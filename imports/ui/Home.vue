@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+    <md-table v-model="projects" md-sort="name" md-sort-order="asc">
       <md-table-toolbar>
         <h1 class="md-title">Projets</h1>
       </md-table-toolbar>

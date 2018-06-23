@@ -4,7 +4,7 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">My Title</span>
+      <span class="md-title">StudioX</span>
 
       <div class="md-toolbar-section-end">
         <md-button @click="showSidepanel = true">Favorites</md-button>
@@ -13,13 +13,13 @@
 
     <md-drawer :md-active.sync="showNavigation">
       <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">My App name</span>
+        <span class="md-title">StudioX</span>
       </md-toolbar>
 
       <md-list>
-        <md-list-item>
-          <md-icon>move_to_inbox</md-icon>
-          <span class="md-list-item-text">Inbox</span>
+        <md-list-item to="/" @click="showNavigation = false">
+          <md-icon>home</md-icon>
+          <span class="md-list-item-text">Accueil</span>
         </md-list-item>
 
         <md-list-item>
@@ -79,17 +79,9 @@
 
 <script>
 import {Session} from 'meteor/session';
-Session.setDefault("counter", 0);
-let labels = ['Click me!', 'Click me again!', 'Here! Click here!', 'Again! Again!',
-'Don\'t click me! No, I\'m just kidding. You can.', 'You like that?',
-'Can you stratch me in the back please?', 'You are soooo nice! Click!',
-'Hmmmm...', 'You know, you are wasting time clicking me.',
-'No really, you can click me as much as you want.', 'Click me to level up!'];
 export default {
   data() {
     return {
-      buttonLabel: 'Click me!',
-      count: 0,
       showNavigation: false,
       showSidepanel: false
     }
