@@ -1,0 +1,27 @@
+{
+  "name": "meteor-vue-example",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "visualize": "meteor --production --extra-packages bundle-visualizer"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.0.0-beta.48",
+    "meteor-node-stubs": "^0.4.1",
+    "vue": "^2.5.16",
+    "vue-hot-reload-api": "^2.3.0",
+    "vue-material": "^1.0.0-beta-10.2",
+    "vue-meteor-tracker": "^1.0.3",
+    "vue-router": "^2.0.0"
+  },
+  "meteor": {
+    "mainModule": {
+      "client": "client/main.js",
+      "server": "server/main.js"
+    },
+    "testModule": "test/main.js"
+  },
+  "devDependencies": {}
+}
