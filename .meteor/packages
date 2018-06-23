@@ -23,3 +23,4 @@ akryum:vue-component
 session@1.1.7
 aldeed:simple-schema
 akryum:vue-router2
+akryum:vue-sass

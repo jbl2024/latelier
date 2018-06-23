@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="home">
     <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
       <md-table-toolbar>
         <h1 class="md-title">Projets</h1>
@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { Projects } from '../../../imports/api/projects/projects.js'
+import { Projects } from '/imports/api/projects/projects.js'
 
 export default {
   data () {

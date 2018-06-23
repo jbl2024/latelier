@@ -72,7 +72,7 @@
     </md-drawer>
 
     <md-content>
-      <my-projects></my-projects>
+      <router-view></router-view>
     </md-content>
   </div>
 </template>
