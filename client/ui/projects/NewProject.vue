@@ -11,7 +11,7 @@
         </md-field>
       </div>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="create">Crêer</md-button>
+        <md-button class="md-primary" @click="create">Créer</md-button>
         <md-button class="md-primary" @click="showDialog = false">Annuler</md-button>
       </md-dialog-actions>
     </md-dialog>  

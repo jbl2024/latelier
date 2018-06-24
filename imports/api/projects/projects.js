@@ -9,9 +9,9 @@ Meteor.methods({
     check(name, String);
 
     // Make sure the user is logged in before inserting a task
-    // if (!Meteor.userId()) {
-    //   throw new Meteor.Error('not-authorized');
-    // }
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
 
     Projects.insert({
       name,
