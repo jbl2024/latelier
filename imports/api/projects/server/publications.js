@@ -5,3 +5,7 @@ import { Projects } from '../projects';
 Meteor.publish('projects', function projectsPublication() {
   return Projects.find();
 });
+
+Meteor.publish('project', function project(projectId) {
+  return Projects.find({ _id: projectId });
+});

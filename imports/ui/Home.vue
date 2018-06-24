@@ -6,7 +6,11 @@
       </md-table-toolbar>
 
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="Nom" md-sort-by="name">{{ item.name }}</md-table-cell>
+        <md-table-cell md-label="Nom" md-sort-by="name">
+          <router-link :to="{ name: 'projects', params: { projectId: item._id }}">
+            {{ item.name }}
+          </router-link>
+        </md-table-cell>
       </md-table-row>
     </md-table>
 
