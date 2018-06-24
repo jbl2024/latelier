@@ -4,9 +4,9 @@
       Loading...
     </div>
     <div v-if="$subReady.project">
-      <h2>
+      <h1 class="md-title">
         <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
-      </h2>
+      </h1>
     </div>
   </div>    
 </template>
