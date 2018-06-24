@@ -1,5 +1,12 @@
 <template>
   <div class="home">
+
+    <md-speed-dial class="md-bottom-right">
+      <md-speed-dial-target @click="newProject">
+        <md-icon>add</md-icon>
+      </md-speed-dial-target>
+    </md-speed-dial>
+     
     <md-table v-model="projects" md-sort="name" md-sort-order="asc">
       <md-table-toolbar>
         <h1 class="md-title">Projets</h1>
@@ -23,6 +30,11 @@ import { Projects } from '/imports/api/projects/projects.js'
 export default {
   data () {
     return {
+    }
+  },
+  methods: {
+    newProject () {
+      window.alert('You can have a custom click inside the target!')
     }
   },
   meteor: {
