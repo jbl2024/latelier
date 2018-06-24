@@ -6,6 +6,9 @@
         <md-icon>add</md-icon>
       </md-speed-dial-target>
     </md-speed-dial>
+
+
+    <new-project ref="newProject"></new-project>  
      
     <md-table v-model="projects" md-sort="name" md-sort-order="asc">
       <md-table-toolbar>
@@ -34,7 +37,7 @@ export default {
   },
   methods: {
     newProject () {
-      window.alert('You can have a custom click inside the target!')
+      this.$refs.newProject.open();
     }
   },
   meteor: {
