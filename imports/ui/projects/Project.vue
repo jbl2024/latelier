@@ -1,7 +1,14 @@
 <template>
   <div class="project">
-    <h1>{{ project.name }}</h1>
-  </div>
+    <div v-if="!$subReady.project">
+      Loading...
+    </div>
+    <div v-if="$subReady.project">
+      <h2>
+        <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
+      </h2>
+    </div>
+  </div>    
 </template>
 
 <script>
