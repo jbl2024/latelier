@@ -35,7 +35,12 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('projects.insert', this.name);
+      Meteor.call('projects.insert', this.name, (error, result) => { 
+        if (error) {
+          return;
+        }
+        this.$router.push({ name: 'projects', params: { projectId: result }}) 
+      });
       this.showDialog = false;
     }
   }
