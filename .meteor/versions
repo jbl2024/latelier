@@ -79,6 +79,7 @@ reactive-dict@1.2.0
 reactive-var@1.0.11
 reload@1.2.0
 retry@1.1.0
+reywood:publish-composite@1.6.0
 routepolicy@1.0.13
 service-configuration@1.0.11
 session@1.1.7

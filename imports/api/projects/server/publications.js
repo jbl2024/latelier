@@ -1,11 +1,26 @@
-import { Meteor } from 'meteor/meteor';
-import { Projects } from '../projects';
+import { Meteor } from "meteor/meteor";
+import { publishComposite } from "meteor/reywood:publish-composite";
+
+import { Projects } from "../projects";
+import { Lists } from "../../lists/lists";
 
 // This code only runs on the server
-Meteor.publish('projects', function projectsPublication() {
+Meteor.publish("projects", function projectsPublication() {
   return Projects.find();
 });
 
-Meteor.publish('project', function project(projectId) {
-  return Projects.find({ _id: projectId });
+publishComposite("project", function(projectId) {
+  return {
+    find() {
+      return Projects.find({ _id: projectId });
+    },
+    children: [
+      {
+        // lists
+        find(project) {
+          return Lists.find({ projectId: project._id });
+        }
+      }
+    ]
+  }
 });
