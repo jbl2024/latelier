@@ -2,7 +2,6 @@
   <div class="home">
 
 
-    <blaze-template template="loginButtons"></blaze-template>
     <new-project ref="newProject"></new-project>  
 
     <div v-if="!$subReady.projects">
@@ -75,4 +74,6 @@ export default {
 </script>
 
 <style scoped>
+
+
 </style>

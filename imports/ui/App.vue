@@ -7,6 +7,7 @@
       <span class="md-title">StudioX</span>
 
       <div class="md-toolbar-section-end">
+        <blaze-template id="login" template="loginButtons"></blaze-template>
         <md-button @click="showSidepanel = true">Favorites</md-button>
       </div>
     </md-toolbar>

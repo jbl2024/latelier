@@ -35,7 +35,6 @@ export default {
       this.showDialog = true;
     },
     create () {
-      console.log(this.name);
       Meteor.call('projects.insert', this.name);
       this.showDialog = false;
     }

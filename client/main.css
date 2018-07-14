@@ -1,4 +1,7 @@
 body {
-  padding: 10px;
-  font-family: sans-serif;
 }
+
+#login .login-link-text{
+  color: white;
+}
+
