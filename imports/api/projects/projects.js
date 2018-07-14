@@ -13,10 +13,13 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    Projects.insert({
+    var project = Projects.insert({
       name,
       createdAt: new Date(),
+      createdBy: Meteor.userId()
     });
+
+    return project;
   },
 
   'projects.remove'(projectId) {
