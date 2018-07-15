@@ -8,7 +8,7 @@ const routerFactory = new RouterFactory({
 });
 
 // Not found
-import NotFound from '/imports/ui/NotFound.vue';
+import NotFound from '/imports/ui/pages/NotFound/NotFound.vue';
 
 RouterFactory.configure(router => {
   router.addRoute({

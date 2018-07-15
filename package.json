@@ -10,6 +10,8 @@
   "dependencies": {
     "@babel/runtime": "^7.0.0-beta.53",
     "bcrypt": "^2.0.1",
+    "element-theme-chalk": "^2.4.4",
+    "element-ui": "^2.4.4",
     "meteor-node-stubs": "^0.4.1",
     "vue": "^2.5.16",
     "vue-hot-reload-api": "^2.3.0",

@@ -9,6 +9,11 @@ import 'vue-material/dist/theme/default.css' // This line here
 
 Vue.use(VueMaterial)
 
+// Element UI
+import ElementUI from 'element-ui'
+Vue.use(ElementUI)
+
+
 // Main app
 import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';
