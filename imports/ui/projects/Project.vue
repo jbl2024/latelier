@@ -24,6 +24,12 @@
 
       </md-table>
 
+      <new-list ref="newList" :project-id="projectId"></new-list>  
+      <md-speed-dial class="md-bottom-right">
+        <md-speed-dial-target @click="newList">
+          <md-icon>add</md-icon>
+        </md-speed-dial-target>
+      </md-speed-dial>
 
 
 
@@ -59,7 +65,16 @@ export default {
     lists () {
       return Lists.find();
     }
-  }
+  },
+  methods: {
+    newList () {
+      this.$refs.newList.open();
+    },
+    deleteList (listId) {
+      Meteor.call('lists.remove', listId);
+    },
+  },
+
 }
 </script>
 
