@@ -12,9 +12,14 @@
 
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
-          <div class="swimlane">
-            <h2>{{list.name}}</h2>
+          <div class="swimlane" @click="editList(list)">
+            <h2 v-show="!isListEdited(list)">{{list.name}}</h2>
+            <h2 v-show="isListEdited(list)"><input type="text" v-model="list.name" v-on:keyup.enter="updateName(list)"></h2>
           </div>
+        </div>  
+        <div class="swimlane new" @click="newListFast">
+          <h2>Nouvelle liste</h2>
+        </div>
       </div>
 
 
@@ -44,6 +49,10 @@ export default {
   },
   data () {
     return {
+      selectedList: {
+        type: String,
+        default: '0'
+      }
     }
   },
   meteor: {
@@ -61,8 +70,37 @@ export default {
     }
   },
   methods: {
+
+    editList (e) {
+      this.selectedList = e;
+    },
+
+    isListEdited (list) {
+      if (!list || !this.selectedList) {
+        return false;
+      }
+      return list._id === this.selectedList._id;
+    },
+
+    updateName (list) {
+      this.selectedList = null;
+      console.log(list.name)
+      Meteor.call('lists.updateName', list._id, list.name, (error, result) => { 
+        if (error) {
+          return;
+        }
+      });      
+    },
+
     newList () {
       this.$refs.newList.open();
+    },
+    newListFast () {
+      Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, result) => { 
+        if (error) {
+          return;
+        }
+      });
     },
     deleteList (listId) {
       Meteor.call('lists.remove', listId);
@@ -86,6 +124,20 @@ export default {
   display: inline-block;
   margin-right: 8px;
 }
+
+.swimlane.new h2 {
+  border: 2px dashed #1f5c87;
+  background-color: white;
+  padding-bottom: 8px;
+  color: black;
+  cursor: pointer;
+}
+.swimlane.new h2:hover {
+  color: rgb(48, 48, 48);
+  cursor: pointer;
+  transition: color 0.5s ease;
+}
+
 
 .swimlane h2 {
   text-align: left;

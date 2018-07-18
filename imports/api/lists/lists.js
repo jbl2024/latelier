@@ -29,4 +29,14 @@ Meteor.methods({
 
     Lists.remove(listId);
   },
+
+  'lists.updateName'(listId, name) {
+    check(listId, String);
+    check(name, String);
+    if (name.length == 0) {
+      throw new Meteor.Error('invalid-name');
+    }
+
+    Lists.update({_id: listId}, {$set: {name: name}});
+  },
 });
