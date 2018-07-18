@@ -14,7 +14,7 @@
         <div v-for="list in lists" :key='list._id'>
           <div class="swimlane" @click="editList(list)">
             <h2 v-show="!isListEdited(list)">{{list.name}}</h2>
-            <h2 v-show="isListEdited(list)"><input type="text" v-model="list.name" v-on:keyup.enter="updateName(list)"></h2>
+            <h2 v-show="isListEdited(list)"><input @focus="$event.target.select()" type="text" v-model="list.name" v-on:keyup.enter="updateName(list)"></h2>
           </div>
         </div>  
         <div class="swimlane new" @click="newListFast">
