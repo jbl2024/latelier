@@ -4,28 +4,22 @@
       Loading...
     </div>
     <div v-if="$subReady.project">
+
+
       <h1 class="md-title">
         <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
       </h1>
 
-      <list v-for="list in lists" :key='list._id' :list="list"></list>
-            
+      <div class="container">
+        <div v-for="list in lists" :key='list._id'>
+          <div class="swimlane">
+            <h2>{{list.name}}</h2>
+          </div>
+      </div>
 
-      <md-table v-model="lists" md-sort="name" md-sort-order="asc" md-card>
-        <md-table-toolbar>
-          <h1 class="md-title">Listes</h1>
-        </md-table-toolbar>
-
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Nom" md-sort-by="name">
-              {{ item.name }}
-          </md-table-cell>
-        </md-table-row>
-
-      </md-table>
 
       <new-list ref="newList" :project-id="projectId"></new-list>  
-      <md-speed-dial class="md-bottom-right">
+      <md-speed-dial class="absolute-right">
         <md-speed-dial-target @click="newList">
           <md-icon>add</md-icon>
         </md-speed-dial-target>
@@ -79,4 +73,36 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.swimlane {
+  flex: 0 0 auto;
+  width: 200px;
+  min-height: 800px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.swimlane h2 {
+  text-align: left;
+  background-color: #1f5c87;
+  color: white;
+  font-weight: normal;
+  font-size: 14px;
+  padding: 5px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+}
+
+.absolute-right {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+}
+
 </style>

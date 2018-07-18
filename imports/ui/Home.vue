@@ -29,7 +29,7 @@
       </md-table>
     </div>
 
-    <md-speed-dial class="md-bottom-right">
+    <md-speed-dial class="absolute-right">
       <md-speed-dial-target @click="newProject">
         <md-icon>add</md-icon>
       </md-speed-dial-target>
@@ -74,6 +74,11 @@ export default {
 </script>
 
 <style scoped>
+.absolute-right {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+}
 
 
 </style>
