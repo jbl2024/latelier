@@ -13,7 +13,12 @@
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
           <div class="swimlane">
-            <h2 @click="editList(list)" v-show="!isListEdited(list, selectedList)">{{list.name}}</h2>
+            <h2 v-show="!isListEdited(list, selectedList)">
+              <span @click="editList(list)">{{list.name}}</span>
+              <md-button class="md-icon-button settings">
+                <md-icon>arrow_drop_down</md-icon>
+              </md-button>
+            </h2>
             <h2 v-show="isListEdited(list, selectedList)">
               <input @focus="$event.target.select()" type="text" v-model="list.name" v-on:keyup.enter="updateName(list)">
               <md-button class="md-icon-button" @click.native="updateName(list)">
@@ -98,6 +103,9 @@ export default {
     },
 
     updateName (list) {
+      if (list.name.length == 0) {
+        list.name = this.savedName;
+      }
       this.selectedList = null;
       Meteor.call('lists.updateName', list._id, list.name, (error, result) => { 
         if (error) {
@@ -116,10 +124,12 @@ export default {
     },
 
     newListFast () {
+      var that = this;
       Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, result) => { 
         if (error) {
           return;
         }
+        that.selectedList = result;
       });
     },
     deleteList (listId) {
@@ -183,6 +193,10 @@ export default {
 
 .swimlane .md-icon.md-theme-default.md-icon-font {
   color: white;
+}
+
+.swimlane .settings {
+  float: right;
 }
 
 .absolute-right {

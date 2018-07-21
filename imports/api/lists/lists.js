@@ -21,7 +21,7 @@ Meteor.methods({
       createdBy: Meteor.userId()
     });
 
-    return list;
+    return Lists.findOne({_id: list});
   },
 
   'lists.remove'(listId) {
