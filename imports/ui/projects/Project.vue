@@ -12,9 +12,20 @@
 
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
-          <div class="swimlane" @click="editList(list)">
-            <h2 v-show="!isListEdited(list)">{{list.name}}</h2>
-            <h2 v-show="isListEdited(list)"><input @focus="$event.target.select()" type="text" v-model="list.name" v-on:keyup.enter="updateName(list)"></h2>
+          <div class="swimlane">
+            <h2 @click="editList(list)" v-show="!isListEdited(list, selectedList)">{{list.name}}</h2>
+            <h2 v-show="isListEdited(list, selectedList)">
+              <input @focus="$event.target.select()" type="text" v-model="list.name" v-on:keyup.enter="updateName(list)">
+              <md-button class="md-icon-button" @click.native="updateName(list)">
+                <md-icon>check_circle</md-icon>
+              </md-button>
+
+              <md-button class="md-icon-button" @click.native="cancelUpdate(list)">
+                <md-icon>cancel</md-icon>
+              </md-button>
+
+            </h2>
+
           </div>
         </div>  
         <div class="swimlane new" @click="newListFast">
@@ -50,8 +61,10 @@ export default {
   data () {
     return {
       selectedList: {
-        type: String,
-        default: '0'
+        type: Object
+      },
+      savedName: {
+        type: String
       }
     }
   },
@@ -71,20 +84,21 @@ export default {
   },
   methods: {
 
-    editList (e) {
-      this.selectedList = e;
+    editList (list) {
+      this.selectedList = list;
+      this.savedName = this.selectedList.name;
     },
 
-    isListEdited (list) {
-      if (!list || !this.selectedList) {
+    isListEdited (list, selectedList) {
+      if (!list || !selectedList) {
         return false;
       }
-      return list._id === this.selectedList._id;
+      var edited = list._id === selectedList._id;
+      return edited;
     },
 
     updateName (list) {
       this.selectedList = null;
-      console.log(list.name)
       Meteor.call('lists.updateName', list._id, list.name, (error, result) => { 
         if (error) {
           return;
@@ -92,9 +106,15 @@ export default {
       });      
     },
 
+    cancelUpdate (list) {
+      list.name = this.savedName;
+      this.selectedList = null;
+    },
+
     newList () {
       this.$refs.newList.open();
     },
+
     newListFast () {
       Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, result) => { 
         if (error) {
@@ -149,6 +169,20 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   margin-bottom: 0;
+}
+.swimlane input {
+  width: 70%;
+}
+
+.swimlane .md-button {
+  min-width: 24px;
+  width: 24px;
+  height: 20px;
+  margin: 0;
+}
+
+.swimlane .md-icon.md-theme-default.md-icon-font {
+  color: white;
 }
 
 .absolute-right {
