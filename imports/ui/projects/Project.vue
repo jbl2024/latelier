@@ -136,11 +136,12 @@ export default {
 
     newListInline () {
       var that = this;
-      Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, result) => { 
+      Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, createdList) => { 
         if (error) {
           return;
         }
-        that.selectedList = result;
+        that.savedName = createdList.name;
+        that.selectedList = createdList;
       });
     },
     deleteList (listId) {
