@@ -15,9 +15,15 @@
           <div class="swimlane">
             <h2 v-show="!isListEdited(list, selectedList)">
               <span @click="editList(list)">{{list.name}}</span>
-              <md-button class="md-icon-button settings">
-                <md-icon>arrow_drop_down</md-icon>
-              </md-button>
+              <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
+                <md-button md-menu-trigger class="md-icon-button">
+                  <md-icon>arrow_drop_down</md-icon>
+                </md-button>
+                <md-menu-content>
+                  <md-menu-item @click="deleteList(list._id)">Supprimer</md-menu-item>
+                </md-menu-content>
+              </md-menu>
+
             </h2>
             <h2 v-show="isListEdited(list, selectedList)">
               <input @focus="$event.target.select()" type="text" v-model="list.name" v-on:keyup.enter="updateName(list)">
@@ -168,6 +174,9 @@ export default {
   transition: color 0.5s ease;
 }
 
+.md-menu-item {
+  cursor: pointer;
+}
 
 .swimlane h2 {
   text-align: left;
