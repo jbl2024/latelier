@@ -7,7 +7,7 @@
     <div v-if="!$subReady.projects">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div>
+    <div v-if="$subReady.projects">
       <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
         <md-table-toolbar>
           <h1 class="md-title">Projets</h1>

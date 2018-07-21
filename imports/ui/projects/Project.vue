@@ -3,18 +3,17 @@
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div>
+    <div v-if="$subReady.project"> 
 
-
-      <md-toolbar :md-elevation="1">
-        <h1 class="md-title toolbar" style="flex: 1">
+      <md-content class="md-elevation-1 toolbar">
+        <h1 class="md-title toolbar">
          <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
         </h1>
-        <md-button class="md-icon-button">
+        <md-button class="md-icon-button settings">
           <md-icon>more_vert</md-icon>
         </md-button>
 
-      </md-toolbar>
+      </md-content>
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
           <div class="swimlane">
@@ -158,9 +157,26 @@ export default {
 
 <style scoped>
 
+.md-content { 
+  padding: 8px;
+}
+
 .toolbar {
   font-size: 14px;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
+
+.toolbar h1 {
+  flex: 1;
+  display: inline-block;
+}
+
+.toolbar .settings {
+  margin-top: 4px;
+}
+
 .container {
   display: flex;
   flex-wrap: nowrap;
