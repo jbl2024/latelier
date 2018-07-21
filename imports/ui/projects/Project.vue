@@ -185,7 +185,7 @@ export default {
 
 .swimlane {
   flex: 0 0 auto;
-  width: 200px;
+  width: 272px;
   min-height: 800px;
   display: inline-block;
   margin-right: 8px;
@@ -201,7 +201,6 @@ export default {
 .swimlane.new h2:hover {
   color: rgb(48, 48, 48);
   cursor: pointer;
-  transition: color 0.5s ease;
 }
 
 .md-menu-item {

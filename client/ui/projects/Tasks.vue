@@ -2,7 +2,7 @@
 
 <div class="tasks">
     <div v-for="task in tasks" :key='task._id'>
-        <div> {{task.name}} </div>
+        <task :task="task" class="task"></task>
     </div>
     <div class="task new" @click="newTaskInline()">
         <h2>Nouvelle tache</h2>
@@ -59,6 +59,11 @@ export default {
 </script>
 
 <style scoped>
+
+.task {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
 .task h2 {
   text-align: left;
   background-color: #1f5c87;
@@ -82,7 +87,6 @@ export default {
 .task.new h2:hover {
   color: rgb(48, 48, 48);
   cursor: pointer;
-  transition: color 0.5s ease;
 }
 
 </style>

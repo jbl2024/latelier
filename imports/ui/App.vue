@@ -72,7 +72,7 @@
       </md-list>
     </md-drawer>
 
-    <md-content>
+    <md-content class="main-content">
       <router-view></router-view>
     </md-content>
   </div>
@@ -104,6 +104,11 @@ export default {
 </script>
 
 <style lang="scss">
+
+  .main-content {
+    background-color: #eee !important;
+  }
+
   .page-container {
     min-height: 100vh;
     overflow: hidden;
