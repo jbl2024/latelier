@@ -6,11 +6,15 @@
     <div v-if="$subReady.project">
 
 
-     <md-toolbar :md-elevation="1">
-       <h1 class="md-title toolbar">
-        <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
-      </h1>
-     </md-toolbar>
+      <md-toolbar :md-elevation="1">
+        <h1 class="md-title toolbar" style="flex: 1">
+         <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
+        </h1>
+        <md-button class="md-icon-button">
+          <md-icon>more_vert</md-icon>
+        </md-button>
+
+      </md-toolbar>
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
           <div class="swimlane">
