@@ -3,6 +3,7 @@ import { publishComposite } from "meteor/reywood:publish-composite";
 
 import { Projects } from "../projects";
 import { Lists } from "../../lists/lists";
+import { Tasks } from "../../tasks/tasks";
 
 // This code only runs on the server
 Meteor.publish("projects", function projectsPublication() {
@@ -19,7 +20,15 @@ publishComposite("project", function(projectId) {
         // lists
         find(project) {
           return Lists.find({ projectId: project._id });
-        }
+        },
+        children: [
+          {
+            // tasks
+            find(list) {
+              return Tasks.find({ listId: list._id});
+            }
+          }
+        ]
       }
     ]
   }

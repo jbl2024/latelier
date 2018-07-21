@@ -1,42 +1,44 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
+import { Lists } from '/imports/api/lists/lists.js'
 
-export const Lists = new Mongo.Collection('lists');
+export const Tasks = new Mongo.Collection('tasks');
 
 Meteor.methods({
-  'lists.insert'(projectId, name) {
+  'tasks.insert'(projectId, listId, name) {
     check(projectId, String);
+    check(listId, String);
     check(name, String);
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-
-    var listId = ListIds.insert({
+    var taskId = Tasks.insert({
       name,
       projectId: projectId,
+      listId: listId,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
 
-    return Lists.findOne({_id: listId});
+    return Tasks.findOne({_id: taskId});
   },
 
-  'lists.remove'(listId) {
-    check(listId, String);
+  'tasks.remove'(taskId) {
+    check(taskId, String);
 
-    Lists.remove(listId);
+    Tasks.remove(taskId);
   },
 
-  'lists.updateName'(listId, name) {
-    check(listId, String);
+  'tasks.updateName'(taskId, name) {
+    check(taskId, String);
     check(name, String);
     if (name.length == 0) {
       throw new Meteor.Error('invalid-name');
     }
 
-    Lists.update({_id: listId}, {$set: {name: name}});
+    Tasks.update({_id: taskId}, {$set: {name: name}});
   },
 });

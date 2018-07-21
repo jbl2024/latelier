@@ -37,9 +37,13 @@
 
             </h2>
 
+            <tasks :project-id="projectId" :list-id="list._id"></tasks>
+
           </div>
+
+
         </div>  
-        <div class="swimlane new" @click="newListFast">
+        <div class="swimlane new" @click="newListInline">
           <h2>Nouvelle liste</h2>
         </div>
       </div>
@@ -61,6 +65,7 @@
 <script>
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
+import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export default {
   props: {
@@ -129,7 +134,7 @@ export default {
       this.$refs.newList.open();
     },
 
-    newListFast () {
+    newListInline () {
       var that = this;
       Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, result) => { 
         if (error) {
@@ -140,9 +145,8 @@ export default {
     },
     deleteList (listId) {
       Meteor.call('lists.remove', listId);
-    },
-  },
-
+    }
+  }
 }
 </script>
 
