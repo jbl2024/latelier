@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
+import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export const Lists = new Mongo.Collection('lists');
 
@@ -28,6 +29,7 @@ Meteor.methods({
     check(listId, String);
 
     Lists.remove(listId);
+    Tasks.remove({listId: listId});
   },
 
   'lists.updateName'(listId, name) {
