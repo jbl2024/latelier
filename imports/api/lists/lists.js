@@ -14,7 +14,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    var listId = ListIds.insert({
+    var listId = Lists.insert({
       name,
       projectId: projectId,
       createdAt: new Date(),
