@@ -1,9 +1,9 @@
 <template>
   <div class="project">
     <div v-if="!$subReady.project">
-      Loading...
+      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div v-if="$subReady.project">
+    <div>
 
 
       <md-toolbar :md-elevation="1">

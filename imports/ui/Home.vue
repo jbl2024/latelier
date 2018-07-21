@@ -5,9 +5,9 @@
     <new-project ref="newProject"></new-project>  
 
     <div v-if="!$subReady.projects">
-      Loading...
+      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div v-if="$subReady.projects">
+    <div>
       <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
         <md-table-toolbar>
           <h1 class="md-title">Projets</h1>
