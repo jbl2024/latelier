@@ -7,12 +7,17 @@
       <div class="content">
         <md-field>
             <label>Nom</label>
-            <md-input v-model="name"></md-input>
+            <md-input v-model="name" v-on:keyup.enter="create()"></md-input>
         </md-field>
+            <label>Modèle</label>
+            <div>
+              <md-radio v-model="projectType" value="none">Vide</md-radio>
+              <md-radio v-model="projectType" value="kanban">Kanban</md-radio>
+            </div>
       </div>
       <md-dialog-actions>
-        <md-button class="md-primary" @click="create">Créer</md-button>
-        <md-button class="md-primary" @click="showDialog = false">Annuler</md-button>
+        <md-button class="md-raised md-primary" @click="create">Créer</md-button>
+        <md-button class="md-raised" @click="showDialog = false">Annuler</md-button>
       </md-dialog-actions>
     </md-dialog>  
 
@@ -27,6 +32,7 @@ export default {
   data () {
     return {
       showDialog: false,
+      projectType: 'none',
       name: ''
     }
   },
@@ -35,7 +41,7 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('projects.insert', this.name, (error, result) => { 
+      Meteor.call('projects.create', this.name, this.projectType, (error, result) => { 
         if (error) {
           return;
         }
@@ -51,5 +57,9 @@ export default {
 .content {
   margin-left: 24px;
   margin-right: 24px;
+}
+
+.md-dialog {
+  min-width: 400px;
 }
 </style>

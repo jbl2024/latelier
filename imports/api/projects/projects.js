@@ -24,6 +24,30 @@ Meteor.methods({
     return project;
   },
 
+  'projects.create'(name, projectType) {
+    check(name, String);
+    check(projectType, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var projectId = Projects.insert({
+      name,
+      createdAt: new Date(),
+      createdBy: Meteor.userId()
+    });
+
+    if (projectType === 'kanban') {
+      Meteor.call('lists.insert', projectId, 'A planifier');
+      Meteor.call('lists.insert', projectId, 'En cours');
+      Meteor.call('lists.insert', projectId, 'Terminé');
+    }
+
+    return projectId;
+  },
+
   'projects.remove'(projectId) {
     check(projectId, String);
 

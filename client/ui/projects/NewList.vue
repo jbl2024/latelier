@@ -7,7 +7,7 @@
       <div class="content">
         <md-field>
             <label>Nom</label>
-            <md-input v-model="name"></md-input>
+            <md-input v-model="name" v-on:keyup.enter="create()"></md-input>
         </md-field>
       </div>
       <md-dialog-actions>
