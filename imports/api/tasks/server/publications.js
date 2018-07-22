@@ -3,7 +3,7 @@ import { Tasks } from '../tasks';
 
 // This code only runs on the server
 Meteor.publish('tasks', function tasksPublication(listId) {
-  return Tasks.find({ listId: listId });
+  return Tasks.find({ listId: listId }, {sort: {order: 1}});
 });
 
 Meteor.publish('task', function task(taskId) {

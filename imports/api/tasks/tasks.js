@@ -15,8 +15,18 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
+
+    var _findLastOrder = function () {
+      var task = Tasks.findOne({projectId: projectId, listId: listId}, {sort: {order: -1}});
+      if (task) {
+        return task.order;
+      }
+      return 0;
+    }
+
     var taskId = Tasks.insert({
       name,
+      order: _findLastOrder() + 1,
       projectId: projectId,
       listId: listId,
       createdAt: new Date(),

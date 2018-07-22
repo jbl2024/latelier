@@ -15,8 +15,17 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
+    var _findLastOrder = function () {
+      var list = Lists.findOne({projectId: projectId}, {sort: {order: -1}});
+      if (list) {
+        return list.order;
+      }
+      return 0;
+    }
+
     var listId = Lists.insert({
       name,
+      order: _findLastOrder() + 1,
       projectId: projectId,
       createdAt: new Date(),
       createdBy: Meteor.userId()

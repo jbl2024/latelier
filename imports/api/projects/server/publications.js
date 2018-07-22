@@ -19,13 +19,13 @@ publishComposite("project", function(projectId) {
       {
         // lists
         find(project) {
-          return Lists.find({ projectId: project._id });
+          return Lists.find({ projectId: project._id }, {sort: {order: 1}});
         },
         children: [
           {
             // tasks
             find(list) {
-              return Tasks.find({ listId: list._id});
+              return Tasks.find({ listId: list._id}, {sort: {order: 1}});
             }
           }
         ]

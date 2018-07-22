@@ -107,7 +107,7 @@ export default {
       return Projects.findOne();
     },
     lists () {
-      return Lists.find();
+      return Lists.find({}, {sort: {order: 1}});
     }
   },
   methods: {

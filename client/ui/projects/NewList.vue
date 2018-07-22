@@ -41,7 +41,7 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('lists.insert', this.projectId, this.name, (error, result) => { 
+      Meteor.call('lists.insert',this.projectId, this.name, (error, result) => { 
         if (error) {
           return;
         }
