@@ -41,7 +41,6 @@ export default {
   },
   methods: {
     handleDrop(data, event) {
-      alert('coucou');
     }
   }
 };

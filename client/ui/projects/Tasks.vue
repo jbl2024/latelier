@@ -2,8 +2,8 @@
 
 <div class="tasks">
     <div v-for="task in tasks" :key='task._id'>
-        <drag class="drag">
-          <task :task="task" class="task"></task>
+        <drag class="drag" :transfer-data="task">
+          <task :task="task" class="task" ></task>
           <div slot="image" class="drag-image">
               <md-card md-with-hover >
                 <md-card-header>

@@ -109,7 +109,8 @@ export default {
   },
   methods: {
     handleDrop(data, event) {
-      alert(`You dropped with data: ${JSON.stringify(data)}`);
+      console.log(data);
+      // alert(`You dropped with data: ${JSON.stringify(data)}`);
     },
 
 
