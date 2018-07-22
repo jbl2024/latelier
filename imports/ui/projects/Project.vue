@@ -25,6 +25,7 @@
                   <md-icon>arrow_drop_down</md-icon>
                 </md-button>
                 <md-menu-content>
+                  <md-menu-item @click="newTaskInline(list._id)">Nouvelle tache</md-menu-item>
                   <md-menu-item @click="deleteList(list._id)">Supprimer</md-menu-item>
                 </md-menu-content>
               </md-menu>
@@ -43,6 +44,9 @@
             </h2>
 
             <tasks :project-id="projectId" :list-id="list._id"></tasks>
+            <div class="task new" @click="newTaskInline(list._id)">
+                <h2>Nouvelle tache</h2>
+            </div>
 
           </div>
           </drop>
@@ -155,7 +159,16 @@ export default {
     },
     deleteList (listId) {
       Meteor.call('lists.remove', listId);
+    },
+    newTaskInline (listId) {
+      var that = this;
+      Meteor.call('tasks.insert', this.projectId, listId, 'Nouvelle tache', (error, result) => { 
+        if (error) {
+          return;
+        }
+      });
     }
+    
   }
 }
 </script>
@@ -247,5 +260,18 @@ export default {
   right: 24px;
   bottom: 24px;
 }
+
+.task.new h2 {
+  border: 2px dashed #1f5c87;
+  background-color: white;
+  padding-bottom: 8px;
+  color: black;
+  cursor: pointer;
+}
+.task.new h2:hover {
+  color: rgb(48, 48, 48);
+  cursor: pointer;
+}
+
 
 </style>

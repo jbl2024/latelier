@@ -13,9 +13,6 @@
           </div>          
       </drag>
     </div>
-    <div class="task new" @click="newTaskInline()">
-        <h2>Nouvelle tache</h2>
-    </div>
 </div>
 
 </template>
@@ -83,19 +80,6 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   margin-bottom: 0;
-}
-
-
-.task.new h2 {
-  border: 2px dashed #1f5c87;
-  background-color: white;
-  padding-bottom: 8px;
-  color: black;
-  cursor: pointer;
-}
-.task.new h2:hover {
-  color: rgb(48, 48, 48);
-  cursor: pointer;
 }
 
 </style>
