@@ -109,8 +109,14 @@ export default {
 }
 
 .edit-name {
-  font-size: 24px;
+  font-size: 14px;
+  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   width: 75%;
+  margin-left: -3px;
+}
+
+.task .md-title {
+  font-size: 14px;
 }
 
 </style>

@@ -18,8 +18,11 @@
         <div v-for="list in lists" :key='list._id'>
           <drop @drop="handleDrop">
           <div class="swimlane">
-            <h2 v-show="!isListEdited(list, selectedList)">
-              <span @click="editList(list)">{{list.name}}</span>
+            <h2 v-show="!isListEdited(list, selectedList)" >
+              <span @click="editList(list)" class="list-name">{{list.name}}</span>
+              <md-button md-menu-trigger class="md-icon-button" @click="newTaskInline(list._id)">
+                <md-icon>add</md-icon>
+              </md-button>
               <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
                 <md-button md-menu-trigger class="md-icon-button">
                   <md-icon>arrow_drop_down</md-icon>
@@ -274,5 +277,14 @@ export default {
   cursor: pointer;
 }
 
+.list-name {
+  width: 210px;
+  display: inline-block;
+}
+
+.list-name:hover {
+  background-color: #323742;
+  cursor: pointer;
+}
 
 </style>
