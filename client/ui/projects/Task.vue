@@ -23,17 +23,9 @@
           
           
           </div>
-        <div class="md-subhead">It also have a ripple</div>
+        <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
       </md-card-header>
 
-      <md-card-content>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non.
-      </md-card-content>
-
-      <md-card-actions>
-        <md-button>Action</md-button>
-        <md-button>Action</md-button>
-      </md-card-actions>
     </md-card>
     </drop>
 </div>
@@ -82,6 +74,11 @@ export default {
       this.editName = false;
     },
 
+    formatDate (date) {
+      return moment(date).format('DD/MM/YYYY HH:mm');
+
+    }
+
   }
 };
 </script>
@@ -115,7 +112,12 @@ export default {
   margin-left: -3px;
 }
 
+.task .md-card-header {
+  padding: 12px;
+}
+
 .task .md-title {
+  margin-top: 0 !important;
   font-size: 14px;
 }
 
