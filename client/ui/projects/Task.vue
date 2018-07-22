@@ -1,8 +1,8 @@
 <template>
 
 <div class="task">
-
-    <md-card md-with-hover>
+    <drop @drop="handleDrop">
+    <md-card md-with-hover >
       <md-ripple>
         <md-card-header>
           <div class="md-title">{{ task.name }}</div>
@@ -19,6 +19,7 @@
         </md-card-actions>
       </md-ripple>
     </md-card>
+    </drop>
 </div>
 
 </template>
@@ -37,6 +38,11 @@ export default {
   },
   data() {
     return {};
+  },
+  methods: {
+    handleDrop(data, event) {
+      alert('coucou');
+    }
   }
 };
 </script>

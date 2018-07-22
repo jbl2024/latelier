@@ -2,7 +2,16 @@
 
 <div class="tasks">
     <div v-for="task in tasks" :key='task._id'>
-        <task :task="task" class="task"></task>
+        <drag class="drag">
+          <task :task="task" class="task"></task>
+          <div slot="image" class="drag-image">
+              <md-card md-with-hover >
+                <md-card-header>
+                  <div class="md-title">{{ task.name }}</div>
+                </md-card-header>
+              </md-card>
+          </div>          
+      </drag>
     </div>
     <div class="task new" @click="newTaskInline()">
         <h2>Nouvelle tache</h2>

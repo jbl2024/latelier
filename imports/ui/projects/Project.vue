@@ -16,6 +16,7 @@
       </md-content>
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
+          <drop @drop="handleDrop">
           <div class="swimlane">
             <h2 v-show="!isListEdited(list, selectedList)">
               <span @click="editList(list)">{{list.name}}</span>
@@ -44,7 +45,7 @@
             <tasks :project-id="projectId" :list-id="list._id"></tasks>
 
           </div>
-
+          </drop>
 
         </div>  
         <div class="swimlane new" @click="newListInline">
@@ -103,6 +104,10 @@ export default {
     }
   },
   methods: {
+    handleDrop(data, event) {
+      alert(`You dropped with data: ${JSON.stringify(data)}`);
+    },
+
 
     editList (list) {
       this.selectedList = list;
