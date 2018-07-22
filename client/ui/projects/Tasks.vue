@@ -11,7 +11,7 @@
                 </md-card-header>
               </md-card>
           </div>          
-      </drag>
+        </drag>
     </div>
 </div>
 
@@ -45,7 +45,7 @@ export default {
       }
     },
     tasks() {
-      return Tasks.find({ listId: this.listId });
+      return Tasks.find({ listId: this.listId }, {sort: {order: 1}});
     }
   },
   methods: {

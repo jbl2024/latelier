@@ -16,7 +16,7 @@
       </md-content>
       <div class="container">
         <div v-for="list in lists" :key='list._id'>
-          <drop @drop="handleDrop">
+          <drop @drop="(data, event) => { handleDrop(list, data, event) }">
           <div class="swimlane">
             <h2 v-show="!isListEdited(list, selectedList)" >
               <span @click="editList(list)" class="list-name">{{list.name}}</span>
@@ -111,9 +111,10 @@ export default {
     }
   },
   methods: {
-    handleDrop(data, event) {
-      // console.log(data);
-      // alert(`You dropped with data: ${JSON.stringify(data)}`);
+    handleDrop(list, data, event) {
+      var droppedTask = data;
+      Meteor.call('tasks.move', list.projectId, list._id, droppedTask._id, -1);
+      return false;
     },
 
 

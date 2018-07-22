@@ -7,7 +7,7 @@
         <div class="md-title">
           
           <span v-show="!editName" @click="startUpdateName()">
-          {{ task.name }}
+          {{ task.order }} - {{ task.name }}
           </span>
           <span v-show="editName" class="edit">
             <input @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
@@ -52,6 +52,9 @@ export default {
   },
   methods: {
     handleDrop(data, event) {
+      event.stopPropagation();
+      var droppedTask = data;
+      Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
     },
     startUpdateName () {
       this.savedName = this.task.name;
