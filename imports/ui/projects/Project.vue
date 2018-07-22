@@ -48,7 +48,7 @@
 
             <tasks :project-id="projectId" :list-id="list._id"></tasks>
             <div class="task new" @click="newTaskInline(list._id)">
-                <h2>Nouvelle tache</h2>
+                <h2>Ajouter une tache</h2>
             </div>
 
           </div>

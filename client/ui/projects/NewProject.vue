@@ -16,8 +16,8 @@
             </div>
       </div>
       <md-dialog-actions>
+        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
         <md-button class="md-raised md-primary" @click="create">Créer</md-button>
-        <md-button class="md-raised" @click="showDialog = false">Annuler</md-button>
       </md-dialog-actions>
     </md-dialog>  
 
