@@ -63,7 +63,7 @@ export default {
       if (this.task.name.length == 0) {
         this.task.name = this.savedName;
       }
-      Meteor.call('tasks.updateName', task._id, task.name, (error, result) => { 
+      Meteor.call('tasks.updateName', this.task._id, this.task.name, (error, result) => { 
         if (error) {
           return;
         }
