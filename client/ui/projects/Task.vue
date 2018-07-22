@@ -2,22 +2,38 @@
 
 <div class="task">
     <drop @drop="handleDrop">
-    <md-card md-with-hover >
-      <md-ripple>
-        <md-card-header>
-          <div class="md-title">{{ task.name }}</div>
-          <div class="md-subhead">It also have a ripple</div>
-        </md-card-header>
+    <md-card md-with-hover>
+      <md-card-header>
+        <div class="md-title">
+          
+          <span v-show="!editName" @click="startUpdateName()">
+          {{ task.name }}
+          </span>
+          <span v-show="editName" class="edit">
+            <input @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
+            <md-button class="md-icon-button" @click.native="updateName()">
+              <md-icon>check_circle</md-icon>
+            </md-button>
 
-        <md-card-content>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non.
-        </md-card-content>
+            <md-button class="md-icon-button" @click.native="cancelUpdateName()">
+              <md-icon>cancel</md-icon>
+            </md-button>
 
-        <md-card-actions>
-          <md-button>Action</md-button>
-          <md-button>Action</md-button>
-        </md-card-actions>
-      </md-ripple>
+          </span>
+          
+          
+          </div>
+        <div class="md-subhead">It also have a ripple</div>
+      </md-card-header>
+
+      <md-card-content>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non.
+      </md-card-content>
+
+      <md-card-actions>
+        <md-button>Action</md-button>
+        <md-button>Action</md-button>
+      </md-card-actions>
     </md-card>
     </drop>
 </div>
@@ -37,11 +53,35 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      editName: false,
+      savedName: ''
+    };
   },
   methods: {
     handleDrop(data, event) {
-    }
+    },
+    startUpdateName () {
+      this.savedName = this.task.name;
+      this.editName = true;
+    },
+
+    updateName (list) {
+      this.editName = false;
+      if (this.task.name.length == 0) {
+        this.task.name = this.savedName;
+      }
+      Meteor.call('tasks.updateName', task._id, task.name, (error, result) => { 
+        if (error) {
+          return;
+        }
+      });      
+    },
+
+    cancelUpdateName () {
+      this.editName = false;
+    },
+
   }
 };
 </script>
@@ -59,5 +99,18 @@ export default {
   margin-bottom: 0;
 }
 
+
+.edit .md-button {
+  min-width: 24px;
+  width: 24px;
+  height: 20px;
+  margin: 0;
+  margin-top: 8px;
+}
+
+.edit-name {
+  font-size: 24px;
+  width: 75%;
+}
 
 </style>
