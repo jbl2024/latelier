@@ -18,7 +18,47 @@
         </md-menu-content>
       </md-menu>
     </div>
+
   </md-toolbar>
+
+  <md-divider></md-divider>
+  <div class="description">
+    <div v-show="!editDescription && task.description && task.description.length > 0" @click="startEditDescription">
+      <pre>{{ task.description}}</pre>
+    </div>
+    <div v-show="!task.description && !editDescription" @click="startEditDescription">
+      Aucune description
+    </div>
+
+    <div v-show="editDescription">
+      <md-field>
+        <label>Description</label>
+        <md-textarea v-model="task.description"></md-textarea>
+      </md-field>
+      <md-button class="md-icon-button" @click.native="updateDescription">
+        <md-icon>check_circle</md-icon>
+      </md-button>
+
+      <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
+        <md-icon>cancel</md-icon>
+      </md-button>
+
+    </div>
+    
+  </div>
+  <md-divider></md-divider>
+
+  <md-tabs md-sync-route>
+    <md-tab id="tab-notes" md-label="Notes">
+      Notes
+    </md-tab>
+
+    <md-tab id="tab-properties" md-label="Propriétés">
+      Pages tab
+      <p>Unde provident nemo reiciendis officia, possimus repellendus. Facere dignissimos dicta quis rem. Aliquam aspernatur dolor atque nisi id deserunt laudantium quam repellat.</p>
+    </md-tab>
+
+  </md-tabs>  
 </div>
 
 </template>
@@ -40,6 +80,7 @@ export default {
   },
   data() {
     return {
+      editDescription: false
     };
   },
   methods: {
@@ -49,10 +90,33 @@ export default {
     deleteTask (taskId) {
       Meteor.call('tasks.remove', taskId);
       this.$events.fire('close-properties');
+    },
+    startEditDescription () {
+      this.savedDescription = this.task.description;
+      this.editDescription = true;
+    },
+
+    updateDescription () {
+      this.editDescription = false;
+      Meteor.call('tasks.updateDescription', this.task._id, this.task.description);
+    },
+
+    cancelUpdateDescription () {
+      this.editDescription = false;
+      this.task.description = this.savedDescription;
     }
   }
 };
 </script>
 
 <style scoped>
+
+.description, .md-tabs {
+  margin: 24px;
+}
+
+pre {
+  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+  white-space: pre-wrap;
+}
 </style>

@@ -52,6 +52,16 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$set: {name: name}});
   },
 
+  'tasks.updateDescription'(taskId, description) {
+    check(taskId, String);
+    check(description, String);
+    if (description.length == 0) {
+      throw new Meteor.Error('invalid-description');
+    }
+
+    Tasks.update({_id: taskId}, {$set: {description: description}});
+  },
+
   'tasks.move'(projectId, listId, taskId, order) {
     check(listId, String);
     check(taskId, String);

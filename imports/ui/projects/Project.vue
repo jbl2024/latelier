@@ -61,7 +61,7 @@
         </div>
       </div>
 
-      <md-drawer :md-active="showProperties" md-right md-persistent="full">
+      <md-drawer :md-active="showProperties" md-right md-persistent="full" class="drawer-properties">
         <task-properties :task="selectedTask"></task-properties>
       </md-drawer>
 
@@ -193,6 +193,10 @@ export default {
 
 <style scoped>
 
+.drawer-properties {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+}
+
 .md-drawer {
   top: 66px;
   width: 600px;
@@ -206,7 +210,7 @@ export default {
 }
 
 .toolbar {
-  font-size: 14px;
+  font-size: 18px;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
@@ -222,6 +226,7 @@ export default {
 }
 
 .container {
+  margin: 4px;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
