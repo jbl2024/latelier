@@ -6,9 +6,10 @@
       <md-card-header>
         <div class="md-title">
           
-          <span v-show="!editName" @click="startUpdateName">
+          <span v-show="!editName" @click="startUpdateName" class="name">
           {{ task.order }} - {{ task.name }}
           </span>
+
           <span v-show="editName" class="edit">
             <input @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
             <md-button class="md-icon-button" @click.native="updateName">
@@ -109,6 +110,12 @@ export default {
   margin-bottom: 0;
 }
 
+
+.name:hover {
+  background-color: rgb(48, 48, 48);
+  cursor: pointer;
+  color: white;
+}
 
 .edit .md-button {
   min-width: 24px;

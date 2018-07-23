@@ -62,16 +62,7 @@
       </div>
 
       <md-drawer :md-active="showProperties" md-right md-persistent="full">
-        <md-toolbar class="md-transparent" md-elevation="0">
-          <span>{{ selectedTask.name}}</span>
-
-          <div class="md-toolbar-section-end">
-            <md-button class="md-icon-button md-dense" @click="showProperties=false">
-              <md-icon>close</md-icon>
-            </md-button>
-          </div>
-        </md-toolbar>
-
+        <task-properties :task="selectedTask"></task-properties>
       </md-drawer>
 
       <new-list ref="newList" :project-id="projectId"></new-list>  
@@ -97,6 +88,13 @@ export default {
       this.showProperties = true;
       this.selectedTask = task;
     });
+    this.$events.listen('close-properties', task => {
+      this.showProperties = false;
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('task-selected');
+    this.$events.off('close-properties');
   },
   props: {
     projectId: {
