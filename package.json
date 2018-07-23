@@ -15,6 +15,7 @@
     "meteor-node-stubs": "^0.4.1",
     "vue": "^2.5.16",
     "vue-drag-drop": "^1.1.4",
+    "vue-events": "^3.1.0",
     "vue-hot-reload-api": "^2.3.0",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-meteor-tracker": "^1.0.3",

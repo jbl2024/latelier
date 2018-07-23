@@ -105,6 +105,10 @@ export default {
 
 <style lang="scss">
 
+  .md-content.main-content {
+    padding: 0;
+  }
+
   .main-content {
     background-color: #eee !important;
   }

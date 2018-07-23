@@ -1,21 +1,21 @@
 <template>
 
-<div class="task">
+<div class="task" @click="selectTask">
     <drop @drop="handleDrop">
     <md-card md-with-hover>
       <md-card-header>
         <div class="md-title">
           
-          <span v-show="!editName" @click="startUpdateName()">
+          <span v-show="!editName" @click="startUpdateName">
           {{ task.order }} - {{ task.name }}
           </span>
           <span v-show="editName" class="edit">
             <input @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
-            <md-button class="md-icon-button" @click.native="updateName()">
+            <md-button class="md-icon-button" @click.native="updateName">
               <md-icon>check_circle</md-icon>
             </md-button>
 
-            <md-button class="md-icon-button" @click.native="cancelUpdateName()">
+            <md-button class="md-icon-button" @click.native="cancelUpdateName">
               <md-icon>cancel</md-icon>
             </md-button>
 
@@ -56,12 +56,14 @@ export default {
       var droppedTask = data;
       Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
     },
-    startUpdateName () {
+    startUpdateName (e) {
+      e.stopPropagation();
       this.savedName = this.task.name;
       this.editName = true;
     },
 
-    updateName (list) {
+    updateName (e) {
+      e.stopPropagation();
       this.editName = false;
       if (this.task.name.length == 0) {
         this.task.name = this.savedName;
@@ -73,13 +75,21 @@ export default {
       });      
     },
 
-    cancelUpdateName () {
+    cancelUpdateName (e) {
+      e.stopPropagation();
       this.editName = false;
     },
 
     formatDate (date) {
       return moment(date).format('DD/MM/YYYY HH:mm');
+    },
 
+    selectTask (e) {
+      e.stopPropagation();
+      if (this.editName) {
+        return;
+      }
+      this.$events.fire('task-selected', this.task);
     }
 
   }

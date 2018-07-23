@@ -7,14 +7,15 @@
 
       <md-content class="md-elevation-1 toolbar">
         <h1 class="md-title toolbar">
-         <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
+        <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
         </h1>
         <md-button class="md-icon-button settings">
           <md-icon>more_vert</md-icon>
         </md-button>
 
       </md-content>
-      <div class="container">
+      <div class="container" @click="showProperties=false">
+
         <div v-for="list in lists" :key='list._id'>
           <drop @drop="(data, event) => { handleDrop(list, data, event) }">
           <div class="swimlane">
@@ -60,6 +61,18 @@
         </div>
       </div>
 
+      <md-drawer :md-active="showProperties" md-right md-persistent="full">
+        <md-toolbar class="md-transparent" md-elevation="0">
+          <span>{{ selectedTask.name}}</span>
+
+          <div class="md-toolbar-section-end">
+            <md-button class="md-icon-button md-dense" @click="showProperties=false">
+              <md-icon>close</md-icon>
+            </md-button>
+          </div>
+        </md-toolbar>
+
+      </md-drawer>
 
       <new-list ref="newList" :project-id="projectId"></new-list>  
       <md-speed-dial class="absolute-right">
@@ -67,7 +80,6 @@
           <md-icon>add</md-icon>
         </md-speed-dial-target>
       </md-speed-dial>
-
 
 
     </div>
@@ -80,6 +92,12 @@ import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export default {
+  mounted () {
+    this.$events.listen('task-selected', task => {
+      this.showProperties = true;
+      this.selectedTask = task;
+    });
+  },
   props: {
     projectId: {
       type: String,
@@ -88,12 +106,10 @@ export default {
   },
   data () {
     return {
-      selectedList: {
-        type: Object
-      },
-      savedName: {
-        type: String
-      }
+      selectedList: {},
+      savedName: '',
+      showProperties: false,
+      selectedTask: {}
     }
   },
   meteor: {
@@ -172,13 +188,20 @@ export default {
           return;
         }
       });
-    }
-    
+    },
   }
 }
 </script>
 
 <style scoped>
+
+.md-drawer {
+  top: 66px;
+  width: 600px;
+}
+
+.properties {
+}
 
 .md-content { 
   padding: 8px;
