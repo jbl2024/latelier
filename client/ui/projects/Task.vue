@@ -7,7 +7,7 @@
         <div class="md-title">
           
           <span v-show="!editName" @click="startUpdateName" class="name">
-          {{ task.order }} - {{ task.name }}
+          {{ task.name }}
           </span>
 
           <span v-show="editName" class="edit">
