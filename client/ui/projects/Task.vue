@@ -64,7 +64,9 @@ export default {
     },
 
     updateName (e) {
-      e.stopPropagation();
+      if (e) {
+        e.stopPropagation();
+      }
       this.editName = false;
       if (this.task.name.length == 0) {
         this.task.name = this.savedName;
