@@ -1,6 +1,7 @@
 <template>
-  <div class="app page-container md-layout-column">
-    <md-toolbar class="md-primary" >
+  <div class="page-container">
+    <md-app md-waterfall md-mode="fixed"> 
+    <md-app-toolbar class="md-primary" >
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
@@ -10,9 +11,9 @@
         <blaze-template id="login" template="loginButtons"></blaze-template>
         <md-button @click="showSidepanel = true">Favorites</md-button>
       </div>
-    </md-toolbar>
+    </md-app-toolbar>
 
-    <md-drawer :md-active.sync="showNavigation">
+    <md-app-drawer :md-active.sync="showNavigation">
       <md-toolbar class="md-transparent" md-elevation="0">
         <span class="md-title">StudioX</span>
       </md-toolbar>
@@ -38,9 +39,9 @@
           <span class="md-list-item-text">Spam</span>
         </md-list-item>
       </md-list>
-    </md-drawer>
+    </md-app-drawer>
 
-    <md-drawer class="md-right" :md-active.sync="showSidepanel">
+    <md-app-drawer class="md-right" :md-active.sync="showSidepanel">
       <md-toolbar class="md-transparent" md-elevation="0">
         <span class="md-title">Favorites</span>
       </md-toolbar>
@@ -70,11 +71,13 @@
           </md-button>
         </md-list-item>
       </md-list>
-    </md-drawer>
+    </md-app-drawer>
 
-    <md-content class="main-content">
+    <md-app-content class="main-content">
       <router-view></router-view>
-    </md-content>
+    </md-app-content>
+
+    </md-app>
   </div>
 </template>
 
@@ -105,6 +108,13 @@ export default {
 
 <style lang="scss">
 
+  .md-app-container {
+    background-color: #eee;
+  }
+
+  .md-app {
+    max-height: 100vh;
+  }
   .md-content.main-content {
     padding: 0;
   }
@@ -128,4 +138,10 @@ export default {
   .md-content {
     padding: 16px;
   }
+
+  .md-app-content .md-card {
+    margin-right: 0;
+    margin-left: 0;  
+  }
+
 </style>
