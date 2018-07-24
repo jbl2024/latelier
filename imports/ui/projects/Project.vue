@@ -30,7 +30,7 @@
         </div>
       </md-toolbar>
 
-      <div class="container" @click="showProperties=false">
+      <div ref="container" class="container" @click="showProperties=false" v-bind:style="{ height: getHeight() + 'px' }">
 
         <div v-for="list in lists" :key='list._id'>
           <drop @drop="(data, event) => { handleDrop(list, data, event) }">
@@ -100,6 +100,7 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export default {
   mounted () {
+    window.addEventListener('resize', this.handleResize)
     this.$events.listen('task-selected', task => {
       this.showProperties = true;
       this.selectedTask = task;
@@ -111,6 +112,7 @@ export default {
   beforeDestroy() {
     this.$events.off('task-selected');
     this.$events.off('close-properties');
+    window.removeEventListener('resize', this.handleResize)
   },
   props: {
     projectId: {
@@ -149,6 +151,10 @@ export default {
       return false;
     },
 
+    handleResize () {
+      console.log('handleResize')
+      this.$refs.container.style.height = this.getHeight() + 'px';
+    },
 
     editList (list) {
       this.selectedList = list;
@@ -222,11 +228,29 @@ export default {
       this.project.name = this.savedProjectName;
     },
 
+    getHeight () {
+      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+      var toolbarHeight = 132;
+      if (h > toolbarHeight) {
+        return h - toolbarHeight;
+      }
+      return h;
+    }
+
   }
 }
 </script>
 
 <style scoped>
+::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 7px;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background-color: rgba(0,0,0,.5);
+    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+}
 
 .drawer-properties {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);

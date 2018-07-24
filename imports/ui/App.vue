@@ -1,7 +1,6 @@
 <template>
-  <div class="page-container">
-    <md-app md-waterfall md-mode="fixed"> 
-    <md-app-toolbar class="md-primary" >
+  <div class="page-container md-layout-column">
+    <md-toolbar class="md-primary" >
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
@@ -11,9 +10,9 @@
         <blaze-template id="login" template="loginButtons"></blaze-template>
         <md-button @click="showSidepanel = true">Favorites</md-button>
       </div>
-    </md-app-toolbar>
+    </md-toolbar>
 
-    <md-app-drawer :md-active.sync="showNavigation">
+    <md-drawer :md-active.sync="showNavigation">
       <md-toolbar class="md-transparent" md-elevation="0">
         <span class="md-title">StudioX</span>
       </md-toolbar>
@@ -39,9 +38,9 @@
           <span class="md-list-item-text">Spam</span>
         </md-list-item>
       </md-list>
-    </md-app-drawer>
+    </md-drawer>
 
-    <md-app-drawer class="md-right" :md-active.sync="showSidepanel">
+    <md-drawer class="md-right" :md-active.sync="showSidepanel">
       <md-toolbar class="md-transparent" md-elevation="0">
         <span class="md-title">Favorites</span>
       </md-toolbar>
@@ -71,13 +70,12 @@
           </md-button>
         </md-list-item>
       </md-list>
-    </md-app-drawer>
+    </md-drawer>
 
-    <md-app-content class="main-content">
+    <md-content class="main-content">
       <router-view></router-view>
-    </md-app-content>
+    </md-content>
 
-    </md-app>
   </div>
 </template>
 
