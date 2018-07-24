@@ -51,10 +51,11 @@ export default {
   methods: {
     newTaskInline () {
       var that = this;
-      Meteor.call('tasks.insert', this.projectId, this.listId, 'Nouvelle tache', (error, result) => { 
+      Meteor.call('tasks.insert', this.projectId, this.listId, 'Nouvelle tache', (error, task) => { 
         if (error) {
           return;
         }
+        this.$events.fire('task-edit-name', task);
       });
     },
     deleteTask (taskId) {

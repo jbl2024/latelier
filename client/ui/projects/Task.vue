@@ -11,7 +11,7 @@
           </span>
 
           <span v-show="editName" class="edit">
-            <input @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
+            <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
             <md-button class="md-icon-button" @click.native="updateName">
               <md-icon>check_circle</md-icon>
             </md-button>
@@ -40,6 +40,17 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 
 
 export default {
+  mounted () {
+    this.$events.listen('task-edit-name', task => {
+      if (task._id !== this.task._id) {
+        return;
+      }
+      this.startUpdateName();
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('task-edit-name');
+  },
   props: {
     task: {
       type: Object
@@ -58,9 +69,12 @@ export default {
       Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
     },
     startUpdateName (e) {
-      e.stopPropagation();
+      if (e) {
+        e.stopPropagation();
+      }
       this.savedName = this.task.name;
       this.editName = true;
+      this.$nextTick(() => this.$refs.name.focus())
     },
 
     updateName (e) {
