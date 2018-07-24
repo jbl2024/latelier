@@ -115,7 +115,6 @@ export default {
 
   .page-container {
     min-height: 100vh;
-    max-height: 100vh;
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(#000, .12);

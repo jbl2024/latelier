@@ -247,11 +247,11 @@ export default {
 
 
 .container {
-  max-height: 100vh;
   margin: 4px;
   display: flex;
   flex-wrap: nowrap;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 .swimlane {
