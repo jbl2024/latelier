@@ -38,11 +38,7 @@ export default {
     return {};
   },
   meteor: {
-    // Subscriptions
     $subscribe: {
-      tasks: function() {
-        return [this.listId];
-      }
     },
     tasks() {
       return Tasks.find({ listId: this.listId }, {sort: {order: 1}});
