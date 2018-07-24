@@ -1,6 +1,6 @@
 <template>
   <div class="app page-container md-layout-column">
-    <md-toolbar class="md-primary">
+    <md-toolbar class="md-primary" >
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
@@ -115,6 +115,7 @@ export default {
 
   .page-container {
     min-height: 100vh;
+    max-height: 100vh;
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(#000, .12);

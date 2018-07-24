@@ -5,7 +5,7 @@
     </div>
     <div v-if="$subReady.project"> 
 
-    <md-toolbar>
+      <md-toolbar class="toolbar">
         <md-button class="md-icon-button" :to="{ name: 'home'}">
             <md-icon>home</md-icon>
         </md-button>
@@ -13,7 +13,7 @@
           {{ project.name }}
         </span>
 
-        <span v-show="editProjectName">
+        <span class="md-title" v-show="editProjectName">
           <input @focus="$event.target.select()" type="text" v-model="project.name" v-on:keyup.enter="updateProjectName">
           <md-button class="md-icon-button" @click.native="updateProjectName">
             <md-icon>check_circle</md-icon>
@@ -232,8 +232,11 @@ export default {
 }
 
 .md-drawer {
-  top: 64px;
   width: 600px;
+}
+
+.toolbar {
+  background-color: white;
 }
 
 
@@ -243,6 +246,7 @@ export default {
 
 
 .container {
+  max-height: 100vh;
   margin: 4px;
   display: flex;
   flex-wrap: nowrap;
