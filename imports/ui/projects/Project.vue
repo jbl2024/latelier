@@ -5,15 +5,31 @@
     </div>
     <div v-if="$subReady.project"> 
 
-      <md-content class="md-elevation-1 toolbar">
-        <h1 class="md-title toolbar">
-        <router-link :to="{ name: 'home'}">Accueil</router-link> > {{ project.name }}
-        </h1>
-        <md-button class="md-icon-button settings">
-          <md-icon>more_vert</md-icon>
+    <md-toolbar>
+        <md-button class="md-icon-button" :to="{ name: 'home'}">
+            <md-icon>home</md-icon>
         </md-button>
+        <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
+          {{ project.name }}
+        </span>
 
-      </md-content>
+        <span v-show="editProjectName">
+          <input @focus="$event.target.select()" type="text" v-model="project.name" v-on:keyup.enter="updateProjectName">
+          <md-button class="md-icon-button" @click.native="updateProjectName">
+            <md-icon>check_circle</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button" @click.native="cancelUpdateProjectName">
+            <md-icon>cancel</md-icon>
+          </md-button>
+        </span>
+        <div class="md-toolbar-section-end">
+          <md-button class="md-icon-button settings">
+            <md-icon>more_vert</md-icon>
+          </md-button>
+        </div>
+      </md-toolbar>
+
       <div class="container" @click="showProperties=false">
 
         <div v-for="list in lists" :key='list._id'>
@@ -106,6 +122,8 @@ export default {
     return {
       selectedList: {},
       savedName: '',
+      savedProjectName: '',
+      editProjectName: false,
       showProperties: false,
       selectedTask: {}
     }
@@ -187,6 +205,22 @@ export default {
         }
       });
     },
+
+    startUpdateProjectName () {
+      this.savedProjectName = this.project.name;
+      this.editProjectName = true
+    },
+
+    updateProjectName () {
+      this.editProjectName = false;
+      Meteor.call('projects.updateName', this.project._id, this.project.name);
+    },
+
+    cancelUpdateProjectName () {
+      this.editProjectName = false;
+      this.project.name = this.savedProjectName;
+    },
+
   }
 }
 </script>
@@ -198,32 +232,15 @@ export default {
 }
 
 .md-drawer {
-  top: 66px;
+  top: 64px;
   width: 600px;
 }
 
-.properties {
-}
 
 .md-content { 
   padding: 8px;
 }
 
-.toolbar {
-  font-size: 18px;
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-}
-
-.toolbar h1 {
-  flex: 1;
-  display: inline-block;
-}
-
-.toolbar .settings {
-  margin-top: 4px;
-}
 
 .container {
   margin: 4px;

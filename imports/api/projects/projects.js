@@ -55,4 +55,15 @@ Meteor.methods({
     Lists.remove({projectId: projectId});
     Projects.remove(projectId);
   },
+
+  'projects.updateName'(projectId, name) {
+    check(projectId, String);
+    check(name, String);
+    if (name.length == 0) {
+      throw new Meteor.Error('invalid-name');
+    }
+
+    Projects.update({_id: projectId}, {$set: {name: name}});
+  },
+
 });
