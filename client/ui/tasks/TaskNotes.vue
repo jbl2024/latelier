@@ -11,11 +11,22 @@
   <div v-for="note in notes">
       <div class="note">
         <pre>{{ note.content}}</pre>
-        <md-avatar class="md-avatar-icon md-small">
-            <md-ripple>AA</md-ripple>
-        </md-avatar>
-        <span class="md-caption">{{ formatUser(note.createdBy)}} {{ formatDateDuration(note.createdAt) }} ({{ formatDate(note.createdAt) }})</span>
+        <div class="metadata">
+          <div class="line">
+            <md-avatar class="md-avatar-icon md-small">
+                <md-ripple>AA</md-ripple>
+            </md-avatar>
+            <span class="md-caption">{{ formatUser(note.createdBy)}} {{ formatDateDuration(note.createdAt) }} ({{ formatDate(note.createdAt) }})</span>
+          </div>
+          <div class="action">
+            <md-button class="md-icon-button delete-button" @click="deleteNote(note)">
+              <md-icon>delete</md-icon>
+            </md-button>
+          </div>
+        </div>
+
       </div>
+
       <md-divider></md-divider>
   </div>
 
@@ -89,6 +100,16 @@ export default {
       });
     },
 
+    deleteNote (note) {
+      Meteor.call('tasks.removeNote', this.task._id, note._id, (error, result) => { 
+        if (error) {
+          return;
+        }
+        var task = Tasks.findOne({_id: this.task._id});
+        this.notes = task.notes;
+      });
+    },
+
     cancelAddNote () {
       this.editNewNote = false;
     },
@@ -122,12 +143,33 @@ pre {
   white-space: pre-wrap;
 }
 
+.delete-button {
+}
+
 .md-empty-state {
   transition: none;
 }
 
 .note {
   margin: 8px;
+}
+
+.metadata {
+  display: flex;
+  flex-direction: row;
+}
+
+.metadata .line {
+  display: inline-block;
+  flex: 1;
+}
+.metadata .action {
+  display: inline-block;
+}
+
+.metadata .action .md-button {
+  margin-top: -10px;
+  padding-top: 0;
 }
 
 .center {

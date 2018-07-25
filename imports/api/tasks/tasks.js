@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Lists } from '/imports/api/lists/lists.js'
+import { Random } from 'meteor/random'
 
 export const Tasks = new Mongo.Collection('tasks');
 
@@ -106,6 +107,7 @@ Meteor.methods({
     }
 
     var note = {
+      _id: Random.id(),
       createdAt: new Date(),
       createdBy: Meteor.userId(),
       content: content
@@ -114,4 +116,18 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$push: {notes: note}});
   },
 
+  'tasks.removeNote'(taskId, noteId) {
+    check(taskId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (noteId) {
+      Tasks.update({_id: taskId},  { $pull: { notes: { _id: noteId } } });
+    } else {
+      Tasks.update({_id: taskId},  { $set: { notes: [] } });
+    }
+  },
 });
