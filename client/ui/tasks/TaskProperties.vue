@@ -33,7 +33,7 @@
     <div v-show="editDescription">
       <md-field>
         <label>Description</label>
-        <md-textarea v-model="task.description"></md-textarea>
+        <md-textarea v-model="task.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
       </md-field>
       <md-button class="md-icon-button" @click.native="updateDescription">
         <md-icon>check_circle</md-icon>
@@ -50,12 +50,7 @@
 
   <md-tabs md-sync-route>
     <md-tab id="tab-notes" md-label="Notes">
-      <md-empty-state
-        md-icon="note"
-        md-label="Aucune note"
-        md-description="Vous pouvez ajouter des notes.">
-        <md-button class="md-primary md-raised">Créer une note</md-button>
-      </md-empty-state>
+      <task-notes :task="task"></task-notes>
     </md-tab>
 
     <md-tab id="tab-properties" md-label="Propriétés">
