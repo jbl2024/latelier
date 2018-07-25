@@ -14,7 +14,7 @@
         <md-avatar class="md-avatar-icon md-small">
             <md-ripple>MM</md-ripple>
         </md-avatar>
-        <span class="md-caption">jerome blondon le {{ note.createdAt }}</span>
+        <span class="md-caption">jerome blondon {{ formatDate(note.createdAt) }}</span>
       </div>
       <md-divider></md-divider>
   </div>
@@ -37,6 +37,7 @@
     </md-button>
 
   </div>
+  </div>
     
 </div>
 
@@ -46,7 +47,8 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
-
+import moment from 'moment';
+import 'moment/locale/fr'
 
 export default {
   props: {
@@ -91,7 +93,17 @@ export default {
 
     cancelAddNote () {
       this.editNewNote = false;
-    }
+    },
+
+    formatDate (date) {
+      var now = moment();
+      var noteDate = moment(date);
+      var duration = moment.duration(now.diff(noteDate)).locale('fr');
+      return 'il y a ' + duration.humanize();
+
+      // return moment(date).format('DD/MM/YYYY HH:mm');
+    },
+
   }
 };
 </script>
@@ -101,6 +113,10 @@ export default {
 pre {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   white-space: pre-wrap;
+}
+
+.md-empty-state {
+  transition: none;
 }
 
 .note {
