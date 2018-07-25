@@ -119,6 +119,7 @@ export default {
 
   .main-content {
     background-color: #eee !important;
+    padding: 16px;
   }
 
   .page-container {
@@ -133,9 +134,6 @@ export default {
     max-width: calc(100vw - 125px);
   }
 
-  .md-content {
-    padding: 16px;
-  }
 
   .md-app-content .md-card {
     margin-right: 0;

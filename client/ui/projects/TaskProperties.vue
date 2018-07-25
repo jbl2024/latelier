@@ -50,7 +50,12 @@
 
   <md-tabs md-sync-route>
     <md-tab id="tab-notes" md-label="Notes">
-      Notes
+      <md-empty-state
+        md-icon="note"
+        md-label="Aucune note"
+        md-description="Vous pouvez ajouter des notes.">
+        <md-button class="md-primary md-raised">Créer une note</md-button>
+      </md-empty-state>
     </md-tab>
 
     <md-tab id="tab-properties" md-label="Propriétés">
@@ -111,7 +116,7 @@ export default {
 
 <style scoped>
 
-.description, .md-tabs {
+.description{
   margin: 24px;
 }
 
