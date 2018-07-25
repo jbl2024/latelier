@@ -1,7 +1,7 @@
 <template>
 
 <div class="task-notes">
-  <md-empty-state v-show="!hasNotes(notes)"
+  <md-empty-state v-show="!hasNotes(notes) && !editNewNote"
     md-icon="note"
     md-label="Aucune note"
     md-description="Vous pouvez ajouter des notes.">
