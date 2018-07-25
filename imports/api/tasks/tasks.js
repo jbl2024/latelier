@@ -95,4 +95,23 @@ Meteor.methods({
       });
     }
   },
+
+  'tasks.addNote'(taskId, content) {
+    check(taskId, String);
+    check(content, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var note = {
+      createdAt: new Date(),
+      createdBy: Meteor.userId(),
+      content: content
+    };
+
+    Tasks.update({_id: taskId}, {$push: {notes: note}});
+  },
+
 });
