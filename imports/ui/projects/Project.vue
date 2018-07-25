@@ -13,7 +13,7 @@
           {{ project.name }}
         </span>
 
-        <span class="md-title" v-show="editProjectName">
+        <span class="md-title edit-project-name" v-show="editProjectName">
           <input @focus="$event.target.select()" type="text" v-model="project.name" v-on:keyup.enter="updateProjectName">
           <md-button class="md-icon-button" @click.native="updateProjectName">
             <md-icon>check_circle</md-icon>
@@ -268,6 +268,21 @@ export default {
 .md-content { 
   padding: 8px;
 }
+
+
+.edit-project-name input {
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: .02em;
+  margin-top: 6px;
+  padding: 0;
+  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+}
+
+.edit-project-name .md-button {
+  margin: 0;
+}
+
 
 
 .container {
