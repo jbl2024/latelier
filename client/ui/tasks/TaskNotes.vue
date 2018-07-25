@@ -12,9 +12,9 @@
       <div class="note">
         <pre>{{ note.content}}</pre>
         <md-avatar class="md-avatar-icon md-small">
-            <md-ripple>MM</md-ripple>
+            <md-ripple>AA</md-ripple>
         </md-avatar>
-        <span class="md-caption">jerome blondon {{ formatDate(note.createdAt) }}</span>
+        <span class="md-caption">{{ formatUser(note.createdBy)}} {{ formatDateDuration(note.createdAt) }} ({{ formatDate(note.createdAt) }})</span>
       </div>
       <md-divider></md-divider>
   </div>
@@ -93,7 +93,7 @@ export default {
       this.editNewNote = false;
     },
 
-    formatDate (date) {
+    formatDateDuration (date) {
       var now = moment();
       var noteDate = moment(date);
       var duration = moment.duration(now.diff(noteDate)).locale('fr');
@@ -101,6 +101,15 @@ export default {
 
       // return moment(date).format('DD/MM/YYYY HH:mm');
     },
+
+    formatDate (date) {
+      return moment(date).format('DD/MM/YYYY HH:mm');
+    },
+
+    formatUser (userId) {
+      var user = Meteor.users.findOne({_id: userId});
+      return user.emails[0].address;
+    }
 
   }
 };
