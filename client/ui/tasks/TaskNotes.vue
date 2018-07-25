@@ -35,8 +35,6 @@
     <md-button class="md-icon-button" @click.native="cancelAddNote">
       <md-icon>cancel</md-icon>
     </md-button>
-
-  </div>
   </div>
     
 </div>
