@@ -63,7 +63,7 @@ export default {
     },
     projects () {
       return Projects.find({}, {
-        sort: {date: -1}
+        sort: {name: 1}
       })
     },
     count () {
