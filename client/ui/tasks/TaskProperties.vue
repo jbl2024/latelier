@@ -115,6 +115,18 @@ export default {
   margin: 24px;
 }
 
+.md-tab{
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.task-notes {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 pre {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   white-space: pre-wrap;

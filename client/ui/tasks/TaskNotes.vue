@@ -9,11 +9,19 @@
   </md-empty-state>
 
   <div v-for="note in notes">
-      <pre>{{ note.content}}</pre>
+      <div class="note">
+        <pre>{{ note.content}}</pre>
+        <md-avatar class="md-avatar-icon md-small">
+            <md-ripple>MM</md-ripple>
+        </md-avatar>
+        <span class="md-caption">jerome blondon le {{ note.createdAt }}</span>
+      </div>
       <md-divider></md-divider>
   </div>
 
-  <md-button v-show="hasNotes(notes)" class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
+  <div class="center">
+    <md-button v-show="hasNotes(notes)" class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
+  </div>
 
   <div v-show="editNewNote">
     <md-field>
@@ -94,4 +102,15 @@ pre {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   white-space: pre-wrap;
 }
+
+.note {
+  margin: 8px;
+}
+
+.center {
+  text-align: center;
+}
+
+
+
 </style>
