@@ -2,21 +2,26 @@
 
 <div class="task-properties">
   <md-toolbar class="md-transparent" md-elevation="0">
-    <div class="md-toolbar-section-start">
-      <md-button class="md-icon-button md-dense" @click="requestClose()">
-        <md-icon>close</md-icon>
-      </md-button>
-      <span>{{ task.name}}</span>
-    </div>
-    <div class="md-toolbar-section-end">
-      <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
-        <md-button md-menu-trigger class="md-icon-button">
-          <md-icon>more_vert</md-icon>
+    <div class="md-toolbar-row">
+      <div class="md-toolbar-section-start">
+        <md-button class="md-icon-button md-dense" @click="requestClose()">
+          <md-icon>close</md-icon>
         </md-button>
-        <md-menu-content>
-          <md-menu-item @click="deleteTask(task._id)">Supprimer</md-menu-item>
-        </md-menu-content>
-      </md-menu>
+        <span>{{ task.name}}</span>
+      </div>
+      <div class="md-toolbar-section-end">
+        <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
+          <md-button md-menu-trigger class="md-icon-button">
+            <md-icon>more_vert</md-icon>
+          </md-button>
+          <md-menu-content>
+            <md-menu-item @click="deleteTask(task._id)">Supprimer</md-menu-item>
+          </md-menu-content>
+        </md-menu>
+      </div>
+    </div>
+    <div class="md-toolbar-row">
+      <author-line :user-id="task.createdBy" :date="task.createdAt"></author-line>
     </div>
 
   </md-toolbar>

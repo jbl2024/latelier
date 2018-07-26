@@ -12,12 +12,7 @@
       <div class="note">
         <pre>{{ note.content}}</pre>
         <div class="metadata">
-          <div class="line">
-            <md-avatar class="md-avatar-icon md-small">
-                <md-ripple>AA</md-ripple>
-            </md-avatar>
-            <span class="md-caption">{{ formatUser(note.createdBy)}} {{ formatDateDuration(note.createdAt) }} ({{ formatDate(note.createdAt) }})</span>
-          </div>
+          <author-line :user-id="note.createdBy" :date="note.createdAt"></author-line>
           <div class="action">
             <md-button class="md-icon-button delete-button" @click="deleteNote(note)">
               <md-icon>delete</md-icon>
@@ -159,7 +154,7 @@ pre {
   flex-direction: row;
 }
 
-.metadata .line {
+.metadata .author-line {
   display: inline-block;
   flex: 1;
 }
