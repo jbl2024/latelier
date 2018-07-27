@@ -59,6 +59,4 @@ export default {
   margin-right: 24px;
 }
 
-.md-dialog {
-}
 </style>
