@@ -60,6 +60,5 @@ export default {
 }
 
 .md-dialog {
-  min-width: 400px;
 }
 </style>
