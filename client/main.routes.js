@@ -10,6 +10,15 @@ export default [
     path: '/',
     name: 'home',
     component: '/imports/ui/Home.vue',
+    beforeEnter: (to, from, next) => {
+      if (Meteor.userId()) {
+        next({
+          name: 'projects'
+        })
+      } else {
+        next();
+      }
+    }
   },
   {
     path: '/login',
@@ -40,9 +49,16 @@ export default [
   },  
   {
     path: '/projects/:projectId',
-    name: 'projects',
+    name: 'project',
     beforeEnter: isBasicAuth,
     component: '/imports/ui/projects/Project.vue',
+    props: true
+  },
+  {
+    path: '/projects',
+    name: 'projects',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/projects/Projects.vue',
     props: true
   },
 ];

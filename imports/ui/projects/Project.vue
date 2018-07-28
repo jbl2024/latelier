@@ -6,7 +6,7 @@
     <div v-if="$subReady.project"> 
 
       <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'home'}">
+        <md-button class="md-icon-button" :to="{ name: 'projects'}">
             <md-icon>home</md-icon>
         </md-button>
         <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
