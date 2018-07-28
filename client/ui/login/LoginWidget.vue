@@ -33,6 +33,7 @@
       </md-card>
       <md-snackbar :md-active.sync="notify">{{ notifyText }}</md-snackbar>
     </form>
+  </div>
 </template>
 
 <script>
