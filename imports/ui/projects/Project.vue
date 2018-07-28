@@ -77,7 +77,7 @@
         </div>
       </div>
 
-      <md-drawer :md-active="showProperties" md-right md-persistent="full" class="drawer-properties">
+      <md-drawer :md-active="showProperties" md-right md-persistent="full" class="drawer-properties md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
         <task-properties :task="selectedTask"></task-properties>
       </md-drawer>
 
@@ -257,7 +257,7 @@ export default {
 }
 
 .md-drawer {
-  width: 600px;
+  /* width: 600px; */
 }
 
 .toolbar {
