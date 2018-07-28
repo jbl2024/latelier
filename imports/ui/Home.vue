@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <h1>Bienvenue</h1>
+    <login-widget></login-widget>
   </div>
 </template>
 
@@ -16,4 +16,9 @@ export default {
 </script>
 
 <style scoped>
+
+.login-widget {
+  margin-top: 24px;
+}
+
 </style>
