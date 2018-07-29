@@ -5,11 +5,7 @@
         <drag class="drag" :transfer-data="getTransferData(task)">
           <task :task="task" class="task" ></task>
           <div slot="image" class="drag-image">
-              <md-card md-with-hover >
-                <md-card-header>
-                  <div class="md-title">{{ task.name }}</div>
-                </md-card-header>
-              </md-card>
+              <task :task="task" class="task"></task>
           </div>          
         </drag>
     </div>
@@ -84,6 +80,10 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   margin-bottom: 0;
+}
+
+.drag-image .task {
+  width: 272px;;
 }
 
 </style>
