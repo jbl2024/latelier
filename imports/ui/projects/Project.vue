@@ -4,7 +4,6 @@
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project"> 
-
       <md-toolbar class="toolbar">
         <md-button class="md-icon-button" :to="{ name: 'projects'}">
             <md-icon>home</md-icon>
@@ -12,7 +11,6 @@
         <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
           {{ project.name }}
         </span>
-
         <span class="md-title edit-project-name" v-show="editProjectName">
           <input @focus="$event.target.select()" type="text" v-model="project.name" v-on:keyup.enter="updateProjectName">
           <md-button class="md-icon-button" @click.native="updateProjectName">

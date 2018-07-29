@@ -4,7 +4,7 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">StudioX</span>
+      <span class="md-title">L'atelier</span>
 
       <div class="md-toolbar-section-end">
         <blaze-template id="login" template="loginButtons"></blaze-template>
@@ -14,7 +14,7 @@
 
     <md-drawer :md-active.sync="showNavigation">
       <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">StudioX</span>
+        <span class="md-title">L'atelier</span>
       </md-toolbar>
 
       <md-list>
