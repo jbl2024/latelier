@@ -1,8 +1,8 @@
 <template>
 
 <div class="task" @click="selectTask">
-    <drop @drop="handleDrop">
-    <md-card md-with-hover>
+    <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
+    <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown }">
       <md-card-header>
         <div class="md-title">
           
@@ -59,15 +59,27 @@ export default {
   data() {
     return {
       editName: false,
-      savedName: ''
+      savedName: '',
+      dragover: false,
+      dragup: false,
+      dragdown: false
     };
   },
   methods: {
     handleDrop(data, event) {
       event.stopPropagation();
+      this.dragover = false;
+      this.dragup = false;
+      this.dragdown = false;
       if (data.type === 'task') {
+        var order = this.task.order;
         var droppedTask = data.data;
-        Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
+        var target = event.toElement;
+        var middle = target.clientHeight / 2;
+        if (event.offsetY < middle) {
+          order = order - 1;
+        }
+        Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, order);
         return false;
       } else if (data.type === 'list') {
         var list = Lists.findOne({_id: this.task.listId});
@@ -82,6 +94,31 @@ export default {
         return false;
       }
     },
+
+    handleDragOver (data, event) {
+      if (data.type === 'task') {
+        if (data.data._id == this.task._id) {
+          this.dragover = false;
+          return;
+        }
+        var target = event.toElement;
+        var middle = target.clientHeight / 2;
+        if (event.offsetY >= middle) {
+          this.dragup = false;
+          this.dragdown = true;
+        } else {
+          this.dragup = true;
+          this.dragdown = false;
+        }
+      }
+      this.dragover = true;
+    },
+    handleDragLeave (data, event) {
+      this.dragover = false;
+      this.dragup = false;
+      this.dragdown = false;
+    },
+
     startUpdateName (e) {
       if (e) {
         e.stopPropagation();
@@ -138,6 +175,17 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
   margin-bottom: 0;
+}
+
+.dragover { 
+}
+
+.dragup {
+  background: linear-gradient(0deg, #fff 50%, #eee 50%);
+}
+
+.dragdown {
+  background: linear-gradient(0deg, #eee 50%, #fff 50%);
 }
 
 
