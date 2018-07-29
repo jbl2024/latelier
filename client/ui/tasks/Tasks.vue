@@ -2,7 +2,7 @@
 
 <div class="tasks">
     <div v-for="task in tasks" :key='task._id'>
-        <drag class="drag" :transfer-data="task">
+        <drag class="drag" :transfer-data="getTransferData(task)">
           <task :task="task" class="task" ></task>
           <div slot="image" class="drag-image">
               <md-card md-with-hover >
@@ -56,6 +56,13 @@ export default {
     },
     deleteTask (taskId) {
       Meteor.call('tasks.remove', taskId);
+    },
+
+    getTransferData (task) {
+      return {
+        type: 'task',
+        data: task
+      };
     }
   }
 };

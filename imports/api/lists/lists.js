@@ -50,4 +50,31 @@ Meteor.methods({
 
     Lists.update({_id: listId}, {$set: {name: name}});
   },
+
+  'lists.move'(projectId, listId, order) {
+    check(projectId, String);
+    check(listId, String);
+    check(order, Number);
+    
+    var _reorder = function (projectId) {
+      var lists = Lists.find({projectId: projectId}, {sort: {order: 1}}).fetch();
+      for (var i = 0; i < lists.length; i++) {
+        var list  = lists[i];
+        list.order = i + 1;
+        Lists.update({_id: list._id}, {$set: {order: list.order}});
+      }
+    }
+
+    if (order == -1) {
+      var lastList = Lists.findOne({projectId: projectId}, {sort: {order: -1}});
+      if (lastList) {
+        order = lastList.order + 1;
+      } else {
+        order = 1;
+      }
+    }
+    Lists.update({_id: listId}, {$set: {order: order}}, {}, (error, result) => {
+      _reorder(projectId);
+    });
+  },  
 });

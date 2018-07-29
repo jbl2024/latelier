@@ -3,8 +3,9 @@
       <div v-for="list in lists" :key='list._id'>
         <drop @drop="(data, event) => { handleDrop(list, data, event) }">
         <div class="swimlane">
+          <drag :transfer-data="getTransferData(list)">
           <h2 v-show="!isListEdited(list, selectedList)" >
-            <span @click="editList(list)" class="list-name">{{list.name}}</span>
+            <span @click="editList(list)" class="list-name">{{list.order}} - {{list.name}}</span>
             <md-button md-menu-trigger class="md-icon-button" @click="newTaskInline(list._id)">
               <md-icon>add</md-icon>
             </md-button>
@@ -30,6 +31,12 @@
             </md-button>
 
           </h2>
+
+          <div slot="image" class="drag-image">
+              <h2><span class="list-name">{{list.name}}</span></h2>
+          </div>          
+
+        </drag>
 
           <tasks :project-id="projectId" :list-id="list._id"></tasks>
           <div class="task new" @click="newTaskInline(list._id)">
@@ -74,9 +81,21 @@ export default {
       this.$events.fire('close-properties');
     },
     handleDrop(list, data, event) {
-      var droppedTask = data;
-      Meteor.call('tasks.move', list.projectId, list._id, droppedTask._id, -1);
-      return false;
+      if (data.type === 'task') {
+        var droppedTask = data.data;
+        Meteor.call('tasks.move', list.projectId, list._id, droppedTask._id, -1);
+        return false;
+      } else if (data.type === 'list') {
+        var order = list.order - 1;
+        var target = event.toElement;
+        var middle = target.clientWidth / 2;
+        if (event.offsetX >= middle) {
+          order = list.order + 1;
+        }
+        var droppedList = data.data;
+        Meteor.call('lists.move', list.projectId, droppedList._id, order);
+        return false;
+      }
     },
 
     editList (list) {
@@ -130,6 +149,13 @@ export default {
         }
         this.$events.fire('task-edit-name', task);
       });
+    },
+
+    getTransferData (list) {
+      return {
+        type: 'list',
+        data: list
+      };
     }
   }
 }
@@ -144,6 +170,10 @@ export default {
   min-height: 800px;
   display: inline-block;
   margin-right: 8px;
+}
+
+.drag {
+
 }
 
 .swimlane.new h2 {

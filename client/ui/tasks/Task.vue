@@ -65,8 +65,22 @@ export default {
   methods: {
     handleDrop(data, event) {
       event.stopPropagation();
-      var droppedTask = data;
-      Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
+      if (data.type === 'task') {
+        var droppedTask = data.data;
+        Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, this.task.order);
+        return false;
+      } else if (data.type === 'list') {
+        var list = Lists.findOne({_id: this.task.listId});
+        var order = list.order - 1;
+        var target = event.toElement;
+        var middle = target.clientWidth / 2;
+        if (event.offsetX >= middle) {
+          order = list.order + 1;
+        }
+        var droppedList = data.data;
+        Meteor.call('lists.move', list.projectId, droppedList._id, order);
+        return false;
+      }
     },
     startUpdateName (e) {
       if (e) {
