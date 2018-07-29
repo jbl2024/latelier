@@ -77,13 +77,17 @@ Meteor.methods({
       }
     }
 
-    if (order != -1) {
+    if (order != -1 && order != 0) {
       Tasks.update({listId: listId, order: {$gt: order}}, {$inc: {order: 1}}, {}, (error, result) => {
         Tasks.update({_id: taskId}, {$set: {listId: listId, order: order + 1}}, {}, (error, result) => {
           _reorder(listId);
         });
       });
 
+    } else if (order == 0) {
+      Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
+        _reorder(listId);
+      });
     } else {
       var lastTask = Tasks.findOne({projectId: projectId, listId: listId}, {sort: {order: -1}});
       if (lastTask) {
