@@ -6,7 +6,7 @@
       <md-card-header>
         <div class="md-title">
           
-          <span v-show="!editName" @click="startUpdateName" class="name">
+          <span v-show="!editName" @click="$events.fire('task-edit-name', task)" class="name">
           {{ task.name }}
           </span>
 
@@ -43,6 +43,7 @@ export default {
   mounted () {
     this.$events.listen('task-edit-name', task => {
       if (task._id !== this.task._id) {
+        this.cancelUpdateName();
         return;
       }
       this.startUpdateName();
@@ -144,7 +145,9 @@ export default {
     },
 
     cancelUpdateName (e) {
-      e.stopPropagation();
+      if (e) {
+        e.stopPropagation();
+      }
       this.editName = false;
     },
 
