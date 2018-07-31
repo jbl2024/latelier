@@ -164,16 +164,23 @@ export default {
 <style scoped>
 
 
-.swimlane {
-  flex: 0 0 auto;
-  width: 272px;
-  min-height: 800px;
-  display: inline-block;
-  margin-right: 8px;
+@media (max-width: 600px) {
+  .swimlane {
+    flex: 0 0 auto;
+    width: 100%;
+    display: inline-block;
+    margin-right: 8px;
+  }
 }
 
-.drag {
-
+@media (min-width: 601px) {
+  .swimlane {
+    flex: 0 0 auto;
+    width: 272px;
+    min-height: 800px;
+    display: inline-block;
+    margin-right: 8px;
+  }
 }
 
 .swimlane.new h2 {

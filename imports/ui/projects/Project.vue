@@ -170,12 +170,22 @@ export default {
   margin: 0;
 }
 
-.container {
-  margin: 4px;
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: auto;
+@media (max-width: 600px) {
+  .container {
+    margin: 4px;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 601px) {
+  .container {
+    margin: 4px;
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: auto;
+  }
 }
 
 .md-menu-item {
@@ -186,6 +196,7 @@ export default {
   position: fixed;
   right: 24px;
   bottom: 24px;
+  z-index: 1000;
 }
 
 </style>
