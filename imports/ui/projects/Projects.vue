@@ -12,6 +12,7 @@
           </div>
 
           <md-field md-clearable class="md-toolbar-section-end">
+            <md-icon>search</md-icon>
             <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
           </md-field>
 
