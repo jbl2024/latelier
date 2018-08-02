@@ -12,6 +12,7 @@
     "bcrypt": "^2.0.1",
     "element-theme-chalk": "^2.4.4",
     "element-ui": "^2.4.4",
+    "lodash": "^4.17.10",
     "meteor-node-stubs": "^0.4.1",
     "moment": "^2.22.2",
     "vue": "^2.5.16",

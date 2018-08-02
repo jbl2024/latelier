@@ -4,14 +4,29 @@
 
     <new-project ref="newProject"></new-project>  
 
-    <div v-if="!$subReady.projects">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-    </div>
-    <div v-if="$subReady.projects">
+    <div>
       <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
         <md-table-toolbar>
-          <h1 class="md-title">Projets</h1>
-        </md-table-toolbar>
+          <div class="md-toolbar-section-start">
+            <h1 class="md-title">Projets</h1>
+          </div>
+
+          <md-field md-clearable class="md-toolbar-section-end">
+            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
+          </md-field>
+
+        </md-table-toolbar>        
+
+        <md-table-empty-state
+          md-label="Aucun projet"
+          :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
+          <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+        </md-table-empty-state>
+
+        <div v-if="!$subReady.projects">
+          <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+        </div>
+
 
         <md-table-row slot="md-table-row" slot-scope="{ item }">
           <md-table-cell md-label="Nom" md-sort-by="name">
@@ -39,13 +54,20 @@
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
+import { Projects } from '/imports/api/projects/projects.js';
+import debounce from 'lodash/debounce';
 
 export default {
   data () {
     return {
+      filter: '',
       selected: [],
+      debouncedFilter: '',
+      filteredProjects: []
     }
+  },
+  created () {
+    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
   },
   methods: {
     newProject () {
@@ -53,18 +75,21 @@ export default {
     },
     deleteProject (projectId) {
       Meteor.call('projects.remove', projectId);
-    },
+    }
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       // Subscribes to the 'threads' publication with no parameters
-      'projects': [],
+      'projects': function() {
+        // Here you can use Vue reactive properties
+        return [this.filter] // Subscription params
+      }
     },
     projects () {
       return Projects.find({}, {
-        sort: {name: 1}
-      })
+          sort: {name: 1}
+      });
     },
     count () {
       return Projects.find().count();

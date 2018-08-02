@@ -6,8 +6,12 @@ import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 
 // This code only runs on the server
-Meteor.publish("projects", function projectsPublication() {
-  return Projects.find();
+Meteor.publish("projects", function projectsPublication(name) {
+  if (name && name.length > 0) {
+    return Projects.find({name: {'$regex': '.*' + name + '.*', '$options': 'i'}});
+  } else {
+    return Projects.find();
+  }
 });
 
 publishComposite("project", function(projectId) {
