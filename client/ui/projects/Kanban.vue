@@ -5,7 +5,7 @@
         <div class="swimlane">
           <drag :transfer-data="getTransferData(list)">
           <h2 v-show="!isListEdited(list, selectedList)" >
-            <span @click="editList(list)" class="list-name">{{list.order}} - {{list.name}}</span>
+            <span @click="editList(list)" class="list-name">{{list.name}} ({{ taskCount(list) }}) </span>
             <md-button md-menu-trigger class="md-icon-button" @click="newTaskInline(list._id)">
               <md-icon>add</md-icon>
             </md-button>
@@ -156,6 +156,10 @@ export default {
         type: 'list',
         data: list
       };
+    },
+
+    taskCount (list) {
+      return Tasks.find({listId: list._id}).count();
     }
   }
 }
