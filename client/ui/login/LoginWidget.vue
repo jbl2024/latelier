@@ -30,7 +30,12 @@
         <md-card-actions>
           <md-button type="submit" class="md-primary" :disabled="sending">Suivant</md-button>
         </md-card-actions>
+        <md-card-actions>
+          <md-button :to="{ name: 'register'}">Créer un compte</md-button>
+          <md-button :to="{ name: 'forgot-password'}">Mot de passe oublié ?</md-button>
+        </md-card-actions>
       </md-card>
+
       <md-snackbar :md-active.sync="notify">{{ notifyText }}</md-snackbar>
     </form>
   </div>
