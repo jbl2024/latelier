@@ -2,7 +2,7 @@
 
 <div class="author-line">
     <md-avatar class="md-avatar-icon md-small">
-        <md-ripple>AA</md-ripple>
+        <md-ripple>{{ formatUserLetters(userId) }}</md-ripple>
     </md-avatar>
     <span class="md-caption">{{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }})</span>
 </div>
@@ -47,6 +47,15 @@ export default {
       }
       var user = Meteor.users.findOne({_id: userId});
       return user.emails[0].address;
+    },
+
+    formatUserLetters (userId) {
+      if (!userId) {
+        return '';
+      }
+      var user = Meteor.users.findOne({_id: userId});
+      var emailComponents = user.emails[0].address.split('@');
+      return emailComponents[0][0] + emailComponents[1][0];
     }
   }
 };
