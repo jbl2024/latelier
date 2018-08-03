@@ -5,7 +5,7 @@
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown }">
       <md-card-header>
         <div class="md-title">
-          <md-checkbox v-show="!editName" v-model="completed"></md-checkbox>
+          <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
           <span v-show="!editName" @click="$events.fire('task-edit-name', task)" class="name">
           {{ task.name }}
           </span>
@@ -42,15 +42,21 @@ import moment from 'moment';
 export default {
   mounted () {
     this.$events.listen('task-edit-name', task => {
-      if (task._id !== this.task._id) {
+      if (task._id != this.task._id) {
         this.cancelUpdateName();
         return;
       }
       this.startUpdateName();
     });
+    this.$events.listen('task-cancel-edit-name', task => {
+      if (task._id !== this.task._id) {
+        this.cancelUpdateName();
+      }
+    });
   },
   beforeDestroy() {
     this.$events.off('task-edit-name');
+    this.$events.off('task-cancel-edit-name');
   },
   props: {
     task: {
@@ -63,21 +69,12 @@ export default {
       savedName: '',
       dragover: false,
       dragup: false,
-      dragdown: false,
-      completed: false
+      dragdown: false
     };
   },
   watch: {
-    task: {
-      immediate: true,
-      handler(task, oldTask) {
-        if (this.completed != task.completed) {
-          this.completed = task.completed;
-        }
-      }
-    },
-    'completed'(completed, prevValue) {
-      if (prevValue != completed && completed != this.task.completed) {
+    'task.completed'(completed, prevValue) {
+      if (prevValue != completed) {
         Meteor.call('tasks.complete', this.task._id, completed);
       }
     }
