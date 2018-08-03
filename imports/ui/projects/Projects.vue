@@ -4,6 +4,16 @@
 
     <new-project ref="newProject"></new-project>  
 
+    <md-dialog-confirm
+      :md-active.sync="showConfirmDialog"
+      md-title="Confirmer la suppression ?"
+      md-content="Le projet sera définitivement supprimé"
+      md-confirm-text="Supprimer"
+      md-cancel-text="Annuler"
+      @md-cancel="onCancelDeleteProject"
+      @md-confirm="onConfirmDeleteProject" />
+
+
     <div>
       <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
         <md-table-toolbar>
@@ -13,7 +23,7 @@
 
           <md-field md-clearable class="md-toolbar-section-end">
             <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
+            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
           </md-field>
 
         </md-table-toolbar>        
@@ -64,7 +74,9 @@ export default {
       filter: '',
       selected: [],
       debouncedFilter: '',
-      filteredProjects: []
+      filteredProjects: [],
+      showConfirmDialog: false,
+      projectId: ''
     }
   },
   created () {
@@ -75,7 +87,17 @@ export default {
       this.$refs.newProject.open();
     },
     deleteProject (projectId) {
-      Meteor.call('projects.remove', projectId);
+      this.projectId = projectId;
+      this.showConfirmDialog = true;
+    },
+
+    onConfirmDeleteProject () {
+      this.showConfirmDialog = false;
+      Meteor.call('projects.remove', this.projectId);
+    },
+
+    onCancelDeleteProject () {
+      this.showConfirmDialog = false;
     }
   },
   meteor: {
