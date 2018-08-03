@@ -5,7 +5,7 @@
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown }">
       <md-card-header>
         <div class="md-title">
-          
+          <md-checkbox v-show="!editName" v-model="completed"></md-checkbox>
           <span v-show="!editName" @click="$events.fire('task-edit-name', task)" class="name">
           {{ task.name }}
           </span>
@@ -63,8 +63,24 @@ export default {
       savedName: '',
       dragover: false,
       dragup: false,
-      dragdown: false
+      dragdown: false,
+      completed: false
     };
+  },
+  watch: {
+    task: {
+      immediate: true,
+      handler(task, oldTask) {
+        if (this.completed != task.completed) {
+          this.completed = task.completed;
+        }
+      }
+    },
+    'completed'(completed, prevValue) {
+      if (prevValue != completed && completed != this.task.completed) {
+        Meteor.call('tasks.complete', this.task._id, completed);
+      }
+    }
   },
   methods: {
     handleDrop(data, event) {
@@ -180,8 +196,12 @@ export default {
   margin-bottom: 0;
 }
 
-.dragover { 
+.md-checkbox {
+  margin: 0;
+  margin-right: 4px;
+  top: 2px;
 }
+
 
 .dragup {
   background: linear-gradient(0deg, #fff 50%, #eee 50%);

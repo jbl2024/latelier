@@ -48,6 +48,8 @@
           <md-table-cell md-label="Actions">
             <md-button class="md-icon-button" @click="deleteProject(item._id)">
               <md-icon>delete</md-icon>
+              <md-tooltip md-delay="300">Supprimer</md-tooltip>
+
             </md-button>
           </md-table-cell>
         </md-table-row>

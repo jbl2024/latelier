@@ -63,6 +63,12 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$set: {description: description}});
   },
 
+  'tasks.complete'(taskId, completed) {
+    check(taskId, String);
+    check(completed, Boolean);
+    Tasks.update({_id: taskId}, {$set: {completed: completed}});
+  },
+
   'tasks.move'(projectId, listId, taskId, order) {
     check(listId, String);
     check(taskId, String);
