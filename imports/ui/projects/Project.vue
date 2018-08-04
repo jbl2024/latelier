@@ -6,13 +6,15 @@
     <div v-if="$subReady.project"> 
       <md-toolbar class="toolbar">
         <md-button class="md-icon-button" :to="{ name: 'projects'}">
-            <md-icon>home</md-icon>
+            <md-icon>home
+              <md-tooltip md-delay="300">Accueil</md-tooltip>
+            </md-icon>
         </md-button>
         <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
           {{ project.name }}
         </span>
         <span class="md-title edit-project-name" v-show="editProjectName">
-          <input @focus="$event.target.select()" type="text" v-model="project.name" v-on:keyup.enter="updateProjectName">
+          <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
           <md-button class="md-icon-button" @click.native="updateProjectName">
             <md-icon>check_circle</md-icon>
           </md-button>
@@ -99,7 +101,8 @@ export default {
 
     startUpdateProjectName () {
       this.savedProjectName = this.project.name;
-      this.editProjectName = true
+      this.editProjectName = true;
+      this.$nextTick(() => this.$refs.name.focus())
     },
 
     updateProjectName () {
