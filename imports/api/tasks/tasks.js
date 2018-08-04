@@ -155,4 +155,45 @@ Meteor.methods({
       Tasks.update({_id: taskId},  { $set: { notes: [] } });
     }
   },
+
+  'tasks.addChecklistItem'(taskId, name) {
+    check(taskId, String);
+    check(name, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var item = {
+      _id: Random.id(),
+      createdAt: new Date(),
+      createdBy: Meteor.userId(),
+      name: name,
+      checked: false
+    };
+
+    Tasks.update({_id: taskId}, {$push: {checklist: item}});
+  },
+
+  'tasks.removeChecklistItem'(taskId, itemId) {
+    check(taskId, String);
+    check(itemId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Tasks.update({_id: taskId},  { $pull: { checklist: { _id: itemId } } });
+  },
+
+  'tasks.toggleCheckItem'(taskId, itemId, checked) {
+    check(taskId, String);
+    check(itemId, String);
+    check(checked, Boolean);
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Tasks.update({_id: taskId, "checklist._id" : itemId}, {$set : {"checklist.$.checked" : checked}});
+  }
 });

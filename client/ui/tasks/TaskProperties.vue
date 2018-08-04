@@ -63,6 +63,10 @@
       <p>Unde provident nemo reiciendis officia, possimus repellendus. Facere dignissimos dicta quis rem. Aliquam aspernatur dolor atque nisi id deserunt laudantium quam repellat.</p>
     </md-tab>
 
+    <md-tab id="tab-checkist" md-label="Checklist">
+      <task-checklist :task="task"></task-checklist>
+    </md-tab>
+
   </md-tabs>  
 </div>
 
