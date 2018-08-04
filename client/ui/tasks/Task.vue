@@ -88,7 +88,7 @@ export default {
       if (data.type === 'task') {
         var order = this.task.order;
         var droppedTask = data.data;
-        var target = event.toElement;
+        var target = event.toElement || event.target;
         var middle = target.clientHeight / 2;
         if (event.offsetY < middle) {
           order = order - 1;
@@ -98,7 +98,7 @@ export default {
       } else if (data.type === 'list') {
         var list = Lists.findOne({_id: this.task.listId});
         var order = list.order - 1;
-        var target = event.toElement;
+        var target = event.toElement || event.target;
         var middle = target.clientWidth / 2;
         if (event.offsetX >= middle) {
           order = list.order + 1;
@@ -115,7 +115,7 @@ export default {
           this.dragover = false;
           return;
         }
-        var target = event.toElement;
+        var target = event.toElement || event.target;
         var middle = target.clientHeight / 2;
         if (event.offsetY >= middle) {
           this.dragup = false;

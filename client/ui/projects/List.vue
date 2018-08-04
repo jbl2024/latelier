@@ -88,7 +88,7 @@ export default {
         return false;
       } else if (data.type === 'list') {
         var order = list.order - 1;
-        var target = event.toElement;
+        var target = event.toElement || event.target;
         var middle = target.clientWidth / 2;
         if (event.offsetX >= middle) {
           order = list.order + 1;
