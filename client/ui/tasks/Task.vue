@@ -3,6 +3,7 @@
 <div class="task" @click="selectTask">
     <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown }">
+      <md-card-area md-inset>
       <md-card-header>
         <div class="md-title">
           <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
@@ -25,10 +26,13 @@
           
           </div>
         <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
-        <task-checklist :task="task"></task-checklist>
-
       </md-card-header>
 
+      </md-card-area>
+
+      <md-card-content>
+        <task-checklist :task="task"></task-checklist>
+      </md-card-content>
     </md-card>
     </drop>
 </div>
