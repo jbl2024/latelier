@@ -6,6 +6,13 @@ import { Random } from 'meteor/random'
 
 export const Tasks = new Mongo.Collection('tasks');
 
+var _checkForCompletion = function(listId, taskId) {
+  var list = Lists.findOne({_id: listId});
+  if (list && list.autoComplete) {
+    Tasks.update({_id: taskId}, {$set: {completed: true}});
+  }
+}
+
 Meteor.methods({
   'tasks.insert'(projectId, listId, name) {
     check(projectId, String);
@@ -25,11 +32,17 @@ Meteor.methods({
       return 0;
     }
 
+    var completed = false;
+    var list = Lists.findOne({_id: listId});
+    if (list && list.autoComplete) {
+      completed = true;
+    }
     var taskId = Tasks.insert({
       name,
       order: _findLastOrder() + 1,
       projectId: projectId,
       listId: listId,
+      completed: completed,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -73,6 +86,8 @@ Meteor.methods({
     check(listId, String);
     check(taskId, String);
     check(order, Number);
+
+    _checkForCompletion(listId, taskId);
 
     var _reorder = function (listId) {
       var tasks = Tasks.find({listId: listId}, {sort: {order: 1}}).fetch();

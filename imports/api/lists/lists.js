@@ -77,4 +77,15 @@ Meteor.methods({
       _reorder(projectId);
     });
   },  
+
+  'lists.autoComplete'(listId, autoComplete) {
+    check(listId, String);
+    check(autoComplete, Boolean);
+
+    Lists.update({_id: listId}, {$set: {autoComplete: autoComplete}});
+    if (autoComplete) {
+      Tasks.update({listId: listId}, {$set: {completed: true}}, {multi: true});
+    }
+  },
+
 });

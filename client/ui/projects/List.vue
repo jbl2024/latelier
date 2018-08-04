@@ -15,6 +15,8 @@
           <md-menu-content>
             <md-menu-item @click="newTaskInline(list._id)">Nouvelle tache</md-menu-item>
             <md-menu-item @click="deleteList(list._id)">Supprimer</md-menu-item>
+            <md-divider></md-divider>
+            <md-menu-item><md-checkbox v-model="list.autoComplete">Marquer comme terminé</md-checkbox></md-menu-item>
           </md-menu-content>
         </md-menu>
 
@@ -64,6 +66,13 @@ export default {
     return {
       selectedList: {},
       savedName: '',
+    }
+  },
+  watch: {
+    'list.autoComplete'(autoComplete, prevValue) {
+      if (prevValue != autoComplete) {
+        Meteor.call('lists.autoComplete', this.list._id, autoComplete);
+      }
     }
   },
   meteor: {
