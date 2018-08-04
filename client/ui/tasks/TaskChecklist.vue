@@ -1,6 +1,6 @@
 <template>
 
-<div class="task-checklist">
+<div class="task-checklist" v-show="showList(checklist)">
   <div v-for="item in checklist" :key="item._id" class="item">
     <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
     <md-button class="md-icon-button delete-button" @click="deleteItem(item)">
@@ -26,6 +26,10 @@ import 'moment/locale/fr'
 export default {
   name: 'task-checklist',
   props: {
+    hideIfEmpty: {
+      type: Boolean,
+      value: false
+    },
     task: {
       type: Object
     }
@@ -46,6 +50,13 @@ export default {
     };
   },
   methods: {
+    showList (checklist) {
+      console.log(this.hideIfEmpty)
+      if (this.hideIfEmpty && !this.hasItems(checklist)) {
+        return false;
+      }
+      return true;
+    },
 
     hasItems (checklist) {
       return checklist && checklist.length > 0;

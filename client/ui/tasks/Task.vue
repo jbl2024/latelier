@@ -31,7 +31,7 @@
       </md-card-area>
 
       <md-card-content>
-        <task-checklist :task="task"></task-checklist>
+        <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
       </md-card-content>
     </md-card>
     </drop>
