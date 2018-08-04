@@ -20,6 +20,14 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 
 
 export default {
+  mounted () {
+    this.$events.listen('filter-tasks', name => {
+      this.filterName = name;
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('filter-tasks');
+  },  
   props: {
     projectId: {
       type: String,
@@ -31,14 +39,27 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      filterName: ''
+    };
   },
   meteor: {
     $subscribe: {
     },
-    tasks() {
-      return Tasks.find({ listId: this.listId }, {sort: {order: 1}});
-    }
+    tasks: {
+      params () {
+        return {
+          name: this.filterName
+        };
+      },
+      deep: false,
+      update ({name}) {
+        if (name && name.length > 0) {
+          return Tasks.find({ listId: this.listId, name: { $regex: ".*" + name + ".*", $options: "i" } }, {sort: {order: 1}});
+        }
+        return Tasks.find({ listId: this.listId}, {sort: {order: 1}});
+      }
+    },    
   },
   methods: {
     newTaskInline () {

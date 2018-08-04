@@ -12,7 +12,7 @@
         </md-button>
         <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
           {{ project.name }}
-        </span>
+        </span>        
         <span class="md-title edit-project-name" v-show="editProjectName">
           <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
           <md-button class="md-icon-button" @click.native="updateProjectName">
@@ -23,7 +23,12 @@
             <md-icon>cancel</md-icon>
           </md-button>
         </span>
+
         <div class="md-toolbar-section-end">
+          <md-field class="search" md-clearable>
+            <md-icon>search</md-icon>
+            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
+          </md-field>
           <md-button class="md-icon-button settings">
             <md-icon>more_vert</md-icon>
           </md-button>
@@ -52,6 +57,7 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import debounce from 'lodash/debounce';
 
 export default {
   mounted () {
@@ -63,6 +69,9 @@ export default {
     this.$events.listen('close-properties', task => {
       this.showProperties = false;
     });
+  },
+  created () {
+    this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
   },
   beforeDestroy() {
     this.$events.off('task-selected');
@@ -80,7 +89,8 @@ export default {
       savedProjectName: '',
       editProjectName: false,
       showProperties: false,
-      selectedTask: {}
+      selectedTask: {},
+      debouncedFilter: ''
     }
   },
   meteor: {
@@ -154,6 +164,9 @@ export default {
   background-color: white;
 }
 
+.search {
+  max-width: 300px;
+}
 
 .md-content { 
   padding: 8px;

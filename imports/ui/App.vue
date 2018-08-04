@@ -110,6 +110,10 @@ export default {
     background-color: #eee;
   }
 
+  .search {
+    width: 100%;
+  }
+
   .md-app {
     max-height: 100vh;
   }
