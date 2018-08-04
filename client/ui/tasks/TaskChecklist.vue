@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     showList (checklist) {
-      console.log(this.hideIfEmpty)
       if (this.hideIfEmpty && !this.hasItems(checklist)) {
         return false;
       }
