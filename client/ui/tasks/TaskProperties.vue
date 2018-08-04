@@ -38,7 +38,7 @@
     <div v-show="editDescription">
       <md-field>
         <label>Description</label>
-        <md-textarea v-model="task.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
+        <md-textarea ref="description" v-model="task.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
       </md-field>
       <md-button class="md-icon-button" @click.native="updateDescription">
         <md-icon>check_circle</md-icon>
@@ -99,6 +99,7 @@ export default {
     startEditDescription () {
       this.savedDescription = this.task.description;
       this.editDescription = true;
+      this.$nextTick(() => this.$refs.description.$el.focus());
     },
 
     updateDescription () {
