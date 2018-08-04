@@ -6,7 +6,7 @@
       <md-card-header>
         <div class="md-title">
           <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
-          <span v-show="!editName" @click="$events.fire('task-edit-name', task)" class="name">
+          <span v-show="!editName" @click="startUpdateName" class="name">
           {{ task.name }}
           </span>
 
@@ -42,8 +42,7 @@ import moment from 'moment';
 export default {
   mounted () {
     this.$events.listen('task-edit-name', task => {
-      if (task._id != this.task._id) {
-        this.cancelUpdateName();
+      if (task._id !== this.task._id) {
         return;
       }
       this.startUpdateName();
@@ -137,6 +136,7 @@ export default {
       if (e) {
         e.stopPropagation();
       }
+      this.$events.fire('task-cancel-edit-name', this.task);
       this.savedName = this.task.name;
       this.editName = true;
       this.$nextTick(() => this.$refs.name.focus())
