@@ -25,6 +25,8 @@
           
           </div>
         <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
+        <task-checklist :task="task"></task-checklist>
+
       </md-card-header>
 
     </md-card>
@@ -239,4 +241,7 @@ export default {
   font-size: 14px;
 }
 
+.task-checklist {
+  font-size: 12px;
+}
 </style>

@@ -1,8 +1,8 @@
 <template>
 
 <div class="task-checklist">
-  <div v-for="item in checklist" :key="item._id">
-    <md-checkbox v-model="item.checked" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
+  <div v-for="item in checklist" :key="item._id" class="item">
+    <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
     <md-button class="md-icon-button delete-button" @click="deleteItem(item)">
       <md-icon>delete</md-icon>
     </md-button>
@@ -31,8 +31,11 @@ export default {
     }
   },
   watch: { 
-    task: function(task, oldTask) { // watch it
-      this.checklist = task.checklist;
+    task: {
+    immediate: true,
+    handler: function(task, oldTask) { // watch it
+        this.checklist = task.checklist;
+      }
     }
   },
   data() {
@@ -152,5 +155,7 @@ pre {
 .center {
   text-align: center;
 }
+
+
 
 </style>
