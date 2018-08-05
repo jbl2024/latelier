@@ -6,9 +6,6 @@
       <drag :transfer-data="getTransferData(list)">
       <h2 v-show="!isListEdited(list, selectedList)" >
         <span @click="editList(list)" class="list-name">{{list.name}} ({{ taskCount }}) </span>
-        <md-button md-menu-trigger class="md-icon-button" @click="newTaskInline(list._id)">
-          <md-icon>add</md-icon>
-        </md-button>
         <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
           <md-button md-menu-trigger class="md-icon-button">
             <md-icon>arrow_drop_down</md-icon>
@@ -20,6 +17,9 @@
             <md-menu-item><md-checkbox v-model="list.autoComplete">Marquer comme terminé</md-checkbox></md-menu-item>
           </md-menu-content>
         </md-menu>
+        <md-button md-menu-trigger class="md-icon-button settings" @click="newTaskInline(list._id)">
+          <md-icon>add</md-icon>
+        </md-button>
 
       </h2>
       <h2 v-show="isListEdited(list, selectedList)">
