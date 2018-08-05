@@ -13,6 +13,15 @@
       @md-cancel="onCancelDeleteProject"
       @md-confirm="onConfirmDeleteProject" />
 
+    <md-dialog-confirm
+      :md-active.sync="showConfirmCloneDialog"
+      md-title="Confirmer le clonage du projet ?"
+      md-content="Le projet sera cloné"
+      md-confirm-text="Cloner"
+      md-cancel-text="Annuler"
+      @md-cancel="onCancelCloneProject"
+      @md-confirm="onConfirmCloneProject" />
+
 
     <div>
       <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
@@ -46,10 +55,13 @@
             </router-link>
           </md-table-cell>
           <md-table-cell md-label="Actions">
+            <md-button class="md-icon-button" @click="cloneProject(item._id)">
+              <md-icon>file_copy</md-icon>
+              <md-tooltip md-delay="300">Cloner</md-tooltip>
+            </md-button>
             <md-button class="md-icon-button" @click="deleteProject(item._id)">
               <md-icon>delete</md-icon>
               <md-tooltip md-delay="300">Supprimer</md-tooltip>
-
             </md-button>
           </md-table-cell>
         </md-table-row>
@@ -78,6 +90,7 @@ export default {
       debouncedFilter: '',
       filteredProjects: [],
       showConfirmDialog: false,
+      showConfirmCloneDialog: false,
       projectId: ''
     }
   },
@@ -100,8 +113,23 @@ export default {
 
     onCancelDeleteProject () {
       this.showConfirmDialog = false;
+    },
+
+    cloneProject (projectId) {
+      this.projectId = projectId;
+      this.showConfirmCloneDialog = true;
+    },
+
+    onConfirmCloneProject () {
+      this.showConfirmCloneDialog = false;
+      Meteor.call('projects.clone', this.projectId);
+    },
+
+    onCancelCloneProject () {
+      this.showConfirmCloneDialog = false;
     }
-  },
+
+},
   meteor: {
     // Subscriptions
     $subscribe: {

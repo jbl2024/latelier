@@ -24,7 +24,7 @@ Meteor.methods({
     }
 
     var listId = Lists.insert({
-      name,
+      name: name,
       order: _findLastOrder() + 1,
       projectId: projectId,
       createdAt: new Date(),

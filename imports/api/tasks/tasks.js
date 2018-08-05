@@ -38,7 +38,7 @@ Meteor.methods({
       completed = true;
     }
     var taskId = Tasks.insert({
-      name,
+      name: name,
       order: _findLastOrder() + 1,
       projectId: projectId,
       listId: listId,

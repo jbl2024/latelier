@@ -16,7 +16,7 @@ Meteor.methods({
     }
 
     var project = Projects.insert({
-      name,
+      name: name,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -64,6 +64,51 @@ Meteor.methods({
     }
 
     Projects.update({_id: projectId}, {$set: {name: name}});
+  },
+
+  'projects.clone'(projectId) {
+    check(projectId, String);
+    var project = Projects.findOne(projectId);
+    if (!project) {
+      throw new Meteor.Error('invalid-project');
+    }
+
+    var newProjectId = Projects.insert({
+      name: 'Copie de ' + project.name,
+      createdAt: new Date(),
+      createdBy: Meteor.userId()
+    });
+
+    var newProject = Projects.findOne(newProjectId);
+    if (!newProject) {
+      throw new Meteor.Error('invalid-new-project');
+    }
+
+    var lists = Lists.find({projectId: projectId});
+    lists.map(list => {
+      var newListId = Lists.insert({
+        name: list.name,
+        order: list.order,
+        projectId: newProjectId,
+        createdAt: new Date(),
+        createdBy: Meteor.userId()
+      });
+
+      var tasks = Tasks.find({listId: list._id});
+      tasks.map(task => {
+        Tasks.insert({
+          name: task.name,
+          order: task.order,
+          description: task.description,
+          notes: task.notes,
+          checklist: task.checklist,
+          projectId: newProjectId,
+          listId: newListId,
+          createdAt: new Date(),
+          createdBy: Meteor.userId()
+        });
+      });
+    });
   },
 
 });
