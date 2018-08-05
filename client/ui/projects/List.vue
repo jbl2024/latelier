@@ -203,7 +203,7 @@ export default {
 
 .swimlane h2 {
   text-align: left;
-  background-color: #1f5c87;
+  background-color: #01579b;
   color: white;
   font-weight: normal;
   font-size: 14px;
