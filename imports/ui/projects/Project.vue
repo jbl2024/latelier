@@ -220,6 +220,8 @@ export default {
 
 .container-wrapper {
   overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
 }
 
 .md-menu-item {

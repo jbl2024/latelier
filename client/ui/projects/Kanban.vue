@@ -1,6 +1,6 @@
 <template>
   <div class="kanban" @click="hideProperties()">
-      <div v-for="list in lists" :key='list._id'>
+      <div v-for="list in lists" :key='list._id' class="flex">
         <list :list="list"></list>
       </div>  
       <div class="swimlane new" @click="newListInline">
@@ -53,6 +53,10 @@ export default {
 
 <style scoped>
 
+.flex {
+  display: flex;
+  flex-direction: column;
+}
 
 .swimlane.new h2 {
   font-weight: normal;
@@ -71,7 +75,6 @@ export default {
   .swimlane.new {
     flex: 0 0 auto;
     width: 272px;
-    min-height: 800px;
     display: inline-block;
     margin-right: 8px;
   }
@@ -80,6 +83,10 @@ export default {
 .swimlane.new h2:hover {
   color: rgb(48, 48, 48);
   cursor: pointer;
+}
+
+.list {
+  overflow-y: scroll;  
 }
 
 </style>

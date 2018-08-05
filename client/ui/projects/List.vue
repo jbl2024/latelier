@@ -1,5 +1,6 @@
 <template>
   <div class="list">
+    <div class="list-header">
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
     <div class="swimlane">
       <drag :transfer-data="getTransferData(list)">
@@ -38,15 +39,18 @@
       </div>          
 
     </drag>
+    </drop>
 
+    </div>
 
-      <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
-      <div class="task new" @click="newTaskInline(list._id)">
-          <h2>Ajouter une tache</h2>
+      <div class="tasks-wrapper">
+        <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
+        <div class="task new" @click="newTaskInline(list._id)">
+            <h2>Ajouter une tache</h2>
+        </div>
       </div>
 
     </div>
-    </drop>
 
   </div>  
 </template>
@@ -173,15 +177,21 @@ export default {
     display: inline-block;
     margin-right: 8px;
   }
+  .tasks-wrapper {
+    width: 100%;    
+  }
 }
 
 @media (min-width: 601px) {
   .swimlane {
     flex: 0 0 auto;
     width: 272px;
-    min-height: 800px;
     display: inline-block;
     margin-right: 8px;
+  }
+
+  .tasks-wrapper {
+    width: 272px;    
   }
 }
 
@@ -234,7 +244,9 @@ export default {
 .task.new h2 {
   border: 2px dashed #1f5c87;
   background-color: white;
-  padding-bottom: 8px;
+  font-size: 14px;
+  padding: 4px;
+  font-weight: normal;
   color: black;
   cursor: pointer;
 }
@@ -251,6 +263,19 @@ export default {
 .list-name:hover {
   background-color: #323742;
   cursor: pointer;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+}
+
+.tasks-wrapper {
+  overflow-y: scroll;
+}
+
+.tasks {
+  overflow-y: scroll;
 }
 
 </style>
