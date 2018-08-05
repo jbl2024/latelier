@@ -1,5 +1,5 @@
 <template>
-  <div class="project">
+  <div class="project">    
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
@@ -29,6 +29,25 @@
             <md-icon>search</md-icon>
             <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
           </md-field>
+
+          <md-button class="md-icon-button">
+              <md-icon>view_week
+                <md-tooltip md-delay="300" md-direction="bottom">Kanban</md-tooltip>
+              </md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button">
+              <md-icon>calendar_today
+                <md-tooltip md-delay="300" md-direction="bottom">Timeline</md-tooltip>
+              </md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button">
+              <md-icon>settings
+                <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
+              </md-icon>
+          </md-button>
+
           <md-button class="md-icon-button settings">
             <md-icon>more_vert</md-icon>
           </md-button>
@@ -156,10 +175,6 @@ export default {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
 }
 
-.md-drawer {
-  /* width: 600px; */
-}
-
 .toolbar {
   background-color: white;
 }
@@ -201,6 +216,8 @@ export default {
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: auto;
+    border-left: 1px solid #aaa;
+    padding-left: 4px;
   }
 }
 
