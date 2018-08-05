@@ -1,5 +1,6 @@
 html, body {
   background-color: #eee;
+  height: 100%;
 }
 
 #login .login-link-text{

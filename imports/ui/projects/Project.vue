@@ -1,9 +1,11 @@
 <template>
-  <div class="project">    
+  <div class="project"> 
+
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div v-if="$subReady.project"> 
+    <div v-if="$subReady.project" class="project-wrapper"> 
+
       <md-toolbar class="toolbar">
         <md-button class="md-icon-button" :to="{ name: 'projects'}">
             <md-icon>home
@@ -54,7 +56,9 @@
         </div>
       </md-toolbar>
 
-      <kanban ref="container" class="container" @click="showProperties=false" v-bind:style="{ height: getHeight() + 'px' }" :projectId="projectId"></kanban>
+      <div class="container-wrapper">
+        <kanban ref="container" class="container" @click="showProperties=false" :projectId="projectId"></kanban>
+      </div>
 
       <md-drawer :md-active="showProperties" md-right md-persistent="full" class="drawer-properties md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
         <task-properties :task="selectedTask"></task-properties>
@@ -67,9 +71,8 @@
         </md-speed-dial-target>
       </md-speed-dial>
 
-
     </div>
-  </div>    
+</div>
 </template>
 
 <script>
@@ -80,7 +83,6 @@ import debounce from 'lodash/debounce';
 
 export default {
   mounted () {
-    window.addEventListener('resize', this.handleResize)
     this.$events.listen('task-selected', task => {
       this.showProperties = true;
       this.selectedTask = task;
@@ -95,7 +97,6 @@ export default {
   beforeDestroy() {
     this.$events.off('task-selected');
     this.$events.off('close-properties');
-    window.removeEventListener('resize', this.handleResize)
   },
   props: {
     projectId: {
@@ -124,10 +125,6 @@ export default {
     }
   },
   methods: {
-    handleResize () {
-      this.$refs.container.$el.style.height = this.getHeight() + 'px';
-    },
-
     startUpdateProjectName () {
       this.savedProjectName = this.project.name;
       this.editProjectName = true;
@@ -146,16 +143,6 @@ export default {
     newList () {
       this.$refs.newList.open();
     },
-
-    getHeight () {
-      var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-      var toolbarHeight = 132;
-      if (h > toolbarHeight) {
-        return h - toolbarHeight;
-      }
-      return h;
-    }
-
   }
 }
 </script>
@@ -187,6 +174,15 @@ export default {
   padding: 8px;
 }
 
+.project {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-wrapper {
+  display: flex;
+  flex-direction: column;
+}
 
 .edit-project-name input {
   font-size: 20px;
@@ -213,12 +209,17 @@ export default {
   .container {
     margin: 4px;
     display: flex;
+    flex-direction: row;
     flex-wrap: nowrap;
     overflow-x: auto;
-    overflow-y: auto;
+    overflow-y: scroll;
     border-left: 1px solid #aaa;
     padding-left: 4px;
   }
+}
+
+.container-wrapper {
+  overflow-y: scroll;
 }
 
 .md-menu-item {

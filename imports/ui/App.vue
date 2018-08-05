@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container md-layout-column">
+  <div class="page-container">
     <md-toolbar class="md-primary" >
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
@@ -105,17 +105,10 @@ export default {
 </script>
 
 <style lang="scss">
-  .md-app-container {
-    background-color: #eee;
-  }
-
   .search {
     width: 100%;
   }
 
-  .md-app {
-    max-height: 100vh;
-  }
   .md-content.main-content {
     padding: 0;
   }
@@ -123,13 +116,18 @@ export default {
   .main-content {
     background-color: #eee !important;
     padding: 16px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
   }
 
   .page-container {
-    min-height: 100vh;
+    height: 100%;
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(#000, .12);
+    display: flex;
+    flex-direction: column;
   }
 
   .md-drawer {
