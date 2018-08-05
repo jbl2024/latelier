@@ -176,11 +176,13 @@ export default {
 
 .project {
   display: flex;
+  min-height:0;
   flex-direction: column;
 }
 
 .project-wrapper {
   display: flex;
+  min-height:0;
   flex-direction: column;
 }
 
