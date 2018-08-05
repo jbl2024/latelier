@@ -195,5 +195,27 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
     Tasks.update({_id: taskId, "checklist._id" : itemId}, {$set : {"checklist.$.checked" : checked}});
+  },
+
+
+  'tasks.convertItemToTask'(taskId, itemId) {
+    check(taskId, String);
+    check(itemId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var task = Tasks.findOne({_id: taskId, "checklist._id" : itemId});
+    if (!task) {
+      throw new Meteor.Error('task-not-found');
+    }
+
+    var item = task.checklist.find(item => {
+      return item._id === itemId;
+    });
+
+    Meteor.call('tasks.insert', task.projectId, task.listId, item.name);
+    Meteor.call('tasks.removeChecklistItem', taskId, itemId);
   }
 });

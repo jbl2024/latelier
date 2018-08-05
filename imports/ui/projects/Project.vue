@@ -215,7 +215,6 @@ export default {
     flex-wrap: nowrap;
     overflow-x: auto;
     overflow-y: scroll;
-    border-left: 1px solid #aaa;
     padding-left: 4px;
   }
 }

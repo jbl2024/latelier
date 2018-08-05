@@ -1,11 +1,18 @@
 <template>
 
 <div class="task-checklist" v-show="showList(checklist)">
-  <div v-for="item in checklist" :key="item._id" class="item">
+  <div v-for="item in checklist" :key="item._id" class="item" @mouseover="showButtons = true" @mouseleave="showButtons = false">
     <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
-    <md-button class="md-icon-button delete-button" @click="deleteItem(item)">
-      <md-icon>delete</md-icon>
-    </md-button>
+    <transition name="fade">
+    <div class="right" v-show="showButtons">
+      <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
+        <md-icon>view_week</md-icon>
+      </md-button>
+      <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
+        <md-icon>delete</md-icon>
+      </md-button>
+    </div>
+    </transition>
   </div>
   <md-field>
     <md-icon>check_box_outline_blank</md-icon>
@@ -46,7 +53,8 @@ export default {
     return {
       editNewItem: false,
       item: '',
-      checklist: []
+      checklist: [],
+      showButtons: false
     };
   },
   methods: {
@@ -79,7 +87,10 @@ export default {
       });
     },
 
-    deleteItem (item) {
+    deleteItem (e, item) {
+      if (e) {
+        e.stopPropagation();
+      }
       Meteor.call('tasks.removeChecklistItem', this.task._id, item._id, (error, result) => { 
         if (error) {
           return;
@@ -111,6 +122,20 @@ export default {
 
     cancelAddItem () {
       this.editNewItem = false;
+    },
+
+    convertToTask (e, item) {
+      if (e) {
+        e.stopPropagation();
+      }
+
+      Meteor.call('tasks.convertItemToTask', this.task._id, item._id, (error, result) => { 
+        if (error) {
+          return;
+        }
+        var task = Tasks.findOne({_id: this.task._id});
+        this.checklist = task.checklist;
+      });
     }
   }
 };
@@ -118,7 +143,19 @@ export default {
 
 <style scoped>
 
-.delete-button {
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
+
+.right {
+  float: right;
+  margin-top: 8px;
+}
+
+.convert-button {
   float: right;
   margin-top: 8px;
 }
