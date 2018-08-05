@@ -7,7 +7,7 @@
       <span class="md-title">l'atelier</span>
 
       <div class="md-toolbar-section-end">
-        <blaze-template id="login" template="loginButtons"></blaze-template>
+        <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
         <md-button @click="showSidepanel = true">Favorites</md-button>
       </div>
     </md-toolbar>
@@ -105,7 +105,6 @@ export default {
 </script>
 
 <style lang="scss">
-
   .md-app-container {
     background-color: #eee;
   }
