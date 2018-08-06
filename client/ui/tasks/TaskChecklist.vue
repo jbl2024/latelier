@@ -2,17 +2,23 @@
 
 <div class="task-checklist" v-show="showList(checklist)">
   <div v-for="item in checklist" :key="item._id" class="item" @mouseover="showButtons = true" @mouseleave="showButtons = false">
-    <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
-    <transition name="fade">
-    <div class="right" v-show="showButtons">
-      <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
-        <md-icon>view_week</md-icon>
-      </md-button>
-      <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
-        <md-icon>delete</md-icon>
-      </md-button>
+    <div v-show="!showButtons">
+      <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
     </div>
-    </transition>
+
+    <div v-show="showButtons">
+      <md-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
+      <div class="right">
+        <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
+          <md-icon>view_week</md-icon>
+        </md-button>
+        <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
+          <md-icon>delete</md-icon>
+        </md-button>
+      </div>
+      <div class="clear"></div>
+    </div>
+
   </div>
   <md-field>
     <md-icon>check_box_outline_blank</md-icon>
@@ -150,14 +156,34 @@ export default {
   opacity: 0;
 }
 
+
+
+.item {
+  min-width:250px;
+}
+
+.check {
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 50%;
+  box-sizing:border-box;
+  text-overflow: ellipsis;
+}
+
+
 .right {
   float: right;
   margin-top: 8px;
+  white-space: nowrap;
+  max-width: 50%;
+  overflow: hidden;
+  box-sizing:border-box;
+  text-overflow: ellipsis;
 }
 
-.convert-button {
-  float: right;
-  margin-top: 8px;
+.clear {
+  clear: both;
 }
 
 .task-checklist {
