@@ -84,10 +84,14 @@ import debounce from 'lodash/debounce';
 export default {
   mounted () {
     this.$events.listen('task-selected', task => {
+      if (!task) {
+        return;
+      }
       this.showProperties = true;
       this.selectedTask = task;
     });
     this.$events.listen('close-properties', task => {
+      this.$events.fire('task-selected', null);
       this.showProperties = false;
     });
   },

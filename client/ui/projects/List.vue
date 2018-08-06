@@ -39,10 +39,10 @@
       </div>          
 
     </drag>
+    </div>
     </drop>
 
     </div>
-
       <div class="tasks-wrapper">
         <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
         <div class="task new" @click="newTaskInline(list._id)">

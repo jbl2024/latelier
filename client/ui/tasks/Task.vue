@@ -2,7 +2,7 @@
 
 <div class="task" @click="selectTask">
     <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-    <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown }">
+    <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }">
       <md-card-area md-inset>
       <md-card-header>
         <div class="md-title">
@@ -58,10 +58,18 @@ export default {
         this.cancelUpdateName();
       }
     });
+    this.$events.listen('task-selected', task => {
+      if (!task || task._id !== this.task._id) {
+        this.selected = false;
+        return;
+      }
+      this.selected = true;
+    });
   },
   beforeDestroy() {
     this.$events.off('task-edit-name');
     this.$events.off('task-cancel-edit-name');
+    this.$events.off('task-selected');
   },
   props: {
     task: {
@@ -74,7 +82,8 @@ export default {
       savedName: '',
       dragover: false,
       dragup: false,
-      dragdown: false
+      dragdown: false,
+      selected: false
     };
   },
   watch: {
@@ -212,6 +221,10 @@ export default {
 
 .dragdown {
   background: linear-gradient(0deg, #eee 50%, #fff 50%);
+}
+
+.selected { 
+  background: linear-gradient(90deg, #aaa 2%, #fff 2%);
 }
 
 
