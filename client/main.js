@@ -8,7 +8,7 @@ import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css' // This line here
 
 import VueDragDrop from 'vue-drag-drop';
-import VueEvents from 'vue-events'
+import VueEvents from 'vue-event-handler'
 
 Vue.use(VueEvents) ;
 Vue.use(VueDragDrop);
