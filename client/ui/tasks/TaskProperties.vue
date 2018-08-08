@@ -10,13 +10,15 @@
 
     <div class="md-elevation-1">
       <md-list-item>
-       <md-avatar v-show="task.assignedTo" class="md-avatar-icon" :class="isOnline(task.assignedTo)">
-          <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-        </md-avatar>
+       <md-button class="md-icon-button md-avatar-icon" v-show="task.assignedTo" @click="showChooseAssignedToDialog = true">
+        <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
+            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+          </md-avatar>
+       </md-button>
         <div class="md-list-item-text cursor" @click="showChooseAssignedToDialog = true">
           <span v-show="task.assignedTo">Assignée à </span>
-          <span v-show="!task.assignedTo">Non assignée </span>
           <span>{{ formatUser(task.assignedTo) }}</span>
+          <span v-show="!task.assignedTo">Non assignée </span>
         </div>
         <md-button class="md-icon-button md-list-action" @click="removeAssignedTo">
           <md-icon>delete</md-icon>
@@ -61,17 +63,19 @@ import 'moment/locale/fr'
 export default {
   mixins: [usersMixin],
   props: {
-    task: {
-      type: Object
+    taskId: {
+      type: String
     }
   },
   watch: { 
-    task: function(task, oldTask) { // watch it
+    taskId: function(taskId, oldTaskId) { // watch it
+      this.task = Tasks.findOne(taskId);
     }
   },
   data() {
     return {
-      showChooseAssignedToDialog: false
+      showChooseAssignedToDialog: false,
+      task: {}
     };
   },
   methods: {
@@ -82,13 +86,13 @@ export default {
 
     onChooseAssignedTo (user) {
       Meteor.call('tasks.assignTo', this.task._id, user._id, (err, res) => {
-        this.task.assignedTo = Tasks.findOne({_id: this.task._id}).assignedTo;
+        this.task = Tasks.findOne({_id: this.task._id});
       });
     },
 
     removeAssignedTo () {
       Meteor.call('tasks.removeAssignedTo', this.task._id, (err, res) => {
-        this.task.assignedTo = Tasks.findOne({_id: this.task._id}).assignedTo;
+        this.task = Tasks.findOne({_id: this.task._id});
       });
     }
   }

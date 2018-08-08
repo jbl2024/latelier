@@ -59,7 +59,7 @@
     </md-tab>
 
     <md-tab id="tab-properties" md-label="Propriétés">
-      <task-properties :task="task"></task-properties>
+      <task-properties :taskId="task._id"></task-properties>
     </md-tab>
 
     <md-tab id="tab-checkist" md-label="Checklist">
