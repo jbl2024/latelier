@@ -10,10 +10,18 @@
 
     <div class="md-elevation-1">
       <md-list-item>
+       <md-avatar v-show="task.assignedTo" class="md-avatar-icon" :class="isOnline(task.assignedTo)">
+          <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+        </md-avatar>
         <div class="md-list-item-text cursor" @click="showChooseAssignedToDialog = true">
-          <span>Assignée à </span>
-          <span>jerome blondon</span>
+          <span v-show="task.assignedTo">Assignée à </span>
+          <span v-show="!task.assignedTo">Non assignée </span>
+          <span>{{ formatUser(task.assignedTo) }}</span>
         </div>
+        <md-button class="md-icon-button md-list-action" @click="removeAssignedTo">
+          <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        </md-button>
       </md-list-item>
     </div>
 
@@ -46,10 +54,12 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 import moment from 'moment';
 import 'moment/locale/fr'
 
 export default {
+  mixins: [usersMixin],
   props: {
     task: {
       type: Object
@@ -70,8 +80,16 @@ export default {
 
     },
 
-    onChooseAssignedTo (person) {
-      console.log(person);
+    onChooseAssignedTo (user) {
+      Meteor.call('tasks.assignTo', this.task._id, user._id, (err, res) => {
+        this.task.assignedTo = Tasks.findOne({_id: this.task._id}).assignedTo;
+      });
+    },
+
+    removeAssignedTo () {
+      Meteor.call('tasks.removeAssignedTo', this.task._id, (err, res) => {
+        this.task.assignedTo = Tasks.findOne({_id: this.task._id}).assignedTo;
+      });
     }
   }
 };

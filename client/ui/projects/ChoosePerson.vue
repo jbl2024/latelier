@@ -27,8 +27,10 @@
 <script>
 import { Meteor } from 'meteor/meteor'
 import { Projects } from '/imports/api/projects/projects.js'
+import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 
 export default {
+  mixins: [usersMixin],
   props: {
     active: Boolean,
   },
@@ -44,21 +46,6 @@ export default {
   methods: {
     closeDialog () {
       this.$emit('update:active', false);
-    },
-
-    formatUserLetters (user) {
-      var emailComponents = user.emails[0].address.split('@');
-      return emailComponents[0][0] + emailComponents[1][0];
-    },
-
-    formatUser (user) {
-      return user.emails[0].address;
-    },
-
-    isOnline (user) {
-      if (user.statusConnection == 'online') {
-        return 'md-primary';
-      }
     },
 
     selectUser (user) {

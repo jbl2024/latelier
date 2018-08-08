@@ -6,7 +6,7 @@
     
     <md-list>
       <md-list-item v-for="user in projectUsers" :key="user._id">
-        <md-avatar class="md-avatar-icon md-small" :class="isOnline(user)">
+        <md-avatar class="md-avatar-icon" :class="isOnline(user)">
             <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
         </md-avatar>
 
@@ -21,9 +21,11 @@
 <script>
 import { Meteor } from 'meteor/meteor'
 import { Projects } from '/imports/api/projects/projects.js'
+import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 
 export default {
   name: 'project-manage-users',
+  mixins: [usersMixin],
   props: {
     project: Object
   },
@@ -58,20 +60,6 @@ export default {
   },
   methods: {
 
-    formatUserLetters (user) {
-      var emailComponents = user.emails[0].address.split('@');
-      return emailComponents[0][0] + emailComponents[1][0];
-    },
-
-    formatUser (user) {
-      return user.emails[0].address;
-    },
-
-    isOnline (user) {
-      if (user.statusConnection == 'online') {
-        return 'md-primary';
-      }
-    },
 
     onSelectUser (user) {
       Meteor.call('projects.addMember', this.project._id, user._id);

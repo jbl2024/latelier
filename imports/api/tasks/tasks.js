@@ -217,5 +217,26 @@ Meteor.methods({
 
     Meteor.call('tasks.insert', task.projectId, task.listId, item.name);
     Meteor.call('tasks.removeChecklistItem', taskId, itemId);
-  }
+  },
+
+  'tasks.assignTo'(taskId, userId) {
+    check(taskId, String);
+    check(userId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Tasks.update({_id: taskId}, {$set: {assignedTo: userId}});
+  },
+
+  'tasks.removeAssignedTo'(taskId) {
+    check(taskId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Tasks.update({_id: taskId}, {$set: {assignedTo: null}});
+  },
+
+
 });
