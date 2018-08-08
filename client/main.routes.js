@@ -48,6 +48,13 @@ export default [
     ]
   },  
   {
+    path: '/projects',
+    name: 'projects',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/projects/Projects.vue',
+    props: true,
+  },
+  {
     path: '/projects/:projectId',
     name: 'project',
     beforeEnter: isBasicAuth,
@@ -55,10 +62,10 @@ export default [
     props: true
   },
   {
-    path: '/projects',
-    name: 'projects',
+    path: '/projects/:projectId/settings',
+    name: 'projectSettings',
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/Projects.vue',
+    component: '/imports/ui/projects/ProjectSettings.vue',
     props: true
   },
   {

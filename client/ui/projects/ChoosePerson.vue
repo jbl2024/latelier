@@ -6,8 +6,8 @@
 
       <div class="content">
         <md-list>
-          <md-list-item v-for="person in persons" :key="person._id">
-            <md-avatar class="md-avatar-icon md-small">
+          <md-list-item v-for="person in persons" :key="person._id" class="cursor" @click="selectUser(person)">
+            <md-avatar class="md-avatar-icon" :class="isOnline(person)">
                 <md-ripple>{{ formatUserLetters(person) }}</md-ripple>
             </md-avatar>
 
@@ -18,7 +18,6 @@
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="closeDialog">Annuler</md-button>
-        <md-button class="md-raised md-primary" @click="confirm">Choisir</md-button>
       </md-dialog-actions>
     </md-dialog>  
 
@@ -31,7 +30,7 @@ import { Projects } from '/imports/api/projects/projects.js'
 
 export default {
   props: {
-    active: Boolean
+    active: Boolean,
   },
   data () {
     return {
@@ -47,11 +46,6 @@ export default {
       this.$emit('update:active', false);
     },
 
-    confirm () {
-      this.$emit('update:active', false);
-      this.$emit('choose');
-    },
-
     formatUserLetters (user) {
       var emailComponents = user.emails[0].address.split('@');
       return emailComponents[0][0] + emailComponents[1][0];
@@ -61,6 +55,16 @@ export default {
       return user.emails[0].address;
     },
 
+    isOnline (user) {
+      if (user.statusConnection == 'online') {
+        return 'md-primary';
+      }
+    },
+
+    selectUser (user) {
+      this.$emit('update:active', false);
+      this.$emit('choose', user);
+    }
 
   }
 }
@@ -70,8 +74,15 @@ export default {
 .content {
   margin-left: 24px;
   margin-right: 24px;
-  max-height: 300px;
   overflow-y: scroll;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.cursor:hover {
+  background-color: #aaa;
 }
 
 </style>

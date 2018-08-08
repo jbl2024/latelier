@@ -28,7 +28,12 @@ if (Projects.find().count() === 0) {
 
   });  
 }
-
+var users = Meteor.users.find().fetch();
+users.map ( user => {
+  if (user._id != 'TAGRk8jBBZAkMMYmc') {
+    //Meteor.users.remove(user._id);
+  }
+})
 if (Meteor.users.find().count() <= 2) {
   faker.locale = "fr";
 
@@ -46,6 +51,8 @@ if (Meteor.users.find().count() <= 2) {
         lastName: lastName,
       }
     }
+    console.log(userData);
+    
     Accounts.createUser(userData);
   }
 }

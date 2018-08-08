@@ -1,6 +1,12 @@
 <template>
   <div class="admin">
-    <h1>Admin</h1>
+
+    <md-tabs>
+      <md-tab id="tab-users" md-label="Utilisateurs" to="">
+        Utilisateurs
+      </md-tab>
+
+    </md-tabs>
   </div>
 </template>
 
@@ -18,4 +24,9 @@ export default {
 </script>
 
 <style scoped>
+
+.admin {
+  min-height: 100vh;
+  background-color: white;
+}
 </style>

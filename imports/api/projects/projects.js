@@ -111,4 +111,19 @@ Meteor.methods({
     });
   },
 
+  'projects.addMember'(projectId, userId) {
+    check(projectId, String);
+    check(userId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (Projects.find({_id: projectId,  "members._id" : userId}).count() > 0) {
+      return;
+    }
+    Projects.update({_id: projectId}, {$push: {members: userId}});
+  }
+
 });

@@ -1,14 +1,13 @@
 <template>
-  <div class="project"> 
+  <div class="project-settings"> 
 
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project" class="project-wrapper"> 
-
       <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'projects'}">
-            <md-icon>home
+        <md-button class="md-icon-button" :to="{ name: 'project', params: { projectId: project._id }}">
+            <md-icon>arrow_back
               <md-tooltip md-delay="300">Accueil</md-tooltip>
             </md-icon>
         </md-button>
@@ -25,52 +24,9 @@
             <md-icon>cancel</md-icon>
           </md-button>
         </span>
-
-        <div class="md-toolbar-section-end">
-          <md-field class="search" md-clearable>
-            <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
-          </md-field>
-
-          <md-button class="md-icon-button">
-              <md-icon>view_week
-                <md-tooltip md-delay="300" md-direction="bottom">Kanban</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button">
-              <md-icon>calendar_today
-                <md-tooltip md-delay="300" md-direction="bottom">Timeline</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: project._id }}">
-              <md-icon>settings
-                <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button settings">
-            <md-icon>more_vert</md-icon>
-          </md-button>
-        </div>
       </md-toolbar>
 
-      <div class="container-wrapper">
-        <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
-      </div>
-
-      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
-        <task-detail :task="selectedTask"></task-detail>
-      </md-drawer>
-
-      <new-list ref="newList" :project-id="projectId"></new-list>  
-      <md-speed-dial class="absolute-right">
-        <md-speed-dial-target @click="newList">
-          <md-icon>add</md-icon>
-        </md-speed-dial-target>
-      </md-speed-dial>
-
+      <project-manage-users :project="project" class="users"></project-manage-users>
     </div>
 </div>
 </template>
@@ -83,24 +39,10 @@ import debounce from 'lodash/debounce';
 
 export default {
   mounted () {
-    this.$events.listen('task-selected', task => {
-      if (!task) {
-        return;
-      }
-      this.showTaskDetail = true;
-      this.selectedTask = task;
-    });
-    this.$events.listen('close-task-detail', task => {
-      this.$events.fire('task-selected', null);
-      this.showTaskDetail = false;
-    });
   },
   created () {
-    this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
   },
   beforeDestroy() {
-    this.$events.off('task-selected');
-    this.$events.off('close-task-detail');
   },
   props: {
     projectId: {
@@ -112,9 +54,6 @@ export default {
     return {
       savedProjectName: '',
       editProjectName: false,
-      showTaskDetail: false,
-      selectedTask: {},
-      debouncedFilter: ''
     }
   },
   meteor: {
@@ -144,27 +83,12 @@ export default {
       this.editProjectName = false;
       this.project.name = this.savedProjectName;
     },
-    newList () {
-      this.$refs.newList.open();
-    },
   }
 }
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-}
-::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0,0,0,.5);
-    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-}
 
-.drawer-task-detail {
-  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
-}
 
 .toolbar {
   background-color: white;
@@ -178,16 +102,15 @@ export default {
   padding: 8px;
 }
 
-.project {
+.project-settings {
   display: flex;
-  min-height:0;
   flex-direction: column;
+  background-color: white;
+  height: 100%;
 }
 
-.project-wrapper {
-  display: flex;
-  min-height:0;
-  flex-direction: column;
+.users {
+  overflow-y: scroll;
 }
 
 .edit-project-name input {
