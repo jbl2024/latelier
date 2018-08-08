@@ -2,7 +2,7 @@
 
 <div class="task-properties">
 
-  <choose-person scope="project" @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog">
+  <choose-person @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog">
 
   </choose-person>
   <md-list class="md-double-line">

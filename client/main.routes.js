@@ -61,4 +61,11 @@ export default [
     component: '/imports/ui/projects/Projects.vue',
     props: true
   },
+  {
+    path: '/admin',
+    name: 'admin',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/admin/Admin.vue',
+    props: true
+  },
 ];
