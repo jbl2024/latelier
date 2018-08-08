@@ -59,8 +59,7 @@
     </md-tab>
 
     <md-tab id="tab-properties" md-label="Propriétés">
-      Pages tab
-      <p>Unde provident nemo reiciendis officia, possimus repellendus. Facere dignissimos dicta quis rem. Aliquam aspernatur dolor atque nisi id deserunt laudantium quam repellat.</p>
+      <task-properties :task="task"></task-properties>
     </md-tab>
 
     <md-tab id="tab-checkist" md-label="Checklist">
