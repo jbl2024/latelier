@@ -57,11 +57,11 @@
       </md-toolbar>
 
       <div class="container-wrapper">
-        <kanban ref="container" class="container" @click="showProperties=false" :projectId="projectId"></kanban>
+        <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
-      <md-drawer :md-active="showProperties" md-right md-persistent="full" class="drawer-properties md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
-        <task-properties :task="selectedTask"></task-properties>
+      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+        <task-detail :task="selectedTask"></task-detail>
       </md-drawer>
 
       <new-list ref="newList" :project-id="projectId"></new-list>  
@@ -87,12 +87,12 @@ export default {
       if (!task) {
         return;
       }
-      this.showProperties = true;
+      this.showTaskDetail = true;
       this.selectedTask = task;
     });
-    this.$events.listen('close-properties', task => {
+    this.$events.listen('close-task-detail', task => {
       this.$events.fire('task-selected', null);
-      this.showProperties = false;
+      this.showTaskDetail = false;
     });
   },
   created () {
@@ -100,7 +100,7 @@ export default {
   },
   beforeDestroy() {
     this.$events.off('task-selected');
-    this.$events.off('close-properties');
+    this.$events.off('close-task-detail');
   },
   props: {
     projectId: {
@@ -112,7 +112,7 @@ export default {
     return {
       savedProjectName: '',
       editProjectName: false,
-      showProperties: false,
+      showTaskDetail: false,
       selectedTask: {},
       debouncedFilter: ''
     }
@@ -162,7 +162,7 @@ export default {
     -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
-.drawer-properties {
+.drawer-task-detail {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
 }
 

@@ -1,6 +1,6 @@
 <template>
 
-<div class="task-properties">
+<div class="task-detail">
   <md-toolbar class="md-transparent" md-elevation="0">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
@@ -83,7 +83,7 @@ export default {
     task: {
       type: Object
     },
-    showProperties: {
+    showTaskDetail: {
       type: Boolean
     }
   },
@@ -94,11 +94,11 @@ export default {
   },
   methods: {
     requestClose () {
-      this.$events.fire('close-properties');
+      this.$events.fire('close-task-detail');
     },
     deleteTask (taskId) {
       Meteor.call('tasks.remove', taskId);
-      this.$events.fire('close-properties');
+      this.$events.fire('close-task-detail');
     },
     startEditDescription () {
       this.savedDescription = this.task.description;

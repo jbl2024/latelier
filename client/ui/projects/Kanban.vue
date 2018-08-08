@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     hideProperties () {
-      this.$events.fire('close-properties');
+      this.$events.fire('close-task-detail');
     },
 
     newListInline () {
