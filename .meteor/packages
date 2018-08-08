@@ -25,7 +25,8 @@ aldeed:simple-schema
 akryum:vue-router2
 akryum:vue-sass
 vuejs:blaze-integration
-accounts-ui
-accounts-password
+accounts-ui@1.3.0
+accounts-password@1.5.1
 reywood:publish-composite
-random
+random@1.1.0
+konecty:user-presence

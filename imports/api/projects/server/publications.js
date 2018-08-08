@@ -32,7 +32,7 @@ publishComposite("project", function(projectId) {
             find(list) {
               return Meteor.users.find(
                 { _id: list.createdBy },
-                { fields: { profile: 1 } }
+                { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1 } }
               );
             }
           }
@@ -55,7 +55,7 @@ publishComposite("project", function(projectId) {
 
               return Meteor.users.find(
                 { _id: { $in: userIds } },
-                { fields: { profile: 1 } }
+                { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1 } }
               );
             }
           }
@@ -65,7 +65,7 @@ publishComposite("project", function(projectId) {
         find(project) {
           return Meteor.users.find(
             { _id: project.createdBy },
-            { fields: { profile: 1 } }
+            { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1 } }
           );
         }
       }

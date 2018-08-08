@@ -24,6 +24,13 @@ import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';
 
 Meteor.startup(() => {
+  // Time of inactivity to set user as away automaticly. Default 60000
+  UserPresence.awayTime = 60000;
+  // Set user as away when window loses focus. Defaults false
+  UserPresence.awayOnWindowBlur = true;
+  // Start monitor for user activity
+  UserPresence.start();
+
   const router = routerFactory.create();
   new Vue({
     router,
