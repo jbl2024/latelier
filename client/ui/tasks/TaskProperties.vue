@@ -32,7 +32,7 @@
 
     <div class="md-elevation-1">
       <md-list-item>
-        <div class="md-list-item-text">
+        <div class="md-list-item-text" @click="showChoose = true">
           <span>Date de début</span>
           <span></span>
         </div>

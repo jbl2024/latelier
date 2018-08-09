@@ -64,7 +64,7 @@ export default {
   padding: 5px;
   padding-top: 12px;
   margin-bottom: 0;
-  border: 2px dashed #1f5c87;
+  border: 2px dashed #2D6293;
   background-color: white;
   padding-bottom: 8px;
   color: black;

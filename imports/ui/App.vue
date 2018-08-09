@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <md-toolbar class="md-primary" >
+    <md-toolbar class="md-primary main-toolbar">
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
@@ -94,7 +94,8 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+  
   .search {
     width: 100%;
   }

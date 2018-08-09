@@ -184,7 +184,7 @@ export default {
 }
 
 .swimlane.new h2 {
-  border: 2px dashed #1f5c87;
+  border: 2px dashed #2D6293;
   background-color: white;
   padding-bottom: 8px;
   color: black;
@@ -201,7 +201,7 @@ export default {
 
 .swimlane h2 {
   text-align: left;
-  background-color: #01579b;
+  background-color: #2D6293;
   color: white;
   font-weight: normal;
   font-size: 14px;
@@ -230,7 +230,7 @@ export default {
 }
 
 .task.new h2 {
-  border: 2px dashed #1f5c87;
+  border: 2px dashed #2D6293;
   background-color: white;
   font-size: 14px;
   padding: 4px;

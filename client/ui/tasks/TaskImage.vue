@@ -35,7 +35,7 @@ export default {
 <style scoped>
 .task h2 {
   text-align: left;
-  background-color: #1f5c87;
+  background-color: #2D6293;
   color: white;
   font-weight: normal;
   font-size: 14px;
