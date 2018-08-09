@@ -4,6 +4,7 @@
 
   <choose-person @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog"></choose-person>
   <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
+  <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
   
   <md-list class="md-double-line">
     <md-subheader>Responsabilités</md-subheader>
@@ -26,7 +27,6 @@
         </md-button>
       </md-list-item>
     </div>
-
 
     <md-subheader>Dates</md-subheader>
 
@@ -71,6 +71,7 @@ export default {
     return {
       showChooseAssignedToDialog: false,
       showSelectDueDate: false,
+      showSelectStartDate: false,
     };
   },
   methods: {
@@ -85,6 +86,10 @@ export default {
 
     onSelectDueDate (date) {
       Meteor.call('tasks.setDueDate', this.task._id, date);
+    },
+
+    onSelectStartDate (date) {
+      Meteor.call('tasks.seStartDate', this.task._id, date);
     },
 
     formatDate (date) {

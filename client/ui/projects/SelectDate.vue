@@ -5,7 +5,7 @@
       <md-dialog-title>Choisir une date</md-dialog-title>
 
       <div class="content">
-        <flat-pickr v-model="date" :config="config" class="invisible"></flat-pickr>
+        <flat-pickr v-model="fakeDate" :config="config" class="invisible" @on-change="onChangeEvent"></flat-pickr>
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="closeDialog">Annuler</md-button>
@@ -29,14 +29,15 @@ export default {
   },
   data () {
     return {
+      fakeDate: null,
       date: null,
       config: {
         enableTime: true,
         altInput: true,
+        altFormat: 'd/m/Y H:i',
         weekNumbers: true,
         inline: true,
         time_24hr: true,
-        altFormat: 'd/m/Y H:i',
         locale: French,
         "enableTime": true
       },             
@@ -48,6 +49,14 @@ export default {
   methods: {
     closeDialog () {
       this.$emit('update:active', false);
+    },
+
+    onChangeEvent (dates) {
+      if (dates && dates.length > 0) {
+        this.date = dates[0];
+      } else {
+        this.date = null;
+      }
     },
 
     selectDate () {
