@@ -11,11 +11,9 @@
 
     <div class="md-elevation-1">
       <md-list-item>
-       <md-button class="md-icon-button md-avatar-icon" v-show="task.assignedTo" @click="showChooseAssignedToDialog = true">
         <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
-            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+            {{ formatUserLetters(task.assignedTo) }}
         </md-avatar>
-       </md-button>
         <div class="md-list-item-text cursor" @click="showChooseAssignedToDialog = true">
           <span v-show="task.assignedTo">Assignée à </span>
           <span>{{ formatUser(task.assignedTo) }}</span>
@@ -32,6 +30,9 @@
 
     <div class="md-elevation-1">
       <md-list-item>
+        <md-avatar class="md-avatar-icon">
+          <md-icon>calendar_today</md-icon>
+        </md-avatar>
         <div class="md-list-item-text">
           <span>Date de début</span>
           <span></span>
@@ -40,11 +41,22 @@
 
       <md-divider></md-divider>
 
-      <md-list-item class="cursor" @click="showSelectDueDate = true">
-        <div class="md-list-item-text">
+      <md-list-item class="cursor">
+        <md-avatar class="md-avatar-icon">
+          <md-icon>alarm_on</md-icon>
+        </md-avatar>
+        <div class="md-list-item-text" @click="showSelectDueDate = true">
           <span>Date de fin</span>
-          <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
+          <span>
+            <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
+            <span v-show="!task.dueDate">Aucune</span>
+          </span>
         </div>
+        <md-button class="md-icon-button md-list-action" @click="onSelectDueDate(null)">
+          <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        </md-button>
+
       </md-list-item>
     </div>
   </md-list>

@@ -33,6 +33,7 @@
       </md-card-area>
 
       <md-card-content>
+        <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
         <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
       </md-card-content>
     </md-card>
@@ -193,7 +194,11 @@ export default {
         return;
       }
       this.$events.fire('task-selected', this.task);
-    }
+    },
+    formatDate (date) {
+      return moment(date).format('DD/MM/YYYY HH:mm');
+    },
+
 
   }
 };
