@@ -12,7 +12,7 @@ export default {
         return;
       }
       user = getUser(user);
-      var emailComponents = user.emails[0].address.split('.');
+      var emailComponents = user.emails[0].address.split('@')[0].split('.');
       if (emailComponents.length <= 1) {
         return emailComponents[0][0];
       }
