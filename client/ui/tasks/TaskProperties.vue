@@ -43,7 +43,7 @@
       <md-list-item class="cursor" @click="showSelectDueDate = true">
         <div class="md-list-item-text">
           <span>Date de fin</span>
-          <span></span>
+          <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
         </div>
       </md-list-item>
     </div>
@@ -76,19 +76,20 @@ export default {
   methods: {
 
     onChooseAssignedTo (user) {
-      Meteor.call('tasks.assignTo', this.task._id, user._id, (err, res) => {
-      });
+      Meteor.call('tasks.assignTo', this.task._id, user._id);
     },
 
     removeAssignedTo () {
-      Meteor.call('tasks.removeAssignedTo', this.task._id, (err, res) => {
-      });
+      Meteor.call('tasks.removeAssignedTo', this.task._id);
     },
 
     onSelectDueDate (date) {
-
+      Meteor.call('tasks.setDueDate', this.task._id, date);
     },
 
+    formatDate (date) {
+      return moment(date).format('DD/MM/YYYY HH:mm');
+    },
   }
 };
 </script>

@@ -2,11 +2,15 @@
   <div class="select-date">
 
     <md-dialog :md-active.sync="active">
-      <md-dialog-title class="invisible">coucou</md-dialog-title>
+      <md-dialog-title>Choisir une date</md-dialog-title>
 
       <div class="content">
         <flat-pickr v-model="date" :config="config" class="invisible"></flat-pickr>
       </div>
+      <md-dialog-actions>
+        <md-button class="md-button" @click="closeDialog">Annuler</md-button>
+        <md-button class="md-button md-primary" @click="selectDate">Confirmer</md-button>
+      </md-dialog-actions>
     </md-dialog>  
   </div>    
 </template>
@@ -34,11 +38,7 @@ export default {
         time_24hr: true,
         altFormat: 'd/m/Y H:i',
         locale: French,
-        onClose: this.selectDate,
-        "enableTime": true,
-        "plugins": [new confirmDatePlugin({
-          confirmText: 'Choisir'
-        })],
+        "enableTime": true
       },             
     }
   },
@@ -50,11 +50,10 @@ export default {
       this.$emit('update:active', false);
     },
 
-    selectDate (date) {
+    selectDate () {
       this.$emit('update:active', false);
-      this.$emit('select', date);
+      this.$emit('select', this.date);
     }
-
   }
 }
 </script>
