@@ -29,7 +29,7 @@
   <md-divider></md-divider>
   <div class="description">
     <div v-show="!editDescription && task.description && task.description.length > 0" @click="startEditDescription">
-      <pre>{{ task.description}}</pre>
+      <div v-html="markDown(task.description)"></div>
     </div>
     <div v-show="!task.description && !editDescription" @click="startEditDescription">
       Aucune description
@@ -75,7 +75,7 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
-
+import showdown from 'showdown';
 
 export default {
   props: {
@@ -126,6 +126,19 @@ export default {
     cancelUpdateDescription () {
       this.editDescription = false;
       this.task.description = this.savedDescription;
+    },
+
+    markDown (text) {
+      var converter = new showdown.Converter({
+        type: 'lang',
+        filter: function(text) {
+            return text.replace(/^( *(\d+\. {1,4}|[\w\<\'\">\-*+])[^\n]*)\n{1}(?!\n| *\d+\. {1,4}| *[-*+] +|$)/gm, function(text) {
+                return text.trim() + "  \n";
+            })
+          }
+        }
+      );
+      return converter.makeHtml(text);
     }
   }
 };

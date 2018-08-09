@@ -17,6 +17,7 @@
     "meteor-node-stubs": "^0.4.1",
     "mobile-drag-drop": "^2.3.0-rc.1",
     "moment": "^2.22.2",
+    "showdown": "^1.8.6",
     "vue": "^2.5.16",
     "vue-drag-drop": "^1.1.4",
     "vue-event-handler": "^1.1.0",
