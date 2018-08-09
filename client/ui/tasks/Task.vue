@@ -5,14 +5,15 @@
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }">
       <md-card-area md-inset>
       <md-card-header>
+        <md-avatar class="md-avatar-icon" :class="isOnline(task.assignedTo)">
+            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+        </md-avatar>
+
         <div class="md-title">
           <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
           <span v-show="!editName" @click="startUpdateName" class="name">
           {{ task.name }}
           </span>
-        <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
-            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-        </md-avatar>
 
           <span v-show="editName" class="edit">
             <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
@@ -25,10 +26,9 @@
             </md-button>
 
           </span>
-          
-          
-          </div>
-        <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
+
+          <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
+        </div>
       </md-card-header>
 
       </md-card-area>
@@ -266,4 +266,5 @@ export default {
 .task-checklist {
   font-size: 12px;
 }
+
 </style>

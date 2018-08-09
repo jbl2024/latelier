@@ -132,16 +132,6 @@ export default {
       this.selectedList = null;
     },
 
-    newListInline () {
-      var that = this;
-      Meteor.call('lists.insert', this.list.projectId, 'Nouvelle liste', (error, createdList) => { 
-        if (error) {
-          return;
-        }
-        that.savedName = createdList.name;
-        that.selectedList = createdList;
-      });
-    },
     deleteList (listId) {
       Meteor.call('lists.remove', listId);
     },

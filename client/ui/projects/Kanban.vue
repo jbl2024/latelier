@@ -3,8 +3,8 @@
       <div v-for="list in lists" :key='list._id' class="flex">
         <list :list="list"></list>
       </div>  
-      <div class="swimlane new" @click="newListInline">
-        <h2>Nouvelle liste</h2>
+      <div class="swimlane new">
+        <h2 @click="newListInline">Nouvelle liste</h2>
       </div>
   </div>
 </template>
