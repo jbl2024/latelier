@@ -61,7 +61,7 @@
       </div>
 
       <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
-        <task-detail :task="selectedTask"></task-detail>
+        <task-detail :taskId="selectedTask._id"></task-detail>
       </md-drawer>
 
       <new-list ref="newList" :project-id="projectId"></new-list>  

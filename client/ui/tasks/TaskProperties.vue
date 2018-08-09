@@ -13,7 +13,7 @@
        <md-button class="md-icon-button md-avatar-icon" v-show="task.assignedTo" @click="showChooseAssignedToDialog = true">
         <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
             <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-          </md-avatar>
+        </md-avatar>
        </md-button>
         <div class="md-list-item-text cursor" @click="showChooseAssignedToDialog = true">
           <span v-show="task.assignedTo">Assignée à </span>
@@ -63,19 +63,13 @@ import 'moment/locale/fr'
 export default {
   mixins: [usersMixin],
   props: {
-    taskId: {
-      type: String
-    }
-  },
-  watch: { 
-    taskId: function(taskId, oldTaskId) { // watch it
-      this.task = Tasks.findOne(taskId);
+    task: {
+      type: Object
     }
   },
   data() {
     return {
       showChooseAssignedToDialog: false,
-      task: {}
     };
   },
   methods: {
@@ -86,13 +80,11 @@ export default {
 
     onChooseAssignedTo (user) {
       Meteor.call('tasks.assignTo', this.task._id, user._id, (err, res) => {
-        this.task = Tasks.findOne({_id: this.task._id});
       });
     },
 
     removeAssignedTo () {
       Meteor.call('tasks.removeAssignedTo', this.task._id, (err, res) => {
-        this.task = Tasks.findOne({_id: this.task._id});
       });
     }
   }

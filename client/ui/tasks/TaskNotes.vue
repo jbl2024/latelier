@@ -1,14 +1,14 @@
 <template>
 
 <div class="task-notes">
-  <md-empty-state v-show="!hasNotes(notes) && !editNewNote"
+  <md-empty-state v-show="!hasNotes(task.notes) && !editNewNote"
     md-icon="note"
     md-label="Aucune note"
     md-description="Vous pouvez ajouter des notes.">
     <md-button class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
   </md-empty-state>
 
-  <div v-for="note in notes">
+  <div v-for="note in task.notes" :key='note._id'>
       <div class="note">
         <pre>{{ note.content}}</pre>
         <div class="metadata">
@@ -26,7 +26,7 @@
   </div>
 
   <div class="center">
-    <md-button v-show="hasNotes(notes)" class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
+    <md-button v-show="hasNotes(task.notes)" class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
   </div>
 
   <div v-show="editNewNote">
@@ -60,16 +60,10 @@ export default {
       type: Object
     }
   },
-  watch: { 
-    task: function(task, oldTask) { // watch it
-      this.notes = task.notes;
-    }
-  },
   data() {
     return {
       editNewNote: false,
       note: '',
-      notes: []
     };
   },
   methods: {
@@ -86,23 +80,11 @@ export default {
 
     addNote () {
       this.editNewNote = false;
-      Meteor.call('tasks.addNote', this.task._id, this.note, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.notes = task.notes;
-      });
+      Meteor.call('tasks.addNote', this.task._id, this.note);
     },
 
     deleteNote (note) {
-      Meteor.call('tasks.removeNote', this.task._id, note._id, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.notes = task.notes;
-      });
+      Meteor.call('tasks.removeNote', this.task._id, note._id);
     },
 
     cancelAddNote () {

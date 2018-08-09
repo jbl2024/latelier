@@ -10,6 +10,9 @@
           <span v-show="!editName" @click="startUpdateName" class="name">
           {{ task.name }}
           </span>
+        <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
+            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+        </md-avatar>
 
           <span v-show="editName" class="edit">
             <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
@@ -43,9 +46,11 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 import moment from 'moment';
 
 export default {
+  mixins: [usersMixin],
   mounted () {
     this.$events.listen('task-edit-name', task => {
       if (task._id !== this.task._id) {

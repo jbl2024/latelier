@@ -59,7 +59,7 @@
     </md-tab>
 
     <md-tab id="tab-properties" md-label="Propriétés">
-      <task-properties :taskId="task._id"></task-properties>
+      <task-properties :task="task"></task-properties>
     </md-tab>
 
     <md-tab id="tab-checkist" md-label="Checklist">
@@ -79,8 +79,8 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export default {
   props: {
-    task: {
-      type: Object
+    taskId: {
+      type: String
     },
     showTaskDetail: {
       type: Boolean
@@ -90,6 +90,19 @@ export default {
     return {
       editDescription: false
     };
+  },
+  meteor: {
+    task: {
+      params () {
+        return {
+          id: this.taskId
+        };
+      },
+      deep: false,
+      update ({id}) {
+        return Tasks.findOne({ _id: id}) || {};
+      }
+    }
   },
   methods: {
     requestClose () {

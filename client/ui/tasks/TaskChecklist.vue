@@ -1,7 +1,7 @@
 <template>
 
-<div class="task-checklist" v-show="showList(checklist)">
-  <div v-for="item in checklist" :key="item._id" class="item" @mouseover="showButtons = true" @mouseleave="showButtons = false">
+<div class="task-checklist" v-show="showList(task.checklist)">
+  <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = true" @mouseleave="showButtons = false">
     <div v-show="!showButtons">
       <md-checkbox v-model="item.checked" class="md-primary" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
     </div>
@@ -47,19 +47,10 @@ export default {
       type: Object
     }
   },
-  watch: { 
-    task: {
-    immediate: true,
-    handler: function(task, oldTask) { // watch it
-        this.checklist = task.checklist;
-      }
-    }
-  },
   data() {
     return {
       editNewItem: false,
       item: '',
-      checklist: [],
       showButtons: false
     };
   },
@@ -83,47 +74,22 @@ export default {
 
     addItem () {
       this.editNewItem = false;
-      Meteor.call('tasks.addChecklistItem', this.task._id, this.item, (error, result) => { 
-        if (error) {
-          return;
-        }
-        this.item = '';
-        var task = Tasks.findOne({_id: this.task._id});
-        this.checklist = task.checklist;
-      });
+      Meteor.call('tasks.addChecklistItem', this.task._id, this.item);
     },
 
     deleteItem (e, item) {
       if (e) {
         e.stopPropagation();
       }
-      Meteor.call('tasks.removeChecklistItem', this.task._id, item._id, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.checklist = task.checklist;
-      });
+      Meteor.call('tasks.removeChecklistItem', this.task._id, item._id);
     },
 
     toggleCheckItem (item) {
-      Meteor.call('tasks.toggleCheckItem', this.task._id,  item._id, item.checked, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.checklist = task.checklist;
-      });
+      Meteor.call('tasks.toggleCheckItem', this.task._id,  item._id, item.checked);
     },
 
     updateChecklist() {
-      Meteor.call('tasks.updateChecklist', this.task._id, this.task.checklist, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.checklist = task.checklist;
-      });
+      Meteor.call('tasks.updateChecklist', this.task._id, this.task.checklist);
     },
 
     cancelAddItem () {
@@ -135,13 +101,7 @@ export default {
         e.stopPropagation();
       }
 
-      Meteor.call('tasks.convertItemToTask', this.task._id, item._id, (error, result) => { 
-        if (error) {
-          return;
-        }
-        var task = Tasks.findOne({_id: this.task._id});
-        this.checklist = task.checklist;
-      });
+      Meteor.call('tasks.convertItemToTask', this.task._id, item._id);
     }
   }
 };
