@@ -275,7 +275,7 @@ export default {
 
 .task-checklist {
   font-size: 12px;
-  padding-left: 2px;
+  padding-left: 0px;
   padding-top: 8px;
 }
 
