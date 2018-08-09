@@ -5,7 +5,7 @@
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }">
       <md-card-area md-inset>
       <md-card-header>
-        <md-avatar class="md-avatar-icon" :class="isOnline(task.assignedTo)">
+        <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)">
             <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
         </md-avatar>
 
@@ -27,7 +27,6 @@
 
           </span>
 
-          <div class="md-subhead">{{ formatDate(task.createdAt)}}</div>
         </div>
       </md-card-header>
 
