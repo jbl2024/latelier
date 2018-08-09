@@ -162,6 +162,11 @@ export default {
   margin-right: 0;
 }
 
+.task-checklist {
+  margin-left: 12px;
+  margin-right: 12px;
+}
+
 pre {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   white-space: pre-wrap;

@@ -5,9 +5,6 @@
     <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }">
       <md-card-area md-inset>
       <md-card-header>
-        <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)">
-            <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-        </md-avatar>
 
         <div class="md-title">
           <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
@@ -33,7 +30,16 @@
       </md-card-area>
 
       <md-card-content>
-        <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
+
+        <div class="metadata">
+          <span>
+            <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+                <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+            </md-avatar>
+          </span>
+          <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
+        </div>
+
         <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
       </md-card-content>
     </md-card>
@@ -269,6 +275,18 @@ export default {
 
 .task-checklist {
   font-size: 12px;
+  padding-left: 2px;
+  padding-top: 8px;
+}
+
+.metadata {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.md-card-content {
+  padding-left: 12px;
+  padding-top: 8px;
 }
 
 </style>

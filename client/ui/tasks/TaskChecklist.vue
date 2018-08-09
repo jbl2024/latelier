@@ -20,7 +20,7 @@
     </div>
 
   </div>
-  <md-field>
+  <md-field class="add-item">
     <md-icon>check_box_outline_blank</md-icon>
     <label>Nouvel item</label>
     <md-input v-model="item" ref="newItem" @keyup.enter="addItem"></md-input>
@@ -134,7 +134,6 @@ export default {
 
 .right {
   float: right;
-  margin-top: 8px;
   white-space: nowrap;
   max-width: 50%;
   overflow: hidden;
@@ -144,11 +143,6 @@ export default {
 
 .clear {
   clear: both;
-}
-
-.task-checklist {
-  margin-left: 12px;
-  margin-right: 12px;
 }
 
 pre {
@@ -189,6 +183,20 @@ pre {
   text-align: center;
 }
 
+.add-item {
+  margin-left: -2px;
+}
 
+.add-item label {
+  font-size: 13px;
+}
+.add-item .md-input {
+  font-size: 12px;
+}
+
+.md-checkbox {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
 
 </style>

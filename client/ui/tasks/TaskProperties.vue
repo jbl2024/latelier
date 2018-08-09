@@ -46,7 +46,7 @@
           <md-icon>alarm_on</md-icon>
         </md-avatar>
         <div class="md-list-item-text" @click="showSelectDueDate = true">
-          <span>Date de fin</span>
+          <span>Date d'échéance</span>
           <span>
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
             <span v-show="!task.dueDate">Aucune</span>
