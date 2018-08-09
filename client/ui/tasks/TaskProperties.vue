@@ -2,9 +2,9 @@
 
 <div class="task-properties">
 
-  <choose-person @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog">
-
-  </choose-person>
+  <choose-person @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog"></choose-person>
+  <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
+  
   <md-list class="md-double-line">
     <md-subheader>Responsabilités</md-subheader>
 
@@ -32,7 +32,7 @@
 
     <div class="md-elevation-1">
       <md-list-item>
-        <div class="md-list-item-text" @click="showChoose = true">
+        <div class="md-list-item-text">
           <span>Date de début</span>
           <span></span>
         </div>
@@ -40,7 +40,7 @@
 
       <md-divider></md-divider>
 
-      <md-list-item>
+      <md-list-item class="cursor" @click="showSelectDueDate = true">
         <div class="md-list-item-text">
           <span>Date de fin</span>
           <span></span>
@@ -70,13 +70,10 @@ export default {
   data() {
     return {
       showChooseAssignedToDialog: false,
+      showSelectDueDate: false,
     };
   },
   methods: {
-
-    chooseAssignedTo () {
-
-    },
 
     onChooseAssignedTo (user) {
       Meteor.call('tasks.assignTo', this.task._id, user._id, (err, res) => {
@@ -86,7 +83,12 @@ export default {
     removeAssignedTo () {
       Meteor.call('tasks.removeAssignedTo', this.task._id, (err, res) => {
       });
-    }
+    },
+
+    onSelectDueDate (date) {
+
+    },
+
   }
 };
 </script>

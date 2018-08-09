@@ -6,18 +6,17 @@ import routerFactory from '/imports/routes.js';
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css' // This line here
+Vue.use(VueMaterial);
 
 import VueDragDrop from 'vue-drag-drop';
-import VueEvents from 'vue-event-handler'
-
-Vue.use(VueEvents) ;
 Vue.use(VueDragDrop);
-Vue.use(VueMaterial);
+
+import VueEvents from 'vue-event-handler'
+Vue.use(VueEvents);
 
 // Element UI
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
-
 
 // Main app
 import App from '/imports/ui/App.vue';
