@@ -32,7 +32,7 @@
             <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
           </md-field>
 
-          <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: project._id }}">
+          <md-button class="md-icon-button" :to="{ name: 'project-settings', params: { projectId: project._id }}">
               <md-icon>settings
                 <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
               </md-icon>

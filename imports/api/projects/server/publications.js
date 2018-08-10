@@ -16,6 +16,21 @@ Meteor.publish("projects", function projectsPublication(name) {
   }
 });
 
+Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name) {
+  if (name && name.length > 0) {
+    return Projects.find({
+      'startDate':{ $ne: null},
+      'endDate':{ $ne: null},
+      name: { $regex: ".*" + name + ".*", $options: "i" }
+    });
+  } else {
+    return Projects.find({
+      'startDate':{ $ne: null},
+      'endDate':{ $ne: null}
+    });
+  }
+});
+
 publishComposite("project", function(projectId) {
   return {
     find() {

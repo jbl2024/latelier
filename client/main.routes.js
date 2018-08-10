@@ -55,6 +55,13 @@ export default [
     props: true,
   },
   {
+    path: '/timeline',
+    name: 'projects-timeline',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/projects/ProjectsTimeline.vue',
+    props: true
+  },
+  {
     path: '/projects/:projectId',
     name: 'project',
     beforeEnter: isBasicAuth,
@@ -63,7 +70,7 @@ export default [
   },
   {
     path: '/projects/:projectId/settings',
-    name: 'projectSettings',
+    name: 'project-settings',
     beforeEnter: isBasicAuth,
     component: '/imports/ui/projects/ProjectSettings.vue',
     props: true

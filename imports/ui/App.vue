@@ -23,6 +23,11 @@
           <span class="md-list-item-text">Accueil</span>
         </md-list-item>
 
+        <md-list-item :to="{ name: 'projects-timeline'}" @click="showNavigation = false">
+          <md-icon>timeline</md-icon>
+          <span class="md-list-item-text">Timeline</span>
+        </md-list-item>
+
         <md-list-item :to="{ name: 'admin'}" @click="showNavigation = false">
           <md-icon>settings</md-icon>
           <span class="md-list-item-text">Paramètres</span>

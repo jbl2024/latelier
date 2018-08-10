@@ -55,8 +55,14 @@
               {{ item.name }}
             </router-link>
           </md-table-cell>
+          <md-table-cell md-label="Date de début" md-sort-by="startDate">
+              {{ formatDate(item.startDate) }}
+          </md-table-cell>
+          <md-table-cell md-label="Date de fin" md-sort-by="endDate">
+              {{ formatDate(item.endDate) }}
+          </md-table-cell>
           <md-table-cell md-label="Actions">
-            <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: item._id }}">
+            <md-button class="md-icon-button" :to="{ name: 'project-settings', params: { projectId: item._id }}">
               <md-icon>settings</md-icon>
               <md-tooltip md-delay="300">Paramétrer</md-tooltip>
             </md-button>
@@ -86,9 +92,11 @@
 
 <script>
 import { Projects } from '/imports/api/projects/projects.js';
+import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
 import debounce from 'lodash/debounce';
 
 export default {
+  mixins: [DatesMixin],
   data () {
     return {
       filter: '',
