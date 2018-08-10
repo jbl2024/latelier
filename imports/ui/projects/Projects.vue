@@ -25,60 +25,53 @@
 
     <div>
 
-      <md-tabs md-sync-route>
-        <md-tab id="tab-list" md-label="Tous les projets">
+      <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
+        <md-table-toolbar>
+          <div class="md-toolbar-section-start">
+            <h1 class="md-title">Projets</h1>
+          </div>
 
-          <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
-            <md-table-toolbar>
-              <div class="md-toolbar-section-start">
-                <h1 class="md-title">Projets</h1>
-              </div>
+          <md-field md-clearable class="md-toolbar-section-end">
+            <md-icon>search</md-icon>
+            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
+          </md-field>
 
-              <md-field md-clearable class="md-toolbar-section-end">
-                <md-icon>search</md-icon>
-                <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
-              </md-field>
+        </md-table-toolbar>        
 
-            </md-table-toolbar>        
+        <md-table-empty-state
+          md-label="Aucun projet"
+          :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
+          <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+        </md-table-empty-state>
 
-            <md-table-empty-state
-              md-label="Aucun projet"
-              :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
-              <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
-            </md-table-empty-state>
-
-            <div v-if="!$subReady.projects">
-              <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-            </div>
+        <div v-if="!$subReady.projects">
+          <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+        </div>
 
 
-            <md-table-row slot="md-table-row" slot-scope="{ item }">
-              <md-table-cell md-label="Nom" md-sort-by="name">
-                <router-link :to="{ name: 'project', params: { projectId: item._id }}">
-                  {{ item.name }}
-                </router-link>
-              </md-table-cell>
-              <md-table-cell md-label="Actions">
-                <md-button class="md-icon-button" @click="cloneProject(item._id)">
-                  <md-icon>file_copy</md-icon>
-                  <md-tooltip md-delay="300">Cloner</md-tooltip>
-                </md-button>
-                <md-button class="md-icon-button" @click="deleteProject(item._id)">
-                  <md-icon>delete</md-icon>
-                  <md-tooltip md-delay="300">Supprimer</md-tooltip>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
+        <md-table-row slot="md-table-row" slot-scope="{ item }">
+          <md-table-cell md-label="Nom" md-sort-by="name">
+            <router-link :to="{ name: 'project', params: { projectId: item._id }}">
+              {{ item.name }}
+            </router-link>
+          </md-table-cell>
+          <md-table-cell md-label="Actions">
+            <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: item._id }}">
+              <md-icon>settings</md-icon>
+              <md-tooltip md-delay="300">Paramétrer</md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button" @click="cloneProject(item._id)">
+              <md-icon>file_copy</md-icon>
+              <md-tooltip md-delay="300">Cloner</md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button" @click="deleteProject(item._id)">
+              <md-icon>delete</md-icon>
+              <md-tooltip md-delay="300">Supprimer</md-tooltip>
+            </md-button>
+          </md-table-cell>
+        </md-table-row>
 
-          </md-table>
-
-
-        </md-tab>
-
-        <md-tab id="tab-timeline" md-label="Calendrier">
-        </md-tab>
-      </md-tabs> 
-
+      </md-table>
 
     </div>
 
@@ -141,8 +134,7 @@ export default {
     onCancelCloneProject () {
       this.showConfirmCloneDialog = false;
     }
-
-},
+  },
   meteor: {
     // Subscriptions
     $subscribe: {
