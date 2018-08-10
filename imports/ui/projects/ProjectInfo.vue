@@ -28,9 +28,6 @@
         </span>
       </md-toolbar>
 
-
-      <md-content>
-
         <md-list class="md-double-line">
           <md-subheader>Dates</md-subheader>
           <div class="md-elevation-1">
@@ -71,7 +68,6 @@
             </md-list-item>
           </div>
         </md-list>
-            </md-content>
 
 
     </div>
@@ -149,10 +145,10 @@ export default {
 
 <style scoped>
 
-
 .toolbar {
   background-color: white;
 }
+
 
 .search {
   max-width: 300px;
@@ -160,17 +156,6 @@ export default {
 
 .md-content { 
   padding: 8px;
-}
-
-.project-settings {
-  display: flex;
-  flex-direction: column;
-  background-color: white;
-  height: 100%;
-}
-
-.users {
-  overflow-y: scroll;
 }
 
 .edit-project-name input {
