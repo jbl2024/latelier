@@ -1,17 +1,19 @@
 <template>
   <div class="manage-users">
     <choose-person @choose="onSelectUser" :active.sync="showSelectUserDialog"></choose-person>
-    <h2>Utilisateurs</h2>
-    <md-button @click="showSelectUserDialog = true">Ajouter</md-button>
-    
+    <md-button class="md-raised md-primary" @click="showSelectUserDialog = true">Ajouter</md-button>
     <md-list>
+      <md-subheader></md-subheader>
       <md-list-item v-for="user in projectUsers" :key="user._id">
         <md-avatar class="md-avatar-icon" :class="isOnline(user)">
             <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
         </md-avatar>
 
         <span class="md-list-item-text">{{ formatUser(user)}}</span>
-
+        <md-button class="md-icon-button md-list-action" @click.stop="removeUser(user)">
+          <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        </md-button>
       </md-list-item>
     </md-list>
 
@@ -63,6 +65,10 @@ export default {
 
     onSelectUser (user) {
       Meteor.call('projects.addMember', this.project._id, user._id);
+    },
+
+    removeUser (user) {
+      Meteor.call('projects.removeMember', this.project._id, user._id);
     }
   }
 }

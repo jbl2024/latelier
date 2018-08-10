@@ -126,6 +126,22 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$push: {members: userId}});
   },
 
+  'projects.removeMember'(projectId, userId) {
+    check(projectId, String);
+    check(userId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (Projects.find({_id: projectId,  "members._id" : userId}).count() > 0) {
+      return;
+    }
+    Projects.update({_id: projectId}, {$pull: {members: userId}});
+    Tasks.update({projectId: projectId, assignedTo: userId}, {$set: {assignedTo: null}});
+  },
+
   'projects.setStartDate'(projectId, startDate) {
     check(projectId, String);
 
@@ -141,7 +157,6 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    console.log(projectId)
     Projects.update({_id: projectId}, {$set: {endDate: endDate}});
   },
 

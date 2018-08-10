@@ -1,4 +1,5 @@
 var getUser = function (user) {
+  if (!user) return;
   if (typeof user === 'string' || user instanceof String) {
     user = Meteor.users.findOne({_id: user}, { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } });
   }
@@ -8,10 +9,9 @@ var getUser = function (user) {
 export default {
   methods: {
     formatUserLetters (user) {
-      if (!user) {
-        return;
-      }
       user = getUser(user);
+      if (!user) return;
+
       var emailComponents = user.emails[0].address.split('@')[0].split('.');
       if (emailComponents.length <= 1) {
         return emailComponents[0][0];
@@ -20,19 +20,18 @@ export default {
     },
 
     formatUser (user) {
-      if (!user) {
-        return;
-      }
       user = getUser(user);
-      return user.emails[0].address;
+      if (!user) return;
+      if (user) {
+        return user.emails[0].address;
+      }
     },
 
     isOnline (user) {
-      if (!user) {
-        return;
-      }
       user = getUser(user);
-      if (user.statusConnection == 'online') {
+      if (!user) return;
+
+      if (user && user.statusConnection == 'online') {
         return 'md-primary';
       }
     },
