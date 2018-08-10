@@ -32,26 +32,10 @@
             <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
           </md-field>
 
-          <md-button class="md-icon-button">
-              <md-icon>view_week
-                <md-tooltip md-delay="300" md-direction="bottom">Kanban</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" :to="{ name: 'projectInfo', params: { projectId: project._id }}">
-              <md-icon>info
-                <md-tooltip md-delay="300" md-direction="bottom">Informations</md-tooltip>
-              </md-icon>
-          </md-button>
-
           <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: project._id }}">
               <md-icon>settings
                 <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
               </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button settings">
-            <md-icon>more_vert</md-icon>
           </md-button>
         </div>
       </md-toolbar>

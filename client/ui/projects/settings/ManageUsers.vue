@@ -24,7 +24,7 @@ import { Projects } from '/imports/api/projects/projects.js'
 import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 
 export default {
-  name: 'project-manage-users',
+  name: 'project-settings-manage-users',
   mixins: [usersMixin],
   props: {
     project: Object

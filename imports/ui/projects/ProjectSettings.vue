@@ -26,7 +26,16 @@
         </span>
       </md-toolbar>
 
-      <project-manage-users :project="project" class="users"></project-manage-users>
+      <md-tabs md-sync-route>
+        <md-tab id="tab-general" md-label="Informations générales">
+          <project-settings-general :project="project"></project-settings-general>
+        </md-tab>
+
+        <md-tab id="tab-users" md-label="Utilisateurs & permissions">
+          <project-settings-manage-users :project="project" class="users"></project-settings-manage-users>
+        </md-tab>
+      </md-tabs> 
+
     </div>
 </div>
 </template>
