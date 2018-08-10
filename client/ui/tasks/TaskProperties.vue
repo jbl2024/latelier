@@ -29,14 +29,21 @@
     <md-subheader>Dates</md-subheader>
 
     <div class="md-elevation-1">
-      <md-list-item>
+      <md-list-item class="cursor">
         <md-avatar class="md-avatar-icon">
           <md-icon>calendar_today</md-icon>
         </md-avatar>
-        <div class="md-list-item-text">
+        <div class="md-list-item-text" @click="showSelectStartDate = true">
           <span>Date de début</span>
-          <span></span>
+          <span>
+            <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
+            <span v-show="!task.startDate">Aucune</span>
+          </span>
         </div>
+        <md-button class="md-icon-button md-list-action" @click="onSelectStartDate(null)">
+          <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        </md-button>
       </md-list-item>
 
       <md-divider></md-divider>
@@ -101,7 +108,7 @@ export default {
     },
 
     onSelectStartDate (date) {
-      Meteor.call('tasks.seStartDate', this.task._id, date);
+      Meteor.call('tasks.setStartDate', this.task._id, date);
     },
 
     formatDate (date) {

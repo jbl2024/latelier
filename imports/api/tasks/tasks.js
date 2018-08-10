@@ -247,4 +247,13 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$set: {dueDate: dueDate}});
   },
 
+  'tasks.setStartDate'(taskId, startDate) {
+    check(taskId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Tasks.update({_id: taskId}, {$set: {startDate: startDate}});
+  },
+
 });
