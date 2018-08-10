@@ -124,6 +124,26 @@ Meteor.methods({
       return;
     }
     Projects.update({_id: projectId}, {$push: {members: userId}});
-  }
+  },
+
+  'projects.setStartDate'(projectId, startDate) {
+    check(projectId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Projects.update({_id: projectId}, {$set: {startDate: startDate}});
+  },
+
+  'projects.setEndDate'(projectId, endDate) {
+    check(projectId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    console.log(projectId)
+    Projects.update({_id: projectId}, {$set: {endDate: endDate}});
+  },
+
 
 });

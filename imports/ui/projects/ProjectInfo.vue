@@ -1,14 +1,15 @@
 <template>
-  <div class="project"> 
+  <div class="project-info"> 
+    <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
+    <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
 
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project" class="project-wrapper"> 
-
       <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'projects'}">
-            <md-icon>home
+        <md-button class="md-icon-button" :to="{ name: 'project', params: { projectId: project._id }}">
+            <md-icon>arrow_back
               <md-tooltip md-delay="300">Accueil</md-tooltip>
             </md-icon>
         </md-button>
@@ -25,51 +26,53 @@
             <md-icon>cancel</md-icon>
           </md-button>
         </span>
-
-        <div class="md-toolbar-section-end">
-          <md-field class="search" md-clearable>
-            <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
-          </md-field>
-
-          <md-button class="md-icon-button">
-              <md-icon>view_week
-                <md-tooltip md-delay="300" md-direction="bottom">Kanban</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" :to="{ name: 'projectInfo', params: { projectId: project._id }}">
-              <md-icon>info
-                <md-tooltip md-delay="300" md-direction="bottom">Informations</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" :to="{ name: 'projectSettings', params: { projectId: project._id }}">
-              <md-icon>settings
-                <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
-              </md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button settings">
-            <md-icon>more_vert</md-icon>
-          </md-button>
-        </div>
       </md-toolbar>
 
-      <div class="container-wrapper">
-        <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
-      </div>
 
-      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
-        <task-detail :taskId="selectedTask._id"></task-detail>
-      </md-drawer>
+      <md-content>
 
-      <new-list ref="newList" :project-id="projectId"></new-list>  
-      <md-speed-dial class="absolute-right">
-        <md-speed-dial-target @click="newList">
-          <md-icon>add</md-icon>
-        </md-speed-dial-target>
-      </md-speed-dial>
+        <md-list class="md-double-line">
+          <md-subheader>Dates</md-subheader>
+          <div class="md-elevation-1">
+            <md-list-item class="cursor" @click="showSelectStartDate = true">
+              <md-avatar class="md-avatar-icon">
+                <md-icon>calendar_today</md-icon>
+              </md-avatar>
+              <div class="md-list-item-text">
+                <span>Date de début</span>
+                <span>
+                  <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
+                  <span v-show="!project.startDate">Aucune</span>
+                </span>
+              </div>
+              <md-button class="md-icon-button md-list-action" @click.stop="onSelectStartDate(null)">
+                <md-icon>delete</md-icon>
+                <md-tooltip md-delay="300">Supprimer</md-tooltip>
+              </md-button>
+            </md-list-item>
+
+            <md-divider></md-divider>
+
+            <md-list-item class="cursor" @click="showSelectEndDate = true">
+              <md-avatar class="md-avatar-icon">
+                <md-icon>alarm_on</md-icon>
+              </md-avatar>
+              <div class="md-list-item-text">
+                <span>Date de fin</span>
+                <span>
+                  <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
+                  <span v-show="!project.endDate">Aucune</span>
+                </span>
+              </div>
+              <md-button class="md-icon-button md-list-action" @click.stop="onSelectEndDate(null)">
+                <md-icon>delete</md-icon>
+                <md-tooltip md-delay="300">Supprimer</md-tooltip>
+              </md-button>
+            </md-list-item>
+          </div>
+        </md-list>
+            </md-content>
+
 
     </div>
 </div>
@@ -79,28 +82,17 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
+
 import debounce from 'lodash/debounce';
 
 export default {
+  mixins: [DatesMixin],
   mounted () {
-    this.$events.listen('task-selected', task => {
-      if (!task) {
-        return;
-      }
-      this.showTaskDetail = true;
-      this.selectedTask = task;
-    });
-    this.$events.listen('close-task-detail', task => {
-      this.$events.fire('task-selected', null);
-      this.showTaskDetail = false;
-    });
   },
   created () {
-    this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
   },
   beforeDestroy() {
-    this.$events.off('task-selected');
-    this.$events.off('close-task-detail');
   },
   props: {
     projectId: {
@@ -112,9 +104,8 @@ export default {
     return {
       savedProjectName: '',
       editProjectName: false,
-      showTaskDetail: false,
-      selectedTask: {},
-      debouncedFilter: ''
+      showSelectStartDate: false,
+      showSelectEndDate: false,
     }
   },
   meteor: {
@@ -144,27 +135,20 @@ export default {
       this.editProjectName = false;
       this.project.name = this.savedProjectName;
     },
-    newList () {
-      this.$refs.newList.open();
+
+    onSelectStartDate (date) {
+      Meteor.call('projects.setStartDate', this.project._id, date);
     },
+
+    onSelectEndDate (date) {
+      Meteor.call('projects.setEndDate', this.project._id, date);
+    }
   }
 }
 </script>
 
 <style scoped>
-::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
-}
-::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0,0,0,.5);
-    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
-}
 
-.drawer-task-detail {
-  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
-}
 
 .toolbar {
   background-color: white;
@@ -178,16 +162,15 @@ export default {
   padding: 8px;
 }
 
-.project {
+.project-settings {
   display: flex;
-  min-height:0;
   flex-direction: column;
+  background-color: white;
+  height: 100%;
 }
 
-.project-wrapper {
-  display: flex;
-  min-height:0;
-  flex-direction: column;
+.users {
+  overflow-y: scroll;
 }
 
 .edit-project-name input {

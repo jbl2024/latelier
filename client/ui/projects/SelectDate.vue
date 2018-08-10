@@ -26,20 +26,20 @@ import {French} from 'flatpickr/dist/l10n/fr';
 export default {
   props: {
     active: Boolean,
+    disableTime: Boolean
   },
   data () {
     return {
       fakeDate: null,
       date: null,
       config: {
-        enableTime: true,
+        enableTime: !this.disableTime,
         altInput: true,
         altFormat: 'd/m/Y H:i',
         weekNumbers: true,
         inline: true,
         time_24hr: true,
         locale: French,
-        "enableTime": true
       },             
     }
   },

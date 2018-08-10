@@ -10,16 +10,16 @@
     <md-subheader>Responsabilités</md-subheader>
 
     <div class="md-elevation-1">
-      <md-list-item>
+      <md-list-item @click="showChooseAssignedToDialog = true">
         <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
             {{ formatUserLetters(task.assignedTo) }}
         </md-avatar>
-        <div class="md-list-item-text cursor" @click="showChooseAssignedToDialog = true">
+        <div class="md-list-item-text cursor">
           <span v-show="task.assignedTo">Assignée à </span>
           <span>{{ formatUser(task.assignedTo) }}</span>
           <span v-show="!task.assignedTo">Non assignée </span>
         </div>
-        <md-button class="md-icon-button md-list-action" @click="removeAssignedTo">
+        <md-button class="md-icon-button md-list-action" @click.stop="removeAssignedTo">
           <md-icon>delete</md-icon>
           <md-tooltip md-delay="300">Supprimer</md-tooltip>
         </md-button>
@@ -29,18 +29,18 @@
     <md-subheader>Dates</md-subheader>
 
     <div class="md-elevation-1">
-      <md-list-item class="cursor">
+      <md-list-item class="cursor" @click="showSelectStartDate = true">
         <md-avatar class="md-avatar-icon">
           <md-icon>calendar_today</md-icon>
         </md-avatar>
-        <div class="md-list-item-text" @click="showSelectStartDate = true">
+        <div class="md-list-item-text">
           <span>Date de début</span>
           <span>
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
             <span v-show="!task.startDate">Aucune</span>
           </span>
         </div>
-        <md-button class="md-icon-button md-list-action" @click="onSelectStartDate(null)">
+        <md-button class="md-icon-button md-list-action" @click.stop="onSelectStartDate(null)">
           <md-icon>delete</md-icon>
           <md-tooltip md-delay="300">Supprimer</md-tooltip>
         </md-button>
@@ -48,18 +48,18 @@
 
       <md-divider></md-divider>
 
-      <md-list-item class="cursor">
+      <md-list-item class="cursor" @click="showSelectDueDate = true">
         <md-avatar class="md-avatar-icon">
           <md-icon>alarm_on</md-icon>
         </md-avatar>
-        <div class="md-list-item-text" @click="showSelectDueDate = true">
+        <div class="md-list-item-text">
           <span>Date d'échéance</span>
           <span>
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
             <span v-show="!task.dueDate">Aucune</span>
           </span>
         </div>
-        <md-button class="md-icon-button md-list-action" @click="onSelectDueDate(null)">
+        <md-button class="md-icon-button md-list-action" @click.stop="onSelectDueDate(null)">
           <md-icon>delete</md-icon>
           <md-tooltip md-delay="300">Supprimer</md-tooltip>
         </md-button>
