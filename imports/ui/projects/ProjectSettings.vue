@@ -26,12 +26,12 @@
         </span>
       </md-toolbar>
 
-      <md-tabs md-sync-route>
-        <md-tab id="tab-general" md-label="Informations générales">
+      <md-tabs md-sync-route :md-alignment="tabAlignment">
+        <md-tab id="tab-general" md-label="Paramètres">
           <project-settings-general :project="project"></project-settings-general>
         </md-tab>
 
-        <md-tab id="tab-users" md-label="Utilisateurs & permissions">
+        <md-tab id="tab-users" md-label="Utilisateurs">
           <project-settings-manage-users :project="project" class="users"></project-settings-manage-users>
         </md-tab>
       </md-tabs> 
@@ -47,11 +47,22 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 import debounce from 'lodash/debounce';
 
 export default {
-  mounted () {
+  mounted(){
+    let self = this;
+    this.$nextTick(function() {
+      window.addEventListener("resize", function(e) {
+        self.windowWidth = window.innerWidth;
+      });
+    });
   },
   created () {
   },
   beforeDestroy() {
+  },
+  computed:{
+      tabAlignment(){
+        return this.windowWidth > 600 ? "left" : "fixed";
+      }
   },
   props: {
     projectId: {
@@ -61,6 +72,7 @@ export default {
   },
   data () {
     return {
+      windowWidth: window.innerWidth,
       savedProjectName: '',
       editProjectName: false,
     }

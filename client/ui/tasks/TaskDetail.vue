@@ -53,7 +53,7 @@
   </div>
   <md-divider></md-divider>
 
-  <md-tabs md-sync-route>
+  <md-tabs md-sync-route  md-alignment="fixed">
     <md-tab id="tab-notes" md-label="Notes">
       <task-notes :task="task"></task-notes>
     </md-tab>
