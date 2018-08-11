@@ -31,9 +31,16 @@
           ref="timeline"
           :items="getItems()"
           :groups="timeline.groups"
-          :options="timeline.options">
+          :options="timeline.options"
+          @select="onSelectProject">
         </timeline>
       </div>
+
+
+      <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
+        <project-detail :projectId="selectedProjectId"></project-detail>
+      </md-drawer>
+
     </div>
   </div>
 </template>
@@ -44,6 +51,20 @@ import { Timeline } from 'vue2vis';
 import debounce from 'lodash/debounce';
 
 export default {
+  components: {
+    Timeline,
+  },  
+  created () {
+    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
+  },
+  mounted () {
+    this.$events.listen('close-project-detail', task => {
+      this.showProjectDetail = false;
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('close-project-detail');
+  },
   data () {
     return {
       showConfirmDialog: false,
@@ -51,44 +72,20 @@ export default {
       filter: '',
       debouncedFilter: '',
       projectId: '',
+      showProjectDetail: false,
       timeline: {
         groups: [
           {
             id: 0,
-            content: 'Group 1',
-          },
-        ],
-        items: [
-          { id: 2, group: 0, content: 'item 2', start: '2014-04-14' },
-          { id: 3, group: 0, content: 'item 3', start: '2014-04-18' },
-          { id: 1, group: 0, content: 'item 1', start: '2014-04-20' },
-          {
-            id: 4,
-            group: 0,
-            content: 'item 4',
-            start: '2014-04-16',
-            end: '2014-04-19',
-          },
-          { id: 5, group: 0, content: 'item 5', start: '2014-04-25' },
-          {
-            id: 6,
-            group: 0,
-            content: 'item 6',
-            start: '2014-04-27',
-            type: 'point',
+            content: 'Actifs',
           },
         ],
         options: {
         },
       },
+      selectedProjectId: ''
     }
   },
-  created () {
-    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
-  },
-  components: {
-    Timeline,
-  },  
   methods: {
     getItems () {
       var items = [];
@@ -96,14 +93,31 @@ export default {
         var item = {
           id: project._id,
           group: 0,
-          content: project.name,
+          content: this.getProjectContent(project),
           start: project.startDate,
           end: project.endDate
         }
         items.push(item);
       });
       return items;
+    },
+
+    getProjectContent (project) {
+      return project.name;
+    },
+
+    onSelectProject (data) {
+      var items = data.items;
+      if (items && items.length > 0) {
+        this.selectedProjectId = items[0];
+        this.showProjectDetail = true;
+        this.$refs.timeline.focus(items[0]);
+      } else {
+        this.selectedProjectId = null;
+        this.showProjectDetail = false;
+      }
     }
+    
   },
   meteor: {
     // Subscriptions
@@ -117,7 +131,7 @@ export default {
     },
     count () {
       return Projects.find().count();
-    }      
+    }    
   },
 }
 </script>
