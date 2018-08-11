@@ -25,7 +25,11 @@
 
     <div>
 
-      <div class="md-xsmall-hide">
+      <div v-if="!$subReady.projects">
+        <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      </div>
+
+      <div class="show-desktop">
         <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card >
           <md-table-toolbar>
             <div class="md-toolbar-section-start">
@@ -40,6 +44,7 @@
           </md-table-toolbar>        
 
           <md-table-empty-state
+            v-if="$subReady.projects"
             md-label="Aucun projet"
             :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
             <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
@@ -96,14 +101,12 @@
           </md-table-toolbar>        
 
           <md-table-empty-state
+            v-if="$subReady.projects"
             md-label="Aucun projet"
             :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
             <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
           </md-table-empty-state>
 
-          <div v-if="!$subReady.projects">
-            <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-          </div>
 
 
             <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
@@ -133,7 +136,7 @@
 
     </div>
 
-    <md-speed-dial class="absolute-right">
+    <md-speed-dial class="absolute-right" v-if="$subReady.projects">
       <md-speed-dial-target @click="newProject">
         <md-icon>add</md-icon>
       </md-speed-dial-target>
@@ -241,11 +244,6 @@ export default {
   cursor: pointer;
 }
 
-@media (min-width: 601px) {
-  .show-mobile {
-    display: none;
-  }
-}
 
 
 </style>

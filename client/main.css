@@ -16,3 +16,15 @@ html, body {
   /* background-color: #eee !important; */
   border:none;
 }
+
+@media (min-width: 601px) {
+  .show-mobile {
+    display: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .show-desktop {
+    display: none;
+  }
+}
