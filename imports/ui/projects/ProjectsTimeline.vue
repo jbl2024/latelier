@@ -77,7 +77,7 @@ export default {
         groups: [
           {
             id: 0,
-            content: 'Actifs',
+            content: 'En cours',
           },
         ],
         options: {

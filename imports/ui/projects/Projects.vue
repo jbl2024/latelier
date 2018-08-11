@@ -25,59 +25,111 @@
 
     <div>
 
-      <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card>
-        <md-table-toolbar>
-          <div class="md-toolbar-section-start">
-            <h1 class="md-title">Projets</h1>
+      <div class="md-xsmall-hide">
+        <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card >
+          <md-table-toolbar>
+            <div class="md-toolbar-section-start">
+              <h1 class="md-title">Projets</h1>
+            </div>
+
+            <md-field md-clearable class="md-toolbar-section-end">
+              <md-icon>search</md-icon>
+              <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
+            </md-field>
+
+          </md-table-toolbar>        
+
+          <md-table-empty-state
+            md-label="Aucun projet"
+            :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
+            <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+          </md-table-empty-state>
+
+          <div v-if="!$subReady.projects">
+            <md-progress-bar md-mode="indeterminate"></md-progress-bar>
           </div>
 
-          <md-field md-clearable class="md-toolbar-section-end">
-            <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
-          </md-field>
 
-        </md-table-toolbar>        
+          <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
+            <md-table-cell md-label="Nom" md-sort-by="name">
+              <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
+                {{ item.name }}
+              </router-link>
+            </md-table-cell>
+            <md-table-cell md-label="Date de début" md-sort-by="startDate">
+                {{ formatDate(item.startDate) }}
+            </md-table-cell>
+            <md-table-cell md-label="Date de fin" md-sort-by="endDate">
+                {{ formatDate(item.endDate) }}
+            </md-table-cell>
+            <md-table-cell md-label="Actions">
+              <md-button class="md-icon-button" @click.stop="openProjectSettings(item._id)">
+                <md-icon>settings</md-icon>
+                <md-tooltip md-delay="300">Paramétrer</md-tooltip>
+              </md-button>
+              <md-button class="md-icon-button" @click.stop="cloneProject(item._id)">
+                <md-icon>file_copy</md-icon>
+                <md-tooltip md-delay="300">Cloner</md-tooltip>
+              </md-button>
+              <md-button class="md-icon-button" @click.stop="deleteProject(item._id)">
+                <md-icon>delete</md-icon>
+                <md-tooltip md-delay="300">Supprimer</md-tooltip>
+              </md-button>
+            </md-table-cell>
+          </md-table-row>
 
-        <md-table-empty-state
-          md-label="Aucun projet"
-          :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
-          <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
-        </md-table-empty-state>
+        </md-table>
+      </div>
 
-        <div v-if="!$subReady.projects">
-          <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-        </div>
+      <div class="show-mobile">
+        <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card >
+          <md-table-toolbar>
+            <div class="md-toolbar-section-start">
+              <h1 class="md-title">Projets</h1>
+            </div>
+
+            <md-field md-clearable class="md-toolbar-section-end">
+              <md-icon>search</md-icon>
+              <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
+            </md-field>
+
+          </md-table-toolbar>        
+
+          <md-table-empty-state
+            md-label="Aucun projet"
+            :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
+            <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+          </md-table-empty-state>
+
+          <div v-if="!$subReady.projects">
+            <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+          </div>
 
 
-        <md-table-row slot="md-table-row" slot-scope="{ item }">
-          <md-table-cell md-label="Nom" md-sort-by="name">
-            <router-link :to="{ name: 'project', params: { projectId: item._id }}">
-              {{ item.name }}
-            </router-link>
-          </md-table-cell>
-          <md-table-cell md-label="Date de début" md-sort-by="startDate">
-              {{ formatDate(item.startDate) }}
-          </md-table-cell>
-          <md-table-cell md-label="Date de fin" md-sort-by="endDate">
-              {{ formatDate(item.endDate) }}
-          </md-table-cell>
-          <md-table-cell md-label="Actions">
-            <md-button class="md-icon-button" :to="{ name: 'project-settings', params: { projectId: item._id }}">
-              <md-icon>settings</md-icon>
-              <md-tooltip md-delay="300">Paramétrer</md-tooltip>
-            </md-button>
-            <md-button class="md-icon-button" @click="cloneProject(item._id)">
-              <md-icon>file_copy</md-icon>
-              <md-tooltip md-delay="300">Cloner</md-tooltip>
-            </md-button>
-            <md-button class="md-icon-button" @click="deleteProject(item._id)">
-              <md-icon>delete</md-icon>
-              <md-tooltip md-delay="300">Supprimer</md-tooltip>
-            </md-button>
-          </md-table-cell>
-        </md-table-row>
+            <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
+              <md-table-cell md-label="Nom" md-sort-by="name">
+                <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
+                  {{ item.name }}
+                </router-link>
+              </md-table-cell>
+              <md-table-cell md-label="Actions">
+                <md-button class="md-icon-button" @click.stop="openProjectSettings(item._id)">
+                  <md-icon>settings</md-icon>
+                  <md-tooltip md-delay="300">Paramétrer</md-tooltip>
+                </md-button>
+                <md-button class="md-icon-button" @click.stop="cloneProject(item._id)">
+                  <md-icon>file_copy</md-icon>
+                  <md-tooltip md-delay="300">Cloner</md-tooltip>
+                </md-button>
+                <md-button class="md-icon-button" @click.stop="deleteProject(item._id)">
+                  <md-icon>delete</md-icon>
+                  <md-tooltip md-delay="300">Supprimer</md-tooltip>
+                </md-button>
+              </md-table-cell>
+            </md-table-row>
 
-      </md-table>
+        </md-table>
+      </div>
 
     </div>
 
@@ -141,6 +193,14 @@ export default {
 
     onCancelCloneProject () {
       this.showConfirmCloneDialog = false;
+    },
+
+    openProject (id) {
+      this.$router.push({ name: 'project', params: { projectId: id }}) 
+    },
+
+    openProjectSettings (id) {
+      this.$router.push({ name: 'project-settings', params: { projectId: id }}) 
     }
   },
   meteor: {
@@ -171,4 +231,21 @@ export default {
   bottom: 24px;
   z-index: 1002;
 }
+
+.project-name {
+  color: black !important;
+  font-weight: normal;
+}
+
+.row {
+  cursor: pointer;
+}
+
+@media (min-width: 601px) {
+  .show-mobile {
+    display: none;
+  }
+}
+
+
 </style>

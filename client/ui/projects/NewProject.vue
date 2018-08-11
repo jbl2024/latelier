@@ -43,9 +43,10 @@ export default {
     create () {
       Meteor.call('projects.create', this.name, this.projectType, (error, result) => { 
         if (error) {
+          console.log(error)
           return;
         }
-        this.$router.push({ name: 'projects', params: { projectId: result }}) 
+        this.$router.push({ name: 'project-settings', params: { projectId: result }}) 
       });
       this.showDialog = false;
     }

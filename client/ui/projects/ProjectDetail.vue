@@ -77,5 +77,8 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+.vis-item .vis-item-overflow {
+  overflow: visible;
+}
 </style>
