@@ -7,24 +7,26 @@ import { Tasks } from "../../tasks/tasks";
 
 // This code only runs on the server
 Meteor.publish("projects", function projectsPublication(name) {
+  var userId = Meteor.userId();
+  var query = {$or: [{createdBy: userId}, {members: userId}]};
   if (name && name.length > 0) {
-    return Projects.find({
-      name: { $regex: ".*" + name + ".*", $options: "i" }
-    });
-  } else {
-    return Projects.find();
-  }
+    query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
+  } 
+  return Projects.find(query);
 });
 
 Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name) {
+  var userId = Meteor.userId();
   if (name && name.length > 0) {
     return Projects.find({
+      $or: [{createdBy: userId}, {members: userId}],
       'startDate':{ $ne: null},
       'endDate':{ $ne: null},
       name: { $regex: ".*" + name + ".*", $options: "i" }
     });
   } else {
     return Projects.find({
+      $or: [{createdBy: userId}, {members: userId}],
       'startDate':{ $ne: null},
       'endDate':{ $ne: null}
     });

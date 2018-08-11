@@ -36,9 +36,8 @@
         </timeline>
       </div>
 
-
       <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
-        <project-detail :projectId="selectedProjectId"></project-detail>
+        <project-detail :projectId="selectedProjectId" v-if="selectedProjectId"></project-detail>
       </md-drawer>
 
     </div>
@@ -83,7 +82,7 @@ export default {
         options: {
         },
       },
-      selectedProjectId: ''
+      selectedProjectId: null
     }
   },
   methods: {
