@@ -30,7 +30,7 @@
       </div>
 
       <div class="show-desktop">
-        <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card >
+        <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
           <md-table-toolbar>
             <div class="md-toolbar-section-start">
               <h1 class="md-title">Projets</h1>
@@ -160,6 +160,8 @@ export default {
       filteredProjects: [],
       showConfirmDialog: false,
       showConfirmCloneDialog: false,
+      currentSort: 'name',
+      currentSortOrder: 'asc',
       projectId: ''
     }
   },
@@ -204,7 +206,25 @@ export default {
 
     openProjectSettings (id) {
       this.$router.push({ name: 'project-settings', params: { projectId: id }}) 
-    }
+    },
+
+    customSort (value) {
+      return value.sort((a, b) => {
+        const sortBy = this.currentSort;
+
+        if (this.currentSortOrder === 'desc') {
+          if (a[sortBy] instanceof Date) {
+            return a[sortBy] > b[sortBy];
+          }
+          return a[sortBy].localeCompare(b[sortBy]);
+        }
+        if (b[sortBy] instanceof Date) {
+          return b[sortBy] > a[sortBy];
+        }
+
+        return b[sortBy].localeCompare(a[sortBy]);
+      })
+    }    
   },
   meteor: {
     // Subscriptions

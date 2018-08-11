@@ -9,7 +9,9 @@
           <md-button class="md-icon-button md-dense" @click="requestClose()">
             <md-icon>close</md-icon>
           </md-button>
-          <span>{{ project.name}}</span>
+          <router-link :to="{ name: 'project', params: { projectId: project._id }}">
+            {{ project.name }}
+          </router-link>
         </div>
         <div class="md-toolbar-section-end">
           <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
