@@ -1,5 +1,5 @@
 html, body {
-  background-color: #eee;
+  background-color: white;
   height: 100%;
   font-family: Lato;
 }
@@ -13,7 +13,6 @@ html, body {
 }
 
 .main-toolbar {
-  /* background-color: #eee !important; */
   border:none;
 }
 

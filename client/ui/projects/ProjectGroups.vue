@@ -2,32 +2,24 @@
 
 <div class="project-groups">
   <new-project-group ref="newProjectGroup"></new-project-group>  
-  <div v-if="$subReady.projectGroups">
-
-    <md-content class="list md-elevation-1" v-if="groups.length > 0">
-      <md-list>
-        <md-list-item v-for="group in groups" :key="group._id" @click="showGroup(group)">
-          <md-avatar class="md-avatar-icon">
-            <md-icon>folder</md-icon>
-          </md-avatar>
-          <span class="md-list-item-text">{{group.name}}</span>
-          <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
-            <md-icon>delete</md-icon>
-            <md-tooltip md-delay="300">Supprimer</md-tooltip>
-          </md-button>
-
-        </md-list-item>
-      </md-list>
-    </md-content>
-
-    <md-empty-state v-if="groups.length == 0"
-      md-label="Aucun groupe"
-      :md-description="`Il n'y a encore aucun groupe. Vous pouvez en créer pour regrouper les projets`">
-      <md-button class="md-primary md-raised" @click="$refs.newProjectGroup.open()">Créer un nouveau groupe</md-button>
-    </md-empty-state>
+  <div v-if="$subReady.projectGroups" >
+    <md-list>
+      <md-subheader>Catégories</md-subheader>
+      <md-list-item v-for="group in groups" :key="group._id" @click="showGroup(group)">
+        <md-icon>folder</md-icon>
+        <span class="md-list-item-text">{{group.name}}</span>
+        <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
+          <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        </md-button>
+      </md-list-item>
+      <md-list-item @click="$refs.newProjectGroup.open()">
+        <md-icon>add</md-icon>
+        <span class="md-list-item-text">Créer...</span>
+      </md-list-item>
+    </md-list>
   </div>
 </div>
-
 
 </template>
 

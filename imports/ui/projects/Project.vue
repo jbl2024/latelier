@@ -166,6 +166,7 @@ export default {
   display: flex;
   min-height:0;
   flex-direction: column;
+  background-color: #eee !important;
 }
 
 .project-wrapper {

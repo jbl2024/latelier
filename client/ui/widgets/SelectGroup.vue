@@ -2,7 +2,7 @@
   <div class="select-group">
 
     <md-dialog :md-active.sync="active">
-      <md-dialog-title>Choisir un groupe</md-dialog-title>
+      <md-dialog-title>Choisir une catégorie</md-dialog-title>
 
       <div class="content">
         <md-list>

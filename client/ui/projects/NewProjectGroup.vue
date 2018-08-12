@@ -2,7 +2,7 @@
   <div class="new-project-group">
 
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Nouveau groupe</md-dialog-title>
+      <md-dialog-title>Nouvelle catégorie</md-dialog-title>
 
       <div class="content">
         <md-field>

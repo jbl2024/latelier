@@ -44,11 +44,11 @@
         </md-list-item>
       </div>
 
-      <md-subheader>Groupes
+      <md-subheader>Catégories
 
         <md-button class="md-icon-button" @click="showSelectGroup = true">
         <md-icon>add</md-icon>
-        <md-tooltip md-delay="300">Ajouter un groupe</md-tooltip>
+        <md-tooltip md-delay="300">Ajouter une catégorie</md-tooltip>
         </md-button>
  
       </md-subheader>

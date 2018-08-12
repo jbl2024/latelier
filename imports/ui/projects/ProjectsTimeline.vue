@@ -153,4 +153,8 @@ export default {
   max-width: 300px;
 }
 
+.projects-timeline {
+  min-height: calc(100vh - 64px);
+}
+
 </style>

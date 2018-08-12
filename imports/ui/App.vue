@@ -1,6 +1,7 @@
 <template>
   <div class="page-container">
-    <md-toolbar class="md-primary main-toolbar">
+    <md-app>
+    <md-app-toolbar class="md-primary main-toolbar">
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
@@ -10,12 +11,9 @@
         <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
         <md-button @click="showSidepanel = true">Favoris</md-button>
       </div>
-    </md-toolbar>
+    </md-app-toolbar>
 
-    <md-drawer :md-active.sync="showNavigation">
-      <md-toolbar class="md-transparent" md-elevation="0">
-        <span class="md-title">l'atelier</span>
-      </md-toolbar>
+    <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped">
 
       <md-list>
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
@@ -32,8 +30,12 @@
           <md-icon>settings</md-icon>
           <span class="md-list-item-text">Paramètres</span>
         </md-list-item>
+
+        <md-divider></md-divider>
       </md-list>
-    </md-drawer>
+      <project-groups></project-groups>
+
+    </md-app-drawer>
 
     <md-drawer class="md-right" :md-active.sync="showSidepanel">
       <md-toolbar class="md-transparent" md-elevation="0">
@@ -67,10 +69,10 @@
       </md-list>
     </md-drawer>
 
-    <md-content class="main-content">
+    <md-app-content class="main-content">
       <router-view></router-view>
-    </md-content>
-
+    </md-app-content>
+    </md-app>
   </div>
 </template>
 
@@ -99,7 +101,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
   
   .search {
     width: 100%;
@@ -110,7 +112,6 @@ export default {
   }
 
   .main-content {
-    background-color: #eee !important;
     padding: 16px;
     overflow-y: scroll;
     display: flex;
@@ -129,9 +130,13 @@ export default {
   .md-drawer {
     width: 230px;
     max-width: calc(100vw - 125px);
+    min-height: calc(100vh - 64px);
   }
 
-
+  .md-app-container {
+    overflow-x: hidden;
+  }
+    
   .md-app-content .md-card {
     margin-right: 0;
     margin-left: 0;  
