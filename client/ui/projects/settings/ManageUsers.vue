@@ -1,6 +1,6 @@
 <template>
   <div class="manage-users">
-    <choose-person @choose="onSelectUser" :active.sync="showSelectUserDialog"></choose-person>
+    <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
     <md-button class="md-raised md-primary" @click="showSelectUserDialog = true">Ajouter</md-button>
     <md-list>
       <md-subheader></md-subheader>

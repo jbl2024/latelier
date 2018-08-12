@@ -2,7 +2,7 @@
 
 <div class="task-properties">
 
-  <choose-person @choose="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog"></choose-person>
+  <select-user @select="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog"></select-user>
   <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
   <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
   

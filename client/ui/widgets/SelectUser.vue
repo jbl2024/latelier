@@ -1,5 +1,5 @@
 <template>
-  <div class="choose-person">
+  <div class="select-user">
 
     <md-dialog :md-active.sync="active">
       <md-dialog-title>Choisir une personne</md-dialog-title>
@@ -50,7 +50,7 @@ export default {
 
     selectUser (user) {
       this.$emit('update:active', false);
-      this.$emit('choose', user);
+      this.$emit('select', user);
     }
 
   }
