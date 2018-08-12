@@ -27,7 +27,7 @@
               <h1 class="md-title">Projets</h1>
             </div>
 
-            <md-field md-clearable class="md-toolbar-section-end">
+            <md-field md-clearable class="md-toolbar-section-start">
               <md-icon>search</md-icon>
               <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
             </md-field>
@@ -230,12 +230,6 @@ export default {
 </script>
 
 <style scoped>
-.absolute-right {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1002;
-}
 
 .project-name {
   color: black !important;

@@ -11,7 +11,7 @@
       </md-tab>
     </md-tabs>
 
-    <md-speed-dial class="absolute-right" v-if="projectsLoaded">
+    <md-speed-dial class="absolute-right">
       <md-speed-dial-target @click="$refs.newProject.open()">
         <md-icon>add</md-icon>
       </md-speed-dial-target>
@@ -24,7 +24,6 @@
 export default {
   mounted () {
     this.$events.listen('projects-loaded', () => {
-      this.projectsLoaded = true;
       this.recalculateTabsHeight();
     });
     let self = this;
@@ -45,8 +44,7 @@ export default {
 
   data () {
     return {
-      windowWidth: window.innerWidth,
-      projectsLoaded: false
+      windowWidth: window.innerWidth
     }
   },
   methods: {
@@ -66,4 +64,8 @@ export default {
 </script>
 
 <style scoped>
+
+.md-tab {
+  background-color: #eee;
+}
 </style>
