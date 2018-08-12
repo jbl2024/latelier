@@ -119,8 +119,9 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-
-    if (Projects.find({_id: projectId,  "members._id" : userId}).count() > 0) {
+    console.log({_id: projectId,  "members._id" : userId})
+    if (Projects.find({_id: projectId,  "members" : userId}).count() > 0) {
+      console.log('found')
       return;
     }
     Projects.update({_id: projectId}, {$push: {members: userId}});
@@ -135,7 +136,7 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
-    if (Projects.find({_id: projectId,  "members._id" : userId}).count() > 0) {
+    if (Projects.find({_id: projectId,  "members" : userId}).count() == 0) {
       return;
     }
     Projects.update({_id: projectId}, {$pull: {members: userId}});
