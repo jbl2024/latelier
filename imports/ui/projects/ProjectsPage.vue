@@ -86,8 +86,4 @@ export default {
 </script>
 
 <style scoped>
-
-.md-tab {
-  background-color: #eee;
-}
 </style>

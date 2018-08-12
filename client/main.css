@@ -35,3 +35,7 @@ html, body {
   bottom: 24px;
   z-index: 1002;
 }
+
+.md-tabs-content {
+  height: 100% !important;
+}

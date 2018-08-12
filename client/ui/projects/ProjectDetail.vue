@@ -83,4 +83,5 @@ export default {
 .vis-item .vis-item-overflow {
   overflow: visible;
 }
+
 </style>

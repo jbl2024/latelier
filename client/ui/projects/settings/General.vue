@@ -2,6 +2,7 @@
   <div class="project-settings-general"> 
     <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
+    <select-group @select="onSelectGroup" :active.sync="showSelectGroup"></select-group>
 
     <md-list class="md-double-line">
       <md-subheader>Dates</md-subheader>
@@ -42,11 +43,33 @@
           </md-button>
         </md-list-item>
       </div>
+
+      <md-subheader>Groupes
+
+        <md-button class="md-icon-button" @click="showSelectGroup = true">
+        <md-icon>add</md-icon>
+        <md-tooltip md-delay="300">Ajouter un groupe</md-tooltip>
+        </md-button>
+ 
+      </md-subheader>
+      <div class="md-elevation-1">
+        <md-list-item v-for="group in assignedGroups" :key="group._id">
+          <div class="md-list-item-text">
+            {{group.name}}
+          </div>
+          <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
+            <md-icon>delete</md-icon>
+            <md-tooltip md-delay="300">Retirer</md-tooltip>
+          </md-button>
+        </md-list-item>
+      </div>
+
     </md-list>
 </div>
 </template>
 
 <script>
+import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
@@ -62,7 +85,18 @@ export default {
     return {
       showSelectStartDate: false,
       showSelectEndDate: false,
+      showSelectGroup: false,
     }
+  },
+  meteor: {
+    $subscribe: {
+      'projectGroups': function() {
+        return [];
+      }
+    },
+    assignedGroups () {
+      return ProjectGroups.find({projects: this.project._id}, {sort: {name: 1}});
+    },
   },
   methods: {
     onSelectStartDate (date) {
@@ -71,10 +105,22 @@ export default {
 
     onSelectEndDate (date) {
       Meteor.call('projects.setEndDate', this.project._id, date);
+    },
+
+    removeGroup (group) {
+      Meteor.call('projectGroups.removeProject', group._id, this.project._id);
+    },
+
+    onSelectGroup (group) {
+      Meteor.call('projectGroups.addProject', group._id, this.project._id);
     }
   }
 }
 </script>
 
 <style scoped>
+
+.groups {
+  width: 100%;
+}
 </style>

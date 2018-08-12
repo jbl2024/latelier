@@ -48,7 +48,7 @@ export default {
     },
     groups () {
       return ProjectGroups.find({}, {sort: {name: 1}});
-    }
+    },
   },
   methods: {
     removeGroup (group) {
