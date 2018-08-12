@@ -1,6 +1,7 @@
 <template>
   <div class="projects-page">
     <new-project ref="newProject"></new-project>  
+    <new-project-group ref="newProjectGroup"></new-project-group>  
     <md-tabs :md-alignment="tabAlignment" ref="tabs">
       <md-tab id="tab-projects" md-label="Tous mes projets">
         <projects></projects>
@@ -11,11 +12,32 @@
       </md-tab>
     </md-tabs>
 
-    <md-speed-dial class="absolute-right">
+    <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
+      <md-speed-dial-target class="md-primary">
+        <md-icon class="md-morph-initial">add</md-icon>
+        <md-icon class="md-morph-final">close</md-icon>
+      </md-speed-dial-target>
+
+      <md-speed-dial-content>
+        <md-button class="md-icon-button" @click="$refs.newProjectGroup.open()">
+          <md-icon>folder</md-icon>
+          <md-tooltip md-delay="300" md-direction="left">Nouveau groupe</md-tooltip>
+        </md-button>
+
+        <md-button class="md-icon-button" @click="$refs.newProject.open()">
+          <md-icon>list_alt</md-icon>
+          <md-tooltip md-delay="300" md-direction="left">Nouveau projet</md-tooltip>
+        </md-button>
+
+      </md-speed-dial-content>
+    </md-speed-dial>
+
+
+    <!-- <md-speed-dial class="">
       <md-speed-dial-target @click="$refs.newProject.open()">
         <md-icon>add</md-icon>
       </md-speed-dial-target>
-    </md-speed-dial>
+    </md-speed-dial> -->
 
   </div>
 </template>
