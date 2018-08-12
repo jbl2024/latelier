@@ -53,15 +53,21 @@
  
       </md-subheader>
       <div class="md-elevation-1">
-        <md-list-item v-for="group in assignedGroups" :key="group._id">
-          <div class="md-list-item-text">
-            {{group.name}}
-          </div>
-          <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
-            <md-icon>delete</md-icon>
-            <md-tooltip md-delay="300">Retirer</md-tooltip>
-          </md-button>
-        </md-list-item>
+        <div v-for="group in assignedGroups" :key="group._id">
+          <md-list-item>
+            <md-avatar class="md-avatar-icon">
+              <md-icon>folder</md-icon>
+            </md-avatar>
+            <div class="md-list-item-text">
+              {{group.name}}
+            </div>
+            <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
+              <md-icon>delete</md-icon>
+              <md-tooltip md-delay="300">Retirer</md-tooltip>
+            </md-button>
+          </md-list-item>
+          <md-divider></md-divider> 
+        </div>
       </div>
 
     </md-list>

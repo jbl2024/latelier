@@ -7,6 +7,9 @@
     <md-content class="list md-elevation-1" v-if="groups.length > 0">
       <md-list>
         <md-list-item v-for="group in groups" :key="group._id" @click="showGroup(group)">
+          <md-avatar class="md-avatar-icon">
+            <md-icon>folder</md-icon>
+          </md-avatar>
           <span class="md-list-item-text">{{group.name}}</span>
           <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
             <md-icon>delete</md-icon>
