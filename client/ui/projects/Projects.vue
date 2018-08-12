@@ -1,7 +1,5 @@
 <template>
   <div class="projects">
-
-
     <new-project ref="newProject"></new-project>  
 
     <md-dialog-confirm
@@ -21,13 +19,6 @@
       md-cancel-text="Annuler"
       @md-cancel="onCancelCloneProject"
       @md-confirm="onConfirmCloneProject" />
-
-
-    <div>
-
-      <div v-if="!$subReady.projects">
-        <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-      </div>
 
       <div class="show-desktop">
         <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
@@ -130,18 +121,8 @@
                 </md-button>
               </md-table-cell>
             </md-table-row>
-
         </md-table>
       </div>
-
-    </div>
-
-    <md-speed-dial class="absolute-right" v-if="$subReady.projects">
-      <md-speed-dial-target @click="newProject">
-        <md-icon>add</md-icon>
-      </md-speed-dial-target>
-    </md-speed-dial>
-
   </div>
 </template>
 
@@ -236,6 +217,7 @@ export default {
       }
     },
     projects () {
+      this.$events.fire('projects-loaded');
       return Projects.find({}, {
           sort: {name: 1}
       });

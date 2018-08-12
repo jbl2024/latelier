@@ -2,7 +2,7 @@
   <div class="projects-timeline">
 
     <md-toolbar class="toolbar">
-      <md-button class="md-icon-button" :to="{ name: 'projects'}">
+      <md-button class="md-icon-button" :to="{ name: 'projects-page'}">
           <md-icon>home
             <md-tooltip md-delay="300">Accueil</md-tooltip>
           </md-icon>

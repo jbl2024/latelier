@@ -101,7 +101,7 @@
             this.notify = true;
           } else {
             this.clearForm();
-            this.$router.push({ name: 'projects' })
+            this.$router.push({ name: 'projects-page' })
           }
         });
       },

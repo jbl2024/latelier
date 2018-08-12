@@ -18,7 +18,7 @@
       </md-toolbar>
 
       <md-list>
-        <md-list-item :to="{ name: 'projects'}" @click="showNavigation = false">
+        <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
           <md-icon>home</md-icon>
           <span class="md-list-item-text">Accueil</span>
         </md-list-item>

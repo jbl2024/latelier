@@ -13,7 +13,7 @@ export default [
     beforeEnter: (to, from, next) => {
       if (Meteor.userId()) {
         next({
-          name: 'projects'
+          name: 'projects-page'
         })
       } else {
         next();
@@ -49,9 +49,9 @@ export default [
   },  
   {
     path: '/projects',
-    name: 'projects',
+    name: 'projects-page',
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/Projects.vue',
+    component: '/imports/ui/projects/ProjectsPage.vue',
     props: true,
   },
   {

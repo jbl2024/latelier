@@ -7,7 +7,7 @@
     <div v-if="$subReady.project" class="project-wrapper"> 
 
       <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'projects'}">
+        <md-button class="md-icon-button" :to="{ name: 'projects-page'}">
             <md-icon>home
               <md-tooltip md-delay="300">Accueil</md-tooltip>
             </md-icon>
