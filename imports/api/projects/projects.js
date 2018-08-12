@@ -119,9 +119,7 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    console.log({_id: projectId,  "members._id" : userId})
     if (Projects.find({_id: projectId,  "members" : userId}).count() > 0) {
-      console.log('found')
       return;
     }
     Projects.update({_id: projectId}, {$push: {members: userId}});
