@@ -100,8 +100,19 @@ export default {
         return [];
       }
     },
-    assignedGroups () {
-      return ProjectGroups.find({projects: this.project._id}, {sort: {name: 1}});
+  
+    assignedGroups: {
+      params () {
+        return {
+          project: this.project
+        };
+      },
+      deep: false,
+      update ({project}) {
+        if (project) {
+          return ProjectGroups.find({projects: project._id}, {sort: {name: 1}});
+        }
+      }
     },
   },
   methods: {
