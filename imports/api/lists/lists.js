@@ -4,6 +4,11 @@ import { check } from 'meteor/check';
 import { Tasks } from '/imports/api/tasks/tasks.js'
 
 export const Lists = new Mongo.Collection('lists');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Lists.rawCollection().createIndex({projectId: 1});
+  });
+}
 
 Meteor.methods({
   'lists.insert'(projectId, name) {

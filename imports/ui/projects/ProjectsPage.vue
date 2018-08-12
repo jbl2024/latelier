@@ -2,7 +2,7 @@
   <div class="projects-page">
     <new-project ref="newProject"></new-project>  
     <md-tabs :md-alignment="tabAlignment" ref="tabs">
-      <md-tab id="tab-projects" md-label="Tous les projets">
+      <md-tab id="tab-projects" md-label="Tous mes projets">
         <projects></projects>
       </md-tab>
 
@@ -22,7 +22,7 @@
 
 <script>
 export default {
-  mounted () {
+  beforeMount () {
     this.$events.listen('projects-loaded', () => {
       this.recalculateTabsHeight();
     });

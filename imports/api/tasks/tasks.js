@@ -5,6 +5,12 @@ import { Lists } from '/imports/api/lists/lists.js'
 import { Random } from 'meteor/random'
 
 export const Tasks = new Mongo.Collection('tasks');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Tasks.rawCollection().createIndex({listId: 1});
+    Tasks.rawCollection().createIndex({projectId: 1});
+  });
+}
 
 var _checkForCompletion = function(listId, taskId) {
   var list = Lists.findOne({_id: listId});
@@ -12,6 +18,7 @@ var _checkForCompletion = function(listId, taskId) {
     Tasks.update({_id: taskId}, {$set: {completed: true}});
   }
 }
+
 
 Meteor.methods({
   'tasks.insert'(projectId, listId, name) {

@@ -19,7 +19,6 @@
       md-cancel-text="Annuler"
       @md-cancel="onCancelCloneProject"
       @md-confirm="onConfirmCloneProject" />
-
       <div class="show-desktop">
         <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
           <md-table-toolbar>
@@ -37,7 +36,7 @@
           <md-table-empty-state
             v-if="$subReady.projects"
             md-label="Aucun projet"
-            :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
+            :md-description="getDescription()">
             <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
           </md-table-empty-state>
 
@@ -205,7 +204,15 @@ export default {
 
         return b[sortBy].localeCompare(a[sortBy]);
       })
-    }    
+    },
+
+    getDescription () {
+      if (this.filter.length == 0) {
+        return "";
+      } else {
+        return `Aucun projet trouvé pour '${this.filter}'. Essayer avec un autre terme ou créer un projet`;
+      }
+    }
   },
   meteor: {
     // Subscriptions
@@ -222,9 +229,6 @@ export default {
           sort: {name: 1}
       });
     },
-    count () {
-      return Projects.find().count();
-    }      
   },
 }
 </script>
