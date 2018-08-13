@@ -219,7 +219,7 @@ export default {
 
     cancelUpdateEstimatedSize () {
       this.editEstimatedSize = false;
-      this.project.estimatedSize = this.savedDescription;
+      this.project.estimatedSize = this.savedEstimatedSize;
     },
 
     markDown (text) {
