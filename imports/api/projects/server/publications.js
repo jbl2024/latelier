@@ -2,16 +2,25 @@ import { Meteor } from "meteor/meteor";
 import { publishComposite } from "meteor/reywood:publish-composite";
 
 import { Projects } from "../projects";
+import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 
 // This code only runs on the server
-Meteor.publish("projects", function projectsPublication(name) {
+Meteor.publish("projects", function projectsPublication(name, groupId) {
   var userId = Meteor.userId();
   var query = {$or: [{createdBy: userId}, {members: userId}]};
   if (name && name.length > 0) {
     query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
   } 
+
+  if (groupId && groupId.length > 0) {  
+    var projectGroup = ProjectGroups.findOne({_id: groupId});
+    if (projectGroup) {
+      var projects = projectGroup.projects;
+      query['_id'] = {$in: projects};
+    }
+  }
   return Projects.find(query);
 });
 

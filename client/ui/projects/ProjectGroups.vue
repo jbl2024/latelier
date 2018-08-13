@@ -51,7 +51,7 @@ export default {
     },
 
     showGroup (group) {
-
+      this.$events.fire('group-selected', group);
     }
   }
 };

@@ -23,7 +23,9 @@
         <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
           <md-table-toolbar>
             <div class="md-toolbar-section-start">
-              <h1 class="md-title">Projets</h1>
+              <h1 class="md-title">Projets 
+                <md-chip v-if="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip>
+              </h1>
             </div>
 
             <md-field md-clearable class="md-toolbar-section-start">
@@ -132,6 +134,21 @@ import debounce from 'lodash/debounce';
 
 export default {
   mixins: [DatesMixin],
+  created () {
+    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
+  },
+  mounted () {
+    this.$events.listen('group-selected', group => {
+      this.selectedGroup = group;
+    });
+    this.$events.listen('group-deselected', () => {
+      this.selectedGroup = {};
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('group-selected');  
+    this.$events.off('group-deselected');  
+  },
   data () {
     return {
       filter: '',
@@ -142,11 +159,25 @@ export default {
       showConfirmCloneDialog: false,
       currentSort: 'name',
       currentSortOrder: 'asc',
+      selectedGroup: {},
       projectId: ''
     }
   },
-  created () {
-    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      // Subscribes to the 'threads' publication with no parameters
+      'projects': function() {
+        // Here you can use Vue reactive properties
+        return [this.filter, this.selectedGroup._id] // Subscription params
+      }
+    },
+    projects () {
+      this.$events.fire('projects-loaded');
+      return Projects.find({}, {
+          sort: {name: 1}
+      });
+    }
   },
   methods: {
     newProject () {
@@ -205,30 +236,17 @@ export default {
         return b[sortBy].localeCompare(a[sortBy]);
       })
     },
-
     getDescription () {
       if (this.filter.length == 0) {
         return "";
       } else {
         return `Aucun projet trouvé pour '${this.filter}'. Essayer avec un autre terme ou créer un projet`;
       }
+    },
+    deselectGroup (str, index) {
+      console.log('deselect')
+      this.$events.fire('group-deselected');
     }
-  },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      // Subscribes to the 'threads' publication with no parameters
-      'projects': function() {
-        // Here you can use Vue reactive properties
-        return [this.filter] // Subscription params
-      }
-    },
-    projects () {
-      this.$events.fire('projects-loaded');
-      return Projects.find({}, {
-          sort: {name: 1}
-      });
-    },
   },
 }
 </script>
