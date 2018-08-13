@@ -4,7 +4,7 @@
     <new-project-group ref="newProjectGroup"></new-project-group>  
     <projects></projects>
     <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
-      <md-speed-dial-target class="md-primary">
+      <md-speed-dial-target>
         <md-icon class="md-morph-initial">add</md-icon>
         <md-icon class="md-morph-final">close</md-icon>
       </md-speed-dial-target>

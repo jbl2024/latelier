@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 
 export const Projects = new Mongo.Collection('projects');
 
@@ -24,7 +25,7 @@ Meteor.methods({
     return project;
   },
 
-  'projects.create'(name, projectType) {
+  'projects.create'(name, projectType, projectGroupId) {
     check(name, String);
     check(projectType, String);
 
@@ -43,6 +44,10 @@ Meteor.methods({
       Meteor.call('lists.insert', projectId, 'A planifier');
       Meteor.call('lists.insert', projectId, 'En cours');
       Meteor.call('lists.insert', projectId, 'Terminé');
+    }
+
+    if (projectGroupId) {
+      Meteor.call('projectGroups.addProject', projectGroupId, projectId);
     }
 
     return projectId;
@@ -76,13 +81,20 @@ Meteor.methods({
     var newProjectId = Projects.insert({
       name: 'Copie de ' + project.name,
       createdAt: new Date(),
-      createdBy: Meteor.userId()
+      createdBy: Meteor.userId(),
+      startDate: project.startDate,
+      endDate: project.endDate,
     });
 
     var newProject = Projects.findOne(newProjectId);
     if (!newProject) {
       throw new Meteor.Error('invalid-new-project');
     }
+
+    var projectGroups = ProjectGroups.find({projects: projectId});
+    projectGroups.map(projectGroup => {
+      Meteor.call('projectGroups.addProject', projectGroup._id, newProjectId);
+    });
 
     var lists = Lists.find({projectId: projectId});
     lists.map(list => {

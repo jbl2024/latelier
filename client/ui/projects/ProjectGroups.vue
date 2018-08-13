@@ -5,8 +5,8 @@
   <div v-if="$subReady.projectGroups" >
     <md-list>
       <md-subheader>Catégories</md-subheader>
-      <md-list-item v-for="group in groups" :key="group._id" @click="showGroup(group)">
-        <md-icon>folder</md-icon>
+      <md-list-item v-for="group in groups" :key="group._id" @click="selectGroup(group)">
+        <md-icon :class="getColor(group)">folder</md-icon>
         <span class="md-list-item-text">{{group.name}}</span>
         <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
           <md-icon>delete</md-icon>
@@ -50,8 +50,21 @@ export default {
       Meteor.call('projectGroups.remove', group._id);
     },
 
-    showGroup (group) {
-      this.$store.dispatch('setSelectedGroup', group);
+    selectGroup (group) {
+      var selectedGroup = this.$store.state.selectedGroup;
+      if (selectedGroup && selectedGroup._id === group._id) {
+        this.$store.dispatch('setSelectedGroup', null);
+      } else {
+        this.$store.dispatch('setSelectedGroup', group);
+      }
+    },
+
+    getColor (group) {
+      var selectedGroup = this.$store.state.selectedGroup;
+      if (selectedGroup && selectedGroup._id === group._id) {
+        return 'selected'
+      }
+      return '';
     }
   }
 };
@@ -63,6 +76,10 @@ export default {
 }
 .md-list-item:hover {
   background-color: #eee;
+}
+
+.selected {
+  color: var(--md-theme-default-primary, #448aff) !important;
 }
 
 </style>

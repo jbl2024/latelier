@@ -41,7 +41,7 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('projects.create', this.name, this.projectType, (error, result) => { 
+      Meteor.call('projects.create', this.name, this.projectType, this.$store.state.selectedGroup._id, (error, result) => { 
         if (error) {
           console.log(error)
           return;

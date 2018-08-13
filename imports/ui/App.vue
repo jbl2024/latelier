@@ -92,7 +92,7 @@ export default {
     flex-direction: column;
   }
 
-  .md-drawer {
+  .md-app-drawer {
     width: 230px;
     max-width: calc(100vw - 125px);
     min-height: calc(100vh - 64px);
@@ -100,6 +100,7 @@ export default {
 
   .md-app-container {
     overflow-x: hidden;
+    overflow-y: hidden;
   }
     
   .md-app-content .md-card {
