@@ -76,6 +76,13 @@ export default [
     props: true
   },
   {
+    path: '/projects/:projectId/timeline',
+    name: 'project-timeline',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/projects/ProjectTimeline.vue',
+    props: true
+  },
+  {
     path: '/admin',
     name: 'admin',
     beforeEnter: isBasicAuth,
