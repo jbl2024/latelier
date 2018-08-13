@@ -37,7 +37,7 @@
         </timeline>
       </div>
 
-      <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
+      <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-project-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
         <project-detail :projectId="selectedProjectId" v-if="selectedProjectId"></project-detail>
       </md-drawer>
 
@@ -166,4 +166,9 @@ export default {
 .categories {
   margin-left: 12px;
 }
+
+.drawer-project-detail {
+  box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+}
+
 </style>
