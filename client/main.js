@@ -21,6 +21,7 @@ Vue.use(ElementUI)
 // Main app
 import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';
+import {store} from '/imports/store';
 
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000
@@ -33,6 +34,7 @@ Meteor.startup(() => {
   const router = routerFactory.create();
   new Vue({
     router,
+    store,
     render: h => h(App),
   }).$mount('app');
 });

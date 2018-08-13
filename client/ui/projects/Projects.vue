@@ -130,6 +130,7 @@
 import { Projects } from '/imports/api/projects/projects.js';
 import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
 import debounce from 'lodash/debounce';
+import { mapState } from 'vuex';
 
 export default {
   mixins: [DatesMixin],
@@ -137,16 +138,19 @@ export default {
     this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
   },
   mounted () {
-    this.$events.listen('group-selected', group => {
-      this.selectedGroup = group;
-    });
-    this.$events.listen('group-deselected', () => {
-      this.selectedGroup = {};
-    });
+    // this.$events.listen('group-selected', group => {
+    //   this.selectedGroup = group;
+    // });
+    // this.$events.listen('group-deselected', () => {
+    //   this.selectedGroup = {};
+    // });
   },
   beforeDestroy() {
-    this.$events.off('group-selected');  
-    this.$events.off('group-deselected');  
+    // this.$events.off('group-selected');  
+    // this.$events.off('group-deselected');  
+  },
+  computed: {
+    ...mapState(['selectedGroup'])
   },
   data () {
     return {
@@ -158,7 +162,6 @@ export default {
       showConfirmCloneDialog: false,
       currentSort: 'name',
       currentSortOrder: 'asc',
-      selectedGroup: {},
       projectId: ''
     }
   },
@@ -168,7 +171,7 @@ export default {
       // Subscribes to the 'threads' publication with no parameters
       'projects': function() {
         // Here you can use Vue reactive properties
-        return [this.filter, this.selectedGroup._id] // Subscription params
+        return [this.filter, this.$store.state.selectedGroup._id] // Subscription params
       }
     },
     projects () {
@@ -243,8 +246,7 @@ export default {
       }
     },
     deselectGroup (str, index) {
-      console.log('deselect')
-      this.$events.fire('group-deselected');
+      this.$store.dispatch('setSelectedGroup', null);
     }
   },
 }

@@ -27,7 +27,8 @@
     "vue-meteor-tracker": "^1.0.3",
     "vue-router": "^2.0.0",
     "vue2vis": "0.0.15",
-    "vuelidate": "^0.7.4"
+    "vuelidate": "^0.7.4",
+    "vuex": "^3.0.1"
   },
   "meteor": {
     "mainModule": {
