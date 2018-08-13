@@ -23,9 +23,8 @@
         <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
           <md-table-toolbar>
             <div class="md-toolbar-section-start">
-              <h1 class="md-title">Projets 
-                <md-chip v-if="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip>
-              </h1>
+              <h1 class="title">Projets</h1>
+              <md-chip v-show="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip>
             </div>
 
             <md-field md-clearable class="md-toolbar-section-start">
@@ -262,6 +261,11 @@ export default {
   cursor: pointer;
 }
 
+.title {
+  font-size: 20px;
+  font-weight: normal;
+  margin-right: 12px;
+}
 
 
 </style>
