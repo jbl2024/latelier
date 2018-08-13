@@ -11,7 +11,7 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'lists.insert'(projectId, name) {
+  'lists.insert'(projectId, name, autoComplete) {
     check(projectId, String);
     check(name, String);
 
@@ -31,6 +31,7 @@ Meteor.methods({
     var listId = Lists.insert({
       name: name,
       order: _findLastOrder() + 1,
+      autoComplete: autoComplete,
       projectId: projectId,
       createdAt: new Date(),
       createdBy: Meteor.userId()

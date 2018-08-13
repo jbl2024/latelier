@@ -4,6 +4,33 @@
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup"></select-group>
 
+      <md-subheader>Description</md-subheader>
+      <div class="md-elevation-1">
+        <div class="description">
+          <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
+            <div v-html="markDown(project.description)"></div>
+          </div>
+          <div v-show="!project.description && !editDescription" @click="startEditDescription">
+            Aucune description
+          </div>
+
+          <div v-show="editDescription">
+            <md-field>
+              <label>Description</label>
+              <md-textarea ref="description" v-model="project.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
+            </md-field>
+            <md-button class="md-icon-button" @click.native="updateDescription">
+              <md-icon>check_circle</md-icon>
+            </md-button>
+
+            <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
+              <md-icon>cancel</md-icon>
+            </md-button>
+
+          </div>
+        </div>
+    </div>
+
     <md-list class="md-double-line">
       <md-subheader>Dates</md-subheader>
       <div class="md-elevation-1">
@@ -80,6 +107,7 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
+import showdown from 'showdown';
 
 export default {
   name: 'project-settings-general',
@@ -92,6 +120,7 @@ export default {
       showSelectStartDate: false,
       showSelectEndDate: false,
       showSelectGroup: false,
+      editDescription: false
     }
   },
   meteor: {
@@ -130,7 +159,37 @@ export default {
 
     onSelectGroup (group) {
       Meteor.call('projectGroups.addProject', group._id, this.project._id);
+    },
+
+    startEditDescription () {
+      this.savedDescription = this.project.description;
+      this.editDescription = true;
+      this.$nextTick(() => this.$refs.description.$el.focus());
+    },
+
+    updateDescription () {
+      this.editDescription = false;
+      Meteor.call('projects.updateDescription', this.project._id, this.project.description);
+    },
+
+    cancelUpdateDescription () {
+      this.editDescription = false;
+      this.project.description = this.savedDescription;
+    },
+
+    markDown (text) {
+      var converter = new showdown.Converter({
+        type: 'lang',
+        filter: function(text) {
+            return text.replace(/^( *(\d+\. {1,4}|[\w\<\'\">\-*+])[^\n]*)\n{1}(?!\n| *\d+\. {1,4}| *[-*+] +|$)/gm, function(text) {
+                return text.trim() + "  \n";
+            })
+          }
+        }
+      );
+      return converter.makeHtml(text);
     }
+
   }
 }
 </script>
@@ -139,5 +198,13 @@ export default {
 
 .groups {
   width: 100%;
+}
+
+.description {
+  margin-left: 24px;
+  margin-right: 24px;
+  margin-bottom: 12px;
+  padding-top: 12px;
+  padding-bottom: 12px;
 }
 </style>

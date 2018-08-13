@@ -43,7 +43,7 @@ Meteor.methods({
     if (projectType === 'kanban') {
       Meteor.call('lists.insert', projectId, 'A planifier');
       Meteor.call('lists.insert', projectId, 'En cours');
-      Meteor.call('lists.insert', projectId, 'Terminé');
+      Meteor.call('lists.insert', projectId, 'Terminé', true);
     }
 
     if (projectGroupId) {
@@ -69,6 +69,16 @@ Meteor.methods({
     }
 
     Projects.update({_id: projectId}, {$set: {name: name}});
+  },
+
+  'projects.updateDescription'(projectId, description) {
+    check(projectId, String);
+    check(description, String);
+    if (description.length == 0) {
+      throw new Meteor.Error('invalid-description');
+    }
+
+    Projects.update({_id: projectId}, {$set: {description: description}});
   },
 
   'projects.clone'(projectId) {

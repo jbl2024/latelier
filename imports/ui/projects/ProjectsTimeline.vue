@@ -8,7 +8,7 @@
           </md-icon>
       </md-button>
       <span class="md-title">
-        Timeline
+        Planification
       </span>        
       <span class="categories"><md-chip v-show="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip></span>
 
