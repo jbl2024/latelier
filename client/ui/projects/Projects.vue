@@ -137,18 +137,6 @@ export default {
   created () {
     this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
   },
-  mounted () {
-    // this.$events.listen('group-selected', group => {
-    //   this.selectedGroup = group;
-    // });
-    // this.$events.listen('group-deselected', () => {
-    //   this.selectedGroup = {};
-    // });
-  },
-  beforeDestroy() {
-    // this.$events.off('group-selected');  
-    // this.$events.off('group-deselected');  
-  },
   computed: {
     ...mapState(['selectedGroup'])
   },

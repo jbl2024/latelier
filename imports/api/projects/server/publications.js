@@ -24,22 +24,25 @@ Meteor.publish("projects", function projectsPublication(name, groupId) {
   return Projects.find(query);
 });
 
-Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name) {
+Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name, groupId) {
   var userId = Meteor.userId();
-  if (name && name.length > 0) {
-    return Projects.find({
-      $or: [{createdBy: userId}, {members: userId}],
-      'startDate':{ $ne: null},
-      'endDate':{ $ne: null},
-      name: { $regex: ".*" + name + ".*", $options: "i" }
-    });
-  } else {
-    return Projects.find({
-      $or: [{createdBy: userId}, {members: userId}],
-      'startDate':{ $ne: null},
-      'endDate':{ $ne: null}
-    });
+  var query = {
+    $or: [{createdBy: userId}, {members: userId}], 
+    'startDate':{ $ne: null},
+    'endDate':{ $ne: null},
   }
+  if (name && name.length > 0) {
+    query.name = { $regex: ".*" + name + ".*", $options: "i" };
+  }
+  
+  if (groupId && groupId.length > 0) {  
+    var projectGroup = ProjectGroups.findOne({_id: groupId});
+    if (projectGroup) {
+      var projects = projectGroup.projects;
+      query._id = {$in: projects};
+    }
+  }
+  return Projects.find(query);
 });
 
 publishComposite("project", function(projectId) {

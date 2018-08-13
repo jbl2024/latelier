@@ -10,6 +10,7 @@
       <span class="md-title">
         Timeline
       </span>        
+      <span class="categories"><md-chip v-show="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip></span>
 
       <div class="md-toolbar-section-end">
         <md-field class="search" md-clearable>
@@ -48,6 +49,7 @@
 import { Projects } from '/imports/api/projects/projects.js';
 import { Timeline } from 'vue2vis';
 import debounce from 'lodash/debounce';
+import { mapState } from 'vuex';
 
 export default {
   components: {
@@ -63,6 +65,9 @@ export default {
   },
   beforeDestroy() {
     this.$events.off('close-project-detail');
+  },
+  computed: {
+    ...mapState(['selectedGroup'])
   },
   data () {
     return {
@@ -115,14 +120,16 @@ export default {
         this.selectedProjectId = null;
         this.showProjectDetail = false;
       }
+    },
+    deselectGroup (str, index) {
+      this.$store.dispatch('setSelectedGroup', null);
     }
-    
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       'projectsForTimeline': function() {
-        return [this.filter] // Subscription params
+        return [this.filter, this.$store.state.selectedGroup._id] // Subscription params
       }
     },
     projects () {
@@ -156,5 +163,7 @@ export default {
 .projects-timeline {
   min-height: calc(100vh - 64px);
 }
-
+.categories {
+  margin-left: 12px;
+}
 </style>
