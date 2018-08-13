@@ -4,31 +4,59 @@
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup"></select-group>
 
-      <md-subheader>Description</md-subheader>
-      <div class="md-elevation-1">
-        <div class="description">
-          <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
-            <div v-html="markDown(project.description)"></div>
-          </div>
-          <div v-show="!project.description && !editDescription" @click="startEditDescription">
-            Aucune description
-          </div>
-
-          <div v-show="editDescription">
-            <md-field>
-              <label>Description</label>
-              <md-textarea ref="description" v-model="project.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
-            </md-field>
-            <md-button class="md-icon-button" @click.native="updateDescription">
-              <md-icon>check_circle</md-icon>
-            </md-button>
-
-            <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
-              <md-icon>cancel</md-icon>
-            </md-button>
-
-          </div>
+    <md-subheader>Description</md-subheader>
+    <div class="md-elevation-1">
+      <div class="description">
+        <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
+          <div v-html="markDown(project.description)"></div>
         </div>
+        <div v-show="!project.description && !editDescription" @click="startEditDescription">
+          Aucune description
+        </div>
+
+        <div v-show="editDescription">
+          <md-field>
+            <label>Description</label>
+            <md-textarea ref="description" v-model="project.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
+          </md-field>
+          <md-button class="md-icon-button" @click.native="updateDescription">
+            <md-icon>check_circle</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
+            <md-icon>cancel</md-icon>
+          </md-button>
+
+        </div>
+      </div>
+    </div>
+
+
+    <md-subheader>Taille</md-subheader>
+    <div class="md-elevation-1" @click="startEditEstimatedSize">
+      <div class="estimatedSize">
+        <div v-show="!editEstimatedSize && project.estimatedSize && project.estimatedSize != 0">
+          {{ project.estimatedSize }}
+        </div>
+        <div v-show="!project.estimatedSize && !editEstimatedSize">
+          Aucune estimation
+        </div>
+
+        <div v-show="editEstimatedSize">
+          <md-field>
+            <label>Estimation de la taille du projet</label>
+            <md-input type="number" ref="estimatedSize" v-model="project.estimatedSize" @keyup.enter="updateEstimatedSize"></md-input>
+          </md-field>
+          <md-button class="md-icon-button" @click.stop="updateEstimatedSize">
+            <md-icon>check_circle</md-icon>
+          </md-button>
+
+          <md-button class="md-icon-button" @click.stop="cancelUpdateEstimatedSize">
+            <md-icon>cancel</md-icon>
+          </md-button>
+
+        </div>
+      </div>
     </div>
 
     <md-list class="md-double-line">
@@ -120,7 +148,8 @@ export default {
       showSelectStartDate: false,
       showSelectEndDate: false,
       showSelectGroup: false,
-      editDescription: false
+      editDescription: false,
+      editEstimatedSize: false
     }
   },
   meteor: {
@@ -177,6 +206,22 @@ export default {
       this.project.description = this.savedDescription;
     },
 
+    startEditEstimatedSize () {
+      this.savedEstimatedSize = this.project.estimatedSize;
+      this.editEstimatedSize = true;
+      this.$nextTick(() => this.$refs.estimatedSize.$el.focus());
+    },
+
+    updateEstimatedSize () {
+      this.editEstimatedSize = false;
+      Meteor.call('projects.updateEstimatedSize', this.project._id, parseFloat(this.project.estimatedSize));
+    },
+
+    cancelUpdateEstimatedSize () {
+      this.editEstimatedSize = false;
+      this.project.estimatedSize = this.savedDescription;
+    },
+
     markDown (text) {
       var converter = new showdown.Converter({
         type: 'lang',
@@ -200,7 +245,7 @@ export default {
   width: 100%;
 }
 
-.description {
+.description, .estimatedSize {
   margin-left: 24px;
   margin-right: 24px;
   margin-bottom: 12px;

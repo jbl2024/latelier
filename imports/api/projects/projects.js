@@ -94,6 +94,7 @@ Meteor.methods({
       createdBy: Meteor.userId(),
       startDate: project.startDate,
       endDate: project.endDate,
+      estimatedSize: project.estimatedSize,
     });
 
     var newProject = Projects.findOne(newProjectId);
@@ -181,5 +182,14 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$set: {endDate: endDate}});
   },
 
+  'projects.updateEstimatedSize'(projectId, estimatedSize) {
+    check(projectId, String);
+    check(estimatedSize, Number);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Projects.update({_id: projectId}, {$set: {estimatedSize: estimatedSize}});
+  },
 
 });
