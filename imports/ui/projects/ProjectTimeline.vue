@@ -206,7 +206,6 @@ export default {
         }
         var task = Tasks.findOne({_id: items[0]});
         this.$events.fire('task-selected', task);
-        this.$refs.timeline.focus(items[0]);
       } else {
         this.$events.fire('close-task-detail');
       }
