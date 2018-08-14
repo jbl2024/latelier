@@ -3,7 +3,8 @@ import Vuex from 'vuex'
 export const store = new Vuex.Store({
   state: {
     selectedGroup: {},
-    showCategories: false
+    showCategories: false,
+    hideDrawer: false
   },
   getters: {
     // Compute derived state based on the current state. More like computed property.
@@ -14,6 +15,9 @@ export const store = new Vuex.Store({
     },
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
+    },
+    updateHideDrawer(state, hideDrawer) {
+      state.hideDrawer = hideDrawer
     }
   },
   actions: {
@@ -25,6 +29,9 @@ export const store = new Vuex.Store({
     },
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
+    },
+    setHideDrawer (context, hideDrawer) {
+      context.commit('updateHideDrawer', hideDrawer);
     }
   }
 });

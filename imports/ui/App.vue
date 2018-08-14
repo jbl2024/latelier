@@ -12,7 +12,7 @@
       </div>
     </md-app-toolbar>
 
-    <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped">
+    <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-if="!hideDrawer">
 
       <md-list>
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
@@ -53,7 +53,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['showCategories'])
+    ...mapState(['showCategories', 'hideDrawer'])
   },
   meteor: {
     data: {
