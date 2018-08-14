@@ -170,14 +170,16 @@ export default {
 .project {
   display: flex;
   min-height:0;
+  height: 100%;
   flex-direction: column;
-  background-color: #eee !important;
 }
 
 .project-wrapper {
   display: flex;
   min-height:0;
   flex-direction: column;
+  flex:1;
+  background-color: #eee !important;
 }
 
 .edit-project-name input {
