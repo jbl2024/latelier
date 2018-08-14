@@ -23,6 +23,7 @@ import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';
 import {store} from '/imports/store';
 
+
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000
   UserPresence.awayTime = 60000;
@@ -37,4 +38,13 @@ Meteor.startup(() => {
     store,
     render: h => h(App),
   }).$mount('app');
+
+  Tracker.autorun(function(c) {
+    var userId = Meteor.userId();
+    if (c.firstRun)
+      return;
+    if (!userId) {
+      router.push({ name: 'login' });
+    }
+  });  
 });

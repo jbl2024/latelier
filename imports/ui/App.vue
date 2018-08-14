@@ -12,8 +12,8 @@
       </div>
     </md-app-toolbar>
 
-    <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-if="!hideDrawer">
 
+    <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-show="!hideDrawer">
       <md-list>
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
           <md-icon>home</md-icon>
