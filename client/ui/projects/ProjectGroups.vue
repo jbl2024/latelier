@@ -2,16 +2,23 @@
 
 <div class="project-groups">
   <new-project-group ref="newProjectGroup"></new-project-group>  
-  <div v-if="$subReady.projectGroups" >
+  <edit-project-group ref="editProjectGroup" :projectGroupId="selectedProjectGroupId"></edit-project-group>
+  <div v-if="$subReady.projectGroups">
     <md-list>
       <md-subheader>Catégories</md-subheader>
-      <md-list-item v-for="group in groups" :key="group._id" @click="selectGroup(group)">
+      <md-list-item v-for="group in groups" 
+          :key="group._id" 
+          @click="(e) => {selectGroup(e, group)}" 
+          @mouseover="showButtons = group._id" 
+          @mouseleave="showButtons = null">
         <md-icon :class="getColor(group)">folder</md-icon>
         <span class="md-list-item-text">{{group.name}}</span>
-        <md-button class="md-icon-button md-list-action" @click.stop="removeGroup(group)">
-          <md-icon>delete</md-icon>
-          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+
+        <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
+          <md-icon>settings</md-icon>
+          <md-tooltip md-delay="300">Paramètres</md-tooltip>
         </md-button>
+
       </md-list-item>
       <md-list-item @click="$refs.newProjectGroup.open()">
         <md-icon>add</md-icon>
@@ -31,6 +38,8 @@ import showdown from 'showdown';
 export default {
   data() {
     return {
+      showButtons: '',
+      selectedProjectGroupId: ''
     };
   },
   meteor: {
@@ -50,7 +59,7 @@ export default {
       Meteor.call('projectGroups.remove', group._id);
     },
 
-    selectGroup (group) {
+    selectGroup (event, group) {
       var selectedGroup = this.$store.state.selectedGroup;
       if (selectedGroup && selectedGroup._id === group._id) {
         this.$store.dispatch('setSelectedGroup', null);
@@ -65,6 +74,11 @@ export default {
         return 'selected'
       }
       return '';
+    },
+
+    openMenu (id) {
+      this.selectedProjectGroupId = id;
+      this.$refs.editProjectGroup.open();
     }
   }
 };
