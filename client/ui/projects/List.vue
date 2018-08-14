@@ -256,6 +256,7 @@ export default {
 .list {
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .tasks-wrapper {

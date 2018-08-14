@@ -78,7 +78,7 @@ export default {
 
   .main-content {
     padding: 16px;
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
   }
