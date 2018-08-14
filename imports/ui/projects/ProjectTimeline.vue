@@ -11,7 +11,7 @@
             </md-icon>
         </md-button>
         <span class="md-title">
-          {{ project.name }} - Planification
+          {{ project.name }}
         </span>        
 
         <div class="md-toolbar-section-end">

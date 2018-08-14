@@ -89,7 +89,7 @@ export default {
   }
 
   .page-container {
-    height: 100%;
+    // height: 100%;
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(#000, .12);
@@ -104,6 +104,7 @@ export default {
   }
 
   .md-app-container {
+    height: calc(100vh - 64px);
     overflow-x: hidden;
     overflow-y: hidden;
   }
