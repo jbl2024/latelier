@@ -59,11 +59,13 @@ export default {
     this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
   },
   mounted () {
+    this.$store.dispatch('setShowCategories', true);    
     this.$events.listen('close-project-detail', task => {
       this.showProjectDetail = false;
     });
   },
   beforeDestroy() {
+    this.$store.dispatch('setShowCategories', false);    
     this.$events.off('close-project-detail');
   },
   computed: {

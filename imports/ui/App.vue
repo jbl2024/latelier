@@ -32,7 +32,7 @@
 
         <md-divider></md-divider>
       </md-list>
-      <project-groups></project-groups>
+      <project-groups v-if="showCategories"></project-groups>
 
     </md-app-drawer>
     <md-app-content class="main-content">
@@ -44,11 +44,16 @@
 
 <script>
 import {Session} from 'meteor/session';
+import { mapState } from 'vuex';
+
 export default {
   data() {
     return {
       showNavigation: false,
     }
+  },
+  computed: {
+    ...mapState(['showCategories'])
   },
   meteor: {
     data: {

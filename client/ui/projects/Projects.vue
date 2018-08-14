@@ -137,6 +137,12 @@ export default {
   created () {
     this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
   },
+  mounted () {
+    this.$store.dispatch('setShowCategories', true);    
+  },
+  beforeDestroy () {
+    this.$store.dispatch('setShowCategories', false);    
+  },
   computed: {
     ...mapState(['selectedGroup'])
   },
