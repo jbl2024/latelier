@@ -100,6 +100,7 @@ export default {
           id: project._id,
           group: 0,
           content: this.getProjectContent(project),
+          className: 'item',
           start: project.startDate,
           end: project.endDate
         }
@@ -109,7 +110,9 @@ export default {
     },
 
     getProjectContent (project) {
-      return project.name;
+      var name = project.name;
+      var color = project.color || '';
+      return `<div style="margin:0; padding:5px; background-color: ${color}">${name}</div>`
     },
 
     onSelectProject (data) {
@@ -173,4 +176,5 @@ export default {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
 }
 
+ 
 </style>

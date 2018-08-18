@@ -3,6 +3,7 @@
     <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup"></select-group>
+    <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color> 
 
     <md-subheader>Description</md-subheader>
     <div class="md-elevation-1">
@@ -62,7 +63,7 @@
     <md-list class="md-double-line">
       <md-subheader>Dates</md-subheader>
       <div class="md-elevation-1">
-        <md-list-item class="cursor" @click="showSelectStartDate = true">
+        <md-list-item @click="showSelectStartDate = true">
           <md-avatar class="md-avatar-icon">
             <md-icon>calendar_today</md-icon>
           </md-avatar>
@@ -81,7 +82,7 @@
 
         <md-divider></md-divider>
 
-        <md-list-item class="cursor" @click="showSelectEndDate = true">
+        <md-list-item @click="showSelectEndDate = true">
           <md-avatar class="md-avatar-icon">
             <md-icon>alarm_on</md-icon>
           </md-avatar>
@@ -98,6 +99,24 @@
           </md-button>
         </md-list-item>
       </div>
+
+      <md-subheader>Couleur
+      </md-subheader>
+
+      <div class="md-elevation-1" >
+        <md-list-item @click="showSelectColor = true">
+          <div class="md-list-item-text">
+            <div class="color" ref="color" :style="getColor(project)"></div>
+          </div>
+          <md-button class="md-icon-button md-list-action"  @click.stop="removeColor()">
+            <md-icon>delete</md-icon>
+            <md-tooltip md-delay="300">Supprimer</md-tooltip>
+          </md-button>
+        </md-list-item>
+        <md-divider></md-divider> 
+      </div>
+
+
 
       <md-subheader>Catégories
 
@@ -134,8 +153,12 @@ import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+
 import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
 import showdown from 'showdown';
+
+
+
 
 export default {
   name: 'project-settings-general',
@@ -148,6 +171,7 @@ export default {
       showSelectStartDate: false,
       showSelectEndDate: false,
       showSelectGroup: false,
+      showSelectColor: false,
       editDescription: false,
       editEstimatedSize: false
     }
@@ -233,6 +257,22 @@ export default {
         }
       );
       return converter.makeHtml(text);
+    },
+
+    onSelectColor (color) {
+      var hex = color.hex || 'white';
+      this.$refs.color.style.backgroundColor = hex;
+      this.project.color = hex;
+      Meteor.call('projects.updateColor', this.project._id, hex);
+    },
+
+    removeColor () {
+      this.project.color = '';
+      Meteor.call('projects.updateColor', this.project._id, '');
+    },
+
+    getColor (project) {
+      return 'background-color: ' + project.color;
     }
 
   }
@@ -251,5 +291,10 @@ export default {
   margin-bottom: 12px;
   padding-top: 12px;
   padding-bottom: 12px;
+}
+
+.color {
+  height: 32px;
+  width: 200px;
 }
 </style>

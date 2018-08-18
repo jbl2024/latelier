@@ -81,6 +81,12 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$set: {description: description}});
   },
 
+  'projects.updateColor'(projectId, color) {
+    check(projectId, String);
+    check(color, String);
+    Projects.update({_id: projectId}, {$set: {color: color}});
+  },
+
   'projects.clone'(projectId) {
     check(projectId, String);
     var project = Projects.findOne(projectId);
