@@ -5,7 +5,7 @@ import { ProjectGroups } from "../projectGroups";
 
 Meteor.publish("projectGroups", function projectGroups(name) {
   var userId = Meteor.userId();
-  var query = {$or: [{createdBy: userId}, {members: userId}]};
+  var query = {};
   if (name && name.length > 0) {
     query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
   } 
