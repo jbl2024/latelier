@@ -22,7 +22,7 @@
 
         <md-list-item :to="{ name: 'projects-timeline'}" @click="showNavigation = false">
           <md-icon>timeline</md-icon>
-          <span class="md-list-item-text">Planification</span>
+          <span class="md-list-item-text">Planning</span>
         </md-list-item>
 
         <md-list-item :to="{ name: 'admin'}" @click="showNavigation = false">

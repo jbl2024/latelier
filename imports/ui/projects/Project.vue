@@ -34,7 +34,7 @@
 
           <md-button class="md-icon-button" :to="{ name: 'project-timeline', params: { projectId: project._id }}">
               <md-icon>timeline
-                <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
+                <md-tooltip md-delay="300" md-direction="bottom">Planning</md-tooltip>
               </md-icon>
           </md-button>
           <md-button class="md-icon-button" :to="{ name: 'project-settings', params: { projectId: project._id }}">
