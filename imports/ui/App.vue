@@ -63,10 +63,6 @@ export default {
     }
   },
   methods: {
-    addOne() {
-      Session.set('counter', this.count + 1);
-      this.buttonLabel = labels[Math.round(Math.random()*(labels.length - 1))];
-    }
   }
 }
 </script>
