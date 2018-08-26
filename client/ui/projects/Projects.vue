@@ -247,7 +247,7 @@ export default {
       if (project.isPublic) {
         return 'visibility';
       }
-      return 'visibility_off';
+      return '';
     }
 
   },
