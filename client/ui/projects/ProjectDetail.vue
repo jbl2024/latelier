@@ -28,11 +28,9 @@
 
     <md-divider></md-divider>
 
-    <md-tabs md-sync-route md-alignment="fixed">
-      <md-tab id="tab-info" md-label="Infos">
-        <project-info :project="project"></project-info>
-      </md-tab>
+    <project-info :project="project" v-show="showInfo(project)"></project-info>
 
+    <md-tabs md-sync-route md-alignment="fixed"  v-show="showSettings(project)">
       <md-tab id="tab-general" md-label="Paramètres">
         <project-settings-general :project="project"></project-settings-general>
       </md-tab>
@@ -78,6 +76,26 @@ export default {
   methods: {
     requestClose () {
       this.$events.fire('close-project-detail');
+    },
+
+    showInfo (project) {
+      if (project.createdBy === Meteor.userId()) {
+        return false;
+      }
+      const members = project.members || [];
+      return !members.some(member => {
+        return member === Meteor.userId()
+      });
+    },
+
+    showSettings (project) {
+      if (project.createdBy === Meteor.userId()) {
+        return true;
+      }
+      const members = project.members || [];
+      return members.some(member => {
+        return member == Meteor.userId()
+      });
     }
   }
 };
@@ -86,6 +104,10 @@ export default {
 <style>
 .vis-item .vis-item-overflow {
   overflow: visible;
+}
+
+.project-info {
+  margin: 24px;
 }
 
 </style>
