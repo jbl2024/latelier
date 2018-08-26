@@ -120,7 +120,6 @@ export default {
       if (items && items.length > 0) {
         this.selectedProjectId = items[0];
         this.showProjectDetail = true;
-        this.$refs.timeline.focus(items[0]);
       } else {
         this.selectedProjectId = null;
         this.showProjectDetail = false;
