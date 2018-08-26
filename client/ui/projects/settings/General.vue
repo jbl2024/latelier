@@ -40,7 +40,7 @@
             <md-icon>{{getVisibilityIcon(project)}}</md-icon>
           </md-avatar>
           <div class="md-list-item-text">
-            Tout le monde peut voir ce projet
+            {{ getVisibilityText(project) }}
           </div>
           <md-switch class="md-list-action" v-model="project.isPublic"></md-switch>
         </md-list-item>
@@ -294,6 +294,13 @@ export default {
         return 'visibility';
       }
       return 'visibility_off';
+    },
+
+    getVisibilityText (project) {
+      if (project.isPublic) {
+        return 'Tout le monde voit ce projet';
+      }
+      return 'Limitée aux membres du projet';
     },
 
     toggleProjectVisibility (project) {

@@ -48,8 +48,8 @@
 
           <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
             <md-table-cell md-label="Nom" md-sort-by="name">
+              <md-icon>{{ getVisibilityIcon(item) }}</md-icon> {{ item.name }}
               <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
-                {{ item.name }}
               </router-link>
             </md-table-cell>
             <md-table-cell md-label="Date de début" md-sort-by="startDate">
@@ -99,9 +99,9 @@
           </md-table-empty-state>
 
 
-
             <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
               <md-table-cell md-label="Nom" md-sort-by="name">
+                <md-icon>{{ getVisibilityIcon(item) }}</md-icon>
                 <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
                   {{ item.name }}
                 </router-link>
@@ -241,7 +241,15 @@ export default {
     },
     deselectGroup (str, index) {
       this.$store.dispatch('setSelectedGroup', null);
+    },
+
+    getVisibilityIcon (project) {
+      if (project.isPublic) {
+        return 'visibility';
+      }
+      return 'visibility_off';
     }
+
   },
 }
 </script>

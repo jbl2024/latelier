@@ -9,7 +9,7 @@ import { Tasks } from "../../tasks/tasks";
 // This code only runs on the server
 Meteor.publish("projects", function projectsPublication(name, groupId) {
   var userId = Meteor.userId();
-  var query = {$or: [{createdBy: userId}, {members: userId}]};
+  var query = {$or: [{createdBy: userId}, {members: userId}, {isPublic: true}]};
   if (name && name.length > 0) {
     query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
   } 
@@ -27,7 +27,7 @@ Meteor.publish("projects", function projectsPublication(name, groupId) {
 Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name, groupId) {
   var userId = Meteor.userId();
   var query = {
-    $or: [{createdBy: userId}, {members: userId}], 
+    $or: [{createdBy: userId}, {members: userId}, {isPublic: true}], 
     'startDate':{ $ne: null},
     'endDate':{ $ne: null},
   }
