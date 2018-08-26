@@ -110,7 +110,7 @@ export default {
     margin-left: 0;  
   }
 
-  .md-list-item-text {
+  .md-app-drawer .md-list-item-text {
     font-size: 13px;
     font-weight: 500;
   }
