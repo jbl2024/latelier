@@ -89,6 +89,12 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$set: {color: color}});
   },
 
+  'projects.updateIsPublic'(projectId, isPublic) {
+    check(projectId, String);
+    check(isPublic, Boolean);
+    Projects.update({_id: projectId}, {$set: {isPublic: isPublic}});
+  },
+
   'projects.clone'(projectId) {
     check(projectId, String);
     var project = Projects.findOne(projectId);

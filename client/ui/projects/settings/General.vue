@@ -32,6 +32,20 @@
       </div>
     </div>
 
+    <md-list>
+      <md-subheader>Visibilité</md-subheader>
+      <div class="md-elevation-1">
+        <md-list-item @click="toggleProjectVisibility(project)">
+          <md-avatar class="md-avatar-icon">
+            <md-icon>{{getVisibilityIcon(project)}}</md-icon>
+          </md-avatar>
+          <div class="md-list-item-text">
+            Tout le monde peut voir ce projet
+          </div>
+          <md-switch class="md-list-action" v-model="project.isPublic"></md-switch>
+        </md-list-item>
+      </div>
+    </md-list>
 
     <md-subheader>Taille</md-subheader>
     <div class="md-elevation-1" @click="startEditEstimatedSize">
@@ -273,6 +287,18 @@ export default {
 
     getColor (project) {
       return 'background-color: ' + project.color;
+    },
+
+    getVisibilityIcon (project) {
+      if (project.isPublic) {
+        return 'visibility';
+      }
+      return 'visibility_off';
+    },
+
+    toggleProjectVisibility (project) {
+      project.isPublic = !project.isPublic;
+      Meteor.call('projects.updateIsPublic', project._id, project.isPublic);
     }
 
   }
