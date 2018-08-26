@@ -28,17 +28,19 @@ Meteor.methods({
   'projects.create'(name, projectType, projectGroupId) {
     check(name, String);
     check(projectType, String);
+    const currentUser = Meteor.userId();
 
     // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
+    if (!currentUser) {
       throw new Meteor.Error('not-authorized');
     }
 
-    var projectId = Projects.insert({
+    const projectId = Projects.insert({
       name,
       createdAt: new Date(),
-      createdBy: Meteor.userId()
+      createdBy: currentUser
     });
+    Meteor.call('projects.addMember', projectId, currentUser);
 
     if (projectType === 'kanban') {
       Meteor.call('lists.insert', projectId, 'A planifier');
