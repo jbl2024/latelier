@@ -29,6 +29,10 @@
     <md-divider></md-divider>
 
     <md-tabs md-sync-route md-alignment="fixed">
+      <md-tab id="tab-info" md-label="Infos">
+        <project-info :project="project"></project-info>
+      </md-tab>
+
       <md-tab id="tab-general" md-label="Paramètres">
         <project-settings-general :project="project"></project-settings-general>
       </md-tab>
