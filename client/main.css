@@ -18,13 +18,14 @@ html, body {
 
 @media (min-width: 601px) {
   .show-mobile {
-    display: none;
+    display: none !important;
   }
 }
 
+
 @media (max-width: 600px) {
   .show-desktop {
-    display: none;
+    display: none !important;
   }
 }
 

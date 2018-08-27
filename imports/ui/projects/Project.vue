@@ -26,7 +26,17 @@
           </md-button>
         </span>
 
-        <div class="md-toolbar-section-end">
+        <div class="md-toolbar-section-end show-mobile">
+          <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
+            <md-button md-menu-trigger class="md-icon-button">
+              <md-icon>more_vert</md-icon>
+            </md-button>
+            <md-menu-content>
+            </md-menu-content>
+          </md-menu>
+        </div>
+
+        <div class="md-toolbar-section-end show-desktop">
           <md-field class="search" md-clearable>
             <md-icon>search</md-icon>
             <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
@@ -180,6 +190,10 @@ export default {
   flex-direction: column;
   flex:1;
   background-color: #eee !important;
+}
+
+.coucou {
+  border: 4px solid black;
 }
 
 .edit-project-name input {
