@@ -152,6 +152,7 @@ export default {
     margin: 4px;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

@@ -80,6 +80,7 @@ export default {
   .main-content {
     padding: 16px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
   }

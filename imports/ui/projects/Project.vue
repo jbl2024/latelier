@@ -4,6 +4,7 @@
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
+
     <div v-if="$subReady.project" class="project-wrapper"> 
 
       <md-toolbar class="toolbar">
@@ -214,6 +215,7 @@ export default {
     margin: 4px;
     overflow-x: hidden;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
