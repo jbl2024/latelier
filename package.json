@@ -1,5 +1,5 @@
 {
-  "name": "meteor-vue-example",
+  "name": "latelier",
   "private": true,
   "scripts": {
     "start": "meteor run",
