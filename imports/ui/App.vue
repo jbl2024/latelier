@@ -99,10 +99,19 @@ export default {
   }
 
   .md-app-container {
-    height: calc(100vh - 58px);
+    height: calc(100vh - 64px);
     overflow-x: hidden;
     overflow-y: hidden;
   }
+
+  @media (max-width: 600px) {
+    .md-app-container {
+      height: calc(100vh - 56px);
+      overflow-x: hidden;
+      overflow-y: hidden;
+    }
+  }
+    
     
   .md-app-content .md-card {
     margin-right: 0;
