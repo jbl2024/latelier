@@ -7,7 +7,7 @@
       <div class="content">
         <md-field>
             <label>Nom</label>
-            <md-input v-model="projectGroup.name" v-on:keyup.enter="updateName()"></md-input>
+            <md-input v-focus v-model="projectGroup.name" v-on:keyup.enter="updateName()"></md-input>
         </md-field>
       </div>
       <md-dialog-actions>
