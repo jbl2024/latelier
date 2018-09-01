@@ -37,6 +37,12 @@ Meteor.startup(() => {
   // Start monitor for user activity
   UserPresence.start();
 
+  Vue.directive('focus', {
+    inserted: (el) => {
+      setTimeout(() => { el.focus(); }, 500);
+    }
+  })
+
   const router = routerFactory.create();
   new Vue({
     router,
@@ -44,11 +50,6 @@ Meteor.startup(() => {
     render: h => h(App),
   }).$mount('app');
 
-  Vue.directive('focus', {
-    inserted: (el) => {
-      setTimeout(() => {el.focus();}, 500);
-    }
-  })
 
   Tracker.autorun(function(c) {
     var userId = Meteor.userId();
