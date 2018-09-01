@@ -48,6 +48,13 @@ Meteor.methods({
       Meteor.call('lists.insert', projectId, 'Terminé', true);
     }
 
+    if (projectType === 'people') {
+      Meteor.call('lists.insert', projectId, 'Vincent');
+      Meteor.call('lists.insert', projectId, 'François');
+      Meteor.call('lists.insert', projectId, 'Paul');
+      Meteor.call('lists.insert', projectId, '... et les autres');
+    }
+
     if (projectGroupId) {
       Meteor.call('projectGroups.addProject', projectGroupId, projectId);
     }

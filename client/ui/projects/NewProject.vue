@@ -7,12 +7,13 @@
       <div class="content">
         <md-field>
             <label>Nom</label>
-            <md-input v-model="name" v-on:keyup.enter="create()"></md-input>
+            <md-input v-focus v-model="name" v-on:keyup.enter="create()"></md-input>
         </md-field>
             <label>Modèle</label>
             <div>
               <md-radio v-model="projectType" value="none">Vide</md-radio>
               <md-radio v-model="projectType" value="kanban">Kanban</md-radio>
+              <md-radio v-model="projectType" value="people">Personnes</md-radio>
             </div>
       </div>
       <md-dialog-actions>
