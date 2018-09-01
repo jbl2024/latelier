@@ -67,7 +67,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style>
   
   .search {
     width: 100%;
