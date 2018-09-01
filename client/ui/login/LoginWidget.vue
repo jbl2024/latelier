@@ -9,16 +9,16 @@
         </md-card-header>
 
         <md-card-content>
-          <label for="email" class="label">Email</label>
           <md-field :class="getValidationClass('email')">
-            <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
+            <md-input  type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
+            <label for="email" class="label">Email</label>
             <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
             <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
           </md-field>
 
-          <label for="password" class="label">Mot de passe</label>
           <md-field :class="getValidationClass('password')">
             <md-input type="password" name="password" id="password" autocomplete="password" v-model="form.password" :disabled="sending" />
+            <label for="password" class="label">Mot de passe</label>
             <span class="md-error" v-if="!$v.form.password.required">The password is required</span>
             <span class="md-error" v-else-if="!$v.form.password.minLenght">Invalid email</span>
           </md-field>
@@ -134,5 +134,11 @@
 
 .md-title {
   text-align: center;
+}
+
+.md-input:-webkit-autofill ~ label {
+  top: 0;
+  opacity: 1;
+  font-size: 12px;
 }
 </style>
