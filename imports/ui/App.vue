@@ -86,10 +86,8 @@ export default {
   }
 
   .page-container {
-    // height: 100%;
     overflow: hidden;
     position: relative;
-    border: 1px solid rgba(#000, .12);
     display: flex;
     flex-direction: column;
   }
