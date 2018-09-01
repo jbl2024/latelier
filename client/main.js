@@ -44,6 +44,12 @@ Meteor.startup(() => {
     render: h => h(App),
   }).$mount('app');
 
+  Vue.directive('focus', {
+    inserted: (el) => {
+      setTimeout(() => {el.focus();}, 500);
+    }
+  })
+
   Tracker.autorun(function(c) {
     var userId = Meteor.userId();
     if (c.firstRun)
