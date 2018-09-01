@@ -193,10 +193,6 @@ export default {
   background-color: #eee !important;
 }
 
-.coucou {
-  border: 4px solid black;
-}
-
 .edit-project-name input {
   font-size: 20px;
   font-weight: 400;
