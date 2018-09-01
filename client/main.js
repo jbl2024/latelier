@@ -1,3 +1,8 @@
+if (Meteor.settings.public.devServerURL) {
+  // HMR url for iOS
+  __meteor_runtime_config__.VUE_DEV_SERVER_URL = Meteor.settings.public.devServerURL;
+}
+
 // Libs
 import { Meteor } from 'meteor/meteor';
 import Vue from 'vue';

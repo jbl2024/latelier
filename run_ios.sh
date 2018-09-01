@@ -1,7 +1,13 @@
 #!/bin/bash
-ip=`ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'`
-export HMR_URL=$ip
+IP=`ifconfig en0 | grep inet | grep -v inet6 | awk '{print $2}'`
+PORT=3000
+
+export HMR_URL=$IP
 export HMR_PORT=3003
+export ROOT_URL=http://$IP:$PORT
+export VUE_DEV_SERVER_URL=http://$HMR_URL:$HMR_PORT
+export METEOR_SETTINGS="{\"public\": {\"devServerURL\": \"$VUE_DEV_SERVER_URL\"}}"
+
 echo "Starting app on ios device..."
-echo "HMR_URL=$HMR_URL | HMR_PORT=$HMR_PORT"
-meteor run ios-device --settings settings-development.json
+
+meteor run ios-device --mobile-server=http://$IP:$PORT
