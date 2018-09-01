@@ -99,7 +99,7 @@ export default {
   }
 
   .md-app-container {
-    height: calc(100vh - 64px);
+    height: calc(100vh - 58px);
     overflow-x: hidden;
     overflow-y: hidden;
   }
