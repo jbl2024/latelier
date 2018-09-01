@@ -2,6 +2,10 @@ import { Projects } from '../../api/projects/projects.js';
 import { Lists } from '../../api/lists/lists.js';
 import faker from 'faker';
 
+if (!Meteor.settings.generateFixtures) {
+  return;
+}
+
 if (Projects.find().count() === 0) {
   var projects = [
     {
