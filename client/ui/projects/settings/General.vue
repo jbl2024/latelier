@@ -169,14 +169,11 @@ import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 
 import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
-import showdown from 'showdown';
-
-
-
+import MarkdownMixin from '/imports/ui/mixins/MarkdownMixin.js'
 
 export default {
   name: 'project-settings-general',
-  mixins: [DatesMixin],
+  mixins: [DatesMixin, MarkdownMixin],
   props: {
     project: Object
   },
@@ -258,19 +255,6 @@ export default {
     cancelUpdateEstimatedSize () {
       this.editEstimatedSize = false;
       this.project.estimatedSize = this.savedEstimatedSize;
-    },
-
-    markDown (text) {
-      var converter = new showdown.Converter({
-        type: 'lang',
-        filter: function(text) {
-            return text.replace(/^( *(\d+\. {1,4}|[\w\<\'\">\-*+])[^\n]*)\n{1}(?!\n| *\d+\. {1,4}| *[-*+] +|$)/gm, function(text) {
-                return text.trim() + "  \n";
-            })
-          }
-        }
-      );
-      return converter.makeHtml(text);
     },
 
     onSelectColor (color) {
