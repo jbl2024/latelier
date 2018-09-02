@@ -33,7 +33,6 @@
 <script>
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Projects } from '/imports/api/projects/projects.js'
-import showdown from 'showdown';
 
 export default {
   data() {

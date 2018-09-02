@@ -47,7 +47,6 @@
 
 <script>
 import { Projects } from '/imports/api/projects/projects.js'
-import showdown from 'showdown';
 
 export default {
   props: {

@@ -10,7 +10,7 @@
 
   <div v-for="note in task.notes" :key='note._id'>
       <div class="note">
-        <pre>{{ note.content}}</pre>
+        <div v-html="markDown(note.content)"></div>
         <div class="metadata">
           <author-line :user-id="note.createdBy" :date="note.createdAt"></author-line>
           <div class="action">
@@ -54,7 +54,10 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 import moment from 'moment';
 import 'moment/locale/fr'
 
+import MarkdownMixin from '/imports/ui/mixins/MarkdownMixin.js'
+
 export default {
+  mixins: [MarkdownMixin],
   props: {
     task: {
       type: Object
