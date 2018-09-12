@@ -5,7 +5,7 @@ export const store = new Vuex.Store({
   state: {
     selectedGroup: {},
     showCategories: false,
-    currentProject: null,
+    currentProjectId: 0,
     hideDrawer: false
   },
   getters: {
@@ -18,12 +18,8 @@ export const store = new Vuex.Store({
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
     },
-    updateCurrentProject(state, currentProjectId) {
-      if (currentProjectId != 0) {
-        state.currentProject = Projects.findOne({_id: currentProjectId});
-      } else {
-        state.currentProject = null;
-      }
+    updateCurrentProjectId(state, currentProjectId) {
+      state.currentProjectId = currentProjectId;
     },
     updateHideDrawer(state, hideDrawer) {
       state.hideDrawer = hideDrawer
@@ -39,8 +35,8 @@ export const store = new Vuex.Store({
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
     },
-    setCurrentProject (context, projectId) {
-      context.commit('updateCurrentProject', projectId);
+    setCurrentProjectId (context, projectId) {
+      context.commit('updateCurrentProjectId', projectId);
     },
     setHideDrawer (context, hideDrawer) {
       context.commit('updateHideDrawer', hideDrawer);

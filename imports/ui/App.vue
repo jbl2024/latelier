@@ -33,7 +33,7 @@
         <md-divider></md-divider>
       </md-list>
 
-      <project-menu v-if="currentProject" :project="currentProject"></project-menu>
+      <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
       <project-groups v-if="showCategories"></project-groups>
 
     </md-app-drawer>
@@ -55,7 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['showCategories', 'hideDrawer', 'currentProject'])
+    ...mapState(['showCategories', 'hideDrawer', 'currentProjectId'])
   },
   meteor: {
     data: {
