@@ -88,6 +88,7 @@ export default {
   }
 
   .page-container {
+    height: 100%;
     overflow: hidden;
     position: relative;
     display: flex;
