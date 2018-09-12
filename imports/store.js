@@ -1,9 +1,11 @@
 import Vuex from 'vuex'
+import { Projects } from '/imports/api/projects/projects.js'
 
 export const store = new Vuex.Store({
   state: {
     selectedGroup: {},
     showCategories: false,
+    currentProject: null,
     hideDrawer: false
   },
   getters: {
@@ -15,6 +17,13 @@ export const store = new Vuex.Store({
     },
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
+    },
+    updateCurrentProject(state, currentProjectId) {
+      if (currentProjectId != 0) {
+        state.currentProject = Projects.findOne({_id: currentProjectId});
+      } else {
+        state.currentProject = null;
+      }
     },
     updateHideDrawer(state, hideDrawer) {
       state.hideDrawer = hideDrawer
@@ -29,6 +38,9 @@ export const store = new Vuex.Store({
     },
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
+    },
+    setCurrentProject (context, projectId) {
+      context.commit('updateCurrentProject', projectId);
     },
     setHideDrawer (context, hideDrawer) {
       context.commit('updateHideDrawer', hideDrawer);
