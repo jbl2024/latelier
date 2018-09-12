@@ -83,7 +83,7 @@ import debounce from 'lodash/debounce';
 
 export default {
   mounted () {
-    this.$store.dispatch('setCurrentProject', this.projectId);    
+    this.$store.dispatch('setCurrentProjectId', this.projectId);    
     this.$events.listen('task-selected', task => {
       if (!task) {
         return;
@@ -102,7 +102,7 @@ export default {
   beforeDestroy() {
     this.$events.off('task-selected');
     this.$events.off('close-task-detail');
-    this.$store.dispatch('setCurrentProject', 0);    
+    this.$store.dispatch('setCurrentProjectId', 0);    
   },
   props: {
     projectId: {
