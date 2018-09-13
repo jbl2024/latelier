@@ -52,6 +52,7 @@ export default {
     Timeline,
   },  
   mounted () {
+    this.$store.dispatch('setCurrentProjectId', this.projectId);    
     this.$events.listen('task-selected', task => {
       if (!task) {
         return;
@@ -68,6 +69,7 @@ export default {
     this.debouncedFilter = debounce((val) => { this.filterName = val}, 400);
   },
   beforeDestroy() {
+    this.$store.dispatch('setCurrentProjectId', 0);    
     this.$events.off('task-selected');
     this.$events.off('close-task-detail');
   },
