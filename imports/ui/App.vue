@@ -5,7 +5,8 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title">l'atelier</span>
+      <span class="md-title" v-show="currentProjectId == 0">l'atelier</span>
+      <span class="md-title" v-show="project">{{ project.name}}</span>
 
       <div class="md-toolbar-section-end">
         <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
@@ -17,7 +18,7 @@
       <md-list v-if="currentProjectId === 0">
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
           <md-icon>home</md-icon>
-          <span class="md-list-item-text">Accueil</span>
+          <span class="md-list-item-text">Projets</span>
         </md-list-item>
 
         <md-list-item :to="{ name: 'projects-timeline'}" @click="showNavigation = false">
@@ -46,6 +47,7 @@
 
 <script>
 import {Session} from 'meteor/session';
+import { Projects } from '/imports/api/projects/projects.js'
 import { mapState } from 'vuex';
 
 export default {
@@ -58,9 +60,15 @@ export default {
     ...mapState(['showCategories', 'hideDrawer', 'currentProjectId'])
   },
   meteor: {
-    data: {
-      count() {
-        return Session.get('counter');
+    project: {
+      params () {
+        return {
+          id: this.currentProjectId
+        };
+      },
+      deep: false,
+      update ({id}) {
+        return Projects.findOne({ _id: id}) || {};
       }
     }
   },
