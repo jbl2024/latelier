@@ -3,7 +3,7 @@
 <div class="project-menu">
       <md-list>
         <md-list-item :to="{ name: 'projects-page'}">
-          <md-icon>home</md-icon>
+          <md-icon>arrow_back</md-icon>
           <span class="md-list-item-text">Accueil</span>
         </md-list-item>
 
