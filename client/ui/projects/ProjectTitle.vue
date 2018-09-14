@@ -17,11 +17,9 @@
       </span>
     </div>
 
-    <div class="md-layout-item md-toolbar-section-end show-desktop">
-      <md-field class="search" md-clearable>
-        <md-icon>search</md-icon>
-        <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" />
-      </md-field>
+    <div class="md-layout-item md-toolbar-section-end search show-desktop">
+      <md-icon>search</md-icon>
+      <input placeholder="Rechercher..." v-on:input="debouncedFilter">
     </div>
 
   </div>
@@ -41,7 +39,7 @@ export default {
   },
   created() {
     this.debouncedFilter = debounce(val => {
-      this.$events.fire("filter-tasks", val);
+      this.$events.fire("filter-tasks", val.target.value);
     }, 400);
   },
   meteor: {
@@ -98,14 +96,19 @@ export default {
   margin: 0;
 }
 
-.search input, .search input:focus {
-  color: white !important;
-}
-input:focus {
-  color: white !important;
+.search  {
+  margin-left: 12px;
 }
 
-.search .md-input {
-  color: white !important;
+
+.search input {
+  margin-left: -24px;
+  padding-left: 32px;
+  border: none;
+  font-size: 16px;
+  color: white;
+  background-color: #448aff;
+  border-bottom: 1px solid #eee;
 }
+
 </style>
