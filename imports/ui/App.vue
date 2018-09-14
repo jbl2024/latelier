@@ -5,14 +5,14 @@
       <md-button class="md-icon-button" @click="showNavigation = true">
         <md-icon>menu</md-icon>
       </md-button>
-      <span class="md-title" v-show="currentProjectId == 0">l'atelier</span>
-      <span class="md-title" v-show="project">{{ project.name}}</span>
-
+      <div>
+        <span class="md-title" v-show="currentProjectId == 0">l'atelier</span>
+      </div>
+      <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
       <div class="md-toolbar-section-end">
         <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
       </div>
     </md-app-toolbar>
-
 
     <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-show="!hideDrawer">
       <md-list v-if="currentProjectId === 0">
@@ -58,21 +58,6 @@ export default {
   },
   computed: {
     ...mapState(['showCategories', 'hideDrawer', 'currentProjectId'])
-  },
-  meteor: {
-    project: {
-      params () {
-        return {
-          id: this.currentProjectId
-        };
-      },
-      deep: false,
-      update ({id}) {
-        return Projects.findOne({ _id: id}) || {};
-      }
-    }
-  },
-  methods: {
   }
 }
 </script>

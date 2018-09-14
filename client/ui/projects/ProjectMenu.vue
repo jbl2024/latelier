@@ -1,25 +1,24 @@
 <template>
 
 <div class="project-menu">
-      <md-list>
-        <md-list-item :to="{ name: 'projects-page'}">
-          <md-icon>arrow_back</md-icon>
-          <span class="md-list-item-text">Accueil</span>
-        </md-list-item>
+  <md-list v-show="$subReady.project">
+    <md-list-item :to="{ name: 'projects-page'}">
+      <md-icon>arrow_back</md-icon>
+      <span class="md-list-item-text">Accueil</span>
+    </md-list-item>
 
-        <md-list-item :to="{ name: 'project-timeline', params: { projectId: project._id }}">
-          <md-icon>timeline</md-icon>
-          <span class="md-list-item-text">Planning</span>
-        </md-list-item>
+    <md-list-item :to="{ name: 'project-timeline', params: { projectId: project._id }}">
+      <md-icon>timeline</md-icon>
+      <span class="md-list-item-text">Planning</span>
+    </md-list-item>
 
-        <md-list-item :to="{ name: 'project-settings', params: { projectId: project._id }}">
-          <md-icon>settings</md-icon>
-          <span class="md-list-item-text">Paramètres</span>
-        </md-list-item>
+    <md-list-item :to="{ name: 'project-settings', params: { projectId: project._id }}">
+      <md-icon>settings</md-icon>
+      <span class="md-list-item-text">Paramètres</span>
+    </md-list-item>
 
-        <md-divider></md-divider>
-      </md-list>
-
+    <md-divider></md-divider>
+  </md-list>
 </div>
 
 </template>
@@ -35,6 +34,11 @@ export default {
     }
   },
   meteor: {
+    $subscribe: {
+      'project': function() {
+        return [this.projectId] 
+      }
+    },
     project: {
       params () {
         return {

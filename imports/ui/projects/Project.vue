@@ -7,55 +7,6 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
 
-      <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'projects-page'}">
-            <md-icon>home
-              <md-tooltip md-delay="300">Accueil</md-tooltip>
-            </md-icon>
-        </md-button>
-        <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
-          {{ project.name }}
-        </span>        
-        <span class="md-title edit-project-name" v-show="editProjectName">
-          <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
-          <md-button class="md-icon-button" @click.native="updateProjectName">
-            <md-icon>check_circle</md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" @click.native="cancelUpdateProjectName">
-            <md-icon>cancel</md-icon>
-          </md-button>
-        </span>
-
-        <div class="md-toolbar-section-end show-mobile">
-          <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
-            <md-button md-menu-trigger class="md-icon-button">
-              <md-icon>more_vert</md-icon>
-            </md-button>
-            <md-menu-content>
-            </md-menu-content>
-          </md-menu>
-        </div>
-
-        <div class="md-toolbar-section-end show-desktop">
-          <md-field class="search" md-clearable>
-            <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
-          </md-field>
-
-          <md-button class="md-icon-button" :to="{ name: 'project-timeline', params: { projectId: project._id }}">
-              <md-icon>timeline
-                <md-tooltip md-delay="300" md-direction="bottom">Planning</md-tooltip>
-              </md-icon>
-          </md-button>
-          <md-button class="md-icon-button" :to="{ name: 'project-settings', params: { projectId: project._id }}">
-              <md-icon>settings
-                <md-tooltip md-delay="300" md-direction="bottom">Paramètres</md-tooltip>
-              </md-icon>
-          </md-button>
-        </div>
-      </md-toolbar>
-
       <div class="container-wrapper">
         <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
