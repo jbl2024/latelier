@@ -6,7 +6,8 @@ export HMR_URL=$IP
 export HMR_PORT=3003
 export ROOT_URL=http://$IP:$PORT
 export VUE_DEV_SERVER_URL=http://$HMR_URL:$HMR_PORT
-echo "{\"public\": {\"devServerURL\": \"$VUE_DEV_SERVER_URL\"}}" > ./settings-temp.json
+export METEOR_SETTINGS="{\"public\": {\"devServerURL\": \"$VUE_DEV_SERVER_URL\"}}"
+
 echo "Starting app on ios device..."
 
-meteor run ios-device --mobile-server=http://$IP:$PORT --settings settings-temp.json
+meteor run ios --mobile-server=http://$IP:$PORT
