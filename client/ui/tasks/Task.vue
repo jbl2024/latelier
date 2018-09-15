@@ -10,7 +10,7 @@
           <div class="checkbox">
             <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
           </div>
-          <span v-show="!editName" @click="startUpdateName" class="name">
+          <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
           {{ task.name }}
           </span>
 
@@ -207,6 +207,17 @@ export default {
       return moment(date).format('DD/MM/YYYY HH:mm');
     },
 
+    getClassForName (task) {
+      var classes = [
+        'name'
+      ];
+
+      if (task.completed) {
+        classes.push('completed');
+      }
+      return classes.join(' ');
+    }
+
 
   }
 };
@@ -251,6 +262,11 @@ export default {
 .name {
   font-size: 12px;
 }
+
+.name.completed {
+  text-decoration: line-through;
+}
+
 .md-title:hover {
   background-color: #ddd;
   cursor: pointer;
