@@ -23,6 +23,9 @@ Vue.use(VueEvents);
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
 
+import VueDragscroll from "vue-dragscroll";
+Vue.directive(VueDragscroll);
+
 // Main app
 import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';

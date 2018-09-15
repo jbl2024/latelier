@@ -2,7 +2,7 @@
   <div class="list">
     <div class="list-header">
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
-    <div class="swimlane">
+    <div class="swimlane dragscroll">
       <drag :transfer-data="getTransferData(list)">
       <h2 v-show="!isListEdited(list, selectedList)" >
         <span @click="editList(list)" class="list-name">{{list.name}} ({{ taskCount }}) </span>
