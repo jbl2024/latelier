@@ -7,7 +7,9 @@
       <md-card-header>
 
         <div class="md-title">
-          <md-checkbox v-show="!editName" v-model="task.completed"></md-checkbox>
+          <div class="checkbox">
+            <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
+          </div>
           <span v-show="!editName" @click="startUpdateName" class="name">
           {{ task.name }}
           </span>
@@ -223,11 +225,6 @@ export default {
   margin-bottom: 0;
 }
 
-.md-checkbox {
-  margin: 0;
-  margin-right: 4px;
-  top: 2px;
-}
 
 
 .dragup {
@@ -242,11 +239,23 @@ export default {
   background: linear-gradient(90deg, #aaa 2%, #fff 2%);
 }
 
+.checkbox {
+  float: left;
+  margin-top: 2px;
+}
+.checkbox input {
+  width: 16px;
+  height: 16px;
+}
 
-.name:hover {
-  background-color: rgb(48, 48, 48);
+.name {
+  font-size: 12px;
+}
+.md-title:hover {
+  background-color: #ddd;
   cursor: pointer;
-  color: white;
+  color: black;
+  transition: background-color 250ms linear;
 }
 
 .edit .md-button {
