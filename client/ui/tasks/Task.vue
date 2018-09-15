@@ -263,6 +263,10 @@ export default {
   font-size: 12px;
 }
 
+.task {
+  padding-right: 2px;
+}
+
 .name.completed {
   text-decoration: line-through;
 }

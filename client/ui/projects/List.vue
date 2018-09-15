@@ -173,13 +173,14 @@ export default {
 @media (min-width: 601px) {
   .swimlane {
     flex: 0 0 auto;
-    width: 272px;
+    width: 274px;
     display: inline-block;
     margin-right: 8px;
+    padding-right: 2px;
   }
 
   .tasks-wrapper {
-    width: 272px;    
+    width: 274px;    
   }
 }
 
