@@ -21,6 +21,7 @@
     "vue": "^2.5.16",
     "vue-color": "^2.6.0",
     "vue-drag-drop": "^1.1.4",
+    "vue-dragscroll": "^1.5.0",
     "vue-event-handler": "^1.1.0",
     "vue-flatpickr-component": "^7.0.5",
     "vue-hot-reload-api": "^2.3.0",

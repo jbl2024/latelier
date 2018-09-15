@@ -1,9 +1,9 @@
 <template>
-  <div class="kanban" @click="hideProperties()">
-      <div v-for="list in lists" :key='list._id' class="flex">
+  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove" >
+      <div v-for="list in lists" :key='list._id' class="flex dragscroll">
         <list :list="list"></list>
       </div>  
-      <div class="swimlane new">
+      <div class="swimlane dragscroll new">
         <h2 @click="newListInline">Nouvelle liste</h2>
       </div>
   </div>
@@ -25,6 +25,7 @@ export default {
     return {
       selectedList: {},
       savedName: '',
+      scrollEnabled: false
     }
   },
   meteor: {
@@ -33,7 +34,7 @@ export default {
     }
   },
   methods: {
-    hideProperties () {
+    hideProperties (e) {
       this.$events.fire('close-task-detail');
     },
 
@@ -46,6 +47,14 @@ export default {
         that.savedName = createdList.name;
         that.selectedList = createdList;
       });
+    },
+
+    onMouseMove (e) {
+      if (e && e.target && e.target.classList.contains('dragscroll')) {
+        this.scrollEnabled = true;
+      } else {
+        this.scrollEnabled = false;
+      }
     }
   }
 }
