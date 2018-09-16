@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 
 export const Projects = new Mongo.Collection('projects');
@@ -67,6 +68,7 @@ Meteor.methods({
 
     Tasks.remove({projectId: projectId});
     Lists.remove({projectId: projectId});
+    Attachments.remove({'meta.projectId': projectId});
     Projects.remove(projectId);
   },
 

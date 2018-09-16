@@ -66,10 +66,6 @@
       <task-checklist :task="task"></task-checklist>
     </md-tab>
 
-    <md-tab id="tab-attachments" md-label="Fichiers">
-      <task-attachments :task="task"></task-attachments>
-    </md-tab>
-
   </md-tabs>  
 </div>
 
