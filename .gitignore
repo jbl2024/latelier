@@ -16,3 +16,5 @@ settings.json
 
 # End of https://www.gitignore.io/api/meteorjs
 node_modules/
+
+settings-temp.json
