@@ -5,6 +5,7 @@ import { Projects } from "../projects";
 import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
+import { Attachments } from "../../attachments/attachments";
 
 // This code only runs on the server
 Meteor.publish("projects", function projectsPublication(name, groupId) {
@@ -61,6 +62,12 @@ publishComposite("project", function(projectId) {
         // tasks
         find(project) {
           return Tasks.find({ projectId: project._id }, { sort: { order: 1 } });
+        },
+      },
+      {
+        // attachments
+        find(project) {
+          return Attachments.find({ 'meta.projectId': project._id }).cursor;
         }
       },
       {
