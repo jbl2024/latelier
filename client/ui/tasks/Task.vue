@@ -1,51 +1,56 @@
 <template>
 
 <div class="task" @click="selectTask">
-    <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-    <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }">
-      <md-card-area md-inset>
-      <md-card-header>
+    <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd"> 
+      <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
+      <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+        <md-card-area md-inset>
+        <md-card-header>
 
-        <div class="md-title">
-          <div class="checkbox">
-            <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
+          <div class="md-title">
+            <div class="checkbox">
+              <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
+            </div>
+            <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
+            {{ task.name }}
+            </span>
+
+            <span v-show="editName" class="edit">
+              <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
+              <md-button class="md-icon-button" @click.native="updateName">
+                <md-icon>check_circle</md-icon>
+              </md-button>
+
+              <md-button class="md-icon-button" @click.native="cancelUpdateName">
+                <md-icon>cancel</md-icon>
+              </md-button>
+
+            </span>
+
           </div>
-          <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
-          {{ task.name }}
-          </span>
+        </md-card-header>
 
-          <span v-show="editName" class="edit">
-            <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
-            <md-button class="md-icon-button" @click.native="updateName">
-              <md-icon>check_circle</md-icon>
-            </md-button>
+        </md-card-area>
 
-            <md-button class="md-icon-button" @click.native="cancelUpdateName">
-              <md-icon>cancel</md-icon>
-            </md-button>
+        <md-card-content>
 
-          </span>
+          <div class="metadata">
+            <span>
+              <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+                  <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
+              </md-avatar>
+            </span>
+            <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
+          </div>
 
-        </div>
-      </md-card-header>
-
-      </md-card-area>
-
-      <md-card-content>
-
-        <div class="metadata">
-          <span>
-            <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-                <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-            </md-avatar>
-          </span>
-          <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
-        </div>
-
-        <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
-      </md-card-content>
-    </md-card>
-    </drop>
+          <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
+        </md-card-content>
+      </md-card>
+      </drop>
+      <div slot="image" class="drag-image">
+          <task-image :task="task" class="task"></task-image>
+      </div>          
+    </drag>
 </div>
 
 </template>
@@ -96,7 +101,8 @@ export default {
       dragover: false,
       dragup: false,
       dragdown: false,
-      selected: false
+      selected: false,
+      hidden: false
     };
   },
   watch: {
@@ -107,6 +113,21 @@ export default {
     }
   },
   methods: {
+    getTransferData (task) {
+      return {
+        type: 'task',
+        data: task
+      };
+    },
+
+    onDragStart () {
+      this.hidden = true;
+    },
+
+    onDragEnd () {
+      this.hidden = false;
+    },
+
     handleDrop(data, event) {
       event.stopPropagation();
       this.dragover = false;
