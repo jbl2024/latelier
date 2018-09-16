@@ -10,7 +10,8 @@
       <md-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
       <div class="right">
         <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
-          <md-icon>view_week</md-icon>
+          
+          <md-icon>list</md-icon>
         </md-button>
         <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
           <md-icon>delete</md-icon>

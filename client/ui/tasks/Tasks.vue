@@ -64,7 +64,7 @@ export default {
   methods: {
     newTaskInline () {
       var that = this;
-      Meteor.call('tasks.insert', this.projectId, this.listId, 'Nouvelle tache', (error, task) => { 
+      Meteor.call('tasks.insert', this.projectId, this.listId, 'Nouvelle tâche', (error, task) => { 
         if (error) {
           return;
         }

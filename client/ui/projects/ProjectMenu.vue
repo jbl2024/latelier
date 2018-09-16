@@ -7,6 +7,13 @@
       <span class="md-list-item-text">Accueil</span>
     </md-list-item>
 
+    <md-divider></md-divider>
+
+    <md-list-item :to="{ name: 'project'}">
+      <md-icon>list</md-icon>
+      <span class="md-list-item-text">Tâches</span>
+    </md-list-item>
+
     <md-list-item :to="{ name: 'project-timeline', params: { projectId: project._id }}">
       <md-icon>timeline</md-icon>
       <span class="md-list-item-text">Planning</span>

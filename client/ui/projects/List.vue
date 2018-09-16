@@ -11,7 +11,7 @@
             <md-icon>arrow_drop_down</md-icon>
           </md-button>
           <md-menu-content>
-            <md-menu-item @click="newTaskInline(list._id)">Nouvelle tache</md-menu-item>
+            <md-menu-item @click="newTaskInline(list._id)">Nouvelle tâche</md-menu-item>
             <md-menu-item @click="deleteList(list._id)">Supprimer</md-menu-item>
             <md-divider></md-divider>
             <md-menu-item><md-checkbox v-model="list.autoComplete">Marquer comme terminé</md-checkbox></md-menu-item>
@@ -46,7 +46,7 @@
       <div class="tasks-wrapper">
         <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
         <div class="task new" @click="newTaskInline(list._id)">
-            <h2>Ajouter une tache</h2>
+            <h2>Ajouter une tâche</h2>
         </div>
       </div>
 
@@ -137,7 +137,7 @@ export default {
     },
     newTaskInline (listId) {
       var that = this;
-      Meteor.call('tasks.insert', this.list.projectId, listId, 'Nouvelle tache', (error, task) => { 
+      Meteor.call('tasks.insert', this.list.projectId, listId, 'Nouvelle tâche', (error, task) => { 
         if (error) {
           return;
         }
