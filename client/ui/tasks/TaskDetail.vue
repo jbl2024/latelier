@@ -62,8 +62,12 @@
       <task-properties :task="task"></task-properties>
     </md-tab>
 
-    <md-tab id="tab-checkist" md-label="Checklist">
+    <md-tab id="tab-checklist" md-label="Checklist">
       <task-checklist :task="task"></task-checklist>
+    </md-tab>
+
+    <md-tab id="tab-attachments" md-label="Fichiers">
+      <task-attachments :task="task"></task-attachments>
     </md-tab>
 
   </md-tabs>  
