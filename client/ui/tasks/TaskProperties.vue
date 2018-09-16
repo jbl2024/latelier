@@ -68,6 +68,8 @@
     </div>
   </md-list>
 
+  <md-subheader>Pièces jointes</md-subheader>
+  <task-attachments :task="task"></task-attachments>
 
 </div>
 

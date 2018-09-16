@@ -2,7 +2,7 @@
 
 <div class="task-attachments">
     <md-field >
-      <label>Single</label>
+      <label>Cliquer pour ajouter un fichier</label>
       <md-file v-model="file" @md-change="onUpload" :disabled="isUploading"/>
     </md-field>
 
@@ -11,7 +11,7 @@
         <md-icon>description</md-icon>
         <span class="md-list-item-text">{{ attachment.name }}</span>
 
-        <md-button class="md-icon-button md-list-action">
+        <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
           <md-icon>delete</md-icon>
         </md-button>
       </md-list-item>
@@ -78,6 +78,10 @@ export default {
       });
 
       upload.start();
+    },
+
+    deleteAttachment (attachment) {
+      Meteor.call('attachments.remove', attachment._id);
     }
   },
   meteor: {

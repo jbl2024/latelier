@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Lists } from '/imports/api/lists/lists.js'
+import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
 
 export const Tasks = new Mongo.Collection('tasks');
@@ -59,7 +60,7 @@ Meteor.methods({
 
   'tasks.remove'(taskId) {
     check(taskId, String);
-
+    Attachments.remove({'meta.taskId': taskId});
     Tasks.remove(taskId);
   },
 
