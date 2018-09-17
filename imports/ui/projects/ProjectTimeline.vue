@@ -4,24 +4,6 @@
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project">
-      <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'project', params: { projectId: project._id }}">
-            <md-icon>arrow_back
-              <md-tooltip md-delay="300">Accueil</md-tooltip>
-            </md-icon>
-        </md-button>
-        <span class="md-title">
-          {{ project.name }}
-        </span>        
-
-        <div class="md-toolbar-section-end">
-          <md-field class="search" md-clearable>
-            <md-icon>search</md-icon>
-            <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
-          </md-field>
-
-        </div>
-      </md-toolbar>
         <div class="timeline">
           <timeline
             ref="timeline"
