@@ -5,26 +5,6 @@
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project" class="project-wrapper"> 
-      <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'project', params: { projectId: project._id }}">
-            <md-icon>arrow_back
-              <md-tooltip md-delay="300">Accueil</md-tooltip>
-            </md-icon>
-        </md-button>
-        <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
-          {{ project.name }}
-        </span>        
-        <span class="md-title edit-project-name" v-show="editProjectName">
-          <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
-          <md-button class="md-icon-button" @click.native="updateProjectName">
-            <md-icon>check_circle</md-icon>
-          </md-button>
-
-          <md-button class="md-icon-button" @click.native="cancelUpdateProjectName">
-            <md-icon>cancel</md-icon>
-          </md-button>
-        </span>
-      </md-toolbar>
 
       <md-tabs md-sync-route :md-alignment="tabAlignment">
         <md-tab id="tab-general" md-label="Paramètres">

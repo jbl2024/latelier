@@ -4,16 +4,6 @@
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
     <div v-if="$subReady.project">
-      <md-toolbar class="toolbar">
-        <md-button class="md-icon-button" :to="{ name: 'project', params: { projectId: project._id }}">
-            <md-icon>arrow_back
-              <md-tooltip md-delay="300">Accueil</md-tooltip>
-            </md-icon>
-        </md-button>
-        <span class="md-title">
-          {{ project.name }}
-        </span>        
-      </md-toolbar>
 
       <md-list>
           <md-list-item v-for="attachment in attachments" :key="attachment._id">
