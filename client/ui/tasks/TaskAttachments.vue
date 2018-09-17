@@ -1,10 +1,8 @@
 <template>
 
 <div class="task-attachments">
-    <md-field >
-      <label>Cliquer pour ajouter un fichier</label>
-      <md-file v-model="file" @md-change="onUpload" :disabled="isUploading"/>
-    </md-field>
+  <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
+  <md-progress-bar md-mode="indeterminate" v-show="isUploading"></md-progress-bar>
 
    <md-list>
       <md-list-item v-for="attachment in attachments" :key="attachment._id">
@@ -16,11 +14,6 @@
         </md-button>
       </md-list-item>
    </md-list>
-   <div class="progress">
-    <md-progress-spinner :md-diameter="30" :md-stroke="3" md-mode="indeterminate" v-show="isUploading"></md-progress-spinner>
-   </div>
-
-
 </div>
 
 </template>
@@ -48,11 +41,12 @@ export default {
     };
   },
   methods: {
-    onUpload(files) {
+    onUpload(e) {
+      var file = e.target.files[0];
       var that = this;
       const upload = Attachments.insert(
         {
-          file: files[0],
+          file: file,
           streams: "dynamic",
           chunkSize: "dynamic",
           meta: {
