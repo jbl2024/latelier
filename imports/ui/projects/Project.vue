@@ -117,6 +117,7 @@ export default {
 
 .drawer-task-detail {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+  z-index: 400;
 }
 
 .toolbar {
@@ -194,7 +195,7 @@ export default {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  z-index: 1000;
+  z-index: 200;
 }
 
 </style>
