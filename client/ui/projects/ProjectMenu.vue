@@ -19,6 +19,11 @@
       <span class="md-list-item-text">Planning</span>
     </md-list-item>
 
+    <md-list-item :to="{ name: 'project-attachments-page', params: { projectId: project._id }}">
+      <md-icon>description</md-icon>
+      <span class="md-list-item-text">Pièces jointes</span>
+    </md-list-item>
+
     <md-list-item :to="{ name: 'project-settings', params: { projectId: project._id }}">
       <md-icon>settings</md-icon>
       <span class="md-list-item-text">Paramètres</span>
