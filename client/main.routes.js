@@ -83,6 +83,13 @@ export default [
     props: true
   },
   {
+    path: '/projects/:projectId/attachments',
+    name: 'project-attachments-page',
+    beforeEnter: isBasicAuth,
+    component: '/imports/ui/projects/ProjectAttachmentsPage.vue',
+    props: true
+  },
+  {
     path: '/admin',
     name: 'admin',
     beforeEnter: isBasicAuth,
