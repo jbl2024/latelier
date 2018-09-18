@@ -5,11 +5,13 @@
     </div>
     <div v-if="$subReady.project">
 
-      <md-list>
+      <md-list class="md-double-line">
           <md-list-item v-for="attachment in attachments" :key="attachment._id">
             <md-icon>description</md-icon>
-            <span class="md-list-item-text">{{ attachment.name }}</span>
-
+            <div class="md-list-item-text">
+              <span>{{ attachment.name }}</span>
+              <span>{{ getTask(attachment).name }}</span>
+            </div>
             <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
               <md-icon>delete</md-icon>
             </md-button>
@@ -22,6 +24,7 @@
 
 <script>
 import { Projects } from '/imports/api/projects/projects.js'
+import { Tasks } from '/imports/api/tasks/tasks.js'
 import { Attachments } from '/imports/api/attachments/attachments.js'
 
 export default {
@@ -59,11 +62,14 @@ export default {
         };
       },
       update ({projectId}) {
-        return Attachments.find({'meta.projectId': this.projectId});
+        return Attachments.find({'meta.projectId': this.projectId}, {sort: {'meta.taskId': 1, 'name': 1}});
       }
     }
   },
   methods: {
+    getTask (attachment) {
+      return Tasks.findOne({_id: attachment.meta.taskId});
+    }
   }
 }
 </script>
