@@ -16,7 +16,6 @@ es5-shim@4.8.0                # ECMAScript 5 compatibility for older browsers
 ecmascript@0.11.1              # Enable ECMAScript2015+ syntax in app code
 shell-server@0.3.1            # Server-side component of the `meteor shell` command
 
-insecure@1.0.7                # Allow all DB writes from clients (for prototyping)
 static-html
 akryum:vue
 akryum:vue-component
