@@ -9,7 +9,7 @@
           <md-list-item v-for="attachment in attachments" :key="attachment._id">
             <md-icon>description</md-icon>
             <div class="md-list-item-text">
-              <span>{{ attachment.name }}</span>
+              <a :href="link(attachment)" target="_blank" class="md-list-item-text">{{ attachment.name }}</a>
               <span>{{ getTask(attachment).name }}</span>
             </div>
             <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
@@ -64,12 +64,21 @@ export default {
       update ({projectId}) {
         return Attachments.find({'meta.projectId': this.projectId}, {sort: {'meta.taskId': 1, 'name': 1}});
       }
-    }
+    }    
   },
   methods: {
+    link (attachment) {
+      return Attachments.link(attachment);
+    },
+
     getTask (attachment) {
       return Tasks.findOne({_id: attachment.meta.taskId});
-    }
+    },
+
+    deleteAttachment (attachment) {
+      Meteor.call('attachments.remove', attachment._id);
+    },
+
   }
 }
 </script>

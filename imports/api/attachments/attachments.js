@@ -4,7 +4,7 @@ import { check } from "meteor/check";
 
 export const Attachments = new FilesCollection({
   collectionName: "Attachments",
-  allowClientCode: false, // Disallow remove files from Client
+  allowClientCode: true, // Disallow remove files from Client
   onBeforeUpload(file) {
     return true;
   },
