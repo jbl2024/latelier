@@ -7,93 +7,100 @@ import ResetPassword from '../imports/ui/pages/Auth/ResetPassword.vue'
 
 export default [
   {
-    path: '/',
-    name: 'home',
-    component: '/imports/ui/Home.vue',
+    path: "/",
+    name: "home",
+    component: "/imports/ui/Home.vue",
     beforeEnter: (to, from, next) => {
       if (Meteor.userId()) {
         next({
-          name: 'projects-page'
-        })
+          name: "projects-page"
+        });
       } else {
         next();
       }
     }
   },
   {
-    path: '/login',
+    path: "/login",
     component: Auth,
-    redirect: { name: 'login' },
+    redirect: { name: "login" },
     children: [
       {
-        path: '/login',
-        name: 'login',
+        path: "/login",
+        name: "login",
         component: Login
       },
       {
-        path: '/register',
-        name: 'register',
+        path: "/register",
+        name: "register",
         component: Register
       },
       {
-        path: '/forgot-password',
-        name: 'forgot-password',
+        path: "/forgot-password",
+        name: "forgot-password",
         component: ForgotPassword
       },
       {
-        path: '/reset-password/:token',
-        name: 'reset-password',
+        path: "/reset-password/:token",
+        name: "reset-password",
         component: ResetPassword
       }
     ]
-  },  
-  {
-    path: '/projects',
-    name: 'projects-page',
-    beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/ProjectsPage.vue',
-    props: true,
   },
   {
-    path: '/timeline',
-    name: 'projects-timeline',
+    path: "/projects",
+    name: "projects-page",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/ProjectsTimeline.vue',
+    component: "/imports/ui/projects/ProjectsPage.vue",
     props: true
   },
   {
-    path: '/projects/:projectId',
-    name: 'project',
+    path: "/timeline",
+    name: "projects-timeline",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/Project.vue',
+    component: "/imports/ui/projects/ProjectsTimeline.vue",
     props: true
   },
   {
-    path: '/projects/:projectId/settings',
-    name: 'project-settings',
+    path: "/projects/:projectId",
+    name: "project",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/ProjectSettings.vue',
+    component: "/imports/ui/projects/Project.vue",
     props: true
   },
   {
-    path: '/projects/:projectId/timeline',
-    name: 'project-timeline',
+    path: "/projects/:projectId/settings",
+    name: "project-settings",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/ProjectTimeline.vue',
+    component: "/imports/ui/projects/ProjectSettings.vue",
     props: true
   },
   {
-    path: '/projects/:projectId/attachments',
-    name: 'project-attachments-page',
+    path: "/projects/:projectId/timeline",
+    name: "project-timeline",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/projects/ProjectAttachmentsPage.vue',
+    component: "/imports/ui/projects/ProjectTimeline.vue",
     props: true
   },
   {
-    path: '/admin',
-    name: 'admin',
+    path: "/projects/:projectId/attachments",
+    name: "project-attachments-page",
     beforeEnter: isBasicAuth,
-    component: '/imports/ui/admin/Admin.vue',
+    component: "/imports/ui/projects/ProjectAttachmentsPage.vue",
     props: true
   },
+  {
+    path: "/projects/:projectId/:taskId",
+    name: "project-task",
+    beforeEnter: isBasicAuth,
+    component: "/imports/ui/projects/Project.vue",
+    props: true
+  },
+  {
+    path: "/admin",
+    name: "admin",
+    beforeEnter: isBasicAuth,
+    component: "/imports/ui/admin/Admin.vue",
+    props: true
+  }
 ];

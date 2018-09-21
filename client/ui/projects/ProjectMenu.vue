@@ -14,17 +14,17 @@
       <span class="md-list-item-text">Tâches</span>
     </md-list-item>
 
-    <md-list-item :to="{ name: 'project-timeline', params: { projectId: project._id }}">
+    <md-list-item :to="{ name: 'project-timeline', params: { projectId: project._id }}" v-if="project._id">
       <md-icon>timeline</md-icon>
       <span class="md-list-item-text">Planning</span>
     </md-list-item>
 
-    <md-list-item :to="{ name: 'project-attachments-page', params: { projectId: project._id }}">
+    <md-list-item :to="{ name: 'project-attachments-page', params: { projectId: project._id }}" v-if="project._id">
       <md-icon>description</md-icon>
       <span class="md-list-item-text">Pièces jointes</span>
     </md-list-item>
 
-    <md-list-item :to="{ name: 'project-settings', params: { projectId: project._id }}">
+    <md-list-item :to="{ name: 'project-settings', params: { projectId: project._id }}" v-if="project._id">
       <md-icon>settings</md-icon>
       <span class="md-list-item-text">Paramètres</span>
     </md-list-item>
