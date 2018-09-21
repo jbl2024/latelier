@@ -7,9 +7,9 @@
    <md-list>
       <md-list-item v-for="attachment in attachments" :key="attachment._id">
         <md-icon>description</md-icon>
-        <span class="md-list-item-text">{{ attachment.name }}</span>
+        <a :href="link(attachment)"  target="_blank" class="md-list-item-text">{{ attachment.name }}</a>
 
-        <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
+        <md-button class="md-icon-button md-list-action" @click.stop="deleteAttachment(attachment)">
           <md-icon>delete</md-icon>
         </md-button>
       </md-list-item>
@@ -76,6 +76,10 @@ export default {
 
     deleteAttachment (attachment) {
       Meteor.call('attachments.remove', attachment._id);
+    },
+
+    link (attachment) {
+      return Attachments.link(attachment);
     }
   },
   meteor: {
