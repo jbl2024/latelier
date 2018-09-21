@@ -1,3 +1,4 @@
 {
-  "generateFixtures": true
+  "generateFixtures": true,
+  "attachmentsPath": "../attachments"
 }
