@@ -10,7 +10,7 @@
             <md-icon>description</md-icon>
             <div class="md-list-item-text">
               <a :href="link(attachment)" target="_blank" class="md-list-item-text">{{ attachment.name }}</a>
-              <span>{{ getTask(attachment).name }}</span>
+              <router-link :to="{ name: 'project-task', params: { projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
             </div>
             <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
               <md-icon>delete</md-icon>

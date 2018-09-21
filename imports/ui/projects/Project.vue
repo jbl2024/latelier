@@ -45,6 +45,7 @@ export default {
     this.$events.listen('close-task-detail', task => {
       this.$events.fire('task-selected', null);
       this.showTaskDetail = false;
+      this.$router.push({ name: 'project', params: { projectId: this.projectId }}) 
     });
   },
   created () {
@@ -59,8 +60,23 @@ export default {
     projectId: {
       type: String,
       default: '0'
+    },
+    taskId: {
+      type: String,
+      default: '0'
     }
   },
+  watch: {
+    taskId: {
+      immediate: true,
+      handler (taskId) {
+        if (taskId != 0) {
+          this.selectTask(taskId);
+        }
+      }
+    },
+  },
+
   data () {
     return {
       savedProjectName: '',
@@ -78,10 +94,20 @@ export default {
       }
     },
     project () {
+      if (this.taskId != 0) {
+        this.selectTask(this.taskId);
+      }
       return Projects.findOne();
     }
   },
   methods: {
+    selectTask (taskId) {
+      var selectedTask = Tasks.findOne({_id: taskId});
+      if (selectedTask) {
+        this.selectedTask = selectedTask;
+        this.showTaskDetail = true;            
+      }
+    },
     startUpdateProjectName () {
       this.savedProjectName = this.project.name;
       this.editProjectName = true;

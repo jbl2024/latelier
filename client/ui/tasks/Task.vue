@@ -222,7 +222,7 @@ export default {
       if (this.editName) {
         return;
       }
-      this.$events.fire('task-selected', this.task);
+      this.$router.push({ name: 'project-task', params: { projectId: this.task.projectId, taskId: this.task._id }}) 
     },
     formatDate (date) {
       return moment(date).format('DD/MM/YYYY HH:mm');
