@@ -30,6 +30,8 @@
     </md-list-item>
 
     <md-divider></md-divider>
+    
+    <labels :projectId="projectId"></labels>
   </md-list>
 </div>
 
