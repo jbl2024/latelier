@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
+import { Tasks } from "/imports/api/tasks/tasks";
 
 export const Labels = new Mongo.Collection('labels');
 
@@ -29,6 +30,7 @@ Meteor.methods({
   'labels.remove'(labelId) {
     check(labelId, String);
 
+    Tasks.update({}, { $pull: { labels: labelId } });
     Labels.remove(labelId);
   },
 
