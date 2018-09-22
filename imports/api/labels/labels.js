@@ -33,7 +33,7 @@ Meteor.methods({
   },
 
   'labels.updateName'(labelId, name) {
-    check(labedId, String);
+    check(labelId, String);
     check(name, String);
     if (name.length == 0) {
       throw new Meteor.Error('invalid-name');
@@ -43,13 +43,27 @@ Meteor.methods({
   },
 
   'labels.updateColor'(labelId, color) {
-    check(labedId, String);
+    check(labelId, String);
     check(color, String);
     if (color.length == 0) {
       throw new Meteor.Error('invalid-color');
     }
 
     Labels.update({_id: labelId}, {$set: {color: color}});
+  },
+
+  'labels.updateNameAndColor'(labelId, name, color) {
+    check(labelId, String);
+    check(name, String);
+    check(color, String);
+    if (name.length == 0) {
+      throw new Meteor.Error('invalid-name');
+    }
+    if (color.length == 0) {
+      throw new Meteor.Error('invalid-color');
+    }
+
+    Labels.update({_id: labelId}, {$set: {color: color, name: name}});
   },
 
 });

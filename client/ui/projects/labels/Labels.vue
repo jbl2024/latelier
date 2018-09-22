@@ -11,7 +11,7 @@
           :key="label._id" 
           @mouseover="showButtons = label._id" 
           @mouseleave="showButtons = null">
-        <md-icon>label</md-icon>
+        <md-icon :style="getColor(label)">label</md-icon>
         <span class="md-list-item-text">{{label.name}}</span>
 
         <md-button class="md-icon-button md-list-action" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
@@ -68,7 +68,12 @@ export default {
       console.log(id)
       this.selectedLabelId = id;
       this.$refs.editLabel.open();
-    }
+    },
+
+    getColor (label) {
+      return 'color: ' + label.color;
+    },
+
   }
 };
 </script>

@@ -8,16 +8,15 @@
       <div class="content">
         <md-field>
             <label>Nom</label>
-            <md-input v-focus v-model="label.name" v-on:keyup.enter="updateName()"></md-input>
+            <md-input v-focus v-model="label.name" v-on:keyup.enter="updateNameAndColor()"></md-input>
         </md-field>
-        <div class="color" :style="getColor(label)" @click="showSelectColor = true">
-
+        <div class="color" ref="color" :style="getColor(label)" @click="showSelectColor = true">
         </div>
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
         <md-button class="md-raised md-accent" @click="remove">Supprimer</md-button>
-        <md-button class="md-raised md-primary" @click="updateName">Modifier</md-button>
+        <md-button class="md-raised md-primary" @click="updateNameAndColor">Modifier</md-button>
       </md-dialog-actions>
     </md-dialog>  
 
@@ -57,8 +56,9 @@ export default {
     open () {
       this.showDialog = true;
     },
-    updateName () {
-      Meteor.call('labels.updateName', this.label._id, this.label.name, (error, result) => { 
+
+    updateNameAndColor () {
+      Meteor.call('labels.updateNameAndColor', this.label._id, this.label.name, this.label.color, (error, result) => { 
         if (error) {
           console.log(error)
           return;
@@ -87,7 +87,6 @@ export default {
       var hex = color.hex || 'white';
       this.$refs.color.style.backgroundColor = hex;
       this.label.color = hex;
-      Meteor.call('labels.updateColor', this.label._id, hex);
     },
 
   }
@@ -102,7 +101,9 @@ export default {
 
 .color {
   width: 100%;
-  height: 64px;
+  height: 32px;
+  margin-bottom: 24px;
+  cursor: pointer;
 }
 
 </style>
