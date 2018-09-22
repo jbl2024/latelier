@@ -6,7 +6,7 @@
 
       <div class="content">
         <md-list>
-          <md-list-item v-for="label in labels" 
+          <md-list-item v-for="label in labels" @click="selectLabel(label)"
               :key="label._id">
             <md-icon :style="getColor(label)">label</md-icon>
             <span class="md-list-item-text">{{label.name}}</span>
@@ -15,7 +15,6 @@
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-        <md-button class="md-raised md-primary" @click="">Sélectionner</md-button>
       </md-dialog-actions>
     </md-dialog>  
 
@@ -46,6 +45,11 @@ export default {
   methods: {
     open () {
       this.showDialog = true;
+    },
+
+    selectLabel (label) {
+      this.showDialog = false;
+      this.$emit('select', label);
     },
 
     getColor (label) {
