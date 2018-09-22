@@ -9,12 +9,10 @@
       <md-subheader>Labels</md-subheader>
       <md-list-item v-for="label in labels" 
           :key="label._id" 
-          @click="selectLabel(label)"
           @mouseover="showButtons = label._id" 
           @mouseleave="showButtons = null">
         <md-icon :style="getColor(label)">label</md-icon>
-        <span class="md-list-item-text" :class="getClassForName(label, selectedLabels)">{{label.name}}</span>
-
+        <span @click="selectLabel(label)" class="md-list-item-text" :class="getClassForName(label, selectedLabels)">{{label.name}}</span>
         <md-button class="md-icon-button md-list-action" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
           <md-icon>settings</md-icon>
           <md-tooltip md-delay="300">Paramètres</md-tooltip>

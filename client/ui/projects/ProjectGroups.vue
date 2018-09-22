@@ -8,12 +8,10 @@
       <md-subheader>Catégories</md-subheader>
       <md-list-item v-for="group in groups" 
           :key="group._id" 
-          @click="(e) => {selectGroup(e, group)}" 
           @mouseover="showButtons = group._id" 
           @mouseleave="showButtons = null">
         <md-icon >folder</md-icon>
-        <span :class="getColor(group)">{{group.name}}</span>
-
+        <span @click="selectGroup(group)" :class="getColor(group)">{{group.name}}</span>
         <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
           <md-icon>settings</md-icon>
           <md-tooltip md-delay="300">Paramètres</md-tooltip>
@@ -58,7 +56,7 @@ export default {
       Meteor.call('projectGroups.remove', group._id);
     },
 
-    selectGroup (event, group) {
+    selectGroup (group) {
       var selectedGroup = this.$store.state.selectedGroup;
       if (selectedGroup && selectedGroup._id === group._id) {
         this.$store.dispatch('setSelectedGroup', null);
