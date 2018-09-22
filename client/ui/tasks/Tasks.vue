@@ -12,6 +12,7 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { mapState } from 'vuex';
 
 
 export default {
@@ -33,6 +34,9 @@ export default {
       default: "0"
     }
   },
+  computed: {
+    ...mapState(['selectedLabels'])
+  },
   data() {
     return {
       filterName: ''
@@ -44,15 +48,29 @@ export default {
     tasks: {
       params () {
         return {
-          name: this.filterName
+          name: this.filterName,
+          labels: this.selectedLabels
         };
       },
       deep: false,
-      update ({name}) {
+      update ({name, labels}) {
+        var query = {
+          listId: this.listId
+        };
+
         if (name && name.length > 0) {
-          return Tasks.find({ listId: this.listId, name: { $regex: ".*" + name + ".*", $options: "i" } }, {sort: {order: 1}});
+          query.name = {
+            $regex: ".*" + name + ".*", $options: "i"
+          };
         }
-        return Tasks.find({ listId: this.listId}, {sort: {order: 1}});
+
+        if (labels && labels.length > 0) {
+          query.labels = {
+            $in: labels.map(label => { return label._id})
+          };
+        }
+
+        return Tasks.find(query, {sort: {order: 1}});
       }
     },    
   },
