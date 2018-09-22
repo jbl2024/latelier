@@ -5,6 +5,7 @@
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
       <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
         <md-card-area md-inset>
+          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
         <md-card-header>
 
           <div class="md-title">
@@ -28,6 +29,7 @@
             </span>
 
           </div>
+
         </md-card-header>
 
         </md-card-area>
@@ -339,4 +341,8 @@ export default {
   padding-top: 8px;
 }
 
+.labels {
+  position: absolute;
+  top: -7px;
+}
 </style>
