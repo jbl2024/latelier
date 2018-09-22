@@ -9,10 +9,11 @@
       <md-subheader>Labels</md-subheader>
       <md-list-item v-for="label in labels" 
           :key="label._id" 
+          @click="selectLabel(label)"
           @mouseover="showButtons = label._id" 
           @mouseleave="showButtons = null">
         <md-icon :style="getColor(label)">label</md-icon>
-        <span class="md-list-item-text">{{label.name}}</span>
+        <span class="md-list-item-text" :class="getClassForName(label, selectedLabels)">{{label.name}}</span>
 
         <md-button class="md-icon-button md-list-action" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
           <md-icon>settings</md-icon>
@@ -33,6 +34,7 @@
 <script>
 import { Labels } from '/imports/api/labels/labels.js'
 import { Projects } from '/imports/api/projects/projects.js'
+import { mapState } from 'vuex';
 
 export default {
   props: {
@@ -40,6 +42,9 @@ export default {
       type: String,
       default: 0
     }
+  },
+  computed: {
+    ...mapState(['selectedLabels'])
   },
   data() {
     return {
@@ -65,14 +70,25 @@ export default {
     },
 
     openMenu (id) {
-      console.log(id)
       this.selectedLabelId = id;
       this.$refs.editLabel.open();
+    },
+
+    selectLabel (label) {
+      this.$store.dispatch('selectLabel', label);
     },
 
     getColor (label) {
       return 'color: ' + label.color;
     },
+
+    getClassForName (label, selectedLabels) {
+      var isSelected = selectedLabels.some(aLabel => { return aLabel._id === label._id});
+      if (isSelected) {
+        return 'selected';
+      }
+      return '';
+    }
 
   }
 };

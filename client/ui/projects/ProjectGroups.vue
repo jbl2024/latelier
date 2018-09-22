@@ -11,8 +11,8 @@
           @click="(e) => {selectGroup(e, group)}" 
           @mouseover="showButtons = group._id" 
           @mouseleave="showButtons = null">
-        <md-icon :class="getColor(group)">folder</md-icon>
-        <span class="md-list-item-text">{{group.name}}</span>
+        <md-icon >folder</md-icon>
+        <span :class="getColor(group)">{{group.name}}</span>
 
         <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
           <md-icon>settings</md-icon>
@@ -70,9 +70,9 @@ export default {
     getColor (group) {
       var selectedGroup = this.$store.state.selectedGroup;
       if (selectedGroup && selectedGroup._id === group._id) {
-        return 'selected'
+        return 'selected md-list-item-text'
       }
-      return '';
+      return 'md-list-item-text';
     },
 
     openMenu (id) {
