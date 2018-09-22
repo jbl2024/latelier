@@ -20,6 +20,7 @@
         </md-menu>
       </div>
     </div>
+    <task-labels :task="task"></task-labels>
     <div class="md-toolbar-row">
       <author-line :user-id="task.createdBy" :date="task.createdAt"></author-line>
     </div>
