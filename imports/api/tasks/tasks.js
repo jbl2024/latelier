@@ -264,4 +264,32 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$set: {startDate: startDate}});
   },
 
+  'tasks.addLabel'(taskId, labelId) {
+    check(taskId, String);
+    check(labelId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (Tasks.find({ _id: taskId, "labels": labelId }).count() > 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $push: { labels: labelId } });
+  },
+
+  'tasks.removeLabel'(taskId, labelId) {
+    check(taskId, String);
+    check(labelId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (Tasks.find({ _id: taskId, "labels": labelId }).count() == 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $pull: { labels: labelId } });
+  },  
 });
