@@ -7,6 +7,7 @@ import '../imports/api/users/server/publications.js';
 
 import '../imports/api/projectGroups/projectGroups.js';
 import '../imports/api/projectGroups/server/publications.js';
+import '../imports/api/labels/server/publications.js';
 
 Meteor.startup(() => {
   // code to run on server at startup
