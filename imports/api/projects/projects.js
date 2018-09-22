@@ -5,6 +5,7 @@ import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
+import { Labels } from '/imports/api/labels/labels.js'
 
 export const Projects = new Mongo.Collection('projects');
 
@@ -128,6 +129,11 @@ Meteor.methods({
     var projectGroups = ProjectGroups.find({projects: projectId});
     projectGroups.map(projectGroup => {
       Meteor.call('projectGroups.addProject', projectGroup._id, newProjectId);
+    });
+
+    var labels = Labels.find({projectId: projectId});
+    labels.map(label => {
+      Meteor.call('labels.create', newProjectId, label.name, label.color);
     });
 
     var lists = Lists.find({projectId: projectId});
