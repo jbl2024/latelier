@@ -2,6 +2,7 @@
   <div class="edit-label">
 
     <md-dialog :md-active.sync="showDialog">
+      <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color> 
       <md-dialog-title>Editer le label</md-dialog-title>
 
       <div class="content">
@@ -9,6 +10,9 @@
             <label>Nom</label>
             <md-input v-focus v-model="label.name" v-on:keyup.enter="updateName()"></md-input>
         </md-field>
+        <div class="color" :style="getColor(label)" @click="showSelectColor = true">
+
+        </div>
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
@@ -31,6 +35,7 @@ export default {
   data () {
     return {
       showDialog: false,
+      showSelectColor: false,
       label: {},
       name: ''
     }
@@ -72,7 +77,19 @@ export default {
           this.showDialog = false;
         });
       }
-    }
+    },
+
+    getColor (label) {
+      return 'background-color: ' + label.color;
+    },
+
+    onSelectColor (color) {
+      var hex = color.hex || 'white';
+      this.$refs.color.style.backgroundColor = hex;
+      this.label.color = hex;
+      Meteor.call('labels.updateColor', this.label._id, hex);
+    },
+
   }
 }
 </script>
@@ -81,6 +98,11 @@ export default {
 .content {
   margin-left: 24px;
   margin-right: 24px;
+}
+
+.color {
+  width: 100%;
+  height: 64px;
 }
 
 </style>

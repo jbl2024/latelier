@@ -3,6 +3,7 @@
 <div class="labels">
   <new-label ref="newLabel" :projectId="projectId"></new-label>  
   <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
+
   <div v-if="$subReady.labels">
     <md-list>
       <md-subheader>Labels</md-subheader>
