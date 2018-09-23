@@ -26,7 +26,7 @@ Vue.use(ElementUI)
 import VueDragscroll from "vue-dragscroll";
 Vue.directive(VueDragscroll);
 
-Vue.use(require('vue-shortkey'))
+Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
 
 // Main app
 import App from '/imports/ui/App.vue';
