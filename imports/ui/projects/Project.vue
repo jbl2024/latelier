@@ -35,13 +35,6 @@ import debounce from 'lodash/debounce';
 export default {
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
-    this.$events.listen('task-selected', task => {
-      if (!task) {
-        return;
-      }
-      this.showTaskDetail = true;
-      this.selectedTask = task;
-    });
     this.$events.listen('close-task-detail', task => {
       this.$events.fire('task-selected', null);
       this.showTaskDetail = false;
@@ -52,7 +45,6 @@ export default {
     this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
   },
   beforeDestroy() {
-    this.$events.off('task-selected');
     this.$events.off('close-task-detail');
     this.$store.dispatch('setCurrentProjectId', 0);    
   },

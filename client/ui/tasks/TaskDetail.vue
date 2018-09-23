@@ -4,7 +4,7 @@
   <md-toolbar class="md-transparent" md-elevation="0">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
-        <md-button class="md-icon-button md-dense" @click="requestClose()">
+        <md-button class="md-icon-button md-dense" @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <md-icon>close</md-icon>
         </md-button>
         <span>{{ task.name}}</span>

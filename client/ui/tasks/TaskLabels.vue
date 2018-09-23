@@ -3,7 +3,7 @@
 <div class="task-labels">
   <select-label ref="selectLabel" @select="onSelectLabel"></select-label>  
   <md-chip v-for="label in labels" md-deletable :key="label._id" :style="getColor(label)" @md-delete="removeLabel(label)">{{ label.name }}</md-chip>
-  <md-button class="md-icon-button md-dense md-raised" @click="$refs.selectLabel.open()">
+  <md-button class="md-icon-button md-dense md-raised" @click="$refs.selectLabel.open()" v-shortkey="['l']" @shortkey="$refs.selectLabel.open()">
     <md-icon>add</md-icon>
     <md-tooltip md-delay="300">Ajouter un label</md-tooltip>
   </md-button>
