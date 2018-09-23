@@ -26,6 +26,8 @@ Vue.use(ElementUI)
 import VueDragscroll from "vue-dragscroll";
 Vue.directive(VueDragscroll);
 
+Vue.use(require('vue-shortkey'))
+
 // Main app
 import App from '/imports/ui/App.vue';
 import '/client/main.routes.js';
