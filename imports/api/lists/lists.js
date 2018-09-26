@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Attachments } from "/imports/api/attachments/attachments";
 
 export const Lists = new Mongo.Collection('lists');
 if (Meteor.isServer) {
@@ -42,9 +43,15 @@ Meteor.methods({
 
   'lists.remove'(listId) {
     check(listId, String);
+    
+    const tasks = Tasks.find({listId: listId});
+    tasks.map ( task => {
+      Attachments.remove({'meta.taskId': task._id});
+    });
+
+    Tasks.remove({listId: listId});
 
     Lists.remove(listId);
-    Tasks.remove({listId: listId});
   },
 
   'lists.updateName'(listId, name) {
