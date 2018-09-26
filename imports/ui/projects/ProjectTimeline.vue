@@ -244,4 +244,9 @@ export default {
 .timeline {
   margin-top: 24px;
 }
+
+.vis-item .vis-item-overflow {
+  overflow: visible;
+}
+
 </style>
