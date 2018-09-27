@@ -3,22 +3,29 @@
     <div v-if="!$subReady.project">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
     </div>
-    <div v-if="$subReady.project">
-        <div class="timeline">
-          <timeline
-            ref="timeline"
-            :items="getItems()"
-            :groups="getGroups()"
-            :options="timeline.options"
-            @select="onSelectTask">
-          </timeline>
-        </div>
+    <template v-if="$subReady.project">
 
-        <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
-          <task-detail :taskId="selectedTask._id"></task-detail>
-        </md-drawer>
+      <div class="progress" v-if="showProgress">
+        <md-progress-spinner md-mode="indeterminate" ></md-progress-spinner>
+      </div>
 
-    </div>
+      <div class="timeline">
+        <timeline
+          ref="timeline"
+          :items="getItems()"
+          :groups="getGroups()"
+          :options="timeline.options"
+          @changed="onTimelineChanged"
+          @rangechanged="onTimelineRangeChanged"
+          @select="onSelectTask">
+        </timeline>
+      </div>
+
+      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+        <task-detail :taskId="selectedTask._id"></task-detail>
+      </md-drawer>
+
+    </template>
   </div>
 </template>
 
@@ -77,6 +84,8 @@ export default {
         options: {
         },
       },      
+      showProgress: true,
+      rangeChanged: false,
     }
   },
   meteor: {
@@ -194,8 +203,17 @@ export default {
         this.$events.fire('close-task-detail');
       }
       return;
-    }
+    },
 
+    onTimelineChanged () {
+      if (this.rangeChanged) {
+        this.showProgress = false;
+      }
+    },
+
+    onTimelineRangeChanged () {
+      this.rangeChanged = true;
+    }    
   }
 }
 </script>
@@ -247,6 +265,11 @@ export default {
 
 .vis-item .vis-item-overflow {
   overflow: visible;
+}
+
+.progress {
+  margin-top: 32px;
+  text-align: center;
 }
 
 </style>
