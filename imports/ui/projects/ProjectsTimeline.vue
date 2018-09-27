@@ -21,21 +21,27 @@
       </div>
     </md-toolbar>
 
-    <div v-if="!$subReady.projectsForTimeline">
+    <template v-if="!$subReady.projectsForTimeline">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-    </div>
+    </template>
 
-    <div v-if="$subReady.projectsForTimeline">
-
+    <template v-if="$subReady.projectsForTimeline">
+      
+      <div class="progress" v-if="showProgress">
+        <md-progress-spinner md-mode="indeterminate" ></md-progress-spinner>
+      </div>
       <div class="timeline">
         <timeline
           ref="timeline"
           :items="getItems()"
           :groups="timeline.groups"
           :options="timeline.options"
+          @changed="onTimelineChanged"
+          @rangechanged="onTimelineRangeChanged"
           @select="onSelectProject">
         </timeline>
       </div>
+
 
       <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-project-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
         <project-detail :projectId="selectedProjectId" v-if="selectedProjectId"></project-detail>
@@ -46,8 +52,7 @@
         md-label="Aucun projet"
         md-description="Seuls les projets avec une date de début et de fin sont affichés ici.">
       </md-empty-state>
-
-    </div>
+    </template>
   </div>
 </template>
 
@@ -81,10 +86,13 @@ export default {
     return {
       showConfirmDialog: false,
       showConfirmCloneDialog: false,
+      showProgress: true,
+      rangeChanged: false,
       filter: '',
       debouncedFilter: '',
       projectId: '',
       showProjectDetail: false,
+      enableData: false,
       timeline: {
         groups: [
           {
@@ -133,7 +141,17 @@ export default {
     },
     deselectGroup (str, index) {
       this.$store.dispatch('setSelectedGroup', null);
-    }
+    },
+
+    onTimelineChanged () {
+      if (this.rangeChanged) {
+        this.showProgress = false;
+      }
+    },
+
+    onTimelineRangeChanged () {
+      this.rangeChanged = true;
+    }    
   },
   meteor: {
     // Subscriptions
@@ -164,6 +182,11 @@ export default {
 
 .timeline {
   margin-top: 24px;
+}
+
+.progress {
+  margin-top: 32px;
+  text-align: center;
 }
 
 .search {
