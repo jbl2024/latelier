@@ -44,8 +44,7 @@ Meteor.methods({
   'projectGroups.addProject'(projectGroupId, projectId) {
     check(projectGroupId, String);
     check(projectId, String);
-    console.log('coucou')
-
+    
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
