@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <new-project ref="newProject"></new-project>  
+    <new-project ref="newProject" :organizationId="organizationId"></new-project>  
 
     <md-dialog-confirm
       :md-active.sync="showConfirmDialog"
@@ -86,6 +86,12 @@ export default {
   computed: {
     ...mapState(["selectedGroup"])
   },
+  props: {
+    organizationId: {
+      type: String,
+      defaultValue: '0'
+    }
+  },
   data() {
     return {
       filter: "",
@@ -105,7 +111,7 @@ export default {
       // Subscribes to the 'threads' publication with no parameters
       projects: function() {
         // Here you can use Vue reactive properties
-        return [this.filter, this.$store.state.selectedGroup._id]; // Subscription params
+        return [this.organizationId, this.filter, this.$store.state.selectedGroup._id]; // Subscription params
       }
     },
     projects() {

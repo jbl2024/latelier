@@ -10,7 +10,7 @@ import { Labels } from '/imports/api/labels/labels.js'
 export const Projects = new Mongo.Collection('projects');
 
 Meteor.methods({
-  'projects.insert'(name) {
+  'projects.insert'(organizationId, name) {
     check(name, String);
 
     // Make sure the user is logged in before inserting a task
@@ -19,6 +19,7 @@ Meteor.methods({
     }
 
     var project = Projects.insert({
+      organizationId: organizationId,
       name: name,
       createdAt: new Date(),
       createdBy: Meteor.userId()
@@ -27,7 +28,8 @@ Meteor.methods({
     return project;
   },
 
-  'projects.create'(name, projectType, projectGroupId) {
+  'projects.create'(organizationId, name, projectType, projectGroupId) {
+    check(organizationId, String);
     check(name, String);
     check(projectType, String);
     const currentUser = Meteor.userId();
@@ -38,6 +40,7 @@ Meteor.methods({
     }
 
     const projectId = Projects.insert({
+      organizationId: organizationId,
       name,
       createdAt: new Date(),
       createdBy: currentUser

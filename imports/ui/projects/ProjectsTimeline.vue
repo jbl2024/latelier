@@ -82,6 +82,12 @@ export default {
   computed: {
     ...mapState(['selectedGroup'])
   },
+  props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    }
+  },
   data () {
     return {
       showConfirmDialog: false,
@@ -157,7 +163,7 @@ export default {
     // Subscriptions
     $subscribe: {
       'projectsForTimeline': function() {
-        return [this.filter, this.$store.state.selectedGroup._id] // Subscription params
+        return [this.organizationId, this.filter, this.$store.state.selectedGroup._id] // Subscription params
       }
     },
     projects () {

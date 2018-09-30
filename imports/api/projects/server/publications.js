@@ -8,7 +8,7 @@ import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
 
 // This code only runs on the server
-Meteor.publish("projects", function projectsPublication(name, groupId) {
+Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
   var query = {$or: [{createdBy: userId}, {members: userId}, {isPublic: true}]};
   if (name && name.length > 0) {
@@ -22,10 +22,11 @@ Meteor.publish("projects", function projectsPublication(name, groupId) {
       query['_id'] = {$in: projects};
     }
   }
+  query.organizationId = organizationId;
   return Projects.find(query);
 });
 
-Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(name, groupId) {
+Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
   var query = {
     $or: [{createdBy: userId}, {members: userId}, {isPublic: true}], 
@@ -43,6 +44,7 @@ Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(na
       query._id = {$in: projects};
     }
   }
+  query.organizationId = organizationId;
   return Projects.find(query);
 });
 
