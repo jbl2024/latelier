@@ -38,7 +38,7 @@ export default {
     this.$events.listen('close-task-detail', task => {
       this.$events.fire('task-selected', null);
       this.showTaskDetail = false;
-      this.$router.push({ name: 'project', params: { projectId: this.projectId }}) 
+      this.$router.push({ name: 'project', params: { organizationId: this.organizationId, projectId: this.projectId }}) 
     });
   },
   created () {
@@ -49,6 +49,10 @@ export default {
     this.$store.dispatch('setCurrentProjectId', 0);    
   },
   props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    },
     projectId: {
       type: String,
       default: '0'
@@ -83,7 +87,7 @@ export default {
     $subscribe: {
       'project': function() {
         return [this.projectId] 
-      }
+      },
     },
     project () {
       if (this.taskId != 0) {

@@ -1,29 +1,27 @@
 <template>
 
 <div class="project-groups">
-  <new-project-group ref="newProjectGroup"></new-project-group>  
+  <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
   <edit-project-group ref="editProjectGroup" :projectGroupId="selectedProjectGroupId"></edit-project-group>
-  <div v-if="$subReady.projectGroups">
-    <md-list>
-      <md-subheader>Catégories</md-subheader>
-      <md-list-item v-for="group in groups" 
-          :key="group._id" 
-          @mouseover="showButtons = group._id" 
-          @mouseleave="showButtons = null">
-        <md-icon >folder</md-icon>
-        <span @click="selectGroup(group)" :class="getColor(group)">{{group.name}}</span>
-        <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
-          <md-icon>settings</md-icon>
-          <md-tooltip md-delay="300">Paramètres</md-tooltip>
-        </md-button>
+  <md-list>
+    <md-subheader>Catégories</md-subheader>
+    <md-list-item v-for="group in groups" 
+        :key="group._id" 
+        @mouseover="showButtons = group._id" 
+        @mouseleave="showButtons = null">
+      <md-icon >folder</md-icon>
+      <span @click="selectGroup(group)" :class="getColor(group)">{{group.name}}</span>
+      <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
+        <md-icon>settings</md-icon>
+        <md-tooltip md-delay="300">Paramètres</md-tooltip>
+      </md-button>
 
-      </md-list-item>
-      <md-list-item @click="$refs.newProjectGroup.open()">
-        <md-icon>add</md-icon>
-        <span class="md-list-item-text">Créer...</span>
-      </md-list-item>
-    </md-list>
-  </div>
+    </md-list-item>
+    <md-list-item @click="$refs.newProjectGroup.open()">
+      <md-icon>add</md-icon>
+      <span class="md-list-item-text">Créer...</span>
+    </md-list-item>
+  </md-list>
 </div>
 
 </template>
@@ -33,6 +31,12 @@ import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Projects } from '/imports/api/projects/projects.js'
 
 export default {
+  props: {
+    organizationId: {
+      type: String,
+      value: '0'
+    }
+  },
   data() {
     return {
       showButtons: '',
@@ -40,13 +44,6 @@ export default {
     };
   },
   meteor: {
-    $subscribe: {
-      // Subscribes to the 'threads' publication with no parameters
-      'projectGroups': function() {
-        // Here you can use Vue reactive properties
-        return [] // Subscription params
-      }
-    },
     groups () {
       return ProjectGroups.find({}, {sort: {name: 1}});
     },

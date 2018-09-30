@@ -29,6 +29,7 @@ import debounce from 'lodash/debounce';
 export default {
   mounted(){
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
+    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     let self = this;
     this.$nextTick(function() {
       window.addEventListener("resize", function(e) {
@@ -40,6 +41,7 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentProjectId', 0);    
+    this.$store.dispatch('setCurrentOrganizationId', 0);    
   },
   computed:{
       tabAlignment(){
@@ -47,6 +49,10 @@ export default {
       }
   },
   props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    },
     projectId: {
       type: String,
       default: '0'

@@ -24,6 +24,12 @@ import { Meteor } from 'meteor/meteor'
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 
 export default {
+  props: {
+    organizationId: {
+      type: String,
+      value: '0'
+    }
+  },
   data () {
     return {
       showDialog: false,
@@ -35,7 +41,7 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('projectGroups.create', this.name, (error, result) => { 
+      Meteor.call('projectGroups.create', this.organizationId, this.name, (error, result) => { 
         if (error) {
           console.log(error)
           return;

@@ -9,7 +9,7 @@
           <md-button class="md-icon-button md-dense" @click="requestClose()">
             <md-icon>close</md-icon>
           </md-button>
-          <router-link :to="{ name: 'project', params: { projectId: project._id }}">
+          <router-link :to="{ name: 'project', params: { organizationId: project.organizationId, projectId: project._id }}">
             {{ project.name }}
           </router-link>
         </div>

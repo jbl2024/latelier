@@ -5,7 +5,8 @@ import { check } from 'meteor/check';
 export const ProjectGroups = new Mongo.Collection('projectGroups');
 
 Meteor.methods({
-  'projectGroups.create'(name) {
+  'projectGroups.create'(organizationId, name) {
+    check(organizationId, String);
     check(name, String);
 
     // Make sure the user is logged in before inserting a task
@@ -14,6 +15,7 @@ Meteor.methods({
     }
 
     var projectGroupId = ProjectGroups.insert({
+      organizationId: organizationId,
       name: name,
       createdAt: new Date(),
       createdBy: Meteor.userId()
@@ -42,6 +44,7 @@ Meteor.methods({
   'projectGroups.addProject'(projectGroupId, projectId) {
     check(projectGroupId, String);
     check(projectId, String);
+    console.log('coucou')
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {

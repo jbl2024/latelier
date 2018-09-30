@@ -43,6 +43,10 @@ export default {
     this.$store.dispatch('setCurrentProjectId', 0);    
   },
   props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    },
     projectId: {
       type: String,
       default: '0'
