@@ -108,9 +108,10 @@ export default {
   data () {
     return {
       windowWidth: window.innerWidth,
-      savedProjectName: '',
-      editProjectName: false,
-      editDescription: false
+      editDescription: false,
+      savedDescription: '',
+      editName: false,
+      savedName: '',
     }
   },
   meteor: {
@@ -137,8 +138,24 @@ export default {
     },
 
     cancelUpdateDescription () {
-      this.editDescription = false;
+      this.editName = false;
       this.organization.description = this.savedDescription;
+    },
+
+    startEditName () {
+      this.savedDescription = this.organization.name;
+      this.editName = true;
+      this.$nextTick(() => this.$refs.description.$el.focus());
+    },
+
+    updateName () {
+      this.editName = false;
+      Meteor.call('organizations.updateName', this.organization._id, this.organization.name);
+    },
+
+    cancelUpdateName () {
+      this.editName = false;
+      this.organization.name = this.savedName;
     },
   }
 }

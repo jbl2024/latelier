@@ -16,5 +16,6 @@ if (Meteor.isServer) {
 }
 
 Meteor.startup(() => {
-  // code to run on server at startup
+  Meteor.call('organizations.fixOrphanProjects');
+  Meteor.call('organizations.fixOrphanProjectGroups');
 });
