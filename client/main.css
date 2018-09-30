@@ -43,3 +43,8 @@ html, body {
 .projects-timeline .timeline .vis-item .vis-item-content {
   padding: 0;
 }
+
+
+.vis-item .vis-item-overflow {
+  overflow: visible;
+}
