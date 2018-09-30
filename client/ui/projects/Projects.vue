@@ -19,207 +19,153 @@
       md-cancel-text="Annuler"
       @md-cancel="onCancelCloneProject"
       @md-confirm="onConfirmCloneProject" />
-      <div class="show-desktop">
-        <md-table v-model="projects" :md-sort.sync="currentSort" :md-sort-order.sync="currentSortOrder" :md-sort-fn="customSort" md-card >
-          <md-table-toolbar>
-            <div class="md-toolbar-section-start">
-              <h1 class="title">Projets</h1>
-              <md-chip v-show="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip>
+
+    <div v-if="!$subReady.projects">
+      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+    </div>
+      
+    <div v-if="$subReady.projects">
+      <md-empty-state
+        v-if="projects.length == 0"
+        :md-description="`Aucun projet disponible`">
+        <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+      </md-empty-state>
+      <md-list class="md-double-line" v-show="projects.length != 0"> 
+        <md-subheader>Organisation</md-subheader>
+
+        <template v-for="item in projects" >
+          <md-list-item :key='item._id'>
+            <md-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</md-icon>
+            <div class="md-list-item-text pointer" @click="openProject(item._id)">
+              <span>{{ item.name }}</span>
+              <span>{{ formatDate(item.startDate) }} {{ formatDate(item.endDate) }}</span>
             </div>
 
-            <md-field md-clearable class="md-toolbar-section-start">
-              <md-icon>search</md-icon>
-              <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
-            </md-field>
+            <md-button class="md-icon-button show-desktop" @click.stop="openProjectSettings(item._id)">
+              <md-icon>settings</md-icon>
+              <md-tooltip md-delay="300">Paramétrer</md-tooltip>
+            </md-button>
+            <md-button class="md-icon-button show-desktop" @click.stop="cloneProject(item._id)">
+              <md-icon>file_copy</md-icon>
+              <md-tooltip md-delay="300">Cloner</md-tooltip>
+            </md-button>
 
-          </md-table-toolbar>        
-
-          <md-table-empty-state
-            v-if="$subReady.projects"
-            md-label="Aucun projet"
-            :md-description="getDescription()">
-            <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
-          </md-table-empty-state>
-
-          <div v-if="!$subReady.projects">
-            <md-progress-bar md-mode="indeterminate"></md-progress-bar>
-          </div>
+            <md-button class="md-icon-button show-desktop" @click.stop="deleteProject(item._id)">
+              <md-icon>delete</md-icon>
+              <md-tooltip md-delay="300">Supprimer</md-tooltip>
+            </md-button>
 
 
-          <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
-            <md-table-cell md-label="Nom" md-sort-by="name">
-              <md-icon>{{ getVisibilityIcon(item) }}</md-icon> {{ item.name }}
-              <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
-              </router-link>
-            </md-table-cell>
-            <md-table-cell md-label="Date de début" md-sort-by="startDate">
-                {{ formatDate(item.startDate) }}
-            </md-table-cell>
-            <md-table-cell md-label="Date de fin" md-sort-by="endDate">
-                {{ formatDate(item.endDate) }}
-            </md-table-cell>
-            <md-table-cell md-label="Actions">
-              <md-button class="md-icon-button" @click.stop="openProjectSettings(item._id)">
-                <md-icon>settings</md-icon>
-                <md-tooltip md-delay="300">Paramétrer</md-tooltip>
-              </md-button>
-              <md-button class="md-icon-button" @click.stop="cloneProject(item._id)">
-                <md-icon>file_copy</md-icon>
-                <md-tooltip md-delay="300">Cloner</md-tooltip>
-              </md-button>
-              <md-button class="md-icon-button" @click.stop="deleteProject(item._id)">
-                <md-icon>delete</md-icon>
-                <md-tooltip md-delay="300">Supprimer</md-tooltip>
-              </md-button>
-            </md-table-cell>
-          </md-table-row>
-
-        </md-table>
-      </div>
-
-      <div class="show-mobile">
-        <md-table v-model="projects" md-sort="name" md-sort-order="asc" md-card >
-          <md-table-toolbar>
-            <div class="md-toolbar-section-start">
-              <h1 class="md-title">Projets</h1>
-            </div>
-
-            <md-field md-clearable class="md-toolbar-section-end">
-              <md-icon>search</md-icon>
-              <md-input placeholder="Rechercher..." v-on:input="debouncedFilter" autofocus/>
-            </md-field>
-
-          </md-table-toolbar>        
-
-          <md-table-empty-state
-            v-if="$subReady.projects"
-            md-label="Aucun projet"
-            :md-description="`Aucun projet trouvé pour '${filter}'. Essayer avec un autre terme ou créer un projet`">
-            <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
-          </md-table-empty-state>
-
-
-            <md-table-row slot="md-table-row" slot-scope="{ item }" class="row" @click="openProject(item._id)">
-              <md-table-cell md-label="Nom" md-sort-by="name">
-                <md-icon>{{ getVisibilityIcon(item) }}</md-icon>
-                <router-link :to="{ name: 'project', params: { projectId: item._id }}" class="project-name">
-                  {{ item.name }}
-                </router-link>
-              </md-table-cell>
-              <md-table-cell md-label="Actions">
-                <md-button class="md-icon-button" @click.stop="openProjectSettings(item._id)">
-                  <md-icon>settings</md-icon>
-                  <md-tooltip md-delay="300">Paramétrer</md-tooltip>
-                </md-button>
-                <md-button class="md-icon-button" @click.stop="cloneProject(item._id)">
-                  <md-icon>file_copy</md-icon>
-                  <md-tooltip md-delay="300">Cloner</md-tooltip>
-                </md-button>
-                <md-button class="md-icon-button" @click.stop="deleteProject(item._id)">
-                  <md-icon>delete</md-icon>
-                  <md-tooltip md-delay="300">Supprimer</md-tooltip>
-                </md-button>
-              </md-table-cell>
-            </md-table-row>
-        </md-table>
-      </div>
+          </md-list-item>
+          <md-divider class="md-inset"></md-divider>
+        </template>
+      </md-list>
+    </div>
   </div>
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js';
-import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
-import debounce from 'lodash/debounce';
-import { mapState } from 'vuex';
+import { Projects } from "/imports/api/projects/projects.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import debounce from "lodash/debounce";
+import { mapState } from "vuex";
 
 export default {
   mixins: [DatesMixin],
-  created () {
-    this.debouncedFilter = debounce((val) => { this.filter = val}, 400);
+  created() {
+    this.debouncedFilter = debounce(val => {
+      this.filter = val;
+    }, 400);
   },
-  mounted () {
-    this.$store.dispatch('setShowCategories', true);    
+  mounted() {
+    this.$store.dispatch("setShowCategories", true);
   },
-  beforeDestroy () {
-    this.$store.dispatch('setShowCategories', false);    
+  beforeDestroy() {
+    this.$store.dispatch("setShowCategories", false);
   },
   computed: {
-    ...mapState(['selectedGroup'])
+    ...mapState(["selectedGroup"])
   },
-  data () {
+  data() {
     return {
-      filter: '',
+      filter: "",
       selected: [],
-      debouncedFilter: '',
+      debouncedFilter: "",
       filteredProjects: [],
       showConfirmDialog: false,
       showConfirmCloneDialog: false,
-      currentSort: 'name',
-      currentSortOrder: 'asc',
-      projectId: ''
-    }
+      currentSort: "name",
+      currentSortOrder: "asc",
+      projectId: ""
+    };
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       // Subscribes to the 'threads' publication with no parameters
-      'projects': function() {
+      projects: function() {
         // Here you can use Vue reactive properties
-        return [this.filter, this.$store.state.selectedGroup._id] // Subscription params
+        return [this.filter, this.$store.state.selectedGroup._id]; // Subscription params
       }
     },
-    projects () {
-      this.$events.fire('projects-loaded');
-      return Projects.find({}, {
-          sort: {name: 1}
-      });
+    projects() {
+      this.$events.fire("projects-loaded");
+      return Projects.find(
+        {},
+        {
+          sort: { name: 1 }
+        }
+      );
     }
   },
   methods: {
-    newProject () {
+    newProject() {
       this.$refs.newProject.open();
     },
-    deleteProject (projectId) {
+    deleteProject(projectId) {
       this.projectId = projectId;
       this.showConfirmDialog = true;
     },
 
-    onConfirmDeleteProject () {
+    onConfirmDeleteProject() {
       this.showConfirmDialog = false;
-      Meteor.call('projects.remove', this.projectId);
+      Meteor.call("projects.remove", this.projectId);
     },
 
-    onCancelDeleteProject () {
+    onCancelDeleteProject() {
       this.showConfirmDialog = false;
     },
 
-    cloneProject (projectId) {
+    cloneProject(projectId) {
       this.projectId = projectId;
       this.showConfirmCloneDialog = true;
     },
 
-    onConfirmCloneProject () {
+    onConfirmCloneProject() {
       this.showConfirmCloneDialog = false;
-      Meteor.call('projects.clone', this.projectId);
+      Meteor.call("projects.clone", this.projectId);
     },
 
-    onCancelCloneProject () {
+    onCancelCloneProject() {
       this.showConfirmCloneDialog = false;
     },
 
-    openProject (id) {
-      this.$router.push({ name: 'project', params: { projectId: id }}) 
+    openProject(id) {
+      this.$router.push({ name: "project", params: { projectId: id } });
     },
 
-    openProjectSettings (id) {
-      this.$router.push({ name: 'project-settings', params: { projectId: id }}) 
+    openProjectSettings(id) {
+      this.$router.push({
+        name: "project-settings",
+        params: { projectId: id }
+      });
     },
 
-    customSort (value) {
+    customSort(value) {
       return value.sort((a, b) => {
         const sortBy = this.currentSort;
 
-        if (this.currentSortOrder === 'desc') {
+        if (this.currentSortOrder === "desc") {
           if (a[sortBy] instanceof Date) {
             return a[sortBy] > b[sortBy];
           }
@@ -230,32 +176,39 @@ export default {
         }
 
         return b[sortBy].localeCompare(a[sortBy]);
-      })
+      });
     },
-    getDescription () {
+    getDescription() {
       if (this.filter.length == 0) {
         return "";
       } else {
-        return `Aucun projet trouvé pour '${this.filter}'. Essayer avec un autre terme ou créer un projet`;
+        return `Aucun projet trouvé pour '${
+          this.filter
+        }'. Essayer avec un autre terme ou créer un projet`;
       }
     },
-    deselectGroup (str, index) {
-      this.$store.dispatch('setSelectedGroup', null);
+    deselectGroup(str, index) {
+      this.$store.dispatch("setSelectedGroup", null);
     },
 
-    getVisibilityIcon (project) {
+    getVisibilityIcon(project) {
       if (project.isPublic) {
-        return 'visibility';
+        return "visibility";
       }
-      return '';
-    }
+      return "";
+    },
 
-  },
-}
+    getVisibilityIconClass(project) {
+      if (project.isPublic) {
+        return "md-primary";
+      }
+      return "";
+    }
+  }
+};
 </script>
 
 <style scoped>
-
 .project-name {
   color: black !important;
   font-weight: normal;
@@ -271,5 +224,7 @@ export default {
   margin-right: 12px;
 }
 
-
+.pointer { 
+  cursor: pointer;
+}
 </style>
