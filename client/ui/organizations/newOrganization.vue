@@ -1,20 +1,14 @@
 <template>
-  <div class="new-project">
+  <div class="new-organization">
 
     <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Nouveau projet</md-dialog-title>
+      <md-dialog-title>Nouvelle organisation</md-dialog-title>
 
       <div class="content">
         <md-field>
             <label>Nom</label>
             <md-input v-focus v-model="name" v-on:keyup.enter="create()"></md-input>
         </md-field>
-            <label>Modèle</label>
-            <div>
-              <md-radio v-model="projectType" value="none">Vide</md-radio>
-              <md-radio v-model="projectType" value="kanban">Kanban</md-radio>
-              <md-radio v-model="projectType" value="people">Personnes</md-radio>
-            </div>
       </div>
       <md-dialog-actions>
         <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
@@ -27,15 +21,9 @@
 
 <script>
 import { Meteor } from 'meteor/meteor'
-import { Projects } from '/imports/api/projects/projects.js'
+import { Organizations } from '/imports/api/organizations/organizations.js'
 
 export default {
-  props: {
-    organizationId: {
-      type: String,
-      defaultValue: '0'
-    }
-  },
   data () {
     return {
       showDialog: false,
@@ -48,12 +36,12 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('projects.create', this.organizationId, this.name, this.projectType, this.$store.state.selectedGroup._id, (error, result) => { 
+      Meteor.call('organizations.create', this.name, (error, result) => { 
         if (error) {
           console.log(error)
           return;
         }
-        this.$router.push({ name: 'project-settings', params: { projectId: result }}) 
+        this.$router.push({ name: 'projects-page', params: { organizationId: result }}) 
       });
       this.showDialog = false;
     }

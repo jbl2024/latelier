@@ -102,7 +102,7 @@
             this.notify = true;
           } else {
             this.clearForm();
-            this.$router.push({ name: 'projects-page' })
+            this.$router.push({ name: 'organizations-page' })
           }
         });
       },

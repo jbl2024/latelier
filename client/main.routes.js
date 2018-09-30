@@ -13,7 +13,7 @@ export default [
     beforeEnter: (to, from, next) => {
       if (Meteor.userId()) {
         next({
-          name: "projects-page"
+          name: "organizations-page"
         });
       } else {
         next();
@@ -48,14 +48,21 @@ export default [
     ]
   },
   {
-    path: "/projects",
+    path: "/organizations",
+    name: "organizations-page",
+    beforeEnter: isBasicAuth,
+    component: "/imports/ui/projects/OrganizationsPage.vue",
+    props: true
+  },
+  {
+    path: "/organizations/:organizationId",
     name: "projects-page",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectsPage.vue",
     props: true
   },
   {
-    path: "/timeline",
+    path: "/timeline/:organizationId",
     name: "projects-timeline",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectsTimeline.vue",

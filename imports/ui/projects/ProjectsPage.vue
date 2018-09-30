@@ -2,7 +2,7 @@
   <div class="projects-page">
     <new-project ref="newProject"></new-project>  
     <new-project-group ref="newProjectGroup"></new-project-group>  
-    <projects></projects>
+    <projects :organizationId="organizationId"></projects>
     <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
       <md-speed-dial-target>
         <md-icon class="md-morph-initial">add</md-icon>
@@ -45,6 +45,12 @@ export default {
       tabAlignment(){
         return this.windowWidth > 600 ? "left" : "fixed";
       }
+  },
+  props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    }
   },
 
   data () {
