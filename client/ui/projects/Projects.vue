@@ -38,7 +38,7 @@
             <md-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</md-icon>
             <div class="md-list-item-text pointer" @click="openProject(item._id)">
               <span>{{ item.name }}</span>
-              <span>{{ formatDate(item.startDate) }} {{ formatDate(item.endDate) }}</span>
+              <span>{{ formatProjectDates(item) }}</span>
             </div>
 
             <md-button class="md-icon-button show-desktop" @click.stop="openProjectSettings(item._id)">
@@ -203,6 +203,17 @@ export default {
         return "md-primary";
       }
       return "";
+    },
+
+    formatProjectDates (project) {
+      if (project.startDate && project.endDate) {
+        return 'Du  ' + this.formatDate(project.startDate) + ' au ' + this.formatDate(project.endDate);
+      } else if (project.startDate) {
+        return 'A partir du ' + this.formatDate(project.startDate);
+      } else if (project.endtDate) {
+        return 'Jusqu\'au ' + this.formatDate(project.endDate);
+      }
+      return '';
     }
   }
 };
