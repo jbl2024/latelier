@@ -3,6 +3,13 @@ if (Meteor.settings.public.devServerURL) {
   __meteor_runtime_config__.VUE_DEV_SERVER_URL = Meteor.settings.public.devServerURL;
 }
 
+Meteor.startup(function() {
+    setTimeout(function() {
+        $("#inject-loader-wrapper").fadeOut(500, function() { $(this).remove(); });
+    }, 500);
+});
+
+
 // Libs
 import { Meteor } from 'meteor/meteor';
 import Vue from 'vue';
