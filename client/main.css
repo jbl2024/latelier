@@ -30,7 +30,7 @@ html, body {
 }
 
 .absolute-right {
-  position: fixed;
+  position: absolute;
   right: 24px;
   bottom: 24px;
   z-index: 1002;
