@@ -33,11 +33,6 @@
         </md-button>
 
       </h2>
-
-      <div slot="image" class="drag-image">
-          <h2><span class="list-name">{{list.name}}</span></h2>
-      </div>          
-
     </drag>
     </div>
     </drop>

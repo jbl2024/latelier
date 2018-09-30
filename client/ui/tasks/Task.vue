@@ -49,9 +49,6 @@
         </md-card-content>
       </md-card>
       </drop>
-      <div slot="image" class="drag-image">
-          <task-image :task="task" class="task"></task-image>
-      </div>          
     </drag>
 </div>
 
