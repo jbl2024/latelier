@@ -53,25 +53,23 @@ export default {
       this.showDialog = true;
     },
     updateName () {
-      var that = this;
       Meteor.call('projectGroups.updateName', this.projectGroup._id, this.projectGroup.name, (error, result) => {
         if (error) {
           console.log(error)
           return;
         }
-        that.showDialog = false;
+        this.showDialog = false;
       });
     },
 
     remove () {
-      var that = this;
       if (confirm('Voulez-vous supprimer définitivement cette catégorie ?')) {
         Meteor.call('projectGroups.remove', this.projectGroup._id, (error, result) => { 
           if (error) {
             console.log(error)
             return;
           }
-          that.showDialog = false;
+          this.showDialog = false;
         });
       }
     }

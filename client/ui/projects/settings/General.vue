@@ -3,6 +3,7 @@
     <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup" :organizationId="project.organizationId"></select-group>
+    <select-organization @select="onSelectOrganization" :active.sync="showSelectOrganization"></select-organization>
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color> 
 
     <md-subheader>Description</md-subheader>
@@ -130,8 +131,6 @@
         <md-divider></md-divider> 
       </div>
 
-
-
       <md-subheader>Catégories
 
         <md-button class="md-icon-button" @click="showSelectGroup = true">
@@ -158,13 +157,28 @@
         </div>
       </div>
 
+      <md-subheader>Organisation</md-subheader>
+      <div class="md-elevation-1" v-if="$subReady.organizations">
+        <md-list-item @click="showSelectOrganization = true">
+          <md-avatar class="md-avatar-icon">
+            <md-icon>folder</md-icon>
+          </md-avatar>
+          <div class="md-list-item-text">
+            {{ organization.name}}
+          </div>
+        </md-list-item>
+      </div>
+
     </md-list>
+
+
 </div>
 </template>
 
 <script>
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Projects } from '/imports/api/projects/projects.js'
+import { Organizations } from '/imports/api/organizations/organizations.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 
@@ -182,12 +196,18 @@ export default {
       showSelectStartDate: false,
       showSelectEndDate: false,
       showSelectGroup: false,
+      showSelectOrganization: false,
       showSelectColor: false,
       editDescription: false,
       editEstimatedSize: false
     }
   },
   meteor: {
+    $subscribe: {
+      organizations: function() {
+        return [];
+      }
+    },
     assignedGroups: {
       params () {
         return {
@@ -201,6 +221,22 @@ export default {
         }
       }
     },
+
+    organization: {
+      params () {
+        return {
+          project: this.project
+        };
+      },
+      deep: false,
+      update ({project}) {
+        if (project) {
+          return Organizations.findOne({_id: project.organizationId}, {sort: {name: 1}});
+        }
+      }
+
+    }
+      
   },
   methods: {
     onSelectStartDate (date) {
@@ -217,6 +253,20 @@ export default {
 
     onSelectGroup (group) {
       Meteor.call('projectGroups.addProject', group._id, this.project._id);
+    },
+
+    onSelectOrganization (organization) {
+      if (organization._id === this.project.organizationId) {
+        return;
+      }
+      
+      Meteor.call('organizations.moveProject', organization._id, this.project._id, (error, result) => {
+        if (error) {
+          console.log(error)
+          return;
+        }
+        this.$router.push({ name: 'project-settings', params: { organizationId: organization._id, projectId: this.project._id }}) 
+      });
     },
 
     startEditDescription () {

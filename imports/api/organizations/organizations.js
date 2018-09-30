@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Projects } from '/imports/api/projects/projects.js'
+import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 
 export const Organizations = new Mongo.Collection('organizations');
 
@@ -47,5 +47,13 @@ Meteor.methods({
       throw new Meteor.Error('invalid-description');
     }
     Organizations.update({ _id: organizationId }, { $set: { description: description } });
+  },
+
+  'organizations.moveProject'(organizationId, projectId) {
+    check(organizationId, String);
+    check(projectId, String);
+
+    ProjectGroups.update({ projects: projectId }, { $pull: { projects: projectId } });
+    Projects.update({ _id: projectId }, { $set: { organizationId: organizationId } });
   }
 });
