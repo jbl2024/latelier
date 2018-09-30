@@ -62,6 +62,13 @@ export default [
     props: true
   },
   {
+    path: "/organizations/:organizationId/settings",
+    name: "organization-settings",
+    beforeEnter: isBasicAuth,
+    component: "/imports/ui/projects/OrganizationSettings.vue",
+    props: true
+  },
+  {
     path: "/timeline/:organizationId",
     name: "projects-timeline",
     beforeEnter: isBasicAuth,
