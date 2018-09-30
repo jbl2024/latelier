@@ -5,7 +5,8 @@ if (Meteor.settings.public.devServerURL) {
 
 Meteor.startup(function() {
     setTimeout(function() {
-        $("#inject-loader-wrapper").fadeOut(500, function() { $(this).remove(); });
+      var elem = document.getElementById("inject-loader-wrapper");
+      elem.remove();      
     }, 500);
 });
 
