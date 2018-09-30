@@ -10,6 +10,9 @@ Meteor.startup(function() {
     }, 500);
 });
 
+Accounts.config({
+  forbidClientAccountCreation : true
+});
 
 // Libs
 import { Meteor } from 'meteor/meteor';
