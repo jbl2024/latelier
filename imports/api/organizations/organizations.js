@@ -21,14 +21,41 @@ Meteor.methods({
       createdAt: new Date(),
       createdBy: currentUser
     });
+
     return organizationId;
+  },
+
+  'organizations.fixOrphanProjects' () {
+    const projects = Projects.find({ organizationId : { $exists: false } });
+    const organization = Organizations.findOne({orphans: true});
+    let organizationId;
+    if (organization) {
+      organizationId = organization._id
+    } else {
+      organizationId = Organizations.insert({
+        name: 'Projets sans organisation',
+        createdAt: new Date(),
+        orphans: true
+      })
+    }
+    projects.map(project => {
+      Meteor.call('organizations.moveProject', organizationId, project._id);
+    });
+  },
+
+  'organizations.fixOrphanProjectGroups' () {
+    ProjectGroups.remove({ organizationId : { $exists: false } });
   },
 
   'organizations.remove'(organizationId) {
     check(organizationId, String);
 
+    Projects.update({organizationId: organizationId}, {$unset: {organizationId: 1}}, {multi: true});
     Organizations.remove(organizationId);
-  },
+
+    Meteor.call('organizations.fixOrphanProjects');
+    Meteor.call('organizations.fixOrphanProjectGroups');
+},
 
   'organizations.updateName'(organizationId, name) {
     check(organizationId, String);

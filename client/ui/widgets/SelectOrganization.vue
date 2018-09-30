@@ -34,7 +34,7 @@ export default {
   },
   meteor: {
     organizations () {
-      return Organizations.find({}, {sort: {name: 1}});
+      return Organizations.find({orphans: {$exists: false}}, {sort: {name: 1}});
     }
   },
   methods: {
