@@ -69,28 +69,28 @@ export default [
     props: true
   },
   {
-    path: "/projects/:projectId",
+    path: "/projects/:organizationId/:projectId",
     name: "project",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/Project.vue",
     props: true
   },
   {
-    path: "/projects/:projectId/settings",
+    path: "/projects/:organizationId/:projectId/settings",
     name: "project-settings",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectSettings.vue",
     props: true
   },
   {
-    path: "/projects/:projectId/timeline",
+    path: "/projects/:organizationId/:projectId/timeline",
     name: "project-timeline",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectTimeline.vue",
     props: true
   },
   {
-    path: "/projects/:projectId/attachments",
+    path: "/projects/:organizationId/:projectId/attachments",
     name: "project-attachments-page",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectAttachmentsPage.vue",

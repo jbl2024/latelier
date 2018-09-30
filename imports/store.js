@@ -6,6 +6,7 @@ export const store = new Vuex.Store({
     selectedGroup: {},
     selectedLabels: [],
     showCategories: false,
+    currentOrganizationId: 0,
     currentProjectId: 0,
     hideDrawer: false
   },
@@ -21,6 +22,9 @@ export const store = new Vuex.Store({
     },
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
+    },
+    updateCurrentOrganizationId(state, currentOrganizationId) {
+      state.currentOrganizationId = currentOrganizationId;
     },
     updateHideDrawer(state, hideDrawer) {
       state.hideDrawer = hideDrawer
@@ -40,6 +44,9 @@ export const store = new Vuex.Store({
     },
     clearSelectedLabels(state) {
       state.selectedLabels = [];
+    },
+    clearSelectedGroup(state) {
+      state.selectedGroup = {};
     }
   },
   actions: {
@@ -55,6 +62,10 @@ export const store = new Vuex.Store({
     setCurrentProjectId (context, projectId) {
       context.commit('clearSelectedLabels');
       context.commit('updateCurrentProjectId', projectId);
+    },
+    setCurrentOrganizationId (context, organizationId) {
+      context.commit('clearSelectedGroup');
+      context.commit('updateCurrentOrganizationId', organizationId);
     },
     setHideDrawer (context, hideDrawer) {
       context.commit('updateHideDrawer', hideDrawer);

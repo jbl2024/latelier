@@ -42,6 +42,7 @@ export default {
   },  
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
+    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     this.$events.listen('task-selected', task => {
       if (!task) {
         return;
@@ -59,10 +60,15 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentProjectId', 0);    
+    this.$store.dispatch('setCurrentOrganizationId', 0);    
     this.$events.off('task-selected');
     this.$events.off('close-task-detail');
   },
   props: {
+    organizationId: {
+      type: String,
+      default: '0'
+    },
     projectId: {
       type: String,
       default: '0'

@@ -8,3 +8,10 @@ Meteor.publish("organizations", function organizations() {
   var query = {};
   return Organizations.find(query);
 });
+
+
+Meteor.publish("organization", function organization(organizationId) {
+  var userId = Meteor.userId();
+  var query = {_id: organizationId};
+  return Organizations.find(query);
+});

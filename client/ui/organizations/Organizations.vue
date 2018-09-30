@@ -80,7 +80,7 @@ export default {
     newOrganization() {
       this.$refs.newOrganization.open();
     },
-    deleteOrganization(projectId) {
+    deleteOrganization(organizationId) {
       this.organizationId = organizationId;
       this.showConfirmDialog = true;
     },

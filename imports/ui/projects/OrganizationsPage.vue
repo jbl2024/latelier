@@ -1,6 +1,6 @@
 <template>
   <div class="organization-page">
-    <new-project ref="newOrganization"></new-project>
+    <new-organization ref="newOrganization"></new-organization>
     <organizations></organizations>
     <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
       <md-speed-dial-target>

@@ -7,7 +7,6 @@ import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
 
-// This code only runs on the server
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
   var query = {$or: [{createdBy: userId}, {members: userId}, {isPublic: true}]};
@@ -70,6 +69,12 @@ publishComposite("project", function(projectId) {
         // attachments
         find(project) {
           return Attachments.find({ 'meta.projectId': project._id }).cursor;
+        }
+      },
+      {
+        // attachments
+        find(project) {
+          return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       },
       {

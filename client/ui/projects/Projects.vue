@@ -31,7 +31,7 @@
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
       </md-empty-state>
       <md-list class="md-double-line" v-show="projects.length != 0"> 
-        <md-subheader>Organisation</md-subheader>
+        <md-subheader>{{ organization.name}}</md-subheader>
 
         <template v-for="item in projects" >
           <md-list-item :key='item._id'>
@@ -66,6 +66,7 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import debounce from "lodash/debounce";
 import { mapState } from "vuex";
@@ -112,6 +113,13 @@ export default {
       projects: function() {
         // Here you can use Vue reactive properties
         return [this.organizationId, this.filter, this.$store.state.selectedGroup._id]; // Subscription params
+      },
+      organization: function() {
+        // Here you can use Vue reactive properties
+        return [this.organizationId]; // Subscription params
+      },
+      projectGroups: function() {
+        return [this.organizationId];
       }
     },
     projects() {
@@ -122,6 +130,9 @@ export default {
           sort: { name: 1 }
         }
       );
+    },
+    organization() {
+      return Organizations.findOne()
     }
   },
   methods: {

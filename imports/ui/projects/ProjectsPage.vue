@@ -38,8 +38,12 @@ export default {
       });
     });
   },
+  mounted () {
+    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
+  },
   beforeDestroy() {
     this.$events.off('projects-loaded');
+    this.$store.dispatch('setCurrentOrganizationId', 0);    
   },
   computed:{
       tabAlignment(){

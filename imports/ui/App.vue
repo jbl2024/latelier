@@ -15,7 +15,12 @@
     </md-app-toolbar>
 
     <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-show="!hideDrawer">
-      <md-list v-if="currentProjectId === 0">
+      <md-list v-if="currentOrganizationId != 0 && currentProjectId == 0">
+        <md-list-item :to="{ name: 'organizations-page' }">
+          <md-icon>arrow_back</md-icon>
+          <span class="md-list-item-text">Accueil</span>
+        </md-list-item>
+
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
           <md-icon>home</md-icon>
           <span class="md-list-item-text">Projets</span>
@@ -25,17 +30,11 @@
           <md-icon>timeline</md-icon>
           <span class="md-list-item-text">Planning</span>
         </md-list-item>
-
-        <md-list-item :to="{ name: 'admin'}" @click="showNavigation = false">
-          <md-icon>settings</md-icon>
-          <span class="md-list-item-text">Paramètres</span>
-        </md-list-item>
-
         <md-divider></md-divider>
       </md-list>
 
       <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
-      <project-groups v-if="showCategories"></project-groups>
+      <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
 
     </md-app-drawer>
     <md-app-content class="main-content">
@@ -57,7 +56,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['showCategories', 'hideDrawer', 'currentProjectId'])
+    ...mapState(['showCategories', 'hideDrawer', 'currentProjectId', 'currentOrganizationId'])
   }
 }
 </script>
