@@ -53,7 +53,7 @@ export default {
           console.log(error)
           return;
         }
-        this.$router.push({ name: 'project-settings', params: { projectId: result }}) 
+        this.$router.push({ name: 'project-settings', params: { organizationId: this.organizationId, projectId: result }}) 
       });
       this.showDialog = false;
     }
