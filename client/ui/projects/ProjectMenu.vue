@@ -20,7 +20,7 @@
     </md-list-item>
 
     <md-list-item :to="{ name: 'project-attachments-page', params: { projectId: project._id }}" v-if="project._id">
-      <md-icon>description</md-icon>
+      <md-icon>attachment</md-icon>
       <span class="md-list-item-text">Pièces jointes</span>
     </md-list-item>
 
