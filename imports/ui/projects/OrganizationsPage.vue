@@ -1,7 +1,6 @@
 <template>
   <div class="organization-page">
     <new-organization ref="newOrganization"></new-organization>
-    <organizations></organizations>
     <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
       <md-speed-dial-target>
         <md-icon class="md-morph-initial">add</md-icon>
@@ -15,6 +14,7 @@
         </md-button>
       </md-speed-dial-content>
     </md-speed-dial>
+    <organizations></organizations>
   </div>
 </template>
 
@@ -32,4 +32,5 @@ export default {
 </script>
 
 <style scoped>
+
 </style>
