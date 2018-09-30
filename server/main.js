@@ -15,6 +15,10 @@ if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }
 
+Accounts.config({
+  forbidClientAccountCreation : true
+});
+
 Meteor.startup(() => {
   Meteor.call('organizations.fixOrphanProjects');
   Meteor.call('organizations.fixOrphanProjectGroups');
