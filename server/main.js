@@ -10,7 +10,7 @@ import '../imports/api/projectGroups/server/publications.js';
 import '../imports/api/labels/server/publications.js';
 
 if (Meteor.isServer) {
-  Inject.rawHead("loader", Assets.getText('loader.html'));
+  Inject.rawBody("loader", Assets.getText('loader.html'));
 }
 
 Meteor.startup(() => {
