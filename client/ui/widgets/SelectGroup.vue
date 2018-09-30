@@ -29,7 +29,7 @@
         <md-button class="md-button" @click="closeDialog">Annuler</md-button>
       </md-dialog-actions>
     </md-dialog>  
-    <new-project-group ref="newProjectGroup"></new-project-group>  
+    <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
 
   </div>    
 </template>
@@ -40,6 +40,7 @@ import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 
 export default {
   props: {
+    organizationId: String,
     active: Boolean,
   },
   data () {

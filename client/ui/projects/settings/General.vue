@@ -2,7 +2,7 @@
   <div class="project-settings-general"> 
     <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate"  :disableTime="true"></select-date>
-    <select-group @select="onSelectGroup" :active.sync="showSelectGroup"></select-group>
+    <select-group @select="onSelectGroup" :active.sync="showSelectGroup" :organizationId="project.organizationId"></select-group>
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color> 
 
     <md-subheader>Description</md-subheader>
@@ -188,12 +188,6 @@ export default {
     }
   },
   meteor: {
-    $subscribe: {
-      'projectGroups': function() {
-        return [];
-      }
-    },
-  
     assignedGroups: {
       params () {
         return {
