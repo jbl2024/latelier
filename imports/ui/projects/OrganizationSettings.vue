@@ -22,7 +22,7 @@
               <div v-show="editName">
                 <md-field>
                   <label>Nom</label>
-                  <input ref="name" v-model="organization.name" @keyup.ctrl.enter="updateName"></md-textarea>
+                  <md-input ref="name" v-focus v-model="organization.name" @keyup.ctrl.enter="updateName"></md-input>
                 </md-field>
                 <md-button class="md-icon-button" @click.native="updateName">
                   <md-icon>check_circle</md-icon>
@@ -143,9 +143,9 @@ export default {
     },
 
     startEditName () {
-      this.savedDescription = this.organization.name;
+      this.savedName = this.organization.name;
       this.editName = true;
-      this.$nextTick(() => this.$refs.description.$el.focus());
+      this.$nextTick(() => this.$refs.name.$el.focus());
     },
 
     updateName () {
