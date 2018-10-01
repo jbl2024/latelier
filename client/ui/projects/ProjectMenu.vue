@@ -4,7 +4,7 @@
   <md-list v-show="$subReady.project">
     <md-list-item :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
       <md-icon>arrow_back</md-icon>
-      <span class="md-list-item-text">Accueil</span>
+      <span class="md-list-item-text">Tous les projets</span>
     </md-list-item>
 
     <md-divider></md-divider>
