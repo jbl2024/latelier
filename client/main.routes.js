@@ -51,7 +51,14 @@ export default [
     path: "/organizations",
     name: "organizations-page",
     beforeEnter: isBasicAuth,
-    component: "/imports/ui/projects/OrganizationsPage.vue",
+    component: "/imports/ui/organizations/OrganizationsPage.vue",
+    props: true
+  },
+  {
+    path: "/organizations/:organizationId/settings",
+    name: "organization-settings",
+    beforeEnter: isBasicAuth,
+    component: "/imports/ui/organizations/OrganizationSettings.vue",
     props: true
   },
   {
@@ -59,13 +66,6 @@ export default [
     name: "projects-page",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/ProjectsPage.vue",
-    props: true
-  },
-  {
-    path: "/organizations/:organizationId/settings",
-    name: "organization-settings",
-    beforeEnter: isBasicAuth,
-    component: "/imports/ui/projects/OrganizationSettings.vue",
     props: true
   },
   {
