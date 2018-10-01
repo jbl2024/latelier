@@ -18,7 +18,7 @@
       <md-list v-if="currentOrganizationId != 0 && currentProjectId == 0">
         <md-list-item :to="{ name: 'organizations-page' }">
           <md-icon>arrow_back</md-icon>
-          <span class="md-list-item-text">Accueil</span>
+          <span class="md-list-item-text">Organisations</span>
         </md-list-item>
 
         <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
@@ -30,6 +30,12 @@
           <md-icon>timeline</md-icon>
           <span class="md-list-item-text">Planning</span>
         </md-list-item>
+
+        <md-list-item :to="{ name: 'organization-settings', params: { organizationId: currentOrganizationId }}">
+          <md-icon>settings</md-icon>
+          <span class="md-list-item-text">Paramètres</span>
+        </md-list-item>
+
         <md-divider></md-divider>
       </md-list>
 
