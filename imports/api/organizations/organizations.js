@@ -21,6 +21,7 @@ Meteor.methods({
       createdAt: new Date(),
       createdBy: currentUser
     });
+    Meteor.call('organizations.addMember', organizationId, currentUser);
 
     return organizationId;
   },
@@ -82,5 +83,34 @@ Meteor.methods({
 
     ProjectGroups.update({ projects: projectId }, { $pull: { projects: projectId } });
     Projects.update({ _id: projectId }, { $set: { organizationId: organizationId } });
-  }
+  },
+
+  'organizations.addMember'(organizationId, userId) {
+    check(organizationId, String);
+    check(userId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (Organizations.find({_id: organizationId,  "members" : userId}).count() > 0) {
+      return;
+    }
+    Organizations.update({_id: organizationId}, {$push: {members: userId}});
+  },
+
+  'organizations.removeMember'(organizationId, userId) {
+    check(organizationId, String);
+    check(userId, String);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (Organizations.find({_id: organizationId,  "members" : userId}).count() == 0) {
+      return;
+    }
+    Organizations.update({_id: organizationId}, {$pull: {members: userId}});
+    Tasks.update({organizationId: organizationId, assignedTo: userId}, {$set: {assignedTo: null}});
+  },
+
 });
