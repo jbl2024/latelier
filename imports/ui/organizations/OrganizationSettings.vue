@@ -12,6 +12,7 @@
         </md-tab>
 
         <md-tab id="tab-users" md-label="Utilisateurs">
+          <organization-settings-manage-users :organization="organization"></organization-settings-manage-users>
         </md-tab>
       </md-tabs> 
 

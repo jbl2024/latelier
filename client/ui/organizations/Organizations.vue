@@ -26,6 +26,7 @@
 
         <template v-for="item in organizations" >
           <md-list-item :key='item._id'>
+            <md-icon>domain</md-icon>
             <div class="md-list-item-text pointer" @click="openOrganization(item._id)">
               <span>{{ item.name }}</span>
               <span>{{ item.description }}</span>
