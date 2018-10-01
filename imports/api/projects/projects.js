@@ -117,6 +117,7 @@ Meteor.methods({
 
     var newProjectId = Projects.insert({
       name: 'Copie de ' + project.name,
+      organizationId: project.organizationId,
       createdAt: new Date(),
       createdBy: Meteor.userId(),
       startDate: project.startDate,
