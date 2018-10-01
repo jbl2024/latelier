@@ -6,8 +6,9 @@
         <md-icon>menu</md-icon>
       </md-button>
       <div>
-        <span class="md-title" v-show="currentProjectId == 0">l'atelier</span>
+        <span class="md-title" v-show="currentProjectId == 0 && currentOrganizationId == 0">l'atelier</span>
       </div>
+      <organization-title v-if="currentProjectId == 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId"></organization-title>
       <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
       <div class="md-toolbar-section-end">
         <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
