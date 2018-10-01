@@ -1,6 +1,6 @@
 <template>
   <div class="projects-page">
-    <new-project ref="newProject"></new-project>  
+    <new-project :organizationId="organizationId" ref="newProject"></new-project>  
     <new-project-group ref="newProjectGroup"></new-project-group>  
     <projects :organizationId="organizationId"></projects>
     <md-speed-dial class="absolute-right" md-direction="top" md-event="click">
