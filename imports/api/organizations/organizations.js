@@ -106,11 +106,16 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
+    const projects = Projects.find({organizationId: organizationId});
+    projects.map(project => {
+      Meteor.call('projects.removeMember', project._id, userId);
+    });
+
     if (Organizations.find({_id: organizationId,  "members" : userId}).count() == 0) {
       return;
     }
     Organizations.update({_id: organizationId}, {$pull: {members: userId}});
-    Tasks.update({organizationId: organizationId, assignedTo: userId}, {$set: {assignedTo: null}});
+
   },
 
 });
