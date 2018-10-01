@@ -37,6 +37,10 @@ export default {
       default: 0
     }
   },
+  created() {
+    this.debouncedFilter = debounce(val => {
+    }, 400);
+  },
   meteor: {
     organization: {
       params() {
