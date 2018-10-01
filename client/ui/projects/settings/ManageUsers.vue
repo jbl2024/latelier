@@ -1,6 +1,6 @@
 <template>
   <div class="manage-users">
-    <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
+    <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog"></select-user>
     <md-button class="md-raised md-primary" @click="showSelectUserDialog = true">Ajouter</md-button>
     <md-list>
       <md-subheader></md-subheader>
@@ -55,9 +55,6 @@ export default {
           return Meteor.users.find({_id: {$in: members}});
         }
       }
-    },    
-    allUsers () {
-      return Meteor.users.find();
     }
   },
   methods: {

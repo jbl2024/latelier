@@ -6,7 +6,7 @@
 
       <div class="content">
         <md-list>
-          <md-list-item v-for="person in persons" :key="person._id" class="cursor" @click="selectUser(person)">
+          <md-list-item v-for="person in users" :key="person._id" class="cursor" @click="selectUser(person)">
             <md-avatar class="md-avatar-icon" :class="isOnline(person)">
                 <md-ripple>{{ formatUserLetters(person) }}</md-ripple>
             </md-avatar>
@@ -27,19 +27,28 @@
 <script>
 import { Meteor } from 'meteor/meteor'
 import { Projects } from '/imports/api/projects/projects.js'
+import { Organizations } from '/imports/api/organizations/organizations.js'
 import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 
 export default {
   mixins: [usersMixin],
   props: {
     active: Boolean,
+    project: Object
   },
   data () {
     return {
     }
   },
   meteor: {
-    persons () {
+    users () {
+      if (this.project) {
+        const organization = Organizations.findOne(this.project.organizationId);
+        if (organization) {
+          const members = organization.members || [];
+          return Meteor.users.find({_id: {$in: members}});
+        }
+      }
       return Meteor.users.find();
     }
   },

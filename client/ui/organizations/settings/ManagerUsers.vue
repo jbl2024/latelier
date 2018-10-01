@@ -55,9 +55,6 @@ export default {
           return Meteor.users.find({_id: {$in: members}});
         }
       }
-    },    
-    allUsers () {
-      return Meteor.users.find();
     }
   },
   methods: {
