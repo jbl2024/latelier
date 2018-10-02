@@ -1,22 +1,31 @@
 <template>
   <div class="organization-settings-manage-users">
     <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
-    <md-button class="md-raised md-primary" @click="showSelectUserDialog = true">Ajouter</md-button>
     <md-list>
-      <md-subheader></md-subheader>
-      <md-list-item v-for="user in organizationUsers" :key="user._id">
-        <md-avatar class="md-avatar-icon" :class="isOnline(user)">
-            <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
-        </md-avatar>
+      <md-subheader>Membres
 
-        <span class="md-list-item-text">{{ formatUser(user)}}</span>
-        <md-button class="md-icon-button md-list-action" @click.stop="removeUser(user)">
-          <md-icon>delete</md-icon>
-          <md-tooltip md-delay="300">Supprimer</md-tooltip>
+        <md-button class="md-icon-button" @click="showSelectUserDialog = true">
+        <md-icon>add</md-icon>
+        <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
         </md-button>
-      </md-list-item>
-    </md-list>
+ 
+      </md-subheader>
+      <div class="md-elevation-1">
+        <div v-for="user in organizationUsers" :key="user._id">
+          <md-list-item>
+            <md-avatar class="md-avatar-icon" :class="isOnline(user)">
+                <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
+            </md-avatar>
 
+            <span class="md-list-item-text">{{ formatUser(user)}}</span>
+            <md-button class="md-icon-button md-list-action" @click.stop="removeUser(user)">
+              <md-icon>delete</md-icon>
+              <md-tooltip md-delay="300">Supprimer</md-tooltip>
+            </md-button>
+          </md-list-item>
+        </div>
+      </div>
+    </md-list>
   </div>    
 </template>
 
@@ -72,6 +81,14 @@ export default {
 <style scoped>
 .manage-user {
   overflow-y: scroll;
+}
+
+.toolbar {
+  background-color: #2D6293;
+}
+
+.toolbar h3.md-title {
+  color: white;
 }
 
 .online {
