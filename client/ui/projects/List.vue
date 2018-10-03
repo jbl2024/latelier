@@ -4,7 +4,7 @@
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
     <div class="swimlane dragscroll">
       <drag :transfer-data="getTransferData(list)">
-      <h2 v-show="!isListEdited(list, selectedList)" >
+      <h2 v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
         <span @click="editList(list)" class="list-name">{{list.name}} ({{ taskCount }}) </span>
         <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
           <md-button md-menu-trigger class="md-icon-button">
@@ -52,12 +52,16 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { mapState } from 'vuex';
 
 export default {
   props: {
     list: {
       type: Object,
     }
+  },
+  computed: {
+    ...mapState(['currentProjectId'])
   },
   data () {
     return {
@@ -145,7 +149,15 @@ export default {
         type: 'list',
         data: list
       };
-    }
+    },
+
+    getColor (projectId) {
+      const project = Projects.findOne({_id: projectId});
+      if (project && project.color) {
+        return 'background-color: ' + project.color;
+      }
+    },
+
   }
 }
 </script>
