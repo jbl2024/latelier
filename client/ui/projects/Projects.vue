@@ -35,7 +35,10 @@
 
         <template v-for="item in projects" >
           <md-list-item :key='item._id'>
-            <md-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</md-icon>
+            <md-avatar class="md-avatar-icon" :style="getColor(item)">
+              <md-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</md-icon>
+            </md-avatar>
+
             <div class="md-list-item-text pointer" @click="openProject(item._id)">
               <span>{{ item.name }}</span>
               <span>{{ formatProjectDates(item) }}</span>
@@ -212,15 +215,20 @@ export default {
       if (project.isPublic) {
         return "visibility";
       }
-      return "";
+      return "visibility_off";
     },
 
     getVisibilityIconClass(project) {
       if (project.isPublic) {
-        return "md-primary";
+        return "";
       }
       return "";
     },
+
+    getColor (item) {
+      return 'background-color: ' + item.color;
+    },
+
 
     formatProjectDates (project) {
       if (project.startDate && project.endDate) {
