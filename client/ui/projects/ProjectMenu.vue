@@ -2,12 +2,6 @@
 
 <div class="project-menu">
   <md-list v-show="$subReady.project">
-    <md-list-item :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
-      <md-icon>arrow_back</md-icon>
-      <span class="md-list-item-text">Tous les projets</span>
-    </md-list-item>
-
-    <md-divider></md-divider>
 
     <md-list-item :to="{ name: 'project', params: { organizationId: project.organizationId, projectId: project._id }}">
       <md-icon>list</md-icon>
