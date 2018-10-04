@@ -2,6 +2,9 @@
 
   <div class="organization-title md-layout md-gutter">
     <div class="md-layout-item md-toolbar-section-start">
+      <md-button class="md-icon-button" :to="{ name: 'organizations-page' }">
+          <md-icon>home</md-icon>
+      </md-button>
       <span class="md-title" v-show="!editOrganizationName" @click="startUpdateOrganizationName">
         {{ organization.name }}
       </span>
