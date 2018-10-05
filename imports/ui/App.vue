@@ -18,12 +18,12 @@
     <md-app-drawer :md-active.sync="showNavigation" md-permanent="clipped" v-show="!hideDrawer">
       <md-list v-if="currentOrganizationId != 0 && currentProjectId == 0">
 
-        <md-list-item :to="{ name: 'projects-page'}" @click="showNavigation = false">
+        <md-list-item :to="{ name: 'projects-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
           <md-icon>home</md-icon>
           <span class="md-list-item-text">Projets</span>
         </md-list-item>
 
-        <md-list-item :to="{ name: 'projects-timeline'}" @click="showNavigation = false">
+        <md-list-item :to="{ name: 'projects-timeline', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
           <md-icon>timeline</md-icon>
           <span class="md-list-item-text">Planning</span>
         </md-list-item>
