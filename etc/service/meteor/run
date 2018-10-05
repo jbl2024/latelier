@@ -1,0 +1,36 @@
+#!/bin/bash -e
+
+export NODE_ENV="production"
+
+# File created by Dockerfile containing NODE_PATH to Meteor's node.
+# We are making Meteor's node be useful system wide.
+[ -f /etc/service/meteor/run.env ] && source /etc/service/meteor/run.env
+
+# You can mount a volume (file) into this location to provide a script which sets environment variables.
+[ -f /etc/service/meteor/run.config ] && source /etc/service/meteor/run.config
+
+MONGO_ENABLED=false
+# Wait for the database to become reachable before connecting using node.
+if [ -e /bundle/programs/server/npm/node_modules/meteor/npm-mongo ]; then
+  # Meteor 1.3 location.
+  cd /bundle/programs/server/npm/node_modules/meteor/npm-mongo
+  MONGO_ENABLED=true
+elif [ -e /bundle/programs/server/npm/npm-mongo ]; then
+  # Meteor 1.2 location.
+  cd /bundle/programs/server/npm/npm-mongo
+  MONGO_ENABLED=true
+elif [ -e /bundle/programs/server/npm/mongo ]; then
+  # Before Meteor 1.2 location.
+  cd /bundle/programs/server/npm/mongo
+  MONGO_ENABLED=true
+fi
+if [ "$MONGO_ENABLED" = true ]; then
+  cat /etc/service/meteor/wait_db.js | /usr/local/bin/node
+fi
+
+cd /bundle
+
+# Initialization hook.
+[ -f /etc/service/meteor/run.initialization ] && source /etc/service/meteor/run.initialization
+
+exec chpst -u meteor:meteor /usr/local/bin/node --stack-trace-limit=1000 main.js 2>&1
