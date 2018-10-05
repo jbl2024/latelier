@@ -1,7 +1,7 @@
 <template>
 
 <div class="project-menu">
-  <md-list v-show="$subReady.project">
+  <md-list v-if="$subReady.project">
 
     <md-list-item :to="{ name: 'project', params: { organizationId: project.organizationId, projectId: project._id }}">
       <md-icon>list</md-icon>

@@ -2,7 +2,7 @@
 
   <div class="project-title md-layout md-gutter">
     <div class="md-layout-item md-toolbar-section-start">
-      <md-button class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
+      <md-button v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
           <md-icon>domain</md-icon>
       </md-button>
       <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
