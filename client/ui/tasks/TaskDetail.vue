@@ -67,6 +67,9 @@
       <task-checklist :task="task"></task-checklist>
     </md-tab>
 
+    <md-tab id="tab-ressource" md-label="Ressources">
+    </md-tab>
+
   </md-tabs>  
 </div>
 
