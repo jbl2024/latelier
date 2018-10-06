@@ -1,5 +1,17 @@
 <template>
   <div class="organization-settings-resources"> 
+    <new-resource ref="newResource" :organizationId="organization._id"></new-resource>  
+    <edit-resource ref="editResource"></edit-resource>  
+
+    <md-dialog-confirm
+      :md-active.sync="showConfirmDialog"
+      md-title="Confirmer la suppression ?"
+      md-content="La ressource sera définitivement supprimé"
+      md-confirm-text="Supprimer"
+      md-cancel-text="Annuler"
+      @md-cancel="onCancelDeleteResource"
+      @md-confirm="onConfirmDeleteResource" />
+
 
     <div v-if="!$subReady.resources">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
@@ -15,17 +27,41 @@
         <md-button class="md-primary md-raised" @click="newResource">Ajouter une ressource</md-button>
       </md-empty-state>
 
-      <md-table v-if="resources.length > 0">
-        <md-table-row>
-          <md-table-head>Nom</md-table-head>
-          <md-table-head md-numeric>Nombre</md-table-head>
-        </md-table-row>
+      <md-list class="md-double-line" v-show="resources.length != 0"> 
+        <md-subheader>Ressources
 
-        <md-table-row v-for="resource in resources" :key='resource._id'>
-          <md-table-cell>{{ resource.name}}</md-table-cell>
-          <md-table-cell md-numeric>{{ resource.amount}}</md-table-cell>
-        </md-table-row>
-      </md-table>
+          <md-button class="md-icon-button" @click="newResource">
+          <md-icon>add</md-icon>
+          <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
+          </md-button>
+  
+        </md-subheader>
+
+        <div class="md-elevation-1">
+          <template v-for="item in resources" >
+            <md-list-item :key='item._id'>
+              <md-avatar class="md-avatar-icon md-primary">
+                <md-icon>category</md-icon>
+              </md-avatar>
+
+              <div class="md-list-item-text pointer">
+                <span>{{ item.name }}</span>
+                <span>{{ item.description }}</span>
+              </div>
+
+              <md-button class="md-icon-button show-desktop" @click.stop="editResource(item._id)">
+                <md-icon>edit</md-icon>
+                <md-tooltip md-delay="300">Supprimer</md-tooltip>
+              </md-button>
+              <md-button class="md-icon-button show-desktop" @click.stop="deleteResource(item._id)">
+                <md-icon>delete</md-icon>
+                <md-tooltip md-delay="300">Supprimer</md-tooltip>
+              </md-button>
+            </md-list-item>
+            <md-divider></md-divider>
+          </template>
+        </div>
+      </md-list>
     </div>
   </div>
 </template>
@@ -44,18 +80,35 @@ export default {
   },
   data () {
     return {
+      showConfirmDialog: false,
     }
   },
   methods: {
-    newResource () {
+    newResource() {
+      this.$refs.newResource.open();
+    },
+    editResource(resourceId) {
+      this.$refs.editResource.open(resourceId);
+    },
+    deleteResource(resourceId) {
+      this.resourceId = resourceId;
+      this.showConfirmDialog = true;
+    },
 
-    }
+    onConfirmDeleteResource() {
+      this.showConfirmDialog = false;
+      Meteor.call("resources.remove", this.resourceId);
+    },
+
+    onCancelDeleteResource() {
+      this.showConfirmDialog = false;
+    },
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       resources: function() {
-        return [this.organizationId];
+        return [this.organization._id];
       }
     },
     resources() {
