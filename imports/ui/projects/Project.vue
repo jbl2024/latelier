@@ -11,7 +11,7 @@
         <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
-      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-40 md-large-size-40 md-xlarge-size-40">
+      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-100 md-large-size-100 md-xlarge-size-100">
         <task-detail :taskId="selectedTask._id"></task-detail>
       </md-drawer>
 
