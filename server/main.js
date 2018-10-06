@@ -3,6 +3,7 @@ import '../imports/startup/server/fixtures.js';
 import '../imports/startup/server/userPresence.js';
 import '../imports/api/organizations/organizations.js';
 import '../imports/api/organizations/server/publications.js';
+import '../imports/api/resources/server/publications.js';
 import '../imports/api/projects/projects.js';
 import '../imports/api/projects/server/publications.js';
 import '../imports/api/users/server/publications.js';
