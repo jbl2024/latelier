@@ -18,7 +18,7 @@
             <md-icon>description</md-icon>
             <div class="md-list-item-text">
               <a :href="link(attachment)" target="_blank" class="md-list-item-text">{{ attachment.name }}</a>
-              <router-link :to="{ name: 'project-task', params: { projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
+              <router-link :to="{ name: 'project-task', params: { organizationId: this.currentOrganizationId, projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
             </div>
             <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
               <md-icon>delete</md-icon>
@@ -34,10 +34,12 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import { Attachments } from '/imports/api/attachments/attachments.js'
+import { mapState } from 'vuex';
 
 export default {
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
+    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentProjectId', 0);    
@@ -51,6 +53,9 @@ export default {
       type: String,
       default: '0'
     }
+  },
+  computed: {
+    ...mapState(['currentOrganizationId'])
   },
   data () {
     return {

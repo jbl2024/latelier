@@ -68,6 +68,7 @@
     </md-tab>
 
     <md-tab id="tab-ressource" md-label="Ressources">
+      <task-resources :task="task"></task-resources>
     </md-tab>
 
   </md-tabs>  

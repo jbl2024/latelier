@@ -35,6 +35,7 @@ import debounce from 'lodash/debounce';
 export default {
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
+    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     this.$events.listen('close-task-detail', task => {
       this.$events.fire('task-selected', null);
       this.showTaskDetail = false;
