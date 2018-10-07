@@ -72,7 +72,7 @@ publishComposite("project", function(projectId) {
         }
       },
       {
-        // attachments
+        // groups
         find(project) {
           return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
