@@ -58,6 +58,7 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { mapState } from 'vuex';
 import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 import moment from 'moment';
 
@@ -92,6 +93,9 @@ export default {
     task: {
       type: Object
     }
+  },
+  computed: {
+    ...mapState(['currentOrganizationId'])
   },
   data() {
     return {
@@ -221,7 +225,7 @@ export default {
       if (this.editName) {
         return;
       }
-      this.$router.push({ name: 'project-task', params: { projectId: this.task.projectId, taskId: this.task._id }}) 
+      this.$router.push({ name: 'project-task', params: { organizationId: this.currentOrganizationId, projectId: this.task.projectId, taskId: this.task._id }}) 
     },
     formatDate (date) {
       return moment(date).format('DD/MM/YYYY HH:mm');

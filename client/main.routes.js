@@ -104,7 +104,7 @@ export default [
     props: true
   },
   {
-    path: "/projects/:projectId/:taskId",
+    path: "/projects/:organizationId/:projectId/:taskId",
     name: "project-task",
     beforeEnter: isBasicAuth,
     component: "/imports/ui/projects/Project.vue",
