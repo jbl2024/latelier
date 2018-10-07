@@ -6,6 +6,7 @@ import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
+import { Resources } from "../../resources/resources";
 
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
@@ -75,6 +76,12 @@ publishComposite("project", function(projectId) {
         // groups
         find(project) {
           return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
+        }
+      },
+      {
+        // resources
+        find(project) {
+          return Resources.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       },
       {

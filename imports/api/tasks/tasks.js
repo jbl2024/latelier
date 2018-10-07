@@ -292,4 +292,33 @@ Meteor.methods({
     }
     Tasks.update({ _id: taskId }, { $pull: { labels: labelId } });
   },  
+
+  'tasks.addResource'(taskId, resourceId) {
+    check(taskId, String);
+    check(resourceId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+    if (Tasks.find({ _id: taskId, "resources": resourceId }).count() > 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $push: { resources: resourceId } });
+  },
+
+  'tasks.removeResource'(taskId, resourceId) {
+    check(taskId, String);
+    check(resourceId, String);
+
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    if (Tasks.find({ _id: taskId, "resources": resourceId }).count() == 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $pull: { resources: resourceId } });
+  },  
 });
