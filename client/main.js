@@ -19,6 +19,9 @@ import { Meteor } from 'meteor/meteor';
 import Vue from 'vue';
 import routerFactory from '/imports/routes.js';
 
+import VueMeteorTracker from "vue-meteor-tracker";
+Vue.use(VueMeteorTracker);
+
 import VueMaterial from 'vue-material'
 import 'vue-material/dist/vue-material.min.css'
 import 'vue-material/dist/theme/default.css' // This line here
@@ -33,9 +36,6 @@ Vue.use(VueEvents);
 // Element UI
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
-
-import VueDragscroll from "vue-dragscroll";
-Vue.directive(VueDragscroll);
 
 Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
 

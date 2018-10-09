@@ -13,8 +13,12 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { dragscroll } from 'vue-dragscroll'
 
 export default {
+  directives: {
+    'dragscroll': dragscroll
+  },
   props: {
     projectId: {
       type: String,
