@@ -1,5 +1,6 @@
+import Vue from 'vue'
 import Vuex from 'vuex'
-import { Projects } from '/imports/api/projects/projects.js'
+Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
