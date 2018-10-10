@@ -24,7 +24,7 @@
   <md-field class="add-item">
     <md-icon>check_box_outline_blank</md-icon>
     <label>Nouvel item</label>
-    <md-input v-model="item" ref="newItem" @keyup.enter="addItem"></md-input>
+    <md-input v-model="item" ref="newItem" v-focus @keyup.enter="addItem"></md-input>
   </md-field>
 </div>
 
@@ -67,15 +67,13 @@ export default {
       return checklist && checklist.length > 0;
     },
 
-    startNewItem () {
-      this.editNewItem = true;
-      this.item = '';
-      this.$nextTick(() => this.$refs.newItem.$el.focus());
-    },
-
     addItem () {
       this.editNewItem = false;
-      Meteor.call('tasks.addChecklistItem', this.task._id, this.item);
+      Meteor.call('tasks.addChecklistItem', this.task._id, this.item, (error, result) => {
+        if (!error) {
+          this.item = '';
+        }
+      });
     },
 
     deleteItem (e, item) {
