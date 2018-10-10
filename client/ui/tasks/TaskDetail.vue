@@ -48,14 +48,12 @@
       <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
         <md-icon>cancel</md-icon>
       </md-button>
-
     </div>
-    
   </div>
   <md-divider></md-divider>
 
-  <md-tabs md-sync-route  md-alignment="fixed">
-    <md-tab id="tab-notes" md-label="Notes">
+  <md-tabs md-sync-route md-alignment="fixed">
+    <md-tab id="tab-notes" :md-label="getLabel('Notes', notesCount)">
       <task-notes :task="task"></task-notes>
     </md-tab>
 
@@ -63,11 +61,11 @@
       <task-properties :task="task"></task-properties>
     </md-tab>
 
-    <md-tab id="tab-checklist" md-label="Checklist">
-      <task-checklist :task="task"></task-checklist>
+    <md-tab id="tab-checklist" :md-label="getLabel('Checklist', checklistCount)">
+      <task-checklist-in-detail :task="task"></task-checklist-in-detail>
     </md-tab>
 
-    <md-tab id="tab-ressource" md-label="Ressources">
+    <md-tab id="tab-ressource" :md-label="getLabel('Ressources', resourcesCount)">
       <task-resources :task="task"></task-resources>
     </md-tab>
 
@@ -108,6 +106,45 @@ export default {
       update ({id}) {
         return Tasks.findOne({ _id: id}) || {};
       }
+    },
+
+    checklistCount: {
+      params () {
+        return {
+          id: this.taskId
+        };
+      },
+      update ({id}) {
+        const task = Tasks.findOne({ _id: id}) || {};
+        const checklist = task.checklist || [];
+        return checklist.length;
+      }
+    },
+
+    notesCount: {
+      params () {
+        return {
+          id: this.taskId
+        };
+      },
+      update ({id}) {
+        const task = Tasks.findOne({ _id: id}) || {};
+        const notes = task.notes || [];
+        return notes.length;
+      }
+    },
+
+    resourcesCount: {
+      params () {
+        return {
+          id: this.taskId
+        };
+      },
+      update ({id}) {
+        const task = Tasks.findOne({ _id: id}) || {};
+        const resources = task.resources || [];
+        return resources.length;
+      }
     }
   },
   methods: {
@@ -132,6 +169,13 @@ export default {
     cancelUpdateDescription () {
       this.editDescription = false;
       this.task.description = this.savedDescription;
+    },
+
+    getLabel(label, count) {
+      if (!count || count == 0) {
+        return label;
+      }
+      return label + ' (' + count + ')';
     }
   }
 };
@@ -155,7 +199,7 @@ export default {
   margin-right: 0;
 }
 
-.task-checklist {
+.task-checklist-in-detail {
   margin-left: 12px;
   margin-right: 12px;
 }
@@ -163,5 +207,9 @@ export default {
 pre {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   white-space: pre-wrap;
+}
+
+#tab-checklist {
+  min-width: 400px;
 }
 </style>
