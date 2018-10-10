@@ -1,17 +1,17 @@
 <template>
 
-<div class="task-checklist" v-show="showList(task.checklist)" @click.stop="">
-  <div v-for="item in task.checklist" :key="item._id" class="item" 
-        @mouseover="showButtons = item._id" 
-        @mouseleave="showButtons = null">
+<div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop="">
+  <div v-for="item in task.checklist" :key="item._id" class="item">
     <div>
       <md-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
-      <div class="right" v-show="showButtons === item._id">
+      <div class="right">
         <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
           <md-icon>list</md-icon>
+          <md-tooltip md-delay="300">Convertir en tache</md-tooltip>
         </md-button>
         <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
           <md-icon>delete</md-icon>
+          <md-tooltip md-delay="300">Supprimer</md-tooltip>
         </md-button>
       </div>
       <div class="clear"></div>
@@ -35,7 +35,7 @@ import moment from 'moment';
 import 'moment/locale/fr'
 
 export default {
-  name: 'task-checklist',
+  name: 'task-checklist-in-detail',
   props: {
     hideIfEmpty: {
       type: Boolean,
@@ -48,8 +48,7 @@ export default {
   data() {
     return {
       editNewItem: false,
-      item: '',
-      showButtons: null
+      item: ''
     };
   },
   methods: {
@@ -112,8 +111,6 @@ export default {
   opacity: 0;
 }
 
-
-
 .item {
   min-width:250px;
 }
@@ -122,18 +119,19 @@ export default {
   float: left;
   white-space: nowrap;
   overflow: hidden;
+  max-width: 50%;
   box-sizing:border-box;
   text-overflow: ellipsis;
 }
 
+
 .right {
-  position: absolute;
-  right: 0;
+  float: right;
   white-space: nowrap;
+  max-width: 50%;
   overflow: hidden;
   box-sizing:border-box;
   text-overflow: ellipsis;
-  background-color: white;
 }
 
 .clear {
