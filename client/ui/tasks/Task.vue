@@ -6,9 +6,7 @@
       <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
         <md-card-area md-inset>
           <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-        <md-card-header>
-
-          <div class="md-title">
+        <div class="title-wrapper">
             <div class="checkbox">
               <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
             </div>
@@ -27,15 +25,11 @@
               </md-button>
 
             </span>
-
-          </div>
-
-        </md-card-header>
+        </div>
 
         </md-card-area>
 
-        <md-card-content>
-
+        <md-card-content v-show="hasAdditionalContentToShow(task)">
           <div class="metadata">
             <span>
               <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
@@ -240,6 +234,19 @@ export default {
         classes.push('completed');
       }
       return classes.join(' ');
+    },
+
+    hasAdditionalContentToShow (task) {
+      if (task.assignedTo) {
+        return true;
+      }
+      if (task.checklist && task.checklist.count > 0) {
+        return true;
+      }
+      if (task.dueDate) {
+        return true;
+      }
+      return false;
     }
 
 
@@ -260,8 +267,6 @@ export default {
   margin-bottom: 0;
 }
 
-
-
 .dragup {
   background: linear-gradient(0deg, #fff 50%, #eee 50%);
 }
@@ -274,9 +279,15 @@ export default {
   background: linear-gradient(90deg, #aaa 2%, #fff 2%);
 }
 
+.title-wrapper {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 4px;
+}
+
 .checkbox {
   float: left;
-  margin-top: 2px;
+  margin-top: -1px;
 }
 .checkbox input {
   width: 16px;
@@ -302,12 +313,16 @@ export default {
   transition: background-color 250ms linear;
 }
 
+.edit {
+  margin-left: 4px;
+  margin-top: 4px;
+}
 .edit .md-button {
   min-width: 24px;
   width: 24px;
   height: 20px;
   margin: 0;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .edit-name {
@@ -315,15 +330,6 @@ export default {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
   width: 75%;
   margin-left: -3px;
-}
-
-.task .md-card-header {
-  padding: 12px;
-}
-
-.task .md-title {
-  margin-top: 0 !important;
-  font-size: 14px;
 }
 
 .task-checklist {
@@ -335,11 +341,14 @@ export default {
 .metadata {
   margin-top: 2px;
   margin-bottom: 2px;
+  font-size: 12px;
 }
 
 .md-card-content {
   padding-left: 12px;
   padding-top: 8px;
+  margin-bottom: 0;
+  padding-bottom:8px;
 }
 
 .labels {
