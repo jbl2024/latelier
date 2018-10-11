@@ -4,7 +4,7 @@
     <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd"> 
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
       <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
-        <md-card-area md-inset>
+        <div>
           <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
         <div class="title-wrapper">
             <div class="checkbox">
@@ -27,9 +27,10 @@
             </span>
         </div>
 
-        </md-card-area>
+        </div>
 
         <md-card-content v-show="hasAdditionalContentToShow(task)">
+          <md-divider></md-divider>
           <div class="metadata">
             <span>
               <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
@@ -339,6 +340,7 @@ export default {
 }
 
 .metadata {
+  padding-top: 8px;
   margin-top: 2px;
   margin-bottom: 2px;
   font-size: 12px;
