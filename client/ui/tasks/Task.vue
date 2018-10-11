@@ -240,7 +240,7 @@ export default {
       if (task.assignedTo) {
         return true;
       }
-      if (task.checklist && task.checklist.count > 0) {
+      if (task.checklist && task.checklist.length > 0) {
         return true;
       }
       if (task.dueDate) {
