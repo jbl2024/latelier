@@ -53,12 +53,12 @@
   <md-divider></md-divider>
 
   <md-tabs md-sync-route md-alignment="fixed">
-    <md-tab id="tab-notes" :md-label="getLabel('Notes', notesCount)">
-      <task-notes :task="task"></task-notes>
-    </md-tab>
-
     <md-tab id="tab-properties" md-label="Propriétés">
       <task-properties :task="task"></task-properties>
+    </md-tab>
+
+    <md-tab id="tab-notes" :md-label="getLabel('Notes', notesCount)">
+      <task-notes :task="task"></task-notes>
     </md-tab>
 
     <md-tab id="tab-checklist" :md-label="getLabel('Checklist', checklistCount)">
