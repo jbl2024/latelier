@@ -32,10 +32,11 @@
       </md-empty-state>
 
       <md-list class="md-double-line" v-show="projects.length != 0"> 
-        <md-subheader>Projets
+        <md-subheader>
+          <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
           <md-button class="md-icon-button" @click="newProject">
             <md-icon>add</md-icon>
-            <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
+            <md-tooltip md-delay="300">Ajouter un projet</md-tooltip>
           </md-button>
         </md-subheader>
 
