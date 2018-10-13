@@ -22,7 +22,12 @@
         <md-button class="md-primary md-raised" @click="newOrganization">Créer une organisation</md-button>
       </md-empty-state>
       <md-list class="md-double-line" v-show="organizations.length != 0"> 
-        <md-subheader>Organisations</md-subheader>
+        <md-subheader>Organisations
+          <md-button class="md-icon-button" @click="newOrganization">
+            <md-icon>add</md-icon>
+            <md-tooltip md-delay="300">Ajouter une organisation</md-tooltip>
+          </md-button>
+        </md-subheader>
 
         <template v-for="item in organizations" >
           <md-list-item :key='item._id'>
