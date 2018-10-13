@@ -30,8 +30,14 @@
         :md-description="`Aucun projet disponible`">
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
       </md-empty-state>
+
       <md-list class="md-double-line" v-show="projects.length != 0"> 
-        <md-subheader>{{ organization.name}}</md-subheader>
+        <md-subheader>Projets
+          <md-button class="md-icon-button" @click="newProject">
+            <md-icon>add</md-icon>
+            <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
+          </md-button>
+        </md-subheader>
 
         <template v-for="item in projects" >
           <md-list-item :key='item._id'>
