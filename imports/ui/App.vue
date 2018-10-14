@@ -19,7 +19,7 @@
       <md-list v-if="currentOrganizationId != 0 && currentProjectId == 0">
 
         <md-list-item :to="{ name: 'projects-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-          <md-icon>home</md-icon>
+          <md-icon>pages</md-icon>
           <span class="md-list-item-text">Projets</span>
         </md-list-item>
 
