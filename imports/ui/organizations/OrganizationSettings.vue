@@ -14,10 +14,6 @@
         <md-tab id="tab-users" md-label="Utilisateurs">
           <organization-settings-manage-users :organization="organization"></organization-settings-manage-users>
         </md-tab>
-
-        <md-tab id="tab-resources" md-label="Ressources">
-          <organization-settings-resources :organization="organization"></organization-settings-resources>
-        </md-tab>
       </md-tabs> 
 
     </div>
