@@ -1,5 +1,6 @@
+
 <template>
-  <div class="organization-settings-resources"> 
+  <div class="organization-resources"> 
     <new-resource ref="newResource" :organizationId="organization._id"></new-resource>  
     <edit-resource ref="editResource"></edit-resource>  
 
@@ -71,7 +72,7 @@ import { Organizations } from '/imports/api/organizations/organizations.js'
 import { Resources } from '/imports/api/resources/resources.js'
 
 export default {
-  name: 'organization-settings-resources',
+  name: 'organization-resources',
   props: {
     organization: {
       type: Object,

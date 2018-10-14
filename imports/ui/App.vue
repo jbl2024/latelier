@@ -28,6 +28,11 @@
           <span class="md-list-item-text">Planning</span>
         </md-list-item>
 
+        <md-list-item :to="{ name: 'organization-resources-page', params: { organizationId: currentOrganizationId }}">
+          <md-icon>category</md-icon>
+          <span class="md-list-item-text">Ressources</span>
+        </md-list-item>
+
         <md-list-item :to="{ name: 'organization-settings', params: { organizationId: currentOrganizationId }}">
           <md-icon>settings</md-icon>
           <span class="md-list-item-text">Paramètres</span>
