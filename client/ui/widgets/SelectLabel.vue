@@ -64,6 +64,7 @@ export default {
   margin-left: 24px;
   margin-right: 24px;
   margin-bottom: 24px;
+  overflow-y: scroll;
 }
 
 .color {
