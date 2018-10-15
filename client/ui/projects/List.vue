@@ -1,7 +1,7 @@
 <template>
   <div class="list">
-    <div class="list-header">
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
+    <div class="list-header">
     <div class="swimlane dragscroll">
       <drag :transfer-data="getTransferData(list)">
       <h2 v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
@@ -35,17 +35,15 @@
       </h2>
     </drag>
     </div>
-    </drop>
-
     </div>
-      <div class="tasks-wrapper">
-        <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
-        <div class="task new" @click="newTaskInline(list._id)">
-            <h2>Ajouter une tâche</h2>
-        </div>
+    <div class="tasks-wrapper">
+      <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
+      <div class="task new" @click="newTaskInline(list._id)">
+          <h2>Ajouter une tâche</h2>
       </div>
-
     </div>
+    </drop>
+  </div>
 </template>
 
 <script>
