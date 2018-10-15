@@ -5,7 +5,7 @@ import { Organizations } from "../organizations";
 
 Meteor.publish("organizations", function organizations() {
   var userId = Meteor.userId();
-  var query = {};
+  var query = {$or: [{members: userId}, {isPublic: true}]};
   return Organizations.find(query);
 });
 
