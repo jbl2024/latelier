@@ -106,6 +106,15 @@ Meteor.methods({
       throw new Meteor.Error('not-authorized');
     }
 
+    const organization = Organizations.findOne({_id: organizationId});
+    if (!organization) {
+      throw new Meteor.Error('not-found');
+    }
+    const members = organization.members || [];
+    if (members.length <= 1) {
+      throw new Meteor.Error('cannot empty all members');
+    }
+
     const projects = Projects.find({organizationId: organizationId});
     projects.map(project => {
       Meteor.call('projects.removeMember', project._id, userId);
