@@ -15,13 +15,6 @@
         <task-detail :taskId="selectedTask._id"></task-detail>
       </md-drawer>
 
-      <new-list ref="newList" :project-id="projectId"></new-list>  
-      <md-speed-dial class="absolute-right">
-        <md-speed-dial-target @click="newList">
-          <md-icon>add</md-icon>
-        </md-speed-dial-target>
-      </md-speed-dial>
-
     </div>
 </div>
 </template>
@@ -119,10 +112,7 @@ export default {
     cancelUpdateProjectName () {
       this.editProjectName = false;
       this.project.name = this.savedProjectName;
-    },
-    newList () {
-      this.$refs.newList.open();
-    },
+    }
   }
 }
 </script>
