@@ -28,14 +28,8 @@
         <md-button class="md-primary md-raised" @click="newResource">Ajouter une ressource</md-button>
       </md-empty-state>
 
-      <md-list class="md-double-line" v-show="resources.length != 0"> 
+      <md-list class="md-double-line fap-list" v-show="resources.length != 0"> 
         <md-subheader>Ressources
-
-          <md-button class="md-icon-button" @click="newResource">
-          <md-icon>add</md-icon>
-          <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
-          </md-button>
-  
         </md-subheader>
 
         <div class="md-elevation-1">
@@ -63,6 +57,14 @@
           </template>
         </div>
       </md-list>
+
+      <div class="absolute-right">
+        <md-button class="md-fab" @click="newResource">
+            <md-icon>add</md-icon>          
+            <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
+        </md-button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -120,4 +122,19 @@ export default {
 </script>
 
 <style scoped>
+
+@media (min-width: 601px) {
+  .fap-list {
+    margin-right: 92px;
+    margin-left: 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .fap-list {
+    margin-right: auto; 
+    margin-left: auto;
+  }
+}
+
 </style>
