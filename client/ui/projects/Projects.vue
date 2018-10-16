@@ -34,10 +34,6 @@
       <md-list class="md-double-line" v-show="projects.length != 0"> 
         <md-subheader>
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
-          <md-button class="md-icon-button" @click="newProject">
-            <md-icon>add</md-icon>
-            <md-tooltip md-delay="300">Ajouter un projet</md-tooltip>
-          </md-button>
         </md-subheader>
 
         <template v-for="item in projects" >
@@ -70,6 +66,14 @@
           <md-divider class="md-inset"></md-divider>
         </template>
       </md-list>
+
+      <div class="absolute-right">
+        <md-button class="md-fab" @click="newProject">
+            <md-icon>add</md-icon>          
+            <md-tooltip md-delay="300">Ajouter un projet</md-tooltip>
+        </md-button>
+      </div>
+
     </div>
   </div>
 </template>
@@ -270,4 +274,5 @@ export default {
 .pointer { 
   cursor: pointer;
 }
+
 </style>
