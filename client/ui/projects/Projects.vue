@@ -31,11 +31,12 @@
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
       </md-empty-state>
 
-      <md-list class="md-double-line" v-show="projects.length != 0"> 
+      <md-list class="md-double-line fap-list" v-show="projects.length != 0"> 
         <md-subheader>
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
         </md-subheader>
 
+        <div class="md-elevation-1">
         <template v-for="item in projects" >
           <md-list-item :key='item._id'>
             <md-avatar class="md-avatar-icon" :style="getColor(item)">
@@ -65,6 +66,7 @@
           </md-list-item>
           <md-divider class="md-inset"></md-divider>
         </template>
+        </div>
       </md-list>
 
       <div class="absolute-right">
@@ -275,4 +277,18 @@ export default {
   cursor: pointer;
 }
 
+
+@media (min-width: 601px) {
+  .fap-list {
+    margin-right: 92px;
+    margin-left: 48px;
+  }
+}
+
+@media (max-width: 600px) {
+  .fap-list {
+    margin-right: auto; 
+    margin-left: auto;
+  }
+}
 </style>
