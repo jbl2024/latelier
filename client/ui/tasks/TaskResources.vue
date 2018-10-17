@@ -2,13 +2,13 @@
 
 <div class="task-resources">
   <select-resource ref="selectResource" @select="onSelectResource"></select-resource>  
-  <md-empty-state
+  <empty-state
     v-if="!task.resources || task.resources.length == 0"
-    md-icon="category"
-    md-label="Aucune ressource"
-    md-description="Vous pouvez ajouter des ressources">
+    icon="category"
+    label="Aucune ressource"
+    description="Vous pouvez ajouter des ressources">
     <md-button class="md-primary md-raised" @click="addResource">Ajouter une ressource</md-button>
-  </md-empty-state>
+  </empty-state>
 
   <md-list class="md-double-line" v-show="task.resources && task.resources.length != 0"> 
     <md-subheader>Ressources

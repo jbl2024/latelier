@@ -20,13 +20,13 @@
       
     <div v-if="$subReady.resources">
 
-      <md-empty-state
+      <empty-state
         v-if="resources.length == 0"
-        md-rounded
-        md-icon="category"
-        :md-description="`Aucune ressource définie`">
+        rounded
+        icon="category"
+        :description="`Aucune ressource définie`">
         <md-button class="md-primary md-raised" @click="newResource">Ajouter une ressource</md-button>
-      </md-empty-state>
+      </empty-state>
 
       <md-list class="md-double-line fap-list" v-show="resources.length != 0"> 
         <md-subheader>Ressources

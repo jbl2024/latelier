@@ -17,12 +17,12 @@
           </md-list-item>
         </md-list>
 
-        <md-empty-state v-show="groups.length == 0"
-          md-icon="folder"
-          md-label="Aucune catégorie"
-          md-description="Vous pouvez créer une catégorie.">
+        <empty-state v-show="groups.length == 0"
+          icon="folder"
+          label="Aucune catégorie"
+          description="Vous pouvez créer une catégorie.">
           <md-button class="md-primary md-raised" @click="$refs.newProjectGroup.open()">Créer une catégorie</md-button>
-        </md-empty-state>
+        </empty-state>
 
       </div>
       <md-dialog-actions>

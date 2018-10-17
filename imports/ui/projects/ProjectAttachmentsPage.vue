@@ -5,13 +5,13 @@
     </div>
     <div v-if="$subReady.project">
 
-      <md-empty-state
+      <empty-state
         v-show="attachments.length == 0"
-        md-rounded
-        md-icon="attachment"
-        md-label="Aucune pièce jointe"
-        md-description="Vous pouvez ajouter une pièce jointe sur une tâche">
-      </md-empty-state>
+        rounded
+        icon="attachment"
+        label="Aucune pièce jointe"
+        description="Vous pouvez ajouter une pièce jointe sur une tâche">
+      </empty-state>
             
       <md-list class="md-double-line">
           <md-list-item v-for="attachment in attachments" :key="attachment._id">
@@ -105,7 +105,7 @@ export default {
   background-color: white;
 }
 
-.md-empty-state {
+.empty-state {
   margin-top: 24px;
 }
 </style>
