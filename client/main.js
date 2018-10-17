@@ -38,6 +38,12 @@ Vue.use(VueEvents);
 import ElementUI from 'element-ui'
 Vue.use(ElementUI)
 
+// Vuetify
+import Vuetify from 'vuetify'
+Vue.use(Vuetify)
+
+import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
+
 Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
 
 // Main app
