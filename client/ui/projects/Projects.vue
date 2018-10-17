@@ -25,11 +25,11 @@
     </div>
       
     <div v-if="$subReady.projects">
-      <md-empty-state
+      <empty-state
         v-if="projects.length == 0"
-        :md-description="`Aucun projet disponible`">
+        :description="`Aucun projet disponible`">
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
-      </md-empty-state>
+      </empty-state>
 
       <md-list class="md-double-line fap-list" v-show="projects.length != 0"> 
         <md-subheader>

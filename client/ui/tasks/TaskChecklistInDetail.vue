@@ -146,7 +146,7 @@ pre {
 .delete-button {
 }
 
-.md-empty-state {
+.empty-state {
   transition: none;
 }
 

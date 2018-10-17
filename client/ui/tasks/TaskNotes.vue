@@ -1,12 +1,12 @@
 <template>
 
 <div class="task-notes">
-  <md-empty-state v-show="!hasNotes(task.notes) && !editNewNote"
-    md-icon="note"
-    md-label="Aucune note"
-    md-description="Vous pouvez ajouter des notes.">
+  <empty-state v-show="!hasNotes(task.notes) && !editNewNote"
+    icon="note"
+    label="Aucune note"
+    description="Vous pouvez ajouter des notes.">
     <md-button class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
-  </md-empty-state>
+  </empty-state>
 
   <div v-for="note in task.notes" :key='note._id'>
       <div class="note">
@@ -126,7 +126,7 @@ pre {
 .delete-button {
 }
 
-.md-empty-state {
+.empty-state {
   transition: none;
 }
 

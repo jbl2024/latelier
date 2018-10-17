@@ -47,11 +47,11 @@
         <project-detail :projectId="selectedProjectId" v-if="selectedProjectId"></project-detail>
       </md-drawer>
 
-      <md-empty-state v-show="count == 0"
-        md-icon="timeline"
-        md-label="Aucun projet"
-        md-description="Seuls les projets avec une date de début et de fin sont affichés ici.">
-      </md-empty-state>
+      <empty-state v-show="count == 0"
+        icon="timeline"
+        label="Aucun projet"
+        description="Seuls les projets avec une date de début et de fin sont affichés ici.">
+      </empty-state>
     </template>
   </div>
 </template>
