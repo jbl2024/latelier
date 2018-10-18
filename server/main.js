@@ -17,7 +17,7 @@ if (Meteor.isServer) {
 }
 
 Accounts.config({
-  forbidClientAccountCreation : true
+  forbidClientAccountCreation : false
 });
 
 Meteor.startup(() => {

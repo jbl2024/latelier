@@ -11,7 +11,7 @@ Meteor.startup(function() {
 });
 
 Accounts.config({
-  forbidClientAccountCreation : true
+  forbidClientAccountCreation : false
 });
 
 // Libs
