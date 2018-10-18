@@ -39,49 +39,9 @@
           fixed
           app
     >
-
-    <v-list dense class="pt-0" v-if="currentOrganizationId != 0 && currentProjectId == 0">
-      <v-list-tile :to="{ name: 'projects-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
-          <v-icon>pages</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Projets</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile :to="{ name: 'projects-timeline', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
-          <v-icon>timeline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Planning</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile :to="{ name: 'organization-resources-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
-          <v-icon>category</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Ressources</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-
-      <v-list-tile :to="{ name: 'organization-settings', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
-          <v-icon>settings</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Parametres</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-divider></v-divider>
-    </v-list>
-
-    <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
-    <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
-
+      <organization-menu v-if="currentOrganizationId != 0 && currentProjectId == 0" :organizationId="currentOrganizationId"></organization-menu>
+      <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
+      <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
     </v-navigation-drawer>
 
     <v-content class="main-content">
