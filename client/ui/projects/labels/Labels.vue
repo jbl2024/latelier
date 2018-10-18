@@ -3,27 +3,41 @@
 <div class="labels">
   <new-label ref="newLabel" :projectId="projectId"></new-label>  
   <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
-
   <div v-if="$subReady.labels">
-    <md-list>
-      <md-subheader>Labels</md-subheader>
-      <md-list-item v-for="label in labels" 
+    <v-list dense class="pt-0">
+      <v-subheader>Labels</v-subheader>
+      <v-list-tile 
+          v-for="label in labels"
           :key="label._id" 
           @mouseover="showButtons = label._id" 
           @mouseleave="showButtons = null">
-        <md-icon :style="getColor(label)">label</md-icon>
-        <span @click="selectLabel(label)" class="md-list-item-text" :class="getClassForName(label, selectedLabels)">{{label.name}}</span>
-        <md-button class="md-icon-button md-list-action" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
-          <md-icon>settings</md-icon>
-          <md-tooltip md-delay="300">Paramètres</md-tooltip>
-        </md-button>
 
-      </md-list-item>
-      <md-list-item @click="$refs.newLabel.open()">
-        <md-icon>add</md-icon>
-        <span class="md-list-item-text">Créer...</span>
-      </md-list-item>
-    </md-list>
+        <v-list-tile-avatar>
+          <v-icon :style="getColor(label)">label</v-icon>
+        </v-list-tile-avatar>
+
+        <v-list-tile-content @click="selectLabel(label)" class="pointer">
+          <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
+        </v-list-tile-content>
+
+        <v-list-tile-action>
+          <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id"> 
+            <v-icon color="grey lighten-1">settings</v-icon>
+          </v-btn>
+        </v-list-tile-action>
+      </v-list-tile>
+
+      <v-list-tile @click="$refs.newLabel.open()"> 
+
+        <v-list-tile-avatar>
+          <v-icon>add</v-icon>
+        </v-list-tile-avatar>
+
+        <v-list-tile-content>
+          <v-list-tile-title>Créer...</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
   </div>
 </div>
 
@@ -93,15 +107,13 @@ export default {
 </script>
 
 <style scoped>
-.md-list-item {
+.pointer {
   cursor: pointer;
-}
-.md-list-item:hover {
-  background-color: #eee;
 }
 
 .selected {
-  color: var(--md-theme-default-primary, #448aff) !important;
+  font-weight: bold;
+  /* color: var(--md-theme-default-primary, #448aff) !important; */
 }
 
 </style>
