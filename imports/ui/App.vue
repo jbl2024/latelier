@@ -8,14 +8,29 @@
       dark
       app
       fixed
-    >      
-      <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
+    >
+      <v-toolbar-title style="width: 300px" class="ml-0 pl-3" v-show="currentProjectId == 0 && currentOrganizationId == 0">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down" v-show="currentProjectId == 0 && currentOrganizationId == 0">l'atelier</span>
+        <span class="title ml-3 mr-5">L'atelier</span>
+      </v-toolbar-title>
         <organization-title v-if="currentProjectId == 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId"></organization-title>
         <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
-        <blaze-template id="login" template="loginButtons" class="md-xsmall-hide"></blaze-template>
-      </v-toolbar-title>          
+      <v-text-field
+        flat
+        solo-inverted
+        hide-details
+        prepend-inner-icon="search"
+        label="Search"
+        class="hidden-sm-and-down"
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <v-btn icon>
+        <v-icon>apps</v-icon>
+      </v-btn>
+      <v-btn icon>
+        <v-icon>notifications</v-icon>
+      </v-btn>
+        <blaze-template id="login" template="loginButtons"></blaze-template>
     </v-toolbar>
 
     <v-navigation-drawer
@@ -24,33 +39,48 @@
           fixed
           app
     >
-      <md-list v-if="currentOrganizationId != 0 && currentProjectId == 0">
 
-        <md-list-item :to="{ name: 'projects-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-          <md-icon>pages</md-icon>
-          <span class="md-list-item-text">Projets</span>
-        </md-list-item>
+    <v-list dense class="pt-0" v-if="currentOrganizationId != 0 && currentProjectId == 0">
+      <v-list-tile :to="{ name: 'projects-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
+        <v-list-tile-action>
+          <v-icon>pages</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Projets</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <md-list-item :to="{ name: 'projects-timeline', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
-          <md-icon>timeline</md-icon>
-          <span class="md-list-item-text">Planning</span>
-        </md-list-item>
+      <v-list-tile :to="{ name: 'projects-timeline', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
+        <v-list-tile-action>
+          <v-icon>timeline</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Planning</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <md-list-item :to="{ name: 'organization-resources-page', params: { organizationId: currentOrganizationId }}">
-          <md-icon>category</md-icon>
-          <span class="md-list-item-text">Ressources</span>
-        </md-list-item>
+      <v-list-tile :to="{ name: 'organization-resources-page', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
+        <v-list-tile-action>
+          <v-icon>category</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Ressources</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
 
-        <md-list-item :to="{ name: 'organization-settings', params: { organizationId: currentOrganizationId }}">
-          <md-icon>settings</md-icon>
-          <span class="md-list-item-text">Paramètres</span>
-        </md-list-item>
+      <v-list-tile :to="{ name: 'organization-settings', params: {organizationId: currentOrganizationId}}" @click="showNavigation = false">
+        <v-list-tile-action>
+          <v-icon>settings</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>Parametres</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-divider></v-divider>
+    </v-list>
 
-        <md-divider></md-divider>
-      </md-list>
-
-      <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
-      <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
+    <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
+    <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
 
     </v-navigation-drawer>
 
