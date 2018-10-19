@@ -1,44 +1,36 @@
 <template>
 
-<div class="task-checklist" v-show="showList(task.checklist)" @click.stop="">
-  <div v-for="item in task.checklist" :key="item._id" class="item" 
-        @mouseover="showButtons = item._id" 
-        @mouseleave="showButtons = null">
-    <div>
-      <div class="check">
-        <input type="checkbox" v-model="item.checked" id="checkbox-{{item._id}}" @change="toggleCheckItem(item)">
-        <label for="checkbox-{{item._id}}">{{ item.name }}</label>
+  <div class="task-checklist" v-show="showList(task.checklist)" @click.stop="">
+    <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
+      <div>
+        <div class="check">
+          <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)">
+          <label :for="item._id">{{ item.name }}</label>
+        </div>
+        <div class="right" v-show="showButtons === item._id">
+          <v-btn icon @click="event => { convertToTask(event, item)}">
+            <v-icon>list</v-icon>
+          </v-btn>
+          <v-btn icon @click="event => { deleteItem(event, item)}">
+            <v-icon s-icon>delete</v-icon>
+          </v-btn>
+        </div>
+        <div class="clear"></div>
       </div>
-      <div class="right" v-show="showButtons === item._id">
-        <v-btn icon @click="event => { convertToTask(event, item)}">
-          <v-icon>list</v-icon>
-        </v-btn>
-        <v-btn icon @click="event => { deleteItem(event, item)}">
-          <v-icon s-icon>delete</v-icon>
-        </v-btn>
-      </div>
-      <div class="clear"></div>
     </div>
-
   </div>
-  <md-field class="add-item">
-    <md-icon>check_box_outline_blank</md-icon>
-    <label>Nouvel item</label>
-    <md-input v-model="item" ref="newItem" @keyup.enter="addItem"></md-input>
-  </md-field>
-</div>
 
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import moment from 'moment';
-import 'moment/locale/fr'
+import { Projects } from "/imports/api/projects/projects.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import moment from "moment";
+import "moment/locale/fr";
 
 export default {
-  name: 'task-checklist',
+  name: "task-checklist",
   props: {
     hideIfEmpty: {
       type: Boolean,
@@ -51,81 +43,90 @@ export default {
   data() {
     return {
       editNewItem: false,
-      item: '',
+      item: "",
       showButtons: null
     };
   },
   methods: {
-    showList (checklist) {
+    showList(checklist) {
       if (this.hideIfEmpty && !this.hasItems(checklist)) {
         return false;
       }
       return true;
     },
 
-    hasItems (checklist) {
+    hasItems(checklist) {
       return checklist && checklist.length > 0;
     },
 
-    addItem () {
+    addItem() {
       this.editNewItem = false;
-      Meteor.call('tasks.addChecklistItem', this.task._id, this.item, (error, result) => {
-        if (!error) {
-          this.item = '';
+      Meteor.call(
+        "tasks.addChecklistItem",
+        this.task._id,
+        this.item,
+        (error, result) => {
+          if (!error) {
+            this.item = "";
+          }
         }
-      });
+      );
     },
 
-    deleteItem (e, item) {
+    deleteItem(e, item) {
       if (e) {
         e.stopPropagation();
       }
-      Meteor.call('tasks.removeChecklistItem', this.task._id, item._id);
+      Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
     },
 
-    toggleCheckItem (item) {
-      Meteor.call('tasks.toggleCheckItem', this.task._id,  item._id, item.checked);
+    toggleCheckItem(item) {
+      Meteor.call(
+        "tasks.toggleCheckItem",
+        this.task._id,
+        item._id,
+        item.checked
+      );
     },
 
     updateChecklist() {
-      Meteor.call('tasks.updateChecklist', this.task._id, this.task.checklist);
+      Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
     },
 
-    cancelAddItem () {
+    cancelAddItem() {
       this.editNewItem = false;
     },
 
-    convertToTask (e, item) {
+    convertToTask(e, item) {
       if (e) {
         e.stopPropagation();
       }
 
-      Meteor.call('tasks.convertItemToTask', this.task._id, item._id);
+      Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
     }
   }
 };
 </script>
 
 <style scoped>
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
 }
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 
-
-
 .item {
-  min-width:250px;
+  min-width: 250px;
 }
 
 .check {
   float: left;
   white-space: nowrap;
   overflow: hidden;
-  box-sizing:border-box;
+  box-sizing: border-box;
   text-overflow: ellipsis;
   margin-top: 0;
   font-size: 12px;
@@ -137,7 +138,7 @@ export default {
   right: 0;
   white-space: nowrap;
   overflow: hidden;
-  box-sizing:border-box;
+  box-sizing: border-box;
   text-overflow: ellipsis;
   background-color: white;
 }
@@ -147,7 +148,7 @@ export default {
 }
 
 pre {
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
 
@@ -194,5 +195,4 @@ pre {
 .add-item .md-input {
   font-size: 12px;
 }
-
 </style>
