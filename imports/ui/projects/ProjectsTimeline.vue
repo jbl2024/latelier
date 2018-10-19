@@ -22,7 +22,7 @@
     </md-toolbar>
 
     <template v-if="!$subReady.projectsForTimeline">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      <v-progress-linear indeterminate></v-progress-linear>
     </template>
 
     <template v-if="$subReady.projectsForTimeline">

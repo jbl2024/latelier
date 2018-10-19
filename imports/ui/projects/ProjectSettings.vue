@@ -2,7 +2,7 @@
   <div class="project-settings"> 
 
     <div v-if="!$subReady.project">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div v-if="$subReady.project" class="project-wrapper"> 
 

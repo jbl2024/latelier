@@ -30,7 +30,7 @@
 
 
     <div v-if="!$subReady.projects">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      <v-progress-linear indeterminate></v-progress-linear>
     </div>
       
     <div v-if="$subReady.projects">
