@@ -3,7 +3,7 @@
 <div class="task" @click="selectTask">
     <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd"> 
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-      <md-card md-with-hover ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+      <v-card  ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
         <div>
           <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
         <div class="title-wrapper">
@@ -16,20 +16,20 @@
 
             <span v-show="editName" class="edit">
               <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
-              <md-button class="md-icon-button" @click.native="updateName">
-                <md-icon>check_circle</md-icon>
-              </md-button>
+              <v-btn icon flat @click.native="updateName">
+                <v-icon>check_circle</v-icon>
+              </v-btn>
 
-              <md-button class="md-icon-button" @click.native="cancelUpdateName">
-                <md-icon>cancel</md-icon>
-              </md-button>
+              <v-btn icon flat @click.native="cancelUpdateName">
+                <v-icon>cancel</v-icon>
+              </v-btn>
 
             </span>
         </div>
 
         </div>
 
-        <md-card-content v-show="hasAdditionalContentToShow(task)">
+        <div class="card-content" v-show="hasAdditionalContentToShow(task)">
           <md-divider></md-divider>
           <div class="metadata">
             <span>
@@ -41,8 +41,8 @@
           </div>
 
           <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
-        </md-card-content>
-      </md-card>
+        </div>
+      </v-card>
       </drop>
     </drag>
 </div>
@@ -318,7 +318,7 @@ export default {
   margin-left: 4px;
   margin-top: 4px;
 }
-.edit .md-button {
+.edit .v-btn {
   min-width: 24px;
   width: 24px;
   height: 20px;
@@ -346,7 +346,7 @@ export default {
   font-size: 12px;
 }
 
-.md-card-content {
+.card-content {
   padding-left: 12px;
   padding-top: 8px;
   margin-bottom: 0;
