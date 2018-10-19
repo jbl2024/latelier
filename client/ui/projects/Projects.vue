@@ -47,7 +47,7 @@
           <template v-for="item in projects">
 
             <v-list-tile :key='item._id' @click="openProject(item._id)">
-              <v-list-tile-avatar :style="getColor(item)">
+              <v-list-tile-avatar :color="getColor(item)">
                 <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
               </v-list-tile-avatar>
 
@@ -245,7 +245,7 @@ export default {
     },
 
     getColor(item) {
-      return "background-color: " + item.color;
+      return item.color;
     },
 
     formatProjectDates(project) {
