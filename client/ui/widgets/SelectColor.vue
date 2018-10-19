@@ -1,46 +1,45 @@
 <template>
   <div class="select-color">
-
-    <md-dialog :md-active.sync="active">
-      <md-dialog-title>Choisir une couleur</md-dialog-title>
-
-      <div class="content">
-        <swatches-picker :value="color" @input="selectColor"/>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="closeDialog">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-  </div>    
+    <v-dialog v-model="active" persistent max-width="320" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Choisir une couleur</v-card-title>
+        <swatches-picker :value="color" @input="selectColor" />
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="closeDialog">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Swatches } from 'vue-color'
+import { Meteor } from "meteor/meteor";
+import { Swatches } from "vue-color";
 
 export default {
   components: {
-    'swatches-picker': Swatches,
+    "swatches-picker": Swatches
   },
   props: {
-    active: Boolean,
+    active: Boolean
   },
-  data () {
+  data() {
     return {
-      color: ''
-    }
+      color: ""
+    };
   },
   methods: {
-    closeDialog () {
-      this.$emit('update:active', false);
+    closeDialog() {
+      this.$emit("update:active", false);
     },
 
-    selectColor (color) {
-      this.$emit('update:active', false);
-      this.$emit('select', color);
+    selectColor(color) {
+      this.$emit("update:active", false);
+      this.$emit("select", color);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -57,5 +56,4 @@ export default {
 .cursor:hover {
   background-color: #aaa;
 }
-
 </style>
