@@ -2,14 +2,17 @@
   <div class="organizations">
     <new-organization ref="newOrganization"></new-organization>  
 
-    <md-dialog-confirm
-      :md-active.sync="showConfirmDialog"
-      md-title="Confirmer la suppression ?"
-      md-content="L'organisation sera définitivement supprimée"
-      md-confirm-text="Supprimer"
-      md-cancel-text="Annuler"
-      @md-cancel="onCancelDeleteOrganization"
-      @md-confirm="onConfirmDeleteOrganization" />
+    <v-dialog v-model="showConfirmDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Confirmer la suppression ?</v-card-title>
+        <v-card-text>L'organisation sera défintivement supprimé</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click.native="onCancelDeleteOrganization">Annuler</v-btn>
+          <v-btn color="warning" @click.native="onConfirmDeleteOrganization">Supprimer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <div v-if="!$subReady.organizations">
       <v-progress-linear indeterminate></v-progress-linear>
@@ -51,12 +54,9 @@
         </template>
       </v-list>
 
-      <div class="absolute-right">
-        <md-button class="md-fab" @click="newOrganization">
-            <md-icon>add</md-icon>          
-            <md-tooltip md-delay="300">Ajouter une organisation</md-tooltip>
-        </md-button>
-      </div>
+      <v-btn absolute dark fab bottom right color="red" @click="newOrganization">
+        <v-icon>add</v-icon>
+      </v-btn>
     </div>
   </div>
 </template>

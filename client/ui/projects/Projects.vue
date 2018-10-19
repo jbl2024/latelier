@@ -1,6 +1,9 @@
 <template>
   <div class="projects">
-    <new-project ref="newProject" :organizationId="organizationId"></new-project>  
+    <new-project ref="newProject" :organizationId="organizationId"></new-project>
+      <v-btn absolute dark fab bottom right color="red" @click="newProject">
+        <v-icon>add</v-icon>
+      </v-btn>
 
     <v-dialog v-model="showConfirmDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
@@ -14,7 +17,6 @@
       </v-card>
     </v-dialog>
 
-
     <v-dialog v-model="showConfirmCloneDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Confirmer le clonage du projet ?</v-card-title>
@@ -27,65 +29,54 @@
       </v-card>
     </v-dialog>
 
-
-
     <div v-if="!$subReady.projects">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-      
+
     <div v-if="$subReady.projects">
-      <empty-state
-        v-if="projects.length == 0"
-        :description="`Aucun projet disponible`">
+      <empty-state v-if="projects.length == 0" :description="`Aucun projet disponible`">
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
       </empty-state>
 
-      <V-list two-line subheader v-show="projects.length != 0"> 
+      <V-list two-line subheader v-show="projects.length != 0">
         <v-subheader inset>
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
         </v-subheader>
 
         <div class="md-elevation-1">
-        <template v-for="item in projects" >
+          <template v-for="item in projects">
 
-          <v-list-tile :key='item._id' @click="openProject(item._id)">
-            <v-list-tile-avatar :style="getColor(item)">
-              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
-            </v-list-tile-avatar>            
+            <v-list-tile :key='item._id' @click="openProject(item._id)">
+              <v-list-tile-avatar :style="getColor(item)">
+                <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+              </v-list-tile-avatar>
 
-            <v-list-tile-content class="pointer">
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
-            </v-list-tile-content>
+              <v-list-tile-content class="pointer">
+                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+              </v-list-tile-content>
 
-            <v-list-tile-action>
-              <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
-                <v-icon>settings</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action>
-              <v-btn icon ripple @click.stop="cloneProject(item._id)">
-                <v-icon>file_copy</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action>
-              <v-btn icon ripple @click.stop="deleteProject(item._id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-          <v-divider></v-divider>
+              <v-list-tile-action>
+                <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
+                  <v-icon>settings</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action>
+                <v-btn icon ripple @click.stop="cloneProject(item._id)">
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action>
+                <v-btn icon ripple @click.stop="deleteProject(item._id)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+            <v-divider></v-divider>
 
-        </template>
+          </template>
         </div>
       </V-list>
-
-      <div class="absolute-right">
-        <md-button class="md-fab" @click="newProject">
-            <md-icon>add</md-icon>          
-            <md-tooltip md-delay="300">Ajouter un projet</md-tooltip>
-        </md-button>
-      </div>
 
     </div>
   </div>
@@ -117,7 +108,7 @@ export default {
   props: {
     organizationId: {
       type: String,
-      defaultValue: '0'
+      defaultValue: "0"
     }
   },
   data() {
@@ -139,7 +130,11 @@ export default {
       // Subscribes to the 'threads' publication with no parameters
       projects: function() {
         // Here you can use Vue reactive properties
-        return [this.organizationId, this.filter, this.$store.state.selectedGroup._id]; // Subscription params
+        return [
+          this.organizationId,
+          this.filter,
+          this.$store.state.selectedGroup._id
+        ]; // Subscription params
       },
       organization: function() {
         // Here you can use Vue reactive properties
@@ -159,7 +154,7 @@ export default {
       );
     },
     organization() {
-      return Organizations.findOne()
+      return Organizations.findOne();
     }
   },
   methods: {
@@ -249,20 +244,24 @@ export default {
       return "";
     },
 
-    getColor (item) {
-      return 'background-color: ' + item.color;
+    getColor(item) {
+      return "background-color: " + item.color;
     },
 
-
-    formatProjectDates (project) {
+    formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return 'Du  ' + this.formatDate(project.startDate) + ' au ' + this.formatDate(project.endDate);
+        return (
+          "Du  " +
+          this.formatDate(project.startDate) +
+          " au " +
+          this.formatDate(project.endDate)
+        );
       } else if (project.startDate) {
-        return 'A partir du ' + this.formatDate(project.startDate);
+        return "A partir du " + this.formatDate(project.startDate);
       } else if (project.endtDate) {
-        return 'Jusqu\'au ' + this.formatDate(project.endDate);
+        return "Jusqu'au " + this.formatDate(project.endDate);
       }
-      return '';
+      return "";
     }
   }
 };
@@ -284,10 +283,9 @@ export default {
   margin-right: 12px;
 }
 
-.pointer { 
+.pointer {
   cursor: pointer;
 }
-
 
 @media (min-width: 601px) {
   .fap-list {
@@ -298,7 +296,7 @@ export default {
 
 @media (max-width: 600px) {
   .fap-list {
-    margin-right: auto; 
+    margin-right: auto;
     margin-left: auto;
   }
 }
