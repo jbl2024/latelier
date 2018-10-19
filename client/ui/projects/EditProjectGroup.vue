@@ -1,21 +1,22 @@
 <template>
   <div class="edit-project-group">
 
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Editer la catégorie</md-dialog-title>
-
-      <div class="content">
-        <md-field>
-            <label>Nom</label>
-            <md-input v-focus v-model="projectGroup.name" v-on:keyup.enter="updateName()"></md-input>
-        </md-field>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-        <md-button class="md-raised md-accent" @click="remove">Supprimer</md-button>
-        <md-button class="md-raised md-primary" @click="updateName">Modifier</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
+    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Editer la catégorie</v-card-title>
+        <v-card-text>
+          <v-form v-model="valid" v-on:submit.prevent>
+            <v-text-field v-model="projectGroup.name" :rules="nameRules" label="Nom" required v-on:keyup.enter="updateName()"></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+          <v-btn color="warning" @click="remove" :disabled="!valid">Supprimer</v-btn>
+          <v-btn color="info" @click="updateName" :disabled="!valid">Modifier</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </div>    
 </template>
@@ -32,7 +33,11 @@ export default {
     return {
       showDialog: false,
       projectGroup: {},
-      name: ''
+      valid: false,
+      name: '',
+      nameRules: [
+        v => !!v || "Le nom est obligatoire"
+      ]
     }
   },
   meteor: {
@@ -64,12 +69,12 @@ export default {
 
     remove () {
       if (confirm('Voulez-vous supprimer définitivement cette catégorie ?')) {
+        this.showDialog = false;
         Meteor.call('projectGroups.remove', this.projectGroup._id, (error, result) => { 
           if (error) {
             console.log(error)
             return;
           }
-          this.showDialog = false;
         });
       }
     }

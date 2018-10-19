@@ -4,8 +4,8 @@
       <v-card>
         <v-card-title class="headline">Nouvelle organisation</v-card-title>
         <v-card-text>
-          <v-form v-model="valid">
-            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required></v-text-field>
+          <v-form v-model="valid" v-on:submit.prevent>
+            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
