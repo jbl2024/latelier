@@ -31,43 +31,45 @@
         <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
       </empty-state>
 
-      <md-list class="md-double-line fap-list" v-show="projects.length != 0"> 
-        <md-subheader>
+      <V-list two-line subheader v-show="projects.length != 0"> 
+        <v-subheader inset>
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
-        </md-subheader>
+        </v-subheader>
 
         <div class="md-elevation-1">
         <template v-for="item in projects" >
-          <md-list-item :key='item._id'>
-            <md-avatar class="md-avatar-icon" :style="getColor(item)">
-              <md-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</md-icon>
-            </md-avatar>
 
-            <div class="md-list-item-text pointer" @click="openProject(item._id)">
-              <span>{{ item.name }}</span>
-              <span>{{ formatProjectDates(item) }}</span>
-            </div>
+          <v-list-tile :key='item._id' @click="openProject(item._id)">
+            <v-list-tile-avatar :style="getColor(item)">
+              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+            </v-list-tile-avatar>            
 
-            <md-button class="md-icon-button show-desktop" @click.stop="openProjectSettings(item._id)">
-              <md-icon>settings</md-icon>
-              <md-tooltip md-delay="300">Paramétrer</md-tooltip>
-            </md-button>
-            <md-button class="md-icon-button show-desktop" @click.stop="cloneProject(item._id)">
-              <md-icon>file_copy</md-icon>
-              <md-tooltip md-delay="300">Cloner</md-tooltip>
-            </md-button>
+            <v-list-tile-content class="pointer">
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+            </v-list-tile-content>
 
-            <md-button class="md-icon-button show-desktop" @click.stop="deleteProject(item._id)">
-              <md-icon>delete</md-icon>
-              <md-tooltip md-delay="300">Supprimer</md-tooltip>
-            </md-button>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
+                <v-icon>settings</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="cloneProject(item._id)">
+                <v-icon>file_copy</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="deleteProject(item._id)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-divider></v-divider>
 
-
-          </md-list-item>
-          <md-divider class="md-inset"></md-divider>
         </template>
         </div>
-      </md-list>
+      </V-list>
 
       <div class="absolute-right">
         <md-button class="md-fab" @click="newProject">

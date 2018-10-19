@@ -21,34 +21,35 @@
         :description="`Aucune organisation disponible`">
         <md-button class="md-primary md-raised" @click="newOrganization">Créer une organisation</md-button>
       </empty-state>
-      <md-list class="md-double-line fap-list" v-show="organizations.length != 0"> 
-        <md-subheader>Organisations</md-subheader>
 
-        <div class="md-elevation-1">
+      <v-list two-line subheader v-show="organizations.length != 0"> 
+        <v-subheader inset>Organisations</v-subheader>
+
         <template v-for="item in organizations" >
-          <md-list-item :key='item._id'>
-            <md-icon>domain</md-icon>
-            <div class="md-list-item-text pointer" @click="openOrganization(item._id)">
-              <span>{{ item.name }}</span>
-              <span>{{ item.description }}</span>
-            </div>
+          <v-list-tile :key='item._id' @click="openOrganization(item._id)">
+            <v-list-tile-avatar>
+              <v-icon>domain</v-icon>
+            </v-list-tile-avatar>            
 
-            <md-button class="md-icon-button show-desktop" @click.stop="openOrganizationSettings(item._id)">
-              <md-icon>settings</md-icon>
-              <md-tooltip md-delay="300">Paramétrer</md-tooltip>
-            </md-button>
+            <v-list-tile-content class="pointer">
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
+            </v-list-tile-content>
 
-            <md-button class="md-icon-button show-desktop" @click.stop="deleteOrganization(item._id)">
-              <md-icon>delete</md-icon>
-              <md-tooltip md-delay="300">Supprimer</md-tooltip>
-            </md-button>
-
-
-          </md-list-item>
-          <md-divider></md-divider>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="openOrganizationSettings(item._id)">
+                <v-icon>settings</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="deleteOrganization(item._id)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-divider></v-divider>
         </template>
-        </div>
-      </md-list>
+      </v-list>
 
       <div class="absolute-right">
         <md-button class="md-fab" @click="newOrganization">
