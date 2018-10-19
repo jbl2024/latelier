@@ -1,77 +1,77 @@
 <template>
 
-<div class="task" @click="selectTask">
-    <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd"> 
+  <div class="task" @click="selectTask">
+    <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd">
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-      <v-card  ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
-        <div>
-          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-        <div class="title-wrapper">
-            <div class="checkbox">
-              <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
+        <v-card ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+          <div>
+            <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
+            <div class="title-wrapper">
+              <div class="checkbox">
+                <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
+              </div>
+              <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
+                {{ task.name }}
+              </span>
+
+              <span v-show="editName" class="edit">
+                <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
+                <v-btn icon flat @click.native="updateName">
+                  <v-icon>check_circle</v-icon>
+                </v-btn>
+
+                <v-btn icon flat @click.native="cancelUpdateName">
+                  <v-icon>cancel</v-icon>
+                </v-btn>
+
+              </span>
             </div>
-            <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
-            {{ task.name }}
-            </span>
-
-            <span v-show="editName" class="edit">
-              <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
-              <v-btn icon flat @click.native="updateName">
-                <v-icon>check_circle</v-icon>
-              </v-btn>
-
-              <v-btn icon flat @click.native="cancelUpdateName">
-                <v-icon>cancel</v-icon>
-              </v-btn>
-
-            </span>
-        </div>
-
-        </div>
-
-        <div class="card-content" v-show="hasAdditionalContentToShow(task)">
-          <md-divider></md-divider>
-          <div class="metadata">
-            <span>
-              <md-avatar class="md-avatar-icon md-small" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-                  <md-ripple>{{ formatUserLetters(task.assignedTo) }}</md-ripple>
-              </md-avatar>
-            </span>
-            <span v-show="task.dueDate"><md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}</span>
           </div>
 
-          <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
-        </div>
-      </v-card>
+          <div class="card-content" v-show="hasAdditionalContentToShow(task)">
+            <v-divider></v-divider>
+            <div class="metadata">
+              <span>
+                <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+                  <span>{{ formatUserLetters(task.assignedTo) }}</span>
+                </v-avatar>
+              </span>
+              <span v-show="task.dueDate">
+                <md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}
+              </span>
+            </div>
+            <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
+          </div>
+        </v-card>
       </drop>
     </drag>
-</div>
+  </div>
 
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import { mapState } from 'vuex';
-import usersMixin from '/imports/ui/mixins/UsersMixin.js';
-import moment from 'moment';
+import { Projects } from "/imports/api/projects/projects.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import { mapState } from "vuex";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import moment from "moment";
 
 export default {
   mixins: [usersMixin],
-  mounted () {
-    this.$events.listen('task-edit-name', task => {
+  mounted() {
+    this.$events.listen("task-edit-name", task => {
       if (task._id !== this.task._id) {
         return;
       }
       this.startUpdateName();
     });
-    this.$events.listen('task-cancel-edit-name', task => {
+    this.$events.listen("task-cancel-edit-name", task => {
       if (task._id !== this.task._id) {
         this.cancelUpdateName();
       }
     });
-    this.$events.listen('task-selected', task => {
+    this.$events.listen("task-selected", task => {
       if (!task || task._id !== this.task._id) {
         this.selected = false;
         return;
@@ -80,9 +80,9 @@ export default {
     });
   },
   beforeDestroy() {
-    this.$events.off('task-edit-name');
-    this.$events.off('task-cancel-edit-name');
-    this.$events.off('task-selected');
+    this.$events.off("task-edit-name");
+    this.$events.off("task-cancel-edit-name");
+    this.$events.off("task-selected");
   },
   props: {
     task: {
@@ -90,12 +90,12 @@ export default {
     }
   },
   computed: {
-    ...mapState(['currentOrganizationId'])
+    ...mapState(["currentOrganizationId"])
   },
   data() {
     return {
       editName: false,
-      savedName: '',
+      savedName: "",
       dragover: false,
       dragup: false,
       dragdown: false,
@@ -104,25 +104,25 @@ export default {
     };
   },
   watch: {
-    'task.completed'(completed, prevValue) {
+    "task.completed"(completed, prevValue) {
       if (prevValue != completed) {
-        Meteor.call('tasks.complete', this.task._id, completed);
+        Meteor.call("tasks.complete", this.task._id, completed);
       }
     }
   },
   methods: {
-    getTransferData (task) {
+    getTransferData(task) {
       return {
-        type: 'task',
+        type: "task",
         data: task
       };
     },
 
-    onDragStart () {
+    onDragStart() {
       this.hidden = true;
     },
 
-    onDragEnd () {
+    onDragEnd() {
       this.hidden = false;
     },
 
@@ -131,7 +131,7 @@ export default {
       this.dragover = false;
       this.dragup = false;
       this.dragdown = false;
-      if (data.type === 'task') {
+      if (data.type === "task") {
         var order = this.task.order;
         var droppedTask = data.data;
         var target = event.toElement || event.target;
@@ -139,10 +139,16 @@ export default {
         if (event.offsetY < middle) {
           order = order - 1;
         }
-        Meteor.call('tasks.move', this.task.projectId, this.task.listId, droppedTask._id, order);
+        Meteor.call(
+          "tasks.move",
+          this.task.projectId,
+          this.task.listId,
+          droppedTask._id,
+          order
+        );
         return false;
-      } else if (data.type === 'list') {
-        var list = Lists.findOne({_id: this.task.listId});
+      } else if (data.type === "list") {
+        var list = Lists.findOne({ _id: this.task.listId });
         var order = list.order - 1;
         var target = event.toElement || event.target;
         var middle = target.clientWidth / 2;
@@ -150,13 +156,13 @@ export default {
           order = list.order + 1;
         }
         var droppedList = data.data;
-        Meteor.call('lists.move', list.projectId, droppedList._id, order);
+        Meteor.call("lists.move", list.projectId, droppedList._id, order);
         return false;
       }
     },
 
-    handleDragOver (data, event) {
-      if (data.type === 'task') {
+    handleDragOver(data, event) {
+      if (data.type === "task") {
         if (data.data._id == this.task._id) {
           this.dragover = false;
           return;
@@ -173,23 +179,23 @@ export default {
       }
       this.dragover = true;
     },
-    handleDragLeave (data, event) {
+    handleDragLeave(data, event) {
       this.dragover = false;
       this.dragup = false;
       this.dragdown = false;
     },
 
-    startUpdateName (e) {
+    startUpdateName(e) {
       if (e) {
         e.stopPropagation();
       }
-      this.$events.fire('task-cancel-edit-name', this.task);
+      this.$events.fire("task-cancel-edit-name", this.task);
       this.savedName = this.task.name;
       this.editName = true;
-      this.$nextTick(() => this.$refs.name.focus())
+      this.$nextTick(() => this.$refs.name.focus());
     },
 
-    updateName (e) {
+    updateName(e) {
       if (e) {
         e.stopPropagation();
       }
@@ -197,47 +203,57 @@ export default {
       if (this.task.name.length == 0) {
         this.task.name = this.savedName;
       }
-      Meteor.call('tasks.updateName', this.task._id, this.task.name, (error, result) => { 
-        if (error) {
-          return;
+      Meteor.call(
+        "tasks.updateName",
+        this.task._id,
+        this.task.name,
+        (error, result) => {
+          if (error) {
+            return;
+          }
         }
-      });      
+      );
     },
 
-    cancelUpdateName (e) {
+    cancelUpdateName(e) {
       if (e) {
         e.stopPropagation();
       }
       this.editName = false;
     },
 
-    formatDate (date) {
-      return moment(date).format('DD/MM/YYYY HH:mm');
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY HH:mm");
     },
 
-    selectTask (e) {
+    selectTask(e) {
       e.stopPropagation();
       if (this.editName) {
         return;
       }
-      this.$router.push({ name: 'project-task', params: { organizationId: this.currentOrganizationId, projectId: this.task.projectId, taskId: this.task._id }}) 
+      this.$router.push({
+        name: "project-task",
+        params: {
+          organizationId: this.currentOrganizationId,
+          projectId: this.task.projectId,
+          taskId: this.task._id
+        }
+      });
     },
-    formatDate (date) {
-      return moment(date).format('DD/MM/YYYY HH:mm');
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY HH:mm");
     },
 
-    getClassForName (task) {
-      var classes = [
-        'name'
-      ];
+    getClassForName(task) {
+      var classes = ["name"];
 
       if (task.completed) {
-        classes.push('completed');
+        classes.push("completed");
       }
-      return classes.join(' ');
+      return classes.join(" ");
     },
 
-    hasAdditionalContentToShow (task) {
+    hasAdditionalContentToShow(task) {
       if (task.assignedTo) {
         return true;
       }
@@ -249,8 +265,6 @@ export default {
       }
       return false;
     }
-
-
   }
 };
 </script>
@@ -258,7 +272,7 @@ export default {
 <style scoped>
 .task h2 {
   text-align: left;
-  background-color: #2D6293;
+  background-color: #2d6293;
   color: white;
   font-weight: normal;
   font-size: 14px;
@@ -276,7 +290,7 @@ export default {
   background: linear-gradient(0deg, #eee 50%, #fff 50%);
 }
 
-.selected { 
+.selected {
   background: linear-gradient(90deg, #aaa 2%, #fff 2%);
 }
 
@@ -328,7 +342,7 @@ export default {
 
 .edit-name {
   font-size: 14px;
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   width: 75%;
   margin-left: -3px;
 }
@@ -350,7 +364,7 @@ export default {
   padding-left: 12px;
   padding-top: 8px;
   margin-bottom: 0;
-  padding-bottom:8px;
+  padding-bottom: 8px;
 }
 
 .labels {
