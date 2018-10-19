@@ -9,7 +9,7 @@
   <md-list class="md-double-line">
     <md-subheader>Responsabilités</md-subheader>
 
-    <div class="md-elevation-1">
+    <div class="elevation-1">
       <md-list-item @click="showChooseAssignedToDialog = true">
         <md-avatar  class="md-avatar-icon" :class="isOnline(task.assignedTo)">
             {{ formatUserLetters(task.assignedTo) }}
@@ -28,7 +28,7 @@
 
     <md-subheader>Dates</md-subheader>
 
-    <div class="md-elevation-1">
+    <div class="elevation-1">
       <md-list-item class="cursor" @click="showSelectStartDate = true">
         <md-avatar class="md-avatar-icon">
           <md-icon>calendar_today</md-icon>

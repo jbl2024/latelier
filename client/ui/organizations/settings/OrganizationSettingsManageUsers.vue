@@ -10,7 +10,7 @@
         </md-button>
  
       </md-subheader>
-      <div class="md-elevation-1">
+      <div class="elevation-1">
         <div v-for="user in organizationUsers" :key="user._id">
           <md-list-item>
             <md-avatar class="md-avatar-icon" :class="isOnline(user)">

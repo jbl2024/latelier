@@ -8,7 +8,7 @@
           <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
         </md-button>
       </md-subheader>
-      <div class="md-elevation-1">
+      <div class="elevation-1">
         <div v-for="user in projectUsers" :key="user._id">
           <md-list-item>
             <md-avatar class="md-avatar-icon" :class="isOnline(user)">

@@ -20,7 +20,7 @@
 
     </md-subheader>
 
-    <div class="md-elevation-1">
+    <div class="elevation-1">
       <template v-for="item in resources" >
         <md-list-item :key='item._id'>
           <md-avatar class="md-avatar-icon md-primary">

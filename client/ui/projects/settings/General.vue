@@ -7,7 +7,7 @@
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color> 
 
     <md-subheader>Description</md-subheader>
-    <div class="md-elevation-1">
+    <div class="elevation-1">
       <div class="description">
         <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
           <div v-html="markDown(project.description)"></div>
@@ -35,7 +35,7 @@
 
     <md-list>
       <md-subheader>Visibilité</md-subheader>
-      <div class="md-elevation-1">
+      <div class="elevation-1">
         <md-list-item @click="toggleProjectVisibility(project)">
           <md-avatar class="md-avatar-icon">
             <md-icon>{{getVisibilityIcon(project)}}</md-icon>
@@ -49,7 +49,7 @@
     </md-list>
 
     <md-subheader>Taille</md-subheader>
-    <div class="md-elevation-1" @click="startEditEstimatedSize">
+    <div class="elevation-1" @click="startEditEstimatedSize">
       <div class="estimatedSize">
         <div v-show="!editEstimatedSize && project.estimatedSize && project.estimatedSize != 0">
           {{ project.estimatedSize }}
@@ -77,7 +77,7 @@
 
     <md-list class="md-double-line">
       <md-subheader>Dates</md-subheader>
-      <div class="md-elevation-1">
+      <div class="elevation-1">
         <md-list-item @click="showSelectStartDate = true">
           <md-avatar class="md-avatar-icon">
             <md-icon>calendar_today</md-icon>
@@ -118,7 +118,7 @@
       <md-subheader>Couleur
       </md-subheader>
 
-      <div class="md-elevation-1" >
+      <div class="elevation-1" >
         <md-list-item @click="showSelectColor = true">
           <div class="md-list-item-text">
             <div class="color" ref="color" :style="getColor(project)"></div>
@@ -139,7 +139,7 @@
         </md-button>
  
       </md-subheader>
-      <div class="md-elevation-1">
+      <div class="elevation-1">
         <div v-for="group in assignedGroups" :key="group._id">
           <md-list-item>
             <md-avatar class="md-avatar-icon">
@@ -158,7 +158,7 @@
       </div>
 
       <md-subheader>Organisation</md-subheader>
-      <div class="md-elevation-1" v-if="$subReady.organizations">
+      <div class="elevation-1" v-if="$subReady.organizations">
         <md-list-item @click="showSelectOrganization = true">
           <md-avatar class="md-avatar-icon">
             <md-icon>folder</md-icon>
