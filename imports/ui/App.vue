@@ -42,7 +42,7 @@
     </v-navigation-drawer>
 
     <v-content class="main-content">
-      <v-container>
+      <v-container class="page-container">
         <router-view></router-view>
       </v-container>
     </v-content>
@@ -89,6 +89,7 @@ export default {
   .page-container {
     height: 100%;
     overflow: hidden;
+    overflow-y: auto;
     position: relative;
     display: flex;
     flex-direction: column;
