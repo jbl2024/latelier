@@ -25,7 +25,7 @@
         rounded
         icon="category"
         :description="`Aucune ressource définie`">
-        <md-button class="md-primary md-raised" @click="newResource">Ajouter une ressource</md-button>
+        <v-btn class="info" @click="newResource">Ajouter une ressource</v-btn>
       </empty-state>
 
       <md-list class="md-double-line fap-list" v-show="resources.length != 0"> 
