@@ -1,30 +1,32 @@
 <template>
   <div class="manage-users">
     <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog"></select-user>
-    <md-list>
-      <md-subheader>Membres
-        <md-button class="md-icon-button" @click="showSelectUserDialog = true">
-          <md-icon>add</md-icon>
-          <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
-        </md-button>
-      </md-subheader>
-      <div class="elevation-1">
-        <div v-for="user in projectUsers" :key="user._id">
-          <md-list-item>
-            <md-avatar class="md-avatar-icon" :class="isOnline(user)">
-                <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
-            </md-avatar>
+    <div class="elevation-1">
+      <v-list>
+        <v-subheader>Membres
+          <v-btn flat icon @click="showSelectUserDialog = true">
+            <v-icon>add</v-icon>
+          </v-btn>
+        </v-subheader>
+        <template v-for="user in projectUsers">
+          <v-list-tile :key="user._id" avatar>
+            <v-list-tile-avatar :color="isOnline(user)">
+              <span class="">{{ formatUserLetters(user) }}</span>
+            </v-list-tile-avatar>
 
-            <span class="md-list-item-text">{{ formatUser(user)}}</span>
-            <md-button class="md-icon-button md-list-action" @click.stop="removeUser(user)">
-              <md-icon>delete</md-icon>
-              <md-tooltip md-delay="300">Supprimer</md-tooltip>
-            </md-button>
-          </md-list-item>
-          <md-divider></md-divider>
-        </div>
-      </div>
-    </md-list>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+            </v-list-tile-content>
+
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="removeUser(item._id)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </template>
+      </v-list>
+    </div>
   </div>    
 </template>
 
