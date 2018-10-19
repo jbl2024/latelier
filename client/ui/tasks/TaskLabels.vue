@@ -2,12 +2,11 @@
 
 <div class="task-labels">
   <select-label ref="selectLabel" @select="onSelectLabel"></select-label>  
-  <md-chip v-for="label in labels" md-deletable :key="label._id" :style="getColor(label)" @md-delete="removeLabel(label)">{{ label.name }}</md-chip>
-  <md-chip v-show="labels.length == 0" @click="$refs.selectLabel.open()">Ajouter un label</md-chip>
-  <md-button v-show="labels.length > 0" class="md-icon-button md-dense md-raised" @click="$refs.selectLabel.open()" v-shortkey="['l']" @shortkey="$refs.selectLabel.open()">
-    <md-icon>add</md-icon>
-    <md-tooltip md-delay="300">Ajouter un label</md-tooltip>
-  </md-button>
+  <v-chip v-for="label in labels" close :key="label._id" :style="getColor(label)" @input="removeLabel(label)">{{ label.name }}</v-chip>
+  <v-chip v-show="labels.length == 0" @click="$refs.selectLabel.open()">Ajouter un label</v-chip>
+  <v-btn v-show="labels.length > 0" fab small @click="$refs.selectLabel.open()" v-shortkey="['l']" @shortkey="$refs.selectLabel.open()">
+    <v-icon>add</v-icon>
+  </v-btn>
 </div>
 
 </template>
