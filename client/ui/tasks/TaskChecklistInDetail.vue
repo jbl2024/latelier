@@ -3,26 +3,20 @@
 <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop="">
   <div v-for="item in task.checklist" :key="item._id" class="item">
     <div>
-      <md-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
+      <v-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)" :label="item.name"></v-checkbox>
       <div class="right">
-        <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
-          <md-icon>list</md-icon>
-          <md-tooltip md-delay="300">Convertir en tache</md-tooltip>
-        </md-button>
-        <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
-          <md-icon>delete</md-icon>
-          <md-tooltip md-delay="300">Supprimer</md-tooltip>
-        </md-button>
+        <v-btn icon @click="event => { convertToTask(event, item)}">
+          <v-icon>list</v-icon>
+        </v-btn>
+        <v-btn icon @click="event => { deleteItem(event, item)}">
+          <v-icon>delete</v-icon>
+        </v-btn>
       </div>
       <div class="clear"></div>
     </div>
 
   </div>
-  <md-field class="add-item">
-    <md-icon>check_box_outline_blank</md-icon>
-    <label>Nouvel item</label>
-    <md-input v-model="item" ref="newItem" @keyup.enter="addItem"></md-input>
-  </md-field>
+  <v-text-field preprend-icon="check_box_outline_blank" label="Nouvel item" v-model="item" ref="newItem" @keyup.enter="addItem"></v-text-field>
 </div>
 
 </template>
@@ -167,7 +161,7 @@ pre {
   display: inline-block;
 }
 
-.metadata .action .md-button {
+.metadata .action .v-btn {
   margin-top: -10px;
   padding-top: 0;
 }

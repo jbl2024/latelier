@@ -5,14 +5,17 @@
         @mouseover="showButtons = item._id" 
         @mouseleave="showButtons = null">
     <div>
-      <md-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)">{{ item.name}}</md-checkbox>
+      <div class="check">
+        <input type="checkbox" v-model="item.checked" id="checkbox-{{item._id}}" @change="toggleCheckItem(item)">
+        <label for="checkbox-{{item._id}}">{{ item.name }}</label>
+      </div>
       <div class="right" v-show="showButtons === item._id">
-        <md-button class="md-icon-button md-dense" @click="event => { convertToTask(event, item)}">
-          <md-icon>list</md-icon>
-        </md-button>
-        <md-button class="md-icon-button md-dense" @click="event => { deleteItem(event, item)}">
-          <md-icon>delete</md-icon>
-        </md-button>
+        <v-btn icon @click="event => { convertToTask(event, item)}">
+          <v-icon>list</v-icon>
+        </v-btn>
+        <v-btn icon @click="event => { deleteItem(event, item)}">
+          <v-icon s-icon>delete</v-icon>
+        </v-btn>
       </div>
       <div class="clear"></div>
     </div>
@@ -124,6 +127,9 @@ export default {
   overflow: hidden;
   box-sizing:border-box;
   text-overflow: ellipsis;
+  margin-top: 0;
+  font-size: 12px;
+  margin-top: 12px;
 }
 
 .right {
@@ -169,7 +175,7 @@ pre {
   display: inline-block;
 }
 
-.metadata .action .md-button {
+.metadata .action .v-btn {
   margin-top: -10px;
   padding-top: 0;
 }
@@ -187,11 +193,6 @@ pre {
 }
 .add-item .md-input {
   font-size: 12px;
-}
-
-.md-checkbox {
-  margin-top: 6px;
-  margin-bottom: 6px;
 }
 
 </style>
