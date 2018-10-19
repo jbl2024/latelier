@@ -2,7 +2,7 @@
   <div class="organization-settings"> 
 
     <div v-if="!$subReady.organization">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div v-if="$subReady.organization" class="project-wrapper"> 
 

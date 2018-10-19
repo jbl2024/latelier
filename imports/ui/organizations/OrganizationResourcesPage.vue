@@ -1,7 +1,7 @@
 <template>
   <div class="organization-resourcesPage">
     <div v-if="!$subReady.organization">
-      <md-progress-bar md-mode="indeterminate"></md-progress-bar>
+      <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <template v-if="$subReady.organization">
       <organization-resources :organization="organization"></organization-resources>
