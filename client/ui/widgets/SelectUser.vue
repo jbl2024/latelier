@@ -5,20 +5,18 @@
       <v-card>
         <v-card-title class="headline">Sélectionner un utilisateur</v-card-title>
         <v-card-text>
-          <v-list class="content"> 
-            <template v-for="item in users" >
-              <v-list-tile :key='item._id' @click="selectUser(item)">
-                <v-list-tile-avatar>
-                  <div class="avatar">
-                    {{ formatUserLetters(item) }}
-                  </div>
-                </v-list-tile-avatar>            
+          <v-list class="content">
+            <template v-for="user in users">
+              <v-list-tile :key='user._id' @click="selectUser(user)">
+                <v-list-tile-avatar :color="isOnline(user)">
+                  <span class="">{{ formatUserLetters(user) }}</span>
+                </v-list-tile-avatar>
                 <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ formatUser(item) }}</v-list-tile-title>
+                  <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
-            </template>     
-          </v-list>   
+            </template>
+          </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -27,16 +25,14 @@
       </v-card>
     </v-dialog>
 
-
-
-  </div>    
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Projects } from '/imports/api/projects/projects.js'
-import { Organizations } from '/imports/api/organizations/organizations.js'
-import usersMixin from '/imports/ui/mixins/UsersMixin.js';
+import { Meteor } from "meteor/meteor";
+import { Projects } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
   mixins: [usersMixin],
@@ -44,34 +40,32 @@ export default {
     active: Boolean,
     project: Object
   },
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
   meteor: {
-    users () {
+    users() {
       if (this.project) {
         const organization = Organizations.findOne(this.project.organizationId);
         if (organization) {
           const members = organization.members || [];
-          return Meteor.users.find({_id: {$in: members}});
+          return Meteor.users.find({ _id: { $in: members } });
         }
       }
       return Meteor.users.find();
     }
   },
   methods: {
-    closeDialog () {
-      this.$emit('update:active', false);
+    closeDialog() {
+      this.$emit("update:active", false);
     },
 
-    selectUser (user) {
-      this.$emit('update:active', false);
-      this.$emit('select', user);
+    selectUser(user) {
+      this.$emit("update:active", false);
+      this.$emit("select", user);
     }
-
   }
-}
+};
 </script>
 
 <style scoped>
@@ -97,5 +91,4 @@ export default {
   height: 38px;
   padding-top: 8px;
 }
-
 </style>

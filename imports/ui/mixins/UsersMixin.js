@@ -1,25 +1,36 @@
-var getUser = function (user) {
+var getUser = function(user) {
   if (!user) return;
-  if (typeof user === 'string' || user instanceof String) {
-    user = Meteor.users.findOne({_id: user}, { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } });
+  if (typeof user === "string" || user instanceof String) {
+    user = Meteor.users.findOne(
+      { _id: user },
+      {
+        fields: {
+          profile: 1,
+          status: 1,
+          statusDefault: 1,
+          statusConnection: 1,
+          emails: 1
+        }
+      }
+    );
   }
   return user;
-}
+};
 
 export default {
   methods: {
-    formatUserLetters (user) {
+    formatUserLetters(user) {
       user = getUser(user);
       if (!user) return;
 
-      var emailComponents = user.emails[0].address.split('@')[0].split('.');
+      var emailComponents = user.emails[0].address.split("@")[0].split(".");
       if (emailComponents.length <= 1) {
         return emailComponents[0][0];
       }
       return emailComponents[0][0] + emailComponents[1][0];
     },
 
-    formatUser (user) {
+    formatUser(user) {
       user = getUser(user);
       if (!user) return;
       if (user) {
@@ -27,13 +38,12 @@ export default {
       }
     },
 
-    isOnline (user) {
+    isOnline(user) {
       user = getUser(user);
-      if (!user) return;
-
-      if (user && user.statusConnection == 'online') {
-        return 'md-primary';
+      if (user && user.statusConnection == "online") {
+        return "blue";
       }
-    },
+      return "grey lighten-1";
+    }
   }
-}
+};

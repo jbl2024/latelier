@@ -1,81 +1,86 @@
 <template>
   <div class="organization-settings-manage-users">
     <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
-    <md-list>
-      <md-subheader>Membres
+    <div class="elevation-1">
+      <v-list>
+        <v-subheader>Membres
+          <v-btn flat icon @click="showSelectUserDialog = true">
+            <v-icon>add</v-icon>
+          </v-btn>
+        </v-subheader>
+        <template v-for="user in organizationUsers">
+          <v-list-tile :key="user._id" avatar>
+            <v-list-tile-avatar :color="isOnline(user)">
+              <span class="">{{ formatUserLetters(user) }}</span>
+            </v-list-tile-avatar>
 
-        <md-button class="md-icon-button" @click="showSelectUserDialog = true">
-        <md-icon>add</md-icon>
-        <md-tooltip md-delay="300">Ajouter un utilisateur</md-tooltip>
-        </md-button>
- 
-      </md-subheader>
-      <div class="elevation-1">
-        <div v-for="user in organizationUsers" :key="user._id">
-          <md-list-item>
-            <md-avatar class="md-avatar-icon" :class="isOnline(user)">
-                <md-ripple>{{ formatUserLetters(user) }}</md-ripple>
-            </md-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+            </v-list-tile-content>
 
-            <span class="md-list-item-text">{{ formatUser(user)}}</span>
-            <md-button class="md-icon-button md-list-action" @click.stop="removeUser(user)">
-              <md-icon>delete</md-icon>
-              <md-tooltip md-delay="300">Supprimer</md-tooltip>
-            </md-button>
-          </md-list-item>
-        </div>
-      </div>
-    </md-list>
-  </div>    
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="removeUser(item._id)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </template>
+      </v-list>
+    </div>
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Organizations } from '/imports/api/organizations/organizations.js'
-import usersMixin from '/imports/ui/mixins/UsersMixin.js';
+import { Meteor } from "meteor/meteor";
+import { Organizations } from "/imports/api/organizations/organizations.js";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
-  name: 'organization-settings-manage-users',
+  name: "organization-settings-manage-users",
   mixins: [usersMixin],
   props: {
     organization: Object
   },
-  data () {
+  data() {
     return {
       showSelectUserDialog: false
-    }
+    };
   },
   meteor: {
     $subscribe: {
-      'users': function() {
-        return [] ;
+      users: function() {
+        return [];
       }
     },
     organizationUsers: {
-      params () {
+      params() {
         return {
           organization: this.organization
         };
       },
       deep: false,
-      update ({organization}) {
+      update({ organization }) {
         if (organization) {
           var members = organization.members || [];
-          return Meteor.users.find({_id: {$in: members}});
+          return Meteor.users.find({ _id: { $in: members } });
         }
       }
     }
   },
   methods: {
-    onSelectUser (user) {
-      Meteor.call('organizations.addMember', this.organization._id, user._id);
+    onSelectUser(user) {
+      Meteor.call("organizations.addMember", this.organization._id, user._id);
     },
 
-    removeUser (user) {
-      Meteor.call('organizations.removeMember', this.organization._id, user._id);
+    removeUser(user) {
+      Meteor.call(
+        "organizations.removeMember",
+        this.organization._id,
+        user._id
+      );
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -84,7 +89,7 @@ export default {
 }
 
 .toolbar {
-  background-color: #2D6293;
+  background-color: #2d6293;
 }
 
 .toolbar h3.md-title {
@@ -94,5 +99,4 @@ export default {
 .online {
   background-color: red;
 }
-
 </style>
