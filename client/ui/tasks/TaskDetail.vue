@@ -36,17 +36,14 @@
       </div>
 
       <div v-show="editDescription">
-        <md-field>
-          <label>Description</label>
-          <md-textarea ref="description" v-model="task.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
-        </md-field>
-        <md-button class="md-icon-button" @click.native="updateDescription">
-          <md-icon>check_circle</md-icon>
-        </md-button>
+        <v-textarea ref="description" solo label=Description v-model="task.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
+        <v-btn icon flat @click="updateDescription">
+          <v-icon>check_circle</v-icon>
+        </v-btn>
 
-        <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
-          <md-icon>cancel</md-icon>
-        </md-button>
+        <v-btn icon flat @click="cancelUpdateDescription">
+          <v-icon>cancel</v-icon>
+        </v-btn>
       </div>
     </div>
     <v-divider></v-divider>
@@ -167,7 +164,7 @@ export default {
     startEditDescription() {
       this.savedDescription = this.task.description;
       this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.$el.focus());
+      this.$nextTick(() => this.$refs.description.focus());
     },
 
     updateDescription() {
