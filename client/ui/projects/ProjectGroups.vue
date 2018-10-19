@@ -3,25 +3,43 @@
 <div class="project-groups">
   <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
   <edit-project-group ref="editProjectGroup" :projectGroupId="selectedProjectGroupId"></edit-project-group>
-  <md-list>
-    <md-subheader>Catégories</md-subheader>
-    <md-list-item v-for="group in groups" 
+
+
+  <v-list dense class="pt-0">
+    <v-subheader>Catégories</v-subheader>
+    <v-list-tile 
+        v-for="group in groups"
         :key="group._id" 
         @mouseover="showButtons = group._id" 
         @mouseleave="showButtons = null">
-      <md-icon >folder</md-icon>
-      <span @click="selectGroup(group)" :class="getColor(group)">{{group.name}}</span>
-      <md-button class="md-icon-button md-list-action" @click.stop="openMenu(group._id)" v-show="showButtons === group._id">
-        <md-icon>settings</md-icon>
-        <md-tooltip md-delay="300">Paramètres</md-tooltip>
-      </md-button>
 
-    </md-list-item>
-    <md-list-item @click="$refs.newProjectGroup.open()">
-      <md-icon>add</md-icon>
-      <span class="md-list-item-text">Créer...</span>
-    </md-list-item>
-  </md-list>
+      <v-list-tile-avatar>
+        <v-icon :style="getColor(group)">folder</v-icon>
+      </v-list-tile-avatar>
+
+      <v-list-tile-content @click="selectGroup(group)" class="pointer">
+        <v-list-tile-title :class="getColor(group)">{{ group.name }}</v-list-tile-title>
+      </v-list-tile-content>
+
+      <v-list-tile-action>
+        <v-btn icon ripple @click.stop="openMenu(group._id)" v-show="showButtons === group._id"> 
+          <v-icon color="grey lighten-1">settings</v-icon>
+        </v-btn>
+      </v-list-tile-action>
+    </v-list-tile>
+
+    <v-list-tile @click="$refs.newProjectGroup.open()"> 
+
+      <v-list-tile-avatar>
+        <v-icon>add</v-icon>
+      </v-list-tile-avatar>
+
+      <v-list-tile-content>
+        <v-list-tile-title>Créer...</v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </v-list>
+
 </div>
 
 </template>
@@ -65,9 +83,9 @@ export default {
     getColor (group) {
       var selectedGroup = this.$store.state.selectedGroup;
       if (selectedGroup && selectedGroup._id === group._id) {
-        return 'selected md-list-item-text'
+        return 'selected'
       }
-      return 'md-list-item-text';
+      return '';
     },
 
     openMenu (id) {
@@ -79,15 +97,7 @@ export default {
 </script>
 
 <style scoped>
-.md-list-item {
-  cursor: pointer;
-}
-.md-list-item:hover {
-  background-color: #eee;
-}
-
 .selected {
-  color: var(--md-theme-default-primary, #448aff) !important;
+  font-weight: bold;
 }
-
 </style>
