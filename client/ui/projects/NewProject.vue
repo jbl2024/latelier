@@ -1,64 +1,77 @@
 <template>
   <div class="new-project">
-
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Nouveau projet</md-dialog-title>
-
-      <div class="content">
-        <md-field>
-            <label>Nom</label>
-            <md-input v-focus v-model="name" v-on:keyup.enter="create()"></md-input>
-        </md-field>
-            <label>Modèle</label>
-            <div>
-              <md-radio v-model="projectType" value="none">Vide</md-radio>
-              <md-radio v-model="projectType" value="kanban">Kanban</md-radio>
-              <md-radio v-model="projectType" value="people">Personnes</md-radio>
-            </div>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-        <md-button class="md-raised md-primary" @click="create">Créer</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-
-  </div>    
+    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Nouveau projet</v-card-title>
+        <v-card-text>
+          <v-form v-model="valid">
+            <v-text-field v-model="name" :rules="nameRules" label="Nom" required></v-text-field>
+            <v-radio-group v-model="projectType">
+              <v-radio label="Vide" value="none"></v-radio>
+              <v-radio label="Kanban" value="kanban"></v-radio>
+              <v-radio label="Personnes" value="people"></v-radio>
+            </v-radio-group>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+          <v-btn color="info" @click="create" :disabled="!valid">Créer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Projects } from '/imports/api/projects/projects.js'
+import { Meteor } from "meteor/meteor";
+import { Projects } from "/imports/api/projects/projects.js";
 
 export default {
   props: {
     organizationId: {
       type: String,
-      defaultValue: '0'
+      defaultValue: "0"
     }
   },
-  data () {
+  data() {
     return {
       showDialog: false,
-      projectType: 'none',
-      name: ''
-    }
+      projectType: "none",
+      valid: false,
+      name: "",
+      nameRules: [
+        v => !!v || "Le nom est obligatoire",
+        v => v.length > 1 || "Le nom est trop court"
+      ]
+    };
   },
   methods: {
-    open () {
+    open() {
       this.showDialog = true;
     },
-    create () {
-      Meteor.call('projects.create', this.organizationId, this.name, this.projectType, this.$store.state.selectedGroup._id, (error, result) => { 
-        if (error) {
-          console.log(error)
-          return;
+    create() {
+      Meteor.call(
+        "projects.create",
+        this.organizationId,
+        this.name,
+        this.projectType,
+        this.$store.state.selectedGroup._id,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            return;
+          }
+          this.$router.push({
+            name: "project-settings",
+            params: { organizationId: this.organizationId, projectId: result }
+          });
         }
-        this.$router.push({ name: 'project-settings', params: { organizationId: this.organizationId, projectId: result }}) 
-      });
+      );
       this.showDialog = false;
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -66,5 +79,4 @@ export default {
   margin-left: 24px;
   margin-right: 24px;
 }
-
 </style>
