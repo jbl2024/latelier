@@ -7,13 +7,16 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
 
+      <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-bottom-transition">
+        <v-card>
+          <task-detail :taskId="selectedTask._id"></task-detail>
+        </v-card>
+      </v-dialog>
+
       <div class="container-wrapper">
         <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
-      <md-drawer :md-active="showTaskDetail" md-right md-persistent="full" class="drawer-task-detail md-layout-item md-small-size-100 md-medium-size-100 md-large-size-100 md-xlarge-size-100">
-        <task-detail :taskId="selectedTask._id"></task-detail>
-      </md-drawer>
 
     </div>
 </div>
@@ -130,6 +133,10 @@ export default {
 
 .drawer-task-detail {
   box-shadow: 0 2px 1px -1px rgba(0,0,0,.2), 0 1px 1px 0 rgba(0,0,0,.14), 0 1px 3px 0 rgba(0,0,0,.12);
+  z-index: 400;
+}
+
+.detail {
   z-index: 400;
 }
 
