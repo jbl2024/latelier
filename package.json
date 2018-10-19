@@ -23,7 +23,6 @@
     "vue-drag-drop": "^1.1.4",
     "vue-dragscroll": "^1.5.0",
     "vue-event-handler": "^1.1.0",
-    "vue-flatpickr-component": "^7.0.5",
     "vue-hot-reload-api": "^2.3.0",
     "vue-material": "^1.0.0-beta-10.2",
     "vue-meteor-tracker": "^1.2.3",

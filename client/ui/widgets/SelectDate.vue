@@ -1,15 +1,28 @@
 <template>
   <div class="select-date">
-    <v-dialog v-model="active" max-width="385" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog v-model="active" max-width="320" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Choisir une date</v-card-title>
         <v-card-text>
-        <div><flat-pickr v-model="fakeDate" :config="config" class="invisible" @on-change="onChangeEvent"></flat-pickr></div>
+          <v-tabs grow>
+            <v-tab>
+              Date
+            </v-tab>
+            <v-tab>
+              Heure
+            </v-tab>
+            <v-tab-item>
+              <v-date-picker v-model="date" locale="fr-fr"></v-date-picker>
+            </v-tab-item>
+            <v-tab-item>
+              <v-time-picker v-model="hour" format="24hr"></v-time-picker>
+            </v-tab-item>
+          </v-tabs>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="closeDialog">Annuler</v-btn>
-          <v-btn color="info" @click="selectDate">Sélectionner</v-btn>
+          <v-btn color="info" @click="selectDate" :disabled="!date">Sélectionner</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -19,10 +32,6 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
-import flatPickr from "vue-flatpickr-component";
-import confirmDatePlugin from "flatpickr/dist/plugins/confirmDate/confirmDate.js";
-import "flatpickr/dist/flatpickr.css";
-import { French } from "flatpickr/dist/l10n/fr";
 
 export default {
   props: {
@@ -31,38 +40,23 @@ export default {
   },
   data() {
     return {
-      fakeDate: null,
       date: null,
-      config: {
-        enableTime: !this.disableTime,
-        altInput: true,
-        altFormat: "d/m/Y H:i",
-        weekNumbers: true,
-        inline: true,
-        time_24hr: true,
-        locale: French
-      }
+      hour: null
     };
-  },
-  components: {
-    flatPickr
   },
   methods: {
     closeDialog() {
       this.$emit("update:active", false);
     },
 
-    onChangeEvent(dates) {
-      if (dates && dates.length > 0) {
-        this.date = dates[0];
-      } else {
-        this.date = null;
-      }
-    },
-
     selectDate() {
+      let dateTime = this.date;
+      if (this.hour) {
+        dateTime = dateTime + ' ' + this.hour;
+      }
+      console.log(dateTime)
       this.$emit("update:active", false);
-      this.$emit("select", this.date);
+      this.$emit("select", dateTime);
     }
   }
 };
