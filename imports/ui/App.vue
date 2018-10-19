@@ -13,16 +13,13 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <span class="title ml-3 mr-5">L'atelier</span>
       </v-toolbar-title>
-        <organization-title v-if="currentProjectId == 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId"></organization-title>
-        <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
-      <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="search"
-        label="Search"
-        class="hidden-sm-and-down"
-      ></v-text-field>
+
+      <organization-title v-if="currentProjectId == 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId">
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      </organization-title>
+      <project-title v-if="currentProjectId != 0" :projectId="currentProjectId">
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+      </project-title>
       <v-spacer></v-spacer>
       <v-btn icon>
         <v-icon>apps</v-icon>

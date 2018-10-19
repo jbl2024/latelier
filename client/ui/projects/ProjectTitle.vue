@@ -1,29 +1,36 @@
 <template>
 
-  <div class="project-title md-layout md-gutter">
-    <div class="md-layout-item md-toolbar-section-start">
-      <md-button v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
-          <md-icon>domain</md-icon>
-      </md-button>
-      <span class="md-title" v-show="!editProjectName" @click="startUpdateProjectName">
-        {{ project.name }}
+  <div class="project-title ml-0 pl-3">
+    <v-toolbar-title class="align-left">
+      <slot></slot>
+      <v-btn flat icon color="white" v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
+        <v-icon>domain</v-icon>
+      </v-btn>
+      <span class="title ml-3 mr-5" v-show="!editProjectName" @click="startUpdateProjectName">
+          {{ project.name }}
       </span>
-      <span class="md-title edit-project-name" v-show="editProjectName">
+      <span class="title edit-project-name" v-show="editProjectName">
         <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
-        <md-button class="md-icon-button" @click.native="updateProjectName">
-          <md-icon>check_circle</md-icon>
-        </md-button>
+        <v-btn @click="updateProjectName">
+          <v-icon>check_circle</v-icon>
+        </v-btn>
 
-        <md-button class="md-icon-button" @click.native="cancelUpdateProjectName">
-          <md-icon>cancel</md-icon>
-        </md-button>
+        <v-btn @click="cancelUpdateProjectName">
+          <v-icon>cancel</v-icon>
+        </v-btn>
       </span>
-    </div>
+    </v-toolbar-title>
 
-    <div class="md-layout-item md-toolbar-section-end search show-desktop">
-      <md-icon>search</md-icon>
-      <input placeholder="Rechercher..." v-on:input="debouncedFilter">
-    </div>
+    <v-text-field
+        style="width: 500px"
+        flat
+        solo-inverted
+        hide-details
+        prepend-inner-icon="search"
+        label="Rechercher..."
+        class="hidden-sm-and-down"
+        v-on:input="debouncedFilter"
+    ></v-text-field>
 
   </div>
 
@@ -42,7 +49,7 @@ export default {
   },
   created() {
     this.debouncedFilter = debounce(val => {
-      this.$events.fire("filter-tasks", val.target.value);
+      this.$events.fire("filter-tasks", val);
     }, 400);
   },
   meteor: {
@@ -95,23 +102,10 @@ export default {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.edit-project-name .md-button {
-  margin: 0;
+.project-title {
 }
 
-.search  {
-  margin-left: 12px;
+.align-left {
+  float: left;
 }
-
-
-.search input {
-  margin-left: -24px;
-  padding-left: 32px;
-  border: none;
-  font-size: 16px;
-  color: white;
-  background-color: #448aff;
-  border-bottom: 1px solid #eee;
-}
-
 </style>
