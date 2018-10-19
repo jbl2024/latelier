@@ -6,15 +6,21 @@
     </div>
     <div v-if="$subReady.organization" class="project-wrapper"> 
 
-      <md-tabs md-sync-route :md-alignment="tabAlignment">
-        <md-tab id="tab-general" md-label="Paramètres">
+      <v-tabs>
+        <v-tab id="tab-general">
+          Paramètres
+        </v-tab>
+        <v-tab id="tab-users">
+          Utilisateurs
+        </v-tab>
+        <v-tab-item>
           <organization-settings-general :organization="organization"></organization-settings-general>
-        </md-tab>
+        </v-tab-item>
+        <v-tab-item>
+          <organization-settings-manage-users :organization="organization" class="users"></organization-settings-manage-users>
+        </v-tab-item>
+      </v-tabs> 
 
-        <md-tab id="tab-users" md-label="Utilisateurs">
-          <organization-settings-manage-users :organization="organization"></organization-settings-manage-users>
-        </md-tab>
-      </md-tabs> 
 
     </div>
 </div>

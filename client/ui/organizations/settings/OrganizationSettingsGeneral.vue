@@ -2,7 +2,7 @@
   <div class="organization-settings-general"> 
 
   <md-subheader>Titre</md-subheader>
-  <div class="md-elevation-1">
+  <div class="elevation-1">
     <div class="description">
       <div v-show="!editName && organization.name && organization.name.length > 0" @click="startEditName">
         {{ organization.name }}
