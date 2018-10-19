@@ -2,7 +2,8 @@
 
 <div class="task-attachments">
   <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
-  <md-progress-bar md-mode="indeterminate" v-show="isUploading"></md-progress-bar>
+  
+  <v-progress-linear indeterminate v-show="isUploading"></v-progress-linear>
 
    <md-list>
       <md-list-item v-for="attachment in attachments" :key="attachment._id">

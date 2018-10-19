@@ -25,7 +25,7 @@
 
         </md-card-content>
 
-        <md-progress-bar md-mode="indeterminate" v-if="sending" />
+        <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
 
         <md-card-actions>
           <md-button type="submit" class="md-primary" :disabled="sending">Suivant</md-button>

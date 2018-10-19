@@ -28,7 +28,7 @@
     <template v-if="$subReady.projectsForTimeline">
       
       <div class="progress" v-if="showProgress && count > 0">
-        <md-progress-spinner md-mode="indeterminate" ></md-progress-spinner>
+        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <div class="timeline">
         <timeline

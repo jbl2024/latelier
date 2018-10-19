@@ -6,7 +6,7 @@
     <template v-if="$subReady.project">
 
       <div class="progress" v-if="showProgress">
-        <md-progress-spinner md-mode="indeterminate" ></md-progress-spinner>
+        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
 
       <div class="timeline">
