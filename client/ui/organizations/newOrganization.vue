@@ -1,21 +1,20 @@
 <template>
   <div class="new-organization">
-
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Nouvelle organisation</md-dialog-title>
-
-      <div class="content">
-        <md-field>
-            <label>Nom</label>
-            <md-input v-focus v-model="name" v-on:keyup.enter="create()"></md-input>
-        </md-field>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-        <md-button class="md-raised md-primary" @click="create">Créer</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-
+    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Nouvelle organisation</v-card-title>
+        <v-card-text>
+          <v-form v-model="valid">
+            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required></v-text-field>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+          <v-btn color="info" @click="create" :disabled="!valid">Créer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>    
 </template>
 
@@ -28,7 +27,12 @@ export default {
     return {
       showDialog: false,
       projectType: 'none',
-      name: ''
+      valid: false,
+      name: '',
+      nameRules: [
+        v => !!v || "Le nom est obligatoire",
+        v => v.length > 1 || "Le nom est trop court"
+      ]
     }
   },
   methods: {

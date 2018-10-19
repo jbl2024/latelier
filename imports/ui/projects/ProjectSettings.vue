@@ -6,15 +6,20 @@
     </div>
     <div v-if="$subReady.project" class="project-wrapper"> 
 
-      <md-tabs md-sync-route :md-alignment="tabAlignment">
-        <md-tab id="tab-general" md-label="Paramètres">
+      <v-tabs>
+        <v-tab id="tab-general">
+          Paramètres
+        </v-tab>
+        <v-tab id="tab-users">
+          Utilisateurs
+        </v-tab>
+        <v-tab-item>
           <project-settings-general :project="project"></project-settings-general>
-        </md-tab>
-
-        <md-tab id="tab-users" md-label="Utilisateurs">
+        </v-tab-item>
+        <v-tab-item>
           <project-settings-manage-users :project="project" class="users"></project-settings-manage-users>
-        </md-tab>
-      </md-tabs> 
+        </v-tab-item>
+      </v-tabs> 
 
     </div>
 </div>
