@@ -1,25 +1,33 @@
 <template>
   <div class="select-user">
 
-    <md-dialog :md-active.sync="active">
-      <md-dialog-title>Choisir une personne</md-dialog-title>
+    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Sélectionner un utilisateur</v-card-title>
+        <v-card-text>
+          <v-list class="content"> 
+            <template v-for="item in users" >
+              <v-list-tile :key='item._id' @click="selectUser(item)">
+                <v-list-tile-avatar>
+                  <div class="avatar">
+                    {{ formatUserLetters(item) }}
+                  </div>
+                </v-list-tile-avatar>            
+                <v-list-tile-content class="pointer">
+                  <v-list-tile-title>{{ formatUser(item) }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>     
+          </v-list>   
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="closeDialog">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-      <div class="content">
-        <md-list>
-          <md-list-item v-for="person in users" :key="person._id" class="cursor" @click="selectUser(person)">
-            <md-avatar class="md-avatar-icon" :class="isOnline(person)">
-                <md-ripple>{{ formatUserLetters(person) }}</md-ripple>
-            </md-avatar>
 
-            <span class="md-list-item-text">{{ formatUser(person)}}</span>
-
-          </md-list-item>
-        </md-list>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="closeDialog">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
 
   </div>    
 </template>
@@ -71,6 +79,7 @@ export default {
   margin-left: 24px;
   margin-right: 24px;
   overflow-y: scroll;
+  max-height: 300px;
 }
 
 .cursor {
@@ -79,6 +88,14 @@ export default {
 
 .cursor:hover {
   background-color: #aaa;
+}
+
+.avatar {
+  background-color: rgba(0, 0, 0, 0.14);
+  border-radius: 50%;
+  width: 38px;
+  height: 38px;
+  padding-top: 8px;
 }
 
 </style>
