@@ -2,23 +2,32 @@
   <div class="projects">
     <new-project ref="newProject" :organizationId="organizationId"></new-project>  
 
-    <md-dialog-confirm
-      :md-active.sync="showConfirmDialog"
-      md-title="Confirmer la suppression ?"
-      md-content="Le projet sera définitivement supprimé"
-      md-confirm-text="Supprimer"
-      md-cancel-text="Annuler"
-      @md-cancel="onCancelDeleteProject"
-      @md-confirm="onConfirmDeleteProject" />
+    <v-dialog v-model="showConfirmDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Confirmer la suppression ?</v-card-title>
+        <v-card-text>Le projet sera défintivement supprimé</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click.native="onCancelDeleteProject">Annuler</v-btn>
+          <v-btn color="warning" @click.native="onConfirmDeleteProject">Supprimer</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-    <md-dialog-confirm
-      :md-active.sync="showConfirmCloneDialog"
-      md-title="Confirmer le clonage du projet ?"
-      md-content="Le projet sera cloné"
-      md-confirm-text="Cloner"
-      md-cancel-text="Annuler"
-      @md-cancel="onCancelCloneProject"
-      @md-confirm="onConfirmCloneProject" />
+
+    <v-dialog v-model="showConfirmCloneDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Confirmer le clonage du projet ?</v-card-title>
+        <v-card-text>Le projet sera cloné</v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click.native="onCancelCloneProject">Annuler</v-btn>
+          <v-btn color="info" @click.native="onConfirmCloneProject">Cloner</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
 
     <div v-if="!$subReady.projects">
       <md-progress-bar md-mode="indeterminate"></md-progress-bar>
