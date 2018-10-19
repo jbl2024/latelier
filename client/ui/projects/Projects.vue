@@ -43,7 +43,7 @@
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
         </v-subheader>
 
-        <div class="md-elevation-1">
+        <div class="elevation-1">
           <template v-for="item in projects">
 
             <v-list-tile :key='item._id' @click="openProject(item._id)">

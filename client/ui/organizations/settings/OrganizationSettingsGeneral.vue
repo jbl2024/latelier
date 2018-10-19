@@ -16,20 +16,20 @@
           <label>Nom</label>
           <md-input ref="name" v-focus v-model="organization.name" @keyup.enter="updateName"></md-input>
         </md-field>
-        <md-button class="md-icon-button" @click.native="updateName">
-          <md-icon>check_circle</md-icon>
-        </md-button>
+        <v-btn icon @click="updateName">
+          <v-icon>check_circle</v-icon>
+        </v-btn>
 
-        <md-button class="md-icon-button" @click.native="cancelUpdateName">
-          <md-icon>cancel</md-icon>
-        </md-button>
+        <v-btn icon @click="cancelUpdateName">
+          <v-icon>cancel</v-icon>
+        </v-btn>
 
       </div>
     </div>
   </div>
 
   <md-subheader>Description</md-subheader>
-  <div class="md-elevation-1">
+  <div class="elevation-1">
     <div class="description">
       <div v-show="!editDescription && organization.description && organization.description.length > 0" @click="startEditDescription">
         <div v-html="markDown(organization.description)"></div>
@@ -43,13 +43,13 @@
           <label>Description</label>
           <md-textarea ref="description" v-model="organization.description" @keyup.ctrl.enter="updateDescription"></md-textarea>
         </md-field>
-        <md-button class="md-icon-button" @click.native="updateDescription">
-          <md-icon>check_circle</md-icon>
-        </md-button>
+        <v-btn icon @click="updateDescription">
+          <v-icon>check_circle</v-icon>
+        </v-btn>
 
-        <md-button class="md-icon-button" @click.native="cancelUpdateDescription">
-          <md-icon>cancel</md-icon>
-        </md-button>
+        <v-btn icon @click="cancelUpdateDescription">
+          <v-icon>cancel</v-icon>
+        </v-btn>
 
       </div>
     </div>
