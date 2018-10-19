@@ -1,63 +1,66 @@
 <template>
   <div class="select-resource">
 
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Sélectionner une ressource</md-dialog-title>
+    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Sélectionner une ressource</v-card-title>
+        <v-card-text>
+          <v-list two-line class="content">
+            <template v-for="resource in resources">
+              <v-list-tile :key='resource._id' @click="selectResource(resource)">
+                <v-list-tile-avatar>
+                  <v-icon>category</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content class="pointer">
+                  <v-list-tile-title>{{ resource.name }}</v-list-tile-title>
+                  <v-list-tile-sub-title>{{ resource.description }}</v-list-tile-sub-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
-      <div class="content">
-        <md-list class="md-double-line">
-          <md-list-item v-for="resource in resources" @click="selectResource(resource)"
-              :key="resource._id">
-            <md-avatar class="md-avatar-icon md-primary">
-              <md-icon>category</md-icon>
-            </md-avatar>
-            <div class="md-list-item-text pointer">
-              <span>{{ resource.name }}</span>
-              <span>{{ resource.description }}</span>
-            </div>
-          </md-list-item>
-        </md-list>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-
-  </div>    
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Resources } from '/imports/api/resources/resources.js'
+import { Meteor } from "meteor/meteor";
+import { Resources } from "/imports/api/resources/resources.js";
 
 export default {
   props: {
     resourceId: String
   },
-  data () {
+  data() {
     return {
       showDialog: false,
       showSelectColor: false,
       label: {},
-      name: ''
-    }
+      name: ""
+    };
   },
   meteor: {
-    resources () {
-      return Resources.find({}, {sort: {name: 1}});
+    resources() {
+      return Resources.find({}, { sort: { name: 1 } });
     }
   },
   methods: {
-    open () {
+    open() {
       this.showDialog = true;
     },
 
-    selectResource (resource) {
+    selectResource(resource) {
       this.showDialog = false;
-      this.$emit('select', resource);
+      this.$emit("select", resource);
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -74,5 +77,4 @@ export default {
   margin-bottom: 24px;
   cursor: pointer;
 }
-
 </style>
