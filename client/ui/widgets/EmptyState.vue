@@ -1,12 +1,17 @@
 <template>
   <div class="empty-state">
-    <md-empty-state
-      :md-description="description"
-      :md-label="label"
-      :md-rounded="rounded"
-      :md-icon="icon">
+    <div class="empty-state-container">
+      <div>
+        <v-icon class="icon" color="grey">{{icon}}</v-icon>
+      </div>
+      <div class="label">
+        {{ label}}
+      </div>
+      <div class="description">
+          {{ description}}
+      </div>
       <slot></slot>
-    </md-empty-state>
+    </div>
   </div>    
 </template>
 
@@ -29,4 +34,26 @@ export default {
 </script>
 
 <style scoped>
+
+.empty-state {
+  text-align: center;
+}
+.icon {
+  font-size: 140px;
+}
+
+.label {
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 40px;
+}
+
+.description {
+  margin: 1em 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.empty-state-container {
+}
 </style>
