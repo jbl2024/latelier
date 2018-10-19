@@ -1,30 +1,23 @@
 <template>
 
-  <div class="organization-title md-layout md-gutter">
-    <div class="md-layout-item md-toolbar-section-start">
-      <md-button class="md-icon-button" :to="{ name: 'organizations-page' }">
-          <md-icon>home</md-icon>
-      </md-button>
-      <span class="md-title" v-show="!editOrganizationName" @click="startUpdateOrganizationName">
+  <div class="organization-title ml-0 pl-3">
+    <slot></slot>
+
+    <v-btn flat icon color="white" :to="{ name: 'organizations-page' }">
+      <v-icon>home</v-icon>
+    </v-btn>
+    <span class="title ml-3 mr-5" v-show="!editOrganizationName" @click="startUpdateOrganizationName">
         {{ organization.name }}
-      </span>
-      <span class="md-title edit-organization-name" v-show="editOrganizationName">
-        <input @focus="$event.target.select()" type="text" ref="name" v-model="organization.name" v-on:keyup.enter="updateOrganizationName">
-        <md-button class="md-icon-button" @click.native="updateOrganizationName">
-          <md-icon>check_circle</md-icon>
-        </md-button>
-
-        <md-button class="md-icon-button" @click.native="cancelUpdateOrganizationName">
-          <md-icon>cancel</md-icon>
-        </md-button>
-      </span>
-    </div>
-
-    <div class="md-layout-item md-toolbar-section-end search show-desktop">
-      <md-icon>search</md-icon>
-      <input placeholder="Rechercher..." v-on:input="debouncedFilter">
-    </div>
-
+    </span>
+    <span class="title edit-organization-name" v-show="editOrganizationName">
+      <input @focus="$event.target.select()" type="text" ref="name" v-model="organization.name" v-on:keyup.enter="updateOrganizationName">
+      <v-btn icon @click="updateOrganizationName">
+        <v-icon>check_circle</v-icon>
+      </v-btn>
+      <v-btn icon @click="cancelUpdateOrganizationName">
+        <v-icon>cancel</v-icon>
+      </v-btn>
+    </span>
   </div>
 
 </template>
@@ -96,21 +89,6 @@ export default {
 
 .edit-organization-name .md-button {
   margin: 0;
-}
-
-.search  {
-  margin-left: 12px;
-}
-
-
-.search input {
-  margin-left: -24px;
-  padding-left: 32px;
-  border: none;
-  font-size: 16px;
-  color: white;
-  background-color: #448aff;
-  border-bottom: 1px solid #eee;
 }
 
 </style>
