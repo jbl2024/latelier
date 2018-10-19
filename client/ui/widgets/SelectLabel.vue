@@ -1,62 +1,67 @@
 <template>
   <div class="select-label">
-
-    <md-dialog :md-active.sync="showDialog">
-      <md-dialog-title>Sélectionner un label</md-dialog-title>
-
-      <div class="content">
-        <md-list>
-          <md-list-item v-for="label in labels" @click="selectLabel(label)"
-              :key="label._id">
-            <md-icon :style="getColor(label)">label</md-icon>
-            <span class="md-list-item-text">{{label.name}}</span>
-          </md-list-item>
-        </md-list>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="showDialog = false">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-
-  </div>    
+    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Sélectionner un label</v-card-title>
+        <v-card-text>
+          <v-list class="content">
+            <template v-for="label in labels">
+              <v-list-tile :key='label._id' @click="selectLabel(label)">
+                <v-list-tile-avatar>
+                  <v-icon :style="getColor(label)">label</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content class="pointer">
+                  <v-list-tile-title>{{ label.name }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Labels } from '/imports/api/labels/labels.js'
+import { Meteor } from "meteor/meteor";
+import { Labels } from "/imports/api/labels/labels.js";
 
 export default {
   props: {
     labelId: String
   },
-  data () {
+  data() {
     return {
       showDialog: false,
       showSelectColor: false,
       label: {},
-      name: ''
-    }
+      name: ""
+    };
   },
   meteor: {
-    labels () {
-      return Labels.find({}, {sort: {name: 1}});
+    labels() {
+      return Labels.find({}, { sort: { name: 1 } });
     }
   },
   methods: {
-    open () {
+    open() {
       this.showDialog = true;
     },
 
-    selectLabel (label) {
+    selectLabel(label) {
       this.showDialog = false;
-      this.$emit('select', label);
+      this.$emit("select", label);
     },
 
-    getColor (label) {
-      return 'color: ' + label.color;
+    getColor(label) {
+      return "color: " + label.color;
     }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -73,5 +78,4 @@ export default {
   margin-bottom: 24px;
   cursor: pointer;
 }
-
 </style>
