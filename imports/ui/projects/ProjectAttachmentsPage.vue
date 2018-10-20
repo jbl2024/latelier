@@ -13,7 +13,7 @@
         description="Vous pouvez ajouter une pièce jointe sur une tâche">
       </empty-state>
 
-      <v-list two-line subheader>
+      <v-list two-line subheader v-show="attachments.length > 0">
         <v-subheader>Pièces jointes</v-subheader>
         <v-list-tile v-for="attachment in attachments" :key="attachment._id">
           <v-list-tile-avatar>
