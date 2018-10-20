@@ -23,7 +23,7 @@
               </div>
 
             </div>
-            <h2 v-show="isListEdited(list, selectedList)">
+            <div class="list-edit" v-show="isListEdited(list, selectedList)">
               <input @focus="$event.target.select()" type="text" ref="name" v-model="list.name" v-on:keyup.enter="updateName(list)">
               <v-btn flat icon @click.native="updateName(list)">
                 <v-icon>check_circle</v-icon>
@@ -33,7 +33,7 @@
                 <v-icon>cancel</v-icon>
               </v-btn>
 
-            </h2>
+            </div>
           </drag>
         </div>
       </div>
@@ -285,5 +285,22 @@ export default {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+}
+
+.list-edit input {
+  float:left;
+  width: 204px;
+  background-color: white;
+  padding: 9px;
+  margin-bottom:1px;
+  margin-top:0;
+}
+
+.list-edit .v-btn {
+  width: 32px;
+  margin-top:0;
+  margin-left: 0;
+  margin-right: 0;
+  margin-bottom:0;
 }
 </style>
