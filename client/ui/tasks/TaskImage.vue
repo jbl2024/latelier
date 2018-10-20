@@ -67,14 +67,6 @@ export default {
   color: white;
 }
 
-.edit .md-button {
-  min-width: 24px;
-  width: 24px;
-  height: 20px;
-  margin: 0;
-  margin-top: 8px;
-}
-
 .edit-name {
   font-size: 14px;
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
