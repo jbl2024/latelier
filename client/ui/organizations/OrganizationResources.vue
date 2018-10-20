@@ -31,8 +31,8 @@
               <v-icon>add</v-icon>
             </v-btn>
           </v-subheader>
-          <template v-for="(item, index) in resources">
-            <v-list-tile :key="item._id" avatar>
+          <template v-for="item in resources">
+            <v-list-tile :key="item._id" avatar @click.stop="editResource(item._id)">
               <v-list-tile-avatar>
                 <v-icon>category</v-icon>
               </v-list-tile-avatar>
@@ -41,25 +41,18 @@
                 <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-                <v-btn icon ripple @click.stop="editResource(item._id)">
+                <v-btn icon flat color="grey darken-1" @click.stop="editResource(item._id)">
                   <v-icon>edit</v-icon>
                 </v-btn>
               </v-list-tile-action>
               <v-list-tile-action>
-                <v-btn icon ripple @click.stop="deleteResource(item._id)">
+                <v-btn icon flat color="grey darken-1" @click.stop="deleteResource(item._id)">
                   <v-icon>delete</v-icon>
                 </v-btn>
               </v-list-tile-action>
             </v-list-tile>
-            <v-divider inset v-if="index != resources.length - 1"></v-divider>
           </template>
         </v-list>
-      </div>
-      <div class="absolute-right">
-        <md-button class="md-fab" @click="newResource">
-          <md-icon>add</md-icon>
-          <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
-        </md-button>
       </div>
     </div>
   </div>

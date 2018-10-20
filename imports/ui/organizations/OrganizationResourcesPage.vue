@@ -48,8 +48,4 @@ export default {
 
 <style scoped>
 
-.organization-resources {
-  margin: 8px;
-}
-
 </style>
