@@ -201,6 +201,9 @@ export default {
   margin-left: 12px;
 }
 
+.author-line {
+  margin: 24px;
+}
 
 pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;

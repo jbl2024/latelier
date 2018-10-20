@@ -14,7 +14,7 @@
       </v-dialog>
 
       <div class="container-wrapper">
-        <kanban ref="container" class="container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
+        <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
 
@@ -156,7 +156,6 @@ export default {
   min-height:0;
   flex-direction: column;
   flex:1;
-  background-color: #eee !important;
 }
 
 .edit-project-name input {
@@ -173,7 +172,7 @@ export default {
 }
 
 @media (max-width: 600px) {
-  .container {
+  .kanban-container {
     margin: 4px;
     overflow-x: hidden;
     overflow-y: auto;
@@ -182,7 +181,7 @@ export default {
 }
 
 @media (min-width: 601px) {
-  .container {
+  .kanban-container {
     margin: 4px;
     display: flex;
     flex-direction: row;
@@ -193,7 +192,7 @@ export default {
   }
 }
 
-.container-wrapper {
+.kanban-container-wrapper {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;

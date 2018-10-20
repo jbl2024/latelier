@@ -4,8 +4,8 @@
       <v-card>
         <v-card-title class="headline">Nouveau projet</v-card-title>
         <v-card-text>
-          <v-form v-model="valid">
-            <v-text-field v-model="name" :rules="nameRules" label="Nom" required></v-text-field>
+          <v-form v-model="valid" v-on:submit.prevent>
+            <v-text-field v-model="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
             <v-radio-group v-model="projectType">
               <v-radio label="Vide" value="none"></v-radio>
               <v-radio label="Kanban" value="kanban"></v-radio>

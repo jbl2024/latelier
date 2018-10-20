@@ -248,6 +248,8 @@ export default {
   background-color: white;
   font-size: 14px;
   padding: 4px;
+  width:272px;
+  margin-top: 4px;
   font-weight: normal;
   color: black;
   cursor: pointer;

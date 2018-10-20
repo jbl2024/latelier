@@ -1,6 +1,6 @@
 <template>
   <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove" >
-      <div v-for="list in lists" :key='list._id' class="flex dragscroll">
+      <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
         <list :list="list"></list>
       </div>  
       <div class="swimlane dragscroll new">
@@ -66,7 +66,7 @@ export default {
 
 <style scoped>
 
-.flex {
+.kanban-flex {
   display: flex;
   flex-direction: column;
 }
