@@ -1,7 +1,7 @@
 <template>
   <div class="organization-settings-manage-users">
     <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
-    <div class="elevation-1">
+    <div class="elevation-1 users">
       <v-list>
         <v-subheader>Membres
           <v-btn flat icon @click="showSelectUserDialog = true">
@@ -98,5 +98,9 @@ export default {
 
 .online {
   background-color: red;
+}
+
+.users {
+  margin-top: 12px;
 }
 </style>

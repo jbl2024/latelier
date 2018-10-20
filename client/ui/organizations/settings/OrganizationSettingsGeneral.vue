@@ -1,8 +1,8 @@
 <template>
   <div class="organization-settings-general">
 
-    <md-subheader>Titre</md-subheader>
-    <div class="elevation-1">
+    <v-subheader>Titre</v-subheader>
+    <div class="elevation-1 settings">
       <div class="description">
         <div v-show="!editName && organization.name && organization.name.length > 0" @click="startEditName">
           {{ organization.name }}
@@ -26,8 +26,8 @@
       </div>
     </div>
 
-    <md-subheader>Description</md-subheader>
-    <div class="elevation-1">
+    <v-subheader>Description</v-subheader>
+    <div class="elevation-1 settings">
       <div class="description">
         <div v-show="!editDescription && organization.description && organization.description.length > 0" @click="startEditDescription">
           <div v-html="markDown(organization.description)"></div>
@@ -126,5 +126,9 @@ export default {
   margin-bottom: 12px;
   padding-top: 12px;
   padding-bottom: 12px;
+}
+
+.settings {
+  background-color: white;
 }
 </style>
