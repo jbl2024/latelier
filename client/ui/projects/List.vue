@@ -1,91 +1,98 @@
 <template>
   <div class="list">
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
-    <div class="list-header">
-    <div class="swimlane dragscroll">
-      <drag :transfer-data="getTransferData(list)">
-      <h2 v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
-        <span @click="editList(list)" class="list-name">{{list.name}} ({{ taskCount }}) </span>
-        <md-menu md-size="medium" md-align-trigger class="settings" :mdCloseOnClick="true" :mdCloseOnSelect="true">
-          <md-button md-menu-trigger class="md-icon-button">
-            <md-icon>arrow_drop_down</md-icon>
-          </md-button>
-          <md-menu-content>
-            <md-menu-item @click="newTaskInline(list._id)">Nouvelle tâche</md-menu-item>
-            <md-menu-item @click="deleteList(list._id)">Supprimer</md-menu-item>
-            <md-divider></md-divider>
-            <md-menu-item><md-checkbox v-model="list.autoComplete">Marquer comme terminé</md-checkbox></md-menu-item>
-          </md-menu-content>
-        </md-menu>
-        <md-button md-menu-trigger class="md-icon-button settings" @click="newTaskInline(list._id)">
-          <md-icon>add</md-icon>
-        </md-button>
+      <div class="list-header">
+        <div class="swimlane dragscroll">
+          <drag :transfer-data="getTransferData(list)">
+            <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
+              <div :style="getColor(currentProjectId)">
+                <div class="list-name" @click="editList(list)">{{list.name}} ({{ taskCount }})</div>
+                <v-menu bottom left>
+                  <v-btn dark small slot="activator" icon>
+                    <v-icon>more_vert</v-icon>
+                  </v-btn>
+                  <v-list>
+                    <v-list-tile @click="newTaskInline(list._id)">
+                      <v-list-tile-title>Nouvelle tâche</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile @click="deleteList(list._id)">
+                      <v-list-tile-title>Supprimer</v-list-tile-title>
+                    </v-list-tile>
+                  </v-list>
+                </v-menu>
+              </div>
 
-      </h2>
-      <h2 v-show="isListEdited(list, selectedList)">
-        <input @focus="$event.target.select()" type="text" ref="name" v-model="list.name" v-on:keyup.enter="updateName(list)">
-        <md-button class="md-icon-button" @click.native="updateName(list)">
-          <md-icon>check_circle</md-icon>
-        </md-button>
+            </div>
+            <h2 v-show="isListEdited(list, selectedList)">
+              <input @focus="$event.target.select()" type="text" ref="name" v-model="list.name" v-on:keyup.enter="updateName(list)">
+              <v-btn flat icon @click.native="updateName(list)">
+                <v-icon>check_circle</v-icon>
+              </v-btn>
 
-        <md-button class="md-icon-button" @click.native="cancelUpdate(list)">
-          <md-icon>cancel</md-icon>
-        </md-button>
+              <v-btn flat icon @click.native="cancelUpdate(list)">
+                <v-icon>cancel</v-icon>
+              </v-btn>
 
-      </h2>
-    </drag>
-    </div>
-    </div>
-    <div class="tasks-wrapper">
-      <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
-      <div class="task new" @click="newTaskInline(list._id)">
-          <h2>Ajouter une tâche</h2>
+            </h2>
+          </drag>
+        </div>
       </div>
-    </div>
+      <div class="tasks-wrapper">
+        <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
+        <div class="task new" @click="newTaskInline(list._id)">
+          <div class="list-title">Ajouter une tâche</div>
+        </div>
+      </div>
     </drop>
   </div>
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import { mapState } from 'vuex';
+import { Projects } from "/imports/api/projects/projects.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import { mapState } from "vuex";
 
 export default {
   props: {
     list: {
-      type: Object,
+      type: Object
     }
   },
   computed: {
-    ...mapState(['currentProjectId'])
+    ...mapState(["currentProjectId"])
   },
-  data () {
+  data() {
     return {
       selectedList: {},
-      savedName: '',
-    }
+      savedName: ""
+    };
   },
   watch: {
-    'list.autoComplete'(autoComplete, prevValue) {
+    "list.autoComplete"(autoComplete, prevValue) {
       if (prevValue != autoComplete) {
-        Meteor.call('lists.autoComplete', this.list._id, autoComplete);
+        Meteor.call("lists.autoComplete", this.list._id, autoComplete);
       }
     }
   },
   meteor: {
-    taskCount () {
-      return Tasks.find({listId: this.list._id}).count();
+    taskCount() {
+      return Tasks.find({ listId: this.list._id }).count();
     }
   },
   methods: {
     handleDrop(list, data, event) {
-      if (data.type === 'task') {
+      if (data.type === "task") {
         var droppedTask = data.data;
-        Meteor.call('tasks.move', list.projectId, list._id, droppedTask._id, -1);
+        Meteor.call(
+          "tasks.move",
+          list.projectId,
+          list._id,
+          droppedTask._id,
+          -1
+        );
         return false;
-      } else if (data.type === 'list') {
+      } else if (data.type === "list") {
         var order = list.order - 1;
         var target = event.toElement || event.target;
         var middle = target.clientWidth / 2;
@@ -93,18 +100,18 @@ export default {
           order = list.order + 1;
         }
         var droppedList = data.data;
-        Meteor.call('lists.move', list.projectId, droppedList._id, order);
+        Meteor.call("lists.move", list.projectId, droppedList._id, order);
         return false;
       }
     },
 
-    editList (list) {
+    editList(list) {
       this.selectedList = list;
       this.savedName = this.selectedList.name;
-      this.$nextTick(() => this.$refs.name.focus())
+      this.$nextTick(() => this.$refs.name.focus());
     },
 
-    isListEdited (list, selectedList) {
+    isListEdited(list, selectedList) {
       if (!list || !selectedList) {
         return false;
       }
@@ -112,57 +119,62 @@ export default {
       return edited;
     },
 
-    updateName (list) {
+    updateName(list) {
       if (list.name.length == 0) {
         list.name = this.savedName;
       }
       this.selectedList = null;
-      Meteor.call('lists.updateName', list._id, list.name, (error, result) => { 
+      Meteor.call("lists.updateName", list._id, list.name, (error, result) => {
         if (error) {
           return;
         }
-      });      
+      });
     },
 
-    cancelUpdate (list) {
+    cancelUpdate(list) {
       list.name = this.savedName;
       this.selectedList = null;
     },
 
-    deleteList (listId) {
-      Meteor.call('lists.remove', listId);
+    deleteList(listId) {
+      Meteor.call("lists.remove", listId);
     },
-    newTaskInline (listId) {
+    newTaskInline(listId) {
       var that = this;
-      Meteor.call('tasks.insert', this.list.projectId, listId, 'Nouvelle tâche', (error, task) => { 
-        if (error) {
-          return;
+      Meteor.call(
+        "tasks.insert",
+        this.list.projectId,
+        listId,
+        "Nouvelle tâche",
+        (error, task) => {
+          if (error) {
+            return;
+          }
+          this.$events.fire("task-edit-name", task);
         }
-        this.$events.fire('task-edit-name', task);
-      });
+      );
     },
 
-    getTransferData (list) {
+    getTransferData(list) {
       return {
-        type: 'list',
+        type: "list",
         data: list
       };
     },
 
-    getColor (projectId) {
-      const project = Projects.findOne({_id: projectId});
+    getColor(projectId) {
+      const project = Projects.findOne({ _id: projectId });
       if (project && project.color) {
-        return 'background-color: ' + project.color;
+        return "background-color: " + project.color;
+      } else {
+        return "background-color: #2D6293";
       }
-    },
-
+    }
   }
-}
+};
 </script>
 
 <style scoped>
-
-
 @media (max-width: 600px) {
   .swimlane {
     flex: 0 0 auto;
@@ -171,7 +183,7 @@ export default {
     margin-right: 8px;
   }
   .tasks-wrapper {
-    width: 100%;    
+    width: 100%;
   }
 }
 
@@ -185,12 +197,12 @@ export default {
   }
 
   .tasks-wrapper {
-    width: 274px;    
+    width: 274px;
   }
 }
 
-.swimlane.new h2 {
-  border: 2px dashed #2D6293;
+.swimlane.new .list-title {
+  border: 2px dashed #2d6293;
   background-color: white;
   padding-bottom: 8px;
   color: black;
@@ -205,9 +217,9 @@ export default {
   cursor: pointer;
 }
 
-.swimlane h2 {
+.swimlane .list-title {
   text-align: left;
-  background-color: #2D6293;
+  background-color: #2d6293;
   color: white;
   font-weight: normal;
   font-size: 14px;
@@ -231,12 +243,8 @@ export default {
   color: white;
 }
 
-.swimlane .settings {
-  float: right;
-}
-
-.task.new h2 {
-  border: 2px dashed #2D6293;
+.task.new .list-title {
+  border: 2px dashed #2d6293;
   background-color: white;
   font-size: 14px;
   padding: 4px;
@@ -244,14 +252,16 @@ export default {
   color: black;
   cursor: pointer;
 }
-.task.new h2:hover {
+.task.new .list-title:hover {
   color: rgb(48, 48, 48);
   cursor: pointer;
 }
 
 .list-name {
-  width: 210px;
+  width: 220px;
   display: inline-block;
+  margin-left: 4px;
+  color: white;
 }
 
 .list-name:hover {
@@ -274,5 +284,4 @@ export default {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
-
 </style>

@@ -28,16 +28,17 @@
             </div>
           </div>
 
+          <v-divider v-show="hasAdditionalContentToShow(task)"></v-divider>
+          
           <div class="card-content" v-show="hasAdditionalContentToShow(task)">
-            <v-divider></v-divider>
             <div class="metadata">
-              <span>
+              <span class="avatar">
                 <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
                   <span>{{ formatUserLetters(task.assignedTo) }}</span>
                 </v-avatar>
               </span>
               <span v-show="task.dueDate">
-                <md-icon>alarm_on</md-icon>{{ formatDate(task.dueDate) }}
+                <v-icon class="alarm-icon">alarm_on</v-icon>{{ formatDate(task.dueDate) }}
               </span>
             </div>
             <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
@@ -302,7 +303,7 @@ export default {
 
 .checkbox {
   float: left;
-  margin-top: -1px;
+  margin-top: 2px;
 }
 .checkbox input {
   width: 16px;
@@ -370,5 +371,15 @@ export default {
 .labels {
   position: absolute;
   top: -7px;
+}
+
+.avatar {
+  position: relative;
+  top: -2px;
+}
+
+.alarm-icon {
+  position: relative;
+  top: 4px;
 }
 </style>

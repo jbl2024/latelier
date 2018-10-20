@@ -70,14 +70,14 @@ export default [
     props: true
   },
   {
-    path: "/organizations/:organizationId/settings",
+    path: "/organizations-settings/:organizationId",
     name: "organization-settings",
     beforeEnter: isBasicAuth,
     component: OrganizationSettings,
     props: true
   },
   {
-    path: "/organizations/:organizationId/resources",
+    path: "/organizations-resources/:organizationId",
     name: "organization-resources-page",
     beforeEnter: isBasicAuth,
     component: OrganizationResourcesPage,
@@ -105,21 +105,21 @@ export default [
     props: true
   },
   {
-    path: "/projects/:organizationId/:projectId/settings",
+    path: "/projects-settings/:organizationId/:projectId",
     name: "project-settings",
     beforeEnter: isBasicAuth,
     component: ProjectSettings,
     props: true
   },
   {
-    path: "/projects/:organizationId/:projectId/timeline",
+    path: "/projects-timeline/:organizationId/:projectId",
     name: "project-timeline",
     beforeEnter: isBasicAuth,
     component: ProjectTimeline,
     props: true
   },
   {
-    path: "/projects/:organizationId/:projectId/attachments",
+    path: "/projects-attachments/:organizationId/:projectId",
     name: "project-attachments-page",
     beforeEnter: isBasicAuth,
     component: ProjectAttachmentsPage,
