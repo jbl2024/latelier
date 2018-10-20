@@ -12,20 +12,30 @@
         label="Aucune pièce jointe"
         description="Vous pouvez ajouter une pièce jointe sur une tâche">
       </empty-state>
-            
-      <md-list class="md-double-line">
-          <md-list-item v-for="attachment in attachments" :key="attachment._id">
-            <md-icon>description</md-icon>
-            <div class="md-list-item-text">
-              <a :href="link(attachment)" target="_blank" class="md-list-item-text">{{ attachment.name }}</a>
-              <router-link :to="{ name: 'project-task', params: { organizationId: this.currentOrganizationId, projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
-            </div>
-            <md-button class="md-icon-button md-list-action" @click="deleteAttachment(attachment)">
-              <md-icon>delete</md-icon>
-            </md-button>
-          </md-list-item>
-      </md-list>
 
+      <v-list two-line subheader>
+        <v-subheader>Pièces jointes</v-subheader>
+        <v-list-tile v-for="attachment in attachments" :key="attachment._id">
+          <v-list-tile-avatar>
+            <v-icon>description</v-icon>
+          </v-list-tile-avatar>            
+
+          <v-list-tile-content class="pointer">
+            <v-list-tile-title>
+              <a class="link"  :href="link(attachment)"  target="_blank">{{ attachment.name }}</a>          
+            </v-list-tile-title>
+            <v-list-tile-sub-title>
+              <router-link class="link-subtitle"  :to="{ name: 'project-task', params: { organizationId: organizationId, projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+
+          <v-list-tile-action>
+            <v-btn icon flat color="grey darken-1" @click.stop="deleteAttachment(attachment)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </v-list> 
     </div>
   </div>
 </template>
@@ -107,5 +117,15 @@ export default {
 
 .empty-state {
   margin-top: 24px;
+}
+
+.link {
+  text-decoration: none !important;
+  color: black;
+}
+
+.link-subtitle {
+  text-decoration: none !important;
+  color: rgba(0,0,0,.54);
 }
 </style>

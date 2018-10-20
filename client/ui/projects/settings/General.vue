@@ -17,7 +17,7 @@
         </div>
 
         <div v-show="editDescription">
-          <v-textarea ref="description" solo label=Description v-model="organization.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
+          <v-textarea ref="description" solo label=Description v-model="project.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
           <v-btn icon @click="updateDescription">
             <v-icon>check_circle</v-icon>
           </v-btn>
@@ -128,10 +128,9 @@
     <v-subheader>Catégories
         <v-btn flat icon @click="showSelectGroup = true">
           <v-icon>add</v-icon>
-          <md-tooltip md-delay="300">Ajouter une catégorie</md-tooltip>
         </v-btn>
     </v-subheader>
-    <v-list class="elevation-1">
+    <v-list class="elevation-1" v-if="assignedGroups.length > 0">
       <template v-for="group in assignedGroups" >
         <v-list-tile :key="group._id">
           <v-list-tile-avatar>
