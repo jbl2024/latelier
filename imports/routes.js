@@ -17,7 +17,6 @@ import Project from "/imports/ui/projects/Project.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
-import Admin from "/imports/ui/admin/Admin.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
 export default [
@@ -130,13 +129,6 @@ export default [
     name: "project-task",
     beforeEnter: isBasicAuth,
     component: Project,
-    props: true
-  },
-  {
-    path: "/admin",
-    name: "admin",
-    beforeEnter: isBasicAuth,
-    component: Admin,
     props: true
   },
   { path: "*", name: "not-found", component: NotFound }
