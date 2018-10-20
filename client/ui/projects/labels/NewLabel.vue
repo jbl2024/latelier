@@ -5,7 +5,7 @@
       <v-card>
         <v-card-title class="headline">Créer un label</v-card-title>
         <v-card-text>
-          <v-form v-model="valid" class="form">
+          <v-form v-model="valid" class="form" v-on:submit.prevent>
             <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="create()"></v-text-field>
 
             <v-btn color="primary" @click="showSelectColor = true" class="btn-color">

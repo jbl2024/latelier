@@ -1,7 +1,7 @@
 <template>
 
 <div class="task-labels">
-  <select-label ref="selectLabel" @select="onSelectLabel"></select-label>  
+  <select-label ref="selectLabel" :projectId="task.projectId" @select="onSelectLabel"></select-label>  
   <v-chip v-for="label in labels" close :key="label._id" :style="getColor(label)" @input="removeLabel(label)">{{ label.name }}</v-chip>
   <v-chip v-show="labels.length == 0" @click="$refs.selectLabel.open()">Ajouter un label</v-chip>
   <v-btn v-show="labels.length > 0" fab small @click="$refs.selectLabel.open()" v-shortkey="['l']" @shortkey="$refs.selectLabel.open()">
