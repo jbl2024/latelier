@@ -84,6 +84,8 @@ export default {
   position: relative;
   display: flex;
   flex-direction: column;
+  -webkit-overflow-scrolling: touch;
+
 }
 
 .md-app-drawer {
