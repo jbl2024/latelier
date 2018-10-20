@@ -54,7 +54,6 @@ export default {
       if (this.hour) {
         dateTime = dateTime + ' ' + this.hour;
       }
-      console.log(dateTime)
       this.$emit("update:active", false);
       this.$emit("select", dateTime);
     }
