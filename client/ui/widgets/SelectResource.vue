@@ -4,6 +4,7 @@
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Sélectionner une ressource</v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-list two-line class="content">
             <template v-for="resource in resources">
@@ -19,6 +20,7 @@
             </template>
           </v-list>
         </v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="showDialog = false">Annuler</v-btn>
@@ -65,10 +67,8 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-bottom: 24px;
   overflow-y: scroll;
+  max-height: 400px;
 }
 
 .color {
