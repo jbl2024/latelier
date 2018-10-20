@@ -1,60 +1,53 @@
 <template>
 
-<div class="task-notes">
-  <empty-state v-show="!hasNotes(task.notes) && !editNewNote"
-    icon="note"
-    label="Aucune note"
-    description="Vous pouvez ajouter des notes.">
-    <md-button class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
-  </empty-state>
+  <div class="task-notes">
+    <empty-state v-show="!hasNotes(task.notes) && !editNewNote" icon="note" label="Aucune note" description="Vous pouvez ajouter des notes.">
+      <v-btn class="primary" @click="startNewNote">Créer une note</v-btn>
+    </empty-state>
 
-  <div v-for="note in task.notes" :key='note._id'>
+    <div v-for="note in task.notes" :key='note._id'>
       <div class="note">
         <div v-html="markDown(note.content)"></div>
         <div class="metadata">
           <author-line :user-id="note.createdBy" :date="note.createdAt"></author-line>
           <div class="action">
-            <md-button class="md-icon-button delete-button" @click="deleteNote(note)">
-              <md-icon>delete</md-icon>
-            </md-button>
+            <v-btn icon flat color="grey" @click="deleteNote(note)">
+              <v-icon>delete</v-icon>
+            </v-btn>
           </div>
         </div>
 
       </div>
 
-      <md-divider></md-divider>
-  </div>
+      <v-divider></v-divider>
+    </div>
 
-  <div class="center">
-    <md-button v-show="hasNotes(task.notes)" class="md-primary md-raised" @click="startNewNote">Créer une note</md-button>
-  </div>
+    <div v-show="editNewNote">
+      <v-textarea ref="newNote" solo label="Note" v-model="note" @keyup.ctrl.enter="addNote"></v-textarea>
+      <v-btn flat icon @click="addNote">
+        <v-icon>check_circle</v-icon>
+      </v-btn>
+      <v-btn flat icon @click="cancelAddNote">
+        <v-icon>cancel</v-icon>
+      </v-btn>
+    </div>
 
-  <div v-show="editNewNote">
-    <md-field>
-      <label>Note</label>
-      <md-textarea ref="newNote" v-model="note" @keyup.ctrl.enter="addNote"></md-textarea>
-    </md-field>
-    <md-button class="md-icon-button" @click.native="addNote">
-      <md-icon>check_circle</md-icon>
-    </md-button>
+    <div class="center">
+      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">Créer une note</v-btn>
+    </div>
 
-    <md-button class="md-icon-button" @click.native="cancelAddNote">
-      <md-icon>cancel</md-icon>
-    </md-button>
   </div>
-    
-</div>
 
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import moment from 'moment';
-import 'moment/locale/fr'
+import { Projects } from "/imports/api/projects/projects.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import moment from "moment";
+import "moment/locale/fr";
 
-import MarkdownMixin from '/imports/ui/mixins/MarkdownMixin.js'
+import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
   mixins: [MarkdownMixin],
@@ -66,60 +59,57 @@ export default {
   data() {
     return {
       editNewNote: false,
-      note: '',
+      note: ""
     };
   },
   methods: {
-
-    hasNotes (notes) {
+    hasNotes(notes) {
       return notes && notes.length > 0;
     },
 
-    startNewNote () {
+    startNewNote() {
       this.editNewNote = true;
-      this.note = '';
-      this.$nextTick(() => this.$refs.newNote.$el.focus());
+      this.note = "";
+      this.$nextTick(() => this.$refs.newNote.focus());
     },
 
-    addNote () {
+    addNote() {
       this.editNewNote = false;
-      Meteor.call('tasks.addNote', this.task._id, this.note);
+      Meteor.call("tasks.addNote", this.task._id, this.note);
     },
 
-    deleteNote (note) {
-      Meteor.call('tasks.removeNote', this.task._id, note._id);
+    deleteNote(note) {
+      Meteor.call("tasks.removeNote", this.task._id, note._id);
     },
 
-    cancelAddNote () {
+    cancelAddNote() {
       this.editNewNote = false;
     },
 
-    formatDateDuration (date) {
+    formatDateDuration(date) {
       var now = moment();
       var noteDate = moment(date);
-      var duration = moment.duration(now.diff(noteDate)).locale('fr');
-      return 'il y a ' + duration.humanize();
+      var duration = moment.duration(now.diff(noteDate)).locale("fr");
+      return "il y a " + duration.humanize();
 
       // return moment(date).format('DD/MM/YYYY HH:mm');
     },
 
-    formatDate (date) {
-      return moment(date).format('DD/MM/YYYY HH:mm');
+    formatDate(date) {
+      return moment(date).format("DD/MM/YYYY HH:mm");
     },
 
-    formatUser (userId) {
-      var user = Meteor.users.findOne({_id: userId});
+    formatUser(userId) {
+      var user = Meteor.users.findOne({ _id: userId });
       return user.emails[0].address;
     }
-
   }
 };
 </script>
 
 <style scoped>
-
 pre {
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
 
@@ -155,7 +145,4 @@ pre {
 .center {
   text-align: center;
 }
-
-
-
 </style>
