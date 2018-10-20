@@ -1,6 +1,6 @@
 <template>
   <div class="project-info"> 
-    <md-subheader>Description</md-subheader>
+    <v-subheader>Description</v-subheader>
     <div class="elevation-1">
         <div class="description">
           <div v-show="project.description && project.description.length > 0">
@@ -12,68 +12,74 @@
         </div>
     </div>
 
-    <md-list class="md-double-line">
-      <md-subheader>Dates</md-subheader>
-      <div class="elevation-1">
-        <md-list-item>
-          <md-avatar class="md-avatar-icon">
-            <md-icon>calendar_today</md-icon>
-          </md-avatar>
-          <div class="md-list-item-text">
-            <span>Date de début</span>
-            <span>
+    <v-subheader>Dates</v-subheader>
+    <v-list two-line class="elevation-1">
+        <v-list-tile>
+          <v-list-tile-avatar>
+            <v-icon>calendar_today</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>Date de début</v-list-tile-title>
+            <v-list-tile-sub-title>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
               <span v-show="!project.startDate">Aucune</span>
-            </span>
-          </div>
-        </md-list-item>
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
 
-        <md-divider></md-divider>
+        <v-divider></v-divider>
 
-        <md-list-item>
-          <md-avatar class="md-avatar-icon">
-            <md-icon>alarm_on</md-icon>
-          </md-avatar>
-          <div class="md-list-item-text">
-            <span>Date de fin</span>
-            <span>
+        <v-list-tile>
+          <v-list-tile-avatar>
+            <v-icon>alarm_on</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>Date de fin</v-list-tile-title>
+            <v-list-tile-sub-title>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
               <span v-show="!project.endDate">Aucune</span>
-            </span>
-          </div>
-        </md-list-item>
-      </div>
+            </v-list-tile-sub-title>
+          </v-list-tile-content>
+        </v-list-tile>
+    </v-list>
 
-      <md-subheader>Couleur
-      </md-subheader>
+    <v-subheader>Couleur</v-subheader>
 
-      <div class="elevation-1" >
-        <md-list-item>
-          <div class="md-list-item-text">
-            <div class="color" ref="color" :style="getColor(project)"></div>
-          </div>
-        </md-list-item>
-        <md-divider></md-divider> 
-      </div>
+    <v-list class="elevation-1">
+      <v-list-tile>
+        <v-list-tile-content>
+          <div class="color" ref="color" :style="getColor(project)"></div>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
 
-      <md-subheader>Catégories
- 
-      </md-subheader>
-      <div class="elevation-1">
-        <div v-for="group in assignedGroups" :key="group._id">
-          <md-list-item>
-            <md-avatar class="md-avatar-icon">
-              <md-icon>folder</md-icon>
-            </md-avatar>
-            <div class="md-list-item-text">
-              {{group.name}}
-            </div>
-          </md-list-item>
-          <md-divider></md-divider> 
-        </div>
-      </div>
+    <v-subheader>Catégories
+    </v-subheader>
+    <v-list class="elevation-1">
+      <template v-for="group in assignedGroups" >
+        <v-list-tile :key="group._id">
+          <v-list-tile-avatar>
+            <v-icon>folder</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{group.name}}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </template>
+    </v-list>
 
-    </md-list>    
+    <v-subheader>Organisation</v-subheader>
+    <v-list class="elevation-1" v-if="$subReady.organizations">
+      <v-list-tile>
+        <v-avatar>
+          <v-icon>folder</v-icon>
+        </v-avatar>
+        <v-list-tile-content>
+        <v-list-tile-title class="md-list-item-text">{{ organization.name}}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list>
+
   </div>
 </template>
 
