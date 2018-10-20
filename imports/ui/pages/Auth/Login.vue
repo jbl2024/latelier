@@ -7,12 +7,6 @@
 <script>
   export default {
     name: 'auth-login',
-    mounted () {
-      this.$store.dispatch('setHideDrawer', true);    
-    },
-    beforeDestroy () {
-      this.$store.dispatch('setHideDrawer', false);    
-    },
   }
 </script>
 

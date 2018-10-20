@@ -9,7 +9,6 @@ export const store = new Vuex.Store({
     showCategories: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
-    hideDrawer: false
   },
   getters: {
     // Compute derived state based on the current state. More like computed property.
@@ -27,10 +26,6 @@ export const store = new Vuex.Store({
     updateCurrentOrganizationId(state, currentOrganizationId) {
       state.currentOrganizationId = currentOrganizationId;
     },
-    updateHideDrawer(state, hideDrawer) {
-      state.hideDrawer = hideDrawer
-    },
-
     selectLabel(state, label) {
       var alreadySelected = state.selectedLabels.some( aLabel => {
         return aLabel._id == label._id;
@@ -67,9 +62,6 @@ export const store = new Vuex.Store({
     setCurrentOrganizationId (context, organizationId) {
       context.commit('clearSelectedGroup');
       context.commit('updateCurrentOrganizationId', organizationId);
-    },
-    setHideDrawer (context, hideDrawer) {
-      context.commit('updateHideDrawer', hideDrawer);
     },
     selectLabel(context, label) {
       context.commit('selectLabel', label);

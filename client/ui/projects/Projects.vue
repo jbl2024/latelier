@@ -1,33 +1,27 @@
 <template>
   <div class="projects">
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
-    <v-btn absolute dark fab bottom right color="red" @click="newProject">
+    <v-btn class="absolute-right" dark fab color="red" @click="newProject">
       <v-icon>add</v-icon>
     </v-btn>
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
-      content="Le projet  sera définitivement supprimé"
+      content="Le projet sera définitivement supprimé"
       confirm-text="Supprimer"
       cancel-text="Annuler"
       @cancel="onCancelDeleteProject"
       @confirm="onConfirmDeleteProject"
     />
-    <v-dialog
-      v-model="showConfirmCloneDialog"
-      max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-    >
-      <v-card>
-        <v-card-title class="headline">Confirmer le clonage du projet ?</v-card-title>
-        <v-card-text>Le projet sera cloné</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click.native="onCancelCloneProject">Annuler</v-btn>
-          <v-btn color="info" @click.native="onConfirmCloneProject">Cloner</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <confirm-dialog
+      :active.sync="showConfirmCloneDialog"
+      title="Confirmer le clonage ?"
+      content="Le projet sera cloné"
+      confirm-text="Confirmer"
+      cancel-text="Annuler"
+      @cancel="onCancelCloneProject"
+      @confirm="onConfirmCloneProject"
+    />
     <div v-if="!$subReady.projects">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
@@ -35,39 +29,36 @@
       <empty-state v-if="projects.length == 0" :description="`Aucun projet disponible`">
         <v-btn class="primary" @click="newProject">Créer un nouveau projet</v-btn>
       </empty-state>
-      <v-list two-line subheader v-show="projects.length != 0">
-        <v-subheader inset>
-          <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
+      <v-list two-line subheader v-show="projects.length != 0" class="elevation-1">
+        <v-subheader>
+          <router-link class="link" :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
         </v-subheader>
-        <div class="elevation-1">
-          <template v-for="item in projects">
-            <v-list-tile :key="item._id" @click="openProject(item._id)">
-              <v-list-tile-avatar :color="getColor(item)">
-                <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="pointer">
-                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
-                  <v-icon>settings</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-action>
-                <v-btn icon ripple @click.stop="cloneProject(item._id)">
-                  <v-icon>file_copy</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-action>
-                <v-btn icon ripple @click.stop="deleteProject(item._id)">
-                  <v-icon>delete</v-icon>
-                </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider></v-divider>
-          </template>
-        </div>
+        <template v-for="item in projects">
+          <v-list-tile :key="item._id" @click="openProject(item._id)">
+            <v-list-tile-avatar :color="getColor(item)">
+              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content class="pointer">
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
+                <v-icon>settings</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="cloneProject(item._id)">
+                <v-icon>file_copy</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn icon ripple @click.stop="deleteProject(item._id)">
+                <v-icon>delete</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </template>
       </v-list>
     </div>
   </div>
@@ -290,5 +281,19 @@ export default {
     margin-right: auto;
     margin-left: auto;
   }
+}
+
+.projects {
+  margin-right: 64px;
+}
+.absolute-right {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1002;
+}
+
+.link {
+  text-decoration: none;
 }
 </style>
