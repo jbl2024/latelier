@@ -166,10 +166,6 @@ export default {
   font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
-.edit-project-name .md-button {
-  margin: 0;
-}
-
 @media (max-width: 600px) {
   .kanban-container {
     margin: 4px;

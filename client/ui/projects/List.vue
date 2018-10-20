@@ -232,13 +232,6 @@ export default {
   width: 70%;
 }
 
-.swimlane .md-button {
-  min-width: 24px;
-  width: 24px;
-  height: 20px;
-  margin: 0;
-}
-
 .swimlane .md-icon.md-theme-default.md-icon-font {
   color: white;
 }

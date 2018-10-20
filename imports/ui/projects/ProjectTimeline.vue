@@ -275,10 +275,6 @@ export default {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.edit-project-name .md-button {
-  margin: 0;
-}
-
 .timeline {
   margin-top: 24px;
 }

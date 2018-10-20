@@ -137,11 +137,6 @@ pre {
   display: inline-block;
 }
 
-.metadata .action .md-button {
-  margin-top: -10px;
-  padding-top: 0;
-}
-
 .center {
   text-align: center;
 }
