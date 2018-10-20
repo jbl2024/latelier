@@ -17,7 +17,7 @@
                 </v-list-tile-content>
               </v-list-tile>
             </template>
-            <v-list-tile @click="$refs.newProjectGroup.open()" v-show="groups.length > 0">
+            <v-list-tile @click="$refs.newProjectGroup.open()">
               <v-list-tile-avatar >
                 <v-icon>folder</v-icon>
               </v-list-tile-avatar>
