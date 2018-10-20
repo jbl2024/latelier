@@ -43,17 +43,17 @@
               <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
+              <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
                 <v-icon>settings</v-icon>
               </v-btn>
             </v-list-tile-action>
             <v-list-tile-action>
-              <v-btn icon ripple @click.stop="cloneProject(item._id)">
+              <v-btn icon flat color="grey darken-1" @click.stop="cloneProject(item._id)">
                 <v-icon>file_copy</v-icon>
               </v-btn>
             </v-list-tile-action>
             <v-list-tile-action>
-              <v-btn icon ripple @click.stop="deleteProject(item._id)">
+              <v-btn icon flat color="grey darken-1" @click.stop="deleteProject(item._id)">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-list-tile-action>

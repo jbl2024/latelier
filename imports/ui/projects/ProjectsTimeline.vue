@@ -1,31 +1,16 @@
 <template>
   <div class="projects-timeline">
 
-    <md-toolbar class="toolbar">
-      <md-button class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: organizationId}}">
-          <md-icon>home
-            <md-tooltip md-delay="300">Accueil</md-tooltip>
-          </md-icon>
-      </md-button>
-      <span class="md-title">
-        Planning
-      </span>        
-      <span class="categories"><md-chip v-show="selectedGroup._id" class="md-primary" md-deletable @md-delete="deselectGroup">{{ selectedGroup.name }}</md-chip></span>
-
-      <div class="md-toolbar-section-end">
-        <md-field class="search" md-clearable>
-          <md-icon>search</md-icon>
-          <md-input placeholder="Rechercher..." v-on:input="debouncedFilter"/>
-        </md-field>
-
-      </div>
-    </md-toolbar>
-
     <template v-if="!$subReady.projectsForTimeline">
       <v-progress-linear indeterminate></v-progress-linear>
     </template>
 
     <template v-if="$subReady.projectsForTimeline">
+      <empty-state v-show="count == 0"
+        icon="timeline"
+        label="Aucun projet"
+        description="Seuls les projets avec une date de début et de fin sont affichés ici.">
+      </empty-state>
       
       <div class="progress" v-if="showProgress && count > 0">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
@@ -41,17 +26,6 @@
           @select="onSelectProject">
         </timeline>
       </div>
-
-
-      <md-drawer :md-active="showProjectDetail" md-right md-persistent="full" class="drawer-project-detail md-layout-item md-xsmall-size-100 md-medium-size-30 md-large-size-30 md-xlarge-size-30">
-        <project-detail :projectId="selectedProjectId" v-if="selectedProjectId"></project-detail>
-      </md-drawer>
-
-      <empty-state v-show="count == 0"
-        icon="timeline"
-        label="Aucun projet"
-        description="Seuls les projets avec une date de début et de fin sont affichés ici.">
-      </empty-state>
     </template>
   </div>
 </template>
@@ -140,11 +114,11 @@ export default {
     onSelectProject (data) {
       var items = data.items;
       if (items && items.length > 0) {
-        this.selectedProjectId = items[0];
-        this.showProjectDetail = true;
-      } else {
-        this.selectedProjectId = null;
-        this.showProjectDetail = false;
+        const projectId = items[0];
+        this.$router.push({
+          name: "project",
+          params: { organizationId: this.organizationId, projectId: projectId }
+        });
       }
     },
     deselectGroup (str, index) {
@@ -184,10 +158,6 @@ export default {
   background-color: white;
 }
 
-.toolbar {
-  background-color: white;
-}
-
 .timeline {
   margin-top: 24px;
 }
@@ -201,9 +171,6 @@ export default {
   max-width: 300px;
 }
 
-.projects-timeline {
-  min-height: calc(100vh - 64px);
-}
 .categories {
   margin-left: 12px;
 }

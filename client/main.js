@@ -29,10 +29,6 @@ Vue.use(VueDragDrop);
 import VueEvents from 'vue-event-handler'
 Vue.use(VueEvents);
 
-// Element UI
-import ElementUI from 'element-ui'
-Vue.use(ElementUI)
-
 // Vuetify
 import Vuetify from 'vuetify'
 Vue.use(Vuetify)
