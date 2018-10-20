@@ -6,7 +6,7 @@
         <v-card-title class="headline">Nouvelle catégorie</v-card-title>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
-            <v-text-field v-model="name" :rules="nameRules" label="Nom" required v-on:keyup.enter="create()"></v-text-field>
+            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="create()"></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>

@@ -9,7 +9,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click.native="onCancelDeleteOrganization">Annuler</v-btn>
-          <v-btn color="warning" @click.native="onConfirmDeleteOrganization">Supprimer</v-btn>
+          <v-btn color="error" @click.native="onConfirmDeleteOrganization">Supprimer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

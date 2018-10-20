@@ -12,7 +12,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="warning" @click="remove" :disabled="!valid">Supprimer</v-btn>
+          <v-btn color="error" @click="remove" :disabled="!valid">Supprimer</v-btn>
           <v-btn color="info" @click="updateName" :disabled="!valid">Modifier</v-btn>
         </v-card-actions>
       </v-card>
