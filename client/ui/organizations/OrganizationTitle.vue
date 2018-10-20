@@ -1,12 +1,12 @@
 <template>
 
   <div class="organization-title ml-0 pl-3">
-    <div v-show="!editOrganizationName" @click="startUpdateOrganizationName">
+    <div v-show="!editOrganizationName">
     <slot></slot>
     <v-btn icon flat @click="goTo('organizations-page')">
       <v-icon>home</v-icon>
     </v-btn>
-    <span class="title ml-3 mr-5">
+    <span class="title ml-3 mr-5" @click="startUpdateOrganizationName">
       {{ organization.name }}
     </span>
     </div>
