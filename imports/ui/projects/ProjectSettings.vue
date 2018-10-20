@@ -119,7 +119,6 @@ export default {
 .project-settings {
   display: flex;
   flex-direction: column;
-  background-color: white;
   height: 100%;
 }
 

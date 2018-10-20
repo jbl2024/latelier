@@ -1,21 +1,29 @@
 <template>
   <div class="select-organization">
 
-    <md-dialog :md-active.sync="active">
-      <md-dialog-title>Choisir une organisation</md-dialog-title>
-
-      <div class="content">
-        <md-list>
-          <md-list-item v-for="organization in organizations" :key="organization._id" class="cursor" @click="selectOrganization(organization)">
-            <md-icon>folder</md-icon>
-            <span class="md-list-item-text">{{ organization.name }}</span>
-          </md-list-item>
-        </md-list>
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="closeDialog">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
+    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <v-card>
+        <v-card-title class="headline">Choisir une organisation</v-card-title>
+        <v-card-text>
+          <v-list class="content">
+            <template v-for="organization in organizations">
+              <v-list-tile :key='organization._id' @click="selectOrganization(user)">
+                <v-list-tile-avatar>
+                  <v-icon>domain</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content class="pointer">
+                  <v-list-tile-title>{{ organization.name }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="closeDialog">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
   </div>    
 </template>

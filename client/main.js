@@ -61,7 +61,6 @@ Meteor.startup(() => {
 
   Vue.directive('focus', {
     inserted: (el) => {
-      console.log(el)
       setTimeout(() => { el.focus(); }, 500);
     }
   })

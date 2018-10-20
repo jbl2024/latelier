@@ -1,36 +1,38 @@
 <template>
   <div class="select-group">
 
-    <md-dialog :md-active.sync="active">
-      <md-dialog-title>Choisir une catégorie</md-dialog-title>
-
-      <div class="content">
-        <md-list>
-          <md-list-item v-for="group in groups" :key="group._id" class="cursor" @click="selectGroup(group)">
-            <md-icon>folder</md-icon>
-            <span class="md-list-item-text">{{ group.name }}</span>
-
-          </md-list-item>
-          <md-list-item @click="$refs.newProjectGroup.open()" v-show="groups.length > 0">
-            <md-icon>add</md-icon>
-            <span class="md-list-item-text">Créer...</span>
-          </md-list-item>
-        </md-list>
-
-        <empty-state v-show="groups.length == 0"
-          icon="folder"
-          label="Aucune catégorie"
-          description="Vous pouvez créer une catégorie.">
-          <md-button class="md-primary md-raised" @click="$refs.newProjectGroup.open()">Créer une catégorie</md-button>
-        </empty-state>
-
-      </div>
-      <md-dialog-actions>
-        <md-button class="md-button" @click="closeDialog">Annuler</md-button>
-      </md-dialog-actions>
-    </md-dialog>  
-    <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
-
+    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
+      <v-card>
+        <v-card-title class="headline">Choisir une catégorie</v-card-title>
+        <v-card-text>
+          <v-list class="content">
+            <template v-for="group in groups">
+              <v-list-tile :key='group._id' @click="selectGroup(group)">
+                <v-list-tile-avatar >
+                  <v-icon>folder</v-icon>
+                </v-list-tile-avatar>
+                <v-list-tile-content class="cursor">
+                  <v-list-tile-title>{{ group.name }}</v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </template>
+            <v-list-tile @click="$refs.newProjectGroup.open()" v-show="groups.length > 0">
+              <v-list-tile-avatar >
+                <v-icon>folder</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content class="cursor">
+                <v-list-tile-title>Créer...</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn flat @click="closeDialog">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>    
 </template>
 
@@ -75,10 +77,6 @@ export default {
 
 .cursor {
   cursor: pointer;
-}
-
-.cursor:hover {
-  background-color: #aaa;
 }
 
 </style>
