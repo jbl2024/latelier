@@ -1,44 +1,33 @@
 <template>
   <div class="organizations">
-    <new-organization ref="newOrganization"></new-organization>  
-
-    <v-dialog v-model="showConfirmDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
-      <v-card>
-        <v-card-title class="headline">Confirmer la suppression ?</v-card-title>
-        <v-card-text>L'organisation sera défintivement supprimé</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click.native="onCancelDeleteOrganization">Annuler</v-btn>
-          <v-btn color="error" @click.native="onConfirmDeleteOrganization">Supprimer</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
+    <new-organization ref="newOrganization"></new-organization>
+    <confirm-dialog
+      :active.sync="showConfirmDialog"
+      title="Confirmer la suppression ?"
+      content="L'organisation  sera définitivement supprimée"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteOrganization"
+      @confirm="onConfirmDeleteOrganization"
+    />
     <div v-if="!$subReady.organizations">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-      
     <div v-if="$subReady.organizations">
-      <empty-state
-        v-if="organizations.length == 0"
-        :description="`Aucune organisation disponible`">
-        <md-button class="md-primary md-raised" @click="newOrganization">Créer une organisation</md-button>
+      <empty-state v-if="organizations.length == 0" :description="`Aucune organisation disponible`">
+        <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
       </empty-state>
-
-      <v-list two-line subheader v-show="organizations.length != 0"> 
+      <v-list two-line subheader v-show="organizations.length != 0">
         <v-subheader inset>Organisations</v-subheader>
-
-        <template v-for="item in organizations" >
-          <v-list-tile :key='item._id' @click="openOrganization(item._id)">
+        <template v-for="item in organizations">
+          <v-list-tile :key="item._id" @click="openOrganization(item._id)">
             <v-list-tile-avatar>
               <v-icon>domain</v-icon>
-            </v-list-tile-avatar>            
-
+            </v-list-tile-avatar>
             <v-list-tile-content class="pointer">
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
-
             <v-list-tile-action>
               <v-btn icon ripple @click.stop="openOrganizationSettings(item._id)">
                 <v-icon>settings</v-icon>
@@ -53,7 +42,6 @@
           <v-divider></v-divider>
         </template>
       </v-list>
-
       <v-btn absolute dark fab bottom right color="red" @click="newOrganization">
         <v-icon>add</v-icon>
       </v-btn>
@@ -106,7 +94,10 @@ export default {
     },
 
     openOrganization(id) {
-      this.$router.push({ name: "projects-page", params: { organizationId: id } });
+      this.$router.push({
+        name: "projects-page",
+        params: { organizationId: id }
+      });
     },
 
     openOrganizationSettings(id) {
@@ -135,10 +126,9 @@ export default {
   margin-right: 12px;
 }
 
-.pointer { 
+.pointer {
   cursor: pointer;
 }
-
 
 @media (min-width: 601px) {
   .fap-list {
@@ -149,9 +139,8 @@ export default {
 
 @media (max-width: 600px) {
   .fap-list {
-    margin-right: auto; 
+    margin-right: auto;
     margin-left: auto;
   }
 }
-
 </style>

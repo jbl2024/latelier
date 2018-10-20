@@ -3,19 +3,27 @@
   <div class="organization-resources">
     <new-resource ref="newResource" :organizationId="organization._id"></new-resource>
     <edit-resource ref="editResource"></edit-resource>
-
-    <md-dialog-confirm :md-active.sync="showConfirmDialog" md-title="Confirmer la suppression ?" md-content="La ressource sera définitivement supprimé" md-confirm-text="Supprimer" md-cancel-text="Annuler" @md-cancel="onCancelDeleteResource" @md-confirm="onConfirmDeleteResource" />
-
+    <confirm-dialog
+      :active.sync="showConfirmDialog"
+      title="Confirmer la suppression ?"
+      content="La ressource sera définitivement supprimé"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteResource"
+      @confirm="onConfirmDeleteResource"
+    />
     <div v-if="!$subReady.resources">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-
     <div v-if="$subReady.resources">
-
-      <empty-state v-if="resources.length == 0" rounded icon="category" :description="`Aucune ressource définie`">
+      <empty-state
+        v-if="resources.length == 0"
+        rounded
+        icon="category"
+        :description="`Aucune ressource définie`"
+      >
         <v-btn class="info" @click="newResource">Ajouter une ressource</v-btn>
       </empty-state>
-
       <div class="elevation-1">
         <v-list two-line v-show="resources.length != 0">
           <v-subheader>Ressources
@@ -23,18 +31,15 @@
               <v-icon>add</v-icon>
             </v-btn>
           </v-subheader>
-
           <template v-for="(item, index) in resources">
-            <v-list-tile :key='item._id' avatar>
+            <v-list-tile :key="item._id" avatar>
               <v-list-tile-avatar>
                 <v-icon>category</v-icon>
               </v-list-tile-avatar>
-
               <v-list-tile-content>
                 <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                 <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
               </v-list-tile-content>
-
               <v-list-tile-action>
                 <v-btn icon ripple @click.stop="editResource(item._id)">
                   <v-icon>edit</v-icon>
@@ -45,20 +50,17 @@
                   <v-icon>delete</v-icon>
                 </v-btn>
               </v-list-tile-action>
-
             </v-list-tile>
             <v-divider inset v-if="index != resources.length - 1"></v-divider>
           </template>
         </v-list>
       </div>
-
       <div class="absolute-right">
         <md-button class="md-fab" @click="newResource">
           <md-icon>add</md-icon>
           <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
         </md-button>
       </div>
-
     </div>
   </div>
 </template>

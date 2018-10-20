@@ -36,10 +36,6 @@ html, body {
   z-index: 1002;
 }
 
-.md-tabs-content {
-  height: 100% !important;
-}
-
 .projects-timeline .timeline .vis-item .vis-item-content {
   padding: 0;
 }
