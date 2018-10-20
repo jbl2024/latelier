@@ -37,7 +37,7 @@
         </div>
 
         <div v-show="editDescription">
-          <v-textarea ref="description" solo label=Description v-model="organization.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
+          <v-textarea ref="description" solo label="Description" v-model="organization.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
 
           <v-btn icon @click="updateDescription">
             <v-icon>check_circle</v-icon>

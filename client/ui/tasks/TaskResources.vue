@@ -7,40 +7,39 @@
     icon="category"
     label="Aucune ressource"
     description="Vous pouvez ajouter des ressources">
-    <md-button class="md-primary md-raised" @click="addResource">Ajouter une ressource</md-button>
+    <v-btn class="primary" @click="addResource">Ajouter une ressource</v-btn>
   </empty-state>
 
-  <md-list class="md-double-line" v-show="task.resources && task.resources.length != 0"> 
-    <md-subheader>Ressources
+  <div v-show="task.resources && task.resources.length != 0">
+    <v-subheader>Ressources
+      <v-btn flat icon @click="addResource">
+        <v-icon>add</v-icon>
+      </v-btn>
+    </v-subheader>
+    <v-list two-line class="elevation-1">
 
-      <md-button class="md-icon-button" @click="addResource">
-      <md-icon>add</md-icon>
-      <md-tooltip md-delay="300">Ajouter une ressource</md-tooltip>
-      </md-button>
+      <template v-for="(item, index) in resources">
+        <v-list-tile :key='item._id' avatar>
+          <v-list-tile-avatar>
+            <v-icon>category</v-icon>
+          </v-list-tile-avatar>
 
-    </md-subheader>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
+          </v-list-tile-content>
 
-    <div class="elevation-1">
-      <template v-for="item in resources" >
-        <md-list-item :key='item._id'>
-          <md-avatar class="md-avatar-icon md-primary">
-            <md-icon>category</md-icon>
-          </md-avatar>
+          <v-list-tile-action>
+            <v-btn icon flat  color="grey"  @click.stop="removeResource(item)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-list-tile-action>
 
-          <div class="md-list-item-text pointer">
-            <span>{{ item.name }}</span>
-            <span>{{ item.description }}</span>
-          </div>
-
-          <md-button class="md-icon-button show-desktop" @click.stop="removeResource(item)">
-            <md-icon>delete</md-icon>
-            <md-tooltip md-delay="300">Supprimer</md-tooltip>
-          </md-button>
-        </md-list-item>
-        <md-divider></md-divider>
+        </v-list-tile>
+        <v-divider inset v-if="index != resources.length - 1"></v-divider>
       </template>
-    </div>
-  </md-list>  
+    </v-list>
+  </div>
 </div>
 
 </template>
