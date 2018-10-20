@@ -31,7 +31,7 @@
       </v-navigation-drawer>
 
       <v-content class="main-content">
-        <v-container class="page-container">
+        <v-container class="page-container" fluid>
           <router-view></router-view>
         </v-container>
       </v-content>

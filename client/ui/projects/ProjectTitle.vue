@@ -23,7 +23,7 @@
         v-on:input="debouncedFilter"
     ></v-text-field>
     <span class="title edit" v-show="editProjectName">
-      <v-text-field @focus="$event.target.select()" ref="name" style="width: 500px" flat solo-inverted hide-details prepend-inner-icon="edit" label="Saisir un nom..." ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName"></v-text-field>
+      <v-text-field @focus="$event.target.select()" style="width: 500px" flat solo-inverted hide-details prepend-inner-icon="edit" label="Saisir un nom..." ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName"></v-text-field>
       <v-btn icon @click="updateProjectName">
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -77,7 +77,9 @@ export default {
     startUpdateProjectName() {
       this.savedProjectName = this.project.name;
       this.editProjectName = true;
-      this.$nextTick(() => this.$refs.name.focus());
+      if (this.$refs.name) {
+        this.$nextTick(() => this.$refs.name.focus());
+      }
     },
 
     updateProjectName() {

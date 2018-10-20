@@ -1,10 +1,10 @@
 <template>
 
 <div class="author-line">
-    <md-avatar class="md-avatar-icon md-small">
-        <md-ripple>{{ formatUserLetters(userId) }}</md-ripple>
-    </md-avatar>
-    <span class="md-caption">{{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }})</span>
+    <v-avatar size="24" :class="isOnline(userId)">
+        <span>{{ formatUserLetters(userId) }}</span>
+    </v-avatar>
+    <span>{{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }})</span>
 </div>
 
 </template>
@@ -13,10 +13,12 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from 'moment';
 import 'moment/locale/fr'
 
 export default {
+  mixins: [usersMixin],
   props: {
     userId: {
       type: String
