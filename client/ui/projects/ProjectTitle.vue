@@ -1,27 +1,18 @@
 <template>
 
   <div class="project-title ml-0 pl-3">
-    <v-toolbar-title class="align-left">
-      <slot></slot>
-      <v-btn flat icon color="white" v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
-        <v-icon>domain</v-icon>
-      </v-btn>
-      <span class="title ml-3 mr-5" v-show="!editProjectName" @click="startUpdateProjectName">
-          {{ project.name }}
-      </span>
-      <span class="title edit-project-name" v-show="editProjectName">
-        <input @focus="$event.target.select()" type="text" ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName">
-        <v-btn @click="updateProjectName">
-          <v-icon>check_circle</v-icon>
+    <v-toolbar-title class="align-left" v-show="!editProjectName">
+      <div @click="startUpdateProjectName">
+        <slot></slot>
+        <v-btn flat icon color="white" v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
+          <v-icon>domain</v-icon>
         </v-btn>
-
-        <v-btn @click="cancelUpdateProjectName">
-          <v-icon>cancel</v-icon>
-        </v-btn>
-      </span>
+        <span class="title ml-3 mr-5" >
+            {{ project.name }}
+        </span>
+      </div>
     </v-toolbar-title>
-
-    <v-text-field
+    <v-text-field v-show="!editProjectName"
         style="width: 500px"
         flat
         solo-inverted
@@ -31,6 +22,16 @@
         class="hidden-sm-and-down"
         v-on:input="debouncedFilter"
     ></v-text-field>
+    <span class="title edit" v-show="editProjectName">
+      <v-text-field @focus="$event.target.select()" style="width: 500px" flat solo-inverted hide-details prepend-inner-icon="edit" label="Saisir un nom..." ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName"></v-text-field>
+      <v-btn icon @click="updateProjectName">
+        <v-icon>check_circle</v-icon>
+      </v-btn>
+      <v-btn icon @click="cancelUpdateProjectName">
+        <v-icon>cancel</v-icon>
+      </v-btn>
+    </span>
+
 
   </div>
 
@@ -93,19 +94,17 @@ export default {
 </script>
 
 <style scoped>
-.edit-project-name input {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  margin-top: 6px;
-  padding: 0;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-.project-title {
-}
-
 .align-left {
   float: left;
 }
+
+.edit .v-text-field {
+  float:left;
+}
+
+.title {
+  position: relative;
+  top: 3px;
+}
+
 </style>
