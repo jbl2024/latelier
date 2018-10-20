@@ -1,23 +1,23 @@
 <template>
   <div class="projects">
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
-      <v-btn absolute dark fab bottom right color="red" @click="newProject">
-        <v-icon>add</v-icon>
-      </v-btn>
-
-    <v-dialog v-model="showConfirmDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
-      <v-card>
-        <v-card-title class="headline">Confirmer la suppression ?</v-card-title>
-        <v-card-text>Le projet sera défintivement supprimé</v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn flat @click.native="onCancelDeleteProject">Annuler</v-btn>
-          <v-btn color="error" @click.native="onConfirmDeleteProject">Supprimer</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
-
-    <v-dialog v-model="showConfirmCloneDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-btn absolute dark fab bottom right color="red" @click="newProject">
+      <v-icon>add</v-icon>
+    </v-btn>
+    <confirm-dialog
+      :active.sync="showConfirmDialog"
+      title="Confirmer la suppression ?"
+      content="Le projet  sera définitivement supprimé"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteProject"
+      @confirm="onConfirmDeleteProject"
+    />
+    <v-dialog
+      v-model="showConfirmCloneDialog"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
       <v-card>
         <v-card-title class="headline">Confirmer le clonage du projet ?</v-card-title>
         <v-card-text>Le projet sera cloné</v-card-text>
@@ -28,34 +28,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
     <div v-if="!$subReady.projects">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-
     <div v-if="$subReady.projects">
       <empty-state v-if="projects.length == 0" :description="`Aucun projet disponible`">
-        <md-button class="md-primary md-raised" @click="newProject">Créer un nouveau projet</md-button>
+        <v-btn class="primary" @click="newProject">Créer un nouveau projet</v-btn>
       </empty-state>
-
-      <V-list two-line subheader v-show="projects.length != 0">
+      <v-list two-line subheader v-show="projects.length != 0">
         <v-subheader inset>
           <router-link :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
         </v-subheader>
-
         <div class="elevation-1">
           <template v-for="item in projects">
-
-            <v-list-tile :key='item._id' @click="openProject(item._id)">
+            <v-list-tile :key="item._id" @click="openProject(item._id)">
               <v-list-tile-avatar :color="getColor(item)">
                 <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
               </v-list-tile-avatar>
-
               <v-list-tile-content class="pointer">
                 <v-list-tile-title>{{ item.name }}</v-list-tile-title>
                 <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
               </v-list-tile-content>
-
               <v-list-tile-action>
                 <v-btn icon ripple @click.stop="openProjectSettings(item._id)">
                   <v-icon>settings</v-icon>
@@ -73,11 +66,9 @@
               </v-list-tile-action>
             </v-list-tile>
             <v-divider></v-divider>
-
           </template>
         </div>
-      </V-list>
-
+      </v-list>
     </div>
   </div>
 </template>

@@ -5,8 +5,8 @@
       <v-card>
         <v-card-title class="headline">Nouvelle ressource</v-card-title>
         <v-card-text>
-          <v-form v-model="valid">
-            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required></v-text-field>
+          <v-form v-model="valid" v-on:submit.prevent>
+            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" @keyup.enter="create()" required></v-text-field>
             <v-textarea v-model="description" label="Description" @keyup.ctrl.enter="create()" required></v-textarea>
           </v-form>
         </v-card-text>
