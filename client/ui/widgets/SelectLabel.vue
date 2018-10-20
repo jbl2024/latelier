@@ -1,8 +1,10 @@
 <template>
   <div class="select-label">
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+      <new-label ref="newLabel" :projectId="projectId"></new-label>  
       <v-card>
         <v-card-title class="headline">Sélectionner un label</v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-list class="content">
             <template v-for="label in labels">
@@ -15,8 +17,18 @@
                 </v-list-tile-content>
               </v-list-tile>
             </template>
+            <v-list-tile @click="$refs.newLabel.open()">
+              <v-list-tile-avatar >
+                <v-icon>label</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content class="cursor">
+                <v-list-tile-title>Créer...</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
           </v-list>
         </v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="showDialog = false">Annuler</v-btn>
@@ -32,7 +44,8 @@ import { Labels } from "/imports/api/labels/labels.js";
 
 export default {
   props: {
-    labelId: String
+    labelId: String,
+    projectId: String
   },
   data() {
     return {
@@ -66,10 +79,8 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 24px;
-  margin-right: 24px;
-  margin-bottom: 24px;
   overflow-y: scroll;
+  max-height: 400px;
 }
 
 .color {
