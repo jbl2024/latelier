@@ -1,144 +1,92 @@
 <template>
   <div class="login-widget">
-
     <div class="centered-container">
-    <form novalidate class="md-layout" @submit.prevent="validateLogin">
-      <md-card>
-        <md-card-header>
-          <div class="md-title">Authentification</div>
-        </md-card-header>
-
-        <md-card-content>
-          <md-field :class="getValidationClass('email')">
-            <md-input  type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
-            <label for="email" class="label">Email</label>
-            <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
-          </md-field>
-
-          <md-field :class="getValidationClass('password')">
-            <md-input type="password" name="password" id="password" autocomplete="password" v-model="form.password" :disabled="sending" />
-            <label for="password" class="label">Mot de passe</label>
-            <span class="md-error" v-if="!$v.form.password.required">The password is required</span>
-            <span class="md-error" v-else-if="!$v.form.password.minLenght">Invalid email</span>
-          </md-field>
-
-        </md-card-content>
-
-        <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
-
-        <md-card-actions>
-          <md-button type="submit" class="md-primary" :disabled="sending">Suivant</md-button>
-        </md-card-actions>
-        <md-card-actions>
-          <md-button :to="{ name: 'register'}">Créer un compte</md-button>
-          <md-button :to="{ name: 'forgot-password'}">Mot de passe oublié ?</md-button>
-        </md-card-actions>
-      </md-card>
-
-      <md-snackbar :md-active.sync="notify">{{ notifyText }}</md-snackbar>
-    </form>
+      <form novalidate @submit.prevent="validateLogin">
+        <v-card>
+          <v-card-title class="title">Authentification</v-card-title>
+          <v-card-text>
+            <v-text-field
+              label="Email"
+              name="email"
+              id="email"
+              autocomplete="email"
+              v-model="form.email"
+              :disabled="sending"
+            ></v-text-field>
+            <v-text-field
+              label="Mot de passe"
+              type="password"
+              name="password"
+              id="password"
+              autocomplete="password"
+              v-model="form.password"
+              :disabled="sending"
+            ></v-text-field>
+            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" type="submit" :disabled="sending">Se connecter</v-btn>
+          </v-card-actions>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn flat :to="{ name: 'register'}">Créer un compte</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat :to="{ name: 'forgot-password'}">Mot de passe oublié ?</v-btn>
+          </v-card-actions>
+          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+        </v-card>
+      </form>
     </div>
   </div>
 </template>
 
 <script>
-  import { validationMixin } from 'vuelidate'
-  import {
-    required,
-    email,
-    minLength,
-    maxLength
-  } from 'vuelidate/lib/validators'
-
-  export default {
-    name: 'login-widget',
-    mixins: [validationMixin],
-      data: () => ({
-      form: {
-        email: null,
-        password: null,
-      },
-      notify: false,
-      notifyText: '',
-      sending: false,
-    }),
-    validations: {
-      form: {
-        password: {
-          required,
-          minLength: minLength(3)
-        },
-        email: {
-          required,
-          email
-        }
-      }
+export default {
+  name: "login-widget",
+  data: () => ({
+    form: {
+      email: null,
+      password: null
     },
-    methods: {
-      getValidationClass (fieldName) {
-        const field = this.$v.form[fieldName]
+    notify: false,
+    notifyText: "",
+    sending: false
+  }),
+  methods: {
+    clearForm() {
+      this.form.email = null;
+      this.form.password = null;
+      this.notify = false;
+    },
+    login() {
+      this.sending = true;
 
-        if (field) {
-          return {
-            'md-invalid': field.$invalid && field.$dirty
-          }
-        }
-      },
-      clearForm () {
-        this.$v.$reset()
-        this.form.email = null;
-        this.form.password = null;
+      Meteor.loginWithPassword(this.form.email, this.form.password, err => {
+        this.sending = false;
         this.notify = false;
-      },
-      login () {
-        this.sending = true;
-
-        Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
-          this.sending = false;
-          this.notify = false;
-          if (err) {
-            this.notifyText = 'Erreur ' + err.reason;
-            this.notify = true;
-          } else {
-            this.clearForm();
-            this.$router.push({ name: 'organizations-page' })
-          }
-        });
-      },
-      validateLogin () {
-        this.$v.$touch()
-
-        if (!this.$v.$invalid) {
-          this.login()
+        if (err) {
+          this.notifyText = "Erreur " + err.reason;
+          this.notify = true;
+        } else {
+          this.clearForm();
+          this.$router.push({ name: "organizations-page" });
         }
-      }
+      });
+    },
+    validateLogin() {
+      this.login();
     }
   }
+};
 </script>
 
 <style scoped>
-
 .centered-container {
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
   height: calc(100vh - 64px);
-}
-
-.md-card {
-  text-align: left;
-  margin: 0 auto;
-}
-
-.md-title {
-  text-align: center;
-}
-
-.md-input:-webkit-autofill ~ label {
-  top: 0;
-  opacity: 1;
-  font-size: 12px;
 }
 </style>

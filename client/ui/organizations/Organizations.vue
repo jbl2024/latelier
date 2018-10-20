@@ -1,6 +1,9 @@
 <template>
   <div class="organizations">
     <new-organization ref="newOrganization"></new-organization>
+    <v-btn class="absolute-right" dark fab  color="red" @click="newOrganization">
+      <v-icon>add</v-icon>
+    </v-btn>
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
@@ -17,8 +20,8 @@
       <empty-state v-if="organizations.length == 0" :description="`Aucune organisation disponible`">
         <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
       </empty-state>
-      <v-list two-line subheader v-show="organizations.length != 0">
-        <v-subheader inset>Organisations</v-subheader>
+      <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
+        <v-subheader>Organisations</v-subheader>
         <template v-for="item in organizations">
           <v-list-tile :key="item._id" @click="openOrganization(item._id)">
             <v-list-tile-avatar>
@@ -29,22 +32,18 @@
               <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon ripple @click.stop="openOrganizationSettings(item._id)">
+              <v-btn icon flat color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
                 <v-icon>settings</v-icon>
               </v-btn>
             </v-list-tile-action>
             <v-list-tile-action>
-              <v-btn icon ripple @click.stop="deleteOrganization(item._id)">
+              <v-btn icon flat color="grey darken-1" @click.stop="deleteOrganization(item._id)">
                 <v-icon>delete</v-icon>
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
-          <v-divider></v-divider>
         </template>
       </v-list>
-      <v-btn absolute dark fab bottom right color="red" @click="newOrganization">
-        <v-icon>add</v-icon>
-      </v-btn>
     </div>
   </div>
 </template>
@@ -143,4 +142,15 @@ export default {
     margin-left: auto;
   }
 }
+.organizations {
+  margin-right: 64px;
+}
+.absolute-right {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1002;
+}
+
+
 </style>

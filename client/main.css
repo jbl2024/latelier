@@ -34,6 +34,7 @@ html, body {
   right: 24px;
   bottom: 24px;
   z-index: 1002;
+  border: 4px solid black;
 }
 
 .projects-timeline .timeline .vis-item .vis-item-content {

@@ -47,14 +47,12 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      showNavigation: false,
       drawer: null
     };
   },
   computed: {
     ...mapState([
       "showCategories",
-      "hideDrawer",
       "currentProjectId",
       "currentOrganizationId"
     ])

@@ -6,12 +6,6 @@
 
 <script>
 export default {
-  mounted () {
-    this.$store.dispatch('setHideDrawer', true);    
-  },
-  beforeDestroy () {
-    this.$store.dispatch('setHideDrawer', false);    
-  },
   data () {
     return {
     }

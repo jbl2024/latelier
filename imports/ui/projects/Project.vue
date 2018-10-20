@@ -17,7 +17,6 @@
         <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
-
     </div>
 </div>
 </template>
