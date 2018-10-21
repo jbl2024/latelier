@@ -16,6 +16,13 @@ export const Attachments = new FilesCollection({
   } 
 });
 
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Attachments.collection.rawCollection().createIndex({"metadata.projectId": 1});
+    Attachments.collection.rawCollection().createIndex({"metadata.taskId": 1});
+  });
+}
+
 
 Meteor.methods({
   'attachments.remove'(attachmentId) {

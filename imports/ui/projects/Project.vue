@@ -6,7 +6,6 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-
       <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
@@ -29,6 +28,7 @@ import debounce from 'lodash/debounce';
 
 export default {
   mounted () {
+    // this.selectedTask = null;
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
     this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     this.$events.listen('close-task-detail', task => {

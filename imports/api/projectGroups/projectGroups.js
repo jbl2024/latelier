@@ -3,6 +3,11 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 export const ProjectGroups = new Mongo.Collection('projectGroups');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    ProjectGroups.rawCollection().createIndex({organizationId: 1});
+  });
+}
 
 Meteor.methods({
   'projectGroups.create'(organizationId, name) {
