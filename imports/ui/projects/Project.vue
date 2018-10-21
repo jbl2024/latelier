@@ -99,21 +99,6 @@ export default {
         this.selectedTask = selectedTask;
         this.showTaskDetail = true;            
       }
-    },
-    startUpdateProjectName () {
-      this.savedProjectName = this.project.name;
-      this.editProjectName = true;
-      this.$nextTick(() => this.$refs.name.focus())
-    },
-
-    updateProjectName () {
-      this.editProjectName = false;
-      Meteor.call('projects.updateName', this.project._id, this.project.name);
-    },
-
-    cancelUpdateProjectName () {
-      this.editProjectName = false;
-      this.project.name = this.savedProjectName;
     }
   }
 }
