@@ -139,7 +139,13 @@ export default {
     // Subscriptions
     $subscribe: {
       'projectsForTimeline': function() {
-        return [this.organizationId, this.filter, this.$store.state.selectedGroup._id] // Subscription params
+        return [this.organizationId, this.filter, this.$store.state.selectedGroup._id];
+      },
+      organization: function() {
+        return [this.organizationId];
+      },
+      projectGroups: function() {
+        return [this.organizationId];
       }
     },
     projects () {
