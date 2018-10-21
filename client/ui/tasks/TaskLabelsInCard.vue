@@ -1,7 +1,6 @@
 <template>
 
 <div class="task-labels">
-  <select-label ref="selectLabel" @select="onSelectLabel"></select-label>  
   <div class="label" v-for="label in labels" :key="label._id" :style="getColor(label)"></div>
 </div>
 
@@ -37,16 +36,8 @@ export default {
     }
   },
   methods: {
-    onSelectLabel (label) {
-      Meteor.call('tasks.addLabel', this.task._id, label._id);
-    },
-
     getColor (label) {
       return 'background-color: ' + label.color;
-    },
-
-    removeLabel (label) {
-      Meteor.call('tasks.removeLabel', this.task._id, label._id);
     }
   }
 };
