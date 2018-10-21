@@ -9,7 +9,7 @@
 
       <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-bottom-transition">
         <v-card>
-          <task-detail :taskId="selectedTask._id"></task-detail>
+          <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
         </v-card>
       </v-dialog>
 
