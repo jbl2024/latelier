@@ -4,6 +4,11 @@ import { check } from 'meteor/check';
 import { Tasks } from "/imports/api/tasks/tasks";
 
 export const Labels = new Mongo.Collection('labels');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Tasks.rawCollection().createIndex({projectId: 1});
+  });
+}
 
 Meteor.methods({
   'labels.create'(projectId, name, color) {

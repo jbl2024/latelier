@@ -3,6 +3,11 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 
 export const Resources = new Mongo.Collection('resources');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Resources.rawCollection().createIndex({organizationId: 1});
+  });
+}
 
 Meteor.methods({
   'resources.create'(organizationId, name, description) {
