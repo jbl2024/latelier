@@ -2,12 +2,12 @@
 
   <div class="project-title ml-0 pl-3">
     <v-toolbar-title class="align-left" v-show="!editProjectName">
-      <div @click="startUpdateProjectName">
+      <div>
         <slot></slot>
         <v-btn flat icon color="white" v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
           <v-icon>domain</v-icon>
         </v-btn>
-        <span class="title ml-3 mr-5" >
+        <span class="title ml-3 mr-5" @click="startUpdateProjectName">
             {{ project.name }}
         </span>
       </div>
