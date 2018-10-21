@@ -7,6 +7,7 @@
     <v-list dense class="pt-0">
       <v-subheader>Labels</v-subheader>
       <v-list-tile 
+          @click="selectLabel(label)"
           v-for="label in labels"
           :key="label._id" 
           @mouseover="showButtons = label._id" 
@@ -16,7 +17,7 @@
           <v-icon :style="getColor(label)">label</v-icon>
         </v-list-tile-avatar>
 
-        <v-list-tile-content @click="selectLabel(label)" class="pointer">
+        <v-list-tile-content>
           <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
         </v-list-tile-content>
 
