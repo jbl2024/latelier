@@ -1,6 +1,6 @@
 <template>
   <div class="confirm-dialog">
-    <v-dialog v-model="active" persistent max-width="320" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog v-model="active" persistent max-width="340" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">{{ title }}</v-card-title>
         <v-card-text>{{ content }}</v-card-text>
