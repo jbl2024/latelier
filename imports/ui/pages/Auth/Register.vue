@@ -3,7 +3,7 @@
     <div class="centered-container">
       <v-form v-model="valid" v-on:submit.prevent="validateRegister">
         <v-card>
-          <v-card-title class="title">Enregistrement</v-card-title>
+          <v-card-title class="title">Créer un compte</v-card-title>
           <v-card-text>
             <v-text-field
               label="Email"
