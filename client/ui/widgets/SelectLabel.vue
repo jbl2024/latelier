@@ -56,8 +56,15 @@ export default {
     };
   },
   meteor: {
-    labels() {
-      return Labels.find({}, { sort: { name: 1 } });
+    labels: {
+      params () {
+        return {
+          projectId: this.projectId
+        };
+      },
+      update ({projectId}) {
+        return Labels.find({projectId: projectId}, { sort: { name: 1 } });
+      }
     }
   },
   methods: {
