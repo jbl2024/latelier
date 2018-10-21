@@ -8,6 +8,7 @@
   <v-list dense class="pt-0">
     <v-subheader>Catégories</v-subheader>
     <v-list-tile 
+        @click="selectGroup(group)"
         v-for="group in groups"
         :key="group._id" 
         @mouseover="showButtons = group._id" 
@@ -17,7 +18,7 @@
         <v-icon :style="getColor(group)">folder</v-icon>
       </v-list-tile-avatar>
 
-      <v-list-tile-content @click="selectGroup(group)" class="pointer">
+      <v-list-tile-content class="pointer">
         <v-list-tile-title :class="getColor(group)">{{ group.name }}</v-list-tile-title>
       </v-list-tile-content>
 
