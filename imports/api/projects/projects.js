@@ -8,6 +8,11 @@ import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Labels } from '/imports/api/labels/labels.js'
 
 export const Projects = new Mongo.Collection('projects');
+if (Meteor.isServer) {
+  Meteor.startup(() => {
+    Projects.rawCollection().createIndex({organizationId: 1});
+  });
+}
 
 Meteor.methods({
   'projects.insert'(organizationId, name) {
