@@ -15,7 +15,7 @@
         </timeline>
       </div>
 
-      <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <v-dialog v-model="showTaskDetail" class="detail" fullscreen persistent hide-overlay transition="dialog-bottom-transition">
         <v-card>
           <task-detail :taskId="selectedTask._id"></task-detail>
         </v-card>
