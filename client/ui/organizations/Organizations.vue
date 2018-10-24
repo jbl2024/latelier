@@ -31,12 +31,12 @@
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action>
+            <v-list-tile-action class="show-desktop">
               <v-btn icon flat color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
                 <v-icon>settings</v-icon>
               </v-btn>
             </v-list-tile-action>
-            <v-list-tile-action>
+            <v-list-tile-action class="show-desktop">
               <v-btn icon flat color="grey darken-1" @click.stop="deleteOrganization(item._id)">
                 <v-icon>delete</v-icon>
               </v-btn>
