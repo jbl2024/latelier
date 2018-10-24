@@ -3,16 +3,14 @@
     <v-app>
 
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
-        <v-toolbar-title style="width: 300px" class="ml-0 pl-3" v-show="currentProjectId == 0 && currentOrganizationId == 0">
-          <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar-title style="width: 300px" class="ml-3 mr-5" v-show="currentProjectId == 0 && currentOrganizationId == 0">
           <span class="title ml-3 mr-5">L'atelier</span>
         </v-toolbar-title>
 
         <organization-title v-if="currentProjectId == 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId">
-          <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         </organization-title>
         <project-title v-if="currentProjectId != 0" :projectId="currentProjectId">
-          <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         </project-title>
         <v-spacer></v-spacer>
         <v-btn icon>

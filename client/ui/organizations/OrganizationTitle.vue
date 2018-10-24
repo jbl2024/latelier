@@ -1,6 +1,6 @@
 <template>
 
-  <div class="organization-title ml-0 pl-3">
+  <div class="organization-title">
     <div v-show="!editOrganizationName">
     <slot></slot>
     <v-btn icon flat @click="goTo('organizations-page')">
