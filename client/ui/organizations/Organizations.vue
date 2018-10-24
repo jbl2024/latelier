@@ -145,6 +145,12 @@ export default {
 .organizations {
   margin-right: 64px;
 }
+@media (max-width: 600px) {
+  .organizations {
+    margin-right: auto;
+  }
+}
+
 .absolute-right {
   position: absolute;
   right: 24px;
