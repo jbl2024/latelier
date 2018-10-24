@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="">
     <v-app>
 
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
@@ -64,12 +64,7 @@ export default {
   width: 100%;
 }
 
-.md-content.main-content {
-  padding: 0;
-}
-
 .main-content {
-  padding: 16px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   display: flex;
@@ -83,36 +78,5 @@ export default {
   display: flex;
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
-
-}
-
-.md-app-drawer {
-  width: 230px;
-  max-width: calc(100vw - 125px);
-  min-height: calc(100vh - 64px);
-}
-
-.md-app-container {
-  height: calc(100vh - 64px);
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-@media (max-width: 600px) {
-  .md-app-container {
-    height: calc(100vh - 56px);
-    overflow-x: hidden;
-    overflow-y: hidden;
-  }
-}
-
-.md-app-content .md-card {
-  margin-right: 0;
-  margin-left: 0;
-}
-
-.md-app-drawer .md-list-item-text {
-  font-size: 13px;
-  font-weight: 500;
 }
 </style>
