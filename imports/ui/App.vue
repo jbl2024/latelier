@@ -80,7 +80,6 @@ export default {
   height: 100%;
   overflow: hidden;
   overflow-y: auto;
-  position: relative;
   display: flex;
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
