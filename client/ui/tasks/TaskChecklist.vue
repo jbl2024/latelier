@@ -109,6 +109,9 @@ export default {
 </script>
 
 <style scoped>
+.task-checklist {
+  margin-bottom: 12px;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s;
