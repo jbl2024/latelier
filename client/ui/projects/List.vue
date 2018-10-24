@@ -252,11 +252,25 @@ export default {
   cursor: pointer;
 }
 
+@media (max-width: 600px) {
+  .task.new .list-title {
+    width: auto;
+  }
+}
 .list-name {
   width: 220px;
   display: inline-block;
   margin-left: 4px;
   color: white;
+}
+
+@media (max-width: 600px) {
+  .list-name {
+    width: 280px;
+    display: inline-block;
+    margin-left: 4px;
+    color: white;
+  }
 }
 
 .list-name:hover {
