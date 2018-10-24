@@ -1,6 +1,6 @@
 <template>
 
-  <div class="project-title ml-0 pl-3">
+  <div class="project-title">
     <v-toolbar-title class="align-left" v-show="!editProjectName">
       <div>
         <slot></slot>
