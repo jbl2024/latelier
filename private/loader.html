@@ -1,70 +1,41 @@
 <div id="inject-loader-wrapper">
-    <style type="text/css">
+  <style type="text/css">
+    .container {
+      margin-top: 50vh; /* poussé de la moitié de hauteur de viewport */
+      transform: translateY(-50%); /* tiré de la moitié de sa propre hauteur */
+    }
+
+    .loader {
+      -webkit-animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite;
+      border: 3px solid #ddd;
+      border-top: 3px solid #42a5f5;
+      border-radius: 50%;
+      height: 75px;
+      width: 75px;
+      margin: 0 auto;
+    }
+
+    @-webkit-keyframes spin {
+      to {
+        border-top-color: #ec407a;
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes spin {
+      to {
+        border-top-color: #ec407a;
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+      }
+    }
 
 
-.loading {
-  font-family: 'Courier';
-  position: absolute;
-  height: 40px;
-  margin: auto;
-  top: 180px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  text-transform: uppercase;
-  text-align: center;
-  letter-spacing: 0.1em;
-  font-size: 24px;
-  font-weight: lighter;
-  color: black;
-}
-
-.loading::after {
-  animation: txt 3s infinite;
-  content: "";
-}
-
-@keyframes cw {
-  0% {
-    width: 0;
-    height: 0;
-  }
-  75% {
-    width: 40px;
-    height: 40px;
-  }
-  100% {
-    width: 0;
-    height: 0;
-  }
-}
-@keyframes txt {
-  0% {
-    content: "|";
-  }
-  33% {
-    content: "/";
-  }
-  66% {
-    content: "-";
-  }
-  100% {
-    content: "\\";
-  }
-}
-#logo {
-  position: absolute;
-  height: 40px;
-  margin: auto;
-  top: 0px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  text-align: center;
-  width: 600px;
-  height: 500px;
-}
-</style>
-<img id="logo" src="/img/logo.png">
-<h1 class="loading"><span>CHARGEMENT</span> </h1>
+    body {}
+  </style>
+  <div class="container">
+    <div class="loader"></div>
+  </div>
 </div>
