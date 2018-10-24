@@ -13,13 +13,13 @@
         <project-title v-if="currentProjectId != 0" :projectId="currentProjectId">
         </project-title>
         <v-spacer></v-spacer>
-        <v-btn icon>
+        <v-btn icon class="show-desktop">
           <v-icon>apps</v-icon>
         </v-btn>
-        <v-btn icon>
+        <v-btn icon class="show-desktop">
           <v-icon>notifications</v-icon>
         </v-btn>
-        <blaze-template id="login" template="loginButtons"></blaze-template>
+        <blaze-template class="show-desktop" id="login" template="loginButtons"></blaze-template>
       </v-toolbar>
 
       <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
