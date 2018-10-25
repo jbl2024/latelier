@@ -1,17 +1,39 @@
 <template>
 
-  <div class="task-checklist" v-show="showList(task.checklist)" @click.stop="">
+  <div class="task-checklist" v-show="showList(task.checklist)">
+
+    <confirm-dialog
+      :active.sync="showConfirmConvertDialog"
+      title="Confirmer la transformation en tache ?"
+      content="Voulez-vous transformer cet élément en tache ?"
+      confirm-text="Transformer"
+      cancel-text="Annuler"
+      @cancel="onCancelConvert"
+      @confirm="onConfirmConvert"
+    />
+
+    <confirm-dialog
+      :active.sync="showConfirmDeleteDialog"
+      title="Confirmer la suppression ?"
+      content="Voulez-vous supprimer cet élément ?"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDelete"
+      @confirm="onConfirmDelete"
+    />
+
+
     <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
       <div>
         <div class="check">
-          <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)">
+          <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)" @click.stop="">
           <label :for="item._id">{{ item.name }}</label>
         </div>
         <div class="right" v-show="showButtons === item._id">
-          <v-btn icon @click="event => { convertToTask(event, item)}">
+          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; showConfirmConvertDialog = true;}">
             <v-icon>list</v-icon>
           </v-btn>
-          <v-btn icon @click="event => { deleteItem(event, item)}">
+          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; showConfirmDeleteDialog = true;}">
             <v-icon s-icon>delete</v-icon>
           </v-btn>
         </div>
@@ -42,8 +64,10 @@ export default {
   },
   data() {
     return {
+      showConfirmConvertDialog: false,
+      showConfirmDeleteDialog: false,
       editNewItem: false,
-      item: "",
+      selectedItem: {},
       showButtons: null
     };
   },
@@ -57,20 +81,6 @@ export default {
 
     hasItems(checklist) {
       return checklist && checklist.length > 0;
-    },
-
-    addItem() {
-      this.editNewItem = false;
-      Meteor.call(
-        "tasks.addChecklistItem",
-        this.task._id,
-        this.item,
-        (error, result) => {
-          if (!error) {
-            this.item = "";
-          }
-        }
-      );
     },
 
     deleteItem(e, item) {
@@ -93,16 +103,22 @@ export default {
       Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
     },
 
-    cancelAddItem() {
-      this.editNewItem = false;
+    onConfirmConvert() {
+      this.showConfirmConvertDialog = false;
+      Meteor.call("tasks.convertItemToTask", this.task._id, this.selectedItem._id);
     },
 
-    convertToTask(e, item) {
-      if (e) {
-        e.stopPropagation();
-      }
+    onCancelConvert(item) {
+      this.showCancelConvertDialog = false;
+    },
 
-      Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
+    onConfirmDelete() {
+      this.showConfirmDeleteDialog = false;
+      Meteor.call("tasks.removeChecklistItem", this.task._id, this.selectedItem._id);
+    },
+
+    onCancelDelete(item) {
+      this.showCancelConvertDialog = false;
     }
   }
 };
