@@ -10,6 +10,7 @@
               name="email"
               id="email"
               autocomplete="email"
+              type="email"
               v-model="form.email"
               :disabled="sending"
             ></v-text-field>
