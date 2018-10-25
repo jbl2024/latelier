@@ -97,10 +97,6 @@ export default {
   max-width: 300px;
 }
 
-.md-content { 
-  padding: 8px;
-}
-
 .project-settings {
   display: flex;
   flex-direction: column;
@@ -145,10 +141,6 @@ export default {
   overflow-y: scroll;
   display: flex;
   flex-direction: column;
-}
-
-.md-menu-item {
-  cursor: pointer;
 }
 
 .absolute-right {

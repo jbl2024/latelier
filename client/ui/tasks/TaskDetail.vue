@@ -22,7 +22,7 @@
     </v-toolbar>
 
     <task-labels :task="task"></task-labels>
-    <div class="md-toolbar-row">
+    <div>
       <author-line :user-id="task.createdBy" :date="task.createdAt"></author-line>
     </div>
 

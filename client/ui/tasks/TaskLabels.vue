@@ -58,7 +58,4 @@ export default {
 
 <style scoped>
 
-.md-chip {
-  cursor: pointer;
-}
 </style>

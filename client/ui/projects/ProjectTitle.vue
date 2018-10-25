@@ -4,7 +4,7 @@
     <v-toolbar-title class="align-left" v-show="!editProjectName">
       <div>
         <slot></slot>
-        <v-btn flat icon color="white" v-if="project && project.organizationId" class="md-icon-button" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
+        <v-btn flat icon color="white" v-if="project && project.organizationId" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
           <v-icon>domain</v-icon>
         </v-btn>
         <span class="title ml-3 mr-5" @click="startUpdateProjectName">

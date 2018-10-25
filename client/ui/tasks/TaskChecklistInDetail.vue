@@ -3,7 +3,7 @@
 <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop="">
   <div v-for="item in task.checklist" :key="item._id" class="item">
     <div>
-      <v-checkbox v-model="item.checked" class="md-primary check" @change="toggleCheckItem(item)" :label="item.name"></v-checkbox>
+      <v-checkbox v-model="item.checked" class="check" @change="toggleCheckItem(item)" :label="item.name"></v-checkbox>
       <div class="right">
         <v-btn icon @click="event => { convertToTask(event, item)}">
           <v-icon>list</v-icon>
@@ -177,13 +177,4 @@ pre {
 .add-item label {
   font-size: 13px;
 }
-.add-item .md-input {
-  font-size: 12px;
-}
-
-.md-checkbox {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-
 </style>

@@ -322,13 +322,6 @@ export default {
   text-decoration: line-through;
 }
 
-.md-title:hover {
-  background-color: #ddd;
-  cursor: pointer;
-  color: black;
-  transition: background-color 250ms linear;
-}
-
 .edit {
   margin-left: 4px;
   margin-top: 4px;

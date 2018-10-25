@@ -262,10 +262,6 @@ export default {
   max-width: 300px;
 }
 
-.md-content {
-  padding: 8px;
-}
-
 .edit-project-name input {
   font-size: 20px;
   font-weight: 400;

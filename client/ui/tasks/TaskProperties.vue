@@ -126,9 +126,6 @@ export default {
   margin: 12px;
 }
 
-.md-subheader {
-  padding-left: 0;
-}
 .cursor {
   cursor: pointer;
 }

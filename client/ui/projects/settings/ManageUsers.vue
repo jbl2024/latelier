@@ -86,10 +86,6 @@ export default {
   background-color: red;
 }
 
-.md-list-item {
-  border-left: 1px solid #eee;
-  border-right: 1px solid #eee;
-}
 
 .manage-users {
   margin-top: 12px;
