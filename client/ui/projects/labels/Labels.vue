@@ -114,7 +114,6 @@ export default {
 
 .selected {
   font-weight: bold;
-  /* color: var(--md-theme-default-primary, #448aff) !important; */
 }
 
 </style>

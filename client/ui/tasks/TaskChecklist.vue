@@ -195,7 +195,4 @@ pre {
 .add-item label {
   font-size: 13px;
 }
-.add-item .md-input {
-  font-size: 12px;
-}
 </style>

@@ -213,10 +213,6 @@ export default {
   cursor: pointer;
 }
 
-.md-menu-item {
-  cursor: pointer;
-}
-
 .swimlane .list-title {
   text-align: left;
   background-color: #2d6293;
@@ -232,9 +228,6 @@ export default {
   width: 70%;
 }
 
-.swimlane .md-icon.md-theme-default.md-icon-font {
-  color: white;
-}
 
 .task.new .list-title {
   border: 2px dashed #2d6293;

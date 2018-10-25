@@ -92,9 +92,6 @@ export default {
   background-color: #2d6293;
 }
 
-.toolbar h3.md-title {
-  color: white;
-}
 
 .online {
   background-color: red;

@@ -111,14 +111,5 @@ export default {
   position: relative;
   height: calc(100vh - 64px);
 }
-
-.md-card {
-  text-align: left;
-  margin: 0 auto;
-}
-
-.md-title {
-  text-align: center;
-}
 </style>
 
