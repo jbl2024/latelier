@@ -29,6 +29,9 @@
       <v-list two-line subheader v-show="projects.length != 0" class="elevation-1">
         <v-subheader>
           <router-link class="link" :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
+          <v-btn fab dark small color="pink" @click="newProject">
+            <v-icon>add</v-icon>
+          </v-btn>
         </v-subheader>
         <template v-for="item in projects">
           <v-list-tile :key="item._id" @click="openProject(item._id)">
@@ -58,9 +61,6 @@
         </template>
       </v-list>
     </div>
-    <v-btn class="absolute-right" dark fab color="red" @click="newProject">
-      <v-icon>add</v-icon>
-    </v-btn>
   </div>
 </template>
 
@@ -291,14 +291,6 @@ export default {
   .projects {
     margin-right: auto;
   }
-}
-
-
-.absolute-right {
-  position: absolute;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1002;
 }
 
 .link {
