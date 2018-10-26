@@ -1,9 +1,6 @@
 <template>
   <div class="organizations">
     <new-organization ref="newOrganization"></new-organization>
-    <v-btn class="absolute-right" dark fab  color="red" @click="newOrganization">
-      <v-icon>add</v-icon>
-    </v-btn>
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
@@ -45,6 +42,10 @@
         </template>
       </v-list>
     </div>
+    <v-btn class="absolute-right" dark fab  color="red" @click="newOrganization">
+      <v-icon>add</v-icon>
+    </v-btn>
+
   </div>
 </template>
 
