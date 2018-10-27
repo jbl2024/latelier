@@ -42,7 +42,7 @@
     <template v-if="isConnected && $subReady.user">
       <v-divider></v-divider>
       <v-list dense class="pt-0" v-if="isAdmin()">
-        <v-list-tile @click="showConfirmDialog = true">
+        <v-list-tile :to="{ name: 'administration-page'}">
           <v-list-tile-action>
             <v-icon>settings</v-icon>
           </v-list-tile-action>
