@@ -2,7 +2,7 @@
   <div class="organization-settings-general">
 
     <v-subheader>Titre</v-subheader>
-    <div class="elevation-1 settings">
+    <v-card>
       <div class="description">
         <div v-show="!editName && organization.name && organization.name.length > 0" @click="startEditName">
           {{ organization.name }}
@@ -24,10 +24,10 @@
 
         </div>
       </div>
-    </div>
+    </v-card>
 
     <v-subheader>Description</v-subheader>
-    <div class="elevation-1 settings">
+    <v-card>
       <div class="description">
         <div v-show="!editDescription && organization.description && organization.description.length > 0" @click="startEditDescription">
           <div v-html="markDown(organization.description)"></div>
@@ -50,7 +50,7 @@
         </div>
       </div>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -128,7 +128,4 @@ export default {
   padding-bottom: 12px;
 }
 
-.settings {
-  background-color: white;
-}
 </style>
