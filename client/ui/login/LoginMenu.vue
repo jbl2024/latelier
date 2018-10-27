@@ -39,8 +39,18 @@
         </v-list-tile>
       </v-list>
     </template>
-    <template v-if="isConnected">
+    <template v-if="isConnected && $subReady.user">
       <v-divider></v-divider>
+      <v-list dense class="pt-0" v-if="isAdmin()">
+        <v-list-tile @click="showConfirmDialog = true">
+          <v-list-tile-action>
+            <v-icon>settings</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>Administration</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
       <v-list dense class="pt-0">
         <v-list-tile @click="showConfirmDialog = true">
           <v-list-tile-action>
@@ -69,7 +79,13 @@ export default {
         return Meteor.userId();
       }
       return false;
-    }
+    },
+    $subscribe: {
+      user: function() {
+        return [];
+      }
+    },
+
   },
   methods: {
     logout () {
@@ -83,6 +99,13 @@ export default {
     onConfirmLogout () {
       showConfirmDialog = false;
       this.logout();
+    },
+
+    isAdmin () {
+      if (Roles.userIsInRole(Meteor.userId(), 'admin', Roles.GLOBAL_GROUP)) {
+        return true;
+      }
+      return false;
     }
   }
 };
