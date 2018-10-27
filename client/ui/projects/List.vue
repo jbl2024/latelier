@@ -175,6 +175,7 @@ export default {
 </script>
 
 <style scoped>
+
 @media (max-width: 600px) {
   .swimlane {
     flex: 0 0 auto;
@@ -199,6 +200,11 @@ export default {
   .tasks-wrapper {
     width: 274px;
   }
+
+  .list {
+    margin-bottom: 48px;
+  }
+
 }
 
 .swimlane.new .list-title {
