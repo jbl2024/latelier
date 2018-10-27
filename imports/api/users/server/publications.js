@@ -17,8 +17,6 @@ Meteor.publish("users", function usersPublication() {
 });
 
 Meteor.publish("user", function() {
-  console.log("publish");
-  console.log(this.userId);
   return Meteor.users.find(
     {
       _id: this.userId
