@@ -6,6 +6,7 @@ akryum:vue-component@0.14.1
 akryum:vue-component-dev-client@0.4.3
 akryum:vue-component-dev-server@0.1.2
 akryum:vue-sass@0.1.1
+alanning:roles@1.2.16
 aldeed:simple-schema@1.5.4
 allow-deny@1.1.0
 autoupdate@1.5.0

@@ -1,4 +1,7 @@
 {
   "generateFixtures": true,
-  "attachmentsPath": "/Users/jerome/rectorat/attachments/"
+  "attachmentsPath": "/Users/jerome/rectorat/attachments/",
+  "roles": {
+    "admin": ["jerome@blondon.fr"]
+  }
 }
