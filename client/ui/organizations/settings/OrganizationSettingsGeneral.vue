@@ -1,56 +1,61 @@
 <template>
   <div class="organization-settings-general">
-
     <v-subheader>Titre</v-subheader>
     <v-card>
       <div class="description">
-        <div v-show="!editName && organization.name && organization.name.length > 0" @click="startEditName">
-          {{ organization.name }}
-        </div>
-        <div v-show="!organization.name && !editName" @click="startEditName">
-          Aucun nom
-        </div>
-
+        <div
+          v-show="!editName && organization.name && organization.name.length > 0"
+          @click="startEditName"
+        >{{ organization.name }}</div>
+        <div v-show="!organization.name && !editName" @click="startEditName">Aucun nom</div>
         <div v-show="editName">
-          <v-text-field label="Nom" ref="name" v-focus v-model="organization.name" @keyup.enter="updateName">
-          </v-text-field>
+          <v-text-field
+            label="Nom"
+            ref="name"
+            v-focus
+            v-model="organization.name"
+            @keyup.enter="updateName"
+          ></v-text-field>
           <v-btn icon @click="updateName">
             <v-icon>check_circle</v-icon>
           </v-btn>
-
           <v-btn icon @click="cancelUpdateName">
             <v-icon>cancel</v-icon>
           </v-btn>
-
         </div>
       </div>
     </v-card>
-
     <v-subheader>Description</v-subheader>
     <v-card>
       <div class="description">
-        <div v-show="!editDescription && organization.description && organization.description.length > 0" @click="startEditDescription">
+        <div
+          v-show="!editDescription && organization.description && organization.description.length > 0"
+          @click="startEditDescription"
+        >
           <div v-html="markDown(organization.description)"></div>
         </div>
-        <div v-show="!organization.description && !editDescription" @click="startEditDescription">
-          Aucune description
-        </div>
-
+        <div
+          v-show="!organization.description && !editDescription"
+          @click="startEditDescription"
+        >Aucune description</div>
         <div v-show="editDescription">
-          <v-textarea ref="description" solo label="Description" v-model="organization.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
-
+          <v-textarea
+            ref="description"
+            solo
+            label="Description"
+            v-model="organization.description"
+            @keyup.ctrl.enter="updateDescription"
+          ></v-textarea>
           <v-btn icon @click="updateDescription">
             <v-icon>check_circle</v-icon>
           </v-btn>
-
           <v-btn icon @click="cancelUpdateDescription">
             <v-icon>cancel</v-icon>
           </v-btn>
-
         </div>
       </div>
-    </div>
-  </v-card>
+    </v-card>
+  </div>
 </template>
 
 <script>
@@ -127,5 +132,4 @@ export default {
   padding-top: 12px;
   padding-bottom: 12px;
 }
-
 </style>
