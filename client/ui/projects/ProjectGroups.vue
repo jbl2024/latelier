@@ -14,9 +14,9 @@
         @mouseover="showButtons = group._id" 
         @mouseleave="showButtons = null">
 
-      <v-list-tile-avatar>
+      <v-list-tile-action>
         <v-icon :style="getColor(group)">folder</v-icon>
-      </v-list-tile-avatar>
+      </v-list-tile-action>
 
       <v-list-tile-content class="pointer">
         <v-list-tile-title :class="getColor(group)">{{ group.name }}</v-list-tile-title>
@@ -31,9 +31,9 @@
 
     <v-list-tile @click="$refs.newProjectGroup.open()"> 
 
-      <v-list-tile-avatar>
+      <v-list-tile-action>
         <v-icon>add</v-icon>
-      </v-list-tile-avatar>
+      </v-list-tile-action>
 
       <v-list-tile-content>
         <v-list-tile-title>Créer...</v-list-tile-title>

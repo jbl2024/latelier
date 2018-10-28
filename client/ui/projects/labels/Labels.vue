@@ -13,9 +13,9 @@
           @mouseover="showButtons = label._id" 
           @mouseleave="showButtons = null">
 
-        <v-list-tile-avatar>
+        <v-list-tile-action>
           <v-icon :style="getColor(label)">label</v-icon>
-        </v-list-tile-avatar>
+        </v-list-tile-action>
 
         <v-list-tile-content>
           <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
@@ -30,9 +30,9 @@
 
       <v-list-tile @click="$refs.newLabel.open()"> 
 
-        <v-list-tile-avatar>
+        <v-list-tile-action>
           <v-icon>add</v-icon>
-        </v-list-tile-avatar>
+        </v-list-tile-action>
 
         <v-list-tile-content>
           <v-list-tile-title>Créer...</v-list-tile-title>

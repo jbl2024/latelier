@@ -2,7 +2,15 @@
   <div class="administration-page">
     <template v-if="$subReady.user">
       <template v-if="isAdmin()">
-        coucou
+        
+        <v-tabs>
+          <v-tab id="tab-users">
+            Utilisateurs
+          </v-tab>
+          <v-tab-item>
+          </v-tab-item>
+        </v-tabs> 
+
       </template>
     </template>
   </div>
