@@ -23,7 +23,7 @@
       </template>
     </v-list>
     <div class="text-xs-center">
-      <v-pagination v-model="page" :length="pagination.totalPages"></v-pagination>
+      <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
     </div>
   </div>
 </template>
