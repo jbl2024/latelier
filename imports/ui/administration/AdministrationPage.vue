@@ -8,6 +8,7 @@
             Utilisateurs
           </v-tab>
           <v-tab-item>
+            <administration-users></administration-users>
           </v-tab-item>
         </v-tabs> 
 
