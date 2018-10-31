@@ -23,14 +23,14 @@
             <v-icon>more_vert</v-icon>
           </v-btn>
           <v-list>
-            <v-list-tile v-if="!isActive(user)" @click="activate()">
+            <v-list-tile v-if="!isMe(user) && !isActive(user)" @click="activate()">
               <v-list-tile-title>Activer</v-list-tile-title>
             </v-list-tile>
-            <v-list-tile v-if="isActive(user)" @click="deactivate()">
+            <v-list-tile v-if="!isMe(user) &&  isActive(user)" @click="deactivate()">
               <v-list-tile-title>Désactiver</v-list-tile-title>
             </v-list-tile>
             <v-divider></v-divider>
-            <v-list-tile @click="showConfirmDeleteUserDialog = true">
+            <v-list-tile v-if="!isMe(user)" @click="showConfirmDeleteUserDialog = true">
               <v-list-tile-title>Supprimer</v-list-tile-title>
             </v-list-tile>
           </v-list>
@@ -80,6 +80,10 @@ export default {
     };
   },
   methods: {
+    isMe (user) {
+      return user._id == Meteor.userId()
+    },
+    
     isActive(user) {
       return Permissions.isActive(user);
     },
