@@ -1,5 +1,4 @@
 import { Accounts } from 'meteor/accounts-base'
-import { Roles, Groups } from '/imports/api/users/users'
 import { Permissions } from '/imports/api/users/permissions'
 
 function initializeRoles() {
