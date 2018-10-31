@@ -1,6 +1,6 @@
 <template>
   <div class="administration-users elevation-1">
-    <v-dialog v-model="showUserDetail" class="detail" max-width="640">
+    <v-dialog v-model="showUserDetail" class="detail" max-width="640" :fullscreen="$vuetify.breakpoint.xsOnly">
       <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
     </v-dialog>
     <v-container>
