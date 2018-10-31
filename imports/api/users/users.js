@@ -33,8 +33,6 @@ Meteor.methods({
       }
     }
 
-    console.log(query)
-
     const count = Meteor.users.find(query).count();
 
     const data = Meteor.users
