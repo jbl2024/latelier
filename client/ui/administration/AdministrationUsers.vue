@@ -1,12 +1,18 @@
 <template>
   <div class="administration-users elevation-1">
-
     <v-dialog v-model="showUserDetail" class="detail" max-width="640">
       <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
     </v-dialog>
-
+    <v-container>
+      <v-layout row wrap>
+        <v-flex xs12 sm6>
+          <v-text-field label="Recherche" single-line v-model="search" append-icon="search" v-on:input="debouncedFilter"></v-text-field>
+        </v-flex>
+      </v-layout>
+    </v-container>
     <v-list dense subheader>
-      <v-subheader inset>{{ pagination.totalItems}} utilisateurs
+      <v-subheader inset>
+        {{ pagination.totalItems}} utilisateurs
         <v-btn flat icon @click="showSelectUserDialog = true">
           <v-icon>add</v-icon>
         </v-btn>
@@ -37,6 +43,7 @@
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import debounce from "lodash/debounce";
 
 export default {
   name: "administration-users",
@@ -44,15 +51,22 @@ export default {
   mounted() {
     this.findUsers();
   },
+  created() {
+    this.debouncedFilter = debounce((val) => { this.search = val }, 400);
+  },
   watch: {
-    page (page) {
-      this.findUsers()
+    page(page) {
+      this.findUsers();
+    },
+    search(search) {
+      this.findUsers();
     }
   },
   props: {},
   data() {
     return {
-      search: '',
+      search: "",
+      debouncedFilter: null,
       users: [],
       user: null,
       showUserDetail: false,
@@ -66,41 +80,50 @@ export default {
   },
   methods: {
     findUsers() {
-      const users = Meteor.call("admin.findUsers", this.page, (error, result) => {
-        if (error) {
-          console.log(error);
-          return;
-        }
-        this.pagination.totalItems = result.totalItems;
-        this.pagination.rowsPerPage = result.rowsPerPage;
-        this.pagination.totalPages = this.calculateTotalPages();
-
-        this.users = result.data;
-        this.users.map (user => {
-          if (!user.profile) {
-            user.profile = {
-              firstName: '',
-              lastName: ''
-            }
+      const users = Meteor.call(
+        "admin.findUsers",
+        this.page,
+        this.search,
+        (error, result) => {
+          if (error) {
+            console.log(error);
+            return;
           }
-        })
-      });
+          this.pagination.totalItems = result.totalItems;
+          this.pagination.rowsPerPage = result.rowsPerPage;
+          this.pagination.totalPages = this.calculateTotalPages();
+
+          this.users = result.data;
+          this.users.map(user => {
+            if (!user.profile) {
+              user.profile = {
+                firstName: "",
+                lastName: ""
+              };
+            }
+          });
+        }
+      );
     },
 
-    calculateTotalPages () {
-      if (this.pagination.rowsPerPage == null ||
+    calculateTotalPages() {
+      if (
+        this.pagination.rowsPerPage == null ||
         this.pagination.totalItems == null
-      ) return 0
+      )
+        return 0;
 
-      return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
     },
 
-    openDetail (user) {
+    openDetail(user) {
       this.user = user;
       this.showUserDetail = true;
     },
 
-    closeDetail () {
+    closeDetail() {
       this.showUserDetail = false;
     }
   }

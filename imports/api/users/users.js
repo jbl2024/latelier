@@ -5,7 +5,7 @@ import { Roles } from "meteor/alanning:roles";
 import { Permissions } from '/imports/api/users/permissions'
 
 Meteor.methods({
-  "admin.findUsers"(skip) {
+  "admin.findUsers"(skip, filter) {
     
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
@@ -16,12 +16,30 @@ Meteor.methods({
     if (!skip) {
       skip = 0;
     }
+    let query = {}
+    if (filter && filter.length > 0) {
+      const emails = {
+        $elemMatch: {
+          address: { $regex: ".*" + filter + ".*", $options: "i" }
+        }
+      }     
 
-    const count = Meteor.users.find({}).count();
+      query = {
+        $or: [
+          {emails: emails},
+          {"profile.firstName": { $regex: ".*" + filter + ".*", $options: "i" }},
+          {"profile.lastName": { $regex: ".*" + filter + ".*", $options: "i" }}
+        ]
+      }
+    }
+
+    console.log(query)
+
+    const count = Meteor.users.find(query).count();
 
     const data = Meteor.users
       .find(
-        {},
+        query,
         {
           fields: {
             profile: 1,
