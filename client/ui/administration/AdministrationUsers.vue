@@ -56,7 +56,7 @@ export default {
       users: [],
       user: null,
       showUserDetail: false,
-      page: 1,
+      page: 0,
       pagination: {
         totalItems: 0,
         rowsPerPage: 0,
