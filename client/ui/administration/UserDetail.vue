@@ -1,5 +1,15 @@
 <template>
   <v-card class="user-detail">
+    <confirm-dialog
+      :active.sync="showConfirmDeleteUserDialog"
+      title="Confirmer la suppression ?"
+      content="L'utilisateur sera définitivement supprimé"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteUser"
+      @confirm="onConfirmDeleteUser"
+    />
+
       <v-toolbar dark color="primary">
         <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
           <v-icon>close</v-icon>
@@ -18,6 +28,10 @@
             </v-list-tile>
             <v-list-tile v-if="isActive(user)" @click="deactivate()">
               <v-list-tile-title>Désactiver</v-list-tile-title>
+            </v-list-tile>
+            <v-divider></v-divider>
+            <v-list-tile @click="showConfirmDeleteUserDialog = true">
+              <v-list-tile-title>Supprimer</v-list-tile-title>
             </v-list-tile>
           </v-list>
         </v-menu>
@@ -61,7 +75,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      showConfirmDeleteUserDialog: false,
+    };
   },
   methods: {
     isActive(user) {
@@ -85,6 +101,16 @@ export default {
 
     activate() {
       Meteor.call("admin.activateUser", this.user._id);
+      this.$emit("saved");
+      this.$emit("close");
+    },
+
+    onCancelDeleteUser () {
+
+    },
+
+    onConfirmDeleteUser() {
+      Meteor.call("admin.removeUser", this.user._id);
       this.$emit("saved");
       this.$emit("close");
     }
