@@ -5,13 +5,17 @@ import { Roles } from "meteor/alanning:roles";
 import { Permissions } from '/imports/api/users/permissions'
 
 Meteor.methods({
-  "admin.findUsers"(skip, filter) {
+  "admin.findUsers"(page, filter) {
     
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
     const perPage = 10;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
 
     if (!skip) {
       skip = 0;

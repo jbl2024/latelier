@@ -70,7 +70,7 @@ export default {
       users: [],
       user: null,
       showUserDetail: false,
-      page: 0,
+      page: 1,
       pagination: {
         totalItems: 0,
         rowsPerPage: 0,
