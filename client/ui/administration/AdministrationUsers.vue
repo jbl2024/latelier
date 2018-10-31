@@ -9,7 +9,7 @@
       <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
     </v-dialog>
     <v-container>
-      <v-layout row wrap>
+      <v-layout row wrap="">
         <v-flex xs12 sm6>
           <v-text-field
             label="Recherche"
@@ -32,10 +32,10 @@
       <template v-for="user in users">
         <v-list-tile :key="user._id" avatar @click="openDetail(user)">
           <v-list-tile-avatar :color="isOnline(user)">
-            <span class="">{{ formatUserLetters(user) }}</span>
+            <span>{{ formatUserLetters(user) }}</span>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+            <v-list-tile-title :class="getClass(user)">{{ formatUser(user) }}</v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple @click.stop="removeUser(item._id)">
@@ -54,6 +54,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Permissions } from "/imports/api/users/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
 
@@ -72,8 +73,12 @@ export default {
     page(page) {
       this.findUsers();
     },
-    search(search) {
-      this.findUsers();
+    search() {
+      if (this.page > 1) {
+        this.page = 1;
+      } else {
+        this.findUsers();
+      }
     }
   },
   props: {},
@@ -139,6 +144,13 @@ export default {
 
     closeDetail() {
       this.showUserDetail = false;
+    },
+
+    getClass(user) {
+      if (!Permissions.isActive(user)) {
+        return "deactivated";
+      }
+      return "";
     }
   }
 };
@@ -155,5 +167,9 @@ export default {
 
 .manage-users {
   margin-top: 12px;
+}
+
+.deactivated {
+  text-decoration: line-through;
 }
 </style>
