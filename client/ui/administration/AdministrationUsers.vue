@@ -1,12 +1,24 @@
 <template>
   <div class="administration-users elevation-1">
-    <v-dialog v-model="showUserDetail" class="detail" max-width="640" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      v-model="showUserDetail"
+      class="detail"
+      max-width="640"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
       <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
     </v-dialog>
     <v-container>
       <v-layout row wrap>
         <v-flex xs12 sm6>
-          <v-text-field label="Recherche" single-line v-model="search" append-icon="search" v-on:input="debouncedFilter"></v-text-field>
+          <v-text-field
+            label="Recherche"
+            single-line
+            v-model="search"
+            append-icon="search"
+            clearable
+            v-on:input="debouncedFilter"
+          ></v-text-field>
         </v-flex>
       </v-layout>
     </v-container>
@@ -52,7 +64,9 @@ export default {
     this.findUsers();
   },
   created() {
-    this.debouncedFilter = debounce((val) => { this.search = val }, 400);
+    this.debouncedFilter = debounce(val => {
+      this.search = val;
+    }, 400);
   },
   watch: {
     page(page) {
