@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { Permissions } from '/imports/api/users/permissions'
+
 export default {
   props: {
   },
@@ -34,10 +36,7 @@ export default {
   },
   methods: {
     isAdmin () {
-      if (Roles.userIsInRole(Meteor.userId(), 'admin', Roles.GLOBAL_GROUP)) {
-        return true;
-      }
-      return false;
+      return Permissions.isAdmin(Meteor.userId())
     }
   },
 }
