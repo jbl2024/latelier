@@ -1,4 +1,6 @@
 import { Accounts } from 'meteor/accounts-base'
+import { Roles, Groups } from '/imports/api/users/users'
+import { Permissions } from '/imports/api/users/permissions'
 
 function initializeRoles() {
   const roles = Meteor.settings.roles;
@@ -6,9 +8,9 @@ function initializeRoles() {
   admin.map (email => {
     const user = Accounts.findUserByEmail(email);
     if (user) {
-      if (!Roles.userIsInRole(user._id, 'admin', Roles.GLOBAL_GROUP)) {
+      if (!Permissions.isAdmin(user._id)) {
         console.info('Adding ' + user.emails[0].address + ' to admin role');
-        Roles.addUsersToRoles(user._id, 'admin', Roles.GLOBAL_GROUP);
+        Roles.addUsersToRoles(user._id, Roles.admin, Groups.GLOBAL);
       }
     } else {
       console.warn('user with email ' + email + ' not found')

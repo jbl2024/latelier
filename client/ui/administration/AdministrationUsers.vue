@@ -1,5 +1,10 @@
 <template>
   <div class="administration-users elevation-1">
+
+    <v-dialog v-model="showUserDetail" class="detail" max-width="640">
+      <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
+    </v-dialog>
+
     <v-list dense subheader>
       <v-subheader inset>{{ pagination.totalItems}} utilisateurs
         <v-btn flat icon @click="showSelectUserDialog = true">
@@ -7,7 +12,7 @@
         </v-btn>
       </v-subheader>
       <template v-for="user in users">
-        <v-list-tile :key="user._id" avatar>
+        <v-list-tile :key="user._id" avatar @click="openDetail(user)">
           <v-list-tile-avatar :color="isOnline(user)">
             <span class="">{{ formatUserLetters(user) }}</span>
           </v-list-tile-avatar>
@@ -47,7 +52,10 @@ export default {
   props: {},
   data() {
     return {
+      search: '',
       users: [],
+      user: null,
+      showUserDetail: false,
       page: 1,
       pagination: {
         totalItems: 0,
@@ -68,6 +76,14 @@ export default {
         this.pagination.totalPages = this.calculateTotalPages();
 
         this.users = result.data;
+        this.users.map (user => {
+          if (!user.profile) {
+            user.profile = {
+              firstName: '',
+              lastName: ''
+            }
+          }
+        })
       });
     },
 
@@ -77,6 +93,15 @@ export default {
       ) return 0
 
       return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage)
+    },
+
+    openDetail (user) {
+      this.user = user;
+      this.showUserDetail = true;
+    },
+
+    closeDetail () {
+      this.showUserDetail = false;
     }
   }
 };
