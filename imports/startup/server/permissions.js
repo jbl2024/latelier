@@ -9,7 +9,7 @@ function initializeRoles() {
     if (user) {
       if (!Permissions.isAdmin(user._id)) {
         console.info('Adding ' + user.emails[0].address + ' to admin role');
-        Roles.addUsersToRoles(user._id, Roles.admin, Groups.GLOBAL);
+        Roles.addUsersToRoles(user._id, "admin", Roles.GLOBAL_GROUP);
       }
     } else {
       console.warn('user with email ' + email + ' not found')
