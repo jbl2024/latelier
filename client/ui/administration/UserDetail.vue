@@ -1,6 +1,5 @@
 <template>
-  <div class="user-detail">
-    <v-card>
+  <v-card class="user-detail">
       <v-card-title>
         <span class="headline">{{ user.profile.firstName}} {{ user.profile.lastName }}</span>
       </v-card-title>
@@ -28,8 +27,7 @@
         <v-btn flat @click.native="activate()" v-if="!isActive(user)">Activer</v-btn>
         <v-btn color="primary" @click.native="save()">Mettre à jour</v-btn>
       </v-card-actions>
-    </v-card>
-  </div>
+  </v-card>
 </template>
 
 <script>
