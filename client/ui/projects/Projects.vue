@@ -42,6 +42,9 @@
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
             </v-list-tile-content>
+            <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click="selectGroup(group)">
+              <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+            </v-list-tile-action>
             <v-list-tile-action class="show-desktop">
               <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
                 <v-icon>settings</v-icon>
@@ -66,6 +69,7 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import debounce from "lodash/debounce";
@@ -244,7 +248,20 @@ export default {
         return "Jusqu'au " + this.formatDate(project.endDate);
       }
       return "";
-    }
+    },
+
+    getProjectGroups (project) {
+      return ProjectGroups.find({projects: project._id}, {sort: {name: 1}}).fetch();
+    },
+    selectGroup (group) {
+      var selectedGroup = this.$store.state.selectedGroup;
+      if (selectedGroup && selectedGroup._id === group._id) {
+        this.$store.dispatch('setSelectedGroup', null);
+      } else {
+        this.$store.dispatch('setSelectedGroup', group);
+      }
+    },
+
   }
 };
 </script>
