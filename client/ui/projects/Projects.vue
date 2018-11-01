@@ -42,7 +42,7 @@
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click="selectGroup(group)">
+            <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
               <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
             </v-list-tile-action>
             <v-list-tile-action class="show-desktop">
