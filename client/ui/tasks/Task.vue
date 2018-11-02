@@ -1,16 +1,19 @@
 <template>
 
-  <div class="task" @click="selectTask">
+  <div class="task" @click="selectTask" @mouseenter="showEditButton = true" @mouseleave="showEditButton = false">
     <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd">
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
         <v-card ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
           <div>
             <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
+            <v-icon icon flat v-show="showEditButton && !editName" class="editButton" small color="grey darken-1" @click="startUpdateName">
+              edit
+            </v-icon>
             <div class="title-wrapper">
               <div class="checkbox">
                 <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()">
               </div>
-              <span v-show="!editName" @click="startUpdateName" :class="getClassForName(task)">
+              <span v-show="!editName" :class="getClassForName(task)">
                 {{ task.name }}
               </span>
 
@@ -87,7 +90,7 @@ export default {
   },
   props: {
     task: {
-      type: Object
+      type: Object,
     }
   },
   computed: {
@@ -101,7 +104,8 @@ export default {
       dragup: false,
       dragdown: false,
       selected: false,
-      hidden: false
+      hidden: false,
+      showEditButton: false
     };
   },
   watch: {
@@ -374,5 +378,12 @@ export default {
 .alarm-icon {
   position: relative;
   top: 4px;
+}
+
+.editButton {
+  overflow:hidden;
+  position: absolute;
+  right: 8px;
+  top: 8px;
 }
 </style>
