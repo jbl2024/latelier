@@ -80,7 +80,7 @@ export default {
   -webkit-overflow-scrolling: touch;
 }
 
-.drawer {
+.drawer .v-list {
   padding-left: 8px;
 }
 </style>
