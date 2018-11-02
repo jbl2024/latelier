@@ -37,8 +37,8 @@
           <v-list-tile-title>Parametres</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-      <v-divider></v-divider>
     </v-list>
+    <v-divider></v-divider>
 </div>
 
 </template>

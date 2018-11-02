@@ -35,8 +35,8 @@
         <v-list-tile-title>Paramètres</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
-    <v-divider></v-divider>
   </v-list>
+  <v-divider></v-divider>
   <labels :projectId="projectId"></labels>
 </div>
 
