@@ -322,6 +322,11 @@ export default {
   padding-right: 2px;
 }
 
+.v-card:hover {
+  background: rgba(0,0,0,0.04);
+  cursor: pointer;
+}
+
 .name.completed {
   text-decoration: line-through;
 }

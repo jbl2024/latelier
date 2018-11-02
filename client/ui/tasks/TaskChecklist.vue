@@ -159,7 +159,6 @@ export default {
   overflow: hidden;
   box-sizing: border-box;
   text-overflow: ellipsis;
-  background-color: white;
 }
 
 .clear {
