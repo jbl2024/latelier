@@ -22,7 +22,7 @@
         <blaze-template class="show-desktop" id="login" template="loginButtons"></blaze-template>
       </v-toolbar>
 
-      <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
+      <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app class="drawer">
         <organization-menu v-if="currentOrganizationId != 0 && currentProjectId == 0" :organizationId="currentOrganizationId"></organization-menu>
         <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
         <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
@@ -78,5 +78,9 @@ export default {
   display: flex;
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
+}
+
+.drawer {
+  padding-left: 8px;
 }
 </style>
