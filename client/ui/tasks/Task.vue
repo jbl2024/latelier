@@ -316,6 +316,7 @@ export default {
 
 .name {
   font-size: 12px;
+  padding-right: 22px;
 }
 
 .task {
