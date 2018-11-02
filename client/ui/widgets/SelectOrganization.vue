@@ -7,7 +7,7 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="organization in organizations">
-              <v-list-tile :key='organization._id' @click="selectOrganization(user)">
+              <v-list-tile :key='organization._id' @click="selectOrganization(organization)">
                 <v-list-tile-avatar>
                   <v-icon>domain</v-icon>
                 </v-list-tile-avatar>
