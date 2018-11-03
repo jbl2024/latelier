@@ -11,6 +11,7 @@ const messages = {
         removeChecklistItem: "Suppression d'un item",
         toggleCheckItem: "Mise à jour d'un item",
         convertItemToTask: "Conversion d'un item en tache",
+        move: "Déplacement",
       }
     }
   }

@@ -242,7 +242,7 @@ Meteor.methods({
         query,
         {
           sort: {
-            createdAt: 1
+            createdAt: -1
           }
         }
       )
