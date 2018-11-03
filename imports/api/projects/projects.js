@@ -6,6 +6,7 @@ import { Tasks } from '/imports/api/tasks/tasks.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Labels } from '/imports/api/labels/labels.js'
+import { Events } from '/imports/api/events/events.js'
 
 export const Projects = new Mongo.Collection('projects');
 if (Meteor.isServer) {
@@ -230,4 +231,25 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$set: {estimatedSize: estimatedSize}});
   },
 
+  'projects.getHistory'(projectId) {
+    check(projectId, String);
+    const query = {
+      'properties.task.projectId': projectId
+    }
+
+    const data = Events
+      .find(
+        query,
+        {
+          sort: {
+            createdAt: 1
+          }
+        }
+      )
+      .fetch();    
+
+      return {
+        data: data
+      };
+  }
 });

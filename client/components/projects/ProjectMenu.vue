@@ -1,7 +1,8 @@
 <template>
 
 <div class="project-menu">
-
+  <project-history :projectId="project._id" ref="projectHistory"></project-history>
+  
   <v-list dense class="pt-0" v-if="$subReady.project">
     <v-list-tile :to="{ name: 'project', params: { organizationId: project.organizationId, projectId: project._id }}">
       <v-list-tile-action>
@@ -25,6 +26,14 @@
       </v-list-tile-action>
       <v-list-tile-content>
         <v-list-tile-title>Pièces jointes</v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+    <v-list-tile @click="$refs.projectHistory.open()">
+      <v-list-tile-action>
+        <v-icon>track_changes</v-icon>
+      </v-list-tile-action>
+      <v-list-tile-content>
+        <v-list-tile-title>Historique</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
     <v-list-tile :to="{ name: 'project-settings', params: { organizationId: project.organizationId, projectId: project._id }}">
@@ -52,6 +61,11 @@ export default {
       default: 0
     }
   },
+  data() {
+    return {
+      showHistoryDialog: false
+    };
+  },
   meteor: {
     $subscribe: {
       'project': function() {
@@ -69,10 +83,6 @@ export default {
         return Projects.findOne({ _id: id}) || {};
       }
     }
-  },
-  data() {
-    return {
-    };
   },
   methods: {
   }
