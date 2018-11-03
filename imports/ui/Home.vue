@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+      {{ $t("message.hello") }}
     <login-widget></login-widget>
   </div>
 </template>
