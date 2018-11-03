@@ -161,7 +161,7 @@ Meteor.methods({
       });
     }
 
-    Meteor.call('tasks.tracks', {
+    Meteor.call('tasks.track', {
       type: 'tasks.move',
       taskId: taskId
     });
@@ -186,7 +186,7 @@ Meteor.methods({
 
     Tasks.update({_id: taskId}, {$push: {notes: note}});
 
-    Meteor.call('tasks.tracks', {
+    Meteor.call('tasks.track', {
       type: 'tasks.update',
       taskId: taskId
     });
