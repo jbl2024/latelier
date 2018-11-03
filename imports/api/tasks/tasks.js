@@ -20,6 +20,10 @@ var _checkForCompletion = function(listId, taskId) {
   }
 }
 
+Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
+  modifier.$set = modifier.$set || {};
+  modifier.$set.updatedAt = new Date();
+});
 
 Meteor.methods({
   'tasks.insert'(projectId, listId, name) {
@@ -52,6 +56,7 @@ Meteor.methods({
       listId: listId,
       completed: completed,
       createdAt: new Date(),
+      updatedAt: new Date(),
       createdBy: Meteor.userId()
     });
 
