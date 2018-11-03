@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
+import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
@@ -58,6 +59,11 @@ Meteor.methods({
       createdAt: new Date(),
       updatedAt: new Date(),
       createdBy: Meteor.userId()
+    });
+
+    Meteor.call('tasks.track', {
+      type: 'task.create',
+      taskId: taskId
     });
 
     return Tasks.findOne({_id: taskId});
@@ -325,5 +331,29 @@ Meteor.methods({
       return;
     }
     Tasks.update({ _id: taskId }, { $pull: { resources: resourceId } });
-  },  
+  }, 
+  
+  
+  'tasks.track' (event) {
+    check(event, {
+      taskId: String,
+      type: String,
+      properties: Match.Optional(Object)
+    });
+    
+    const task = Tasks.findOne({_id: event.taskId});
+    const project = Projects.findOne({_id: task.projectId});
+
+    const properties = event.properties || {};
+
+    properties.taskId = task._id;
+    properties.listId = task.listId;
+    properties.projectId = task.projectId;
+    properties.organizationId = project.organizationId;
+
+    Meteor.call('events.track', {
+      type: event.type,
+      properties: properties
+    })
+  }
 });
