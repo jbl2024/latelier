@@ -22,7 +22,7 @@
               <v-card class="elevation-2">
                 <v-card-text>
                   <div>{{ item.properties.task.name }}</div>
-                  <div class="grey--text">{{ item.type }}</div>
+                  <div class="grey--text">{{ $t(`history.${item.type}`) }}</div>
                 </v-card-text>
               </v-card>
 
@@ -71,7 +71,6 @@ export default {
           return;
         }
         this.history = result.data;
-        console.log (this.history);
       })
     },
 

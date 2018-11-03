@@ -20,6 +20,9 @@ import Vue from 'vue';
 import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
+import VueI18n from 'vue-i18n';
+Vue.use(VueI18n)
+
 import VueMeteorTracker from "vue-meteor-tracker";
 Vue.use(VueMeteorTracker);
 
@@ -41,6 +44,7 @@ Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
 import App from '/imports/ui/App.vue';
 import {store} from '/imports/store';
 import routes from '/imports/routes.js'
+import messages from '/imports/i18n.js'
 
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000
@@ -59,8 +63,14 @@ Meteor.startup(() => {
     mode: 'history',
     routes,
   })
-
+  
+  const i18n = new VueI18n({
+    locale: 'fr',
+    messages,
+  })
+  
   new Vue({
+    i18n,
     router,
     store,
     render: h => h(App),
