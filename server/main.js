@@ -10,10 +10,11 @@ import '../imports/api/projects/server/publications.js';
 import '../imports/api/users/permissions.js';
 import '../imports/api/users/users.js';
 import '../imports/api/users/server/publications.js';
-
 import '../imports/api/projectGroups/projectGroups.js';
 import '../imports/api/projectGroups/server/publications.js';
+import '../imports/api/labels/labels.js';
 import '../imports/api/labels/server/publications.js';
+import '../imports/api/events/events.js';
 
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
