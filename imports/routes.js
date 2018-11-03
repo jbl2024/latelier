@@ -25,15 +25,7 @@ export default [
     path: "/",
     name: "home",
     component: Home,
-    beforeEnter: (to, from, next) => {
-      if (Meteor.userId()) {
-        next({
-          name: "organizations-page"
-        });
-      } else {
-        next();
-      }
-    }
+    beforeEnter: isBasicAuth
   },
   {
     path: "/login",
