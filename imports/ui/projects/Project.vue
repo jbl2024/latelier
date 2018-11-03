@@ -66,7 +66,7 @@ export default {
           this.selectTask(taskId);
         }
       }
-    },
+    }
   },
 
   data () {
