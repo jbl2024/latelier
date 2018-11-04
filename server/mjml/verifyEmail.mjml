@@ -1,0 +1,32 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="blue" color="blue" />
+      <mj-class name="big" font-size="20px" />
+      <mj-all font-family="Helvetica" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#1565c0">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#fff" mj-class="big">
+          L'atelier
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#fff">
+      <mj-column>
+        <mj-text>Bienvenue sur l'atelier</mj-text>
+        <mj-button background-color="#f45e43" color="white" href="{{ url }}">
+          Confirmer mon inscription
+         </mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#eee">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#fff">
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
