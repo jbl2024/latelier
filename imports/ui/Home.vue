@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-      {{ $t("message.hello") }}
-    <login-widget></login-widget>
+      <empty-state description="Bienvenue sur l'atelier" illustration="organizing">
+        <v-btn class="primary" :to="{ name: 'organizations-page'}">Démarrer</v-btn>
+      </empty-state>
   </div>
 </template>
 
