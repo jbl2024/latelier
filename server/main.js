@@ -21,10 +21,25 @@ if (Meteor.isServer) {
 }
 
 Accounts.config({
-  forbidClientAccountCreation : false
+  forbidClientAccountCreation : false,
+  sendVerificationEmail: true
 });
 
 Meteor.startup(() => {
   Meteor.call('organizations.fixOrphanProjects');
   Meteor.call('organizations.fixOrphanProjectGroups');
+
+  var email = new MJML(Npm.require('path').resolve('.').split('.meteor')[0]+ './server/mjml/body.mjml');
+  email.helpers({
+    message:"Hello World"
+  });
+  
+  email.send({
+    to: "to@email",
+    from: "from@email",
+    subject: "Just Testing..."
+  });
+  
+  
+
 });

@@ -1,0 +1,23 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-class name="blue" color="blue" />
+      <mj-class name="big" font-size="20px" />
+      <mj-all font-family="Arial" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#1565c0">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#fff" mj-class="big">
+          L'atelier
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#fff">
+      <mj-column>
+        <mj-text>{{ message }}</mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

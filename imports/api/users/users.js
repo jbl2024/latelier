@@ -120,5 +120,39 @@ Meteor.methods({
       }
     });
     Meteor.users.remove(userId);
+  },
+
+  "admin.confirmEmail"(userId) {
+    check(userId, String);
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    Meteor.users.update(
+      { _id: userId },
+      { $set: {
+        'services.email.verificationTokens': [],
+        'emails.0.verified': true
+      } }
+    );
+  },
+
+  "admin.unconfirmEmail"(userId) {
+    check(userId, String);
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    Meteor.users.update(
+      { _id: userId },
+      { $set: {
+        'emails.0.verified': false
+      } }
+    );
+  },
+
+  "users.create" (userData) {
+    const userId = Accounts.createUser(userData);
+    Accounts.sendVerificationEmail(userId);
   }
 });
