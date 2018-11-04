@@ -28,7 +28,6 @@
         </v-list>
       </v-menu>
     </v-toolbar>
-    <v-card-title></v-card-title>
     <v-card-text>
       <v-container grid-list-md>
         <v-layout wrap="">
