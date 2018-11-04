@@ -75,6 +75,11 @@ export default {
         if (error) {
           alert("Error during upload: " + error);
         } else {
+          Meteor.call('tasks.track', {
+            type: 'tasks.addAttachment',
+            taskId: that.task._id,
+          });
+
           that.file = null;
         }
       });
@@ -84,6 +89,10 @@ export default {
 
     deleteAttachment (attachment) {
       Meteor.call('attachments.remove', attachment._id);
+      Meteor.call('tasks.track', {
+        type: 'tasks.removeAttachment',
+        taskId: this.task._id,
+      });
     },
 
     link (attachment) {
