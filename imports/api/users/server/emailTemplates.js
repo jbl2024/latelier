@@ -3,7 +3,7 @@ Accounts.emailTemplates.verifyEmail = {
      return "Activate your account now!";
   },
   text(user, url) {
-     return `Hey ${user}! Verify your e-mail by following this link: ${url}`;
+     return `Bienvenue sur l'atelier. Confirmer votre inscription en cliquant sur le lien suivant : ${url}`;
   },
 
   html(user, url) {
