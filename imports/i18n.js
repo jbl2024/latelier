@@ -12,6 +12,8 @@ const messages = {
         toggleCheckItem: "Mise à jour d'un item",
         convertItemToTask: "Conversion d'un item en tache",
         move: "Déplacement",
+        addAttachment: "Ajout d'une pièce jointe",
+        removeAttachment: "Suppression d'un pièce jointe",
       }
     }
   }
