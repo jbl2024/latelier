@@ -438,6 +438,8 @@ Meteor.methods({
   
   
   'tasks.track' (event) {
+    this.unblock();
+
     check(event, {
       taskId: String,
       type: String,
@@ -445,7 +447,6 @@ Meteor.methods({
     });
     
     const task = Tasks.findOne({_id: event.taskId});
-
     const properties = event.properties || {};
 
     properties.task = task;
