@@ -11,7 +11,12 @@ Meteor.startup(function() {
 });
 
 Accounts.config({
-  forbidClientAccountCreation : false
+  forbidClientAccountCreation : false,
+  sendVerificationEmail: true
+});
+
+Accounts.onEmailVerificationLink(function(token,done) { 
+  Accounts.verifyEmail(token, done);
 });
 
 // Libs

@@ -48,6 +48,16 @@ if (Meteor.isServer) {
     if (attemptObj.user && !Permissions.isActive(attemptObj.user._id)) {
       throw new Meteor.Error(403, "Your account is disabled.");
     }
+    if (Permissions.isAdmin(attemptObj.user._id)) {
+      return true;
+    }
+
+    if (attemptObj.user.emails[0].verified === true) {
+      return true;
+    } else {
+      throw new Meteor.Error('email-not-verified', 'You must verify your email address before you can log in');
+    }
+    
     return true;
   });
 }

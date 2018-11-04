@@ -9,40 +9,35 @@
       @cancel="onCancelDeleteUser"
       @confirm="onConfirmDeleteUser"
     />
-
-      <v-toolbar dark color="primary">
-        <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
-          <v-icon>close</v-icon>
+    <v-toolbar dark color="primary">
+      <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-toolbar-title>
+        <span>{{ user.profile.firstName}} {{ user.profile.lastName }}</span>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-menu bottom left>
+        <v-btn slot="activator" icon>
+          <v-icon>more_vert</v-icon>
         </v-btn>
-        <v-toolbar-title>
-          <span>{{ user.profile.firstName}} {{ user.profile.lastName }}</span>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <v-menu bottom left>
-          <v-btn slot="activator" icon>
-            <v-icon>more_vert</v-icon>
-          </v-btn>
-          <v-list>
-            <v-list-tile v-if="!isMe(user) && !isActive(user)" @click="activate()">
-              <v-list-tile-title>Activer</v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile v-if="!isMe(user) &&  isActive(user)" @click="deactivate()">
-              <v-list-tile-title>Désactiver</v-list-tile-title>
-            </v-list-tile>
-            <v-divider></v-divider>
-            <v-list-tile v-if="!isMe(user)" @click="showConfirmDeleteUserDialog = true">
-              <v-list-tile-title>Supprimer</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </v-toolbar>    
-    <v-card-title>
-      <span v-if="isActive(user)">Compte activé</span>
-      <span v-if="!isActive(user)" class="deactivated">Compte désactivé</span>
-    </v-card-title>
+        <v-list>
+          <v-list-tile v-if="!isMe(user)" @click="showConfirmDeleteUserDialog = true">
+            <v-list-tile-title>Supprimer</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-toolbar>
+    <v-card-title></v-card-title>
     <v-card-text>
       <v-container grid-list-md>
-        <v-layout wrap>
+        <v-layout wrap="">
+          <v-flex xs12 sm6 md6>
+            <v-switch v-if="!isMe(user)" :label="`${isActive ? 'Compte activé' : 'Compte déactivé'}`" v-model="isActive"></v-switch>
+          </v-flex>
+          <v-flex xs12 sm6 md6>
+            <v-switch v-if="!isMe(user)" :label="`${isConfirmed ? 'Mail confirmé' : 'Mail non confirmé'}`" v-model="isConfirmed"></v-switch>
+          </v-flex>
           <v-flex xs12 sm6 md6>
             <v-text-field label="Prénom*" required v-model="user.profile.firstName"></v-text-field>
           </v-flex>
@@ -77,15 +72,40 @@ export default {
   data() {
     return {
       showConfirmDeleteUserDialog: false,
+      isActive: false,
+      isConfirmed: false
     };
   },
-  methods: {
-    isMe (user) {
-      return user._id == Meteor.userId()
+  watch: {
+    user: {
+      immediate: true,
+      handler(user) {
+        this.isActive = Permissions.isActive(user);
+        this.isConfirmed = user.emails[0].verified;
+      }
     },
-    
-    isActive(user) {
-      return Permissions.isActive(user);
+    isActive(active, prevValue) {
+      if (active != prevValue) {
+        if (active) {
+          this.activate();
+        } else {
+          this.deactivate();
+        }
+      }
+    },
+    isConfirmed(confirmed, prevValue) {
+      if (confirmed != prevValue) {
+        if (confirmed) {
+          this.confirm();
+        } else {
+          this.unconfirm();
+        }
+      }
+    }
+  },
+  methods: {
+    isMe(user) {
+      return user._id == Meteor.userId();
     },
 
     close() {
@@ -100,18 +120,24 @@ export default {
     deactivate() {
       Meteor.call("admin.deactivateUser", this.user._id);
       this.$emit("saved");
-      this.$emit("close");
     },
 
     activate() {
       Meteor.call("admin.activateUser", this.user._id);
       this.$emit("saved");
-      this.$emit("close");
     },
 
-    onCancelDeleteUser () {
-
+    confirm() {
+      Meteor.call("admin.confirmEmail", this.user._id);
+      this.$emit("saved");
     },
+
+    unconfirm() {
+      Meteor.call("admin.unconfirmEmail", this.user._id);
+      this.$emit("saved");
+    },
+
+    onCancelDeleteUser() {},
 
     onConfirmDeleteUser() {
       Meteor.call("admin.removeUser", this.user._id);
@@ -123,7 +149,6 @@ export default {
 </script>
 
 <style scoped>
-
 .deactivated {
   font-weight: bold;
 }

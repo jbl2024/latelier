@@ -77,22 +77,14 @@ export default {
         password: this.form.password,
         email: this.form.email
       };
-      Accounts.createUser(userData, err => {
+      Meteor.call('users.create', userData, (err, result) => {
         this.sending = false;
         this.notify = false;
         if (err) {
           this.notifyText = "Erreur " + err.reason;
           this.notify = true;
         } else {
-          Meteor.loginWithPassword(this.form.email, this.form.password, err => {
-            if (err) {
-              this.notifyText = "Erreur " + err.reason;
-              this.notify = true;
-            } else {
-              this.clearForm();
-              this.$router.push({ name: "organizations-page" });
-            }
-          });
+          this.$router.push({ name: "login" });
         }
       });
     },
