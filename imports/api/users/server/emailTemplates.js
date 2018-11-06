@@ -7,7 +7,7 @@ Accounts.emailTemplates.verifyEmail = {
   },
 
   html(user, url) {
-    var email = new MJML(Assets.absoluteFilePath('mjml') + './verifyEmail.mjml');
+    var email = new MJML(Assets.absoluteFilePath('mjml/verifyEmail.mjml'));
     email.helpers({
       url: url,
     });
