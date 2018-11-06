@@ -199,6 +199,7 @@ export default {
 
   .tasks-wrapper {
     width: 274px;
+    overflow-y: hidden !important;
   }
 
   .list {
@@ -236,14 +237,13 @@ export default {
 
 
 .task.new .list-title {
-  border: 2px dashed #2d6293;
-  background-color: white;
-  font-size: 14px;
+  border: 1px dashed #2d6293;
+  font-size: 12px;
   padding: 4px;
-  width:272px;
   margin-top: 4px;
+  width: 272px;
   font-weight: normal;
-  color: black;
+  color: #777;
   cursor: pointer;
 }
 .task.new .list-title:hover {
