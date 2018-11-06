@@ -1,5 +1,5 @@
 <template>
-  <drop class="kanban" @drop="(data, event) => { handleDrop(data, event) }" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove" >
+  <drop class="kanban" @drop="(data, event) => { handleDrop(data, event) }" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove.native="onMouseMove" >
       <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
         <list :list="list" class="kanban-list-item" :data-id="list._id" :ref="list._id"></list>
       </div>  
