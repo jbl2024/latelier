@@ -118,5 +118,9 @@ export default {
 .list {
   overflow-y: scroll;  
 }
-
+@media (min-width: 601px) {
+  .kanban {
+    overflow-y: hidden !important;
+  }
+}
 </style>
