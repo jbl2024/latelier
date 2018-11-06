@@ -1,3 +1,4 @@
+Accounts.emailTemplates.from  = Meteor.settings.email.from;
 Accounts.emailTemplates.verifyEmail = {
   subject() {
      return "Activate your account now!";
