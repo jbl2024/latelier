@@ -1,6 +1,9 @@
 {
   "generateFixtures": true,
   "attachmentsPath": "/Users/jerome/rectorat/attachments/",
+  "email": {
+    "from": "noreply@latelierdesprojets.fr"
+  },
   "roles": {
     "admin": ["jerome@blondon.fr"]
   }
