@@ -92,12 +92,11 @@ export default {
   font-weight: normal;
   font-size: 14px;
   padding: 5px;
-  padding-top: 12px;
-  margin-bottom: 0;
-  border: 2px dashed #2D6293;
-  background-color: white;
-  padding-bottom: 8px;
-  color: black;
+  padding-top: 10px;
+  margin-bottom: 0px;
+  border: 1px dashed #2D6293;
+  padding-bottom: 7px;
+  color: #777;
   cursor: pointer;
 }
 
