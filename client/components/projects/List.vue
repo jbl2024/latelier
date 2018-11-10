@@ -21,18 +21,21 @@
                   </v-list>
                 </v-menu>
               </div>
-
             </div>
             <div class="list-edit" v-show="isListEdited(list, selectedList)">
-              <input @focus="$event.target.select()" type="text" ref="name" v-model="list.name" v-on:keyup.enter="updateName(list)">
+              <input
+                @focus="$event.target.select()"
+                type="text"
+                ref="name"
+                v-model="list.name"
+                v-on:keyup.enter="updateName(list)"
+              >
               <v-btn flat icon @click.native="updateName(list)">
                 <v-icon>check_circle</v-icon>
               </v-btn>
-
               <v-btn flat icon @click.native="cancelUpdate(list)">
                 <v-icon>cancel</v-icon>
               </v-btn>
-
             </div>
           </drag>
         </div>
@@ -51,6 +54,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Attachments } from "/imports/api/attachments/attachments";
 import { mapState } from "vuex";
 
 export default {
@@ -82,6 +86,10 @@ export default {
   },
   methods: {
     handleDrop(list, data, event) {
+      if (!data) {
+        this.onDropFile(list, event);
+        return;
+      }
       if (data.type === "task") {
         var droppedTask = data.data;
         Meteor.call(
@@ -102,6 +110,80 @@ export default {
         var droppedList = data.data;
         Meteor.call("lists.move", list.projectId, droppedList._id, order);
         return false;
+      }
+    },
+
+    onDropFile(list, event) {
+      const files = [];
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          if (event.dataTransfer.items[i].kind === "file") {
+            const file = event.dataTransfer.items[i].getAsFile();
+            files.push(file);
+          }
+        }
+      } else {
+        for (let i = 0; i < event.dataTransfer.files.length; i++) {
+          files.push(event.dataTransfer.files[i]);
+        }
+      }
+      if (files.length == 0) {
+        return;
+      }
+
+      const taskName = files[0].name;
+
+      Meteor.call(
+        "tasks.insert",
+        list.projectId,
+        list._id,
+        taskName,
+        (error, task) => {
+          if (error) {
+            return;
+          }
+          files.map(file => {
+            const upload = Attachments.insert(
+              {
+                file: file,
+                streams: "dynamic",
+                chunkSize: "dynamic",
+                meta: {
+                  projectId: task.projectId,
+                  taskId: task._id,
+                  createdBy: Meteor.userId()
+                }
+              },
+              false
+            );
+
+            upload.on("start", function() {});
+
+            upload.on("end", function(error, fileObj) {
+              if (error) {
+                alert("Error during upload: " + error);
+              } else {
+                Meteor.call("tasks.track", {
+                  type: "tasks.addAttachment",
+                  taskId: task._id
+                });
+              }
+            });
+
+            upload.start();
+          });
+        }
+      );
+      this.removeDragData(event);
+    },
+
+    removeDragData(ev) {
+      if (ev.dataTransfer.items) {
+        // Use DataTransferItemList interface to remove the drag data
+        ev.dataTransfer.items.clear();
+      } else {
+        // Use DataTransfer interface to remove the drag data
+        ev.dataTransfer.clearData();
       }
     },
 
@@ -175,7 +257,6 @@ export default {
 </script>
 
 <style scoped>
-
 @media (max-width: 600px) {
   .swimlane {
     flex: 0 0 auto;
@@ -205,7 +286,6 @@ export default {
   .list {
     margin-bottom: 48px;
   }
-
 }
 
 .swimlane.new .list-title {
@@ -234,7 +314,6 @@ export default {
 .swimlane input {
   width: 70%;
 }
-
 
 .task.new .list-title {
   border: 1px dashed #2d6293;
@@ -294,19 +373,19 @@ export default {
 }
 
 .list-edit input {
-  float:left;
+  float: left;
   width: 204px;
   background-color: white;
   padding: 9px;
-  margin-bottom:1px;
-  margin-top:0;
+  margin-bottom: 1px;
+  margin-top: 0;
 }
 
 .list-edit .v-btn {
   width: 32px;
-  margin-top:0;
+  margin-top: 0;
   margin-left: 0;
   margin-right: 0;
-  margin-bottom:0;
+  margin-bottom: 0;
 }
 </style>
