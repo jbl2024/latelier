@@ -6,7 +6,7 @@
     <select-organization @select="onSelectOrganization" :active.sync="showSelectOrganization"></select-organization>
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
 
-    <v-subheader>Description</v-subheader>
+    <v-subheader>{{ $t("Description")}}</v-subheader>
 
     <div class="elevation-1 settings">
       <div class="description">
@@ -14,7 +14,7 @@
           <div v-html="markDown(project.description)"></div>
         </div>
         <div v-show="!project.description && !editDescription" @click="startEditDescription">
-          Aucune description
+          {{ $t("No description")}}
         </div>
 
         <div v-show="editDescription">
@@ -29,7 +29,7 @@
       </div>
     </div>
 
-    <v-subheader>Visibilité</v-subheader>
+    <v-subheader>{{ $t("Visibility") }}</v-subheader>
     <v-list class="elevation-1">
       <v-list-tile @click="toggleProjectVisibility(project)">
         <v-list-tile-avatar>
@@ -44,7 +44,7 @@
       </v-list-tile>
     </v-list>
 
-    <v-subheader>Taille</v-subheader>
+    <v-subheader>{{ $t("Size")}}</v-subheader>
     <div class="elevation-1 settings" @click="startEditEstimatedSize">
       <div class="estimatedSize">
         <div v-show="!editEstimatedSize && project.estimatedSize && project.estimatedSize != 0">
@@ -68,7 +68,7 @@
       </div>
     </div>
 
-    <v-subheader>Dates</v-subheader>
+    <v-subheader>{{ $t("Dates") }}</v-subheader>
     <v-list two-line class="elevation-1">
         <v-list-tile @click="showSelectStartDate = true">
           <v-list-tile-avatar>
@@ -111,7 +111,7 @@
     </v-list>
 
     
-    <v-subheader>Couleur</v-subheader>
+    <v-subheader>{{ $t("Color") }}</v-subheader>
 
     <v-list class="elevation-1">
       <v-list-tile @click="showSelectColor = true">
@@ -126,7 +126,7 @@
       </v-list-tile>
     </v-list>
 
-    <v-subheader>Catégories
+    <v-subheader>{{ $t("Categories") }}
         <v-btn flat icon @click="showSelectGroup = true">
           <v-icon>add</v-icon>
         </v-btn>
@@ -149,7 +149,7 @@
       </template>
     </v-list>
 
-    <v-subheader>Organisation</v-subheader>
+    <v-subheader>{{ $t("Organization") }}</v-subheader>
     <v-list class="elevation-1" v-if="$subReady.organizations">
       <v-list-tile @click="showSelectOrganization = true">
         <v-avatar>
@@ -234,12 +234,28 @@ export default {
   i18n: {
     messages: {
       en: { 
-        projectIsPublic: "The project is public",
-        projectIsPrivate: "The project is private"
+        "Description": "Description",
+        "Visibility": "Visibility",
+        "Size": "Size",
+        "Dates": "Dates",
+        "Color": "Color",
+        "Categories": "Categories",
+        "Organization": "Organization",
+        "No description": "no description",
+        "The project is public": "The project is public",
+        "The project is private": "The project is private",
       },
       fr: {
-        projectIsPublic: "Le projet est public",
-        projectIsPrivate: "Le projet est privé"
+        "Description": "Description",
+        "Visibility": "Visibilité",
+        "Size": "Taille",
+        "Dates": "Dates",
+        "Color": "Couleur",
+        "Categories": "Catégories",
+        "Organization": "Organisation",
+        "No description": "Aucune description",
+        "The project is public": "Le projet est public",
+        "The project is private": "Le projet est privé",
       }
     }
   },  
@@ -359,9 +375,9 @@ export default {
       project.isPublic = !project.isPublic;
       Meteor.call("projects.updateIsPublic", project._id, project.isPublic);
       if (!project.isPublic) {
-        this.$store.dispatch("notify", this.$t("projectIsPublic"));
+        this.$store.dispatch("notify", this.$t("The project is public"));
       } else {
-        this.$store.dispatch("notify", this.$t("projectIsPrivate"));
+        this.$store.dispatch("notify", this.$t("The project is private"));
       }
     }
   }
