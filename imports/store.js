@@ -9,6 +9,7 @@ export const store = new Vuex.Store({
     showCategories: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
+    notifyMessage: ''
   },
   getters: {
     // Compute derived state based on the current state. More like computed property.
@@ -43,6 +44,9 @@ export const store = new Vuex.Store({
     },
     clearSelectedGroup(state) {
       state.selectedGroup = {};
+    },
+    notify(state, message) {
+      state.notifyMessage = message;
     }
   },
   actions: {
@@ -65,6 +69,9 @@ export const store = new Vuex.Store({
     },
     selectLabel(context, label) {
       context.commit('selectLabel', label);
+    },
+    notify(context, message) {
+      context.commit('notify', message);
     },
 
   }

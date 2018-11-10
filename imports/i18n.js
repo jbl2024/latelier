@@ -16,6 +16,24 @@ const messages = {
         removeAttachment: "Suppression d'un pièce jointe",
       }
     }
+  },
+  en: {
+    history: {
+      tasks: {
+        create: "Creation",
+        updateName: "Update name",
+        updateDescription: "Update description",
+        addLabel: "Add label",
+        removeLabel: "Remove label",
+        addChecklistItem: "Add item",
+        removeChecklistItem: "Delete item",
+        toggleCheckItem: "Update item",
+        convertItemToTask: "Convert item totask",
+        move: "Move",
+        addAttachment: "Add attachment",
+        removeAttachment: "Delete attachment",
+      }
+    }
   }
 };
 

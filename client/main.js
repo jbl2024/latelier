@@ -15,8 +15,18 @@ Accounts.config({
   sendVerificationEmail: true
 });
 
+delete Accounts._accountsCallbacks['verify-email'];
 Accounts.onEmailVerificationLink(function(token,done) { 
-  Accounts.verifyEmail(token, done);
+  Accounts.verifyEmail(token, (err) => {
+    if (err) {
+        console.log("Error: ", err);
+    } else {
+        console.log("Success");
+        // Do whatever you want to on completion, the
+        // done() call is the default one.
+        done();
+    }
+  });
 });
 
 // Libs
@@ -68,9 +78,15 @@ Meteor.startup(() => {
     mode: 'history',
     routes,
   })
+
+  let language = navigator.language;
+  if (language.startsWith('en-')) {
+    language = 'en';
+  }
   
   const i18n = new VueI18n({
-    locale: 'fr',
+    locale: language,
+    fallbackLocale: 'fr',
     messages,
   })
   
