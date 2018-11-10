@@ -57,6 +57,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Attachments } from "/imports/api/attachments/attachments";
 import { mapState } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from "moment";
@@ -136,6 +137,12 @@ export default {
       this.dragover = false;
       this.dragup = false;
       this.dragdown = false;
+
+      if (!data) {
+        this.onDropFile(this.task, event);
+        return;
+      }
+
       if (data.type === "task") {
         var order = this.task.order;
         var droppedTask = data.data;
@@ -167,6 +174,9 @@ export default {
     },
 
     handleDragOver(data, event) {
+      if (!data) {
+        return;
+      }
       if (data.type === "task") {
         if (data.data._id == this.task._id) {
           this.dragover = false;
@@ -189,6 +199,69 @@ export default {
       this.dragup = false;
       this.dragdown = false;
     },
+
+    onDropFile(task, event) {
+      const files = [];
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          if (event.dataTransfer.items[i].kind === "file") {
+            const file = event.dataTransfer.items[i].getAsFile();
+            files.push(file);
+          }
+        }
+      } else {
+        for (let i = 0; i < event.dataTransfer.files.length; i++) {
+          files.push(event.dataTransfer.files[i]);
+        }
+      }
+      if (files.length == 0) {
+        return;
+      }
+
+      const taskName = files[0].name;
+
+      files.map(file => {
+        const upload = Attachments.insert(
+          {
+            file: file,
+            streams: "dynamic",
+            chunkSize: "dynamic",
+            meta: {
+              projectId: task.projectId,
+              taskId: task._id,
+              createdBy: Meteor.userId()
+            }
+          },
+          false
+        );
+
+        upload.on("start", function() {});
+
+        upload.on("end", function(error, fileObj) {
+          if (error) {
+            alert("Error during upload: " + error);
+          } else {
+            Meteor.call("tasks.track", {
+              type: "tasks.addAttachment",
+              taskId: task._id
+            });
+          }
+        });
+
+        upload.start();
+      });
+      this.removeDragData(event);
+    },
+
+    removeDragData(event) {
+      if (event.dataTransfer.items) {
+        // Use DataTransferItemList interface to remove the drag data
+        event.dataTransfer.items.clear();
+      } else {
+        // Use DataTransfer interface to remove the drag data
+        event.dataTransfer.clearData();
+      }
+    },    
 
     startUpdateName(e) {
       if (e) {

@@ -177,13 +177,13 @@ export default {
       this.removeDragData(event);
     },
 
-    removeDragData(ev) {
-      if (ev.dataTransfer.items) {
+    removeDragData(event) {
+      if (event.dataTransfer.items) {
         // Use DataTransferItemList interface to remove the drag data
-        ev.dataTransfer.items.clear();
+        event.dataTransfer.items.clear();
       } else {
         // Use DataTransfer interface to remove the drag data
-        ev.dataTransfer.clearData();
+        event.dataTransfer.clearData();
       }
     },
 
