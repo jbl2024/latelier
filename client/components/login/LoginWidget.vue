@@ -54,6 +54,16 @@ export default {
     notifyText: "",
     sending: false
   }),
+  i18n: {
+    messages: {
+      en: { 
+        "Welcome back!": "Welcome back!",
+      },
+      fr: {
+        "Welcome back!": "Ravi de vous revoir!",
+      }
+    }  
+  },
   methods: {
     clearForm() {
       this.form.email = null;
@@ -71,6 +81,7 @@ export default {
           this.notify = true;
         } else {
           this.clearForm();
+          this.$store.dispatch("notify", this.$t("Welcome back!"));
           this.$router.push({ name: "organizations-page" });
         }
       });
