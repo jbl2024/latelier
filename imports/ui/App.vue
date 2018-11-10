@@ -31,9 +31,18 @@
 
       <v-content class="main-content">
         <v-container class="page-container" fluid>
-          <router-view></router-view>
+          <router-view></router-view>          
         </v-container>
       </v-content>
+      <v-snackbar
+          v-model="showSnackbar"
+          bottom
+      >
+        {{ notifyMessage }}
+        <v-btn icon flat @click="showSnackbar = false">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
@@ -46,15 +55,22 @@ import { mapState } from "vuex";
 export default {
   data() {
     return {
-      drawer: null
+      drawer: null,
+      showSnackbar: false
     };
   },
   computed: {
     ...mapState([
       "showCategories",
       "currentProjectId",
-      "currentOrganizationId"
+      "currentOrganizationId",
+      "notifyMessage"
     ])
+  },
+  watch: {
+    notifyMessage (message) {
+      this.showSnackbar = true;
+    }
   }
 };
 </script>

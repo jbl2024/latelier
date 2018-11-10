@@ -7,6 +7,7 @@
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
 
     <v-subheader>Description</v-subheader>
+
     <div class="elevation-1 settings">
       <div class="description">
         <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
@@ -230,6 +231,18 @@ export default {
       }
     }
   },
+  i18n: {
+    messages: {
+      en: { 
+        projectIsPublic: "The project is public",
+        projectIsPrivate: "The project is private"
+      },
+      fr: {
+        projectIsPublic: "Le projet est public",
+        projectIsPrivate: "Le projet est privé"
+      }
+    }
+  },  
   methods: {
     onSelectStartDate(date) {
       Meteor.call("projects.setStartDate", this.project._id, date);
@@ -345,6 +358,11 @@ export default {
     toggleProjectVisibility(project) {
       project.isPublic = !project.isPublic;
       Meteor.call("projects.updateIsPublic", project._id, project.isPublic);
+      if (!project.isPublic) {
+        this.$store.dispatch("notify", this.$t("projectIsPublic"));
+      } else {
+        this.$store.dispatch("notify", this.$t("projectIsPrivate"));
+      }
     }
   }
 };
