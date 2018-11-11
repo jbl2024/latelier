@@ -8,8 +8,8 @@
     <template v-if="$subReady.projectsForTimeline">
       <empty-state v-show="count == 0"
         icon="timeline"
-        label="Aucun projet"
-        description="Seuls les projets avec une date de début et de fin sont affichés ici.">
+        :label="$t('No project')"
+        :description="$t('Projects with start and end date are displayed here')">
       </empty-state>
       
       <div class="progress" v-if="showProgress && count > 0">
@@ -62,6 +62,18 @@ export default {
     organizationId: {
       type: String,
       default: '0'
+    }
+  },
+  i18n: {
+    messages: {
+      en: {
+        "No project": "No project",
+        "Projects with start and end date are displayed here": "Projects with start and end date are displayed here"
+      },
+      fr: {
+        "No project": "Aucun projet",
+        "Projects with start and end date are displayed here": "Seuls les projets avec une date de début et une date de fin sont affichés ici"
+      }
     }
   },
   data () {
