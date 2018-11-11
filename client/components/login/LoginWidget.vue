@@ -1,7 +1,7 @@
 <template>
   <div class="login-widget">
     <div class="centered-container">
-      <form novalidate @submit.prevent="validateLogin">
+      <v-form v-model="valid" v-on:submit.prevent>
         <v-card>
           <v-card-title class="title">Authentification</v-card-title>
           <v-card-text>
@@ -12,6 +12,7 @@
               autocomplete="email"
               type="email"
               v-model="form.email"
+              :rules="emailRules"
               :disabled="sending"
             ></v-text-field>
             <v-text-field
@@ -20,14 +21,16 @@
               name="password"
               id="password"
               autocomplete="password"
+              :rules="passwordRules"
               v-model="form.password"
+              v-on:keyup.enter="login()"
               :disabled="sending"
             ></v-text-field>
             <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" :disabled="sending">Se connecter</v-btn>
+            <v-btn color="primary" @click="login" :disabled="sending || !valid">Se connecter</v-btn>
           </v-card-actions>
           <v-divider></v-divider>
           <v-card-actions>
@@ -37,7 +40,7 @@
           </v-card-actions>
           <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
         </v-card>
-      </form>
+      </v-form>
     </div>
   </div>
 </template>
@@ -46,13 +49,23 @@
 export default {
   name: "login-widget",
   data: () => ({
+    valid: false,
     form: {
-      email: null,
-      password: null
+      email: '',
+      password: ''
     },
     notify: false,
     notifyText: "",
-    sending: false
+    sending: false,
+    emailRules: [
+      v => !!v || "L'email est obligatoire",
+      v => v.length > 1 || "L'email est trop cours"
+    ],
+    passwordRules: [
+      v => !!v || "Le mot de passe est obligatoire",
+      v => v.length > 1 || "Le mot de passe est trop cours"
+    ]
+
   }),
   i18n: {
     messages: {

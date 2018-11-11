@@ -5,6 +5,7 @@ import NotFound from "/imports/ui/pages/NotFound/NotFound.vue";
 import Home from "/imports/ui/Home.vue";
 import Auth from "../imports//ui/layout/Auth.vue";
 import Login from "../imports/ui/pages/Auth/Login.vue";
+import RegistrationCompleted from "../imports/ui/pages/Auth/RegistrationCompleted.vue";
 import Register from "../imports/ui/pages/Auth/Register.vue";
 import ForgotPassword from "../imports/ui/pages/Auth/ForgotPassword.vue";
 import ResetPassword from "../imports/ui/pages/Auth/ResetPassword.vue";
@@ -36,6 +37,11 @@ export default [
         path: "/login",
         name: "login",
         component: Login
+      },
+      {
+        path: "/registration-completed",
+        name: "registration-completed",
+        component: RegistrationCompleted
       },
       {
         path: "/register",
