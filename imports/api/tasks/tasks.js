@@ -21,6 +21,25 @@ var _checkForCompletion = function(listId, taskId) {
 }
 
 Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
+ 
+  const hasOrderModification = modifier =>  {
+    if (modifier.$set && modifier.$set.order != undefined) {
+      if (Object.keys(modifier.$set).length === 1) {
+        return true;
+      }
+    }
+    if (modifier.$inc && modifier.$inc.order) {
+      return true;
+    }
+    return false;
+  };
+
+  if (hasOrderModification(modifier)) {
+    // do not pollute update history with minor order modifications
+    return;
+  }
+  console.log({message: 'updating data', modifier: modifier})
+
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
 });
