@@ -48,6 +48,9 @@ if (Meteor.isServer) {
     if (attemptObj.user && !Permissions.isActive(attemptObj.user._id)) {
       throw new Meteor.Error(403, "Your account is disabled.");
     }
+    if (!attemptObj.user) {
+      return false;
+    }
     if (Permissions.isAdmin(attemptObj.user._id)) {
       return true;
     }

@@ -36,6 +36,7 @@
       </v-content>
       <v-snackbar
           v-model="showSnackbar"
+          :timeout="timeout"
           bottom
       >
         {{ notifyMessage }}
@@ -56,7 +57,8 @@ export default {
   data() {
     return {
       drawer: null,
-      showSnackbar: false
+      showSnackbar: false,
+      timeout: 6000
     };
   },
   computed: {
@@ -69,7 +71,14 @@ export default {
   },
   watch: {
     notifyMessage (message) {
-      this.showSnackbar = true;
+      if (message) {
+        this.showSnackbar = true;
+      }
+    },
+    showSnackbar (show) {
+      if (!show) {
+        this.$store.dispatch("notify", "");
+      }
     }
   }
 };
