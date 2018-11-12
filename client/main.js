@@ -47,9 +47,16 @@ Vue.use(VueDragDrop);
 import VueEvents from 'vue-event-handler'
 Vue.use(VueEvents);
 
+import colors from 'vuetify/es5/util/colors'
+
 // Vuetify
 import Vuetify from 'vuetify'
-Vue.use(Vuetify)
+Vue.use(Vuetify, {
+  theme: {
+    primary: "#455A64",
+    accent: "#F9A825",
+  }
+});
 
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 

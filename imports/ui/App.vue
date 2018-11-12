@@ -2,7 +2,7 @@
   <div class="">
     <v-app>
 
-      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
+      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed>
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title style="width: 300px" class="ml-3 mr-5" v-show="currentProjectId == 0 && currentOrganizationId == 0">
           <span class="title ml-3 mr-5">L'atelier</span>
