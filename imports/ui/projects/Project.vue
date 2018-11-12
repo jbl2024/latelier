@@ -6,7 +6,7 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-      <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-bottom-transition">
+      <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-transition">
         <v-card>
           <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
         </v-card>
