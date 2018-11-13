@@ -60,6 +60,8 @@ Vue.use(Vuetify, {
 
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
+import 'pretty-checkbox/dist/pretty-checkbox.min.css'
+
 Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
 
 // Main app

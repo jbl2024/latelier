@@ -26,8 +26,14 @@
     <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
       <div>
         <div class="check">
-          <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)" @click.stop="">
-          <label :for="item._id">{{ item.name }}</label>
+
+          <div class="pretty p-default">
+                <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)" @click.stop=""/>
+                <div class="state p-primary">
+                    <label>{{ item.name }}</label>
+                </div>
+          </div>
+          
         </div>
         <div class="right" v-show="showButtons === item._id">
           <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; showConfirmConvertDialog = true;}">
