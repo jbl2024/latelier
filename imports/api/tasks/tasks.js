@@ -38,7 +38,6 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
     // do not pollute update history with minor order modifications
     return;
   }
-  console.log({message: 'updating data', modifier: modifier})
 
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
