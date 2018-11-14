@@ -121,5 +121,10 @@ export default {
   .kanban {
     overflow-y: hidden !important;
   }
+
+  .kanban-flex {
+    border-right: 1px solid rgba(0,0,0,.12);
+    margin-right: 10px;
+  }
 }
 </style>
