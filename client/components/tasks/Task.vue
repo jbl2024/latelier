@@ -401,6 +401,10 @@ export default {
   cursor: pointer;
 }
 
+.v-card {
+  border-radius: 3px;
+}
+
 .name.completed {
   text-decoration: line-through;
 }
