@@ -103,6 +103,10 @@ export default {
   display: flex;
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-top: 4px;
+  padding-right: 4px;
 }
 
 .drawer .v-list {
