@@ -125,6 +125,7 @@ export default {
   .kanban-flex {
     border-right: 1px solid rgba(0,0,0,.12);
     margin-right: 10px;
+    min-height: 89vh;
   }
 }
 </style>
