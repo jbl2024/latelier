@@ -21,6 +21,11 @@ if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }
 
+if (Meteor.isDevelopment){
+  process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
+}
+
+
 Accounts.config({
   forbidClientAccountCreation : false,
   sendVerificationEmail: true
