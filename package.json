@@ -2,13 +2,13 @@
   "name": "latelier",
   "private": true,
   "scripts": {
-    "start": "MAIL_URL=smtp://localhost:25 NO_HMR=1 meteor run --settings settings-development.json",
+    "start": "MAIL_URL=smtp://localhost:1025 NO_HMR=1 meteor run --settings settings-development.json",
     "test": "meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
   "dependencies": {
-    "@babel/runtime": "^7.1.2",
+    "@babel/runtime": "^7.1.5",
     "bcrypt": "^2.0.1",
     "element-theme-chalk": "^2.4.4",
     "element-ui": "^2.4.4",
