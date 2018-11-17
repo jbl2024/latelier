@@ -1,6 +1,6 @@
 <template>
   <div class="project-history">
-    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="70%">
+    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="60%">
       <v-toolbar dark color="primary">
         <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
           <v-icon>close</v-icon>
@@ -10,19 +10,19 @@
         </v-toolbar-title>
       </v-toolbar>       
       <v-card>
-        <v-card-text>
-          <v-timeline :dense="$vuetify.breakpoint.xsOnly" clipped> 
+        <v-card-text class="content">
+          <v-timeline :dense="$vuetify.breakpoint.xsOnly" clipped dense> 
             <v-timeline-item 
               v-for="item in history"
               :key="item._id"
               color="indigo"
               :small="$vuetify.breakpoint.xsOnly"
             >
-             <span slot="opposite">{{ formatDateDuration(item.createdAt) }} par {{ formatUser(item.userId) }}</span>
+             <span slot="opposite"></span>
               <v-card class="elevation-2">
                 <v-card-text>
                   <div>{{ item.properties.task.name }}</div>
-                  <div class="grey--text">{{ $t(`history.${item.type}`) }}</div>
+                  <div class="grey--text">{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ formatUser(item.userId) }}</div>
                 </v-card-text>
               </v-card>
 

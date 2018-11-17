@@ -14,6 +14,8 @@ const messages = {
         move: "Déplacement",
         addAttachment: "Ajout d'une pièce jointe",
         removeAttachment: "Suppression d'un pièce jointe",
+        remove: "Suppression",
+        setDueDate: "Date d'échéance"
       }
     }
   },
@@ -32,6 +34,8 @@ const messages = {
         move: "Move",
         addAttachment: "Add attachment",
         removeAttachment: "Delete attachment",
+        remove: "Delete",
+        setDueDate: "Due date"
       }
     }
   }
