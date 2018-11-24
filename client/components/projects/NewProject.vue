@@ -36,7 +36,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="info" @click="create" :disabled="!valid">Créer</v-btn>
+          <v-btn color="primary" @click="create" :disabled="!valid">Créer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
