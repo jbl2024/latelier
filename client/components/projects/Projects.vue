@@ -300,16 +300,6 @@ export default {
   }
 }
 
-.projects {
-  margin-right: 64px;
-}
-
-@media (max-width: 600px) {
-  .projects {
-    margin-right: auto;
-  }
-}
-
 .link {
   text-decoration: none;
 }
