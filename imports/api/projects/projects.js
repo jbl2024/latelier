@@ -15,6 +15,14 @@ if (Meteor.isServer) {
   });
 }
 
+export const ProjectStates = Object.freeze({
+  PLANNED: "planned",
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
+  RETIRED: "retired"
+});
+
+
 Meteor.methods({
   'projects.insert'(organizationId, name) {
     check(name, String);
@@ -27,6 +35,7 @@ Meteor.methods({
     var project = Projects.insert({
       organizationId: organizationId,
       name: name,
+      state: ProjectStates.DEVELOPMENT,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -34,10 +43,11 @@ Meteor.methods({
     return project;
   },
 
-  'projects.create'(organizationId, name, projectType, projectGroupId) {
+  'projects.create'(organizationId, name, projectType, projectGroupId, state) {
     check(organizationId, String);
     check(name, String);
     check(projectType, String);
+    check(state, String);
     const currentUser = Meteor.userId();
 
     // Make sure the user is logged in before inserting a task
@@ -48,6 +58,7 @@ Meteor.methods({
     const projectId = Projects.insert({
       organizationId: organizationId,
       name,
+      state,
       createdAt: new Date(),
       createdBy: currentUser
     });
