@@ -19,7 +19,6 @@
         <v-btn icon class="show-desktop">
           <v-icon>notifications</v-icon>
         </v-btn>
-        <blaze-template class="show-desktop" id="login" template="loginButtons"></blaze-template>
       </v-toolbar>
 
       <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app class="drawer">

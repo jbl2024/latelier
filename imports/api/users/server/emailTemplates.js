@@ -1,3 +1,10 @@
+Meteor.startup(function() {
+  Accounts.urls.resetPassword = function(token) {
+     return Meteor.absoluteUrl('reset-password/' + token);
+   };
+ });
+ 
+ 
 Accounts.emailTemplates.from  = Meteor.settings.email.from;
 Accounts.emailTemplates.verifyEmail = {
   subject() {
@@ -15,3 +22,4 @@ Accounts.emailTemplates.verifyEmail = {
     return email.compile();
   }
 };
+
