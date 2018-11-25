@@ -100,7 +100,7 @@ export default {
       const states = []
       Object.keys(ProjectStates).map(state => {
         states.push({
-          value: state,
+          value: ProjectStates[state],
           label: this.$t(`projects.state.${state}`)
         })
       });
