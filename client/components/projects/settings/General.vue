@@ -29,6 +29,15 @@
       </div>
     </div>
 
+    <v-subheader>{{ $t("State") }}</v-subheader>
+    <v-select
+      :items="projectStates()"
+      item-text="label"
+      item-value="value"
+      solo
+      v-model="project.state"
+    ></v-select>
+
     <v-subheader>{{ $t("Visibility") }}</v-subheader>
     <v-list class="elevation-1">
       <v-list-tile @click="toggleProjectVisibility(project)">
@@ -167,6 +176,7 @@
 <script>
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Projects } from "/imports/api/projects/projects.js";
+import { ProjectStates } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
@@ -179,6 +189,11 @@ export default {
   mixins: [DatesMixin, MarkdownMixin],
   props: {
     project: Object
+  },
+  watch: {
+    'project.state'(state) {
+      Meteor.call("projects.updateState", this.project._id, state);
+    }
   },
   data() {
     return {
@@ -244,6 +259,7 @@ export default {
         "No description": "no description",
         "The project is public": "The project is public",
         "The project is private": "The project is private",
+        "State": "State"
       },
       fr: {
         "Description": "Description",
@@ -256,6 +272,7 @@ export default {
         "No description": "Aucune description",
         "The project is public": "Le projet est public",
         "The project is private": "Le projet est privé",
+        "State": "Etat"
       }
     }
   },  
@@ -379,6 +396,17 @@ export default {
       } else {
         this.$store.dispatch("notify", this.$t("The project is private"));
       }
+    },
+
+    projectStates () {
+      const states = []
+      Object.keys(ProjectStates).map(state => {
+        states.push({
+          value: ProjectStates[state],
+          label: this.$t(`projects.state.${state}`)
+        })
+      });
+      return states;
     }
   }
 };

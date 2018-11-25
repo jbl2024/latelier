@@ -113,6 +113,16 @@ Meteor.methods({
     Projects.update({_id: projectId}, {$set: {description: description}});
   },
 
+  'projects.updateState'(projectId, state) {
+    check(projectId, String);
+    check(state, String);
+    if (state.length == 0) {
+      throw new Meteor.Error('invalid-state');
+    }
+
+    Projects.update({_id: projectId}, {$set: {state: state}});
+  },
+
   'projects.updateColor'(projectId, color) {
     check(projectId, String);
     check(color, String);
