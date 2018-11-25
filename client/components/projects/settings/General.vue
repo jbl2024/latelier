@@ -30,14 +30,14 @@
     </div>
 
     <v-subheader>{{ $t("State") }}</v-subheader>
-    <v-select
-      :items="projectStates()"
-      item-text="label"
-      item-value="value"
-      solo
-      v-model="project.state"
-    ></v-select>
-
+    <div class="elevation-1 state">
+      <v-select
+        :items="projectStates()"
+        item-text="label"
+        item-value="value"
+        v-model="project.state"
+      ></v-select>
+    </div>
     <v-subheader>{{ $t("Visibility") }}</v-subheader>
     <v-list class="elevation-1">
       <v-list-tile @click="toggleProjectVisibility(project)">
@@ -434,4 +434,10 @@ export default {
 .settings {
   background-color: white;
 }
+
+.state {
+  padding-left: 24px;
+  background-color: white;
+}
+
 </style>
