@@ -23,7 +23,7 @@ const messages = {
         PLANNED: 'Planifié',
         DEVELOPMENT: 'En développement',
         PRODUCTION: 'En production',
-        RETIRED: 'Décommissionné'
+        ARCHIVED: 'Archivé'
       }
     }
   },
@@ -51,7 +51,7 @@ const messages = {
         PLANNED: 'Planned',
         DEVELOPMENT: 'Development',
         PRODUCTION: 'Production',
-        RETIRED: 'Retired'
+        ARCHIVED: 'Archived'
       }
     }
   }
