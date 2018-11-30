@@ -19,7 +19,7 @@ export const ProjectStates = Object.freeze({
   PLANNED: "planned",
   DEVELOPMENT: "development",
   PRODUCTION: "production",
-  RETIRED: "retired"
+  ARCHIVED: "archived"
 });
 
 
