@@ -12,6 +12,14 @@
                     <v-icon>more_vert</v-icon>
                   </v-btn>
                   <v-list>
+                    <v-list-tile @click="list.autoComplete = !list.autoComplete">
+                      <v-list-tile-action>
+                        <v-checkbox
+                          v-model="list.autoComplete"
+                        ></v-checkbox>
+                      </v-list-tile-action>                      
+                      <v-list-tile-title>Marquer les taches comme terminées</v-list-tile-title>
+                    </v-list-tile>
                     <v-list-tile @click="newTaskInline(list._id)">
                       <v-list-tile-title>Nouvelle tâche</v-list-tile-title>
                     </v-list-tile>
