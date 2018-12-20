@@ -1,6 +1,6 @@
 <template>
   <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop>
-    <v-list dense>
+    <v-list dense class="tasks-wrapper elevation-1" v-if="task.checklist && task.checklist.length > 0">
       <template v-for="item in task.checklist">
         <v-list-tile :key="item._id">
           <v-list-tile-action>
@@ -125,14 +125,16 @@ export default {
   margin: 0 auto;
 }
 
+.tasks-wrapper {
+  margin-top:12px;
+  margin-bottom:12px;
+  border-radius: 4px;
+}
+
 .icons {
   border: 2px solid black;
 }
 
-.add-item {
-  margin-left: 18px;
-  margin-right: 18px;
-}
 
 .add-item label {
   font-size: 13px;
