@@ -101,6 +101,9 @@ export default {
 </script>
 
 <style>
+#app {
+  font-family: 'Roboto', sans-serif;
+}
 .search {
   width: 100%;
 }
