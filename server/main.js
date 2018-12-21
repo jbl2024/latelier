@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import '../imports/startup/server/fixtures.js';
-import '../imports/startup/server/fixEmptyProjectStates.js';
+import '../imports/startup/server/fixEmptyAttributes.js';
 import '../imports/startup/server/permissions.js';
 import '../imports/startup/server/userPresence.js';
 import '../imports/api/organizations/organizations.js';

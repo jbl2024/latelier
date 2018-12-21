@@ -34,6 +34,14 @@
                       </v-list-tile-action> 
                       <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
                     </v-list-tile>
+                    <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
+                      <v-list-tile-action >
+                        <v-checkbox
+                          v-model="list.catchCompleted"
+                        ></v-checkbox>
+                      </v-list-tile-action> 
+                      <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
+                    </v-list-tile>
                   </v-list>
                 </v-menu>
               </div>
@@ -92,6 +100,11 @@ export default {
     "list.autoComplete"(autoComplete, prevValue) {
       if (prevValue != autoComplete) {
         Meteor.call("lists.autoComplete", this.list._id, autoComplete);
+      }
+    },
+    "list.catchCompleted"(catchCompleted, prevValue) {
+      if (prevValue != catchCompleted) {
+        Meteor.call("lists.catchCompleted", this.list._id, catchCompleted);
       }
     }
   },
