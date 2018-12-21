@@ -67,7 +67,7 @@ Meteor.methods({
     if (projectType === 'kanban') {
       Meteor.call('lists.insert', projectId, 'A planifier');
       Meteor.call('lists.insert', projectId, 'En cours');
-      Meteor.call('lists.insert', projectId, 'Terminé', true);
+      Meteor.call('lists.insert', projectId, 'Terminé', true, true);
     }
 
     if (projectType === 'people') {
