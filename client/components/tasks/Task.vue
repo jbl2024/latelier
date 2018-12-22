@@ -1,37 +1,73 @@
 <template>
-
-  <div class="task" @click="selectTask" @mouseenter="showEditButton = true" @mouseleave="showEditButton = false">
-    <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd">
+  <div
+    class="task"
+    @click="selectTask"
+    @mouseenter="showEditButton = true"
+    @mouseleave="showEditButton = false"
+  >
+    <drag
+      class="drag"
+      :transfer-data="getTransferData(task)"
+      @dragstart="onDragStart"
+      @dragend="onDragEnd"
+    >
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-        <div class="card" ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+        <div
+          class="card"
+          ref="card"
+          :class="{ dragover, dragup, dragdown, selected }"
+          v-show="!hidden"
+        >
           <div class="header">
-
-          </div>
-          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-          <div>            
-            <v-icon icon flat v-show="showEditButton && !editName" class="editButton" small color="grey darken-1" @click="startUpdateName">
-              edit
-            </v-icon>
-            <div class="title-wrapper">
-
-              <div class="checkbox">
-                <div class="pretty p-svg p-curve">
-                      <input type="checkbox" v-show="!editName" v-model="task.completed" @click="e => e.stopPropagation()"/>
-                      <div class="state p-primary">
-                        <svg class="svg svg-icon" viewBox="0 0 20 20">
-                          <path d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z" style="stroke: white;fill:white;"></path>
-                        </svg>
-                        <label></label>
-                      </div>
+            <div class="checkbox">
+              <div class="pretty p-svg p-curve">
+                <input
+                  type="checkbox"
+                  v-show="!editName"
+                  v-model="task.completed"
+                  @click="e => e.stopPropagation()"
+                >
+                <div class="state p-primary">
+                  <svg class="svg svg-icon" viewBox="0 0 20 20">
+                    <path
+                      d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                      style="stroke: white;fill:white;"
+                    ></path>
+                  </svg>
+                  <label></label>
                 </div>
               </div>
-
-              <div v-show="!editName" :class="getClassForName(task)">
-                {{ task.name }}
-              </div>
+            </div>
+            <div class="avatar">
+              <v-avatar size="32" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+                <span>{{ formatUserLetters(task.assignedTo) }}</span>
+              </v-avatar>
+            </div>
+          </div>
+          <v-divider></v-divider>
+          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
+          <div class="title">
+            <v-icon
+              icon
+              flat
+              v-show="showEditButton && !editName"
+              class="editButton"
+              small
+              color="grey darken-1"
+              @click="startUpdateName"
+            >edit</v-icon>
+            <div class="title-wrapper">
+              <div v-show="!editName" :class="getClassForName(task)">{{ task.name }}</div>
 
               <span v-show="editName" class="edit">
-                <input ref="name" @focus="$event.target.select()" type="text" class="edit-name" v-model="task.name" v-on:keyup.enter="updateName()">
+                <input
+                  ref="name"
+                  @focus="$event.target.select()"
+                  type="text"
+                  class="edit-name"
+                  v-model="task.name"
+                  v-on:keyup.enter="updateName()"
+                >
                 <v-btn icon flat @click.native="updateName">
                   <v-icon>check_circle</v-icon>
                 </v-btn>
@@ -39,31 +75,23 @@
                 <v-btn icon flat @click.native="cancelUpdateName">
                   <v-icon>cancel</v-icon>
                 </v-btn>
-
               </span>
             </div>
           </div>
 
-          <v-divider v-show="hasAdditionalContentToShow(task)"></v-divider>
-          
-          <div class="card-content" v-show="hasAdditionalContentToShow(task)">
-            <div class="metadata">
-              <span class="avatar">
-                <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-                  <span>{{ formatUserLetters(task.assignedTo) }}</span>
-                </v-avatar>
-              </span>
-              <span v-show="task.dueDate">
-                <v-icon class="alarm-icon">alarm_on</v-icon>{{ formatDate(task.dueDate) }}
-              </span>
+          <v-divider v-if="hasAdditionalContentToShow(task)"></v-divider>
+          <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
+          <v-divider v-if="hasFooterData(task)"></v-divider>
+          <div class="footer" v-if="hasFooterData(task)">
+            <div v-if="task.dueDate" class="due-date">
+              <v-icon class="alarm-icon">alarm_on</v-icon>
+              {{ formatDate(task.dueDate) }}
             </div>
-            <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
           </div>
         </div>
       </drop>
     </drag>
   </div>
-
 </template>
 
 <script>
@@ -104,7 +132,7 @@ export default {
   },
   props: {
     task: {
-      type: Object,
+      type: Object
     }
   },
   computed: {
@@ -274,7 +302,7 @@ export default {
         // Use DataTransfer interface to remove the drag data
         event.dataTransfer.clearData();
       }
-    },    
+    },
 
     startUpdateName(e) {
       if (e) {
@@ -355,6 +383,10 @@ export default {
         return true;
       }
       return false;
+    },
+
+    hasFooterData (task) {
+      return task.dueDate;
     }
   }
 };
@@ -365,18 +397,43 @@ export default {
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
+  transition: box-shadow 0.5s ease;
+  position: relative;
 }
 
 .card:hover {
-  background: rgba(0,0,0,0.04);
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
   cursor: pointer;
 }
 
 .header {
+  background-color: #4A5EAF;
   border-radius: 4px 4px 0px 0px;
-  background: #A8B6C7;
-  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
-  height: 64px;
+  height: 52px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+}
+
+.checkbox {
+  margin-left: 12px;
+}
+
+.footer {
+  border-radius: 0px 0px 4px 4px;
+  height: 52px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.due-date {
+  margin-left: 12px;
+  color: #666;
+  font-size: 11px;
 }
 
 .task h2 {
@@ -403,6 +460,10 @@ export default {
   background: linear-gradient(90deg, #aaa 2%, #fff 2%);
 }
 
+.title {
+  position: relative;
+}
+
 .title-wrapper {
   padding-top: 12px;
   padding-bottom: 12px;
@@ -410,14 +471,6 @@ export default {
   padding-right: 12px;
 
   display: flex;
-}
-
-.checkbox {
-  flex: none;
-}
-
-.checkbox .pretty {
-  margin-right: auto;
 }
 
 .name {
@@ -455,6 +508,10 @@ export default {
   margin-left: -3px;
 }
 
+.checklist {
+  margin-left: 12px;
+}
+
 .task-checklist {
   font-size: 12px;
   padding-left: 0px;
@@ -479,8 +536,10 @@ export default {
 }
 
 .avatar {
-  position: relative;
-  top: -2px;
+  margin-right: 12px;
+}
+.avatar .v-avatar {
+  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
 }
 
 .alarm-icon {
@@ -489,7 +548,7 @@ export default {
 }
 
 .editButton {
-  overflow:hidden;
+  overflow: hidden;
   position: absolute;
   right: 8px;
   top: 8px;
