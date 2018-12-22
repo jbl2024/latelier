@@ -135,7 +135,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentOrganizationId"])
+    ...mapState(["currentOrganizationId", "currentProjectId"])
   },
   data() {
     return {
@@ -380,7 +380,17 @@ export default {
 
     hasFooterData (task) {
       return task.dueDate;
+    },
+
+    getColor(projectId) {
+      const project = Projects.findOne({ _id: projectId });
+      if (project && project.color) {
+        return "background-color: " + project.color;
+      } else {
+        return "background-color: #2D6293";
+      }
     }
+
   }
 };
 </script>
