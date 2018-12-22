@@ -465,8 +465,8 @@ export default {
 }
 
 .title-wrapper {
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: 24px;
+  padding-bottom: 24px;
   padding-left: 12px;
   padding-right: 12px;
 
@@ -550,7 +550,7 @@ export default {
 .editButton {
   overflow: hidden;
   position: absolute;
-  right: 8px;
-  top: 8px;
+  right: 12px;
+  top: 24px;
 }
 </style>
