@@ -78,8 +78,7 @@
               </span>
             </div>
           </div>
-
-          <v-divider v-if="hasAdditionalContentToShow(task)"></v-divider>
+          <v-divider v-if="hasChecklist(task)"></v-divider>
           <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
           <v-divider v-if="hasFooterData(task)"></v-divider>
           <div class="footer" v-if="hasFooterData(task)">
@@ -372,14 +371,8 @@ export default {
       return classes.join(" ");
     },
 
-    hasAdditionalContentToShow(task) {
-      if (task.assignedTo) {
-        return true;
-      }
+    hasChecklist(task) {
       if (task.checklist && task.checklist.length > 0) {
-        return true;
-      }
-      if (task.dueDate) {
         return true;
       }
       return false;
@@ -409,7 +402,7 @@ export default {
 .header {
   background-color: #4A5EAF;
   border-radius: 4px 4px 0px 0px;
-  height: 52px;
+  height: 42px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -510,6 +503,7 @@ export default {
 
 .checklist {
   margin-left: 12px;
+  padding-bottom: 12px;
 }
 
 .task-checklist {
