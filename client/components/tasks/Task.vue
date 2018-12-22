@@ -15,7 +15,7 @@
         <div
           class="card"
           ref="card"
-          :class="{ dragover, dragup, dragdown, selected }"
+          :class="{ dragover, dragup, dragdown, selected, completed }"
           v-show="!hidden"
         >
           <div class="header">
@@ -154,6 +154,11 @@ export default {
       if (prevValue != completed) {
         Meteor.call("tasks.complete", this.task._id, completed);
       }
+    }
+  },
+  computed: {
+    completed: function () {
+      return this.task.completed
     }
   },
   methods: {
@@ -400,8 +405,12 @@ export default {
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
-  transition: box-shadow 0.5s ease;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease;
   position: relative;
+}
+
+.card.completed {
+  opacity: 0.6;
 }
 
 .card:hover {
@@ -486,10 +495,6 @@ export default {
   padding-left: 2px;
   padding-right: 2px;
   padding-bottom: 12px;
-}
-
-.name.completed {
-  text-decoration: line-through;
 }
 
 .edit {
