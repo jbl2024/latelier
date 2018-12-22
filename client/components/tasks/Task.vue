@@ -3,9 +3,12 @@
   <div class="task" @click="selectTask" @mouseenter="showEditButton = true" @mouseleave="showEditButton = false">
     <drag class="drag" :transfer-data="getTransferData(task)" @dragstart="onDragStart" @dragend="onDragEnd">
       <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-        <v-card ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+        <div class="card" ref="card" :class="{ dragover, dragup, dragdown, selected }" v-show="!hidden">
+          <div class="header">
+
+          </div>
+          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
           <div>            
-            <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
             <v-icon icon flat v-show="showEditButton && !editName" class="editButton" small color="grey darken-1" @click="startUpdateName">
               edit
             </v-icon>
@@ -56,7 +59,7 @@
             </div>
             <task-checklist :task="task" :hide-if-empty="true"></task-checklist>
           </div>
-        </v-card>
+        </div>
       </drop>
     </drag>
   </div>
@@ -358,6 +361,24 @@ export default {
 </script>
 
 <style scoped>
+.card {
+  background-color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+}
+
+.card:hover {
+  background: rgba(0,0,0,0.04);
+  cursor: pointer;
+}
+
+.header {
+  border-radius: 4px 4px 0px 0px;
+  background: #A8B6C7;
+  box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+  height: 64px;
+}
+
 .task h2 {
   text-align: left;
   background-color: #2d6293;
@@ -406,16 +427,9 @@ export default {
 }
 
 .task {
+  padding-left: 2px;
   padding-right: 2px;
-}
-
-.v-card:hover {
-  background: rgba(0,0,0,0.04);
-  cursor: pointer;
-}
-
-.v-card {
-  border-radius: 3px;
+  padding-bottom: 12px;
 }
 
 .name.completed {
@@ -462,8 +476,6 @@ export default {
 }
 
 .labels {
-  position: absolute;
-  top: -7px;
 }
 
 .avatar {
