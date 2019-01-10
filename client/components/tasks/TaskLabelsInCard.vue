@@ -45,11 +45,14 @@ export default {
 
 <style scoped>
 
+.task-labels {
+  display: flex;  
+  flex-direction: row;
+}
+
 .label {
   width: 48px;
   height: 8px;
-  display: inline-block;
-  margin-left: 0;
   margin-right: 4px;
 }
 </style>

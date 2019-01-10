@@ -1,6 +1,6 @@
 {
   "generateFixtures": true,
-  "attachmentsPath": "/Users/jerome/rectorat/attachments/",
+  "attachmentsPath": "/tmp/attachments/",
   "email": {
     "from": "noreply@latelierdesprojets.fr"
   },

@@ -2,21 +2,41 @@
   <div class="new-project">
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
-        <v-card-title class="headline">Nouveau projet</v-card-title>
+        <v-toolbar dark color="primary">
+          <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+            <v-icon>close</v-icon>
+          </v-btn>
+          <v-toolbar-title>
+            <span>Nouveau projet</span>
+          </v-toolbar-title>
+        </v-toolbar>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
-            <v-text-field v-model="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
-            <v-radio-group v-model="projectType">
-              <v-radio label="Vide" value="none"></v-radio>
-              <v-radio label="Kanban" value="kanban"></v-radio>
-              <v-radio label="Personnes" value="people"></v-radio>
-            </v-radio-group>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
+              </v-flex>
+              <v-flex sm6 md6>
+                <label>Modèle</label>
+                <v-radio-group v-model="projectType">
+                  <v-radio label="Vide" value="none"></v-radio>
+                  <v-radio label="Kanban" value="kanban"></v-radio>
+                  <v-radio label="Personnes" value="people"></v-radio>
+                </v-radio-group>
+              </v-flex>
+              <v-flex sm6 md6>
+                <label>Etat</label>
+                <v-radio-group v-model="projectState">
+                  <v-radio v-for="item in projectStates()" :key="item.value" :label="item.label" :value="item.value"></v-radio>
+                </v-radio-group>
+              </v-flex>
+            </v-layout>
           </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="info" @click="create" :disabled="!valid">Créer</v-btn>
+          <v-btn color="primary" @click="create" :disabled="!valid">Créer</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -26,6 +46,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
+import { ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
   props: {
@@ -38,6 +59,7 @@ export default {
     return {
       showDialog: false,
       projectType: "none",
+      projectState: ProjectStates.DEVELOPMENT,
       valid: false,
       name: "",
       nameRules: [
@@ -50,6 +72,9 @@ export default {
     open() {
       this.showDialog = true;
     },
+    close () {
+      this.showDialog = false;
+    },
     create() {
       Meteor.call(
         "projects.create",
@@ -57,6 +82,7 @@ export default {
         this.name,
         this.projectType,
         this.$store.state.selectedGroup._id,
+        this.projectState,
         (error, result) => {
           if (error) {
             console.log(error);
@@ -69,6 +95,16 @@ export default {
         }
       );
       this.showDialog = false;
+    },
+    projectStates () {
+      const states = []
+      Object.keys(ProjectStates).map(state => {
+        states.push({
+          value: ProjectStates[state],
+          label: this.$t(`projects.state.${state}`)
+        })
+      });
+      return states;
     }
   }
 };

@@ -33,35 +33,42 @@
             <v-icon>add</v-icon>
           </v-btn>
         </v-subheader>
-        <template v-for="item in projects">
-          <v-list-tile :key="item._id" @click="openProject(item._id)">
-            <v-list-tile-avatar :color="getColor(item)">
-              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content class="pointer">
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
-              <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop">
-              <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
-                <v-icon>settings</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop">
-              <v-btn icon flat color="grey darken-1" @click.stop="cloneProject(item._id)">
-                <v-icon>file_copy</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop">
-              <v-btn icon flat color="grey darken-1" @click.stop="deleteProject(item._id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+
+        <template v-for="item in projectStates()">
+          <v-subheader :key="item.value">{{ item.label }}</v-subheader>
+          <template v-for="item in filterProjectsByState(projects, item.value)">
+            <v-list-tile :key="item._id" @click="openProject(item._id)">
+              <v-list-tile-avatar :color="getColor(item)">
+                <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content class="pointer">
+                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+                <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
+                <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+              </v-list-tile-action>
+              <v-list-tile-action class="show-desktop">
+                <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
+                  <v-icon>settings</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action class="show-desktop">
+                <v-btn icon flat color="grey darken-1" @click.stop="cloneProject(item._id)">
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action class="show-desktop">
+                <v-btn icon flat color="grey darken-1" @click.stop="deleteProject(item._id)">
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </template>
         </template>
+
+
+
       </v-list>
     </div>
   </div>
@@ -74,6 +81,7 @@ import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import debounce from "lodash/debounce";
 import { mapState } from "vuex";
+import { ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
   mixins: [DatesMixin],
@@ -135,7 +143,7 @@ export default {
       return Projects.find(
         {},
         {
-          sort: { name: 1 }
+          sort: { state: 1, name: 1 }
         }
       );
     },
@@ -261,6 +269,22 @@ export default {
         this.$store.dispatch('setSelectedGroup', group);
       }
     },
+    projectStates () {
+      const states = []
+      Object.keys(ProjectStates).map(state => {
+        states.push({
+          value: ProjectStates[state],
+          label: this.$t(`projects.state.${state}`)
+        })
+      });
+      return states;
+    },
+
+    filterProjectsByState (projects, state) {
+      return projects.filter(project => {
+        return project.state === state;
+      });
+    }
 
   }
 };
@@ -297,16 +321,6 @@ export default {
   .fap-list {
     margin-right: auto;
     margin-left: auto;
-  }
-}
-
-.projects {
-  margin-right: 64px;
-}
-
-@media (max-width: 600px) {
-  .projects {
-    margin-right: auto;
   }
 }
 

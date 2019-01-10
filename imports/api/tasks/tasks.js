@@ -133,7 +133,8 @@ Meteor.methods({
     check(completed, Boolean);
 
     Tasks.update({_id: taskId}, {$set: {completed: completed}});
-
+    const task = Tasks.findOne({_id: taskId});
+    Meteor.call('lists.findTasksToCatch', task.projectId);
     Meteor.call('tasks.track', {
       type: 'tasks.complete',
       taskId: taskId

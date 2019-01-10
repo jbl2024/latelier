@@ -19,7 +19,7 @@
         <v-btn icon class="show-desktop">
           <v-icon>notifications</v-icon>
         </v-btn>
-        <blaze-template class="show-desktop" id="login" template="loginButtons"></blaze-template>
+        {{ email }}
       </v-toolbar>
 
       <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app class="drawer">
@@ -80,11 +80,31 @@ export default {
         this.$store.dispatch("notify", "");
       }
     }
-  }
+  },
+  meteor: {
+    email () {
+      if (Meteor) {
+        const user = Meteor.user();
+        if (user) {
+          return user.emails[0].address;
+        }
+      }
+    },
+    $subscribe: {
+      user: function() {
+        return [];
+      }
+    },
+
+  },
 };
 </script>
 
 <style>
+#app {
+  font-family: 'Roboto', sans-serif;
+  background-color: #e5e5e5;
+}
 .search {
   width: 100%;
 }

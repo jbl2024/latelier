@@ -144,13 +144,5 @@ export default {
     margin-left: auto;
   }
 }
-.organizations {
-  margin-right: 64px;
-}
-@media (max-width: 600px) {
-  .organizations {
-    margin-right: auto;
-  }
-}
 
 </style>

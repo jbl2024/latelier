@@ -16,6 +16,14 @@ const messages = {
         removeAttachment: "Suppression d'un pièce jointe",
         remove: "Suppression",
         setDueDate: "Date d'échéance"
+      },
+    },
+    projects: {
+      state: {
+        PLANNED: 'Planifié',
+        DEVELOPMENT: 'En développement',
+        PRODUCTION: 'En production',
+        ARCHIVED: 'Archivé'
       }
     }
   },
@@ -36,6 +44,14 @@ const messages = {
         removeAttachment: "Delete attachment",
         remove: "Delete",
         setDueDate: "Due date"
+      }
+    },
+    projects: {
+      state: {
+        PLANNED: 'Planned',
+        DEVELOPMENT: 'Development',
+        PRODUCTION: 'Production',
+        ARCHIVED: 'Archived'
       }
     }
   }

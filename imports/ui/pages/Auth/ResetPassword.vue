@@ -1,87 +1,97 @@
 <template>
   <div class="reset-password">
-    <div class="auth-layout_inner">
-      <el-card class="auth-layout_card card">
-        <header class="auth-layout_card-header card-header">
-          <h2>Reset Password</h2>
-        </header>
-        <span class="divider"></span>
-        <el-form 
-          :model="resetPasswordForm" 
-          :rules="rules" 
-          ref="resetPasswordForm"
-          class="auth-layout_card-content card-content">
-          <el-form-item label="New Password" prop="new_password">
-            <el-input type="password" v-model="resetPasswordForm.new_password" auto-complete="off"></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button 
-              class="auth-layout_submit full-width"
-              size="large" 
-              type="primary" 
-              @click="submitForm('resetPasswordForm')"
-              :loading="isLoading">
-              Confirm
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </el-card>
+    <div class="centered-container">
+      <v-form v-model="valid" v-on:submit.prevent>
+        <v-card>
+          <v-card-title class="title">{{ $t('Reset password') }}</v-card-title>
+          <v-card-text>
+            <v-text-field
+              label="Mot de passe"
+              type="password"
+              name="password"
+              id="password"
+              autocomplete="password"
+              :rules="passwordRules"
+              v-model="form.password"
+              v-on:keyup.enter="login()"
+              :disabled="sending"
+            ></v-text-field>
+            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" @click="reset" :disabled="sending || !valid">{{ $t('Reset') }}</v-btn>
+          </v-card-actions>
+          <v-divider></v-divider>
+          <v-card-actions>
+            <v-btn flat :to="{ name: 'register'}">{{ $t('Register')}}</v-btn>
+            <v-spacer></v-spacer>
+            <v-btn flat :to="{ name: 'login'}">{{ $t('Already have an account?') }}</v-btn>
+          </v-card-actions>
+          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+        </v-card>
+      </v-form>
     </div>
   </div>
 </template>
 
 <script>
-  export default {
-    name: 'auth-reset-password',
-    data: () => ({
-      isLoading: false,
-      resetPasswordForm: {
-        new_password: ''
+export default {
+  name: "reset-password",
+  data: () => ({
+    valid: false,
+    form: {
+      password: ''
+    },
+    notify: false,
+    sending: false,
+    passwordRules: [
+      v => !!v || "Le mot de passe est obligatoire",
+      v => v.length > 1 || "Le mot de passe est trop cours"
+    ]
+
+  }),
+  i18n: {
+    messages: {
+      en: { 
+        "Welcome back!": "Welcome back!",
       },
-      rules: {
-        new_password: [
-          { required: true, message: 'Please insert your new password', trigger: 'blur' }
-        ]
+      fr: {
+        "Welcome back!": "Ravi de vous revoir!",
       }
-    }),
-    methods: {
-      submitForm(formName) {
-        this.isLoading = true
-        this.$refs[formName].validate((valid) => {
-          if (valid) {
-            const dataForm = this.resetPasswordForm;
-            const new_password = dataForm.new_password;
-            const token = this.$route.params.token
-            Accounts.resetPassword(token, new_password, (err) => {
-              if (err) {
-                this.$notify.error({
-                  title: 'Sorry!',
-                  message: err.reason,
-                  offset: 100
-                })
-                this.isLoading = false
-              } else {
-                this.$notify.success({
-                  title: 'Success',
-                  message: 'Password reset with success!',
-                  offset: 100
-                })
-                this.$router.push({name: 'login'})
-              }
-            })
-          } else {
-            this.$notify.error({
-              title: 'Sorry!',
-              message: 'All fields are required',
-              offset: 100
-            })
-            this.isLoading = false
-          }
-        })
-      },
-      resetForm(formName) {
-        this.$refs[formName].resetFields()
-      }
+    }  
+  },
+  methods: {
+    clearForm() {
+      this.form.password = null;
+      this.notify = false;
+    },
+    reset() {
+      this.sending = true;
+      const dataForm = this.resetPasswordForm;
+      const new_password = this.form.password;
+      const token = this.$route.params.token
+      Accounts.resetPassword(token, new_password, (err) => {
+        if (err) {
+          this.$store.dispatch("notify", err.reason);
+          this.isLoading = false
+        } else {
+          this.$store.dispatch("notify", this.$t('Password reset with success!'));
+          this.$router.push({name: 'login'})
+        }
+      })
+
     }
   }
+};
 </script>
+
+<style scoped>
+.centered-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  height: calc(100vh - 64px);
+}
+</style>
