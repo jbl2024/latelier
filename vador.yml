@@ -1,0 +1,8 @@
+---
+name: latelier
+ports:
+- {guest: 3000, host: 3000}    
+- {guest: 3003, host: 3003}    
+internal_links:
+  /var/lib/projects/latelier/.meteor/local: /vagrant/projects/latelier/.meteor/local
+  /var/lib/projects/latelier/node_modules: /vagrant/projects/latelier/node_modules
