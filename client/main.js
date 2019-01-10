@@ -96,6 +96,7 @@ Meteor.startup(() => {
   const i18n = new VueI18n({
     locale: language,
     fallbackLocale: 'fr',
+    silentTranslationWarn: true, 
     messages,
   })
   

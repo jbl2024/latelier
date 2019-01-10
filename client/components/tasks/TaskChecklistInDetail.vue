@@ -1,35 +1,46 @@
 <template>
-
-<div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop="">
-  <div v-for="item in task.checklist" :key="item._id" class="item">
-    <div>
-      <v-checkbox v-model="item.checked" class="check" @change="toggleCheckItem(item)" :label="item.name"></v-checkbox>
-      <div class="right">
-        <v-btn icon @click="event => { convertToTask(event, item)}">
-          <v-icon>list</v-icon>
-        </v-btn>
-        <v-btn icon @click="event => { deleteItem(event, item)}">
-          <v-icon>delete</v-icon>
-        </v-btn>
-      </div>
-      <div class="clear"></div>
-    </div>
-
+  <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop>
+    <v-list dense class="tasks-wrapper elevation-1" v-if="task.checklist && task.checklist.length > 0">
+      <template v-for="item in task.checklist">
+        <v-list-tile :key="item._id">
+          <v-list-tile-action>
+            <v-checkbox v-model="item.checked" @change="toggleCheckItem(item)"></v-checkbox>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon ripple @click="event => { convertToTask(event, item)}">
+              <v-icon>list</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+          <v-list-tile-action>
+            <v-btn icon ripple @click="event => { deleteItem(event, item)}">
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </template>
+    </v-list>
+    <v-text-field class="add-item"
+      preprend-icon="check_box_outline_blank"
+      label="Nouvel item"
+      v-model="item"
+      ref="newItem"
+      @keyup.enter="addItem"
+    ></v-text-field>
   </div>
-  <v-text-field preprend-icon="check_box_outline_blank" label="Nouvel item" v-model="item" ref="newItem" @keyup.enter="addItem"></v-text-field>
-</div>
-
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import moment from 'moment';
-import 'moment/locale/fr'
+import { Projects } from "/imports/api/projects/projects.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import moment from "moment";
+import "moment/locale/fr";
 
 export default {
-  name: 'task-checklist-in-detail',
+  name: "task-checklist-in-detail",
   props: {
     hideIfEmpty: {
       type: Boolean,
@@ -42,137 +53,88 @@ export default {
   data() {
     return {
       editNewItem: false,
-      item: ''
+      item: ""
     };
   },
   methods: {
-    showList (checklist) {
+    showList(checklist) {
       if (this.hideIfEmpty && !this.hasItems(checklist)) {
         return false;
       }
       return true;
     },
 
-    hasItems (checklist) {
+    hasItems(checklist) {
       return checklist && checklist.length > 0;
     },
 
-    addItem () {
+    addItem() {
       this.editNewItem = false;
-      Meteor.call('tasks.addChecklistItem', this.task._id, this.item, (error, result) => {
-        if (!error) {
-          this.item = '';
+      Meteor.call(
+        "tasks.addChecklistItem",
+        this.task._id,
+        this.item,
+        (error, result) => {
+          if (!error) {
+            this.item = "";
+          }
         }
-      });
+      );
     },
 
-    deleteItem (e, item) {
+    deleteItem(e, item) {
       if (e) {
         e.stopPropagation();
       }
-      Meteor.call('tasks.removeChecklistItem', this.task._id, item._id);
+      Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
     },
 
-    toggleCheckItem (item) {
-      Meteor.call('tasks.toggleCheckItem', this.task._id,  item._id, item.checked);
+    toggleCheckItem(item) {
+      Meteor.call(
+        "tasks.toggleCheckItem",
+        this.task._id,
+        item._id,
+        item.checked
+      );
     },
 
     updateChecklist() {
-      Meteor.call('tasks.updateChecklist', this.task._id, this.task.checklist);
+      Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
     },
 
-    cancelAddItem () {
+    cancelAddItem() {
       this.editNewItem = false;
     },
 
-    convertToTask (e, item) {
+    convertToTask(e, item) {
       if (e) {
         e.stopPropagation();
       }
 
-      Meteor.call('tasks.convertItemToTask', this.task._id, item._id);
+      Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
     }
   }
 };
 </script>
 
 <style scoped>
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to {
-  opacity: 0;
-}
-
-.item {
-  min-width:250px;
+.task-checklist-in-detail {
+  margin: 12px;
+  padding: 12px;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
-.check {
-  float: left;
-  white-space: nowrap;
-  overflow: hidden;
-  max-width: 50%;
-  box-sizing:border-box;
-  text-overflow: ellipsis;
+.tasks-wrapper {
+  margin-top:12px;
+  margin-bottom:12px;
+  border-radius: 4px;
 }
 
-
-.right {
-  float: right;
-  white-space: nowrap;
-  max-width: 50%;
-  overflow: hidden;
-  box-sizing:border-box;
-  text-overflow: ellipsis;
+.icons {
+  border: 2px solid black;
 }
 
-.clear {
-  clear: both;
-}
-
-pre {
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
-  white-space: pre-wrap;
-}
-
-.delete-button {
-}
-
-.empty-state {
-  transition: none;
-}
-
-.note {
-  margin: 8px;
-}
-
-.metadata {
-  display: flex;
-  flex-direction: row;
-}
-
-.metadata .author-line {
-  display: inline-block;
-  flex: 1;
-}
-.metadata .action {
-  display: inline-block;
-}
-
-.metadata .action .v-btn {
-  margin-top: -10px;
-  padding-top: 0;
-}
-
-.center {
-  text-align: center;
-}
-
-.add-item {
-  margin-left: -2px;
-}
 
 .add-item label {
   font-size: 13px;

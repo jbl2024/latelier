@@ -3,7 +3,7 @@
 ### MeteorJS ###
 # default meteor build and local packages
 .meteor/local
-
+.cache
 # meteor settings file
 settings.json
 

@@ -11,12 +11,36 @@
                   <v-btn dark small slot="activator" icon>
                     <v-icon>more_vert</v-icon>
                   </v-btn>
-                  <v-list>
+                  <v-list dense>
                     <v-list-tile @click="newTaskInline(list._id)">
+                      <v-list-tile-action>
+                        <v-icon>add</v-icon>
+                      </v-list-tile-action>
                       <v-list-tile-title>Nouvelle tâche</v-list-tile-title>
+                      
                     </v-list-tile>
                     <v-list-tile @click="deleteList(list._id)">
+                      <v-list-tile-action>
+                        <v-icon>delete</v-icon>
+                      </v-list-tile-action>
                       <v-list-tile-title>Supprimer</v-list-tile-title>
+                    </v-list-tile>
+                    <v-divider></v-divider>
+                    <v-list-tile @click="list.autoComplete = !list.autoComplete">
+                      <v-list-tile-action >
+                        <v-checkbox
+                          v-model="list.autoComplete"
+                        ></v-checkbox>
+                      </v-list-tile-action> 
+                      <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
+                    </v-list-tile>
+                    <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
+                      <v-list-tile-action >
+                        <v-checkbox
+                          v-model="list.catchCompleted"
+                        ></v-checkbox>
+                      </v-list-tile-action> 
+                      <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
                     </v-list-tile>
                   </v-list>
                 </v-menu>
@@ -76,6 +100,11 @@ export default {
     "list.autoComplete"(autoComplete, prevValue) {
       if (prevValue != autoComplete) {
         Meteor.call("lists.autoComplete", this.list._id, autoComplete);
+      }
+    },
+    "list.catchCompleted"(catchCompleted, prevValue) {
+      if (prevValue != catchCompleted) {
+        Meteor.call("lists.catchCompleted", this.list._id, catchCompleted);
       }
     }
   },

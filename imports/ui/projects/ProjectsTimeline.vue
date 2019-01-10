@@ -19,7 +19,7 @@
         <timeline
           ref="timeline"
           :items="getItems()"
-          :groups="timeline.groups"
+          :groups="getGroups()"
           :options="timeline.options"
           @changed="onTimelineChanged"
           @rangechanged="onTimelineRangeChanged"
@@ -32,6 +32,7 @@
 
 <script>
 import { Projects } from '/imports/api/projects/projects.js';
+import { ProjectStates } from "/imports/api/projects/projects.js";
 import { Timeline } from 'vue2vis';
 import debounce from 'lodash/debounce';
 import { mapState } from 'vuex';
@@ -101,12 +102,22 @@ export default {
     }
   },
   methods: {
+    getGroups () {
+      const states = []
+      Object.keys(ProjectStates).map(state => {
+        states.push({
+          id: ProjectStates[state],
+          content: this.$t(`projects.state.${state}`)
+        })
+      });
+      return states;
+    },
     getItems () {
       var items = [];
       this.projects.map (project => {
         var item = {
           id: project._id,
-          group: 0,
+          group: project.state,
           content: this.getProjectContent(project),
           className: 'item',
           start: project.startDate,

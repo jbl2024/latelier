@@ -4,7 +4,7 @@
 
     <confirm-dialog
       :active.sync="showConfirmConvertDialog"
-      title="Confirmer la transformation en tache ?"
+      title="Transformer en tache"
       content="Voulez-vous transformer cet élément en tache ?"
       confirm-text="Transformer"
       cancel-text="Annuler"
@@ -14,7 +14,7 @@
 
     <confirm-dialog
       :active.sync="showConfirmDeleteDialog"
-      title="Confirmer la suppression ?"
+      title="Supprimer"
       content="Voulez-vous supprimer cet élément ?"
       confirm-text="Supprimer"
       cancel-text="Annuler"

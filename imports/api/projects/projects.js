@@ -15,6 +15,14 @@ if (Meteor.isServer) {
   });
 }
 
+export const ProjectStates = Object.freeze({
+  PLANNED: "planned",
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
+  ARCHIVED: "archived"
+});
+
+
 Meteor.methods({
   'projects.insert'(organizationId, name) {
     check(name, String);
@@ -27,6 +35,7 @@ Meteor.methods({
     var project = Projects.insert({
       organizationId: organizationId,
       name: name,
+      state: ProjectStates.DEVELOPMENT,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -34,10 +43,11 @@ Meteor.methods({
     return project;
   },
 
-  'projects.create'(organizationId, name, projectType, projectGroupId) {
+  'projects.create'(organizationId, name, projectType, projectGroupId, state) {
     check(organizationId, String);
     check(name, String);
     check(projectType, String);
+    check(state, String);
     const currentUser = Meteor.userId();
 
     // Make sure the user is logged in before inserting a task
@@ -48,6 +58,7 @@ Meteor.methods({
     const projectId = Projects.insert({
       organizationId: organizationId,
       name,
+      state,
       createdAt: new Date(),
       createdBy: currentUser
     });
@@ -56,7 +67,7 @@ Meteor.methods({
     if (projectType === 'kanban') {
       Meteor.call('lists.insert', projectId, 'A planifier');
       Meteor.call('lists.insert', projectId, 'En cours');
-      Meteor.call('lists.insert', projectId, 'Terminé', true);
+      Meteor.call('lists.insert', projectId, 'Terminé', true, true);
     }
 
     if (projectType === 'people') {
@@ -100,6 +111,16 @@ Meteor.methods({
     }
 
     Projects.update({_id: projectId}, {$set: {description: description}});
+  },
+
+  'projects.updateState'(projectId, state) {
+    check(projectId, String);
+    check(state, String);
+    if (state.length == 0) {
+      throw new Meteor.Error('invalid-state');
+    }
+
+    Projects.update({_id: projectId}, {$set: {state: state}});
   },
 
   'projects.updateColor'(projectId, color) {
