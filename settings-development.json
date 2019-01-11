@@ -2,9 +2,9 @@
   "generateFixtures": true,
   "attachmentsPath": "/tmp/attachments/",
   "email": {
-    "from": "noreply@latelierdesprojets.fr"
+    "from": "noreply@ac-lyon.fr"
   },
   "roles": {
-    "admin": ["jerome@blondon.fr"]
+    "admin": ["jerome.blondon@ac-lyon.fr"]
   }
 }
