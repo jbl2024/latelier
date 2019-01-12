@@ -18,34 +18,8 @@
           :class="{ dragover, dragup, dragdown, selected, completed }"
           v-show="!hidden"
         >
-          <div class="header">
-            <div class="checkbox">
-              <div class="pretty p-svg p-curve">
-                <input
-                  type="checkbox"
-                  v-show="!editName"
-                  v-model="task.completed"
-                  @click="e => e.stopPropagation()"
-                >
-                <div class="state p-primary">
-                  <svg class="svg svg-icon" viewBox="0 0 20 20">
-                    <path
-                      d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                      style="stroke: white;fill:white;"
-                    ></path>
-                  </svg>
-                  <label></label>
-                </div>
-              </div>
-            </div>
-            <div class="avatar">
-              <v-avatar size="32" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-                <span>{{ formatUserLetters(task.assignedTo) }}</span>
-              </v-avatar>
-            </div>
-          </div>
-          <v-divider></v-divider>
           <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
+
           <div class="title">
             <v-icon
               icon
@@ -56,7 +30,28 @@
               color="grey darken-1"
               @click="startUpdateName"
             >edit</v-icon>
+            
             <div class="title-wrapper">
+              <div class="checkbox">
+                <div class="pretty p-svg p-curve">
+                  <input
+                    type="checkbox"
+                    v-show="!editName"
+                    v-model="task.completed"
+                    @click="e => e.stopPropagation()"
+                  >
+                  <div class="state p-primary">
+                    <svg class="svg svg-icon" viewBox="0 0 20 20">
+                      <path
+                        d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                        style="stroke: white;fill:white;"
+                      ></path>
+                    </svg>
+                    <label></label>
+                  </div>
+                </div>
+              </div>
+
               <div v-show="!editName" :class="getClassForName(task)">{{ task.name }}</div>
 
               <span v-show="editName" class="edit">
@@ -85,6 +80,11 @@
             <div v-if="task.dueDate" class="due-date">
               <v-icon class="alarm-icon">alarm_on</v-icon>
               {{ formatDate(task.dueDate) }}
+            </div>
+            <div class="avatar">
+              <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+                <span>{{ formatUserLetters(task.assignedTo) }}</span>
+              </v-avatar>
             </div>
           </div>
         </div>
@@ -157,8 +157,8 @@ export default {
     }
   },
   computed: {
-    completed: function () {
-      return this.task.completed
+    completed: function() {
+      return this.task.completed;
     }
   },
   methods: {
@@ -383,7 +383,7 @@ export default {
       return false;
     },
 
-    hasFooterData (task) {
+    hasFooterData(task) {
       return task.dueDate;
     },
 
@@ -395,7 +395,6 @@ export default {
         return "background-color: #2D6293";
       }
     }
-
   }
 };
 </script>
@@ -418,21 +417,6 @@ export default {
   cursor: pointer;
 }
 
-.header {
-  background-color: #4A5EAF;
-  border-radius: 4px 4px 0px 0px;
-  height: 42px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
-}
-
-.checkbox {
-  margin-left: 12px;
-}
-
 .footer {
   border-radius: 0px 0px 4px 4px;
   height: 52px;
@@ -448,17 +432,6 @@ export default {
   font-size: 11px;
 }
 
-.task h2 {
-  text-align: left;
-  background-color: #2d6293;
-  color: white;
-  font-weight: normal;
-  font-size: 14px;
-  padding: 5px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 0;
-}
 
 .dragup {
   background: linear-gradient(0deg, #fff 50%, #eee 50%);
@@ -481,14 +454,25 @@ export default {
   padding-bottom: 24px;
   padding-left: 12px;
   padding-right: 12px;
-
   display: flex;
+  justify-content: space-between;
+  flex-direction: row;
 }
 
+
+.checkbox {
+  font-size: 13px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+
 .name {
-  flex: auto;
   font-size: 12px;
   padding-right: 22px;
+  line-height: 1.3;
+  flex-grow: 1;
 }
 
 .task {
@@ -545,10 +529,12 @@ export default {
 }
 
 .avatar {
+  font-size: 11px;
+  margin-top: 5px;
   margin-right: 12px;
 }
 .avatar .v-avatar {
-  /* box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25); */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
 .alarm-icon {
@@ -561,5 +547,10 @@ export default {
   position: absolute;
   right: 12px;
   top: 24px;
+}
+
+.very-small {
+  width: 30px;
+  height: 30px;
 }
 </style>
