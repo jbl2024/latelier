@@ -29,5 +29,9 @@ Meteor.methods({
     check(id, String);
 
     Backgrounds.remove(id);
+  },
+
+  'backgrounds.find'() {
+    return Backgrounds.find({}).fetch();
   }
 });
