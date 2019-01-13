@@ -1,8 +1,7 @@
 <template>
   <div class="home">
-    <empty-state description="Bienvenue sur l'atelier" illustration="organizing">
-      <v-btn class="primary" :to="{ name: 'organizations-page'}">Accéder aux organisations
-        <v-icon dark right>arrow_right</v-icon>
+    <empty-state description="Bienvenue dans l'atelier" illustration="welcome">
+      <v-btn class="primary" round :to="{ name: 'organizations-page'}">Accéder aux organisations
       </v-btn>
     </empty-state>
   </div>
