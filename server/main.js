@@ -17,6 +17,7 @@ import '../imports/api/projectGroups/server/publications.js';
 import '../imports/api/labels/labels.js';
 import '../imports/api/labels/server/publications.js';
 import '../imports/api/events/events.js';
+import '../imports/api/backgrounds/startup/server/fixtures.js';
 
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));

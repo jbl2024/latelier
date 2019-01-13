@@ -1,0 +1,10 @@
+[{
+  "credits": "<span>Photo by <a href='https://unsplash.com/photos/LzVB84KkZOE?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'>Nicolas Jehly</a> on <a href='/search/photos/desert?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'>Unsplash</a></span>",
+  "name": "desert",
+  "path": "./backgrounds/nicolas-jehly-234061-unsplash.jpg"
+},
+{
+  "credits": "<span>Photo by <a href='https://unsplash.com/photos/3A4XZUopCJA?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'>Andrej Lišakov</a> on <a href='/search/photos/desk?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText'>Unsplash</a></span>",
+  "name": "desk",
+  "path": "./backgrounds/andrej-lisakov-568525-unsplash.jpg"
+}]
