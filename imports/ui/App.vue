@@ -124,9 +124,9 @@ export default {
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 0;
-  padding-left: 4px;
-  padding-top: 4px;
-  padding-right: 4px;
+  padding-left: 0px;
+  padding-top: 0px;
+  padding-right: 0px;
 }
 
 .drawer .v-list {

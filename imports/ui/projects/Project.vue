@@ -12,7 +12,7 @@
         </v-card>
       </v-dialog>
 
-      <div class="container-wrapper">
+      <div class="container-wrapper" :style="getBackgroundUrl(project)"> 
         <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
@@ -99,6 +99,11 @@ export default {
         this.selectedTask = selectedTask;
         this.showTaskDetail = true;            
       }
+    },
+
+    getBackgroundUrl(project) {
+      return "background-image: url('/backgrounds/nicolas-jehly-234061-unsplash.jpg');"
+      // return "background-image: url('/backgrounds/andrej-lisakov-568525-unsplash.jpg');"
     }
   }
 }
@@ -179,6 +184,22 @@ export default {
   right: 24px;
   bottom: 24px;
   z-index: 200;
+}
+
+.container-wrapper {
+  overflow-y: scroll;
+  height: 100%;
+  position: absolute;
+  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  /* box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+
 }
 
 </style>
