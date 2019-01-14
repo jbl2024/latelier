@@ -135,7 +135,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentOrganizationId", "currentProjectId"])
+    ...mapState(["currentOrganizationId", "currentProjectId"]),
+    completed: function() {
+      return this.task.completed;
+    }
   },
   data() {
     return {
@@ -154,11 +157,6 @@ export default {
       if (prevValue != completed) {
         Meteor.call("tasks.complete", this.task._id, completed);
       }
-    }
-  },
-  computed: {
-    completed: function() {
-      return this.task.completed;
     }
   },
   methods: {
