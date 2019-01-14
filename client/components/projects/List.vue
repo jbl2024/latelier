@@ -264,7 +264,7 @@ export default {
         "tasks.insert",
         this.list.projectId,
         listId,
-        "Nouvelle tâche",
+        "",
         (error, task) => {
           if (error) {
             return;

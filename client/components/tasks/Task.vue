@@ -59,7 +59,8 @@
                   ref="name" 
                   class="edit-name"
                   @focus.native="$event.target.select()" 
-                  solo 
+                  label="Titre de la tâche"
+                  outline
                   v-model="task.name" 
                   @keyup.ctrl.enter="updateName"></v-textarea>
                 <v-btn icon flat @click.native="updateName">
