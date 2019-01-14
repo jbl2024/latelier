@@ -116,8 +116,6 @@ export default {
       if (user) {
         const background = user.profile.background;
         if (background) {
-          console.log(background)
-          console.log(Backgrounds.link(background))
           return `background-image: url('${Backgrounds.link(background)}');`;
         }
       }
