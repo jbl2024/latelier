@@ -113,7 +113,7 @@ export default {
     },
 
     getBackgroundUrl(user) {
-      if (user) {
+      if (user && user.profile) {
         const background = user.profile.background;
         if (background) {
           return `background-image: url('${Backgrounds.link(background)}');`;
