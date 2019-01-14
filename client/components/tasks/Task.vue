@@ -37,7 +37,7 @@
                   <input
                     type="checkbox"
                     v-show="!editName"
-                    v-model="task.completed"
+                    v-model="completed"
                     @click="e => e.stopPropagation()"
                   >
                   <div class="state p-primary">
@@ -135,9 +135,6 @@ export default {
   },
   computed: {
     ...mapState(["currentOrganizationId", "currentProjectId"]),
-    completed: function() {
-      return this.task.completed;
-    }
   },
   data() {
     return {
@@ -148,14 +145,21 @@ export default {
       dragdown: false,
       selected: false,
       hidden: false,
-      showEditButton: false
+      showEditButton: false,
+      completed: false
     };
   },
   watch: {
-    "task.completed"(completed, prevValue) {
-      if (prevValue != completed) {
-        Meteor.call("tasks.complete", this.task._id, completed);
+    "task.completed": {
+      immediate: true,
+      handler(completed, prevValue) {
+        if (this.completed != completed) {
+          this.completed = completed;
+        }
       }
+    },
+    "completed"(completed) {
+      Meteor.call("tasks.complete", this.task._id, completed);
     }
   },
   methods: {
@@ -367,7 +371,7 @@ export default {
     getClassForName(task) {
       var classes = ["name"];
 
-      if (task.completed) {
+      if (this.completed) {
         classes.push("completed");
       }
       return classes.join(" ");
