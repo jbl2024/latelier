@@ -1,8 +1,6 @@
 <template>
   <div class>
     <v-app>
-    <select-background :active.sync="showSelectBackgroundDialog"></select-background>
-
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed>
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title
@@ -26,12 +24,6 @@
               <v-icon>account_circle</v-icon>
             </v-btn>
             <login-menu></login-menu>
-            <v-divider></v-divider>
-            <v-list>
-              <v-list-tile @click="showSelectBackgroundDialog = true">
-                <v-list-tile-title>Background</v-list-tile-title>
-              </v-list-tile>
-            </v-list>
           </v-menu>
         </v-avatar>
       </v-toolbar>
@@ -77,8 +69,7 @@ export default {
     return {
       drawer: null,
       showSnackbar: false,
-      timeout: 6000,
-      showSelectBackgroundDialog: false
+      timeout: 6000
     };
   },
   computed: {

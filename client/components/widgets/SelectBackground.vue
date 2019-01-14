@@ -46,8 +46,6 @@ export default {
   },
   mounted() {
     Meteor.call('backgrounds.find', (error, result) => {
-      console.log(error)
-      console.log(result)
       if (result) {
         this.backgrounds = result;
       }
@@ -78,7 +76,7 @@ export default {
     },
 
     selectBackground(image) {
-      Meteor.users.update(Meteor.userId(), {$set: {'profile.background': image._id}});
+      Meteor.users.update(Meteor.userId(), {$set: {'profile.background': image}});
       this.$store.dispatch("notify", this.$t("Background updated"));
       this.$emit("update:active", false);
     },
