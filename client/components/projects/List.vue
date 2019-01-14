@@ -6,7 +6,8 @@
           <drag :transfer-data="getTransferData(list)">
             <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
               <div :style="getColor(currentProjectId)">
-                <div class="list-name" @click="editList(list)">{{list.name}} ({{ taskCount }})</div>
+                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
+                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}} / {{ taskCount }})</div>
                 <v-menu bottom left>
                   <v-btn dark small slot="activator" icon>
                     <v-icon>more_vert</v-icon>
@@ -65,9 +66,12 @@
         </div>
       </div>
       <div class="tasks-wrapper">
-        <tasks :project-id="list.projectId" :list-id="list._id"></tasks>
-        <div class="task new" @click="newTaskInline(list._id)">
-          <div class="list-title">Ajouter une tâche</div>
+        <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
+        <v-btn small block @click="newTaskInline(list._id)">
+            Ajouter une tâche
+        </v-btn>
+        <div class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks" v-if="hiddenTaskCount > 0">
+          <div class="list-title">{{ hiddenTaskCount }} taches masquées</div>
         </div>
       </div>
     </drop>
@@ -93,7 +97,9 @@ export default {
   data() {
     return {
       selectedList: {},
-      savedName: ""
+      savedName: "",
+      hiddenTaskCount: 0,
+      showHiddenTasks: false
     };
   },
   watch: {
@@ -111,6 +117,9 @@ export default {
   meteor: {
     taskCount() {
       return Tasks.find({ listId: this.list._id }).count();
+    },
+    hiddenTaskCount() {
+      return Tasks.find({ listId: this.list._id, completed: true }).count();
     }
   },
   methods: {
@@ -345,18 +354,32 @@ export default {
 }
 
 .task.new .list-title {
-  border: 1px dashed #2d6293;
+  border: 1px solid #eee;
   font-size: 12px;
-  padding: 4px;
-  margin-top: 4px;
+  padding: 8px;
   width: 272px;
   font-weight: normal;
   color: #777;
   cursor: pointer;
+  background-color: white;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease;
 }
 .task.new .list-title:hover {
   color: rgb(48, 48, 48);
   cursor: pointer;
+}
+
+.task.show-hidden {
+  font-size: 12px;
+  padding: 4px;
+  margin-top: 4px;
+  width: 100%;
+  font-weight: normal;
+  color: #777;
+  cursor: pointer;
+  background-color: #e5e5e5;
 }
 
 @media (max-width: 600px) {
