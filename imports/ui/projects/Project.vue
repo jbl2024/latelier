@@ -12,7 +12,7 @@
         </v-card>
       </v-dialog>
 
-      <div class="container-wrapper" :style="getBackgroundUrl(project)"> 
+      <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
         <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
       </div>
 
@@ -22,6 +22,7 @@
 
 <script>
 import { Projects } from '/imports/api/projects/projects.js'
+import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import debounce from 'lodash/debounce';
@@ -84,12 +85,18 @@ export default {
       'project': function() {
         return [this.projectId] 
       },
+      'user': function() {
+        return [];
+      }
     },
     project () {
       if (this.taskId != 0) {
         this.selectTask(this.taskId);
       }
       return Projects.findOne();
+    },
+    user () {
+      return Meteor.user();
     }
   },
   methods: {
@@ -101,9 +108,19 @@ export default {
       }
     },
 
-    getBackgroundUrl(project) {
-      return "background-image: url('/backgrounds/nicolas-jehly-234061-unsplash.jpg');"
-      // return "background-image: url('/backgrounds/andrej-lisakov-568525-unsplash.jpg');"
+    hasBackground() {
+      return this.getBackgroundUrl();
+    },
+
+    getBackgroundUrl(user) {
+      if (user) {
+        const background = user.profile.background;
+        if (background) {
+          console.log(background)
+          console.log(Backgrounds.link(background))
+          return `background-image: url('${Backgrounds.link(background)}');`;
+        }
+      }
     }
   }
 }

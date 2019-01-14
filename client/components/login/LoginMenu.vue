@@ -1,6 +1,5 @@
 <template>
-
-<div class="login-menu">
+  <div class="login-menu">
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la déconnexion ?"
@@ -10,6 +9,7 @@
       @cancel="onCancelLogout"
       @confirm="onConfirmLogout"
     />
+    <select-background :active.sync="showSelectBackgroundDialog"></select-background>
 
     <template v-if="!isConnected">
       <v-list dense class="pt-0">
@@ -62,6 +62,15 @@
         </v-list-tile>
       </v-list>
       <v-list dense class="pt-0">
+        <v-list-tile @click="showSelectBackgroundDialog = true">
+          <v-list-tile-action>
+            <v-icon>photo_library</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ $t('Background') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+        <v-divider></v-divider>
         <v-list-tile @click="showConfirmDialog = true">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
@@ -72,21 +81,31 @@
         </v-list-tile>
       </v-list>
     </template>
-</div>
-
+  </div>
 </template>
 
 <script>
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/users/permissions";
 
 export default {
+   i18n: {
+    messages: {
+      en: { 
+        "Background": "Background",
+      },
+      fr: {
+        "Background": "Fond d'écran",
+      }
+    }  
+  }, 
   data() {
     return {
-      showConfirmDialog: false
+      showConfirmDialog: false,
+      showSelectBackgroundDialog: false
     };
   },
   meteor: {
-    isConnected () {
+    isConnected() {
       if (Meteor) {
         return Meteor.userId();
       }
@@ -96,25 +115,25 @@ export default {
       user: function() {
         return [];
       }
-    },
-
+    }
   },
+  
   methods: {
-    logout () {
+    logout() {
       Meteor.logout();
     },
 
-    onCancelLogout () {
+    onCancelLogout() {
       showConfirmDialog = false;
     },
 
-    onConfirmLogout () {
+    onConfirmLogout() {
       showConfirmDialog = false;
       this.logout();
     },
 
-    isAdmin () {
-      return Permissions.isAdmin(Meteor.userId())
+    isAdmin() {
+      return Permissions.isAdmin(Meteor.userId());
     }
   }
 };
