@@ -16,6 +16,7 @@
                 </v-list-tile-content>
               </v-list-tile>
             </template>
+            <v-divider></v-divider>
             <v-list-tile @click="clearBackground()">
               <v-list-tile-avatar>
                 <span class=""></span>
