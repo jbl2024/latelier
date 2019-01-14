@@ -32,7 +32,7 @@
             >edit</v-icon>
             
             <div class="title-wrapper">
-              <div class="checkbox">
+              <div class="checkbox" v-if="!editName">
                 <div class="pretty p-svg p-curve">
                   <input
                     type="checkbox"
@@ -55,14 +55,13 @@
               <div v-show="!editName" :class="getClassForName(task)">{{ task.name }}</div>
 
               <span v-show="editName" class="edit">
-                <input
-                  ref="name"
-                  @focus="$event.target.select()"
-                  type="text"
+                <v-textarea 
+                  ref="name" 
                   class="edit-name"
-                  v-model="task.name"
-                  v-on:keyup.enter="updateName()"
-                >
+                  @focus.native="$event.target.select()" 
+                  solo 
+                  v-model="task.name" 
+                  @keyup.ctrl.enter="updateName"></v-textarea>
                 <v-btn icon flat @click.native="updateName">
                   <v-icon>check_circle</v-icon>
                 </v-btn>
@@ -492,10 +491,8 @@ export default {
 }
 
 .edit-name {
-  font-size: 14px;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
-  width: 75%;
-  margin-left: -3px;
+  /* font-size: 12px;
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif; */
 }
 
 .checklist {
