@@ -98,7 +98,6 @@ export default {
     return {
       selectedList: {},
       savedName: "",
-      hiddenTaskCount: 0,
       showHiddenTasks: false
     };
   },
