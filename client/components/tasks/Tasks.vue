@@ -2,7 +2,7 @@
 
 <div class="tasks">
     <div v-for="task in tasks" :key='task._id'>
-      <task :task="task" class="task" ></task>
+      <task :task="task" class="task" v-if="showCompleted(task, showHiddenTasks)"></task>
     </div>
 </div>
 
@@ -32,6 +32,10 @@ export default {
     listId: {
       type: String,
       default: "0"
+    },
+    showHiddenTasks: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -75,6 +79,13 @@ export default {
     },    
   },
   methods: {
+    showCompleted(task, show) {
+      if (task.completed && !show) {
+        return false;
+      }
+      return true;
+    },
+
     newTaskInline () {
       var that = this;
       Meteor.call('tasks.insert', this.projectId, this.listId, 'Nouvelle tâche', (error, task) => { 
