@@ -48,7 +48,7 @@
               <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
                 <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
               </v-list-tile-action>
-              <v-list-tile-action class="show-desktop">
+              <v-list-tile-action class="show-desktop" v-if="canManageProject(item)">
                 <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
                   <v-icon>settings</v-icon>
                 </v-btn>
@@ -58,7 +58,7 @@
                   <v-icon>file_copy</v-icon>
                 </v-btn>
               </v-list-tile-action>
-              <v-list-tile-action class="show-desktop">
+              <v-list-tile-action class="show-desktop" v-if="canDeleteProject(item)">
                 <v-btn icon flat color="grey darken-1" @click.stop="deleteProject(item._id)">
                   <v-icon>delete</v-icon>
                 </v-btn>
@@ -82,6 +82,8 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import debounce from "lodash/debounce";
 import { mapState } from "vuex";
 import { ProjectStates } from "/imports/api/projects/projects.js";
+import { Permissions } from '/imports/api/users/permissions'
+
 
 export default {
   mixins: [DatesMixin],
@@ -284,7 +286,22 @@ export default {
       return projects.filter(project => {
         return project.state === state;
       });
+    },
+
+    canDeleteProject(project) {
+      if (Permissions.isAdmin(Meteor.userId()) || project.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    },
+
+    canManageProject(project) {
+      if (Permissions.isAdmin(Meteor.userId()) || project.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
     }
+
 
   }
 };
