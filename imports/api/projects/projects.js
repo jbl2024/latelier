@@ -147,6 +147,7 @@ Meteor.methods({
       organizationId: project.organizationId,
       createdAt: new Date(),
       createdBy: Meteor.userId(),
+      state: project.state,
       startDate: project.startDate,
       endDate: project.endDate,
       estimatedSize: project.estimatedSize,
