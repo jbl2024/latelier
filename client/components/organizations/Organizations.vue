@@ -32,12 +32,12 @@
               <v-list-tile-title>{{ item.name }}</v-list-tile-title>
               <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
             </v-list-tile-content>
-            <v-list-tile-action class="show-desktop">
+            <v-list-tile-action class="show-desktop" v-if="canManageOrganization(item)">
               <v-btn icon flat color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
                 <v-icon>settings</v-icon>
               </v-btn>
             </v-list-tile-action>
-            <v-list-tile-action class="show-desktop">
+            <v-list-tile-action class="show-desktop" v-if="canDeleteOrganization(item)">
               <v-btn icon flat color="grey darken-1" @click.stop="deleteOrganization(item._id)">
                 <v-icon>delete</v-icon>
               </v-btn>
@@ -52,6 +52,7 @@
 
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { Permissions } from '/imports/api/users/permissions'
 
 export default {
   data() {
@@ -106,6 +107,20 @@ export default {
         name: "organization-settings",
         params: { organizationId: id }
       });
+    },
+
+    canDeleteOrganization(organization) {
+      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    },
+
+    canManageOrganization(organization) {
+      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
     }
   }
 };

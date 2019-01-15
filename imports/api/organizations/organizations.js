@@ -3,6 +3,7 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Projects } from '/imports/api/projects/projects.js'
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
+import { Permissions } from '/imports/api/users/permissions'
 
 export const Organizations = new Mongo.Collection('organizations');
 
@@ -50,6 +51,17 @@ Meteor.methods({
 
   'organizations.remove'(organizationId) {
     check(organizationId, String);
+
+    const organization = Organizations.findOne({_id: organizationId});
+
+    let canDelete = false;
+    if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+      canDelete = true; 
+    };
+
+    if (!canDelete) {
+      throw new Meteor.Error('permission-error');
+    }
 
     Projects.update({organizationId: organizationId}, {$unset: {organizationId: 1}}, {multi: true});
     Organizations.remove(organizationId);
