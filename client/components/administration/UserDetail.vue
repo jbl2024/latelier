@@ -37,6 +37,10 @@
           <v-flex xs12 sm6 md6>
             <v-switch v-if="!isMe(user)" :label="`${isConfirmed ? 'Mail confirmé' : 'Mail non confirmé'}`" v-model="isConfirmed"></v-switch>
           </v-flex>
+          <v-flex xs12>
+            <v-divider></v-divider>
+          </v-flex>
+          
           <v-flex xs12 sm6 md6>
             <v-text-field label="Prénom*" required v-model="user.profile.firstName"></v-text-field>
           </v-flex>
@@ -119,21 +123,25 @@ export default {
     deactivate() {
       Meteor.call("admin.deactivateUser", this.user._id);
       this.$emit("saved");
+      this.$emit("close");
     },
 
     activate() {
       Meteor.call("admin.activateUser", this.user._id);
       this.$emit("saved");
+      this.$emit("close");
     },
 
     confirm() {
       Meteor.call("admin.confirmEmail", this.user._id);
       this.$emit("saved");
+      this.$emit("close");
     },
 
     unconfirm() {
       Meteor.call("admin.unconfirmEmail", this.user._id);
       this.$emit("saved");
+      this.$emit("close");
     },
 
     onCancelDeleteUser() {},
