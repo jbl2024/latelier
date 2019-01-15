@@ -7,7 +7,7 @@
             <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
               <div :style="getColor(currentProjectId)">
                 <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
-                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}} / {{ taskCount }})</div>
+                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
                 <v-menu bottom left>
                   <v-btn dark small slot="activator" icon>
                     <v-icon>more_vert</v-icon>
@@ -30,7 +30,7 @@
                     <v-list-tile @click="list.autoComplete = !list.autoComplete">
                       <v-list-tile-action >
                         <v-checkbox
-                          v-model="list.autoComplete"
+                          :value="list.autoComplete"
                         ></v-checkbox>
                       </v-list-tile-action> 
                       <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
@@ -38,7 +38,7 @@
                     <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
                       <v-list-tile-action >
                         <v-checkbox
-                          v-model="list.catchCompleted"
+                          :value="list.catchCompleted"
                         ></v-checkbox>
                       </v-list-tile-action> 
                       <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
@@ -71,7 +71,8 @@
             Ajouter une tâche
         </v-btn>
         <div class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks" v-if="hiddenTaskCount > 0">
-          <div class="list-title">{{ hiddenTaskCount }} taches masquées</div>
+          <div class="list-title" v-if="showHiddenTasks">Masquer les {{ hiddenTaskCount }} tâches terminées</div>
+          <div class="list-title" v-if="!showHiddenTasks">Afficher les {{ hiddenTaskCount }} tâches terminées</div>
         </div>
       </div>
     </drop>
