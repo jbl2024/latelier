@@ -7,10 +7,16 @@ import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
 import { Resources } from "../../resources/resources";
+import { Permissions } from '/imports/api/users/permissions'
 
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
-  var query = {$or: [{createdBy: userId}, {members: userId}, {isPublic: true}]};
+  let query = {}
+
+  if (!Permissions.isAdmin(Meteor.userId())) {
+    query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
+  }
+
   if (name && name.length > 0) {
     query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
   } 
@@ -22,17 +28,21 @@ Meteor.publish("projects", function projectsPublication(organizationId, name, gr
       query['_id'] = {$in: projects};
     }
   }
+
   query.organizationId = organizationId;
   return Projects.find(query);
 });
 
 Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
-  var query = {
-    $or: [{createdBy: userId}, {members: userId}, {isPublic: true}], 
+  let query = {
     'startDate':{ $ne: null},
     'endDate':{ $ne: null},
   }
+  if (!Permissions.isAdmin(Meteor.userId())) {
+    query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
+  }
+
   if (name && name.length > 0) {
     query.name = { $regex: ".*" + name + ".*", $options: "i" };
   }
