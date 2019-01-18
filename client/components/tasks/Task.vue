@@ -5,6 +5,16 @@
     @mouseenter="showEditButton = true"
     @mouseleave="showEditButton = false"
   >
+    <confirm-dialog
+      :active.sync="showConfirmDeleteDialog"
+      title="Confirmer la suppression ?"
+      content="La tâche sera definitivement supprimée"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteTask"
+      @confirm="onConfirmDeleteTask"
+    />
+
     <drag
       class="drag"
       :transfer-data="getTransferData(task)"
@@ -25,11 +35,20 @@
               icon
               flat
               v-show="showEditButton && !editName"
-              class="editButton"
+              class="edit-button"
               small
               color="grey darken-1"
-              @click="startUpdateName"
+              @click.stop="startUpdateName"
             >edit</v-icon>
+            <v-icon
+              icon
+              flat
+              v-show="showEditButton && !editName"
+              class="delete-button"
+              small
+              color="grey darken-1"
+              @click.stop="showConfirmDeleteDialog = true"
+            >delete</v-icon>
             
             <div class="title-wrapper">
               <div class="checkbox" v-if="!editName">
@@ -147,7 +166,8 @@ export default {
       selected: false,
       hidden: false,
       showEditButton: false,
-      completed: false
+      completed: false,
+      showConfirmDeleteDialog: false
     };
   },
   watch: {
@@ -396,6 +416,15 @@ export default {
       } else {
         return "background-color: #2D6293";
       }
+    },
+
+    onCancelDeleteTask() {
+      showConfirmDeleteDialog = false;
+    },
+
+    onConfirmDeleteTask () {
+      showConfirmDeleteDialog = false;
+      Meteor.call("tasks.remove", this.task._id);
     }
   }
 };
@@ -542,10 +571,17 @@ export default {
   top: 4px;
 }
 
-.editButton {
+.edit-button {
   overflow: hidden;
   position: absolute;
   right: 12px;
+  top: 24px;
+}
+
+.delete-button {
+  overflow: hidden;
+  position: absolute;
+  right: 32px;
   top: 24px;
 }
 
