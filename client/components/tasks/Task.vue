@@ -5,16 +5,6 @@
     @mouseenter="showEditButton = true"
     @mouseleave="showEditButton = false"
   >
-    <confirm-dialog
-      :active.sync="showConfirmDeleteDialog"
-      title="Confirmer la suppression ?"
-      content="La tâche sera definitivement supprimée"
-      confirm-text="Supprimer"
-      cancel-text="Annuler"
-      @cancel="onCancelDeleteTask"
-      @confirm="onConfirmDeleteTask"
-    />
-
     <drag
       class="drag"
       :transfer-data="getTransferData(task)"
@@ -47,7 +37,7 @@
               class="delete-button"
               small
               color="grey darken-1"
-              @click.stop="showConfirmDeleteDialog = true"
+              @click.stop="deleteTask"
             >delete</v-icon>
             
             <div class="title-wrapper">
@@ -418,13 +408,8 @@ export default {
       }
     },
 
-    onCancelDeleteTask() {
-      showConfirmDeleteDialog = false;
-    },
-
-    onConfirmDeleteTask () {
-      showConfirmDeleteDialog = false;
-      Meteor.call("tasks.remove", this.task._id);
+    deleteTask () {
+      this.$events.fire('delete-task', this.task);  
     }
   }
 };
