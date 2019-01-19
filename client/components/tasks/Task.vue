@@ -25,11 +25,20 @@
               icon
               flat
               v-show="showEditButton && !editName"
-              class="editButton"
+              class="edit-button"
               small
               color="grey darken-1"
-              @click="startUpdateName"
+              @click.stop="startUpdateName"
             >edit</v-icon>
+            <v-icon
+              icon
+              flat
+              v-show="showEditButton && !editName"
+              class="delete-button"
+              small
+              color="grey darken-1"
+              @click.stop="deleteTask"
+            >delete</v-icon>
             
             <div class="title-wrapper">
               <div class="checkbox" v-if="!editName">
@@ -147,7 +156,8 @@ export default {
       selected: false,
       hidden: false,
       showEditButton: false,
-      completed: false
+      completed: false,
+      showConfirmDeleteDialog: false
     };
   },
   watch: {
@@ -396,6 +406,10 @@ export default {
       } else {
         return "background-color: #2D6293";
       }
+    },
+
+    deleteTask () {
+      this.$events.fire('delete-task', this.task);  
     }
   }
 };
@@ -542,10 +556,17 @@ export default {
   top: 4px;
 }
 
-.editButton {
+.edit-button {
   overflow: hidden;
   position: absolute;
   right: 12px;
+  top: 24px;
+}
+
+.delete-button {
+  overflow: hidden;
+  position: absolute;
+  right: 32px;
   top: 24px;
 }
 

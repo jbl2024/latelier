@@ -1,5 +1,14 @@
 <template>
   <div class="project"> 
+    <confirm-dialog
+      :active.sync="showDeleteTaskDialog"
+      title="Confirmer la suppression ?"
+      content="La tâche sera definitivement supprimée"
+      confirm-text="Supprimer"
+      cancel-text="Annuler"
+      @cancel="onCancelDeleteTask"
+      @confirm="onConfirmDeleteTask"
+    />
 
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate></v-progress-linear>
@@ -37,11 +46,16 @@ export default {
       this.showTaskDetail = false;
       this.$router.push({ name: 'project', params: { organizationId: this.organizationId, projectId: this.projectId }}) 
     });
+    this.$events.listen('delete-task', task => {
+      this.taskToDelete = task;
+      this.showDeleteTaskDialog = true;
+    });
   },
   created () {
     this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
   },
   beforeDestroy() {
+    this.$events.off('delete-task');
     this.$events.off('close-task-detail');
     this.$store.dispatch('setCurrentProjectId', 0);    
   },
@@ -76,7 +90,9 @@ export default {
       editProjectName: false,
       showTaskDetail: false,
       selectedTask: {},
-      debouncedFilter: ''
+      debouncedFilter: '',
+      showDeleteTaskDialog: false,
+      taskToDeleted: undefined
     }
   },
   meteor: {
@@ -119,7 +135,19 @@ export default {
           return `background-image: url('${Backgrounds.link(background)}');`;
         }
       }
+    },
+
+    onCancelDeleteTask() {
+      showDeleteTaskDialog = false;
+    },
+
+    onConfirmDeleteTask () {
+      showDeleteTaskDialog = false;
+      if (this.taskToDelete) {
+        Meteor.call("tasks.remove", this.taskToDelete._id);
+      }
     }
+     
   }
 }
 </script>
