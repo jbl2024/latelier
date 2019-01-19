@@ -120,6 +120,13 @@ export default {
       }
       this.startUpdateName();
     });
+    this.$events.listen("task-edit-name-after-creation", task => {
+      if (task._id !== this.task._id) {
+        return;
+      }
+      this.justCreated = true;
+      this.startUpdateName();
+    });
     this.$events.listen("task-cancel-edit-name", task => {
       if (task._id !== this.task._id) {
         this.cancelUpdateName();
@@ -157,7 +164,8 @@ export default {
       hidden: false,
       showEditButton: false,
       completed: false,
-      showConfirmDeleteDialog: false
+      showConfirmDeleteDialog: false,
+      justCreated: false
     };
   },
   watch: {
@@ -344,8 +352,13 @@ export default {
         this.task.name,
         (error, result) => {
           if (error) {
+            this.$store.dispatch("notifyError", error);
+            if (this.justCreated) {
+              Meteor.call("tasks.remove", this.task._id);
+            }
             return;
           }
+          this.justCreated = false;
         }
       );
     },
@@ -355,6 +368,9 @@ export default {
         e.stopPropagation();
       }
       this.editName = false;
+      if (this.justCreated) {
+        Meteor.call("tasks.remove", this.task._id);
+      }
     },
 
     formatDate(date) {

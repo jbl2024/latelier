@@ -270,7 +270,7 @@ export default {
           if (error) {
             return;
           }
-          this.$events.fire("task-edit-name", task);
+          this.$events.fire("task-edit-name-after-creation", task);
         }
       );
     },
