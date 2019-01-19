@@ -9,7 +9,7 @@
         <span>{{ task.name}}</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-menu bottom left>
+      <v-menu bottom left class="menu">
         <v-btn slot="activator" icon>
           <v-icon>more_vert</v-icon>
         </v-btn>
@@ -192,6 +192,9 @@ export default {
 </script>
 
 <style scoped>
+.menu {
+  z-index: 10000;
+}
 .description {
   margin: 24px;
 }
