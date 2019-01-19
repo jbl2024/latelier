@@ -14,7 +14,7 @@
           <v-form v-model="valid" v-on:submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
+                <v-text-field v-model="name" ref="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
               </v-flex>
               <v-flex sm6 md6>
                 <label>Modèle</label>
@@ -71,6 +71,7 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
+      this.$nextTick(() => this.$refs.name.focus());
     },
     close () {
       this.showDialog = false;
