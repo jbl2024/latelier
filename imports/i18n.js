@@ -1,6 +1,7 @@
 const messages = {
   fr: {
     'Cancel': 'Annuler',
+    'Canvas': 'Canevas',
     history: {
       tasks: {
         create: "Création",
@@ -30,6 +31,7 @@ const messages = {
   },
   en: {
     'Cancel': 'Cancel',
+    'Canvas': 'Canvas',
     history: {
       tasks: {
         create: "Creation",
