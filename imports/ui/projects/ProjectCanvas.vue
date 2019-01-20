@@ -7,47 +7,46 @@
       <v-container fluid grid-list-md>
         <v-layout row wrap>
           <v-flex xs12 d-flex>
-            <v-card>
-              <v-card-title primary-title>
-                <div>
-                  <div class="headline">But</div>
-                  <span>Quelle est l'intention à l'origine du projet ?</span>
-                </div>
-              </v-card-title>
-              <v-card-text>...</v-card-text>
-            </v-card>
+            <canvas-item title="But" headline="Quelle est l'intention à l'origine du projet ?"></canvas-item>
           </v-flex>
 
-          <v-flex d-flex xs4>
-            <v-layout row wrap class="bloc">
-              <v-flex xs4>
-                <v-card>
-                  <v-card-title primary-title>
-                    <div>
-                      <div class="headline">Budget</div>
-                      <span>Quelle sont les finances disponibles ?</span>
-                    </div>
-                  </v-card-title>
-                  <v-card-text>...</v-card-text>
-                </v-card>
-              </v-flex>
-              <v-flex xs4>EQUIPE</v-flex>
-              <v-flex xs4>CONDITIONS</v-flex>
-              <v-flex xs8>RESSOURCES</v-flex>
-              <v-flex xs4>RISQUES & OPPORTUNITES</v-flex>
-            </v-layout>
+          <v-flex xs4 d-flex>
+            <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?"></canvas-item>
+          </v-flex>
+          <v-flex xs4 d-flex>
+            <canvas-item title="Equipe"></canvas-item>
+          </v-flex>
+          <v-flex xs4 d-flex>
+            <canvas-item title="Conditions"></canvas-item>
           </v-flex>
 
-          <v-flex d-flex xs4>JALONS</v-flex>
-
-          <v-flex d-flex xs4>
-            <v-layout row wrap class="bloc">
-              <v-flex xs12>QUALITE</v-flex>
-              <v-flex xs6>RESULTATS</v-flex>
-              <v-flex xs6>CLIENTS</v-flex>
-            </v-layout>
+          <v-flex xs4 d-flex>
+            <canvas-item title="Ressources"></canvas-item>
           </v-flex>
-          <v-flex xs12 class="bloc" d-flex>CALENDRIER</v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Risques & opportunités"></canvas-item>
+          </v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Jalons"></canvas-item>
+          </v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Qualité"></canvas-item>
+          </v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Résultats"></canvas-item>
+          </v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Clients"></canvas-item>
+          </v-flex>
+
+          <v-flex xs12 class="bloc" d-flex>
+            <canvas-item title="Calendrier"></canvas-item>
+          </v-flex>
         </v-layout>
       </v-container>
     </template>
@@ -95,12 +94,4 @@ export default {
 </script>
 
 <style scoped>
-.bloc {
-  border: 2px solid black;
-  background-color: #eee;
-  min-height: 200px;
-}
-.bloc-red {
-  border: 2px solid red;
-}
 </style>
