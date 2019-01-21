@@ -1,13 +1,13 @@
 <template>
   <div class="project-canvas">
-    <div v-if="!$subReady.project">
+    <div v-if="!canvas">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <template v-if="$subReady.project">
+    <template v-if="canvas && canvas.data">
       <v-container fluid grid-list-md>
         <v-layout row wrap>
           <v-flex xs12 d-flex>
-            <canvas-item title="But" headline="Quelle est l'intention à l'origine du projet ?"></canvas-item>
+            <canvas-item title="But" headline="Quelle est l'intention à l'origine du projet ?" :item.sync="goal"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
@@ -55,6 +55,7 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { Canvas } from "/imports/api/canvas/canvas.js";
 
 export default {
   mounted() {
@@ -75,20 +76,34 @@ export default {
       default: "0"
     }
   },
+  watch: {
+    'canvas'() {
+       if (!this.$subReady.canvas) {
+         return;
+       }
+       this.goal = this.canvas.data.goal || "";
+    },
+    goal(goal) {
+      Meteor.call('canvas.update', this.projectId, {goal: goal});
+    }
+  },
   data() {
-    return {};
+    return {
+      canvas: {},
+      goal: "",
+    };
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      project: function() {
-        return [this.projectId];
-      }
+      'canvas': function() {
+        return [this.projectId] 
+      },
     },
-    project() {
-      return Projects.findOne();
+    canvas() {
+      return Canvas.findOne();
     }
-  },
+  },  
   methods: {}
 };
 </script>

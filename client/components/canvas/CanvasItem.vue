@@ -45,12 +45,24 @@ import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
   mixins: [MarkdownMixin],
+  watch: {
+    item: {
+      immediate: true,
+      handler(item) {
+        this.content = item;
+      }
+    }
+  },
   props: {
     title: {
       type: String,
       default: "title"
     },
     headline: {
+      type: String,
+      default: ""
+    },
+    item: {
       type: String,
       default: ""
     }
@@ -67,6 +79,7 @@ export default {
       this.$nextTick(() => this.$refs.content.focus());
     },
     updateContent() {
+      this.$emit("update:item", this.content);
       this.editContent = false;
     },
     cancelUpdateContent() {
