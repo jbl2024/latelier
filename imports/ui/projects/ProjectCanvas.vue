@@ -78,7 +78,7 @@ export default {
   },
   watch: {
     'canvas'() {
-       if (!this.$subReady.canvas) {
+       if (!this.$subReady.canvas || !this.canvas) {
          return;
        }
        this.goal = this.canvas.data.goal || "";
