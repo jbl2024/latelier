@@ -13,6 +13,27 @@ publishComposite("canvas", function(projectId) {
       {
         // lists
         find(project) {
+          let canvas = Canvas.findOne({projectId: projectId});
+          if (!canvas) {
+            Canvas.insert({
+              projectId: projectId,
+              createdAt: new Date(),
+              createdBy: Meteor.userId(),
+              data: {
+                goal: "",
+                budget: "",
+                team: "",
+                requirements: "",
+                resources: "",
+                risks: "",
+                milestones: "",
+                quality: "",
+                outcome: "",
+                customers: "",
+                planning: ""
+              }
+            });
+          }
           return Canvas.find({ projectId: project._id }, { sort: { order: 1 } });
         }
       }

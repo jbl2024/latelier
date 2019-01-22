@@ -45,7 +45,19 @@ Meteor.methods({
         projectId: projectId,
         createdAt: new Date(),
         createdBy: Meteor.userId(),
-        data: {}
+        data: {
+          goal: "",
+          budget: "",
+          team: "",
+          requirements: "",
+          resources: "",
+          risks: "",
+          milestones: "",
+          quality: "",
+          outcome: "",
+          customers: "",
+          planning: ""
+        }
       });
       canvas = Canvas.findOne({projectId: projectId});
     }

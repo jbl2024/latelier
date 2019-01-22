@@ -7,45 +7,45 @@
       <v-container fluid grid-list-md>
         <v-layout row wrap>
           <v-flex xs12 d-flex>
-            <canvas-item title="But" headline="Quelle est l'intention à l'origine du projet ?" :item.sync="goal"></canvas-item>
+            <canvas-item title="But" headline="Quelle est l'intention à l'origine du projet ?" :item.sync="data.goal"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?"></canvas-item>
+            <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?" :item.sync="data.budget"></canvas-item>
           </v-flex>
           <v-flex xs4 d-flex>
-            <canvas-item title="Equipe"></canvas-item>
+            <canvas-item title="Equipe" :item.sync="data.team"></canvas-item>
           </v-flex>
           <v-flex xs4 d-flex>
-            <canvas-item title="Conditions"></canvas-item>
-          </v-flex>
-
-          <v-flex xs4 d-flex>
-            <canvas-item title="Ressources"></canvas-item>
+            <canvas-item title="Conditions" :item.sync="data.requirements"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Risques & opportunités"></canvas-item>
+            <canvas-item title="Ressources" :item.sync="data.resources"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Jalons"></canvas-item>
+            <canvas-item title="Risques & opportunités" :item.sync="data.risks"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Qualité"></canvas-item>
+            <canvas-item title="Jalons" :item.sync="data.milestones"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Résultats"></canvas-item>
+            <canvas-item title="Qualité" :item.sync="data.quality"></canvas-item>
           </v-flex>
 
           <v-flex xs4 d-flex>
-            <canvas-item title="Clients"></canvas-item>
+            <canvas-item title="Résultats" :item.sync="data.outcome"></canvas-item>
+          </v-flex>
+
+          <v-flex xs4 d-flex>
+            <canvas-item title="Clients" :item.sync="data.customers"></canvas-item>
           </v-flex>
 
           <v-flex xs12 class="bloc" d-flex>
-            <canvas-item title="Calendrier"></canvas-item>
+            <canvas-item title="Calendrier" :item.sync="data.planning"></canvas-item>
           </v-flex>
         </v-layout>
       </v-container>
@@ -81,16 +81,19 @@ export default {
        if (!this.$subReady.canvas || !this.canvas) {
          return;
        }
-       this.goal = this.canvas.data.goal || "";
+       this.data = this.canvas.data;
     },
-    goal(goal) {
-      Meteor.call('canvas.update', this.projectId, {goal: goal});
-    }
+    data: {
+      deep: true,
+      handler(data) {
+        Meteor.call('canvas.update', this.projectId, data);
+      }
+    },
   },
   data() {
     return {
       canvas: {},
-      goal: "",
+      data: {},
     };
   },
   meteor: {
