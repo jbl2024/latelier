@@ -1,26 +1,49 @@
 <template>
-
   <div class="task-detail">
     <div class="toolbar">
-        <div class="toolbar-button">
+      <div class="title edit toolbar-title" v-show="editTaskName">
+        <v-text-field
+          @focus="$event.target.select()"
+          solo
+          flat
+          hide-details
+          prepend-inner-icon="edit"
+          label="Saisir un nom..."
+          ref="name"
+          v-model="task.name"
+          v-on:keyup.enter="updateTaskName"
+        ></v-text-field>
+      </div>
+      <div class="toolbar-button" v-if="editTaskName">
+        <v-btn icon @click="updateTaskName">
+          <v-icon>check_circle</v-icon>
+        </v-btn>
+      </div>
+      <div class="toolbar-button" v-if="editTaskName">
+        <v-btn icon @click="cancelUpdateTaskName">
+          <v-icon>cancel</v-icon>
+        </v-btn>
+      </div>
+
+      <div class="toolbar-button" v-if="!editTaskName">
         <v-btn icon flat @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <v-icon>close</v-icon>
         </v-btn>
-        </div>
-      <div class="toolbar-title">
+      </div>
+      <div class="toolbar-title" @click="startEditTaskName" v-if="!editTaskName">
         <span>{{ task.name}}</span>
       </div>
-      <div class="toolbar-button">
-      <v-menu bottom left class="menu">
-        <v-btn slot="activator" icon>
-          <v-icon>more_vert</v-icon>
-        </v-btn>
-        <v-list>
-          <v-list-tile @click="deleteTask(task._id)">
-            <v-list-tile-title>Supprimer</v-list-tile-title>
-          </v-list-tile>
-        </v-list>
-      </v-menu>
+      <div class="toolbar-button" v-if="!editTaskName">
+        <v-menu bottom left class="menu">
+          <v-btn slot="activator" icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          <v-list>
+            <v-list-tile @click="deleteTask(task._id)">
+              <v-list-tile-title>Supprimer</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
       </div>
     </div>
 
@@ -31,15 +54,25 @@
 
     <v-divider></v-divider>
     <div class="description">
-      <div v-show="!editDescription && task.description && task.description.length > 0" @click="startEditDescription">
+      <div
+        v-show="!editDescription && task.description && task.description.length > 0"
+        @click="startEditDescription"
+      >
         <div v-html="markDown(task.description)"></div>
       </div>
-      <div v-show="!task.description && !editDescription" @click="startEditDescription">
-        Aucune description
-      </div>
+      <div
+        v-show="!task.description && !editDescription"
+        @click="startEditDescription"
+      >Aucune description</div>
 
       <div v-show="editDescription">
-        <v-textarea ref="description" solo label=Description v-model="task.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
+        <v-textarea
+          ref="description"
+          solo
+          label="Description"
+          v-model="task.description"
+          @keyup.ctrl.enter="updateDescription"
+        ></v-textarea>
         <v-btn icon flat @click="updateDescription">
           <v-icon>check_circle</v-icon>
         </v-btn>
@@ -52,18 +85,10 @@
     <v-divider></v-divider>
 
     <v-tabs grow>
-      <v-tab id="tab-properties">
-        Propriétés
-      </v-tab>
-      <v-tab id="tab-notes">
-        {{ getLabel('Notes', notesCount) }}
-      </v-tab>
-      <v-tab id="tab-checklist">
-        {{ getLabel('Checklist', checklistCount) }}
-      </v-tab>
-      <v-tab id="tab-resources">
-        {{ getLabel('Ressources', resourcesCount) }}
-      </v-tab>
+      <v-tab id="tab-properties">Propriétés</v-tab>
+      <v-tab id="tab-notes">{{ getLabel('Notes', notesCount) }}</v-tab>
+      <v-tab id="tab-checklist">{{ getLabel('Checklist', checklistCount) }}</v-tab>
+      <v-tab id="tab-resources">{{ getLabel('Ressources', resourcesCount) }}</v-tab>
 
       <v-tab-item>
         <task-properties :task="task"></task-properties>
@@ -77,10 +102,8 @@
       <v-tab-item>
         <task-resources :task="task"></task-resources>
       </v-tab-item>
-    </v-tabs> 
-
+    </v-tabs>
   </div>
-
 </template>
 
 <script>
@@ -101,7 +124,10 @@ export default {
   },
   data() {
     return {
-      editDescription: false
+      editDescription: false,
+      editTaskName: false,
+      savedDescription: "",
+      savedName: ""
     };
   },
   meteor: {
@@ -189,6 +215,33 @@ export default {
         return label;
       }
       return label + " (" + count + ")";
+    },
+
+    startEditTaskName() {
+      this.savedName = this.task.name;
+      this.editTaskName = true;
+      this.$nextTick(() => this.$refs.name.focus());
+    },
+
+    updateTaskName() {
+      this.editTaskName = false;
+      Meteor.call(
+        "tasks.updateName",
+        this.task._id,
+        this.task.name,
+        (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            this.task.name = this.savedName;
+            return;
+          }
+        }
+      );
+    },
+
+    cancelUpdateTaskName() {
+      this.editTaskName = false;
+      this.task.name = this.savedName;
     }
   }
 };
@@ -234,5 +287,4 @@ pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
-
 </style>
