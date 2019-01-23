@@ -15,11 +15,11 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-      <v-dialog v-model="showTaskDetail" class="detail" fullscreen hide-overlay transition="dialog-transition">
+      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600">
         <v-card>
           <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
         </v-card>
-      </v-dialog>
+      </v-navigation-drawer>
 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
         <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
@@ -184,6 +184,7 @@ export default {
   min-height:0;
   flex-direction: column;
   flex:1;
+  position: relative;
 }
 
 .edit-project-name input {
@@ -242,6 +243,10 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+
+}
+
+.detail {
 
 }
 

@@ -1,7 +1,7 @@
 <template>
 
   <div class="task-detail">
-    <v-toolbar dark color="primary">
+    <v-toolbar dense>
         <v-btn icon flat @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <v-icon>close</v-icon>
         </v-btn>
