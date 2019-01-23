@@ -11,7 +11,9 @@
       </v-toolbar>       
       <v-card>
         <v-card-text class="content">
-          <v-timeline :dense="$vuetify.breakpoint.xsOnly" clipped dense> 
+          <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+
+          <v-timeline :dense="$vuetify.breakpoint.xsOnly" clipped dense v-if="!loading"> 
             <v-timeline-item 
               v-for="item in history"
               :key="item._id"
@@ -51,7 +53,8 @@ export default {
   data () {
     return {
       showDialog: false,
-      history: []
+      history: [],
+      loading: true
     }
   },
   methods: {
@@ -65,9 +68,11 @@ export default {
     },
 
     refresh () {
+      this.loading = true;
       Meteor.call('projects.getHistory', this.projectId, (error, result) => {
+        this.loading = false;
         if (error) {
-          console.log(error);
+          this.$store.dispatch("notifyError", error);
           return;
         }
         this.history = result.data;
