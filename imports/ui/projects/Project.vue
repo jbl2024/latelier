@@ -215,7 +215,12 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+}
 
+@media (max-width: 600px) { 
+  .container-wrapper {
+    min-height: 100vh;
+  }
 }
 
 
