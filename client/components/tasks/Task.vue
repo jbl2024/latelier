@@ -8,6 +8,7 @@
     <drag
       class="drag"
       :transfer-data="getTransferData(task)"
+      :draggable="!editName"
       @dragstart="onDragStart"
       @dragend="onDragEnd"
     >
