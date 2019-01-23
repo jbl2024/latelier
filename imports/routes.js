@@ -17,6 +17,7 @@ import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
+import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
@@ -114,6 +115,13 @@ export default [
     name: "project-timeline",
     beforeEnter: isBasicAuth,
     component: ProjectTimeline,
+    props: true
+  },
+  {
+    path: "/projects-canvas/:organizationId/:projectId",
+    name: "project-canvas",
+    beforeEnter: isBasicAuth,
+    component: ProjectCanvas,
     props: true
   },
   {
