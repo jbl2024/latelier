@@ -15,12 +15,11 @@
         </timeline>
       </div>
 
-      <v-dialog v-model="showTaskDetail" class="detail" fullscreen persistent hide-overlay transition="dialog-bottom-transition">
+      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600" stateless>
         <v-card>
           <task-detail :taskId="selectedTask._id"></task-detail>
         </v-card>
-      </v-dialog>
-
+      </v-navigation-drawer>
 
     </template>
   </div>
