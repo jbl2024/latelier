@@ -1,14 +1,16 @@
 <template>
 
   <div class="task-detail">
-    <v-toolbar dense>
+    <div class="toolbar">
+        <div class="toolbar-button">
         <v-btn icon flat @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <v-icon>close</v-icon>
         </v-btn>
-      <v-toolbar-title>
+        </div>
+      <div class="toolbar-title">
         <span>{{ task.name}}</span>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
+      </div>
+      <div class="toolbar-button">
       <v-menu bottom left class="menu">
         <v-btn slot="activator" icon>
           <v-icon>more_vert</v-icon>
@@ -19,7 +21,8 @@
           </v-list-tile>
         </v-list>
       </v-menu>
-    </v-toolbar>
+      </div>
+    </div>
 
     <task-labels :task="task"></task-labels>
     <div>
@@ -192,6 +195,25 @@ export default {
 </script>
 
 <style scoped>
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar-button {
+  flex: 1;
+  max-width: 42px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+
+.toolbar-title {
+  flex: 2;
+  font-size: 18px;
+}
+
 .menu {
   z-index: 10000;
 }
