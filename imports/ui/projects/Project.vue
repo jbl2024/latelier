@@ -22,7 +22,7 @@
       </v-navigation-drawer>
 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId"></kanban>
+        <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
       </div>
 
     </div>

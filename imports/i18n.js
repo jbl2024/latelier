@@ -17,7 +17,8 @@ const messages = {
         addAttachment: "Ajout d'une pièce jointe",
         removeAttachment: "Suppression d'un pièce jointe",
         remove: "Suppression",
-        setDueDate: "Date d'échéance"
+        setDueDate: "Date d'échéance",
+        complete: "Complétée"
       },
     },
     projects: {
@@ -47,7 +48,8 @@ const messages = {
         addAttachment: "Add attachment",
         removeAttachment: "Delete attachment",
         remove: "Delete",
-        setDueDate: "Due date"
+        setDueDate: "Due date",
+        complete: "Completed"
       }
     },
     projects: {

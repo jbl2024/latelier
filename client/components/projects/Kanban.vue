@@ -6,6 +6,9 @@
       <div class="swimlane dragscroll new">
         <h2 @click="newListInline">Nouvelle liste</h2>
       </div>
+
+      <div class="swimlane dragscroll task-detail-margin" v-if="addMargin">
+      </div>
   </drop>
 </template>
 
@@ -23,6 +26,10 @@ export default {
     projectId: {
       type: String,
       default: '0'
+    },
+    addMargin: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -104,6 +111,12 @@ export default {
   .swimlane.new {
     flex: 0 0 auto;
     width: 272px;
+    display: inline-block;
+    margin-right: 8px;
+  }
+  .swimlane.task-detail-margin {
+    flex: 0 0 auto;
+    width: 592px;
     display: inline-block;
     margin-right: 8px;
   }
