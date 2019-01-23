@@ -20,6 +20,14 @@
         <v-list-tile-title>Planning</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
+    <v-list-tile :to="{ name: 'project-canvas', params: { organizationId: project.organizationId, projectId: project._id }}">
+      <v-list-tile-action>
+        <v-icon>web</v-icon>
+      </v-list-tile-action>
+      <v-list-tile-content>
+        <v-list-tile-title>{{ $t('Canvas') }}</v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
     <v-list-tile :to="{ name: 'project-attachments-page', params: { organizationId: project.organizationId, projectId: project._id }}">
       <v-list-tile-action>
         <v-icon>attachment</v-icon>
