@@ -15,7 +15,7 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600">
+      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600" stateless>
         <v-card>
           <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
         </v-card>
@@ -164,19 +164,12 @@ export default {
 }
 
 
-.toolbar {
-  background-color: white;
-}
-
-.search {
-  max-width: 300px;
-}
-
 .project {
   display: flex;
   min-height:0;
   height: 100%;
   flex-direction: column;
+  position: relative;
 }
 
 .project-wrapper {
@@ -185,15 +178,6 @@ export default {
   flex-direction: column;
   flex:1;
   position: relative;
-}
-
-.edit-project-name input {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: .02em;
-  margin-top: 6px;
-  padding: 0;
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
 }
 
 @media (max-width: 600px) {
@@ -217,23 +201,11 @@ export default {
   }
 }
 
-.kanban-container-wrapper {
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-}
-
-.absolute-right {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 200;
-}
 
 .container-wrapper {
   overflow-y: scroll;
   height: 100%;
-  position: absolute;
+  position: relative;
   width: 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
