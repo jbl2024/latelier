@@ -3,13 +3,12 @@
     <v-card>
       <v-card-title primary-title>
         <div>
-          <v-tooltip bottom>
             <div class="canvas-title" slot="activator">
               {{ title }}
-              <v-icon>help</v-icon>
             </div>
-            <span>{{ headline }}</span>
-          </v-tooltip>
+            <div class="canvas-headline">
+              <slot name="headline"></slot>
+            </div>
         </div>
       </v-card-title>
       <v-card-text>
@@ -94,10 +93,17 @@ export default {
   font-size: 18px;
 }
 
+.canvas-headline {
+  font-size: 12px;
+  color: #546E7A;
+  min-height: 90px;
+}
+
 .content {
   border: 1px solid #eee;
   width: 100%;
   min-height: 220px;
+  cursor: text;
 }
 .edit-content {
   min-height: 220px;
