@@ -88,6 +88,7 @@ export default {
 .kanban-flex {
   display: flex;
   flex-direction: column;
+  cursor: grab;
 }
 
 .swimlane.new h2 {
