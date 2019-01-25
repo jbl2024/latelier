@@ -13,16 +13,15 @@
       </div>
     </v-toolbar-title>
     <v-text-field v-show="!editProjectName"
-        style="width: 500px"
         flat
         solo-inverted
         hide-details
         prepend-inner-icon="search"
         label="Rechercher..."
-        class="hidden-sm-and-down"
+        class="hidden-sm-and-down align-remaining"
         v-on:input="debouncedFilter"
     ></v-text-field>
-    <span class="title edit" v-show="editProjectName">
+    <div class="title edit align-left" v-show="editProjectName">
       <v-text-field @focus="$event.target.select()" style="width: 500px" flat solo-inverted hide-details prepend-inner-icon="edit" label="Saisir un nom..." ref="name" v-model="project.name" v-on:keyup.enter="updateProjectName"></v-text-field>
       <v-btn icon @click="updateProjectName">
         <v-icon>check_circle</v-icon>
@@ -30,7 +29,7 @@
       <v-btn icon @click="cancelUpdateProjectName">
         <v-icon>cancel</v-icon>
       </v-btn>
-    </span>
+    </div>
 
 
   </div>
@@ -96,12 +95,25 @@ export default {
 </script>
 
 <style scoped>
+
+.project-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 2;
+}
+
+
 .align-left {
-  float: left;
+  flex: 1;
+}
+
+.align-remaining {
+  flex: 1;
 }
 
 .edit .v-text-field {
-  float:left;
+  float: left;
 }
 
 .title {

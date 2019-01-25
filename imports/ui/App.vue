@@ -17,7 +17,7 @@
         ></organization-title>
         <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
         <v-spacer></v-spacer>
-        {{ email }}
+        <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
         <v-avatar dark>
           <v-menu offset-y>
             <v-btn icon slot="activator">
