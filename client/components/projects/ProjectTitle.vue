@@ -7,7 +7,7 @@
         <v-btn flat icon color="white" v-if="project && project.organizationId" :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }">
           <v-icon>domain</v-icon>
         </v-btn>
-        <span class="title ml-3 mr-5" @click="startUpdateProjectName">
+        <span class="title" @click="startUpdateProjectName">
             {{ project.name }}
         </span>
       </div>
