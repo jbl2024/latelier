@@ -1,11 +1,15 @@
 <template>
-
   <div class="task-notes">
-    <empty-state v-show="!hasNotes(task.notes) && !editNewNote" icon="note" label="Aucune note" description="Vous pouvez ajouter des notes.">
+    <empty-state
+      v-show="!hasNotes(task.notes) && !editNewNote"
+      icon="note"
+      label="Aucune note"
+      description="Vous pouvez ajouter des notes."
+    >
       <v-btn class="primary" @click="startNewNote">Ajouter une note</v-btn>
     </empty-state>
 
-    <div v-for="note in task.notes" :key='note._id'>
+    <div v-for="note in task.notes" :key="note._id">
       <div class="note">
         <div v-html="markDown(note.content)"></div>
         <div class="metadata">
@@ -16,14 +20,13 @@
             </v-btn>
           </div>
         </div>
-
       </div>
 
       <v-divider></v-divider>
     </div>
 
     <div v-show="editNewNote">
-      <vue-editor v-model="note" ref="newNote" @keyup.ctrl.enter="addNote" :editorToolbar="customToolbar"></vue-editor>
+      <rich-editor v-model="note" ref="newNote"></rich-editor>
       <v-btn flat icon @click="addNote">
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -35,9 +38,7 @@
     <div class="center" v-if="!editNewNote">
       <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">Ajouter une note</v-btn>
     </div>
-
   </div>
-
 </template>
 
 <script>
@@ -52,25 +53,19 @@ import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
   mixins: [MarkdownMixin],
-   components: {
-      VueEditor
-   },
+  components: {
+    VueEditor
+  },
   props: {
     task: {
       type: Object
     }
   },
 
-
   data() {
     return {
       editNewNote: false,
-      note: "",
-      customToolbar: [
-          ['bold', 'italic', 'underline', 'strike'],
-          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          ['code-block', 'blockquote']
-        ]
+      note: ""
     };
   },
   methods: {
@@ -81,7 +76,7 @@ export default {
     startNewNote() {
       this.editNewNote = true;
       this.note = "";
-      this.$nextTick(() => this.$refs.newNote.quill.focus());
+      this.$nextTick(() => this.$refs.newNote.focus());
     },
 
     addNote() {
@@ -117,14 +112,6 @@ export default {
   }
 };
 </script>
-
-<style>
-.ql-toolbar svg {
-  width: 16px !important;
-  height: 16px !important;
-}
-
-</style>
 
 
 <style scoped>
