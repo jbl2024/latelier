@@ -18,6 +18,8 @@ import '../imports/api/labels/labels.js';
 import '../imports/api/labels/server/publications.js';
 import '../imports/api/canvas/canvas.js';
 import '../imports/api/canvas/server/publications.js';
+import '../imports/api/healthReports/healthReports.js';
+import '../imports/api/healthReports/server/publications.js';
 import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
 

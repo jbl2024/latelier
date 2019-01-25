@@ -18,8 +18,10 @@ import Project from "/imports/ui/projects/Project.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
+import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
+
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 
 export default [
@@ -122,6 +124,13 @@ export default [
     name: "project-canvas",
     beforeEnter: isBasicAuth,
     component: ProjectCanvas,
+    props: true
+  },
+  {
+    path: "/projects-weather/:organizationId/:projectId",
+    name: "project-weather",
+    beforeEnter: isBasicAuth,
+    component: ProjectWeather,
     props: true
   },
   {
