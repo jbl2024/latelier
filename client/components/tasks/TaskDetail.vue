@@ -66,13 +66,7 @@
       >Aucune description</div>
 
       <div v-show="editDescription">
-        <v-textarea
-          ref="description"
-          solo
-          label="Description"
-          v-model="task.description"
-          @keyup.ctrl.enter="updateDescription"
-        ></v-textarea>
+        <rich-editor ref="description" v-model="task.description"></rich-editor>
         <v-btn icon flat @click="updateDescription">
           <v-icon>check_circle</v-icon>
         </v-btn>
