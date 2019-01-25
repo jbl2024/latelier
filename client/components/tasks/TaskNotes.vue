@@ -23,7 +23,7 @@
     </div>
 
     <div v-show="editNewNote">
-      <vue-editor v-model="note" @keyup.ctrl.enter="addNote" :editorToolbar="customToolbar"></vue-editor>
+      <vue-editor v-model="note" ref="newNote" @keyup.ctrl.enter="addNote" :editorToolbar="customToolbar"></vue-editor>
       <v-btn flat icon @click="addNote">
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -67,9 +67,9 @@ export default {
       editNewNote: false,
       note: "",
       customToolbar: [
-          ['bold', 'italic', 'underline'],
+          ['bold', 'italic', 'underline', 'strike'],
           [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-          ['code-block']
+          ['code-block', 'blockquote']
         ]
     };
   },
@@ -81,6 +81,7 @@ export default {
     startNewNote() {
       this.editNewNote = true;
       this.note = "";
+      this.$nextTick(() => this.$refs.newNote.quill.focus());
     },
 
     addNote() {
@@ -116,6 +117,15 @@ export default {
   }
 };
 </script>
+
+<style>
+.ql-toolbar svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+</style>
+
 
 <style scoped>
 pre {
