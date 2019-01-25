@@ -23,7 +23,7 @@
     </div>
 
     <div v-show="editNewNote">
-      <v-textarea ref="newNote" solo label="Note" v-model="note" @keyup.ctrl.enter="addNote"></v-textarea>
+      <vue-editor v-model="note" @keyup.ctrl.enter="addNote" :editorToolbar="customToolbar"></vue-editor>
       <v-btn flat icon @click="addNote">
         <v-icon>check_circle</v-icon>
       </v-btn>
@@ -46,20 +46,31 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import moment from "moment";
 import "moment/locale/fr";
+import { VueEditor } from "vue2-editor";
 
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
   mixins: [MarkdownMixin],
+   components: {
+      VueEditor
+   },
   props: {
     task: {
       type: Object
     }
   },
+
+
   data() {
     return {
       editNewNote: false,
-      note: ""
+      note: "",
+      customToolbar: [
+          ['bold', 'italic', 'underline'],
+          [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+          ['code-block']
+        ]
     };
   },
   methods: {
@@ -70,7 +81,6 @@ export default {
     startNewNote() {
       this.editNewNote = true;
       this.note = "";
-      this.$nextTick(() => this.$refs.newNote.focus());
     },
 
     addNote() {

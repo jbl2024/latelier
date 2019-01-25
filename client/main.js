@@ -62,7 +62,7 @@ import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
 import 'pretty-checkbox/dist/pretty-checkbox.min.css'
 
-Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea'] })
+Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea', '.ql-editor'] })
 
 // Main app
 import App from '/imports/ui/App.vue';
