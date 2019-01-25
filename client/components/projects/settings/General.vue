@@ -18,7 +18,7 @@
         </div>
 
         <div v-show="editDescription">
-          <v-textarea ref="description" solo label=Description v-model="project.description" @keyup.ctrl.enter="updateDescription"></v-textarea>
+          <rich-editor ref="description" v-model="project.description"></rich-editor>
           <v-btn icon @click="updateDescription">
             <v-icon>check_circle</v-icon>
           </v-btn>
@@ -321,7 +321,7 @@ export default {
     startEditDescription() {
       this.savedDescription = this.project.description;
       this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.$el.focus());
+      this.$nextTick(() => this.$refs.description.focus());
     },
 
     updateDescription() {
