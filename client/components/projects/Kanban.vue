@@ -34,8 +34,6 @@ export default {
   },
   data () {
     return {
-      selectedList: {},
-      savedName: '',
       scrollEnabled: false
     }
   },
@@ -67,13 +65,10 @@ export default {
     },
 
     newListInline () {
-      var that = this;
       Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, createdList) => { 
         if (error) {
           return;
         }
-        that.savedName = createdList.name;
-        that.selectedList = createdList;
       });
     },
 
