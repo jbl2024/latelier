@@ -2,7 +2,7 @@
 
   <div class="task-notes">
     <empty-state v-show="!hasNotes(task.notes) && !editNewNote" icon="note" label="Aucune note" description="Vous pouvez ajouter des notes.">
-      <v-btn class="primary" @click="startNewNote">Créer une note</v-btn>
+      <v-btn class="primary" @click="startNewNote">Ajouter une note</v-btn>
     </empty-state>
 
     <div v-for="note in task.notes" :key='note._id'>
@@ -32,8 +32,8 @@
       </v-btn>
     </div>
 
-    <div class="center">
-      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">Créer une note</v-btn>
+    <div class="center" v-if="!editNewNote">
+      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">Ajouter une note</v-btn>
     </div>
 
   </div>
