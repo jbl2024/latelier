@@ -11,12 +11,6 @@
       <empty-state v-show="count == 0" icon="timeline" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
       </empty-state>
 
-      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600" stateless>
-        <v-card>
-          <task-detail :taskId="selectedTask._id"></task-detail>
-        </v-card>
-      </v-navigation-drawer>
-
       <div class="timeline">
         <timeline ref="timeline" :items="getItems()" :groups="getGroups()" :options="timeline.options" @changed="onTimelineChanged" @rangechanged="onTimelineRangeChanged" @select="onSelectTask">
         </timeline>
@@ -40,16 +34,9 @@ export default {
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
     this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
-    this.$events.listen("task-selected", task => {
-      if (!task) {
-        return;
-      }
-      this.showTaskDetail = true;
-      this.selectedTask = task;
-    });
     this.$events.listen("close-task-detail", task => {
-      this.$events.fire("task-selected", null);
-      this.showTaskDetail = false;
+      this.$store.dispatch('selectTask', null);
+      this.$store.dispatch('showTaskDetail', false);
     });
   },
   created() {
@@ -60,7 +47,8 @@ export default {
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", 0);
     this.$store.dispatch("setCurrentOrganizationId", 0);
-    this.$events.off("task-selected");
+    this.$store.dispatch('selectTask', null);
+    this.$store.dispatch('showTaskDetail', false);
     this.$events.off("close-task-detail");
   },
   props: {
@@ -214,9 +202,11 @@ export default {
           return;
         }
         var task = Tasks.findOne({ _id: items[0] });
-        this.$events.fire("task-selected", task);
+        this.$store.dispatch('selectTask', task);
+        this.$store.dispatch('showTaskDetail', true);
       } else {
-        this.$events.fire("close-task-detail");
+        this.$store.dispatch('selectTask', null);
+        this.$store.dispatch('showTaskDetail', false);
       }
       return;
     },

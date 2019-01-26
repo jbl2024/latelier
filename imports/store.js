@@ -5,8 +5,10 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
   state: {
     selectedGroup: {},
+    selectedTask: null,
     selectedLabels: [],
     showCategories: false,
+    showTaskDetail: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
     notifyMessage: ''
@@ -20,6 +22,9 @@ export const store = new Vuex.Store({
     },
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
+    },
+    updateShowTaskDetail(state, showTaskDetail) {
+      state.showTaskDetail = showTaskDetail;
     },
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
@@ -38,6 +43,9 @@ export const store = new Vuex.Store({
           return aLabel._id != label._id
         });
       }
+    },
+    selectTask(state, selectedTask) {
+      state.selectedTask = selectedTask;
     },
     clearSelectedLabels(state) {
       state.selectedLabels = [];
@@ -69,6 +77,12 @@ export const store = new Vuex.Store({
     },
     selectLabel(context, label) {
       context.commit('selectLabel', label);
+    },
+    selectTask(context, task) {
+      context.commit('selectTask', task);
+    },
+    showTaskDetail(context, showTaskDetail) {
+      context.commit('updateShowTaskDetail', showTaskDetail);
     },
     notify(context, message) {
       context.commit('notify', message);

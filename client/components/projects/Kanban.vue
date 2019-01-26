@@ -6,9 +6,6 @@
       <div class="swimlane dragscroll new">
         <h2 @click="newListInline">Nouvelle liste</h2>
       </div>
-
-      <div class="swimlane dragscroll task-detail-margin" v-if="addMargin">
-      </div>
   </drop>
 </template>
 
