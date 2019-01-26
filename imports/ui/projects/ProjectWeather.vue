@@ -26,7 +26,7 @@
       </empty-state>
 
       <template v-if="healthReports.length > 0">
-        <div>
+        <div class="container-wrapper" :style="getBackgroundUrl(user)">
           <v-container fluid grid-list-lg>
             <v-layout row wrap>
               <v-flex xs12 sm6 offset-sm3>
@@ -76,6 +76,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { HealthReports } from "/imports/api/healthReports/healthReports.js";
+import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
@@ -131,7 +132,11 @@ export default {
     },
     currentReport() {
       return HealthReports.findOne({}, { sort: { date: -1 } });
+    },
+    user () {
+      return Meteor.user();
     }
+
   },
   methods: {
     newHealthReport() {
@@ -151,7 +156,15 @@ export default {
     },
     getIcon(weather) {
       return `/weather/${weather}.svg`
-    }
+    },
+    getBackgroundUrl(user) {
+      if (user && user.profile) {
+        const background = user.profile.background;
+        if (background) {
+          return `background-image: url('${Backgrounds.link(background)}');`;
+        }
+      }
+    },
 
   }
 };
@@ -161,4 +174,26 @@ export default {
 .empty {
   margin-top: 24px;
 }
+
+.container-wrapper {
+  overflow-y: scroll;
+  height: 100%;
+  position: relative;
+  width: 100%;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  /* box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3); */
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+@media (max-width: 600px) { 
+  .container-wrapper {
+    min-height: 100vh;
+  }
+}
+
 </style>
