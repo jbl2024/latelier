@@ -1,12 +1,22 @@
 <template>
   <div class="project-weather">
     <new-health-report ref="newHealthReport" :projectId="projectId"></new-health-report>
+    <confirm-dialog
+      :active.sync="showConfirmDelete"
+      :title="$t('Confirm')"
+      :content="$t('Deletion is permanent')"
+      :confirm-text="$t('Delete')"
+      :cancel-text="$t('Cancel')"
+      @cancel="onCancelDelete"
+      @confirm="onConfirmDelete"
+    />
 
     <div v-if="!healthReports">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <template v-if="healthReports">
       <empty-state
+        class="empty"
         v-if="healthReports.length == 0"
         illustration="weather"
         :description="$t('No report defined')"
@@ -28,8 +38,8 @@
                       <v-flex xs7>
                         <v-card-title primary-title>
                           <div>
-                            <div class="headline">{{ projectProgress }}%</div>
-                            <div>Du {{ formatDate(report.startDate) }} au {{ formatDate(report.endDate) }}</div>
+                            <div class="headline">{{ report.name }}</div>
+                            <div>{{ formatDate(report.date) }}</div>
                           </div>
                         </v-card-title>
                       </v-flex>
@@ -37,14 +47,17 @@
                         <v-img src="/weather/sunny.svg" height="125px" contain></v-img>
                       </v-flex>
                     </v-layout>
+                    <v-card-text>
+                      <div v-if="report.description" v-html="report.description"></div>
+                    </v-card-text>
                     <v-divider light></v-divider>
+
                     <v-card-actions class="pa-3" color="white">
-                      <v-progress-linear v-model="projectProgress" dark></v-progress-linear>
                       <v-spacer></v-spacer>
                       <v-btn icon>
                         <v-icon>edit</v-icon>
                       </v-btn>
-                      <v-btn icon>
+                      <v-btn icon @click="deleteReport(report)">
                         <v-icon>delete</v-icon>
                       </v-btn>
                     </v-card-actions>
@@ -98,7 +111,8 @@ export default {
   },
   data() {
     return {
-      projectProgress: 80
+      showConfirmDelete: false,
+      selectedReport: {}
     };
   },
   meteor: {
@@ -112,19 +126,30 @@ export default {
       return Projects.findOne();
     },
     healthReports() {
-      return HealthReports.find({}, { sort: { endDate: -1 } });
+      return HealthReports.find({}, { sort: { date: -1 } });
     },
     currentReport() {
-      return HealthReports.findOne({}, { sort: { endDate: -1 } });
+      return HealthReports.findOne({}, { sort: { date: -1 } });
     }
   },
   methods: {
     newHealthReport() {
       this.$refs.newHealthReport.open();
+    },
+    deleteReport(report) {
+      this.selectedReport = report;
+      this.showConfirmDelete = true;
+    },
+    onCancelDelete() {},
+    onConfirmDelete() {
+      Meteor.call("healthReports.remove", this.selectedReport._id);
     }
   }
 };
 </script>
 
 <style scoped>
+.empty {
+  margin-top: 24px;
+}
 </style>
