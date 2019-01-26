@@ -1,17 +1,17 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
+import { check } from "meteor/check";
 import moment from "moment";
 
-export const HealthReports = new Mongo.Collection('healthReports');
+export const HealthReports = new Mongo.Collection("healthReports");
 if (Meteor.isServer) {
   Meteor.startup(() => {
-    HealthReports.rawCollection().createIndex({projectId: 1});
+    HealthReports.rawCollection().createIndex({ projectId: 1 });
   });
 }
 
 Meteor.methods({
-  'healthReports.create'(projectId, name, description, date, weather) {
+  "healthReports.create"(projectId, name, description, date, weather) {
     check(projectId, String);
     check(name, String);
     check(description, String);
@@ -21,7 +21,7 @@ Meteor.methods({
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
 
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
 
     const reportId = HealthReports.insert({
@@ -37,30 +37,61 @@ Meteor.methods({
     return reportId;
   },
 
-  'healthReports.remove'(id) {
+  "healthReports.update"(id, name, description, date, weather) {
+    check(id, String);
+    check(name, String);
+    check(description, String);
+    check(date, String);
+    check(weather, String);
+
+    const convertedDate = moment(date, "YYYY-MM-DD").toDate();
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+
+    const reportId = HealthReports.update(
+      {
+        _id: id
+      },
+      {
+        $set: {
+          name: name,
+          description: description,
+          date: convertedDate,
+          weather: weather,
+          createdAt: new Date(),
+          createdBy: Meteor.userId()
+        }
+      }
+    );
+
+    return reportId;
+  },
+
+  "healthReports.remove"(id) {
     check(id, String);
 
     HealthReports.remove(id);
   },
 
-  'healthReports.updateDate'(id, date) {
+  "healthReports.updateDate"(id, date) {
     check(id, String);
     check(date, String);
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
 
-    HealthReports.update({_id: id}, {$set: {date: convertedDate}});
+    HealthReports.update({ _id: id }, { $set: { date: convertedDate } });
   },
 
-  'healthReports.updateDescription'(id, description) {
+  "healthReports.updateDescription"(id, description) {
     check(id, String);
     check(description, String);
-    HealthReports.update({_id: id}, {$set: {description: description}});
+    HealthReports.update({ _id: id }, { $set: { description: description } });
   },
 
-  'healthReports.updateName'(id, name) {
+  "healthReports.updateName"(id, name) {
     check(id, String);
     check(name, String);
-    HealthReports.update({_id: id}, {$set: {name: name}});
-  },
-
+    HealthReports.update({ _id: id }, { $set: { name: name } });
+  }
 });

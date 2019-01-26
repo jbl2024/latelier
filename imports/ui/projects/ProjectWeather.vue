@@ -1,6 +1,7 @@
 <template>
   <div class="project-weather">
     <new-health-report ref="newHealthReport" :projectId="projectId"></new-health-report>
+    <edit-health-report ref="editHealthReport" :report="selectedReport"></edit-health-report>
     <confirm-dialog
       :active.sync="showConfirmDelete"
       :title="$t('Confirm')"
@@ -54,7 +55,7 @@
 
                     <v-card-actions class="pa-3" color="white">
                       <v-spacer></v-spacer>
-                      <v-btn icon>
+                      <v-btn icon @click="editReport(report)">
                         <v-icon>edit</v-icon>
                       </v-btn>
                       <v-btn icon @click="deleteReport(report)">
@@ -112,7 +113,7 @@ export default {
   data() {
     return {
       showConfirmDelete: false,
-      selectedReport: {}
+      selectedReport: null
     };
   },
   meteor: {
@@ -135,6 +136,10 @@ export default {
   methods: {
     newHealthReport() {
       this.$refs.newHealthReport.open();
+    },
+    editReport(report) {
+      this.selectedReport = report;
+      this.$refs.editHealthReport.open();
     },
     deleteReport(report) {
       this.selectedReport = report;
