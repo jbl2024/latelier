@@ -44,7 +44,7 @@
                         </v-card-title>
                       </v-flex>
                       <v-flex xs5>
-                        <v-img src="/weather/sunny.svg" height="125px" contain></v-img>
+                        <v-img :src="getIcon(report.weather)" height="125px" contain></v-img>
                       </v-flex>
                     </v-layout>
                     <v-card-text>
@@ -143,7 +143,11 @@ export default {
     onCancelDelete() {},
     onConfirmDelete() {
       Meteor.call("healthReports.remove", this.selectedReport._id);
+    },
+    getIcon(weather) {
+      return `/weather/${weather}.svg`
     }
+
   }
 };
 </script>
