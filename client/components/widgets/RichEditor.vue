@@ -24,6 +24,11 @@ export default {
   watch: {
     content(content) {
       this.$emit("input", content);
+    },
+    value(value) {
+      if (this.$refs.editor.quill.root.innerHTML !== this.value) {
+        this.$refs.editor.quill.root.innerHTML = this.value;
+      }
     }
   },
   data() {
