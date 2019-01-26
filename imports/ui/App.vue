@@ -48,6 +48,7 @@
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="showTaskDetail"
+        class="elevation-16"
         fixed
         app
         right
