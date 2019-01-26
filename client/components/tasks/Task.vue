@@ -133,18 +133,10 @@ export default {
         this.cancelUpdateName();
       }
     });
-    this.$events.listen("task-selected", task => {
-      if (!task || task._id !== this.task._id) {
-        this.selected = false;
-        return;
-      }
-      this.selected = true;
-    });
   },
   beforeDestroy() {
     this.$events.off("task-edit-name");
     this.$events.off("task-cancel-edit-name");
-    this.$events.off("task-selected");
   },
   props: {
     task: {
@@ -153,6 +145,12 @@ export default {
   },
   computed: {
     ...mapState(["currentOrganizationId", "currentProjectId"]),
+    selected: {
+      get() {
+        return this.$store.state.selectedTask && this.$store.state.selectedTask._id === this.task._id;
+      }
+    }
+
   },
   data() {
     return {
@@ -161,7 +159,6 @@ export default {
       dragover: false,
       dragup: false,
       dragdown: false,
-      selected: false,
       hidden: false,
       showEditButton: false,
       completed: false,
@@ -437,7 +434,7 @@ export default {
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
-  transition: box-shadow 0.5s ease, opacity 0.5s ease;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease, background-color 0.5s ease;
   position: relative;
 }
 
@@ -475,7 +472,10 @@ export default {
 }
 
 .selected {
-  background: linear-gradient(90deg, #aaa 2%, #fff 2%);
+  background-color: #C5CAE9;
+}
+.pretty .state label:before {
+  background-color: white;
 }
 
 .title {

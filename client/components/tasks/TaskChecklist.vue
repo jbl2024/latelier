@@ -216,4 +216,8 @@ pre {
 .add-item label {
   font-size: 13px;
 }
+.pretty .state label:before {
+  background-color: white;
+}
+
 </style>
