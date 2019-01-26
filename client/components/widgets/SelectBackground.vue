@@ -1,7 +1,7 @@
 <template>
   <div class="select-background">
 
-    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog v-model="active" max-width="420" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">{{ $t('Select background') }}</v-card-title>
         <v-card-text>
