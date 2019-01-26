@@ -11,12 +11,13 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'healthReports.create'(projectId, startDate, endDate) {
+  'healthReports.create'(projectId, name, description, date) {
     check(projectId, String);
-    check(startDate, String);
-    check(endDate, String);
+    check(name, String);
+    check(description, String);
+    check(date, String);
 
-    
+    const convertedDate = moment(date, "YYYY-MM-DD").toDate();
 
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
@@ -24,8 +25,9 @@ Meteor.methods({
 
     const reportId = HealthReports.insert({
       projectId: projectId,
-      startDate: moment(startDate, "YYYY-MM-DD").toDate(),
-      endDate: moment(endDate, "YYYY-MM-DD").toDate(),
+      name: name,
+      description: description,
+      date: convertedDate,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -39,15 +41,24 @@ Meteor.methods({
     HealthReports.remove(id);
   },
 
-  'healthReports.updateStartDate'(id, startDate) {
+  'healthReports.updateDate'(id, date) {
     check(id, String);
-    check(startDate, Date);
-    HealthReports.update({_id: id}, {$set: {startDate: startDate}});
+    check(date, String);
+    const convertedDate = moment(date, "YYYY-MM-DD").toDate();
+
+    HealthReports.update({_id: id}, {$set: {date: convertedDate}});
   },
 
-  'healthReports.updateEndDate'(id, endDate) {
+  'healthReports.updateDescription'(id, description) {
     check(id, String);
-    check(endDate, Date);
-    HealthReports.update({_id: id}, {$set: {endDate: endDate}});
+    check(description, String);
+    HealthReports.update({_id: id}, {$set: {description: description}});
   },
+
+  'healthReports.updateName'(id, name) {
+    check(id, String);
+    check(name, String);
+    HealthReports.update({_id: id}, {$set: {name: name}});
+  },
+
 });

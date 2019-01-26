@@ -1,9 +1,13 @@
 const messages = {
   fr: {
     'Cancel': 'Annuler',
+    'Confirm': 'Confirmer',
+    'Delete': 'Supprimer',
     'Create': 'Créer',
     'Canvas': 'Canevas',
     'Weather': 'Météo',
+    'Description': 'Description',
+    'Deletion is permanent': 'La suppression est définitive',
     history: {
       tasks: {
         create: "Création",
@@ -34,9 +38,13 @@ const messages = {
   },
   en: {
     'Cancel': 'Cancel',
+    'Confirm': 'Confirm',
+    'Delete': 'Delete',
     'Create': 'Create',
     'Canvas': 'Canvas',
     'Weather': 'Weather',
+    'Description': 'Description',
+    'Deletion is permanent': 'Deletion is permanent',
     history: {
       tasks: {
         create: "Creation",
