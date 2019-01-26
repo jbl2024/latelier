@@ -11,11 +11,12 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  'healthReports.create'(projectId, name, description, date) {
+  'healthReports.create'(projectId, name, description, date, weather) {
     check(projectId, String);
     check(name, String);
     check(description, String);
     check(date, String);
+    check(weather, String);
 
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
 
@@ -28,6 +29,7 @@ Meteor.methods({
       name: name,
       description: description,
       date: convertedDate,
+      weather: weather,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });

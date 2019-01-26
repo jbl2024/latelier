@@ -19,6 +19,21 @@
                 <v-text-field v-model="name" :rules="nameRules" label="Nom" required></v-text-field>
               </v-flex>
               <v-flex xs12>
+                <v-combobox
+                  v-model="weather"
+                  :items="items"
+                  :label="$t('Project health')"
+                >
+                  <template slot="selection" slot-scope="data">
+                      <img :src="getIcon(data.item)">
+                  </template>
+                  <template slot="item" slot-scope="data">
+                    <img :src="getIcon(data.item)">
+                  </template>
+
+                </v-combobox>
+              </v-flex>              
+              <v-flex xs12>
                 <v-list two-line class="elevation-1 date">
                     <v-list-tile @click="showSelectDate = true">
                       <v-list-tile-avatar>
@@ -78,12 +93,14 @@ export default {
         "Date": "Date",
         "None": "None",
         "Weekly point": "Weekly point",
+        "Project health": "Project health",
       },
       fr: {
         "New report": "Nouveau bulletin",
         "Date": "Date",
         "None": "Aucune",
         "Weekly point": "Point hebdomadaire",
+        "Project health": "Santé du projet",
       }
     }  
   },    
@@ -95,11 +112,13 @@ export default {
       coherent: false,
       valid: false,
       name: "",
+      weather: "sunny",
       nameRules: [
         v => !!v || "Le nom est obligatoire",
         v => v.length > 1 || "Le nom est trop court"
       ],
-      description: ""
+      description: "",
+      items: ['sunny', 'cloudy', 'storm']
     };
   },
   methods: {
@@ -134,6 +153,7 @@ export default {
         this.name,
         this.description,
         this.date,
+        this.weather,
         (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
@@ -142,6 +162,9 @@ export default {
         }
       );
       this.showDialog = false;
+    },
+    getIcon(weather) {
+      return `/weather/${weather}.svg`
     }
   }
 };
