@@ -1,7 +1,7 @@
 <template>
   <div class>
     <v-app>
-      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed>
+      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title
           style="width: 300px"
@@ -33,6 +33,7 @@
         v-model="drawer"
         fixed
         app
+        left
         class="drawer"
       >
         <organization-menu
@@ -42,6 +43,20 @@
         <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
         <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
         <login-menu></login-menu>
+      </v-navigation-drawer>
+
+      <v-navigation-drawer
+        :clipped="$vuetify.breakpoint.lgAndUp"
+        v-model="showTaskDetail"
+        fixed
+        app
+        right
+        :width="600"
+        stateless
+      >
+        <v-card>
+          <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
+        </v-card>
       </v-navigation-drawer>
 
       <v-content class="main-content">
@@ -77,8 +92,18 @@ export default {
       "showCategories",
       "currentProjectId",
       "currentOrganizationId",
-      "notifyMessage"
-    ])
+      "notifyMessage",
+      "showTaskDetail",
+      "selectedTask"
+    ]),
+    showTaskDetail: {
+      get() {
+        return this.$store.state.showTaskDetail;
+      },
+      set(value) {
+        this.$store.dispatch("showTaskDetail", value);
+      }
+    }
   },
   watch: {
     notifyMessage(message) {
@@ -105,7 +130,7 @@ export default {
       user: function() {
         return [];
       }
-    },
+    }
   }
 };
 </script>

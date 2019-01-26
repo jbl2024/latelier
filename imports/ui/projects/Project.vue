@@ -15,14 +15,9 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-      <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600" stateless>
-        <v-card>
-          <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
-        </v-card>
-      </v-navigation-drawer>
 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <kanban ref="container" class="kanban-container" @click="showTaskDetail=false" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
+        <kanban ref="container" class="kanban-container" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
       </div>
 
     </div>
@@ -35,15 +30,15 @@ import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import debounce from 'lodash/debounce';
+import { mapState } from "vuex";
 
 export default {
   mounted () {
-    // this.selectedTask = null;
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
     this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     this.$events.listen('close-task-detail', task => {
-      this.$events.fire('task-selected', null);
-      this.showTaskDetail = false;
+      this.$store.dispatch('selectTask', null);
+      this.$store.dispatch('showTaskDetail', false);
       this.$router.push({ name: 'project', params: { organizationId: this.organizationId, projectId: this.projectId }}) 
     });
     this.$events.listen('delete-task', task => {
@@ -58,6 +53,8 @@ export default {
     this.$events.off('delete-task');
     this.$events.off('close-task-detail');
     this.$store.dispatch('setCurrentProjectId', 0);    
+    this.$store.dispatch('selectTask', null);
+    this.$store.dispatch('showTaskDetail', false);
   },
   props: {
     organizationId: {
@@ -73,7 +70,11 @@ export default {
       default: '0'
     }
   },
-  watch: {
+  computed: {
+    ...mapState([
+      "showTaskDetail",
+    ])
+  },  watch: {
     taskId: {
       immediate: true,
       handler (taskId) {
@@ -88,8 +89,6 @@ export default {
     return {
       savedProjectName: '',
       editProjectName: false,
-      showTaskDetail: false,
-      selectedTask: {},
       debouncedFilter: '',
       showDeleteTaskDialog: false,
       taskToDeleted: undefined
@@ -119,8 +118,8 @@ export default {
     selectTask (taskId) {
       var selectedTask = Tasks.findOne({_id: taskId});
       if (selectedTask) {
-        this.selectedTask = selectedTask;
-        this.showTaskDetail = true;            
+        this.$store.dispatch('selectTask', selectedTask);
+        this.$store.dispatch('showTaskDetail', true);
       }
     },
 
