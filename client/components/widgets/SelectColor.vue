@@ -1,6 +1,6 @@
 <template>
   <div class="select-color">
-    <v-dialog v-model="active" persistent max-width="320" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" persistent max-width="320" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Choisir une couleur</v-card-title>
         <swatches-picker :value="color" @input="selectColor" />

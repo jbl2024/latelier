@@ -1,7 +1,7 @@
 <template>
   <div class="select-organization">
 
-    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Choisir une organisation</v-card-title>
         <v-card-text>
