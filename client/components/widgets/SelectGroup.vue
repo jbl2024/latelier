@@ -1,7 +1,7 @@
 <template>
   <div class="select-group">
 
-    <v-dialog v-model="active" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <new-project-group ref="newProjectGroup" :organizationId="organizationId"></new-project-group>  
       <v-card>
         <v-card-title class="headline">Choisir une catégorie</v-card-title>

@@ -1,6 +1,6 @@
 <template>
   <div class="select-date">
-    <v-dialog v-model="active" max-width="320" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" max-width="320" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Choisir une date</v-card-title>
         <v-card-text>
