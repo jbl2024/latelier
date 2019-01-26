@@ -232,6 +232,25 @@ Meteor.methods({
     });
   },
 
+  'tasks.updateNote'(taskId, note) {
+    check(taskId, String);
+    check(note, Object);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    Tasks.update({
+      _id: taskId, 
+      "notes._id": note._id
+    },  { 
+      $set: { 
+        "notes.$.content":  note.content,
+        "notes.$.edited":  true
+      } 
+    });
+  },
+
   'tasks.addChecklistItem'(taskId, name) {
     check(taskId, String);
     check(name, String);

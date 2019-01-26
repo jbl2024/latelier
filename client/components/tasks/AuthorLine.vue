@@ -1,10 +1,7 @@
 <template>
 
 <div class="author-line">
-    <v-avatar size="24" :class="isOnline(userId)">
-        <span>{{ formatUserLetters(userId) }}</span>
-    </v-avatar>
-    <span>{{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }})</span>
+    {{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }}) <slot></slot>
 </div>
 
 </template>

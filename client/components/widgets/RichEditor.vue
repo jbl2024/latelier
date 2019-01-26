@@ -19,6 +19,10 @@ export default {
     value: {
       type: String,
       default: ""
+    },
+    autofocus: {
+      type: Boolean,
+      default: false
     }
   },
   watch: {
@@ -29,6 +33,11 @@ export default {
       if (this.$refs.editor.quill.root.innerHTML !== this.value) {
         this.$refs.editor.quill.root.innerHTML = this.value;
       }
+    }
+  },
+  mounted() {
+    if (this.autofocus) {
+      this.focus();
     }
   },
   data() {

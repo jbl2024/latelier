@@ -9,21 +9,42 @@
       <v-btn class="primary" @click="startNewNote">Ajouter une note</v-btn>
     </empty-state>
 
-    <div v-for="note in task.notes" :key="note._id">
-      <div class="note">
-        <div v-html="markDown(note.content)"></div>
-        <div class="metadata">
-          <author-line :user-id="note.createdBy" :date="note.createdAt"></author-line>
-          <div class="action">
-            <v-btn icon flat color="grey" @click="deleteNote(note)">
-              <v-icon>delete</v-icon>
+      <template v-for="note in task.notes">
+        <div class="note" :key="note._id">
+        
+          <div class="note-avatar">
+            <author-avatar :user-id="note.createdBy"></author-avatar> 
+          </div>
+
+          <div class="note-content">
+              <author-line class="note-author" :user-id="note.createdBy">
+                <span v-if="note.edited">
+                  ({{ $t('edited')}})
+                </span>
+              </author-line>
+              <div v-html="note.content" v-if="!isNoteEdited(note._id)"></div>
+              <template v-if="isNoteEdited(note._id)">
+                <rich-editor v-model="selectedNote.content" autofocus></rich-editor>
+                <v-btn flat icon @click="updateNote">
+                  <v-icon>check_circle</v-icon>
+                </v-btn>
+                <v-btn flat icon @click="cancelUpdateNote">
+                  <v-icon>cancel</v-icon>
+                </v-btn>
+              </template>
+          </div>
+
+          <div class="note-actions" v-if="!isNoteEdited(note._id)">
+            <v-btn small icon ripple @click="startEditNote(note)">
+              <v-icon small color="grey lighten-1">edit</v-icon>
+            </v-btn>
+            <v-btn small icon ripple @click="deleteNote(note)">
+              <v-icon small color="grey lighten-1">delete</v-icon>
             </v-btn>
           </div>
         </div>
-      </div>
-
-      <v-divider></v-divider>
-    </div>
+        <v-divider inset></v-divider>
+      </template>
 
     <div v-show="editNewNote">
       <rich-editor v-model="note" ref="newNote"></rich-editor>
@@ -36,7 +57,7 @@
     </div>
 
     <div class="center" v-if="!editNewNote">
-      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">Ajouter une note</v-btn>
+      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">{{ $t('Add note') }}</v-btn>
     </div>
   </div>
 </template>
@@ -61,11 +82,23 @@ export default {
       type: Object
     }
   },
-
+  i18n: {
+    messages: {
+      en: { 
+        "Add note": "Add note",
+        "edited": "edited",
+      },
+      fr: {
+        "Add note": "Ajouter une note",
+        "edited": "éditée",
+      }
+    }  
+  },   
   data() {
     return {
       editNewNote: false,
-      note: ""
+      note: "",
+      selectedNote: null
     };
   },
   methods: {
@@ -108,6 +141,28 @@ export default {
     formatUser(userId) {
       var user = Meteor.users.findOne({ _id: userId });
       return user.emails[0].address;
+    },
+
+    startEditNote(note) {
+      this.selectedNote = note;
+    },
+
+    isNoteEdited(id) {
+      return this.selectedNote && this.selectedNote._id === id;
+    },
+
+    updateNote() {
+      Meteor.call('tasks.updateNote', this.task._id, this.selectedNote, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.selectedNote = null;
+      });
+    },
+
+    cancelUpdateNote() {
+      this.selectedNote = null;
     }
   }
 };
@@ -118,9 +173,6 @@ export default {
 pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
-}
-
-.delete-button {
 }
 
 .empty-state {
@@ -146,5 +198,37 @@ pre {
 
 .center {
   text-align: center;
+}
+
+.note {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.note-author {
+  color: rgba(0,0,0,0.54);
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.note-avatar {
+  flex: 0;
+  margin-right: 24px;
+}
+
+.note-content {
+  flex: 2;
+}
+
+
+.note-actions {
+  flex: 0;
+}
+</style>
+
+<style>
+.note-content p {
+  margin-bottom: 0px !important;
 }
 </style>
