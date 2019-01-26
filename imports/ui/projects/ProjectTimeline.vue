@@ -1,19 +1,15 @@
 <template>
   <div class="project-timeline">
+
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <template v-if="$subReady.project">
+    <div v-if="$subReady.project">
       <div class="progress" v-if="showProgress && count > 0">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <empty-state v-show="count == 0" icon="timeline" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
       </empty-state>
-
-      <div class="timeline">
-        <timeline ref="timeline" :items="getItems()" :groups="getGroups()" :options="timeline.options" @changed="onTimelineChanged" @rangechanged="onTimelineRangeChanged" @select="onSelectTask">
-        </timeline>
-      </div>
 
       <v-navigation-drawer right absolute v-model="showTaskDetail" :width="600" stateless>
         <v-card>
@@ -21,7 +17,12 @@
         </v-card>
       </v-navigation-drawer>
 
-    </template>
+      <div class="timeline">
+        <timeline ref="timeline" :items="getItems()" :groups="getGroups()" :options="timeline.options" @changed="onTimelineChanged" @rangechanged="onTimelineRangeChanged" @select="onSelectTask">
+        </timeline>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -234,6 +235,15 @@ export default {
 </script>
 
 <style scoped>
+.project-timeline {
+  display: flex;
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+  flex:1;
+  position: relative;
+}
+
 
 .project-timeline {
   background-color: white;
