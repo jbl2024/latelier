@@ -62,7 +62,7 @@
                 </div>
               </div>
 
-              <div v-show="!editName" :class="getClassForName(task)">{{ task.name }}</div>
+              <div v-show="!editName" :class="getClassForName(task)" v-html="linkifyHtml(task.name)"></div>
 
               <span v-show="editName" class="edit">
                 <v-textarea 
@@ -110,10 +110,12 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { mapState } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+
 import moment from "moment";
 
 export default {
-  mixins: [usersMixin],
+  mixins: [usersMixin, TextRenderingMixin],
   mounted() {
     this.$events.listen("task-edit-name", task => {
       if (task._id !== this.task._id) {
