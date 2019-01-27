@@ -1,7 +1,7 @@
 <template>
 
 <div class="author-line">
-    {{ formatUser(userId)}} {{ formatDateDuration(date) }} ({{ formatDate(date) }}) <slot></slot>
+    <b>{{ formatUser(userId)}}</b> {{ formatDateDuration(date) }} ({{ formatDate(date) }}) <slot></slot>
 </div>
 
 </template>
