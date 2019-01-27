@@ -31,7 +31,7 @@
         </v-btn>
       </div>
       <div class="toolbar-title" @click="startEditTaskName" v-if="!editTaskName">
-        <span>{{ task.name}}</span>
+        <span v-html="linkifyHtml(task.name)"></span>
       </div>
       <div class="toolbar-button" v-if="!editTaskName">
         <v-menu bottom left class="menu">
