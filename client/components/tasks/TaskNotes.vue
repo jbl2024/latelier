@@ -22,7 +22,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div v-html="note.content" v-if="!isNoteEdited(note._id)"></div>
+              <div v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus></rich-editor>
                 <v-btn flat icon @click="updateNote">
@@ -69,11 +69,10 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 import moment from "moment";
 import "moment/locale/fr";
 import { VueEditor } from "vue2-editor";
-
-import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
-  mixins: [MarkdownMixin],
+  mixins: [TextRenderingMixin],
   components: {
     VueEditor
   },
@@ -163,7 +162,7 @@ export default {
 
     cancelUpdateNote() {
       this.selectedNote = null;
-    }
+    },
   }
 };
 </script>
