@@ -49,7 +49,7 @@
 
     <task-labels :task="task"></task-labels>
     <div>
-      <author-line :user-id="task.createdBy" :date="task.createdAt"></author-line>
+      <author-line :user-id="task.createdBy" :date="task.createdAt" class="author"></author-line>
     </div>
 
     <v-divider></v-divider>
@@ -58,7 +58,7 @@
         v-show="!editDescription && task.description && task.description.length > 0"
         @click="startEditDescription"
       >
-        <div v-html="markDown(task.description)"></div>
+        <div v-html="linkifyHtml(task.description)"></div>
       </div>
       <div
         v-show="!task.description && !editDescription"
@@ -104,10 +104,10 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
-import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
-  mixins: [MarkdownMixin],
+  mixins: [TextRenderingMixin],
   props: {
     taskId: {
       type: String
@@ -247,6 +247,10 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.author {
+  color: rgba(0,0,0,0.54);
 }
 
 .toolbar-button {
