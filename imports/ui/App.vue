@@ -40,7 +40,7 @@
           v-if="currentOrganizationId != 0 && currentProjectId == 0"
           :organizationId="currentOrganizationId"
         ></organization-menu>
-        <project-menu v-if="currentProjectId != 0" :projectId="currentProjectId"></project-menu>
+        <project-menu v-if="currentProjectId != 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId" :projectId="currentProjectId"></project-menu>
         <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
         <login-menu></login-menu>
       </v-navigation-drawer>
