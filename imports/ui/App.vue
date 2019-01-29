@@ -56,7 +56,7 @@
         stateless
       >
         <v-card>
-          <task-detail :taskId="selectedTask._id" v-if="selectedTask && selectedTask._id"></task-detail>
+          <task-detail :taskId="selectedTask ? selectedTask._id : '0'"></task-detail>
         </v-card>
       </v-navigation-drawer>
 
