@@ -225,9 +225,3 @@ pre {
   flex: 0;
 }
 </style>
-
-<style>
-.note-content p {
-  margin-bottom: 0px !important;
-}
-</style>
