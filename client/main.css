@@ -38,3 +38,6 @@ html, body {
   overflow: visible;
 }
 
+p {
+  margin-bottom: 0px !important;
+}
