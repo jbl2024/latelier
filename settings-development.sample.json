@@ -1,0 +1,10 @@
+{
+  "generateFixtures": true,
+  "attachmentsPath": "/tmp/attachments/",
+  "email": {
+    "from": "foo@bar.com"
+  },
+  "roles": {
+    "admin": ["foo@bar.com"]
+  }
+}
