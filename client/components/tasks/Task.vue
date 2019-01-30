@@ -63,6 +63,7 @@
               </div>
 
               <div v-show="!editName" :class="getClassForName(task)" v-html="linkifyHtml(task.name)"></div>
+              <v-icon class="has-notes" small color="blue darken-1" v-show="hasNotes(task) && !editName">chat</v-icon>
 
               <span v-show="editName" class="edit">
                 <v-textarea 
@@ -411,6 +412,13 @@ export default {
       return false;
     },
 
+    hasNotes(task) {
+      if (task.notes && task.notes.length > 0) {
+        return true;
+      }
+      return false;
+    },
+
     hasFooterData(task) {
       return task.dueDate;
     },
@@ -578,19 +586,25 @@ export default {
 .edit-button {
   overflow: hidden;
   position: absolute;
-  right: 12px;
+  right: 26px;
   top: 24px;
 }
 
 .delete-button {
   overflow: hidden;
   position: absolute;
-  right: 32px;
+  right: 42px;
   top: 24px;
 }
 
 .very-small {
   width: 30px;
   height: 30px;
+}
+
+.has-notes {
+  position: absolute;
+  right: 8px;
+  top: 24px;
 }
 </style>
