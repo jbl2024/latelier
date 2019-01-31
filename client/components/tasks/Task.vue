@@ -586,14 +586,20 @@ export default {
 .edit-button {
   overflow: hidden;
   position: absolute;
-  right: 26px;
-  top: 24px;
+  right: 8px;
+  top: 4px;
 }
 
 .delete-button {
   overflow: hidden;
   position: absolute;
-  right: 42px;
+  right: 8px;
+  top: 40px;
+}
+
+.has-notes {
+  position: absolute;
+  right: 8px;
   top: 24px;
 }
 
@@ -602,9 +608,4 @@ export default {
   height: 30px;
 }
 
-.has-notes {
-  position: absolute;
-  right: 8px;
-  top: 24px;
-}
 </style>
