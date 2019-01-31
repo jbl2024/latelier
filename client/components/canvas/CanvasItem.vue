@@ -16,17 +16,10 @@
           v-if="!editContent"
           @click="startUpdateContent"
           class="content"
-          v-html="markDown(content)"
+          v-html="linkifyHtml(content)"
         ></div>
         <div v-if="editContent" class="edit-content">
-          <v-textarea
-            ref="content"
-            @focus.native="$event.target.select()"
-            label="Contenu"
-            outline
-            v-model="content"
-            @keyup.ctrl.enter="updateContent"
-          ></v-textarea>
+          <rich-editor autofocus v-model="content"></rich-editor>
           <v-btn icon flat @click.native="updateContent">
             <v-icon>check_circle</v-icon>
           </v-btn>
@@ -40,10 +33,10 @@
 </template>
 
 <script>
-import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
-  mixins: [MarkdownMixin],
+  mixins: [TextRenderingMixin],
   watch: {
     item: {
       immediate: true,
@@ -75,7 +68,6 @@ export default {
   methods: {
     startUpdateContent() {
       this.editContent = true;
-      this.$nextTick(() => this.$refs.content.focus());
     },
     updateContent() {
       this.$emit("update:item", this.content);
