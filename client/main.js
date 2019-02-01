@@ -70,6 +70,9 @@ import {store} from '/imports/store';
 import routes from '/imports/routes.js'
 import messages from '/imports/i18n.js'
 
+import confirm from '/imports/confirm/confirm.js'
+Vue.use(confirm);
+
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000
   UserPresence.awayTime = 60000;
