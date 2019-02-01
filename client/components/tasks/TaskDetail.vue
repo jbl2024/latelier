@@ -34,16 +34,7 @@
         <span v-html="linkifyHtml(task.name)"></span>
       </div>
       <div class="toolbar-button" v-if="!editTaskName">
-        <v-menu bottom left class="menu">
-          <v-btn slot="activator" icon>
-            <v-icon>more_vert</v-icon>
-          </v-btn>
-          <v-list>
-            <v-list-tile @click="deleteTask(task._id)">
-              <v-list-tile-title>Supprimer</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
+        <task-menu :task="task"></task-menu>
       </div>
     </div>
 
@@ -178,10 +169,6 @@ export default {
   },
   methods: {
     requestClose() {
-      this.$events.fire("close-task-detail");
-    },
-    deleteTask(taskId) {
-      Meteor.call("tasks.remove", taskId);
       this.$events.fire("close-task-detail");
     },
     startEditDescription() {
