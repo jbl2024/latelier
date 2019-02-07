@@ -7,6 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Labels } from '/imports/api/labels/labels.js'
 import { Events } from '/imports/api/events/events.js'
+import { utimes } from 'fs';
 
 export const Projects = new Mongo.Collection('projects');
 if (Meteor.isServer) {
@@ -268,10 +269,20 @@ Meteor.methods({
           }
         }
       )
-      .fetch();    
+      .fetch();   
+      
+      const dataWithUsers = []
+      data.map(item => {
+        item.user = item.userId;
+        const user = Meteor.users.findOne({_id: item.userId});
+        if (user) {
+          item.user = user.emails[0].address;
+        }
+        dataWithUsers.push(item);
+      })
 
       return {
-        data: data
+        data: dataWithUsers
       };
   }
 });

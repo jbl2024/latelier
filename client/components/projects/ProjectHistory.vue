@@ -24,7 +24,7 @@
               <v-card class="elevation-2">
                 <v-card-text>
                   <div>{{ item.properties.task.name }}</div>
-                  <div class="grey--text">{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ formatUser(item.userId) }}</div>
+                  <div class="grey--text">{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ item.user }}</div>
                 </v-card-text>
               </v-card>
 
@@ -77,15 +77,7 @@ export default {
         }
         this.history = result.data;
       })
-    },
-
-    formatUser (userId) {
-      if (!userId) {
-        return '';
-      }
-      var user = Meteor.users.findOne({_id: userId});
-      return user.emails[0].address;
-    },
+    }
 
   }
 }
