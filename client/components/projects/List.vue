@@ -3,7 +3,7 @@
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
       <div class="list-header">
         <div class="swimlane dragscroll">
-          <drag :transfer-data="getTransferData(list)">
+          <drag :transfer-data="getTransferData(list)" :draggable="!isListEdited(list, selectedList)">
             <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
               <div :style="getColor(currentProjectId)">
                 <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
@@ -49,7 +49,6 @@
             </div>
             <div class="list-edit" v-show="isListEdited(list, selectedList)">
               <input
-                @focus="$event.target.select()"
                 type="text"
                 ref="name"
                 v-model="list.name"
