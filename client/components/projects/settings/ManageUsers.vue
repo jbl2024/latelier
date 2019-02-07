@@ -18,7 +18,7 @@
           </v-list-tile-content>
 
           <v-list-tile-action>
-            <v-btn icon ripple @click.stop="removeUser(item._id)">
+            <v-btn icon ripple @click.stop="removeUser(user)">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-tile-action>
