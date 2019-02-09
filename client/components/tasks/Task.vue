@@ -88,9 +88,11 @@
           <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
           <v-divider v-if="hasFooterData(task)"></v-divider>
           <div class="footer" v-if="hasFooterData(task)">
-            <div v-if="task.dueDate" class="due-date">
-              <v-icon class="alarm-icon">alarm_on</v-icon>
-              {{ formatDate(task.dueDate) }}
+            <div class="due-date">
+              <template v-if="task.dueDate">
+                <v-icon class="alarm-icon">alarm_on</v-icon>
+                {{ formatDate(task.dueDate) }}
+              </template>
             </div>
             <div class="avatar">
               <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
@@ -420,7 +422,7 @@ export default {
     },
 
     hasFooterData(task) {
-      return task.dueDate;
+      return task.dueDate || task.assignedTo;
     },
 
     getColor(projectId) {
