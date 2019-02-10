@@ -6,7 +6,7 @@
     <v-btn icon flat @click="goTo('organizations-page')">
       <v-icon>home</v-icon>
     </v-btn>
-    <span class="title" @click="startUpdateOrganizationName">
+    <span class="title hidden-xs-only" @click="startUpdateOrganizationName">
       {{ organization.name }}
     </span>
     </div>
