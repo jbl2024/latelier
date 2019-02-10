@@ -1,7 +1,8 @@
+
 html, body {
   background-color: white;
   height: 100%;
-  font-family: Lato;
+  font-family: 'Inter';
 }
 
 #login .login-link-text{
