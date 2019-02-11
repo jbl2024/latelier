@@ -138,7 +138,6 @@ export default {
 
 <style>
 #app {
-  font-family: "Inter", serif;
   background-color: #e5e5e5;
 }
 .search {
