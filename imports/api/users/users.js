@@ -154,5 +154,6 @@ Meteor.methods({
   "users.create" (userData) {
     const userId = Accounts.createUser(userData);
     Accounts.sendVerificationEmail(userId);
-  }
+  },
+
 });

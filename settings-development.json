@@ -6,5 +6,11 @@
   },
   "roles": {
     "admin": ["jerome.blondon@ac-lyon.fr"]
+  },
+  "public": {
+    "sso": {
+      "enabled": true,
+      "email": "ct-remote-email"
+    }
   }
 }
