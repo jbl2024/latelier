@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { store } from '/imports/store';
 
 // Basic User
 export const isBasicAuth = (to, from, next) => {
@@ -20,11 +21,11 @@ export const isBasicAuth = (to, from, next) => {
             if (!err) {
               next();
             } else {
-              this.$store.dispatch("notifyError", error);
+              store.dispatch("notifyError", error);
             }
           });
         } else {
-          this.$store.dispatch("notifyError", error);
+          store.dispatch("notifyError", error);
         }
       });
     }
