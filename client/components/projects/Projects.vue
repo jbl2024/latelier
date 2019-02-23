@@ -79,7 +79,6 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import debounce from "lodash/debounce";
 import { mapState } from "vuex";
 import { ProjectStates } from "/imports/api/projects/projects.js";
 import { Permissions } from '/imports/api/users/permissions'
@@ -87,15 +86,14 @@ import { Permissions } from '/imports/api/users/permissions'
 
 export default {
   mixins: [DatesMixin],
-  created() {
-    this.debouncedFilter = debounce(val => {
-      this.filter = val;
-    }, 400);
-  },
   mounted() {
+    this.$events.listen('filter-projects', name => {
+      this.filter = name;
+    });
     this.$store.dispatch("setShowCategories", true);
   },
   beforeDestroy() {
+    this.$events.off('filter-projects');
     this.$store.dispatch("setShowCategories", false);
   },
   computed: {
@@ -111,7 +109,6 @@ export default {
     return {
       filter: "",
       selected: [],
-      debouncedFilter: "",
       filteredProjects: [],
       showConfirmDialog: false,
       showConfirmCloneDialog: false,

@@ -1,26 +1,49 @@
 <template>
-
   <div class="organization-title">
-    <div v-show="!editOrganizationName">
-    <slot></slot>
-    <v-btn icon flat @click="goTo('organizations-page')">
-      <v-icon>home</v-icon>
-    </v-btn>
-    <span class="title hidden-xs-only" @click="startUpdateOrganizationName">
-      {{ organization.name }}
-    </span>
-    </div>
-    <span class="title edit" v-show="editOrganizationName">
-      <v-text-field @focus="$event.target.select()" style="width: 500px" flat solo-inverted hide-details prepend-inner-icon="edit" label="Saisir un nom..." ref="name" v-model="organization.name" v-on:keyup.enter="updateOrganizationName"></v-text-field>
+    <v-toolbar-title class="align-left" v-show="!editOrganizationName">
+      <div>
+        <slot></slot>
+        <v-btn icon flat @click="goTo('organizations-page')">
+          <v-icon>home</v-icon>
+        </v-btn>
+        <span
+          class="title hidden-xs-only"
+          @click="startUpdateOrganizationName"
+        >{{ organization.name }}</span>
+      </div>
+    </v-toolbar-title>
+    <v-text-field
+      v-show="!editOrganizationName"
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="search"
+      label="Rechercher..."
+      class="hidden-sm-and-down align-remaining"
+      v-on:input="debouncedFilter"
+    ></v-text-field>
+
+    <div class="title edit align-left" v-show="editOrganizationName">
+      <v-text-field
+        @focus="$event.target.select()"
+        style="width: 500px"
+        flat
+        solo-inverted
+        hide-details
+        prepend-inner-icon="edit"
+        label="Saisir un nom..."
+        ref="name"
+        v-model="organization.name"
+        v-on:keyup.enter="updateOrganizationName"
+      ></v-text-field>
       <v-btn icon @click="updateOrganizationName">
         <v-icon>check_circle</v-icon>
       </v-btn>
       <v-btn icon @click="cancelUpdateOrganizationName">
         <v-icon>cancel</v-icon>
       </v-btn>
-    </span>
+    </div>
   </div>
-
 </template>
 
 <script>
@@ -35,7 +58,9 @@ export default {
     }
   },
   created() {
-    this.debouncedFilter = debounce(val => {}, 400);
+    this.debouncedFilter = debounce(val => {
+      this.$events.fire("filter-projects", val);
+    }, 400);
   },
   meteor: {
     organization: {
@@ -86,14 +111,27 @@ export default {
 </script>
 
 <style scoped>
+.organization-title {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 2;
+}
+
+.align-left {
+  flex: 1;
+}
+
+.align-remaining {
+  flex: 1;
+}
 
 .edit .v-text-field {
-  float:left;
+  float: left;
 }
 
 .title {
   position: relative;
   top: 3px;
 }
-
 </style>
