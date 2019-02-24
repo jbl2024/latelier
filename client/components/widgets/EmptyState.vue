@@ -62,19 +62,16 @@ export default {
   }
 }
 
-
 .label {
   font-size: 26px;
+  font-weight: 500;
   line-height: 40px;
 }
 
 .description {
   margin: 1em 0;
-  font-size: 24px;
-  font-weight: 600;
+  font-size: 16px;
   line-height: 24px;
 }
 
-.empty-state-container {
-}
 </style>
