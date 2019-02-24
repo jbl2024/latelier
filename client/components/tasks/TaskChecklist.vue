@@ -2,27 +2,6 @@
 
   <div class="task-checklist" v-show="showList(task.checklist)">
 
-    <confirm-dialog
-      :active.sync="showConfirmConvertDialog"
-      title="Transformer en tache"
-      content="Voulez-vous transformer cet élément en tache ?"
-      confirm-text="Transformer"
-      cancel-text="Annuler"
-      @cancel="onCancelConvert"
-      @confirm="onConfirmConvert"
-    />
-
-    <confirm-dialog
-      :active.sync="showConfirmDeleteDialog"
-      title="Supprimer"
-      content="Voulez-vous supprimer cet élément ?"
-      confirm-text="Supprimer"
-      cancel-text="Annuler"
-      @cancel="onCancelDelete"
-      @confirm="onConfirmDelete"
-    />
-
-
     <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
       <div>
         <div class="check">
@@ -36,10 +15,10 @@
           
         </div>
         <div class="right" v-show="showButtons === item._id">
-          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; showConfirmConvertDialog = true;}">
+          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">
             <v-icon>list</v-icon>
           </v-btn>
-          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; showConfirmDeleteDialog = true;}">
+          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}">
             <v-icon s-icon>delete</v-icon>
           </v-btn>
         </div>
@@ -54,8 +33,6 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
-import moment from "moment";
-import "moment/locale/fr";
 
 export default {
   name: "task-checklist",
@@ -68,10 +45,22 @@ export default {
       type: Object
     }
   },
+  i18n: {
+    messages: {
+      en: {
+        "Convert element to task?": "Convert element to task?",
+        "Delete element?": "Delete element?",
+        "Convert": "Convert",
+      },
+      fr: {
+        "Convert element to task?": "Transformer en tâche ?",
+        "Delete element?": "Supprimer l'élément ?",
+        "Convert": "Convertir",
+      }
+    }
+  },
   data() {
     return {
-      showConfirmConvertDialog: false,
-      showConfirmDeleteDialog: false,
       editNewItem: false,
       selectedItem: {},
       showButtons: null
@@ -109,22 +98,28 @@ export default {
       Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
     },
 
-    onConfirmConvert() {
-      this.showConfirmConvertDialog = false;
-      Meteor.call("tasks.convertItemToTask", this.task._id, this.selectedItem._id);
+    onConvert() {
+      this.$confirm(this.$t("Convert element to task?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Convert")
+      }).then(res => {
+        if (res) {
+          Meteor.call("tasks.convertItemToTask", this.task._id, this.selectedItem._id);
+        }
+      });
     },
 
-    onCancelConvert(item) {
-      this.showCancelConvertDialog = false;
-    },
-
-    onConfirmDelete() {
-      this.showConfirmDeleteDialog = false;
-      Meteor.call("tasks.removeChecklistItem", this.task._id, this.selectedItem._id);
-    },
-
-    onCancelDelete(item) {
-      this.showCancelConvertDialog = false;
+    onDelete() {
+      this.$confirm(this.$t("Delete element?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("tasks.removeChecklistItem", this.task._id, this.selectedItem._id);
+        }
+      });
     }
   }
 };
