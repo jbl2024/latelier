@@ -413,6 +413,10 @@ export default {
 </script>
 
 <style scoped>
+.project-settings-general {
+  margin-bottom: 24px;
+}
+
 .groups {
   width: 100%;
 }
