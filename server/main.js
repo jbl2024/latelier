@@ -23,6 +23,8 @@ import '../imports/api/healthReports/healthReports.js';
 import '../imports/api/healthReports/server/publications.js';
 import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
+import '../imports/api/databases/databases.js';
+import '../imports/api/databases/server/publications.js';
 
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));

@@ -7,6 +7,7 @@ const messages = {
     'Update': 'Mettre à jour',
     'Canvas': 'Canevas',
     'Weather': 'Météo',
+    'Databases': 'Bases de données',
     'Description': 'Description',
     'Deletion is permanent': 'La suppression est définitive',
     history: {
@@ -45,6 +46,7 @@ const messages = {
     'Update': 'Update',
     'Canvas': 'Canvas',
     'Weather': 'Weather',
+    'Databases': 'Databases',
     'Description': 'Description',
     'Deletion is permanent': 'Deletion is permanent',
     history: {
