@@ -3,11 +3,17 @@
     <div v-if="!database">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <div class="title">
-      <template v-if="$subReady.database">
-        {{ database.name}}
-      </template>
+    <div class="header" v-if="database">
+        <v-subheader>
+          <router-link class="link" :to="{ name: 'project-databases', params: { organizationId: organizationId, projectId: projectId }}">
+            {{ $t('Databases') }}
+          </router-link>&nbsp; > {{ database.name}}
+          <v-btn fab dark small color="pink" @click="newColumn">
+            <v-icon>add</v-icon>
+          </v-btn>
+        </v-subheader>
     </div>
+
     <div class="wrapper">
       <div ref="hot" class="hot"></div>
     </div>
@@ -109,6 +115,10 @@ export default {
       });
     },
 
+    newColumn() {
+
+    },
+
     initializeTable() {
       const columns = [];
       const headers = [];
@@ -133,7 +143,7 @@ export default {
         afterChange: (changes, source) => {
           if (!changes) return;
           changes.forEach(([row, prop, oldValue, newValue]) => {
-            const data = hot.getSourceDataAtRow(row);
+            const data = this.hot.getSourceDataAtRow(row);
             Meteor.call('databases.updateRecord', this.databaseId, data);
           });
         }
@@ -147,8 +157,7 @@ export default {
 <style scoped>
 .project-database {
   background-color: White;
-  margin: 24px;
-  padding: 12px;
+  /* padding: 12px; */
   display: flex;
   min-height:0;
   height: 100%;
@@ -162,7 +171,8 @@ h1 {
   margin-bottom: 24px;
 }
 
-.title {
+.header {
+  margin-bottom: 8px;
 }
 
 .wrapper {
@@ -173,10 +183,14 @@ h1 {
   min-height: 0;
 }
 
+.link {
+  text-decoration: none;
+}
 
 .hot {
   overflow: scroll;
   height: 100%;
   width: 100%;
+  margin-left: 12px;
 }
 </style>
