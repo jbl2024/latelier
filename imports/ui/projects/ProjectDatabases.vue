@@ -3,10 +3,10 @@
     <new-database ref="newDatabase" :projectId="projectId"></new-database>
     <edit-database ref="editDatabase" :database="selectedDatabase"></edit-database>
 
-    <div v-if="!databases">
+    <div v-if="!$subReady.databases">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <template v-if="databases">
+    <template v-if="$subReady.databases && databases">
       <empty-state
         class="empty"
         v-if="databases.length == 0"
@@ -109,7 +109,7 @@ export default {
       return Projects.findOne();
     },
     databases() {
-      return Databases.find({}, { sort: { date: -1 } });
+      return Databases.find({}, { sort: { name: 1 } });
     },
     user () {
       return Meteor.user();

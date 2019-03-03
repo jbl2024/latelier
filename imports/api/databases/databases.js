@@ -90,6 +90,10 @@ Meteor.methods({
     Records.insert(record);
   },
 
+  "databases.findOne"(databaseId) {
+    return Databases.findOne({_id: databaseId});
+  },
+
   "databases.loadRecords"(databaseId) {
     const records = Records.find({databaseId: databaseId}).fetch();
     return {

@@ -1,12 +1,16 @@
 <template>
   <div class="project-database elevation-1">
-    <div v-if="!$subReady.database">
+    <div v-if="!database">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <template v-if="$subReady.database">
-      <h1>{{ database.name}}</h1>
-    </template>
-    <div ref="hot"></div>
+    <div class="title">
+      <template v-if="$subReady.database">
+        {{ database.name}}
+      </template>
+    </div>
+    <div class="wrapper">
+      <div ref="hot" class="hot"></div>
+    </div>
   </div>
 </template>
 
@@ -25,6 +29,10 @@ export default {
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", 0);
     this.$store.dispatch("setCurrentOrganizationId", 0);
+    if (this.hot) {
+      this.hot.destroy();
+      this.hot = null;
+    }
   },
   props: {
     organizationId: {
@@ -46,35 +54,50 @@ export default {
       fr: {}
     }
   },
+  watch: {
+    databaseId: {
+      immediate: true,
+      handler(id) {
+        if (id && id !== "0") {
+          this.loadDatabase(id);
+        }
+      }
+    }
+  },
   data() {
     return {
       records: null,
-      databaseLoaded: false
+      database: null,
+      hot: null
     };
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      database: function() {
-        return [this.databaseId];
+      project: function() {
+        return [this.projectId];
       }
     },
     project() {
       return Projects.findOne();
-    },
-    database() {
-      const database = Databases.findOne();
-      if (database && !this.databaseLoaded) {
-        this.loadRecords(database);
-        this.databaseLoaded = true;
-      }
-      return database;
     },
     user() {
       return Meteor.user();
     }
   },
   methods: {
+    loadDatabase(databaseId) {
+      Meteor.call('databases.findOne', databaseId, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.database = result;
+        if (this.database) {
+          this.loadRecords(this.database);
+        }
+      })
+    },
     loadRecords(database) {
       Meteor.call("databases.loadRecords", database._id, (error, result) => {
         if (error) {
@@ -95,7 +118,10 @@ export default {
         });
         headers.push(column.name);
       });
-      const hot = new Handsontable(this.$refs.hot, {
+      if (this.hot) {
+        this.hot.destroy();
+      }
+      this.hot = new Handsontable(this.$refs.hot, {
         data: this.records,
         colHeaders: headers,
         rowHeaders: true,
@@ -123,10 +149,34 @@ export default {
   background-color: White;
   margin: 24px;
   padding: 12px;
+  display: flex;
+  min-height:0;
+  height: 100%;
+  flex-direction: column;
+  position: relative;
 }
+
 
 h1 {
   font-size: 16px;
   margin-bottom: 24px;
+}
+
+.title {
+}
+
+.wrapper {
+  flex:1;
+  overflow-y: scroll;
+  position: relative;
+  display: flex;
+  min-height: 0;
+}
+
+
+.hot {
+  overflow: scroll;
+  height: 100%;
+  width: 100%;
 }
 </style>
