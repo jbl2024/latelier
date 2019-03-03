@@ -99,7 +99,7 @@ export default {
   },
   methods: {
     findUsers() {
-      const users = Meteor.call(
+      Meteor.call(
         "admin.findUsers",
         this.page,
         this.search,

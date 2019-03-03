@@ -18,3 +18,19 @@ publishComposite("databases", function(projectId) {
     ]
   };
 });
+
+publishComposite("database", function(databaseId) {
+  return {
+    find() {
+      return Databases.find({ _id: databaseId });
+    },
+    children: [
+      {
+        find(database) {
+          return Projects.find({_id: database.projectId});
+        }
+      }
+    ]
+  };
+});
+

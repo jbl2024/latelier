@@ -25,7 +25,7 @@
         </v-subheader>
 
       <template v-for="item in databases">
-        <v-list-tile :key="item._id" @click="openDatabase(item._id)">
+        <v-list-tile :key="item._id" @click="openDatabase(item)">
           <v-list-tile-avatar>
             <v-icon>library_books</v-icon>
           </v-list-tile-avatar>
@@ -133,6 +133,14 @@ export default {
         if (res) {
           Meteor.call("databases.remove", database._id);
         }
+      });
+    },
+    openDatabase(database) {
+      this.$router.push({ name: "project-database", params: {
+          organizationId: this.organizationId,
+          projectId: this.projectId,
+          databaseId: database._id
+        } 
       });
     }
   }

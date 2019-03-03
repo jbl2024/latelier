@@ -20,6 +20,7 @@ import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectDatabases from "/imports/ui/projects/ProjectDatabases.vue";
+import ProjectDatabase from "/imports/ui/projects/ProjectDatabase.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
@@ -139,6 +140,13 @@ export default [
     name: "project-databases",
     beforeEnter: isBasicAuth,
     component: ProjectDatabases,
+    props: true
+  },
+  {
+    path: "/projects-databases/:organizationId/:projectId/:databaseId",
+    name: "project-database",
+    beforeEnter: isBasicAuth,
+    component: ProjectDatabase,
     props: true
   },
   {
