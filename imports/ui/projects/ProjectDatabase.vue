@@ -4,30 +4,40 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div class="header" v-if="database">
-        <v-subheader>
-          <router-link class="link" :to="{ name: 'project-databases', params: { organizationId: organizationId, projectId: projectId }}">
-            {{ $t('Databases') }}
-          </router-link>&nbsp; > {{ database.name}}
-          <v-btn fab dark small color="pink" @click="newColumn">
-            <v-icon>add</v-icon>
-          </v-btn>
-        </v-subheader>
+      <v-subheader>
+        <router-link
+          class="link"
+          :to="{ name: 'project-databases', params: { organizationId: organizationId, projectId: projectId }}"
+        >{{ $t('Databases') }}</router-link>
+        &nbsp; > {{ database.name}}
+      </v-subheader>
     </div>
 
-    <div class="wrapper">
-      <div ref="hot" class="hot"></div>
-    </div>
+    <v-tabs v-model="active" >
+      <v-tab v-for="table in tables" :key="table._id" ripple>{{ table.name }}</v-tab>
+      <v-tab-item v-for="table in tables" :key="table._id">
+        <div class="tab-wrapper">
+          <project-table :tableId="table._id"></project-table>
+        </div>
+      </v-tab-item>
+    </v-tabs>
   </div>
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { Databases } from "/imports/api/databases/databases.js";
+import { Tables } from "/imports/api/databases/databases.js";
+
+import ProjectTable from "/imports/ui/projects/ProjectTable.vue";
 
 import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.css";
 
 export default {
+  components: {
+    ProjectTable
+  },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
     this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
@@ -72,9 +82,9 @@ export default {
   },
   data() {
     return {
-      records: null,
       database: null,
-      hot: null
+      tables: null,
+      active: null
     };
   },
   meteor: {
@@ -93,61 +103,24 @@ export default {
   },
   methods: {
     loadDatabase(databaseId) {
-      Meteor.call('databases.findOne', databaseId, (error, result) => {
+      Meteor.call("databases.findOne", databaseId, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
         this.database = result;
         if (this.database) {
-          this.loadRecords(this.database);
+          this.loadTables(this.database);
         }
-      })
+      });
     },
-    loadRecords(database) {
-      Meteor.call("databases.loadRecords", database._id, (error, result) => {
+    loadTables(database) {
+      Meteor.call("databases.loadTables", database._id, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
-        this.records = result.data;
-        this.initializeTable();
-      });
-    },
-
-    newColumn() {
-
-    },
-
-    initializeTable() {
-      const columns = [];
-      const headers = [];
-      this.database.columns.map(column => {
-        columns.push({
-          data: column._id
-        });
-        headers.push(column.name);
-      });
-      if (this.hot) {
-        this.hot.destroy();
-      }
-      this.hot = new Handsontable(this.$refs.hot, {
-        data: this.records,
-        colHeaders: headers,
-        rowHeaders: true,
-        columns: columns,
-        manualColumnResize: true,
-        manualRowResize: true,  
-        columnSorting: true,      
-        minSpareRows: 1,
-        afterChange: (changes, source) => {
-          if (!changes) return;
-          changes.forEach(([row, prop, oldValue, newValue]) => {
-            const data = this.hot.getSourceDataAtRow(row);
-            Meteor.call('databases.updateRecord', this.databaseId, data);
-          });
-        }
-
+        this.tables = result.data;
       });
     }
   }
@@ -159,12 +132,11 @@ export default {
   background-color: White;
   /* padding: 12px; */
   display: flex;
-  min-height:0;
+  min-height: 0;
   height: 100%;
   flex-direction: column;
   position: relative;
 }
-
 
 h1 {
   font-size: 16px;
@@ -175,22 +147,13 @@ h1 {
   margin-bottom: 8px;
 }
 
-.wrapper {
-  flex:1;
-  overflow-y: scroll;
-  position: relative;
-  display: flex;
-  min-height: 0;
-}
-
 .link {
   text-decoration: none;
 }
 
-.hot {
-  overflow: scroll;
-  height: 100%;
-  width: 100%;
-  margin-left: 12px;
+.tab-wrapper {
+  height: 400px;
 }
+
 </style>
+

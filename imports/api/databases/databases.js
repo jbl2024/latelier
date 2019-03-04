@@ -4,11 +4,14 @@ import { check } from "meteor/check";
 import moment from "moment";
 
 export const Databases = new Mongo.Collection("databases");
+export const Tables = new Mongo.Collection("tables");
 export const Records = new Mongo.Collection("records");
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Databases.rawCollection().createIndex({ projectId: 1 });
-    Records.rawCollection().createIndex({ databaseId: 1 });
+    Tables.rawCollection().createIndex({ databaseId: 1 });
+    Records.rawCollection().createIndex({ tableId: 1 });
   });
 }
 
@@ -27,19 +30,9 @@ Meteor.methods({
       name: name,
       description: description,
       createdAt: new Date(),
-      createdBy: Meteor.userId(),
-      columns: [{
-        _id: new Mongo.ObjectID().valueOf(),
-        name: "Nom",
-        type: "text"
-      }, {
-        _id: new Mongo.ObjectID().valueOf(),
-        name: "Notes",
-        type: "long_text"
-      }]
+      createdBy: Meteor.userId()
     });
-
-    Meteor.call("databases.initializeRecords", databaseId);
+    Meteor.call("databases.initializeTable", databaseId)
 
     return databaseId;
   },
@@ -72,16 +65,42 @@ Meteor.methods({
   "databases.remove"(id) {
     check(id, String);
 
-    Records.remove({databaseId: id})
+    const tables = Tables.find({databaseId: id}).fetch();
+    tables.map(table => {
+      Records.remove({tableId: table._id});
+    })
+    Tables.remove({databaseId: id})
     Databases.remove(id);
   },
 
-  "databases.initializeRecords"(databaseId) {
-    const database = Databases.findOne({_id: databaseId});
-    const record = {
+  "databases.initializeTable"(databaseId) {
+    const table = {
       databaseId: databaseId,
+      createdAt: new Date(),
+      createdBy: Meteor.userId(),
+      name: "Table1",
+      columns: [{
+        _id: new Mongo.ObjectID().valueOf(),
+        name: "Nom",
+        type: "text"
+      }, {
+        _id: new Mongo.ObjectID().valueOf(),
+        name: "Notes",
+        type: "long_text"
+      }]
     }
-    database.columns.map(column => {
+    const tableId = Tables.insert(table);
+    Meteor.call("databases.initializeRecords", tableId);
+
+  },
+
+
+  "databases.initializeRecords"(tableId) {
+    const table = Tables.findOne({_id: tableId});
+    const record = {
+      tableId: tableId,
+    }
+    table.columns.map(column => {
       record[column._id] = "";
     })
     Records.insert(record);
@@ -94,15 +113,26 @@ Meteor.methods({
     return Databases.findOne({_id: databaseId});
   },
 
-  "databases.loadRecords"(databaseId) {
-    const records = Records.find({databaseId: databaseId}).fetch();
+  "databases.findTable"(tableId) {
+    return Tables.findOne({_id: tableId});
+  },
+
+  "databases.loadTables"(databaseId) {
+    const tables = Tables.find({databaseId: databaseId}).fetch();
+    return {
+      data: tables
+    };
+  },
+
+  "databases.loadRecords"(tableId) {
+    const records = Records.find({tableId: tableId}).fetch();
     return {
       data: records
     };
   },
 
-  "databases.updateRecord"(databaseId, record) {
-    check(databaseId, String);
+  "databases.updateRecord"(tableId, record) {
+    check(tableId, String);
     check(record, Object);
 
     if (!Meteor.userId()) {
@@ -111,7 +141,7 @@ Meteor.methods({
 
     if (!record._id) {
       delete record._id;
-      record.databaseId = databaseId;
+      record.tableId = tableId;
       Records.insert(record);
     } else {
       Records.update({_id: record._id}, {$set: record});
