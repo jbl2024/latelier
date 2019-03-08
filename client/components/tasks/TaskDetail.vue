@@ -49,7 +49,7 @@
         v-show="!editDescription && task.description && task.description.length > 0"
         @click="startEditDescription"
       >
-        <div v-html="linkifyHtml(task.description)"></div>
+        <div class="ql-editor-view" v-html="linkifyHtml(task.description)"></div>
       </div>
       <div
         v-show="!task.description && !editDescription"

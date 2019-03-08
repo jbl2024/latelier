@@ -32,7 +32,7 @@
           v-show="!editDescription && organization.description && organization.description.length > 0"
           @click="startEditDescription"
         >
-          <div v-html="markDown(organization.description)"></div>
+          <div class="ql-editor-view" v-html="markDown(organization.description)"></div>
         </div>
         <div
           v-show="!organization.description && !editDescription"

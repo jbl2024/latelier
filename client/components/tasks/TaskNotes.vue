@@ -22,7 +22,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
+              <div class="ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus></rich-editor>
                 <v-btn flat icon @click="updateNote">
