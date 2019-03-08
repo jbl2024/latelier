@@ -34,6 +34,12 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
     return false;
   };
 
+  const hasCompletedModification = modifier => {
+    if (modifier.$set && modifier.$set.completed != undefined) { 
+      return true;
+    }
+  }
+
   if (hasOrderModification(modifier)) {
     // do not pollute update history with minor order modifications
     return;
@@ -41,6 +47,16 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
 
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
+
+  if (hasCompletedModification(modifier)) {
+    // if completed flag is set, set the "completedAt" attribute
+    if (modifier.$set.completed) {
+      modifier.$set.completedAt = modifier.$set.updatedAt;
+    } else {
+      modifier.$set.completedAt = null; // reset date attribute
+    }
+  }
+
 });
 
 Meteor.methods({
