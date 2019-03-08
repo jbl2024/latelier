@@ -11,7 +11,7 @@
     <div class="elevation-1 settings">
       <div class="description">
         <div v-show="!editDescription && project.description && project.description.length > 0" @click="startEditDescription">
-          <div v-html="markDown(project.description)"></div>
+          <div class="ql-editor-view" v-html="markDown(project.description)"></div>
         </div>
         <div v-show="!project.description && !editDescription" @click="startEditDescription">
           {{ $t("No description")}}

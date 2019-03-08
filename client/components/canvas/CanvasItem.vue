@@ -15,7 +15,7 @@
         <div
           v-if="!editContent"
           @click="startUpdateContent"
-          class="content"
+          class="content ql-editor-view"
           v-html="linkifyHtml(content)"
         ></div>
         <div v-if="editContent" class="edit-content">

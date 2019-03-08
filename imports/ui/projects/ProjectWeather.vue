@@ -49,7 +49,7 @@
                       </v-flex>
                     </v-layout>
                     <v-card-text>
-                      <div v-if="report.description" v-html="report.description"></div>
+                      <div v-if="report.description" class="ql-editor-view" v-html="report.description"></div>
                     </v-card-text>
                     <v-divider light></v-divider>
 
