@@ -9,6 +9,7 @@ const messages = {
     'Weather': 'Météo',
     'Description': 'Description',
     'Deletion is permanent': 'La suppression est définitive',
+    'Completed on': 'Terminée le',
     history: {
       tasks: {
         create: "Création",
@@ -47,6 +48,7 @@ const messages = {
     'Weather': 'Weather',
     'Description': 'Description',
     'Deletion is permanent': 'Deletion is permanent',
+    'Completed on': 'Completed on',
     history: {
       tasks: {
         create: "Creation",

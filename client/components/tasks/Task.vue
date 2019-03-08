@@ -86,6 +86,12 @@
           </div>
           <v-divider v-if="hasChecklist(task)"></v-divider>
           <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
+
+          <div class="completed-date" v-if="task.completedAt">
+            {{ $t('Completed on') }}
+            {{ formatDate(task.dueDate) }}
+          </div>
+
           <v-divider v-if="hasFooterData(task)"></v-divider>
           <div class="footer" v-if="hasFooterData(task)">
             <div class="due-date">
@@ -155,7 +161,6 @@ export default {
         return this.$store.state.selectedTask && this.$store.state.selectedTask._id === this.task._id;
       }
     }
-
   },
   data() {
     return {
@@ -474,6 +479,12 @@ export default {
   font-size: 11px;
 }
 
+.completed-date {
+  margin-left: 12px;
+  padding-bottom: 12px;
+  color: #666;
+  font-size: 11px;
+}
 
 .dragup {
   background: linear-gradient(0deg, #fff 50%, #eee 50%);
