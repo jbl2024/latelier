@@ -30,7 +30,7 @@
                     <v-list-tile @click="list.autoComplete = !list.autoComplete">
                       <v-list-tile-action >
                         <v-checkbox
-                          :value="list.autoComplete"
+                          :input-value="list.autoComplete"
                         ></v-checkbox>
                       </v-list-tile-action> 
                       <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
@@ -38,7 +38,7 @@
                     <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
                       <v-list-tile-action >
                         <v-checkbox
-                          :value="list.catchCompleted"
+                          :input-value="list.catchCompleted"
                         ></v-checkbox>
                       </v-list-tile-action> 
                       <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
