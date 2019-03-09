@@ -17,7 +17,7 @@
           </div>
 
           <div class="note-content">
-              <author-line class="note-author" :user-id="note.createdBy">
+              <author-line class="note-author" :user-id="note.createdBy" :date="note.createdAt">
                 <span v-if="note.edited">
                   ({{ $t('edited')}})
                 </span>
