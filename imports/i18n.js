@@ -15,6 +15,9 @@ const messages = {
     'List': 'Liste',
     'Completed on': 'Terminée le',
     'Created by': 'Créée par',
+    "Convert element to task?": "Transformer en tâche ?",
+    "Delete element?": "Supprimer l'élément ?",
+    "Convert": "Convertir",
     history: {
       tasks: {
         create: "Création",
@@ -59,6 +62,9 @@ const messages = {
     'List': 'List',
     'Completed on': 'Completed on',
     'Created by': 'Created by',
+    "Convert element to task?": "Convert element to task?",
+    "Delete element?": "Delete element?",
+    "Convert": "Convert",
     history: {
       tasks: {
         create: "Creation",
