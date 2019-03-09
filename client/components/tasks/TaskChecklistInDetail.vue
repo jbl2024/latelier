@@ -120,7 +120,16 @@ export default {
       if (e) {
         e.stopPropagation();
       }
-      Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
+      this.$confirm(this.$t("Delete element?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
+        }
+      });
+
     },
 
     toggleCheckItem(item) {
@@ -140,8 +149,15 @@ export default {
       if (e) {
         e.stopPropagation();
       }
-
-      Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
+      this.$confirm(this.$t("Convert element to task?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Convert")
+      }).then(res => {
+        if (res) {
+          Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
+        }
+      });
     },
 
     updateItem(item) {
