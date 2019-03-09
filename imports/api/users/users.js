@@ -156,4 +156,36 @@ Meteor.methods({
     Accounts.sendVerificationEmail(userId);
   },
 
+  "users.getEmailPreferences"() {
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    const user = Meteor.users.findOne({_id: Meteor.userId()});
+    if (!user.emailSettings) {
+      user.emailSettings = {
+        tasks: {
+          assignTo: true
+        }        
+      }
+    }
+    return user;
+  },
+
+  "users.updateEmailPreferences"(settings) {
+    check(settings, Object);    
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    Meteor.users.update(
+      {
+        _id: Meteor.userId()
+      },
+      {
+        $set: {
+          emailSettings: settings
+        }
+      }
+    );    
+  }
+
 });

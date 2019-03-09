@@ -23,6 +23,7 @@ import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
+import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
 
 export default [
   {
@@ -152,6 +153,13 @@ export default [
     name: "administration-page",
     beforeEnter: isBasicAuth,
     component: AdministrationPage,
+    props: true
+  },
+  {
+    path: "/settings/mail",
+    name: "mail-settings-page",
+    beforeEnter: isBasicAuth,
+    component: MailSettingsPage,
     props: true
   },
   { path: "*", name: "not-found", component: NotFound }
