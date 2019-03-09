@@ -1,6 +1,12 @@
 <template>
   <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop>
-    <v-list dense class="tasks-wrapper elevation-1" v-if="task.checklist && task.checklist.length > 0">
+    <v-list
+      dense
+      class="tasks-wrapper elevation-1"
+      v-if="task.checklist && task.checklist.length > 0"
+      v-sortable-list
+      @sorted="objectSortOccurred"
+    >
       <template v-for="item in task.checklist">
         <v-list-tile :key="item._id">
           <v-list-tile-action>
@@ -8,9 +14,19 @@
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>
-              <input type="text" v-model.lazy="item.name" class="edit" v-on:change="updateItem(item)">
+              <input
+                type="text"
+                v-model.lazy="item.name"
+                class="edit"
+                v-on:change="updateItem(item)"
+              >
             </v-list-tile-title>
           </v-list-tile-content>
+          <v-list-tile-action class="sortHandle">
+            <v-icon style="cursor: row-resize">
+              drag_handle
+            </v-icon>
+          </v-list-tile-action>
           <v-list-tile-action>
             <v-btn icon ripple @click="event => { convertToTask(event, item)}">
               <v-icon>list</v-icon>
@@ -24,7 +40,8 @@
         </v-list-tile>
       </template>
     </v-list>
-    <v-text-field class="add-item"
+    <v-text-field
+      class="add-item"
       preprend-icon="check_box_outline_blank"
       label="Nouvel item"
       v-model="item"
@@ -40,9 +57,24 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import moment from "moment";
 import "moment/locale/fr";
+import * as Sortable from "sortablejs";
 
 export default {
   name: "task-checklist-in-detail",
+  directives: {
+    sortableList: {
+      bind(el, binding, vnode) {
+        const options = {
+          handle: ".sortHandle",
+          animation: 150,
+          onUpdate: function(event) {
+            vnode.child.$emit("sorted", event);
+          }
+        };
+        Sortable.create(el, options);
+      }
+    }
+  },
   props: {
     hideIfEmpty: {
       type: Boolean,
@@ -115,6 +147,12 @@ export default {
     updateItem(item) {
       Meteor.call("tasks.updateCheckListItem", this.task._id, item);
     },
+
+    objectSortOccurred({ oldIndex, newIndex }) {
+      const moved = this. task.checklist.splice(oldIndex, 1)[0];
+      this.task.checklist.splice(newIndex, 0, moved);
+      Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
+    },
   }
 };
 </script>
@@ -128,15 +166,14 @@ export default {
 }
 
 .tasks-wrapper {
-  margin-top:12px;
-  margin-bottom:12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
   border-radius: 4px;
 }
 
 .icons {
   border: 2px solid black;
 }
-
 
 .add-item label {
   font-size: 13px;
