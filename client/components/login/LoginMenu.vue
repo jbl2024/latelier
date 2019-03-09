@@ -71,6 +71,14 @@
           </v-list-tile-content>
         </v-list-tile>
         <v-divider></v-divider>
+        <v-list-tile :to="{ name: 'mail-settings-page'}">
+          <v-list-tile-action>
+            <v-icon>mail</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ $t('Email notifications') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
         <v-list-tile @click="showConfirmDialog = true">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>

@@ -18,6 +18,7 @@ const messages = {
     "Convert element to task?": "Transformer en tâche ?",
     "Delete element?": "Supprimer l'élément ?",
     "Convert": "Convertir",
+    "Email notifications": "Notifications par mail",
     history: {
       tasks: {
         create: "Création",
@@ -65,6 +66,7 @@ const messages = {
     "Convert element to task?": "Convert element to task?",
     "Delete element?": "Delete element?",
     "Convert": "Convert",
+    "Email notifications": "Email notifications",
     history: {
       tasks: {
         create: "Creation",

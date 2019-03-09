@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check, Match } from 'meteor/check';
+import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
@@ -539,7 +540,13 @@ Meteor.methods({
     const task = Tasks.findOne({_id: event.taskId});
     const properties = event.properties || {};
 
+    const project = Projects.findOne({_id: task.projectId});
+    const list = Lists.findOne({_id: task.listId});
+
     properties.task = task;
+    properties.task.project = project;
+    properties.task.list = list;
+    properties.task.url = Meteor.absoluteUrl(`/projects/${project.organizationId}/${project._id}/${task._id}`);
 
     Meteor.call('events.track', {
       type: event.type,

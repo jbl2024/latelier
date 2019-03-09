@@ -33,3 +33,22 @@ Meteor.publish("user", function() {
     }
   );
 });
+
+Meteor.publish("userEmailSettings", function() {
+  return Meteor.users.find(
+    {
+      _id: this.userId
+    },
+    {
+      fields: {
+        profile: 1,
+        status: 1,
+        statusDefault: 1,
+        statusConnection: 1,
+        emails: 1,
+        roles: 1,
+        emailSettings: 1
+      }
+    }
+  );
+});
