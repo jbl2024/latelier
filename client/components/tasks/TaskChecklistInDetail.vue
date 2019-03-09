@@ -7,7 +7,9 @@
             <v-checkbox v-model="item.checked" @change="toggleCheckItem(item)"></v-checkbox>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+            <v-list-tile-title>
+              <input type="text" v-model.lazy="item.name" class="edit" v-on:change="updateItem(item)">
+            </v-list-tile-title>
           </v-list-tile-content>
           <v-list-tile-action>
             <v-btn icon ripple @click="event => { convertToTask(event, item)}">
@@ -98,10 +100,6 @@ export default {
       );
     },
 
-    updateChecklist() {
-      Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
-    },
-
     cancelAddItem() {
       this.editNewItem = false;
     },
@@ -112,7 +110,11 @@ export default {
       }
 
       Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
-    }
+    },
+
+    updateItem(item) {
+      Meteor.call("tasks.updateCheckListItem", this.task._id, item);
+    },
   }
 };
 </script>
@@ -138,5 +140,9 @@ export default {
 
 .add-item label {
   font-size: 13px;
+}
+
+.edit {
+  width: 100%;
 }
 </style>

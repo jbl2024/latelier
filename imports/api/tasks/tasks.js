@@ -354,6 +354,26 @@ Meteor.methods({
     Meteor.call('tasks.removeChecklistItem', taskId, itemId);
   },
 
+  'tasks.updateCheckListItem'(taskId, item) {
+    check(taskId, String);
+    check(item, Object);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error('task-not-found');
+    }
+
+    const itemIndex = task.checklist.findIndex(aItem => {
+      return aItem._id === item._id;
+    });
+    task.checklist[itemIndex] = item;
+    Tasks.update({_id: taskId}, {$set: {checklist: task.checklist}});
+  },
+
   'tasks.assignTo'(taskId, userId) {
     check(taskId, String);
     check(userId, String);

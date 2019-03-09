@@ -94,10 +94,6 @@ export default {
       );
     },
 
-    updateChecklist() {
-      Meteor.call("tasks.updateChecklist", this.task._id, this.task.checklist);
-    },
-
     onConvert() {
       this.$confirm(this.$t("Convert element to task?"), {
         title: this.$t("Confirm"),
