@@ -89,7 +89,7 @@
 
           <div class="completed-date" v-if="task.completedAt">
             {{ $t('Completed on') }}
-            {{ formatDate(task.dueDate) }}
+            {{ formatDateTime(task.completedAt) }}
           </div>
 
           <v-divider v-if="hasFooterData(task)"></v-divider>
@@ -97,7 +97,7 @@
             <div class="due-date">
               <template v-if="task.dueDate">
                 <v-icon class="alarm-icon">alarm_on</v-icon>
-                {{ formatDate(task.dueDate) }}
+                {{ formatDateTime(task.dueDate) }}
               </template>
             </div>
             <div class="avatar">
@@ -120,11 +120,12 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { mapState } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 import moment from "moment";
 
 export default {
-  mixins: [usersMixin, TextRenderingMixin],
+  mixins: [usersMixin, TextRenderingMixin, DatesMixin],
   mounted() {
     this.$events.listen("task-edit-name", task => {
       if (task._id !== this.task._id) {
@@ -381,10 +382,6 @@ export default {
       }
     },
 
-    formatDate(date) {
-      return moment(date).format("DD/MM/YYYY HH:mm");
-    },
-
     selectTask(e) {
       e.stopPropagation();
       if (this.editName) {
@@ -399,10 +396,6 @@ export default {
         }
       });
     },
-    formatDate(date) {
-      return moment(date).format("DD/MM/YYYY HH:mm");
-    },
-
     getClassForName(task) {
       var classes = ["name"];
 

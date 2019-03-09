@@ -30,6 +30,26 @@
           <v-icon>close</v-icon>
         </v-btn>
       </div>
+
+      <div class="checkbox" v-if="!editTaskName">
+        <div class="pretty p-svg p-curve">
+          <input
+            type="checkbox"
+            v-show="!editTaskName"
+            v-model="completed"
+          >
+          <div class="state p-primary">
+            <svg class="svg svg-icon" viewBox="0 0 20 20">
+              <path
+                d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                style="stroke: white;fill:white;"
+              ></path>
+            </svg>
+            <label></label>
+          </div>
+        </div>
+      </div>
+
       <div class="toolbar-title" @click="startEditTaskName" v-if="!editTaskName">
         <span v-html="linkifyHtml(task.name)"></span>
       </div>
@@ -39,8 +59,12 @@
     </div>
 
     <task-labels :task="task"></task-labels>
-    <div>
-      <author-line :user-id="task.createdBy" :date="task.createdAt" class="author"></author-line>
+    <div class="authors">
+      <author-line :user-id="task.createdBy" :date="task.createdAt" class="author" :prefix="$t('Created by')"></author-line>
+      <div class="completed-date" v-if="task.completedAt">
+        {{ $t('Completed on') }}
+        {{ formatDate(task.completedAt) }}
+      </div>
     </div>
 
     <v-divider></v-divider>
@@ -96,9 +120,10 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
-  mixins: [TextRenderingMixin],
+  mixins: [TextRenderingMixin, DatesMixin],
   props: {
     taskId: {
       type: String
@@ -107,12 +132,20 @@ export default {
       type: Boolean
     }
   },
+  watch: {
+    "completed"(completed) {
+      if (this.task && this.task.completed != completed) {
+        Meteor.call("tasks.complete", this.taskId, completed);
+      }
+    }
+  },  
   data() {
     return {
       editDescription: false,
       editTaskName: false,
       savedDescription: "",
-      savedName: ""
+      savedName: "",
+      completed: false,
     };
   },
   meteor: {
@@ -124,7 +157,9 @@ export default {
       },
       deep: false,
       update({ id }) {
-        return Tasks.findOne({ _id: id }) || {};
+        const task = Tasks.findOne({ _id: id }) || {};
+        this.completed = task.completed;
+        return task;
       }
     },
 
@@ -264,8 +299,14 @@ export default {
   margin-left: 12px;
 }
 
-.author-line {
+.authors {
   margin: 24px;
+  margin-bottom: 12px;
+}
+
+.completed-date {
+  color: rgba(0,0,0,0.54);
+  font-weight: bold;
 }
 
 pre {

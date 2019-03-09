@@ -14,6 +14,7 @@ const messages = {
     'Resources': 'Ressources',
     'List': 'Liste',
     'Completed on': 'Terminée le',
+    'Created by': 'Créée par',
     history: {
       tasks: {
         create: "Création",
@@ -57,6 +58,7 @@ const messages = {
     'Resources': 'Resources',
     'List': 'List',
     'Completed on': 'Completed on',
+    'Created by': 'Created by',
     history: {
       tasks: {
         create: "Creation",
