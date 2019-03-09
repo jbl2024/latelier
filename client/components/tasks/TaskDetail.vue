@@ -70,10 +70,10 @@
     <v-divider></v-divider>
 
     <v-tabs grow>
-      <v-tab id="tab-properties">Propriétés</v-tab>
-      <v-tab id="tab-notes">{{ getLabel('Notes', notesCount) }}</v-tab>
-      <v-tab id="tab-checklist">{{ getLabel('Checklist', checklistCount) }}</v-tab>
-      <v-tab id="tab-resources">{{ getLabel('Ressources', resourcesCount) }}</v-tab>
+      <v-tab id="tab-properties">{{ $t('Properties') }}</v-tab>
+      <v-tab id="tab-notes">{{ getLabel($t('Notes'), notesCount) }}</v-tab>
+      <v-tab id="tab-checklist">{{ getLabel($t('List'), checklistCount) }}</v-tab>
+      <v-tab id="tab-resources">{{ getLabel($t('Resources'), resourcesCount) }}</v-tab>
 
       <v-tab-item>
         <task-properties :task="task"></task-properties>

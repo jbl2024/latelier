@@ -9,6 +9,10 @@ const messages = {
     'Weather': 'Météo',
     'Description': 'Description',
     'Deletion is permanent': 'La suppression est définitive',
+    'Properties': 'Propriétés',
+    'Notes': 'Notes',
+    'Resources': 'Ressources',
+    'List': 'Liste',
     'Completed on': 'Terminée le',
     history: {
       tasks: {
@@ -48,6 +52,10 @@ const messages = {
     'Weather': 'Weather',
     'Description': 'Description',
     'Deletion is permanent': 'Deletion is permanent',
+    'Properties': 'Properties',
+    'Notes': 'Notes',
+    'Resources': 'Resources',
+    'List': 'List',
     'Completed on': 'Completed on',
     history: {
       tasks: {
