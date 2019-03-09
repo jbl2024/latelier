@@ -1,6 +1,7 @@
 <template>
 
 <div class="author-line">
+    <template v-if="prefix">{{ prefix }}</template>
     <b>{{ formatUser(userId)}}</b> {{ formatDateDuration(date) }} ({{ formatDate(date) }}) <slot></slot>
 </div>
 
@@ -11,51 +12,26 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import moment from 'moment';
 import 'moment/locale/fr'
 
 export default {
-  mixins: [usersMixin],
+  mixins: [usersMixin, DatesMixin],
   props: {
     userId: {
       type: String
     },
     date: {
       type: Date
+    },
+    prefix: {
+      type: String
     }
   },
   data() {
     return {
     };
-  },
-  methods: {
-    formatDateDuration (date) {
-      var now = moment();
-      var noteDate = moment(date);
-      var duration = moment.duration(now.diff(noteDate)).locale('fr');
-      return 'il y a ' + duration.humanize();
-    },
-
-    formatDate (date) {
-      return moment(date).format('DD/MM/YYYY HH:mm');
-    },
-
-    formatUser (userId) {
-      if (!userId) {
-        return '';
-      }
-      var user = Meteor.users.findOne({_id: userId});
-      return user.emails[0].address;
-    },
-
-    formatUserLetters (userId) {
-      if (!userId) {
-        return '';
-      }
-      var user = Meteor.users.findOne({_id: userId});
-      var emailComponents = user.emails[0].address.split('@');
-      return emailComponents[0][0] + emailComponents[1][0];
-    }
   }
 };
 </script>
