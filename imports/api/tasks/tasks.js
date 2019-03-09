@@ -374,6 +374,22 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$set: {checklist: task.checklist}});
   },
 
+  'tasks.updateCheckList'(taskId, checklist) {
+    check(taskId, String);
+    check(checklist, Array);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error('not-authorized');
+    }
+
+    var task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error('task-not-found');
+    }
+
+    Tasks.update({_id: taskId}, {$set: {checklist: checklist}});
+  },
+
   'tasks.assignTo'(taskId, userId) {
     check(taskId, String);
     check(userId, String);
