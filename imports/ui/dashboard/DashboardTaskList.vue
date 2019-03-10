@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-task-list">
-    <v-list three-line v-if="tasks">
+    <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+    <v-list three-line v-if="tasks && !loading">
       <empty-state v-if="tasks.length == 0" :illustration="emptyIllustration" small :label="$t('No task')"></empty-state>
 
       <template v-for="task in tasks">
@@ -9,9 +10,9 @@
             <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>{{ task.name }}</v-list-tile-title>
+            <v-list-tile-title><span class="grey--text text--darken-1">[{{ task.organization.name }}] {{ task.project.name}}</span> - {{ task.name }}</v-list-tile-title>
             <v-list-tile-sub-title>
-              {{ task.project.name}}
+              Dernière modification {{ formatDateDuration(task.updatedAt) }}
             </v-list-tile-sub-title>
             <v-list-tile-sub-title>
               <template v-if="task.dueDate && isLate(task)">
@@ -43,6 +44,7 @@ export default {
       this.type,
       1,
       (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -66,6 +68,7 @@ export default {
   },
   data() {
     return {
+      loading: true,
       tasks: null
     };
   },
