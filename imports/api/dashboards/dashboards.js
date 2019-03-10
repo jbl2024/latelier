@@ -10,7 +10,7 @@ Meteor.methods({
   "dashboards.findTasks"(user, type, page) {
     const userId = Meteor.userId();
 
-    const perPage = 10;
+    const perPage = 50;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;
@@ -78,6 +78,7 @@ Meteor.methods({
     // load associated projects, users and assign them to tasks
     const projects = {};
     const users = {};
+    const organizations = {};
 
     const loadUser = (userId) => {
       let user = users[userId];
@@ -108,6 +109,15 @@ Meteor.methods({
       }
       if (project) {
         task.project = project;
+
+        let organization = organizations[project.organizationId];
+        if (!organization) {
+          organizations[project.organizationId] = Organizations.findOne({_id: project.organizationId});
+          organization = organizations[project.organizationId];
+        }
+        if (organization) {
+          task.organization = organization;
+        }
       }
 
       if (task.assignedTo) {
