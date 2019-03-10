@@ -24,6 +24,7 @@ import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
+import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
 
 export default [
   {
@@ -160,6 +161,13 @@ export default [
     name: "mail-settings-page",
     beforeEnter: isBasicAuth,
     component: MailSettingsPage,
+    props: true
+  },
+  {
+    path: "/dashboard",
+    name: "dashboard-page",
+    beforeEnter: isBasicAuth,
+    component: DashboardPage,
     props: true
   },
   { path: "*", name: "not-found", component: NotFound }
