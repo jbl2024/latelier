@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-task-list">
     <v-list three-line v-if="tasks">
-      <empty-state v-if="tasks.length == 0" illustration="empty" small :label="$t('No task')"></empty-state>
+      <empty-state v-if="tasks.length == 0" :illustration="emptyIllustration" small :label="$t('No task')"></empty-state>
 
       <template v-for="task in tasks">
         <v-list-tile :key="task._id" @click="openTask(task)" avatar>
@@ -23,7 +23,7 @@
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-divider inset :key="task._id"></v-divider>
+        <v-divider inset :key="`divider-${task._id}`"></v-divider>
       </template>
     </v-list>
   </div>
@@ -58,6 +58,10 @@ export default {
     type: {
       type: String,
       default: "recent"
+    },
+    emptyIllustration: {
+      type: String,
+      default: "empty"
     }
   },
   data() {
