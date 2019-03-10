@@ -21,6 +21,7 @@ const messages = {
     "Email notifications": "Notifications par mail",
     "Dashboard": "Tableau de bord",
     "Tasks": "Tâches",
+    "No task": "Aucune tâche",
     history: {
       tasks: {
         create: "Création",
@@ -71,6 +72,7 @@ const messages = {
     "Email notifications": "Email notifications",
     "Dashboard": "Dashboard",
     "Tasks": "Tasks",
+    "No task": "No task",
     history: {
       tasks: {
         create: "Creation",

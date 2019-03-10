@@ -10,11 +10,18 @@ export default {
       if (!date) return;
       return moment(date).format('DD/MM/YYYY HH:mm');
     },
-    formatDateDuration (date) {
+    formatDateDuration (date, prefix) {
       var now = moment();
       var noteDate = moment(date);
       var duration = moment.duration(now.diff(noteDate)).locale('fr');
-      return 'il y a ' + duration.humanize();
+      if (!prefix) {
+        prefix = "dans"
+        if (duration > 0) {
+          prefix = 'il y a'
+        }
+      }
+      return `${prefix} ${duration.humanize()}`;
+      
     }
   }
 }
