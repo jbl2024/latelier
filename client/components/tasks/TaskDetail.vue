@@ -33,11 +33,7 @@
 
       <div class="checkbox" v-if="!editTaskName">
         <div class="pretty p-svg p-curve">
-          <input
-            type="checkbox"
-            v-show="!editTaskName"
-            v-model="completed"
-          >
+          <input type="checkbox" v-show="!editTaskName" v-model="completed">
           <div class="state p-primary">
             <svg class="svg svg-icon" viewBox="0 0 20 20">
               <path
@@ -60,7 +56,12 @@
 
     <task-labels :task="task"></task-labels>
     <div class="authors">
-      <author-line :user-id="task.createdBy" :date="task.createdAt" class="author" :prefix="$t('Created by')"></author-line>
+      <author-line
+        :user-id="task.createdBy"
+        :date="task.createdAt"
+        class="author"
+        :prefix="$t('Created by')"
+      ></author-line>
       <div class="completed-date" v-if="task.completedAt">
         {{ $t('Completed on') }}
         {{ formatDate(task.completedAt) }}
@@ -133,22 +134,27 @@ export default {
     }
   },
   watch: {
-    "completed"(completed) {
+    completed(completed) {
       if (this.task && this.task.completed != completed) {
         Meteor.call("tasks.complete", this.taskId, completed);
       }
     }
-  },  
+  },
   data() {
     return {
       editDescription: false,
       editTaskName: false,
       savedDescription: "",
       savedName: "",
-      completed: false,
+      completed: false
     };
   },
   meteor: {
+    $subscribe: {
+      task: function() {
+        return [this.taskId];
+      }
+    },
     task: {
       params() {
         return {
@@ -272,7 +278,7 @@ export default {
 }
 
 .author {
-  color: rgba(0,0,0,0.54);
+  color: rgba(0, 0, 0, 0.54);
 }
 
 .toolbar-button {
@@ -305,7 +311,7 @@ export default {
 }
 
 .completed-date {
-  color: rgba(0,0,0,0.54);
+  color: rgba(0, 0, 0, 0.54);
   font-weight: bold;
 }
 
