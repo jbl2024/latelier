@@ -10,7 +10,7 @@
             <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title><span class="grey--text text--darken-1">[{{ task.organization.name }}] {{ task.project.name}}</span> - {{ task.name }}</v-list-tile-title>
+            <v-list-tile-title><span class="grey--text text--darken-1 show-desktop">[{{ task.organization.name }}] {{ task.project.name}} - </span> {{ task.name }}</v-list-tile-title>
             <v-list-tile-sub-title>
               Dernière modification {{ formatDateDuration(task.updatedAt) }}
             </v-list-tile-sub-title>

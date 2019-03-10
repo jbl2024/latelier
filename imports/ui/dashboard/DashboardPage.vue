@@ -98,7 +98,7 @@ export default {
 <style scoped>
 
 .dashboard-task-list {
-  height: 420px;
+  height: 460px;
   overflow-y: scroll;
 }
 </style>
