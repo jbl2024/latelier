@@ -2,7 +2,7 @@
   <div class="empty-state">
     <div class="empty-state-container">
       <div>
-        <v-img :src="getIllustrationUrl()" v-if="illustration" class="illustration"></v-img>
+        <v-img :src="getIllustrationUrl()" v-if="illustration" :class="getIllustrationClass()"></v-img>
         <v-icon class="icon" color="grey" v-if="icon">{{icon}}</v-icon>
       </div>
       <div class="label">
@@ -24,7 +24,11 @@ export default {
     description: String,
     rounded: Boolean,
     icon: String,
-    illustration: String
+    illustration: String,
+    small: {
+      type: Boolean,
+      default: false
+    }
   },
   data () {
     return {
@@ -33,6 +37,9 @@ export default {
   methods: {
     getIllustrationUrl () {
       return `/illustrations/${this.illustration}.svg`;
+    },
+    getIllustrationClass() {
+      return `illustration ${this.small ? "small": ""}`;
     }
   }
 }
@@ -53,6 +60,9 @@ export default {
 @media (min-width: 601px) {
   .illustration {
     width: 512px;
+  }
+  .illustration.small {
+    width: 300px;
   }
 }
 
