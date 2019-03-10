@@ -24,8 +24,6 @@ Meteor.methods({
       completed: false
     }
 
-    let queryProjects = {}
-
     if (!Permissions.isAdmin(userId)) {
       const organizations = Organizations.find({'$or': [{members: userId}, {isPublic: true}]}, {fields: {_id: 1}}).fetch();
       const organizationIds = [];
@@ -63,7 +61,6 @@ Meteor.methods({
       };
     }
     
-    console.log(query)
     const data = Tasks
       .find(
         query,
