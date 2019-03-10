@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-task-list">
     <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-    <v-list three-line v-if="tasks && !loading">
+    <v-list dense three-line v-if="tasks && !loading">
       <empty-state v-if="tasks.length == 0" :illustration="emptyIllustration" small :label="$t('No task')"></empty-state>
 
       <template v-for="task in tasks">
@@ -38,6 +38,11 @@ export default {
   name: "dashboard-task-list",
   mixins: [UsersMixin, DatesMixin],
   mounted() {
+    this.$events.listen('close-task-detail', task => {
+      this.$store.dispatch('selectTask', null);
+      this.$store.dispatch('showTaskDetail', false);
+    });
+
     Meteor.call(
       "dashboards.findTasks",
       this.user,
@@ -52,6 +57,11 @@ export default {
         this.tasks = result.data;
       }
     );
+  },
+  beforeDestroy() {
+    this.$events.off('close-task-detail');
+    this.$store.dispatch('selectTask', null);
+    this.$store.dispatch('showTaskDetail', false);
   },
   props: {
     user: {
@@ -74,14 +84,8 @@ export default {
   },
   methods: {
     openTask(task) {
-      this.$router.push({
-        name: "project-task",
-        params: {
-          organizationId: task.project.organizationId,
-          projectId: task.projectId,
-          taskId: task._id
-        }
-      });
+      this.$store.dispatch('selectTask', task);
+      this.$store.dispatch('showTaskDetail', true);
     },
 
     isLate(task) {
