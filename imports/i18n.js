@@ -20,6 +20,7 @@ const messages = {
     "Convert": "Convertir",
     "Email notifications": "Notifications par mail",
     "Dashboard": "Tableau de bord",
+    "Tasks": "Tâches",
     history: {
       tasks: {
         create: "Création",
@@ -69,6 +70,7 @@ const messages = {
     "Convert": "Convert",
     "Email notifications": "Email notifications",
     "Dashboard": "Dashboard",
+    "Tasks": "Tasks",
     history: {
       tasks: {
         create: "Creation",
