@@ -9,16 +9,19 @@
                 <v-toolbar-title>{{ $t('Tasks') }}</v-toolbar-title>
               </v-toolbar>
 
-              <v-tabs v-model="tab" >
+              <v-tabs v-model="tab" icons-and-text dark color="indigo" centered>
                 <v-tab>
-                  {{ $t('Recent') }}
+                  {{ $t('Updated recently') }}
+                  <v-icon>today</v-icon>
                 </v-tab>
                 <v-tab>
                   {{ $t('Assigned to me') }}
+                  <v-icon>account_circle</v-icon>
                 </v-tab>
 
                 <v-tab>
                   {{ $t('Late') }}
+                  <v-icon>alarm_on</v-icon>
                 </v-tab>
 
                 <v-tab-item>
@@ -29,7 +32,7 @@
                 </v-tab-item>
 
                 <v-tab-item>
-                  <dashboard-task-list :user="user" type="late"></dashboard-task-list>
+                  <dashboard-task-list :user="user" type="late" empty-illustration="celebration"></dashboard-task-list>
                 </v-tab-item>
 
               </v-tabs>
@@ -63,12 +66,12 @@ export default {
   i18n: {
     messages: {
       en: {
-        "Recent": "Recent",
+        "Updated recently": "Updated recently",
         "Late": "Late",
         "Assigned to me": "Assigned to me",
       },
       fr: {
-        "Recent": "Récentes",
+        "Updated recently": "Modifiées récemment",
         "Late": "En retard",
         "Assigned to me": "Assignées à moi",
       }
