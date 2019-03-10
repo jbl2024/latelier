@@ -60,7 +60,20 @@ export default {
       this.user = result;
     });
   },
-
+  i18n: {
+    messages: {
+      en: {
+        "Recent": "Recent",
+        "Late": "Late",
+        "Assigned to me": "Assigned to me",
+      },
+      fr: {
+        "Recent": "Récentes",
+        "Late": "En retard",
+        "Assigned to me": "Assignées à moi",
+      }
+    }
+  },
   data() {
     return {
       user: null,
