@@ -5,6 +5,7 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
+import moment from "moment";
 
 export const Tasks = new Mongo.Collection('tasks');
 if (Meteor.isServer) {
@@ -423,11 +424,14 @@ Meteor.methods({
 
   'tasks.setDueDate'(taskId, dueDate) {
     check(taskId, String);
+    check(dueDate, String);
+
+    const convertedDate = moment(dueDate, "YYYY-MM-DD HH:mm").toDate();
 
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    Tasks.update({_id: taskId}, {$set: {dueDate: dueDate}});
+    Tasks.update({_id: taskId}, {$set: {dueDate: convertedDate}});
 
     Meteor.call('tasks.track', {
       type: 'tasks.setDueDate',
@@ -437,11 +441,14 @@ Meteor.methods({
 
   'tasks.setStartDate'(taskId, startDate) {
     check(taskId, String);
+    check(startDate, String);
+
+    const convertedDate = moment(startDate, "YYYY-MM-DD HH:mm").toDate();
 
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
-    Tasks.update({_id: taskId}, {$set: {startDate: startDate}});
+    Tasks.update({_id: taskId}, {$set: {startDate: convertedDate}});
 
     Meteor.call('tasks.track', {
       type: 'tasks.setStartDate',

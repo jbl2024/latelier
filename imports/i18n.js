@@ -19,6 +19,7 @@ const messages = {
     "Delete element?": "Supprimer l'élément ?",
     "Convert": "Convertir",
     "Email notifications": "Notifications par mail",
+    "Dashboard": "Tableau de bord",
     history: {
       tasks: {
         create: "Création",
@@ -67,6 +68,7 @@ const messages = {
     "Delete element?": "Delete element?",
     "Convert": "Convert",
     "Email notifications": "Email notifications",
+    "Dashboard": "Dashboard",
     history: {
       tasks: {
         create: "Creation",

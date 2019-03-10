@@ -41,6 +41,16 @@
     </template>
     <template v-if="isConnected && $subReady.user">
       <v-divider></v-divider>
+      <v-list dense class="pt-0">
+        <v-list-tile :to="{ name: 'dashboard-page'}">
+          <v-list-tile-action>
+            <v-icon>dashboard</v-icon>
+          </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ $t('Dashboard') }}</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
       <v-list dense class="pt-0" v-if="isAdmin()">
         <v-list-tile :to="{ name: 'organizations-page'}">
           <v-list-tile-action>
