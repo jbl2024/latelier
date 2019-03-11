@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     getIllustrationUrl () {
-      return `/illustrations/${this.illustration}.svg`;
+      return Meteor.absoluteUrl(`/illustrations/${this.illustration}.svg`);
     },
     getIllustrationClass() {
       return `illustration ${this.small ? "small": ""}`;
