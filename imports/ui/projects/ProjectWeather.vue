@@ -155,7 +155,7 @@ export default {
       Meteor.call("healthReports.remove", this.selectedReport._id);
     },
     getIcon(weather) {
-      return `/weather/${weather}.svg`
+      return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     },
     getBackgroundUrl(user) {
       if (user && user.profile) {
