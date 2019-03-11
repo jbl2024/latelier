@@ -88,6 +88,7 @@ Meteor.startup(() => {
   })
   const router = new VueRouter({
     mode: 'history',
+    base: new URL(Meteor.absoluteUrl()).pathname,
     routes,
   })
 
