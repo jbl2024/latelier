@@ -1,7 +1,7 @@
 <template>
   <drop class="kanban" @drop="(data, event) => { handleDrop(data, event) }" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove.native="onMouseMove" >
       <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
-        <list :list="list" class="kanban-list-item" :data-id="list._id" :ref="list._id"></list>
+        <list :list="list" class="kanban-list-item dragscroll" :data-id="list._id" :ref="list._id"></list>
       </div>  
       <div class="swimlane dragscroll new">
         <h2 @click="newListInline">Nouvelle liste</h2>
@@ -70,6 +70,7 @@ export default {
     },
 
     onMouseMove (e) {
+      console.log(e.target)
       if (e && e.target && e.target.classList.contains('dragscroll')) {
         this.scrollEnabled = true;
       } else {
