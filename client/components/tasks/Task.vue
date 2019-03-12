@@ -20,7 +20,6 @@
           v-show="!hidden"
         >
           <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-
           <div class="title">
             <v-icon
               icon
