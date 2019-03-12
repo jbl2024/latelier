@@ -317,17 +317,13 @@ export default {
 
   .tasks-wrapper {
     width: 274px;
-    overflow-y: scroll !important;
+    overflow-y: auto;
     flex: 1;
     position: absolute;
     top: 40px;
     left: 0;
     right: 0;
     bottom: 0;
-  }
-
-  .list {
-    /* margin-bottom: 48px; */
   }
 }
 
