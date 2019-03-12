@@ -64,8 +64,8 @@
           </drag>
         </div>
       </div>
-      <div class="tasks-wrapper">
-        <v-btn small block @click="newTaskInline(list._id)">
+      <div class="tasks-wrapper dragscroll">
+        <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">
             Ajouter une tâche
         </v-btn>
         <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
@@ -377,7 +377,7 @@ export default {
   font-size: 12px;
   padding: 4px;
   margin-top: 4px;
-  margin-bottom: 12px;
+  margin-bottom: 24px;
   width: 100%;
   font-weight: normal;
   color: #777;
