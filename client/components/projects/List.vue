@@ -65,10 +65,10 @@
         </div>
       </div>
       <div class="tasks-wrapper">
-        <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
         <v-btn small block @click="newTaskInline(list._id)">
             Ajouter une tâche
         </v-btn>
+        <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
         <div class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks" v-if="hiddenTaskCount > 0">
           <div class="list-title" v-if="showHiddenTasks">Masquer les {{ hiddenTaskCount }} tâches terminées</div>
           <div class="list-title" v-if="!showHiddenTasks">Afficher les {{ hiddenTaskCount }} tâches terminées</div>
@@ -377,6 +377,7 @@ export default {
   font-size: 12px;
   padding: 4px;
   margin-top: 4px;
+  margin-bottom: 12px;
   width: 100%;
   font-weight: normal;
   color: #777;
