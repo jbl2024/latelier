@@ -5,6 +5,10 @@ html, body {
   font-family: 'Inter';
 }
 
+html {
+  overflow-y: auto !important;
+}
+
 #login .login-link-text{
   color: white;
 }
