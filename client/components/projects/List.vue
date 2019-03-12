@@ -422,10 +422,6 @@ export default {
   flex: 0;
 }
 
-.tasks-wrapper {
-  overflow-y: scroll;
-}
-
 .tasks {
   overflow-y: auto;
   overflow-x: hidden;

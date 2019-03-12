@@ -195,6 +195,7 @@ export default {
     overflow-x: auto;
     overflow-y: scroll;
     padding-left: 4px;
+    height: 100%;
   }
 }
 
