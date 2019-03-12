@@ -317,11 +317,17 @@ export default {
 
   .tasks-wrapper {
     width: 274px;
-    overflow-y: hidden !important;
+    overflow-y: scroll !important;
+    flex: 1;
+    position: absolute;
+    top: 40px;
+    left: 0;
+    right: 0;
+    bottom: 0;
   }
 
   .list {
-    margin-bottom: 48px;
+    /* margin-bottom: 48px; */
   }
 }
 
@@ -411,6 +417,12 @@ export default {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  position: relative;
+  height: 100%;
+}
+
+.list-header {
+  flex: 0;
 }
 
 .tasks-wrapper {

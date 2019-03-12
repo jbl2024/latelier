@@ -15,9 +15,10 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper"> 
-
+      <div class="super-wrapper">
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
         <kanban ref="container" class="kanban-container" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
+      </div>
       </div>
 
     </div>
@@ -202,9 +203,8 @@ export default {
 
 
 .container-wrapper {
-  overflow-y: scroll;
+  overflow-y: hidden;
   height: 100%;
-  position: relative;
   width: 100%;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -219,6 +219,16 @@ export default {
 @media (max-width: 600px) { 
   .container-wrapper {
     min-height: 100vh;
+  }
+}
+
+@media (min-width: 601px) { 
+  .container-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
   }
 }
 
