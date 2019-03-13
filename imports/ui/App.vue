@@ -28,13 +28,15 @@
         </v-avatar>
       </v-toolbar>
 
-      <v-hover>
+      <v-hover open-delay="300">
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="drawer"
         fixed
+        dark
         slot-scope="{ hover }"
         left
+        width="270px"
         class="drawer"
         :mini-variant="!hover && !$vuetify.breakpoint.xs"
       >
@@ -191,4 +193,8 @@ export default {
   top: 0;
   overflow-y: auto;
 } */
+.list__tile--active .list__tile__action,
+.list__tile--active .list__tile__action .icon {
+  color: white;
+}
 </style>
