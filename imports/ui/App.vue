@@ -28,22 +28,27 @@
         </v-avatar>
       </v-toolbar>
 
+      <v-hover>
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="drawer"
         fixed
-        app
+        slot-scope="{ hover }"
         left
         class="drawer"
+        :mini-variant="!hover && !$vuetify.breakpoint.xs"
       >
-        <organization-menu
-          v-if="currentOrganizationId != 0 && currentProjectId == 0"
-          :organizationId="currentOrganizationId"
-        ></organization-menu>
-        <project-menu v-if="currentProjectId != 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId" :projectId="currentProjectId"></project-menu>
-        <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
-        <login-menu></login-menu>
+        <div class="drawer-wrapper">
+          <organization-menu
+            v-if="currentOrganizationId != 0 && currentProjectId == 0"
+            :organizationId="currentOrganizationId"
+          ></organization-menu>
+          <project-menu v-if="currentProjectId != 0 && currentOrganizationId != 0" :organizationId="currentOrganizationId" :projectId="currentProjectId"></project-menu>
+          <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
+          <login-menu></login-menu>
+        </div>
       </v-navigation-drawer>
+      </v-hover>
 
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
@@ -149,6 +154,7 @@ export default {
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
+  margin-left: 80px;
 }
 
 .page-container {
@@ -165,6 +171,24 @@ export default {
 }
 
 .drawer .v-list {
-  padding-left: 8px;
+  /* padding-left: 8px; */
 }
+
+.drawer {
+  top: 64px;
+  /* display: flex; */
+
+}
+.drawer-wrapper {
+  position: relative;
+  height: calc(100% + 64px);
+}
+/* .drawer .drawer-wrapper {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  top: 0;
+  overflow-y: auto;
+} */
 </style>
