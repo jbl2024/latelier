@@ -70,7 +70,6 @@ export default {
     },
 
     onMouseMove (e) {
-      console.log(e.target)
       if (e && e.target && e.target.classList.contains('dragscroll')) {
         this.scrollEnabled = true;
       } else {
@@ -132,7 +131,6 @@ export default {
   .kanban-flex {
     border-right: 1px solid rgba(0,0,0,.12);
     margin-right: 10px;
-    min-height: 89vh;
   }
 }
 </style>
