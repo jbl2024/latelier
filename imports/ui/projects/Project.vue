@@ -16,7 +16,27 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <kanban ref="container" class="kanban-container" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
+        <v-toolbar dense class="flex0" >
+          <v-toolbar-side-icon></v-toolbar-side-icon>
+
+          <v-toolbar-title>Title</v-toolbar-title>
+
+          <v-spacer></v-spacer>
+
+          <v-btn icon>
+            <v-icon>search</v-icon>
+          </v-btn>
+
+          <v-btn icon>
+            <v-icon>favorite</v-icon>
+          </v-btn>
+
+          <v-btn icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
+            <v-icon>settings</v-icon>
+          </v-btn>
+        </v-toolbar>
+
+        <kanban ref="container" class="kanban-container flex1" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
       </div>
     </div>
 </div>
@@ -212,12 +232,22 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 600px) { 
   .container-wrapper {
     min-height: 100vh;
   }
+}
+
+.flex0 {
+  flex: 0;
+}
+
+.flex1 {
+  flex: 1;
 }
 
 </style>
