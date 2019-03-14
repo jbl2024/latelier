@@ -4,7 +4,19 @@
   <new-label ref="newLabel" :projectId="projectId"></new-label>  
   <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
   <div v-if="$subReady.labels">
-    <v-list dense class="pt-0">
+
+    <template v-if="mode === 'select'">
+        <v-select
+            v-model="selectedLabels"
+            :items="labels"
+            attach
+            chips
+            label="Labels"
+            multiple
+          ></v-select>
+    </template>
+
+    <v-list dense class="pt-0" v-if="mode === 'menu'">
       <v-subheader>Labels</v-subheader>
       <v-list-tile 
           @click="selectLabel(label)"
@@ -54,6 +66,10 @@ export default {
     projectId: {
       type: String,
       default: 0
+    },
+    mode: {
+      type: String,
+      default: "menu"
     }
   },
   computed: {
