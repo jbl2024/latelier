@@ -217,12 +217,14 @@ export default {
       }
 
       if (data.type === "task") {
-        var order = this.task.order;
-        var droppedTask = data.data;
-        var target = event.toElement || event.target;
-        var middle = target.clientHeight / 2;
+        let order = this.task.order;
+        const droppedTask = data.data;
+        const target = event.toElement || event.target;
+        const middle = target.clientHeight / 2;
         if (event.offsetY < middle) {
           order = order - 1;
+        } else {
+          order = order + 1;
         }
         Meteor.call(
           "tasks.move",
@@ -233,14 +235,14 @@ export default {
         );
         return false;
       } else if (data.type === "list") {
-        var list = Lists.findOne({ _id: this.task.listId });
-        var order = list.order - 1;
-        var target = event.toElement || event.target;
-        var middle = target.clientWidth / 2;
+        const list = Lists.findOne({ _id: this.task.listId });
+        let order = list.order - 1;
+        const target = event.toElement || event.target;
+        const middle = target.clientWidth / 2;
         if (event.offsetX >= middle) {
           order = list.order + 1;
         }
-        var droppedList = data.data;
+        const droppedList = data.data;
         Meteor.call("lists.move", list.projectId, droppedList._id, order);
         return false;
       }
