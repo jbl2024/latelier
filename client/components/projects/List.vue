@@ -133,8 +133,7 @@ export default {
           "tasks.move",
           list.projectId,
           list._id,
-          droppedTask._id,
-          -1
+          droppedTask._id
         );
         return false;
       } else if (data.type === "list") {
