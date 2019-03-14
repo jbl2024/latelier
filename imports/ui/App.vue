@@ -156,6 +156,10 @@ export default {
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
+  position: relative;
+  height: 100%;
+  min-height: 0;
+  flex: 1;
 }
 
 .page-container {
@@ -169,6 +173,12 @@ export default {
   padding-left: 0px;
   padding-top: 0px;
   padding-right: 0px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  flex: 1;
 }
 
 .drawer .v-list {
