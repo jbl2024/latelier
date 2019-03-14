@@ -2,7 +2,7 @@
   <div class>
     <v-app>
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
-        <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
+        <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
         <v-toolbar-title
           style="width: 300px"
           class="ml-3 mr-5"
@@ -156,7 +156,6 @@ export default {
   -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-  margin-left: 80px;
 }
 
 .page-container {
@@ -173,18 +172,52 @@ export default {
 }
 
 .drawer .v-list {
-  /* padding-left: 8px; */
 }
 
-.drawer {
-  top: 64px;
-  /* display: flex; */
+.drawer .v-list .v-list__tile {
+  color: #aaa !important;
+}
 
+.drawer .v-icon {
+  color: gray;
 }
-.drawer-wrapper {
-  position: relative;
-  height: calc(100% + 64px);
+
+.drawer .v-list a.v-list__tile--active {
+  color: white !important;
 }
+
+.drawer .v-list__tile--active .v-icon {
+  color: white !important;
+}
+
+
+@media (min-width: 961px) {
+  .drawer {
+    top: 64px;
+  }
+  .drawer-wrapper {
+    position: relative;
+    height: calc(100% + 64px);
+  }
+}
+
+@media (min-width: 1265px) {
+  .main-content {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 960px) {
+  .drawer {
+    top: 48px;
+
+  }
+  .drawer-wrapper {
+    position: relative;
+    height: calc(100% + 42px);
+  }
+}
+
 /* .drawer .drawer-wrapper {
   position: absolute;
   left: 0;
