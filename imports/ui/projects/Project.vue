@@ -191,6 +191,7 @@ export default {
   height: 100%;
   flex-direction: column;
   position: relative;
+  flex: 1;
 }
 
 .project-wrapper {
