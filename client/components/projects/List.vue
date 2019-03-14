@@ -5,10 +5,10 @@
         <div class="swimlane dragscroll">
           <drag :transfer-data="getTransferData(list)" :draggable="!isListEdited(list, selectedList)">
             <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
-              <div :style="getColor(currentProjectId)">
-                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
-                <div class="list-name" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
-                <v-menu bottom left>
+              <div :style="getColor(currentProjectId)" class="flex-container-row">
+                <div class="list-name flex1" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
+                <div class="list-name flex1" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
+                <v-menu bottom left class="flex0">
                   <v-btn dark small slot="activator" icon>
                     <v-icon>more_vert</v-icon>
                   </v-btn>
@@ -47,19 +47,24 @@
                 </v-menu>
               </div>
             </div>
-            <div class="list-edit" v-show="isListEdited(list, selectedList)">
+            <div class="list-edit flex-container-row" v-show="isListEdited(list, selectedList)">
               <input
                 type="text"
                 ref="name"
                 v-model="list.name"
+                class="flex1"
                 v-on:keyup.enter="updateName(list)"
               >
+              <div class="flex0">
+              <div class="flex-container-row">
               <v-btn flat icon @click.native="updateName(list)">
                 <v-icon>check_circle</v-icon>
               </v-btn>
               <v-btn flat icon @click.native="cancelUpdate(list)">
                 <v-icon>cancel</v-icon>
               </v-btn>
+              </div>
+              </div>
             </div>
           </drag>
         </div>
@@ -390,7 +395,6 @@ export default {
   }
 }
 .list-name {
-  width: 220px;
   display: inline-block;
   margin-left: 4px;
   color: white;
@@ -429,8 +433,6 @@ export default {
 }
 
 .list-edit input {
-  float: left;
-  width: 204px;
   background-color: white;
   padding: 9px;
   margin-bottom: 1px;
@@ -443,5 +445,19 @@ export default {
   margin-left: 0;
   margin-right: 0;
   margin-bottom: 0;
+}
+
+.flex-container-row {
+  display:flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex0 {
+  flex: 0;
+}
+
+.flex1 {
+  flex: 1;
 }
 </style>
