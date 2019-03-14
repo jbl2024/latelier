@@ -1,12 +1,12 @@
 <template>
-  <drop class="kanban" @drop="(data, event) => { handleDrop(data, event) }" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove.native="onMouseMove" >
+  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove.native="onMouseMove">
       <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
         <list :list="list" class="kanban-list-item dragscroll" :data-id="list._id" :ref="list._id"></list>
       </div>  
       <div class="swimlane dragscroll new">
         <h2 @click="newListInline">Nouvelle liste</h2>
       </div>
-  </drop>
+  </div>
 </template>
 
 <script>
@@ -40,23 +40,6 @@ export default {
     }
   },
   methods: {
-    handleDrop(data, event) {
-      const x = event.x;
-      const lists = this.$el.getElementsByClassName("kanban-list-item");
-
-      for (var i = 0; i < lists.length; i++) {
-        const element = lists[i];
-        const rect = element.getBoundingClientRect();
-        if (x >= rect.left && x <= rect.right) {
-          const listId = element.dataset.id;
-          const list = Lists.findOne({_id: element.dataset.id});
-          
-          const component = this.$refs[listId][0];
-          component.handleDrop(list, data, event);
-        }
-      }      
-    },
-
     hideProperties (e) {
       this.$events.fire('close-task-detail');
     },
