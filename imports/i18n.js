@@ -22,6 +22,7 @@ const messages = {
     "Dashboard": "Tableau de bord",
     "Tasks": "Tâches",
     "No task": "Aucune tâche",
+    "Delete list?": "Supprimer la liste ?",
     history: {
       tasks: {
         create: "Création",
@@ -73,6 +74,7 @@ const messages = {
     "Dashboard": "Dashboard",
     "Tasks": "Tasks",
     "No task": "No task",
+    "Delete list?": "Delete list?",
     history: {
       tasks: {
         create: "Creation",
