@@ -51,7 +51,7 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-      <v-list dense class="pt-0" v-if="isAdmin()">
+      <v-list dense class="pt-0">
         <v-list-tile :to="{ name: 'organizations-page'}">
           <v-list-tile-action>
             <v-icon>home</v-icon>
