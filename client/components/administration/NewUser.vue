@@ -66,9 +66,11 @@ export default {
     messages: {
       en: {
         "New user": "New user",
+        "User created": "User created",
       },
       fr: {
         "New user": "Nouvel utilisateur",
+        "User created": "Utilisateur crée",
       }
     }
   },
@@ -104,6 +106,8 @@ export default {
           this.$store.dispatch("notifyError", error);
           return;
         }
+        this.$store.dispatch("notify", this.$t('User created'));
+
         this.close();
         this.$emit("created");
       });
