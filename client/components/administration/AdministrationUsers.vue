@@ -10,7 +10,7 @@
     </v-dialog>
     <new-user ref="newUser" @created="findUsers()"></new-user>
     <v-container>
-      <v-layout row wrap="">
+      <v-layout row wrap>
         <v-flex xs12 sm6>
           <v-text-field
             label="Recherche"
@@ -83,7 +83,18 @@ export default {
     }
   },
   props: {},
-  data() {
+  i18n: {
+    messages: {
+      en: {
+        "Delete user?": "Delete user?",
+        "User deleted": "User deleted",
+      },
+      fr: {
+        "Delete user?": "Supprimer l'utilisateur ?",
+        "User deleted": "Utilisateur supprimé",
+      }
+    }
+  },  data() {
     return {
       search: "",
       debouncedFilter: null,
@@ -124,6 +135,25 @@ export default {
           });
         }
       );
+    },
+
+    removeUser(user) {
+      this.$confirm(this.$t("Delete user?"), {
+        title: user.emails[0].address,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("admin.removeUser", user._id, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('User deleted'));
+            this.findUsers();
+          });
+        }
+      });
     },
 
     calculateTotalPages() {
