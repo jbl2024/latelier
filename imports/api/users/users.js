@@ -151,6 +151,42 @@ Meteor.methods({
     );
   },
 
+  "admin.addUser"(user) {
+    check(user, Object);
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    const existingUser = Meteor.users.findOne({
+      emails: {
+        $elemMatch: {
+          address: { $regex: user.email, $options: "i" }
+        }
+      }
+    });
+    if (existingUser) {
+      throw new Meteor.Error(401, "email-exists");  
+    }
+
+    const userData = {
+      createdAt: new Date(),
+      email: user.email,
+      profile: user.profile,
+    };
+    const userId = Accounts.createUser(userData);
+    if (user.isConfirmed) {
+      Meteor.call("admin.confirmEmail", userId);
+    } else {
+      Meteor.call("admin.unconfirmEmail", userId);
+    }
+    if (user.isActive) {
+      Meteor.call("admin.activateUser", userId);
+    } else {
+      Meteor.call("admin.deactivateUser", userId);
+    }
+    return userId;
+  },
+
   "users.create" (userData) {
     const userId = Accounts.createUser(userData);
     Accounts.sendVerificationEmail(userId);

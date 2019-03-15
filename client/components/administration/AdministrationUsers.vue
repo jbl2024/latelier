@@ -8,6 +8,7 @@
     >
       <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
     </v-dialog>
+    <new-user ref="newUser" @created="findUsers()"></new-user>
     <v-container>
       <v-layout row wrap="">
         <v-flex xs12 sm6>
@@ -25,7 +26,7 @@
     <v-list dense subheader>
       <v-subheader inset>
         {{ pagination.totalItems}} utilisateurs
-        <v-btn flat icon @click="showSelectUserDialog = true">
+        <v-btn flat icon @click="$refs.newUser.open()">
           <v-icon>add</v-icon>
         </v-btn>
       </v-subheader>
