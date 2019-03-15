@@ -94,7 +94,8 @@ export default {
         "User deleted": "Utilisateur supprimé",
       }
     }
-  },  data() {
+  },  
+  data() {
     return {
       search: "",
       debouncedFilter: null,

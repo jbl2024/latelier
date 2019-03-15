@@ -260,7 +260,20 @@ export default {
     },
 
     deleteList(listId) {
-      Meteor.call("lists.remove", listId);
+      this.$confirm(this.$t("Delete list?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("lists.remove", listId, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+          });
+        }
+      });
     },
     newTaskInline(listId) {
       var that = this;
