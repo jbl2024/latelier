@@ -1,5 +1,6 @@
 <template>
   <div class="dashboard-page">
+    <new-organization ref="newOrganization"></new-organization>
     <template v-if="user">
       <v-container grid-list-md fluid>
         <v-layout row wrap fill-height>
@@ -7,7 +8,11 @@
             
             <v-card class="flex-container">
               <v-toolbar dense color="indigo" dark>
-                <v-toolbar-title>{{ $t('Projects') }}</v-toolbar-title>
+                <v-toolbar-title>{{ $t('Organisations') }}</v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-btn icon @click.stop="newOrganization()">
+                  <v-icon>add</v-icon>
+                </v-btn>
               </v-toolbar>
               <dashboard-projects></dashboard-projects>
             </v-card>
@@ -16,6 +21,7 @@
             <v-card class="flex-container">
               <v-toolbar dense color="indigo" dark>
                 <v-toolbar-title>{{ $t('Tasks') }}</v-toolbar-title>
+
               </v-toolbar>
 
               <div class="tabs-wrapper">
@@ -96,6 +102,9 @@ export default {
     };
   },
   methods: {
+    newOrganization() {
+      this.$refs.newOrganization.open();
+    },
     toggleTaskAssignedTo() {
       this.user.emailSettings.tasks.assignTo = !this.user.emailSettings.tasks
         .assignTo;

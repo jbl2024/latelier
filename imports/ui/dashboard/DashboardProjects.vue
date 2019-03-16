@@ -29,31 +29,26 @@
       </empty-state>
       <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
         <template v-for="organization in organizations">
+          <v-toolbar :key="`${organization._id}-toolbar`" class="pointer" color="primary" dark @click="openOrganization(organization._id)">
+            <v-icon>domain</v-icon>
 
-          <v-list-tile :key="organization._id" @click="openOrganization(organization._id)">
-            <v-list-tile-avatar>
-              <v-icon>domain</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content class="pointer">
-              <v-list-tile-title>{{ organization.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ organization.description }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-btn fab dark small color="pink" @click.stop="newProject(organization._id)">
-                <v-icon>add</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop" v-if="canManageOrganization(organization)">
-              <v-btn icon flat color="grey darken-1" @click.stop="openOrganizationSettings(organization._id)">
-                <v-icon>settings</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop" v-if="canDeleteOrganization(organization)">
-              <v-btn icon flat color="grey darken-1" @click.stop="deleteOrganization(organization._id)">
-                <v-icon>delete</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+            <v-toolbar-title>{{ organization.name}}</v-toolbar-title>
+
+            <v-spacer></v-spacer>
+
+            <v-btn icon @click.stop="newProject(organization._id)">
+              <v-icon>add</v-icon>
+            </v-btn>
+
+            <v-btn icon @click.stop="openOrganizationSettings(organization._id)" v-if="canManageOrganization(organization)">
+              <v-icon>settings</v-icon>
+            </v-btn>
+            <v-btn icon @click.stop="deleteOrganization(organization._id)" v-if="canDeleteOrganization(organization)">
+              <v-icon>delete</v-icon>
+            </v-btn>
+
+          </v-toolbar>
+
           <empty-state small :key="`${organization._id}-empty`" v-if="projectsByOrganization(organization).length == 0" :description="`Aucun projet disponible`" illustration="project">
             <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
           </empty-state>
@@ -361,6 +356,9 @@ export default {
 </script>
 
 <style scoped>
+.pointer {
+  cursor: pointer;
+}
 .project-name {
   color: black !important;
   font-weight: normal;
