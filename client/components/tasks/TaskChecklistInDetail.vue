@@ -1,5 +1,8 @@
 <template>
   <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop>
+    <div class="progress">
+      <v-progress-linear v-model="completion"></v-progress-linear>
+    </div>
     <v-list
       dense
       class="tasks-wrapper elevation-1"
@@ -84,10 +87,30 @@ export default {
       type: Object
     }
   },
+  watch: {
+    task: {
+      immediate: true,
+      handler(task) {
+        if (!task.checklist) {
+          this.completion = 0;
+          return;
+        }
+        const totalItems = task.checklist.length;
+        let completedItems = 0;
+        task.checklist.map(item => {
+          if (item.checked) {
+            completedItems = completedItems + 1; 
+          }
+        })
+        this.completion = 100 * (completedItems / totalItems);
+      }
+    }
+  },
   data() {
     return {
       editNewItem: false,
-      item: ""
+      item: "",
+      completion: 0
     };
   },
   methods: {
