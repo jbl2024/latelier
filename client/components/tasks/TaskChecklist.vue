@@ -2,6 +2,9 @@
 
   <div class="task-checklist" v-show="showList(task.checklist)">
 
+    <div class="progress">
+      <v-progress-linear v-model="completion"></v-progress-linear>
+    </div>
     <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
       <div>
         <div class="check">
@@ -36,15 +39,6 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 
 export default {
   name: "task-checklist",
-  props: {
-    hideIfEmpty: {
-      type: Boolean,
-      value: false
-    },
-    task: {
-      type: Object
-    }
-  },
   i18n: {
     messages: {
       en: {
@@ -59,11 +53,40 @@ export default {
       }
     }
   },
+  props: {
+    hideIfEmpty: {
+      type: Boolean,
+      value: false
+    },
+    task: {
+      type: Object
+    }
+  },
+  watch: {
+    task: {
+      immediate: true,
+      handler(task) {
+        if (!task.checklist) {
+          this.completion = 0;
+          return;
+        }
+        const totalItems = task.checklist.length;
+        let completedItems = 0;
+        task.checklist.map(item => {
+          if (item.checked) {
+            completedItems = completedItems + 1; 
+          }
+        })
+        this.completion = 100 * (completedItems / totalItems);
+      }
+    }
+  },
   data() {
     return {
       editNewItem: false,
       selectedItem: {},
-      showButtons: null
+      showButtons: null,
+      completion: 75,
     };
   },
   methods: {
@@ -136,6 +159,10 @@ export default {
 
 .item {
   min-width: 250px;
+}
+
+.progress {
+  padding-right: 12px;
 }
 
 .check {
