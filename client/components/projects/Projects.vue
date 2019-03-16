@@ -28,7 +28,7 @@
       </empty-state>
       <v-list two-line subheader v-show="projects.length != 0" class="elevation-1">
         <v-subheader>
-          <router-link class="link" :to="{ name: 'organizations-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
+          <router-link class="link" :to="{ name: 'dashboard-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
           <v-btn fab dark small color="pink" @click="newProject">
             <v-icon>add</v-icon>
           </v-btn>

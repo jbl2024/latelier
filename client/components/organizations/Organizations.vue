@@ -18,11 +18,14 @@
         <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
       </empty-state>
       <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
-        <v-subheader>Organisations
+
+        <v-subheader>
+          <router-link class="link" :to="{ name: 'dashboard-page' }">{{ $t('Dashboard') }}</router-link>&nbsp;> {{ $t('Organizations') }}
           <v-btn fab dark small color="pink" @click="newOrganization">
             <v-icon>add</v-icon>
           </v-btn>
         </v-subheader>
+
         <template v-for="item in organizations">
           <v-list-tile :key="item._id" @click="openOrganization(item._id)">
             <v-list-tile-avatar>
@@ -158,6 +161,9 @@ export default {
     margin-right: auto;
     margin-left: auto;
   }
+}
+.link {
+  text-decoration: none;
 }
 
 </style>

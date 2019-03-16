@@ -95,7 +95,7 @@ export default {
         } else {
           this.clearForm();
           this.$store.dispatch("notify", this.$t("Welcome back!"));
-          this.$router.push({ name: "organizations-page" });
+          this.$router.push({ name: "dashboard-page" });
         }
       });
     },

@@ -3,7 +3,7 @@
     <v-toolbar-title class="align-left" v-show="!editOrganizationName">
       <div>
         <slot></slot>
-        <v-btn icon flat @click="goTo('organizations-page')">
+        <v-btn icon flat @click="goTo('dashboard-page')">
           <v-icon>home</v-icon>
         </v-btn>
         <span
