@@ -77,12 +77,11 @@ export default {
         password: this.form.password,
         email: this.form.email
       };
-      Meteor.call('users.create', userData, (err, result) => {
+      Meteor.call('users.create', userData, (error, result) => {
         this.sending = false;
         this.notify = false;
-        if (err) {
-          this.notifyText = "Erreur " + err.reason;
-          this.notify = true;
+        if (error) {
+          this.$store.dispatch("notifyError", error);
         } else {
           this.$router.push({ name: "registration-completed" });
         }
