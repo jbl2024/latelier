@@ -188,6 +188,9 @@ Meteor.methods({
   },
 
   "users.create" (userData) {
+    if (Meteor.settings.disableAccountCreation) {
+      throw new Meteor.Error("not-authorized");
+    }
     const userId = Accounts.createUser(userData);
     Accounts.sendVerificationEmail(userId);
   },
