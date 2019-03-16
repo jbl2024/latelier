@@ -1,5 +1,6 @@
 {
   "generateFixtures": true,
+  "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
   "email": {
     "from": "foo@bar.com"
