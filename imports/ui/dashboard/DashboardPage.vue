@@ -4,6 +4,29 @@
     <template v-if="user">
 
       <div class="show-mobile mobile" v-if="$vuetify.breakpoint.xsOnly">
+          <v-bottom-nav
+            :active.sync="bottomNav"
+            :value="true"
+            dark
+            color="primary"
+          >
+            <v-btn
+              flat
+              value="organizations"
+            >
+              <span>{{ $t('Organizations') }}</span>
+              <v-icon>domain</v-icon>
+            </v-btn>
+
+            <v-btn
+              flat
+              value="tasks"
+            >
+              <span>{{ $t('Tasks') }}</span>
+              <v-icon>list</v-icon>
+            </v-btn>
+
+          </v-bottom-nav>        
         <div class="mobile-organizations" v-if="bottomNav === 'organizations'">
             <v-card class="flex-container">
               <v-toolbar dense color="indigo" dark>
@@ -53,30 +76,7 @@
             </v-card>
 
         </div>
-          <v-bottom-nav
-            :active.sync="bottomNav"
-            :value="true"
-            absolute
-            dark
-            color="primary"
-          >
-            <v-btn
-              flat
-              value="organizations"
-            >
-              <span>{{ $t('Organizations') }}</span>
-              <v-icon>domain</v-icon>
-            </v-btn>
 
-            <v-btn
-              flat
-              value="tasks"
-            >
-              <span>{{ $t('Tasks') }}</span>
-              <v-icon>list</v-icon>
-            </v-btn>
-
-          </v-bottom-nav>
       </div>
 
 
