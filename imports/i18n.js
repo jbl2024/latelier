@@ -23,6 +23,8 @@ const messages = {
     "Tasks": "Tâches",
     "No task": "Aucune tâche",
     "Delete list?": "Supprimer la liste ?",
+    "Organizations": "Organisations",
+    "Tasks": "Tâches",
     "Projects": "Projets",
     history: {
       tasks: {
@@ -76,6 +78,8 @@ const messages = {
     "Tasks": "Tasks",
     "No task": "No task",
     "Delete list?": "Delete list?",
+    "Organizations": "Organizations",
+    "Tasks": "Tasks",
     "Projects": "Projects",
     history: {
       tasks: {
