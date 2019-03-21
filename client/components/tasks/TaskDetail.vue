@@ -56,16 +56,24 @@
 
     <task-labels :task="task"></task-labels>
     <div class="authors">
+      <template v-if="showProjectLink(taskObject)">
+        <div>
+          <router-link :to="{ name: 'project', params: { organizationId: taskObject.organization._id, projectId: taskObject.project._id } }">
+          [{{ taskObject.project.name}}]
+          </router-link>
+        </div>
+      </template>
+      <div class="completed-date" v-if="task.completedAt">
+        {{ $t('Completed on') }}
+        {{ formatDate(task.completedAt) }}
+      </div>
+
       <author-line
         :user-id="task.createdBy"
         :date="task.createdAt"
         class="author"
         :prefix="$t('Created by')"
       ></author-line>
-      <div class="completed-date" v-if="task.completedAt">
-        {{ $t('Completed on') }}
-        {{ formatDate(task.completedAt) }}
-      </div>
     </div>
 
     <v-divider></v-divider>
@@ -128,6 +136,9 @@ export default {
   props: {
     taskId: {
       type: String
+    },
+    taskObject: {
+      type: Object
     },
     showTaskDetail: {
       type: Boolean
@@ -264,6 +275,10 @@ export default {
     cancelUpdateTaskName() {
       this.editTaskName = false;
       this.task.name = this.savedName;
+    },
+
+    showProjectLink(task) {
+      return task && task.project && task.organization;
     }
   }
 };
