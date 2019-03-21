@@ -5,7 +5,7 @@
       <div class="show-mobile mobile" v-if="$vuetify.breakpoint.xsOnly">
         <v-bottom-nav :active.sync="bottomNav" :value="true" dark color="primary">
           <v-btn flat value="organizations">
-            <span>{{ $t('Organizations') }}</span>
+            <span>{{ $t('Projects') }}</span>
             <v-icon>domain</v-icon>
           </v-btn>
 
@@ -16,28 +16,11 @@
         </v-bottom-nav>
         <div class="mobile-organizations" v-if="bottomNav === 'organizations'">
           <v-card class="flex-container">
-            <v-toolbar dense color="indigo" dark>
-              <v-toolbar-title>{{ $t('Organisations') }}</v-toolbar-title>
-              <v-spacer></v-spacer>
-
-              <div>
-                <v-tooltip top slot="activator">
-                  <v-btn icon @click.stop="newOrganization()" slot="activator">
-                    <v-icon>add</v-icon>
-                  </v-btn>
-                  <span>{{ $t('New organization') }}</span>
-                </v-tooltip>
-              </div>
-            </v-toolbar>
             <dashboard-projects></dashboard-projects>
           </v-card>
         </div>
         <div class="mobile-tasks" v-if="bottomNav === 'tasks'">
           <v-card class="flex-container">
-            <v-toolbar dense color="indigo" dark>
-              <v-toolbar-title>{{ $t('Tasks') }}</v-toolbar-title>
-            </v-toolbar>
-
             <div class="tabs-wrapper">
               <v-tabs v-model="tab" icons-and-text centered>
                 <v-tab>
@@ -74,16 +57,7 @@
           <v-flex xs12 md6>
             <v-card class="flex-container">
               <v-toolbar dense color="indigo" dark>
-                <v-toolbar-title>{{ $t('Organizations') }}</v-toolbar-title>
-                <v-spacer></v-spacer>
-                <div>
-                  <v-tooltip top slot="activator">
-                    <v-btn icon @click.stop="newOrganization()" slot="activator">
-                      <v-icon>add</v-icon>
-                    </v-btn>
-                    <span>{{ $t('New organization') }}</span>
-                  </v-tooltip>
-                </div>
+                <v-toolbar-title>{{ $t('Projects') }}</v-toolbar-title>
               </v-toolbar>
               <dashboard-projects></dashboard-projects>
             </v-card>
@@ -220,6 +194,7 @@ export default {
   overflow-y: scroll;
 }
 
+
 .tabs-wrapper {
   position: absolute;
   left: 0;
@@ -228,6 +203,15 @@ export default {
   bottom: 0;
   overflow-y: scroll;
 }
+
+.mobile-organizations .dashboard-projects {
+  top: 0;
+}
+
+.mobile-tasks .tabs-wrapper {
+  top: 0;
+}
+
 
 @media (max-width: 601px) {
   .main-container {

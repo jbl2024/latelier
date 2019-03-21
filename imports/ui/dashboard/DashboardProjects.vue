@@ -31,13 +31,14 @@
       >
         <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>        
       </empty-state>
-      <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
+      <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1" dense>
         <template v-for="organization in organizations">
           <v-toolbar
             :key="`${organization._id}-toolbar`"
             class="pointer"
             color="primary"
             dark
+            dense
             @click="openOrganization(organization._id)"
           >
             <v-icon>domain</v-icon>
@@ -96,7 +97,7 @@
 
           <template v-for="item in projectStates()">
             <v-subheader
-              inset
+              
               :key="`${organization._id}-${item.value}`"
               v-if="filterProjectsByState(organization, projects, item.value).length > 0"
             >{{ item.label }}</v-subheader>
@@ -160,10 +161,16 @@
                   </v-tooltip>
                 </v-list-tile-action>
               </v-list-tile>
+              <v-divider inset :key="`divider-${item._id}`"></v-divider>
             </template>
           </template>
           <v-divider :key="`${organization._id}-divider`"></v-divider>
         </template>
+
+        <div class="bottom-buttons">
+          <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>        
+        </div>
+
       </v-list>
     </div>
   </div>
@@ -477,5 +484,12 @@ export default {
 
 .link {
   text-decoration: none;
+}
+
+.bottom-buttons {
+  border-top: 1px solid #455A64;
+  margin: 0px;
+  padding: 24px;
+  text-align: center;
 }
 </style>
