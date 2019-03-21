@@ -26,6 +26,10 @@ const messages = {
     "Organizations": "Organisations",
     "Tasks": "Tâches",
     "Projects": "Projets",
+    "Settings": "Paramètres",
+    "Clone": "Dupliquer",
+    "New project": "Nouveau projet",
+    "New organization": "Nouvelle organisation",
     history: {
       tasks: {
         create: "Création",
@@ -81,6 +85,10 @@ const messages = {
     "Organizations": "Organizations",
     "Tasks": "Tasks",
     "Projects": "Projects",
+    "Settings": "Settings",
+    "Clone": "Clone",
+    "New project": "New project",
+    "New organization": "New organization",
     history: {
       tasks: {
         create: "Creation",
