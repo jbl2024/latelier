@@ -75,7 +75,7 @@ Meteor.methods({
       sort: sort
     }).fetch();
 
-    // load associated projects, users and assign them to tasks
+    // load associated objects and assign them to tasks
     const projects = {};
     const users = {};
     const organizations = {};
