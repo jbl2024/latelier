@@ -30,6 +30,7 @@ const messages = {
     "Clone": "Dupliquer",
     "New project": "Nouveau projet",
     "New organization": "Nouvelle organisation",
+    "Create new organization": "Créer une nouvelle organisation",
     history: {
       tasks: {
         create: "Création",
@@ -89,6 +90,7 @@ const messages = {
     "Clone": "Clone",
     "New project": "New project",
     "New organization": "New organization",
+    "Create new organization": "Create new organization",
     history: {
       tasks: {
         create: "Creation",
