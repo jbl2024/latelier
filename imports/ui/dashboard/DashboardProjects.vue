@@ -56,7 +56,7 @@
           <template v-for="item in projectStates()">
             <v-subheader inset :key="`${organization._id}-${item.value}`" v-if="filterProjectsByState(organization, projects, item.value).length > 0" >{{ item.label }}</v-subheader>
             <template v-for="item in filterProjectsByState(organization, projects, item.value)">
-              <v-list-tile :key="item._id" @click="openProject(item._id)">
+              <v-list-tile :key="item._id" @click="openProject(item)">
                 <v-list-tile-avatar :color="getColor(item)">
                   <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
                 </v-list-tile-avatar>
@@ -77,7 +77,7 @@
                     icon
                     flat
                     color="grey darken-1"
-                    @click.stop="openProjectSettings(item._id)"
+                    @click.stop="openProjectSettings(item)"
                   >
                     <v-icon>settings</v-icon>
                   </v-btn>
@@ -192,14 +192,14 @@ export default {
       this.showConfirmCloneDialog = false;
     },
 
-    openProject(id) {
-      this.$router.push({ name: "project", params: { projectId: id } });
+    openProject(project) {
+      this.$router.push({ name: "project", params: { organizationId: project.organizationId, projectId: project._id } });
     },
 
-    openProjectSettings(id) {
+    openProjectSettings(project) {
       this.$router.push({
         name: "project-settings",
-        params: { projectId: id }
+        params: { organizationId: project.organizationId, projectId: project._id }
       });
     },
 
