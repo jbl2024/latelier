@@ -1,65 +1,72 @@
 <template>
+  <div class="labels">
+    <new-label ref="newLabel" :projectId="projectId"></new-label>
+    <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
+    <div v-if="$subReady.labels">
+      <div v-if="mode === 'select'" class="show-desktop">
+        <select-label ref="selectLabel" :projectId="projectId" @select="selectLabel"></select-label>
+        <v-chip
+          v-for="label in labels"
+          :class="getClassForName(label, selectedLabels)"
+          :key="label._id"
+          :style="getStyleForChip(label)"
+          @click="selectLabel(label)"
+        >{{ label.name }}</v-chip>
 
-<div class="labels">
-  <new-label ref="newLabel" :projectId="projectId"></new-label>  
-  <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
-  <div v-if="$subReady.labels">
+          <v-tooltip top slot="activator">
+            <v-btn
+              icon
+              @click="$refs.newLabel.open()"
+              slot="activator"
+            >
+              <v-icon>add</v-icon>
+            </v-btn>
+            <span>{{ $t('New label') }}</span>
+          </v-tooltip>
+      </div>
 
-    <template v-if="mode === 'select'">
-        <v-select
-            v-model="selectedLabels"
-            :items="labels"
-            attach
-            chips
-            label="Labels"
-            multiple
-          ></v-select>
-    </template>
-
-    <v-list dense class="pt-0" v-if="mode === 'menu'">
-      <v-subheader>Labels</v-subheader>
-      <v-list-tile 
+      <v-list dense class="pt-0" v-if="mode === 'menu'">
+        <v-subheader>Labels</v-subheader>
+        <v-list-tile
           @click="selectLabel(label)"
           v-for="label in labels"
-          :key="label._id" 
-          @mouseover="showButtons = label._id" 
-          @mouseleave="showButtons = null">
+          :key="label._id"
+          @mouseover="showButtons = label._id"
+          @mouseleave="showButtons = null"
+        >
+          <v-list-tile-action>
+            <v-icon :style="getColor(label)">label</v-icon>
+          </v-list-tile-action>
 
-        <v-list-tile-action>
-          <v-icon :style="getColor(label)">label</v-icon>
-        </v-list-tile-action>
+          <v-list-tile-content>
+            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
+          </v-list-tile-content>
 
-        <v-list-tile-content>
-          <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
-        </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
+              <v-icon color="grey lighten-1">settings</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
 
-        <v-list-tile-action>
-          <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id"> 
-            <v-icon color="grey lighten-1">settings</v-icon>
-          </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
+        <v-list-tile @click="$refs.newLabel.open()">
+          <v-list-tile-action>
+            <v-icon>add</v-icon>
+          </v-list-tile-action>
 
-      <v-list-tile @click="$refs.newLabel.open()"> 
-
-        <v-list-tile-action>
-          <v-icon>add</v-icon>
-        </v-list-tile-action>
-
-        <v-list-tile-content>
-          <v-list-tile-title>Créer...</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </v-list>
+          <v-list-tile-content>
+            <v-list-tile-title>Créer...</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+    </div>
   </div>
-</div>
-
 </template>
 
 <script>
-import { Labels } from '/imports/api/labels/labels.js'
-import { Projects } from '/imports/api/projects/projects.js'
-import { mapState } from 'vuex';
+import { Labels } from "/imports/api/labels/labels.js";
+import { Projects } from "/imports/api/projects/projects.js";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -73,52 +80,59 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedLabels'])
+    ...mapState(["selectedLabels"])
   },
   data() {
     return {
-      showButtons: '',
-      selectedLabelId: ''
+      showButtons: "",
+      selectedLabelId: ""
     };
   },
   meteor: {
     $subscribe: {
       // Subscribes to the 'threads' publication with no parameters
-      'labels': function() {
+      labels: function() {
         // Here you can use Vue reactive properties
-        return [this.projectId] // Subscription params
+        return [this.projectId]; // Subscription params
       }
     },
-    labels () {
-      return Labels.find({}, {sort: {name: 1}});
-    },
+    labels() {
+      return Labels.find({}, { sort: { name: 1 } });
+    }
   },
   methods: {
-    removeLabel (label) {
-      Meteor.call('labels.remove', label._id);
+    removeLabel(label) {
+      Meteor.call("labels.remove", label._id);
     },
 
-    openMenu (id) {
+    openMenu(id) {
       this.selectedLabelId = id;
       this.$refs.editLabel.open();
     },
 
-    selectLabel (label) {
-      this.$store.dispatch('selectLabel', label);
+    selectLabel(label) {
+      console.log(label);
+      this.$store.dispatch("selectLabel", label);
     },
 
-    getColor (label) {
-      return 'color: ' + label.color;
+    getColor(label) {
+      return "color: " + label.color;
     },
 
-    getClassForName (label, selectedLabels) {
-      var isSelected = selectedLabels.some(aLabel => { return aLabel._id === label._id});
+    getStyleForChip(label) {
+      const color = `background-color: ${label.color}`;
+      return color;
+    },
+
+    getClassForName(label, selectedLabels) {
+      const isSelected = selectedLabels.some(aLabel => {
+        return aLabel._id === label._id;
+      });
       if (isSelected) {
-        return 'selected';
+        return "selected";
       }
-      return '';
+      return "";
     }
-
   }
 };
 </script>
@@ -131,5 +145,4 @@ export default {
 .selected {
   font-weight: bold;
 }
-
 </style>
