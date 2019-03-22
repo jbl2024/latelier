@@ -16,30 +16,14 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <v-toolbar dense class="flex0" v-if="false">
-          <v-btn icon>
-            <v-icon>arrow_back</v-icon>
-          </v-btn>
-
-          <v-toolbar-title>Title</v-toolbar-title>
-
+        <v-toolbar dense class="flex0">
           <v-spacer></v-spacer>
-
-          <v-btn icon>
-            <v-icon>search</v-icon>
-          </v-btn>
-
           <labels :projectId="projectId" mode="select"></labels>
-
-          <v-btn icon>
-            <v-icon>favorite</v-icon>
-          </v-btn>
-
+          <v-divider inset vertical></v-divider>
           <v-btn icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
             <v-icon>settings</v-icon>
           </v-btn>
         </v-toolbar>
-
         <kanban ref="container" class="kanban-container flex1" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
       </div>
     </div>
