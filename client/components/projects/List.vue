@@ -17,7 +17,7 @@
                       <v-list-tile-action>
                         <v-icon>add</v-icon>
                       </v-list-tile-action>
-                      <v-list-tile-title>Nouvelle tâche</v-list-tile-title>
+                      <v-list-tile-title>{{ $t('Add new task') }}</v-list-tile-title>
                       
                     </v-list-tile>
                     <v-list-tile @click="deleteList(list._id)">
@@ -71,7 +71,7 @@
       </div>
       <div class="tasks-wrapper dragscroll">
         <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">
-            Ajouter une tâche
+            {{ $t('Add new task')}}
         </v-btn>
         <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
         <div class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks" v-if="hiddenTaskCount > 0">
