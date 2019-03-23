@@ -3,7 +3,7 @@
     <new-label ref="newLabel" :projectId="projectId"></new-label>
     <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
     <div v-if="$subReady.labels">
-      <div v-if="mode === 'select'" class="show-desktop">
+      <div v-if="mode === 'select'">
         <select-label ref="selectLabel" :projectId="projectId" @select="selectLabel"></select-label>
         <v-chip
           v-for="label in labels"
@@ -13,7 +13,7 @@
           @click="selectLabel(label)"
         >{{ label.name }}</v-chip>
 
-          <v-tooltip top slot="activator">
+          <v-tooltip top slot="activator" v-show="labels.length > 0">
             <v-btn
               icon
               @click="$refs.newLabel.open()"
@@ -23,6 +23,9 @@
             </v-btn>
             <span>{{ $t('New label') }}</span>
           </v-tooltip>
+
+        <v-chip v-show="labels.length == 0" @click="$refs.newLabel.open()">{{ $t('New label') }}</v-chip>
+
       </div>
 
       <v-list dense class="pt-0" v-if="mode === 'menu'">
