@@ -532,9 +532,9 @@ export default {
 }
 
 .edit {
-  margin-left: 4px;
-  margin-top: 4px;
+  width: 100%;
 }
+
 .edit .v-btn {
   min-width: 24px;
   width: 24px;
