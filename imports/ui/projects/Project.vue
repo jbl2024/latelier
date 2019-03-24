@@ -18,9 +18,8 @@
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
         <v-toolbar dense class="flex0 show-desktop">
           <project-filters :projectId="projectId"></project-filters>
-          <v-spacer></v-spacer>
           <labels :projectId="projectId" mode="select"></labels>
-          <v-divider inset vertical></v-divider>
+          <v-spacer></v-spacer>
           <v-btn icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
             <v-icon>settings</v-icon>
           </v-btn>
@@ -81,7 +80,8 @@ export default {
     ...mapState([
       "showTaskDetail",
     ])
-  },  watch: {
+  },  
+  watch: {
     taskId: {
       immediate: true,
       handler (taskId) {
