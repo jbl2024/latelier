@@ -33,6 +33,8 @@ const messages = {
     "Create new organization": "Créer une nouvelle organisation",
     "New label": "Nouveau label",
     "Add new task": "Ajouter une tâche",
+    "Assigned to": "Assignées à",
+    "others": "autres",
     history: {
       tasks: {
         create: "Création",
@@ -95,6 +97,8 @@ const messages = {
     "Create new organization": "Create new organization",
     "New label": "New label",
     "Add new task": "Add new task",
+    "Assigned to": "Assigned to",
+    "others": "others",
     history: {
       tasks: {
         create: "Creation",
