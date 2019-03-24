@@ -35,6 +35,7 @@ const messages = {
     "Add new task": "Ajouter une tâche",
     "Assigned to": "Assignées à",
     "others": "autres",
+    "Cannot add task while filter is set": "Impossible d'ajouter une tâche quand un filtre est actif",
     history: {
       tasks: {
         create: "Création",
@@ -99,6 +100,7 @@ const messages = {
     "Add new task": "Add new task",
     "Assigned to": "Assigned to",
     "others": "others",
+    "Cannot add task while filter is set": "Cannot add task while filter is set",
     history: {
       tasks: {
         create: "Creation",
