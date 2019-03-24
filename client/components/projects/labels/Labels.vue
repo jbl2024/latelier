@@ -2,31 +2,31 @@
   <div class="labels">
     <new-label ref="newLabel" :projectId="projectId"></new-label>
     <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
-    <div v-if="$subReady.labels">
-      <div v-if="mode === 'select'">
-        <select-label ref="selectLabel" :projectId="projectId" @select="selectLabel"></select-label>
-        <v-chip
-          v-for="label in labels"
-          :class="getClassForName(label, selectedLabels)"
-          :key="label._id"
-          :style="getStyleForChip(label)"
-          @click="selectLabel(label)"
-        >{{ label.name }}</v-chip>
-
-          <v-tooltip top slot="activator" v-show="labels.length > 0">
-            <v-btn
-              icon
-              @click="$refs.newLabel.open()"
-              slot="activator"
-            >
-              <v-icon>add</v-icon>
-            </v-btn>
-            <span>{{ $t('New label') }}</span>
-          </v-tooltip>
-
-        <v-chip v-show="labels.length == 0" @click="$refs.newLabel.open()">{{ $t('New label') }}</v-chip>
-
-      </div>
+    <template v-if="$subReady.labels">
+      <template v-if="mode === 'select'">
+        <div class="compact-form" v-if="labels.length > 0">
+          <v-autocomplete
+            dense
+            class="auto-complete"
+            v-model="selectedLabels"
+            :items="labels"
+            :label="$t('Labels')"
+            multiple
+            :no-data-text="$t('No label available')"
+            :item-text="getItemLabel"
+            :item-value="getItemValue"
+            menu-props="closeOnContentClick"
+          >
+            <template slot="selection" slot-scope="{item, index}">
+              <v-chip :style="getStyleForChip(item)" v-if="index <= 2">{{ item.name }}</v-chip>
+              <span
+                v-if="index > 2"
+                class="grey--text caption"
+              >(+{{ selectedLabels.length - 3 }} {{ $t('others') }})</span>
+            </template>
+          </v-autocomplete>
+        </div>
+      </template>
 
       <v-list dense class="pt-0" v-if="mode === 'menu'">
         <v-subheader>Labels</v-subheader>
@@ -62,7 +62,7 @@
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -83,7 +83,14 @@ export default {
     }
   },
   computed: {
-    ...mapState(["selectedLabels"])
+    selectedLabels: {
+      get() {
+        return this.$store.state.selectedLabels;
+      },
+      set(value) {
+        this.$store.dispatch("selectLabels", value);
+      }
+    }
   },
   data() {
     return {
@@ -134,6 +141,14 @@ export default {
         return "selected";
       }
       return "";
+    },
+
+    getItemLabel(item) {
+      return item.name;
+    },
+
+    getItemValue(item) {
+      return item;
     }
   }
 };
@@ -146,5 +161,16 @@ export default {
 
 .selected {
   font-weight: bold;
+}
+
+.compact-form {
+  position: relative;
+  top: 7px;
+  transform: scale(0.875);
+  transform-origin: left;
+  display: inline-block;
+}
+.auto-complete {
+  max-width: 320px;
 }
 </style>
