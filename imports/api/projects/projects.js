@@ -223,7 +223,7 @@ Meteor.methods({
       return;
     }
     Projects.update({_id: projectId}, {$pull: {members: userId}});
-    Tasks.update({projectId: projectId, assignedTo: userId}, {$set: {assignedTo: null}});
+    Tasks.update({projectId: projectId, assignedTo: userId}, {$set: {assignedTo: null}}, {multi: true});
   },
 
   'projects.setStartDate'(projectId, startDate) {
