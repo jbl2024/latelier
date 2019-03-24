@@ -7,6 +7,7 @@ export const store = new Vuex.Store({
     selectedGroup: {},
     selectedTask: null,
     selectedLabels: [],
+    selectedAssignedTos: [],
     showCategories: false,
     showTaskDetail: false,
     currentOrganizationId: 0,
@@ -44,6 +45,9 @@ export const store = new Vuex.Store({
         });
       }
     },
+    selectAssignedTos(state, assignedTos) {
+      state.selectedAssignedTos = assignedTos;
+    },
     selectTask(state, selectedTask) {
       state.selectedTask = selectedTask;
     },
@@ -77,6 +81,9 @@ export const store = new Vuex.Store({
     },
     selectLabel(context, label) {
       context.commit('selectLabel', label);
+    },
+    selectAssignedTos(context, users) {
+      context.commit('selectAssignedTos', users);
     },
     selectTask(context, task) {
       context.commit('selectTask', task);

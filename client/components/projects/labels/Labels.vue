@@ -114,7 +114,6 @@ export default {
     },
 
     selectLabel(label) {
-      console.log(label);
       this.$store.dispatch("selectLabel", label);
     },
 

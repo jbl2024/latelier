@@ -44,6 +44,14 @@ export default {
         return "blue";
       }
       return "grey lighten-1";
+    },
+
+    getEmailForUser(user) {
+      user = getUser(user);
+      if (!user) return;
+      if (user.emails && user.emails.length > 0) {
+        return user.emails[0].address;
+      }
     }
   }
 };
