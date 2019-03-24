@@ -39,7 +39,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedLabels'])
+    ...mapState(['selectedLabels']),
+    ...mapState(['selectedAssignedTos']),
   },
   data() {
     return {
@@ -53,11 +54,12 @@ export default {
       params () {
         return {
           name: this.filterName,
-          labels: this.selectedLabels
+          labels: this.selectedLabels,
+          assignedTos: this.selectedAssignedTos
         };
       },
       deep: false,
-      update ({name, labels}) {
+      update ({name, labels, assignedTos}) {
         var query = {
           listId: this.listId
         };
@@ -74,6 +76,12 @@ export default {
           };
         }
 
+        if (assignedTos && assignedTos.length > 0) {
+          query.assignedTo = {
+            $in: assignedTos
+          };
+        }
+        
         return Tasks.find(query, {sort: {order: 1}});
       }
     },    

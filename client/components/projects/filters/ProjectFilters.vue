@@ -2,6 +2,7 @@
   <div class="compact-form">
     <v-autocomplete
       dense
+      class="auto-complete"
       v-model="selectedAssignedTos"
       :items="users"
       :label="$t('Assigned to')"
@@ -10,15 +11,16 @@
       :item-value="getObjectForUser"
     >
       <template slot="selection" slot-scope="{item, index}">
-        <div class="avatar" v-if="index === 0">
-          <v-avatar size="24">
+
+        <div class="avatar" v-if="index <= 2">
+          <v-avatar size="24" :color="isOnline(item)">
             <span>{{ formatUserLetters(item) }}</span>
           </v-avatar>
         </div>
         <span
-          v-if="index === 1"
+          v-if="index > 2"
           class="grey--text caption"
-        >(+{{ selectedAssignedTos.length - 1 }} others)</span>
+        >(+{{ selectedAssignedTos.length - 3 }} {{ $t('others') }})</span>
       </template>
     </v-autocomplete>
   </div>
@@ -90,14 +92,15 @@ export default {
   margin-top: 5px;
   margin-right: 12px;
 }
-.avatar .v-avatar {
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-}
 
 .compact-form {
   position: relative;
-  top: 6px;
+  top: 7px;
   transform: scale(0.875);
   transform-origin: left;
+}
+
+.auto-complete {
+  max-width: 200px;
 }
 </style>
