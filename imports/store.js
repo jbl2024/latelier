@@ -45,6 +45,9 @@ export const store = new Vuex.Store({
         });
       }
     },
+    selectLabels(state, labels) {
+      state.selectedLabels = labels;
+    },
     selectAssignedTos(state, assignedTos) {
       state.selectedAssignedTos = assignedTos;
     },
@@ -81,6 +84,9 @@ export const store = new Vuex.Store({
     },
     selectLabel(context, label) {
       context.commit('selectLabel', label);
+    },
+    selectLabels(context, labels) {
+      context.commit('selectLabels', labels);
     },
     selectAssignedTos(context, users) {
       context.commit('selectAssignedTos', users);
