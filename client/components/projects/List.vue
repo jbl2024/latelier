@@ -97,7 +97,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentProjectId"])
+    ...mapState(["currentProjectId"]),
+    ...mapState(["selectedAssignedTos"])
   },
   data() {
     return {
@@ -276,7 +277,10 @@ export default {
       });
     },
     newTaskInline(listId) {
-      var that = this;
+      if (this.selectedAssignedTos.length > 0) {
+        this.$store.dispatch("notify", this.$t('Cannot add task while filter is set'));
+        return;
+      }
       Meteor.call(
         "tasks.insert",
         this.list.projectId,
