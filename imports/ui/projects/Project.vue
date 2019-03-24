@@ -16,7 +16,8 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <v-toolbar dense class="flex0 show-desktop">
+        <v-toolbar class="flex0 show-desktop">
+          <project-filters :projectId="projectId"></project-filters>
           <v-spacer></v-spacer>
           <labels :projectId="projectId" mode="select"></labels>
           <v-divider inset vertical></v-divider>
