@@ -32,13 +32,17 @@ const callbacks = {
           return email.compile();
         }
       };
-      Email.send({
-        from: Meteor.settings.email.from,
-        to: user.emails[0].address,
-        subject: email.subject(user, task),
-        text: email.text(user, task),
-        html: email.html(user, task)
-      });
+      try {
+        Email.send({
+          from: Meteor.settings.email.from,
+          to: user.emails[0].address,
+          subject: email.subject(user, task),
+          text: email.text(user, task),
+          html: email.html(user, task)
+        });
+      } catch(error) {
+        console.error(error);      
+      }
     }
   }
 };
