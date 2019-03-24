@@ -1,12 +1,15 @@
 <template>
   <div class="compact-form">
     <v-autocomplete
+      v-if="users.length > 0"
       dense
       class="auto-complete"
       v-model="selectedAssignedTos"
       :items="users"
       :label="$t('Assigned to')"
       multiple
+      :no-data-text="$t('No user assigned')"
+
       :item-text="getEmailForUser"
       :item-value="getObjectForUser"
       menu-props="closeOnContentClick"
@@ -78,6 +81,11 @@ export default {
           this.users.push(id);
         }
       });
+
+      // clear previously assigned to not available now
+      this.selectedAssignedTos = this.selectedAssignedTos.filter(selectedId => {
+        return userIds.indexOf(selectedId) >= 0;
+      })
     },
 
     getObjectForUser(item) {
