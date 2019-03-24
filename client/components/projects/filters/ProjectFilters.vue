@@ -9,6 +9,7 @@
       multiple
       :item-text="getEmailForUser"
       :item-value="getObjectForUser"
+      menu-props="closeOnContentClick"
     >
       <template slot="selection" slot-scope="{item, index}">
 
