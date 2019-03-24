@@ -35,7 +35,7 @@ Meteor.methods({
   'labels.remove'(labelId) {
     check(labelId, String);
 
-    Tasks.update({}, { $pull: { labels: labelId } });
+    Tasks.update({}, { $pull: { labels: labelId } }, {multi: true});
     Labels.remove(labelId);
   },
 
