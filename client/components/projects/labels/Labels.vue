@@ -4,12 +4,12 @@
     <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
     <template v-if="$subReady.labels">
       <template v-if="mode === 'select'">
-        <div class="compact-form" v-if="labels.length > 0">
+        <div class="compact-form" v-if="filteredLabels.length > 0">
           <v-autocomplete
             dense
             class="auto-complete"
             v-model="selectedLabels"
-            :items="labels"
+            :items="filteredLabels"
             :label="$t('Labels')"
             multiple
             :no-data-text="$t('No label available')"
@@ -69,6 +69,7 @@
 <script>
 import { Labels } from "/imports/api/labels/labels.js";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
 
 export default {
@@ -95,7 +96,8 @@ export default {
   data() {
     return {
       showButtons: "",
-      selectedLabelId: ""
+      selectedLabelId: "",
+      filteredLabels: []
     };
   },
   meteor: {
@@ -108,6 +110,10 @@ export default {
     },
     labels() {
       return Labels.find({}, { sort: { name: 1 } });
+    },
+    tasks() {
+      this.filterLabelsUsedOnProject()
+      return Tasks.find({projectId: this.projectId});
     }
   },
   methods: {
@@ -149,6 +155,23 @@ export default {
 
     getItemValue(item) {
       return item;
+    },
+
+    filterLabelsUsedOnProject() {
+      const query = (label) => {
+        return {
+          projectId: this.projectId,
+          labels: label._id
+        }  
+      }
+      this.filteredLabels = this.labels.filter(label => {
+        return Tasks.findOne(query(label))
+      });
+
+      // clear previously assigned to not available now
+      this.selectedLabels = this.selectedLabels.filter(label => {
+        return this.filteredLabels.find(l => { return l._id === label._id});
+      });
     }
   }
 };
