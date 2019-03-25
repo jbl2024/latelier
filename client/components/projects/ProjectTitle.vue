@@ -66,7 +66,7 @@ export default {
     }, 400);
   },
   mounted() {
-    this.$events.listen('reset-filter-tasks', () => {
+    this.$events.listen("reset-filter-tasks", () => {
       this.savedValue = "";
       this.$events.fire("filter-tasks", this.savedValue);
     });
