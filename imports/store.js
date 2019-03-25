@@ -97,6 +97,13 @@ export const store = new Vuex.Store({
     showTaskDetail(context, showTaskDetail) {
       context.commit('updateShowTaskDetail', showTaskDetail);
     },
+    resetProjectFilters(context, { vm }) {
+      context.commit('selectAssignedTos', []);
+      context.commit('selectLabels', []);
+      
+      // TODO replace event with store management
+      vm.$events.fire("reset-filter-tasks");
+    },
     notify(context, message) {
       context.commit('notify', message);
     },

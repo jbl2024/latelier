@@ -277,10 +277,7 @@ export default {
       });
     },
     newTaskInline(listId) {
-      if (this.selectedAssignedTos.length > 0) {
-        this.$store.dispatch("notify", this.$t('Cannot add task while filter is set'));
-        return;
-      }
+      this.$store.dispatch("resetProjectFilters", {vm: this});
       Meteor.call(
         "tasks.insert",
         this.list.projectId,

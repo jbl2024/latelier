@@ -16,6 +16,7 @@
       </div>
     </v-toolbar-title>
     <v-text-field
+      v-model="savedValue"
       v-show="!editProjectName"
       flat
       solo-inverted
@@ -64,6 +65,15 @@ export default {
       this.$events.fire("filter-tasks", val);
     }, 400);
   },
+  mounted() {
+    this.$events.listen('reset-filter-tasks', () => {
+      this.savedValue = "";
+      this.$events.fire("filter-tasks", this.savedValue);
+    });
+  },
+  beforeDestroy() {
+    this.$events.off('reset-filter-tasks');
+  },
   meteor: {
     project: {
       params() {
@@ -81,6 +91,7 @@ export default {
     return {
       savedProjectName: "",
       editProjectName: false,
+      savedValue: "",
       debouncedFilter: ""
     };
   },
