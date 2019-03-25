@@ -37,7 +37,7 @@ const messages = {
     "others": "autres",
     "Cannot add task while filter is set": "Impossible d'ajouter une tâche quand un filtre est actif",
     "No user assigned": "Aucun utilisateur assigné",
-    "No label available": "Aucun label crée",
+    "No label available": "Aucun label disponible",
     history: {
       tasks: {
         create: "Création",
