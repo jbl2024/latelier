@@ -49,6 +49,7 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
 
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
+  modifier.$set.updatedBy = userId;
 
   if (hasCompletedModification(modifier)) {
     // if completed flag is set, set the "completedAt" attribute
@@ -236,10 +237,9 @@ Meteor.methods({
     Tasks.update({_id: taskId}, {$push: {notes: note}});
 
     Meteor.call('tasks.track', {
-      type: 'tasks.update',
+      type: 'tasks.addNote',
       taskId: taskId
     });
-
   },
 
   'tasks.removeNote'(taskId, noteId) {
@@ -256,8 +256,8 @@ Meteor.methods({
       Tasks.update({_id: taskId},  { $set: { notes: [] } });
     }
 
-    Meteor.call('tasks.removeNote', {
-      type: 'tasks.update',
+    Meteor.call('tasks.track', {
+      type: 'tasks.removeNote',
       taskId: taskId
     });
   },
@@ -279,6 +279,12 @@ Meteor.methods({
         "notes.$.edited":  true
       } 
     });
+
+    Meteor.call('tasks.track', {
+      type: 'tasks.updateNote',
+      taskId: taskId
+    });
+
   },
 
   'tasks.addChecklistItem'(taskId, name) {
