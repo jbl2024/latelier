@@ -40,20 +40,23 @@ const messages = {
     history: {
       tasks: {
         create: "Création",
-        updateName: "Mise à jour du nom",
-        updateDescription: "Mise à jour de la description",
+        updateName: "Modification du nom",
+        updateDescription: "Modification de la description",
         addLabel: "Ajout d'un label",
         removeLabel: "Suppresion d'un label",
         addChecklistItem: "Ajout d'un item",
         removeChecklistItem: "Suppression d'un item",
-        toggleCheckItem: "Mise à jour d'un item",
+        toggleCheckItem: "Modification d'un item",
         convertItemToTask: "Conversion d'un item en tache",
         move: "Déplacement",
         addAttachment: "Ajout d'une pièce jointe",
         removeAttachment: "Suppression d'un pièce jointe",
         remove: "Suppression",
         setDueDate: "Date d'échéance",
-        complete: "Complétée"
+        complete: "Complétée",
+        addNote: "Ajout d'une note",
+        removeNote: "Suppression d'une note",
+        updateNote: "Modification d'une note",
       },
     },
     projects: {
@@ -119,7 +122,10 @@ const messages = {
         removeAttachment: "Delete attachment",
         remove: "Delete",
         setDueDate: "Due date",
-        complete: "Completed"
+        complete: "Completed",
+        addNote: "Add note",
+        removeNote: "Remove note",
+        updateNote: "Update note",
       }
     },
     projects: {
