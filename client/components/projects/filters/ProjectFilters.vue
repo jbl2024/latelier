@@ -1,11 +1,11 @@
 <template>
   <div class="compact-form">
     <v-autocomplete
-      v-if="users.length > 0"
+      v-if="assignedUsers.length > 0"
       dense
       class="auto-complete"
       v-model="selectedAssignedTos"
-      :items="users"
+      :items="assignedUsers"
       :label="$t('Assigned to')"
       multiple
       :no-data-text="$t('No user assigned')"
@@ -47,15 +47,16 @@ export default {
   computed: {
     selectedAssignedTos: {
       get() {
-        return this.$store.state.selectedAssignedTos;
+        return this.$store.state.projectFilters.selectedAssignedTos;
       },
       set(value) {
-        this.$store.dispatch("selectAssignedTos", value);
+        this.$store.dispatch("projectFilters/selectAssignedTos", value);
       }
     }
   },
   data: () => ({
-    users: []
+    assignedUsers: [],
+    lastModificationUsers: []
   }),
   meteor: {
     tasks() {
@@ -66,25 +67,37 @@ export default {
 
   methods: {
     refreshUsers() {
-      this.users = [];
-      const userIds = [];
+      const usersCache = {};
+      const loadUser = (id) => {
+        if (typeof id !== "object") {
+          const userObject = usersCache.id;
+          if (userObject) return userObject;
+          usersCache.id = Meteor.users.findOne({ _id: id });
+          return usersCache.id;
+        }
+      }
+
+      this.assignedUsers = [];
+      this.lastModificationUsers = [];
+      
+      const assignedUserIds = [];
+      const lastModificationUserIds = [];
+
       const tasks = Tasks.find({ projectId: this.projectId });
       tasks.map(task => {
         if (task.assignedTo) {
-          userIds.push(task.assignedTo);
+          assignedUserIds.push(task.assignedTo);
+          this.assignedUsers.push(loadUser(task.assignedTo));
         }
-      });
-      userIds.map(id => {
-        if (typeof id !== "object") {
-          this.users.push(Meteor.users.findOne({ _id: id }));
-        } else {
-          this.users.push(id);
+        if (task.updatedBy) {
+          lastModificationUserIds.push(task.updatedBy);
+          this.lastModificationUsers.push(loadUser(task.updatedBy));
         }
       });
 
       // clear previously assigned to not available now
       this.selectedAssignedTos = this.selectedAssignedTos.filter(selectedId => {
-        return userIds.indexOf(selectedId) >= 0;
+        return assignedUserIds.indexOf(selectedId) >= 0;
       })
     },
 

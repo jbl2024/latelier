@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { store } from '/imports/store';
+import { store } from '/imports/store/store';
 
 // Basic User
 export const isBasicAuth = (to, from, next) => {

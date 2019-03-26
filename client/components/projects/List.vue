@@ -98,7 +98,6 @@ export default {
   },
   computed: {
     ...mapState(["currentProjectId"]),
-    ...mapState(["selectedAssignedTos"])
   },
   data() {
     return {
@@ -277,7 +276,7 @@ export default {
       });
     },
     newTaskInline(listId) {
-      this.$store.dispatch("resetProjectFilters", {vm: this});
+      this.$store.dispatch("projectFilters/reset", {vm: this});
       Meteor.call(
         "tasks.insert",
         this.list.projectId,
