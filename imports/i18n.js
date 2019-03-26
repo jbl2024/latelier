@@ -37,6 +37,8 @@ const messages = {
     "others": "autres",
     "No user assigned": "Aucun utilisateur assigné",
     "No label available": "Aucun label disponible",
+    "Updated by": "Modifiées par",
+    "No user found": "Aucun utilisateur",
     history: {
       tasks: {
         create: "Création",
@@ -106,6 +108,8 @@ const messages = {
     "others": "others",
     "No user assigned": "No user assigned",
     "No label available": "No label available",
+    "Updated by": "Updated by",
+    "No user found": "No user found",
     history: {
       tasks: {
         create: "Creation",
