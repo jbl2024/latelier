@@ -39,8 +39,10 @@ export default {
     }
   },
   computed: {
-    ...mapState(['selectedLabels']),
-    ...mapState(['selectedAssignedTos']),
+    ...mapState("projectFilters", {
+      selectedLabels: state => state.selectedLabels,
+      selectedAssignedTos: state => state.selectedAssignedTos
+    })
   },
   data() {
     return {
