@@ -7,6 +7,7 @@ export const projectFilters = {
   state: {
     selectedLabels: [],
     selectedAssignedTos: [],
+    selectedUpdatedBy: [],
   },
   getters: {
     // Compute derived state based on the current state. More like computed property.
@@ -30,6 +31,9 @@ export const projectFilters = {
     selectAssignedTos(state, assignedTos) {
       state.selectedAssignedTos = assignedTos;
     },
+    selectUpdatedBy(state, selectedUpdatedBy) {
+      state.selectedUpdatedBy = selectedUpdatedBy;
+    },
     clearSelectedLabels(state) {
       state.selectedLabels = [];
     }
@@ -47,6 +51,7 @@ export const projectFilters = {
     
     reset(context, { vm }) {
       context.commit('selectAssignedTos', []);
+      context.commit('selectUpdatedBy', []);
       context.commit('selectLabels', []);
       // TODO replace event with store management
       vm.$events.fire("reset-filter-tasks");
