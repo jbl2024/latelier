@@ -39,6 +39,8 @@ const messages = {
     "No label available": "Aucun label disponible",
     "Updated by": "Modifiées par",
     "No user found": "Aucun utilisateur",
+    "Delete organization?": "Supprimer l'organisation ?",
+    "Organization deleted": "Organisation supprimée",
     history: {
       tasks: {
         create: "Création",
@@ -110,6 +112,8 @@ const messages = {
     "No label available": "No label available",
     "Updated by": "Updated by",
     "No user found": "No user found",
+    "Delete organization?": "Delete organization?",
+    "Organization deleted": "Organization deleted",
     history: {
       tasks: {
         create: "Creation",

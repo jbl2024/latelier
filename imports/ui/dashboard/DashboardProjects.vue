@@ -74,7 +74,7 @@
               <v-tooltip top slot="activator">
                 <v-btn
                   icon
-                  @click.stop="deleteOrganization(organization._id)"
+                  @click.stop="deleteOrganization(organization)"
                   v-if="canDeleteOrganization(organization)"
                   slot="activator"
                 >
@@ -387,6 +387,27 @@ export default {
     projectsByOrganization(organization) {
       return Projects.find({ organizationId: organization._id }).fetch();
     },
+
+    deleteOrganization(organization) {
+      this.$confirm(this.$t("Delete organization?"), {
+        title: organization.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("organizations.remove", organization._id, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('Organization deleted'));
+          });
+        }
+      });
+      
+      
+    },
+
 
     canDeleteProject(project) {
       if (
