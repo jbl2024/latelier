@@ -14,6 +14,7 @@
 <script>
 import { Labels } from '/imports/api/labels/labels.js'
 import { Projects } from '/imports/api/projects/projects.js'
+import { colors } from '/imports/colors.js'
 
 export default {
   props: {
@@ -46,7 +47,10 @@ export default {
     },
 
     getColor (label) {
-      return 'background-color: ' + label.color;
+      return `
+        background-color: ${label.color};
+        color: ${colors.getLabelColor(label.color)}
+      `
     },
 
     removeLabel (label) {
