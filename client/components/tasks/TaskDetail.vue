@@ -306,7 +306,6 @@ export default {
       if (task.createdBy === task.updatedBy) {
         const dif = task.updatedAt.getTime() - task.createdAt.getTime();
         const seconds = Math.abs(dif / 1000);
-        console.log(seconds)
         if (seconds > 60) {
           return true;
         }
