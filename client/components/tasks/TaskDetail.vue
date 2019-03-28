@@ -69,10 +69,18 @@
       </div>
 
       <author-line
+        v-if="showCreatedBy(task)"
         :user-id="task.createdBy"
         :date="task.createdAt"
         class="author"
         :prefix="$t('Created by')"
+      ></author-line>
+      <author-line
+        v-if="showUpdatedBy(task)"
+        :user-id="task.updatedBy"
+        :date="task.updatedAt"
+        class="author"
+        :prefix="$t('Last update by')"
       ></author-line>
     </div>
 
@@ -133,6 +141,16 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
   mixins: [TextRenderingMixin, DatesMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Last update by": "Last update by"
+      },
+      fr: {
+        "Last update by": "Dernière modification par"
+      }
+    }
+  },
   props: {
     taskId: {
       type: String
@@ -279,6 +297,27 @@ export default {
 
     showProjectLink(task) {
       return task && task.project && task.organization;
+    },
+
+    showCreatedBy(task) {
+      if (!task.updatedBy) {
+        return true;
+      }
+      if (task.createdBy === task.updatedBy) {
+        const dif = task.updatedAt.getTime() - task.createdAt.getTime();
+        const seconds = Math.abs(dif / 1000);
+        console.log(seconds)
+        if (seconds > 60) {
+          return true;
+        }
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    showUpdatedBy(task) {
+      return task.updatedAt && task.updatedBy;
     }
   }
 };
@@ -294,6 +333,7 @@ export default {
 
 .author {
   color: rgba(0, 0, 0, 0.54);
+  font-size: 80%;
 }
 
 .toolbar-button {
