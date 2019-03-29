@@ -91,6 +91,7 @@ Meteor.methods({
     Tasks.remove({projectId: projectId});
     Lists.remove({projectId: projectId});
     Attachments.remove({'meta.projectId': projectId});
+    Meteor.users.update({}, {$pull: {'profile.favoriteProjects': projectId}}, {multi: true});
     Projects.remove(projectId);
   },
 
@@ -284,5 +285,23 @@ Meteor.methods({
       return {
         data: dataWithUsers
       };
+  },
+
+  "projects.addToUserFavorites"(projectId, userId) {
+    check(projectId, String);
+    check(userId, String);
+    if (!Meteor.userId() || Meteor.userId() !== userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Meteor.users.update(userId, {$push: {'profile.favoriteProjects': projectId}});
+  },
+
+  "projects.removeFromUserFavorites"(projectId, userId) {
+    check(projectId, String);
+    check(userId, String);
+    if (!Meteor.userId() || Meteor.userId() !== userId) {
+      throw new Meteor.Error('not-authorized');
+    }
+    Meteor.users.update(userId, {$pull: {'profile.favoriteProjects': projectId}});
   }
 });
