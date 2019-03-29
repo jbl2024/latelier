@@ -23,7 +23,7 @@
     <div v-if="!$subReady.allProjects">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <div v-if="$subReady.allProjects && type === 'all'">
+    <div v-if="$subReady.allProjects">
       <empty-state
         v-if="organizations.length == 0"
         :description="`Aucune organisation disponible`"
