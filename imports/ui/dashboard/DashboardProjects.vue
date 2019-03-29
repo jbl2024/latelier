@@ -269,12 +269,6 @@ export default {
   beforeDestroy() {
     this.$events.off("filter-projects");
   },
-  props: {
-    type: {
-      type: String,
-      default: "all"
-    }
-  },
   data() {
     return {
       on: false,
