@@ -20,6 +20,22 @@
           <project-filters :projectId="projectId"></project-filters>
           <labels :projectId="projectId" mode="select"></labels>
           <v-spacer></v-spacer>
+          <div>
+          <v-tooltip top slot="activator" v-if="!isFavorite(user, projectId)">
+            <v-btn icon @click.stop="addToFavorites(user, projectId)" slot="activator">
+              <v-icon>star_border</v-icon>
+            </v-btn>
+            <span>{{ $t('Add to favorites') }}</span>
+          </v-tooltip>
+          </div>
+          <div>
+          <v-tooltip top slot="activator" v-if="isFavorite(user, projectId)">
+            <v-btn icon @click.stop="removeFromFavorites(user, projectId)" slot="activator">
+              <v-icon>star</v-icon>
+            </v-btn>
+            <span>{{ $t('Remove from favorites') }}</span>
+          </v-tooltip>
+          </div>
           <v-btn icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
             <v-icon>settings</v-icon>
           </v-btn>
@@ -152,6 +168,31 @@ export default {
       if (this.taskToDelete) {
         Meteor.call("tasks.remove", this.taskToDelete._id);
       }
+    },
+
+    isFavorite(user, projectId) {
+      const favorites = user.profile.favoriteProjects || [];
+      return favorites.indexOf(projectId) >= 0;
+    },
+
+    addToFavorites(user, projectId) {
+      Meteor.call("projects.addToUserFavorites", projectId, user._id, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$store.dispatch("notify", this.$t('Project added to favorites'));
+      });
+    },
+
+    removeFromFavorites(user, projectId) {
+      Meteor.call("projects.removeFromUserFavorites", projectId, user._id, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$store.dispatch("notify", this.$t('Project removed from favorites'));
+      });
     }
      
   }

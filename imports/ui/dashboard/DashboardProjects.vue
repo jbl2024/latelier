@@ -23,14 +23,90 @@
     <div v-if="!$subReady.allProjects">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
-    <div v-if="$subReady.allProjects">
+    <div v-if="$subReady.allProjects && type === 'all'">
       <empty-state
         v-if="organizations.length == 0"
         :description="`Aucune organisation disponible`"
         illustration="empty"
       >
-        <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>        
+        <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
       </empty-state>
+
+      <v-list two-line subheader class="elevation-1" dense v-if="favorites.length > 0">
+          <v-toolbar
+            class="pointer"
+            color="primary"
+            dark
+            dense
+            @click="openOrganization(organization._id)"
+          >
+            <v-icon>star</v-icon>
+            <v-toolbar-title>{{ $t('Favorites')}}</v-toolbar-title>
+          </v-toolbar>
+        <template v-for="item in favorites">
+          <v-list-tile :key="item._id" @click="openProject(item)">
+            <v-list-tile-avatar :color="getColor(item)">
+              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content class="pointer">
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action
+              v-for="group in getProjectGroups(item)"
+              class="show-desktop"
+              :key="group._id"
+              @click.stop="selectGroup(group)"
+            >
+              <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop" v-if="canManageProject(item)">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  slot="activator"
+                  color="grey darken-1"
+                  @click.stop="openProjectSettings(item)"
+                >
+                  <v-icon>settings</v-icon>
+                </v-btn>
+                <span>{{ $t('Settings') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  color="grey darken-1"
+                  @click.stop="cloneProject(item._id)"
+                  slot="activator"
+                >
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+                <span>{{ $t('Clone') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop" v-if="canDeleteProject(item)">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  color="grey darken-1"
+                  @click.stop="deleteProject(item._id)"
+                  slot="activator"
+                >
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>{{ $t('Delete') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-divider inset :key="`divider-${item._id}`"></v-divider>
+        </template>
+      </v-list>
+
       <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1" dense>
         <template v-for="organization in organizations">
           <v-toolbar
@@ -97,7 +173,6 @@
 
           <template v-for="item in projectStates()">
             <v-subheader
-              
               :key="`${organization._id}-${item.value}`"
               v-if="filterProjectsByState(organization, projects, item.value).length > 0"
             >{{ item.label }}</v-subheader>
@@ -168,9 +243,8 @@
         </template>
 
         <div class="bottom-buttons">
-          <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>        
+          <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
         </div>
-
       </v-list>
     </div>
   </div>
@@ -195,7 +269,12 @@ export default {
   beforeDestroy() {
     this.$events.off("filter-projects");
   },
-  props: {},
+  props: {
+    type: {
+      type: String,
+      default: "all"
+    }
+  },
   data() {
     return {
       on: false,
@@ -229,6 +308,16 @@ export default {
     },
     organizations() {
       return Organizations.find({}, { sort: { name: 1 } });
+    },
+    favorites() {
+      const user = Meteor.user() || {profile: {}};
+      const favorites = user.profile.favoriteProjects || [];
+      return Projects.find(
+        {_id: {$in: favorites}}, 
+        {
+          sort: { organizationId: 1, state: 1, name: 1 }
+        }
+      );
     }
   },
   methods: {
@@ -508,9 +597,14 @@ export default {
 }
 
 .bottom-buttons {
-  border-top: 1px solid #455A64;
+  border-top: 1px solid #455a64;
   margin: 0px;
   padding: 24px;
   text-align: center;
 }
+
+.empty-state {
+  margin-top: 24px;
+}
+
 </style>

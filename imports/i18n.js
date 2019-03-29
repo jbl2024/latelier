@@ -41,6 +41,13 @@ const messages = {
     "No user found": "Aucun utilisateur",
     "Delete organization?": "Supprimer l'organisation ?",
     "Organization deleted": "Organisation supprimée",
+    "Add to favorites": "Ajouter aux favoris",
+    "Remove from favorites": "Retirer des favoris",
+    "Project added to favorites": "Projet ajouté aux favoris",
+    "Project removed from favorites": "Projet retiré des favoris",
+    "No favorite": "Aucun favori",
+    "All": "Tous",
+    "Favorites": "Favoris",
     history: {
       tasks: {
         create: "Création",
@@ -114,6 +121,13 @@ const messages = {
     "No user found": "No user found",
     "Delete organization?": "Delete organization?",
     "Organization deleted": "Organization deleted",
+    "Add to favorites": "Add to favorites",
+    "Remove from favorites": "Remove from favorites",
+    "Project added to favorites": "Project added to favorites",
+    "Project removed from favorites": "Project removed from favorites",
+    "All": "All",
+    "Favorites": "Favorites",
+    "No favorite": "No favori",
     history: {
       tasks: {
         create: "Creation",
