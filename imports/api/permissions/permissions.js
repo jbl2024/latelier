@@ -14,6 +14,37 @@ export const Permissions = {
     return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, scope)
   },
 
+  setAdmin(userId, scope=Roles.GLOBAL_GROUP) {
+    let accessGranted = false;
+    if (this.isAdmin(Meteor.userId())) {
+      accessGranted = true;
+    } else if (this.isAdmin(Meteor.userId(), scope)) {
+      accessGranted = true;
+    }
+    if (!accessGranted) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope)
+  },
+
+  removeAdmin(userId, scope=Roles.GLOBAL_GROUP) {
+    let accessGranted = false;
+    if (this.isAdmin(Meteor.userId())) {
+      accessGranted = true;
+    } else if (this.isAdmin(Meteor.userId(), scope)) {
+      accessGranted = true;
+    }
+    if (!accessGranted) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+    if (scope === Roles.GLOBAL_GROUP) {
+      if (Meteor.userId() === userId) {
+        throw new Meteor.Error(401, "cannot-remove-self");
+      }
+    }
+    Roles.removeUsersFromRoles(userId, ApplicationRoles.ADMIN, scope)
+  },
+
   isActive (userId) {
     if (!userId) {
       return false;
@@ -33,14 +64,14 @@ export const Permissions = {
     });
   },
 
-  setActive (userId, scope=Roles.GLOBAL_GROUP) {
+  setActive (userId) {
     if (!this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     if (this.isActive(userId)) {
       return;
     }
-    Roles.removeUsersFromRoles(userId, ApplicationRoles.INACTIVE, scope)
+    Roles.removeUsersFromRoles(userId, ApplicationRoles.INACTIVE, Roles.GLOBAL_GROUP)
   }
 }
 
@@ -66,8 +97,43 @@ if (Meteor.isServer) {
   });
 }
 
+
 export const checkLoggedIn = () => {
   if (!Meteor.userId()) {
     throw new Meteor.Error("not-authorized");
   }
 }
+
+Permissions.methods = {};
+
+Permissions.methods.setAdmin = new ValidatedMethod({
+  name: "permissions.setAdmin",
+  validate: new SimpleSchema({
+    userId: { type: String },
+    scope: { type: String, optional: true },
+  }).validator(),
+  run({ userId, scope }) {
+    checkLoggedIn();
+   
+    if (!scope) {
+      scope = Roles.GLOBAL_GROUP;
+    }
+    Permissions.setAdmin(userId, scope)
+  }
+});
+
+Permissions.methods.removeAdmin = new ValidatedMethod({
+  name: "permissions.removeAdmin",
+  validate: new SimpleSchema({
+    userId: { type: String },
+    scope: { type: String, optional: true },
+  }).validator(),
+  run({ userId, scope }) {
+    checkLoggedIn();
+   
+    if (!scope) {
+      scope = Roles.GLOBAL_GROUP;
+    }
+    Permissions.removeAdmin(userId, scope)
+  }
+});
