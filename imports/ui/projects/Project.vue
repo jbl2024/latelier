@@ -20,7 +20,7 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <v-toolbar dense class="flex0 show-desktop">
+        <v-toolbar dense class="flex0">
           <v-btn icon @click="showFiltersDialog = true" v-if="$vuetify.breakpoint.smAndDown">
             <v-icon>filter_list</v-icon>
           </v-btn>
