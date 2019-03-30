@@ -7,7 +7,6 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Labels } from '/imports/api/labels/labels.js'
 import { Events } from '/imports/api/events/events.js'
-import { utimes } from 'fs';
 
 export const Projects = new Mongo.Collection('projects');
 if (Meteor.isServer) {
