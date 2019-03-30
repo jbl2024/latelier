@@ -192,7 +192,7 @@ export default {
   },
   watch: {
     'project.state'(state) {
-      Meteor.call("projects.updateState", this.project._id, state);
+      Meteor.call("projects.updateState", {projectId: this.project._id, state: state});
     }
   },
   data() {
@@ -278,11 +278,11 @@ export default {
   },  
   methods: {
     onSelectStartDate(date) {
-      Meteor.call("projects.setStartDate", this.project._id, date);
+      Meteor.call("projects.setStartDate", {projectId: this.project._id, startDate: date});
     },
 
     onSelectEndDate(date) {
-      Meteor.call("projects.setEndDate", this.project._id, date);
+      Meteor.call("projects.setEndDate", {projectId: this.project._id, endDate: date});
     },
 
     removeGroup(group) {
@@ -327,9 +327,10 @@ export default {
     updateDescription() {
       this.editDescription = false;
       Meteor.call(
-        "projects.updateDescription",
-        this.project._id,
-        this.project.description
+        "projects.updateDescription", {
+          projectId: this.project._id,
+          description: this.project.description
+        }
       );
     },
 
@@ -362,12 +363,12 @@ export default {
       var hex = color.hex || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.project.color = hex;
-      Meteor.call("projects.updateColor", this.project._id, hex);
+      Meteor.call("projects.updateColor", {projectId: this.project._id, color: hex});
     },
 
     removeColor() {
       this.project.color = "";
-      Meteor.call("projects.updateColor", this.project._id, "");
+      Meteor.call("projects.updateColor", {projectId: this.project._id, color: ""});
     },
 
     getColor(project) {
@@ -390,7 +391,7 @@ export default {
 
     toggleProjectVisibility(project) {
       project.isPublic = !project.isPublic;
-      Meteor.call("projects.updateIsPublic", project._id, project.isPublic);
+      Meteor.call("projects.updateIsPublic", {projectId: project._id, isPublic: project.isPublic});
       if (!project.isPublic) {
         this.$store.dispatch("notify", this.$t("The project is public"));
       } else {

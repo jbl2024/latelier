@@ -176,7 +176,7 @@ export default {
     },
 
     addToFavorites(user, projectId) {
-      Meteor.call("projects.addToUserFavorites", projectId, user._id, (error, result) => {
+      Meteor.call("projects.addToUserFavorites", {projectId: projectId, userId: user._id}, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -186,7 +186,7 @@ export default {
     },
 
     removeFromFavorites(user, projectId) {
-      Meteor.call("projects.removeFromUserFavorites", projectId, user._id, (error, result) => {
+      Meteor.call("projects.removeFromUserFavorites", {projectId: projectId, userId: user._id}, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;

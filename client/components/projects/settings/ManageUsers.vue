@@ -67,11 +67,11 @@ export default {
   },
   methods: {
     onSelectUser(user) {
-      Meteor.call("projects.addMember", this.project._id, user._id);
+      Meteor.call("projects.addMember", {projectId: this.project._id, userId: user._id});
     },
 
     removeUser(user) {
-      Meteor.call("projects.removeMember", this.project._id, user._id);
+      Meteor.call("projects.removeMember", {projectId: this.project._id, userId: user._id});
     }
   }
 };

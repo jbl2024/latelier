@@ -161,7 +161,7 @@ export default {
 
     onConfirmDeleteProject() {
       this.showConfirmDialog = false;
-      Meteor.call("projects.remove", this.projectId);
+      Meteor.call("projects.remove", {projectId: this.projectId});
     },
 
     onCancelDeleteProject() {
@@ -175,7 +175,7 @@ export default {
 
     onConfirmCloneProject() {
       this.showConfirmCloneDialog = false;
-      Meteor.call("projects.clone", this.projectId);
+      Meteor.call("projects.clone", {projectId: this.projectId});
     },
 
     onCancelCloneProject() {
