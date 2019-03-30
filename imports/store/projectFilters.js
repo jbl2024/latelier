@@ -48,6 +48,9 @@ export const projectFilters = {
     selectAssignedTos(context, users) {
       context.commit('selectAssignedTos', users);
     },
+    selectUpdatedBy(context, selectedUpdatedBy) {
+      context.commit('selectUpdatedBy', selectedUpdatedBy);
+    },
     
     reset(context, { vm }) {
       context.commit('selectAssignedTos', []);

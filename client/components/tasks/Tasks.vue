@@ -41,7 +41,8 @@ export default {
   computed: {
     ...mapState("projectFilters", {
       selectedLabels: state => state.selectedLabels,
-      selectedAssignedTos: state => state.selectedAssignedTos
+      selectedAssignedTos: state => state.selectedAssignedTos,
+      selectedUpdatedBy: state => state.selectedUpdatedBy
     })
   },
   data() {
@@ -57,11 +58,12 @@ export default {
         return {
           name: this.filterName,
           labels: this.selectedLabels,
-          assignedTos: this.selectedAssignedTos
+          assignedTos: this.selectedAssignedTos,
+          updatedBy: this.selectedUpdatedBy
         };
       },
       deep: false,
-      update ({name, labels, assignedTos}) {
+      update ({name, labels, assignedTos, updatedBy}) {
         var query = {
           listId: this.listId
         };
@@ -81,6 +83,12 @@ export default {
         if (assignedTos && assignedTos.length > 0) {
           query.assignedTo = {
             $in: assignedTos
+          };
+        }
+
+        if (updatedBy && updatedBy.length > 0) {
+          query.updatedBy = {
+            $in: updatedBy
           };
         }
         
