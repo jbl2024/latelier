@@ -7,12 +7,13 @@ const ApplicationRoles = Object.freeze({
 });
 
 export const Permissions = {
-  isAdmin (userId) {
+  isAdmin (userId, scope=Roles.GLOBAL_GROUP) {
     if (!userId) {
       return false;
     }
-    return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, Roles.GLOBAL_GROUP)
+    return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, scope)
   },
+
   isActive (userId) {
     if (!userId) {
       return false;
@@ -32,14 +33,14 @@ export const Permissions = {
     });
   },
 
-  setActive (userId) {
+  setActive (userId, scope=Roles.GLOBAL_GROUP) {
     if (!this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     if (this.isActive(userId)) {
       return;
     }
-    Roles.removeUsersFromRoles(userId, ApplicationRoles.INACTIVE, Roles.GLOBAL_GROUP)
+    Roles.removeUsersFromRoles(userId, ApplicationRoles.INACTIVE, scope)
   }
 }
 
