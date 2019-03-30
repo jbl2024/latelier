@@ -7,8 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
-import { Permissions } from "/imports/api/permissions/permissions"
-
+import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions"
 
 export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
@@ -25,12 +24,6 @@ export const ProjectStates = Object.freeze({
 });
 
 Projects.methods = {};
-
-const checkLoggedIn = () => {
-  if (!Meteor.userId()) {
-    throw new Meteor.Error("not-authorized");
-  }
-}
 
 const checkIfAdminOrCreator = (projectId) => {
   if (Permissions.isAdmin(Meteor.userId())) {
@@ -73,6 +66,7 @@ Projects.methods.create = new ValidatedMethod({
     state: { type: String }
   }).validator(),
   run({ organizationId, name, projectType, projectGroupId, state }) {
+    const currentUserId = Meteor.userId();
     checkLoggedIn();
 
     const projectId = Projects.insert({
@@ -80,9 +74,9 @@ Projects.methods.create = new ValidatedMethod({
       name,
       state,
       createdAt: new Date(),
-      createdBy: currentUser
+      createdBy: currentUserId
     });
-    Meteor.call("projects.addMember", {projectId: projectId, userId: currentUser});
+    Meteor.call("projects.addMember", {projectId: projectId, userId: currentUserId});
 
     if (projectType === "kanban") {
       Meteor.call("lists.insert", projectId, "A planifier");
