@@ -17,16 +17,22 @@
             <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
           </v-list-tile-content>
 
-          <v-list-tile-action v-if="canManageProject(project) && !isAdmin(user, project)">
-            <v-btn icon ripple @click.stop="setAdmin(user, project)">
-              <v-icon color="grey">security</v-icon>
-            </v-btn>
+          <v-list-tile-action v-if="canManageProject(project) && !isAdmin(user, project) && user._id != Meteor.userId()">
+            <v-tooltip top slot="activator">
+              <v-btn icon ripple @click.stop="setAdmin(user, project)" slot="activator">
+                <v-icon color="grey">security</v-icon>
+              </v-btn>
+              <span>{{ $t('Grant admin rights') }}</span>
+            </v-tooltip>
           </v-list-tile-action>
 
-          <v-list-tile-action v-if="canManageProject(project) && isAdmin(user, project)">
-            <v-btn icon ripple @click.stop="removeAdmin(user, project)">
-              <v-icon color="red">security</v-icon>
-            </v-btn>
+          <v-list-tile-action v-if="canManageProject(project) && isAdmin(user, project) && user._id != Meteor.userId()">
+            <v-tooltip top slot="activator">
+              <v-btn icon ripple @click.stop="removeAdmin(user, project)" slot="activator">
+                <v-icon color="red">security</v-icon>
+              </v-btn>
+              <span>{{ $t('Remove admin rights') }}</span>
+            </v-tooltip>
           </v-list-tile-action>
 
           <v-list-tile-action>
@@ -57,6 +63,18 @@ export default {
     return {
       showSelectUserDialog: false
     };
+  },
+  i18n: {
+    messages: {
+      en: {
+        "Grant admin rights": "Grant admin rights",
+        "Remove admin rights": "Remove admin rights",
+      },
+      fr: {
+        "Grant admin rights": "Donner les droits d'administration",
+        "Remove admin rights": "Enlever les droits d'administration",
+      }
+    }
   },
   meteor: {
     $subscribe: {
@@ -98,13 +116,23 @@ export default {
 
     setAdmin(user, project) {
       if (this.canManageProject(project)) {
-        Permissions.methods.setAdmin.call({userId: user._id, scope: project._id});
+        Permissions.methods.setAdmin.call({userId: user._id, scope: project._id}, (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+        });
       }
     },
 
     removeAdmin(user, project) {
       if (this.canManageProject(project)) {
-        Permissions.methods.removeAdmin.call({userId: user._id, scope: project._id});
+        Permissions.methods.removeAdmin.call({userId: user._id, scope: project._id}, (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+        });
       }
     }
   }
