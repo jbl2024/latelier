@@ -36,7 +36,7 @@
             <span>{{ $t('Remove from favorites') }}</span>
           </v-tooltip>
           </div>
-          <v-btn icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
+          <v-btn v-if="canManageProject(project)" icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
             <v-icon>settings</v-icon>
           </v-btn>
         </v-toolbar>
@@ -51,6 +51,8 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 import debounce from 'lodash/debounce';
 import { mapState } from "vuex";
 
@@ -193,7 +195,15 @@ export default {
         }
         this.$store.dispatch("notify", this.$t('Project removed from favorites'));
       });
+    },
+
+    canManageProject(project) {
+      if (Permissions.isAdmin(Meteor.userId()) || project.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
     }
+
      
   }
 }

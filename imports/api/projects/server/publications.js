@@ -8,7 +8,8 @@ import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
 import { Resources } from "../../resources/resources";
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();

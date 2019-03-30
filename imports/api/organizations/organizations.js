@@ -3,7 +3,8 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Projects } from '/imports/api/projects/projects.js'
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 
 export const Organizations = new Mongo.Collection('organizations');
 

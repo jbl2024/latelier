@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { publishComposite } from "meteor/reywood:publish-composite";
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 
 import { Organizations } from "../organizations";
 

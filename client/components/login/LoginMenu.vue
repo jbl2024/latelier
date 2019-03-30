@@ -93,7 +93,8 @@
 </template>
 
 <script>
-import { Permissions } from "/imports/api/users/permissions";
+import { Permissions } from "/imports/api/permissions/permissions";
+
 
 export default {
    i18n: {

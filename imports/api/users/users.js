@@ -2,8 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
-import { Permissions } from '/imports/api/users/permissions'
-import { removeAllListeners } from "cluster";
+import { Permissions } from '/imports/api/permissions/permissions'
 
 Meteor.methods({
   "admin.findUsers"(page, filter) {

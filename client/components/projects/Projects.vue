@@ -81,7 +81,8 @@ import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
 import { ProjectStates } from "/imports/api/projects/projects.js";
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 
 
 export default {

@@ -1,5 +1,6 @@
 import { Accounts } from 'meteor/accounts-base'
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 
 function initializeRoles() {
   const roles = Meteor.settings.roles;

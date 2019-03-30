@@ -4,7 +4,8 @@ import { Accounts } from 'meteor/accounts-base'
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
-import { Permissions } from '/imports/api/users/permissions'
+import { Permissions } from "/imports/api/permissions/permissions"
+
 import { removeAllListeners } from "cluster";
 
 Accounts.registerLoginHandler(loginRequest => {

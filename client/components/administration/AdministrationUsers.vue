@@ -55,7 +55,8 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
-import { Permissions } from "/imports/api/users/permissions";
+import { Permissions } from "/imports/api/permissions/permissions";
+
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
 

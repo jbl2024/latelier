@@ -4,7 +4,8 @@ import { check } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Projects } from "/imports/api/projects/projects.js";
-import { Permissions } from "/imports/api/users/permissions";
+import { Permissions } from "/imports/api/permissions/permissions";
+
 
 Meteor.methods({
   "dashboards.findTasks"(user, type, page) {

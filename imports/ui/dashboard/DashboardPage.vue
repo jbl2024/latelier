@@ -104,7 +104,8 @@
 </template>
 
 <script>
-import { Permissions } from "/imports/api/users/permissions";
+import { Permissions } from "/imports/api/permissions/permissions";
+
 import DashboardTaskList from "/imports/ui/dashboard/DashboardTaskList";
 import DashboardProjects from "/imports/ui/dashboard/DashboardProjects";
 
