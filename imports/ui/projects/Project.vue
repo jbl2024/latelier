@@ -198,10 +198,7 @@ export default {
     },
 
     canManageProject(project) {
-      if (Permissions.isAdmin(Meteor.userId()) || project.createdBy === Meteor.userId()) {
-        return true;
-      }
-      return false;
+      return Permissions.isAdmin(Meteor.userId(), project._id) || Permissions.isAdmin(Meteor.userId());
     }
 
      

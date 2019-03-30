@@ -29,6 +29,9 @@ const checkIfAdminOrCreator = (projectId) => {
   if (Permissions.isAdmin(Meteor.userId())) {
     return true;
   }
+  if (Permissions.isAdmin(Meteor.userId(), projectId)) {
+    return true;
+  }
   const project = Projects.findOne(projectId);
   if (project.createdBy != Meteor.userId()) {
     throw new Meteor.Error("not-authorized");

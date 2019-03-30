@@ -17,11 +17,24 @@
             <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
           </v-list-tile-content>
 
+          <v-list-tile-action v-if="canManageProject(project) && !isAdmin(user, project)">
+            <v-btn icon ripple @click.stop="setAdmin(user, project)">
+              <v-icon color="grey">security</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+
+          <v-list-tile-action v-if="canManageProject(project) && isAdmin(user, project)">
+            <v-btn icon ripple @click.stop="removeAdmin(user, project)">
+              <v-icon color="red">security</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+
           <v-list-tile-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-tile-action>
+
         </v-list-tile>
       </template>
     </v-list>
@@ -31,6 +44,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Permissions } from "/imports/api/permissions/permissions"
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
@@ -72,6 +86,26 @@ export default {
 
     removeUser(user) {
       Meteor.call("projects.removeMember", {projectId: this.project._id, userId: user._id});
+    },
+
+    isAdmin(user, project) {
+      return Permissions.isAdmin(user._id, project._id) || Permissions.isAdmin(user._id);
+    },
+
+    canManageProject(project) {
+      return Permissions.isAdmin(Meteor.userId(), project._id) || Permissions.isAdmin(Meteor.userId());
+    },
+
+    setAdmin(user, project) {
+      if (this.canManageProject(project)) {
+        Permissions.methods.setAdmin.call({userId: user._id, scope: project._id});
+      }
+    },
+
+    removeAdmin(user, project) {
+      if (this.canManageProject(project)) {
+        Permissions.methods.removeAdmin.call({userId: user._id, scope: project._id});
+      }
     }
   }
 };
