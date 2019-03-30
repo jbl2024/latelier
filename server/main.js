@@ -9,7 +9,7 @@ import '../imports/api/resources/server/publications.js';
 import '../imports/api/projects/projects.js';
 import '../imports/api/tasks/server/publications.js';
 import '../imports/api/projects/server/publications.js';
-import '../imports/api/users/permissions.js';
+import '../imports/api/permissions/permissions.js';
 import '../imports/api/users/users.js';
 import '../imports/api/users/server/sso.js';
 import '../imports/api/users/server/emailTemplates.js';
