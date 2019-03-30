@@ -330,6 +330,12 @@ export default {
         "projects.updateDescription", {
           projectId: this.project._id,
           description: this.project.description
+        }, (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            this.cancelUpdateDescription();
+            return;
+          }
         }
       );
     },

@@ -7,6 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
+import { Permissions } from '/imports/api/users/permissions'
 
 export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
@@ -24,6 +25,22 @@ export const ProjectStates = Object.freeze({
 
 Projects.methods = {};
 
+const checkLoggedIn = () => {
+  if (!Meteor.userId()) {
+    throw new Meteor.Error("not-authorized");
+  }
+}
+
+const checkIfAdminOrCreator = (projectId) => {
+  if (Permissions.isAdmin(Meteor.userId())) {
+    return true;
+  }
+  const project = Projects.findOne(projectId);
+  if (project.createdBy != Meteor.userId()) {
+    throw new Meteor.Error("not-authorized");
+  }
+}
+
 Projects.methods.insert = new ValidatedMethod({
   name: "projects.insert",
   validate: new SimpleSchema({
@@ -31,13 +48,8 @@ Projects.methods.insert = new ValidatedMethod({
     name: { type: String }
   }).validator(),
   run({ organizationId, name }) {
-    check(name, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
-
+    checkLoggedIn();
+   
     var project = Projects.insert({
       organizationId: organizationId,
       name: name,
@@ -60,12 +72,7 @@ Projects.methods.create = new ValidatedMethod({
     state: { type: String }
   }).validator(),
   run({ organizationId, name, projectType, projectGroupId, state }) {
-    const currentUser = Meteor.userId();
-
-    // Make sure the user is logged in before inserting a task
-    if (!currentUser) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
 
     const projectId = Projects.insert({
       organizationId: organizationId,
@@ -102,6 +109,9 @@ Projects.methods.remove = new ValidatedMethod({
     projectId: { type: String }
   }).validator(),
   run({ projectId }) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+
     Tasks.remove({ projectId: projectId });
     Lists.remove({ projectId: projectId });
     Attachments.remove({ "meta.projectId": projectId });
@@ -121,8 +131,9 @@ Projects.methods.updateName = new ValidatedMethod({
     name: { type: String }
   }).validator(),
   run({projectId, name}) {
-    check(projectId, String);
-    check(name, String);
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+
     if (name.length == 0) {
       throw new Meteor.Error("invalid-name");
     }
@@ -137,6 +148,8 @@ Projects.methods.updateDescription = new ValidatedMethod({
     description: { type: String }
   }).validator(),
   run({projectId, description}) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     if (description.length == 0) {
       throw new Meteor.Error("invalid-description");
     }
@@ -167,6 +180,8 @@ Projects.methods.updateColor = new ValidatedMethod({
     color: { type: String }
   }).validator(),
   run({projectId, color}) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     Projects.update({ _id: projectId }, { $set: { color: color } });
   }
 });
@@ -178,6 +193,8 @@ Projects.methods.updateIsPublic = new ValidatedMethod({
     isPublic: { type: Boolean }
   }).validator(),
   run({projectId, isPublic}) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     Projects.update({ _id: projectId }, { $set: { isPublic: isPublic } });
   }
 });
@@ -188,6 +205,7 @@ Projects.methods.clone = new ValidatedMethod({
     projectId: { type: String }
   }).validator(),
   run({projectId}) {
+    checkLoggedIn();
     var project = Projects.findOne(projectId);
     if (!project) {
       throw new Meteor.Error("invalid-project");
@@ -254,10 +272,9 @@ Projects.methods.addMember = new ValidatedMethod({
     userId: { type: String }
   }).validator(),
   run({projectId, userId}) {
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+
     if (Projects.find({ _id: projectId, members: userId }).count() > 0) {
       return;
     }
@@ -272,13 +289,8 @@ Projects.methods.removeMember = new ValidatedMethod({
     userId: { type: String }
   }).validator(),
   run({projectId, userId}) {
-    check(projectId, String);
-    check(userId, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
 
     if (Projects.find({ _id: projectId, members: userId }).count() == 0) {
       return;
@@ -299,9 +311,8 @@ Projects.methods.setStartDate = new ValidatedMethod({
     startDate: { type: String}
   }).validator(),
   run({projectId, startDate}) {
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     Projects.update({ _id: projectId }, { $set: { startDate: startDate } });
   }
 });
@@ -313,9 +324,8 @@ Projects.methods.setEndDate = new ValidatedMethod({
     endDate: { type: String }
   }).validator(),
   run({projectId, endDate}) {
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     Projects.update({ _id: projectId }, { $set: { endDate: endDate } });
   }
 });
@@ -327,9 +337,8 @@ Projects.methods.updateEstimatedSize = new ValidatedMethod({
     estimatedSize: { type: Number }
   }).validator(),
   run({projectId, estimatedSize}) {
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     Projects.update(
       { _id: projectId },
       { $set: { estimatedSize: estimatedSize } }
@@ -343,7 +352,8 @@ Projects.methods.getHistory = new ValidatedMethod({
     projectId: { type: String }
   }).validator(),
   run({projectId}) {
-    check(projectId, String);
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
     const query = {
       "properties.task.projectId": projectId
     };
@@ -377,8 +387,7 @@ Projects.methods.addToUserFavorites = new ValidatedMethod({
     userId: { type: String }
   }).validator(),
   run({projectId, userId}) {
-    check(projectId, String);
-    check(userId, String);
+    checkLoggedIn();
     if (!Meteor.userId() || Meteor.userId() !== userId) {
       throw new Meteor.Error("not-authorized");
     }
@@ -395,6 +404,7 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
     userId: { type: String }
   }).validator(),
   run({projectId, userId}) {
+    checkLoggedIn();
     check(projectId, String);
     check(userId, String);
     if (!Meteor.userId() || Meteor.userId() !== userId) {
