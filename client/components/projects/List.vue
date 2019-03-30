@@ -1,5 +1,6 @@
 <template>
   <div class="list">
+    <new-task :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
       <div class="list-header">
         <div class="swimlane dragscroll">
@@ -103,7 +104,8 @@ export default {
     return {
       selectedList: {},
       savedName: "",
-      showHiddenTasks: false
+      showHiddenTasks: false,
+      showNewTaskDialog: false
     };
   },
   watch: {
@@ -276,6 +278,8 @@ export default {
       });
     },
     newTaskInline(listId) {
+      this.showNewTaskDialog = true;
+      return;
       this.$store.dispatch("projectFilters/reset", {vm: this});
       Meteor.call(
         "tasks.insert",
