@@ -69,7 +69,7 @@ export default {
 
     refresh () {
       this.loading = true;
-      Meteor.call('projects.getHistory', this.projectId, (error, result) => {
+      Meteor.call('projects.getHistory', {projectId: this.projectId}, (error, result) => {
         this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
