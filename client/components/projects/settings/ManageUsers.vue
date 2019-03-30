@@ -1,7 +1,7 @@
 <template>
   <div class="manage-users elevation-1">
     <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog"></select-user>
-    <v-list>
+    <v-list v-if="$subReady.user && $subReady.users">
       <v-subheader>Membres
         <v-btn flat icon @click="showSelectUserDialog = true">
           <v-icon>add</v-icon>
@@ -17,7 +17,7 @@
             <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
           </v-list-tile-content>
 
-          <v-list-tile-action v-if="canManageProject(project) && !isAdmin(user, project) && user._id != Meteor.userId()">
+          <v-list-tile-action v-if="canManageProject(project) && !isAdmin(user, project) && userId != user._id">
             <v-tooltip top slot="activator">
               <v-btn icon ripple @click.stop="setAdmin(user, project)" slot="activator">
                 <v-icon color="grey">security</v-icon>
@@ -26,7 +26,7 @@
             </v-tooltip>
           </v-list-tile-action>
 
-          <v-list-tile-action v-if="canManageProject(project) && isAdmin(user, project) && user._id != Meteor.userId()">
+          <v-list-tile-action v-if="canManageProject(project) && isAdmin(user, project) && userId != user._id">
             <v-tooltip top slot="activator">
               <v-btn icon ripple @click.stop="removeAdmin(user, project)" slot="activator">
                 <v-icon color="red">security</v-icon>
@@ -80,6 +80,9 @@ export default {
     $subscribe: {
       users: function() {
         return [];
+      },
+      user: function() {
+        return [];
       }
     },
     projectUsers: {
@@ -95,6 +98,9 @@ export default {
           return Meteor.users.find({ _id: { $in: members } });
         }
       }
+    },
+    userId() {
+      return Meteor.userId()
     }
   },
   methods: {
