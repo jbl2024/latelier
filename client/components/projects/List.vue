@@ -280,19 +280,6 @@ export default {
     newTaskInline(listId) {
       this.showNewTaskDialog = true;
       return;
-      this.$store.dispatch("projectFilters/reset", {vm: this});
-      Meteor.call(
-        "tasks.insert",
-        this.list.projectId,
-        listId,
-        "",
-        (error, task) => {
-          if (error) {
-            return;
-          }
-          this.$events.fire("task-edit-name-after-creation", task);
-        }
-      );
     },
 
     getTransferData(list) {
