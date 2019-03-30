@@ -162,3 +162,9 @@ export default {
 
 
 </style>
+
+<style>
+.v-autocomplete__content {
+  z-index: 210 !important;
+}
+</style>

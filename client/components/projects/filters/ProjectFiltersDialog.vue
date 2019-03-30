@@ -24,9 +24,11 @@ export default {
     messages: {
       en: {
         "Filters": "Filters",
+        "Close": "Close",
       },
       fr: {
         "Filters": "Filtres",
+        "Close": "Fermer",
       }
     }
   },    
