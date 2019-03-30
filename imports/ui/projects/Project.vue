@@ -9,6 +9,10 @@
       @cancel="onCancelDeleteTask"
       @confirm="onConfirmDeleteTask"
     />
+    <project-filters-dialog
+      :active.sync="showFiltersDialog"
+      :projectId="projectId"
+    />
 
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate></v-progress-linear>
@@ -17,8 +21,12 @@
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
         <v-toolbar dense class="flex0 show-desktop">
-          <project-filters :projectId="projectId"></project-filters>
-          <labels :projectId="projectId" mode="select"></labels>
+          <v-btn icon @click="showFiltersDialog = true" v-if="$vuetify.breakpoint.smAndDown">
+            <v-icon>filter_list</v-icon>
+          </v-btn>
+
+          <project-filters :projectId="projectId" v-if="$vuetify.breakpoint.mdAndUp"></project-filters>
+          
           <v-spacer></v-spacer>
           <div>
           <v-tooltip top slot="activator" v-if="!isFavorite(user, projectId)">
@@ -116,6 +124,7 @@ export default {
       editProjectName: false,
       debouncedFilter: '',
       showDeleteTaskDialog: false,
+      showFiltersDialog: false,
       taskToDeleted: undefined
     }
   },

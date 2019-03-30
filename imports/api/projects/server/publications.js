@@ -69,6 +69,12 @@ publishComposite("allProjects", (name) => {
             // users
             find(project) {
               var members = project.members || [];
+              if (project.createdBy) {
+                members.push(project.createdBy);
+              }
+              if (project.updatedBy) {
+                members.push(project.updatedBy);
+              }
               return Meteor.users.find(
                 { _id: { $in: members } },
                 { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } }

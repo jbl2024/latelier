@@ -1,9 +1,9 @@
 <template>
-  <div class="compact-form">
+  <div>
     <v-autocomplete
       v-if="assignedUsers.length > 0"
       dense
-      class="auto-complete"
+      class="compact-form auto-complete"
       v-model="selectedAssignedTos"
       :items="assignedUsers"
       :label="$t('Assigned to')"
@@ -28,7 +28,7 @@
     <v-autocomplete
       v-if="updatedByUsers.length > 0"
       dense
-      class="auto-complete"
+      class="compact-form auto-complete"
       v-model="selectedUpdatedBy"
       :items="updatedByUsers"
       :label="$t('Updated by')"
@@ -50,6 +50,7 @@
         >(+{{ selectedUpdatedBy.length - 3 }} {{ $t('others') }})</span>
       </template>
     </v-autocomplete>
+    <labels :projectId="projectId" mode="select"></labels>
   </div>
 </template>
 
@@ -58,6 +59,8 @@ import { Meteor } from "meteor/meteor";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { mapState } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+
+const usersCache = {};
 
 export default {
   mixins: [usersMixin],
@@ -98,13 +101,12 @@ export default {
 
   methods: {
     refreshUsers() {
-      const usersCache = {};
       const loadUser = (id) => {
         if (typeof id !== "object") {
-          const userObject = usersCache.id;
+          const userObject = usersCache[id];
           if (userObject) return userObject;
-          usersCache.id = Meteor.users.findOne({ _id: id });
-          return usersCache.id;
+          usersCache[id] = Meteor.users.findOne({ _id: id });
+          return usersCache[id];
         }
       }
 
@@ -153,8 +155,10 @@ export default {
   transform-origin: left;
 }
 
-.auto-complete {
+.auto-complete, .labels {
   max-width: 200px;
   display: inline-block;
 }
+
+
 </style>
