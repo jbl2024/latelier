@@ -64,3 +64,9 @@ if (Meteor.isServer) {
     return true;
   });
 }
+
+export const checkLoggedIn = () => {
+  if (!Meteor.userId()) {
+    throw new Meteor.Error("not-authorized");
+  }
+}
