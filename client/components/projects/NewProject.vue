@@ -78,15 +78,16 @@ export default {
     },
     create() {
       Meteor.call(
-        "projects.create",
-        this.organizationId,
-        this.name,
-        this.projectType,
-        this.$store.state.selectedGroup._id,
-        this.projectState,
+        "projects.create",{
+          organizationId: this.organizationId,
+          name: this.name,
+          projectType: this.projectType,
+          projectGroupId: this.$store.state.selectedGroup._id,
+          state: this.projectState
+        },
         (error, result) => {
           if (error) {
-            console.log(error);
+            this.$store.dispatch("notifyError", error);
             return;
           }
           this.$router.push({

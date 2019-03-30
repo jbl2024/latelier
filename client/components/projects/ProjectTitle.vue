@@ -106,7 +106,7 @@ export default {
 
     updateProjectName() {
       this.editProjectName = false;
-      Meteor.call("projects.updateName", this.project._id, this.project.name);
+      Meteor.call("projects.updateName", {projectId: this.project._id, name: this.project.name});
     },
 
     cancelUpdateProjectName() {

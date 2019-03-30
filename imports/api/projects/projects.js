@@ -1,17 +1,17 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
+import { check } from "meteor/check";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
-import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
-import { Labels } from '/imports/api/labels/labels.js'
-import { Events } from '/imports/api/events/events.js'
+import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
+import { Labels } from "/imports/api/labels/labels.js";
+import { Events } from "/imports/api/events/events.js";
 
-export const Projects = new Mongo.Collection('projects');
+export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
   Meteor.startup(() => {
-    Projects.rawCollection().createIndex({organizationId: 1});
+    Projects.rawCollection().createIndex({ organizationId: 1 });
   });
 }
 
@@ -22,14 +22,20 @@ export const ProjectStates = Object.freeze({
   ARCHIVED: "archived"
 });
 
+Projects.methods = {};
 
-Meteor.methods({
-  'projects.insert'(organizationId, name) {
+Projects.methods.insert = new ValidatedMethod({
+  name: "projects.insert",
+  validate: new SimpleSchema({
+    organizationId: { type: String },
+    name: { type: String }
+  }).validator(),
+  run({ organizationId, name }) {
     check(name, String);
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
 
     var project = Projects.insert({
@@ -41,18 +47,24 @@ Meteor.methods({
     });
 
     return project;
-  },
+  }
+});
 
-  'projects.create'(organizationId, name, projectType, projectGroupId, state) {
-    check(organizationId, String);
-    check(name, String);
-    check(projectType, String);
-    check(state, String);
+Projects.methods.create = new ValidatedMethod({
+  name: "projects.create",
+  validate: new SimpleSchema({
+    organizationId: { type: String },
+    name: { type: String },
+    projectType: { type: String },
+    projectGroupId: { type: String, optional: true },
+    state: { type: String }
+  }).validator(),
+  run({ organizationId, name, projectType, projectGroupId, state }) {
     const currentUser = Meteor.userId();
 
     // Make sure the user is logged in before inserting a task
     if (!currentUser) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
 
     const projectId = Projects.insert({
@@ -62,114 +74,152 @@ Meteor.methods({
       createdAt: new Date(),
       createdBy: currentUser
     });
-    Meteor.call('projects.addMember', projectId, currentUser);
+    Meteor.call("projects.addMember", {projectId: projectId, userId: currentUser});
 
-    if (projectType === 'kanban') {
-      Meteor.call('lists.insert', projectId, 'A planifier');
-      Meteor.call('lists.insert', projectId, 'En cours');
-      Meteor.call('lists.insert', projectId, 'Terminé', true, true);
+    if (projectType === "kanban") {
+      Meteor.call("lists.insert", projectId, "A planifier");
+      Meteor.call("lists.insert", projectId, "En cours");
+      Meteor.call("lists.insert", projectId, "Terminé", true, true);
     }
 
-    if (projectType === 'people') {
-      Meteor.call('lists.insert', projectId, 'Vincent');
-      Meteor.call('lists.insert', projectId, 'François');
-      Meteor.call('lists.insert', projectId, 'Paul');
-      Meteor.call('lists.insert', projectId, '... et les autres');
+    if (projectType === "people") {
+      Meteor.call("lists.insert", projectId, "Vincent");
+      Meteor.call("lists.insert", projectId, "François");
+      Meteor.call("lists.insert", projectId, "Paul");
+      Meteor.call("lists.insert", projectId, "... et les autres");
     }
 
     if (projectGroupId) {
-      Meteor.call('projectGroups.addProject', projectGroupId, projectId);
+      Meteor.call("projectGroups.addProject", projectGroupId, projectId);
     }
-
     return projectId;
-  },
+  }
+});
 
-  'projects.remove'(projectId) {
-    check(projectId, String);
-
-    Tasks.remove({projectId: projectId});
-    Lists.remove({projectId: projectId});
-    Attachments.remove({'meta.projectId': projectId});
-    Meteor.users.update({}, {$pull: {'profile.favoriteProjects': projectId}}, {multi: true});
+Projects.methods.remove = new ValidatedMethod({
+  name: "projects.remove",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({ projectId }) {
+    Tasks.remove({ projectId: projectId });
+    Lists.remove({ projectId: projectId });
+    Attachments.remove({ "meta.projectId": projectId });
+    Meteor.users.update(
+      {},
+      { $pull: { "profile.favoriteProjects": projectId } },
+      { multi: true }
+    );
     Projects.remove(projectId);
-  },
+  }
+});
 
-  'projects.updateName'(projectId, name) {
+Projects.methods.updateName = new ValidatedMethod({
+  name: "projects.updateName",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    name: { type: String }
+  }).validator(),
+  run({projectId, name}) {
     check(projectId, String);
     check(name, String);
     if (name.length == 0) {
-      throw new Meteor.Error('invalid-name');
+      throw new Meteor.Error("invalid-name");
     }
+    Projects.update({ _id: projectId }, { $set: { name: name } });
+  }
+});
 
-    Projects.update({_id: projectId}, {$set: {name: name}});
-  },
-
-  'projects.updateDescription'(projectId, description) {
-    check(projectId, String);
-    check(description, String);
+Projects.methods.updateDescription = new ValidatedMethod({
+  name: "projects.updateDescription",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    description: { type: String }
+  }).validator(),
+  run({projectId, description}) {
     if (description.length == 0) {
-      throw new Meteor.Error('invalid-description');
+      throw new Meteor.Error("invalid-description");
     }
 
-    Projects.update({_id: projectId}, {$set: {description: description}});
-  },
+    Projects.update({ _id: projectId }, { $set: { description: description } });
+  }
+});
 
-  'projects.updateState'(projectId, state) {
-    check(projectId, String);
-    check(state, String);
+Projects.methods.updateStates = new ValidatedMethod({
+  name: "projects.updateState",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    state: { type: String }
+  }).validator(),
+  run({projectId, state}) {
     if (state.length == 0) {
-      throw new Meteor.Error('invalid-state');
+      throw new Meteor.Error("invalid-state");
     }
 
-    Projects.update({_id: projectId}, {$set: {state: state}});
-  },
+    Projects.update({ _id: projectId }, { $set: { state: state } });
+  }
+});
 
-  'projects.updateColor'(projectId, color) {
-    check(projectId, String);
-    check(color, String);
-    Projects.update({_id: projectId}, {$set: {color: color}});
-  },
+Projects.methods.updateColor = new ValidatedMethod({
+  name: "projects.updateColor",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    color: { type: String }
+  }).validator(),
+  run({projectId, color}) {
+    Projects.update({ _id: projectId }, { $set: { color: color } });
+  }
+});
 
-  'projects.updateIsPublic'(projectId, isPublic) {
-    check(projectId, String);
-    check(isPublic, Boolean);
-    Projects.update({_id: projectId}, {$set: {isPublic: isPublic}});
-  },
+Projects.methods.updateIsPublic = new ValidatedMethod({
+  name: "projects.updateIsPublic",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    isPublic: { type: Boolean }
+  }).validator(),
+  run({projectId, isPublic}) {
+    Projects.update({ _id: projectId }, { $set: { isPublic: isPublic } });
+  }
+});
 
-  'projects.clone'(projectId) {
-    check(projectId, String);
+Projects.methods.clone = new ValidatedMethod({
+  name: "projects.clone",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({projectId}) {
     var project = Projects.findOne(projectId);
     if (!project) {
-      throw new Meteor.Error('invalid-project');
+      throw new Meteor.Error("invalid-project");
     }
 
     var newProjectId = Projects.insert({
-      name: 'Copie de ' + project.name,
+      name: "Copie de " + project.name,
       organizationId: project.organizationId,
       createdAt: new Date(),
       createdBy: Meteor.userId(),
       state: project.state,
       startDate: project.startDate,
       endDate: project.endDate,
-      estimatedSize: project.estimatedSize,
+      estimatedSize: project.estimatedSize
     });
 
     var newProject = Projects.findOne(newProjectId);
     if (!newProject) {
-      throw new Meteor.Error('invalid-new-project');
+      throw new Meteor.Error("invalid-new-project");
     }
 
-    var projectGroups = ProjectGroups.find({projects: projectId});
+    var projectGroups = ProjectGroups.find({ projects: projectId });
     projectGroups.map(projectGroup => {
-      Meteor.call('projectGroups.addProject', projectGroup._id, newProjectId);
+      Meteor.call("projectGroups.addProject", projectGroup._id, newProjectId);
     });
 
-    var labels = Labels.find({projectId: projectId});
+    var labels = Labels.find({ projectId: projectId });
     labels.map(label => {
-      Meteor.call('labels.create', newProjectId, label.name, label.color);
+      Meteor.call("labels.create", newProjectId, label.name, label.color);
     });
 
-    var lists = Lists.find({projectId: projectId});
+    var lists = Lists.find({ projectId: projectId });
     lists.map(list => {
       var newListId = Lists.insert({
         name: list.name,
@@ -179,7 +229,7 @@ Meteor.methods({
         createdBy: Meteor.userId()
       });
 
-      var tasks = Tasks.find({listId: list._id});
+      var tasks = Tasks.find({ listId: list._id });
       tasks.map(task => {
         Tasks.insert({
           name: task.name,
@@ -194,113 +244,164 @@ Meteor.methods({
         });
       });
     });
-  },
+  }
+});
 
-  'projects.addMember'(projectId, userId) {
+Projects.methods.addMember = new ValidatedMethod({
+  name: "projects.addMember",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({projectId, userId}) {
+    // Make sure the user is logged in before inserting a task
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    if (Projects.find({ _id: projectId, members: userId }).count() > 0) {
+      return;
+    }
+    Projects.update({ _id: projectId }, { $push: { members: userId } });
+  }
+});
+
+Projects.methods.removeMember = new ValidatedMethod({
+  name: "projects.removeMember",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({projectId, userId}) {
     check(projectId, String);
     check(userId, String);
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
-    if (Projects.find({_id: projectId,  "members" : userId}).count() > 0) {
+
+    if (Projects.find({ _id: projectId, members: userId }).count() == 0) {
       return;
     }
-    Projects.update({_id: projectId}, {$push: {members: userId}});
-  },
+    Projects.update({ _id: projectId }, { $pull: { members: userId } });
+    Tasks.update(
+      { projectId: projectId, assignedTo: userId },
+      { $set: { assignedTo: null } },
+      { multi: true }
+    );
+  }
+});
 
-  'projects.removeMember'(projectId, userId) {
-    check(projectId, String);
-    check(userId, String);
-
-    // Make sure the user is logged in before inserting a task
+Projects.methods.setStartDate = new ValidatedMethod({
+  name: "projects.setStartDate",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    startDate: { type: String}
+  }).validator(),
+  run({projectId, startDate}) {
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
+    Projects.update({ _id: projectId }, { $set: { startDate: startDate } });
+  }
+});
 
-    if (Projects.find({_id: projectId,  "members" : userId}).count() == 0) {
-      return;
-    }
-    Projects.update({_id: projectId}, {$pull: {members: userId}});
-    Tasks.update({projectId: projectId, assignedTo: userId}, {$set: {assignedTo: null}}, {multi: true});
-  },
-
-  'projects.setStartDate'(projectId, startDate) {
-    check(projectId, String);
-
+Projects.methods.setEndDate = new ValidatedMethod({
+  name: "projects.setEndDate",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    endDate: { type: String }
+  }).validator(),
+  run({projectId, endDate}) {
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
-    Projects.update({_id: projectId}, {$set: {startDate: startDate}});
-  },
+    Projects.update({ _id: projectId }, { $set: { endDate: endDate } });
+  }
+});
 
-  'projects.setEndDate'(projectId, endDate) {
-    check(projectId, String);
-
+Projects.methods.updateEstimatedSize = new ValidatedMethod({
+  name: "projects.updateEstimatedSize",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    estimatedSize: { type: Number }
+  }).validator(),
+  run({projectId, estimatedSize}) {
     if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
-    Projects.update({_id: projectId}, {$set: {endDate: endDate}});
-  },
+    Projects.update(
+      { _id: projectId },
+      { $set: { estimatedSize: estimatedSize } }
+    );
+  }
+});
 
-  'projects.updateEstimatedSize'(projectId, estimatedSize) {
-    check(projectId, String);
-    check(estimatedSize, Number);
-
-    if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
-    }
-    Projects.update({_id: projectId}, {$set: {estimatedSize: estimatedSize}});
-  },
-
-  'projects.getHistory'(projectId) {
+Projects.methods.getHistory = new ValidatedMethod({
+  name: "projects.getHistory",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({projectId}) {
     check(projectId, String);
     const query = {
-      'properties.task.projectId': projectId
-    }
+      "properties.task.projectId": projectId
+    };
 
-    const data = Events
-      .find(
-        query,
-        {
-          sort: {
-            createdAt: -1
-          }
-        }
-      )
-      .fetch();   
-      
-      const dataWithUsers = []
-      data.map(item => {
-        item.user = item.userId;
-        const user = Meteor.users.findOne({_id: item.userId});
-        if (user) {
-          item.user = user.emails[0].address;
-        }
-        dataWithUsers.push(item);
-      })
+    const data = Events.find(query, {
+      sort: {
+        createdAt: -1
+      }
+    }).fetch();
 
-      return {
-        data: dataWithUsers
-      };
-  },
+    const dataWithUsers = [];
+    data.map(item => {
+      item.user = item.userId;
+      const user = Meteor.users.findOne({ _id: item.userId });
+      if (user) {
+        item.user = user.emails[0].address;
+      }
+      dataWithUsers.push(item);
+    });
 
-  "projects.addToUserFavorites"(projectId, userId) {
+    return {
+      data: dataWithUsers
+    };
+  }
+});
+
+Projects.methods.addToUserFavorites = new ValidatedMethod({
+  name: "projects.addToUserFavorites",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({projectId, userId}) {
     check(projectId, String);
     check(userId, String);
     if (!Meteor.userId() || Meteor.userId() !== userId) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {$push: {'profile.favoriteProjects': projectId}});
-  },
+    Meteor.users.update(userId, {
+      $push: { "profile.favoriteProjects": projectId }
+    });
+  }
+});
 
-  "projects.removeFromUserFavorites"(projectId, userId) {
+Projects.methods.removeFromUserFavorites = new ValidatedMethod({
+  name: "projects.removeFromUserFavorites",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({projectId, userId}) {
     check(projectId, String);
     check(userId, String);
     if (!Meteor.userId() || Meteor.userId() !== userId) {
-      throw new Meteor.Error('not-authorized');
+      throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {$pull: {'profile.favoriteProjects': projectId}});
+    Meteor.users.update(userId, {
+      $pull: { "profile.favoriteProjects": projectId }
+    });
   }
 });
