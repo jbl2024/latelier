@@ -1,5 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Roles } from "meteor/alanning:roles";
+import { Projects } from "/imports/api/projects/projects.js";
 
 const ApplicationRoles = Object.freeze({
   ADMIN: "admin",
@@ -25,6 +26,10 @@ export const Permissions = {
       throw new Meteor.Error(401, "not-authorized");
     }
     Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope)
+  },
+
+  initializeProjectPermissions(project) {
+    Roles.addUsersToRoles(project.createdBy, ApplicationRoles.ADMIN, project._id)
   },
 
   removeAdmin(userId, scope=Roles.GLOBAL_GROUP) {
@@ -119,6 +124,21 @@ Permissions.methods.setAdmin = new ValidatedMethod({
       scope = Roles.GLOBAL_GROUP;
     }
     Permissions.setAdmin(userId, scope)
+  }
+});
+
+Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
+  name: "permissions.initializeProjectPermissions",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+  }).validator(),
+  run({ projectId }) {
+    checkLoggedIn();
+    
+    const project = Projects.findOne({_id: projectId});
+    const userId = project.createdBy;
+    if (!userId) return;
+    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
   }
 });
 

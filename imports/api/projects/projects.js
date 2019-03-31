@@ -80,6 +80,7 @@ Projects.methods.create = new ValidatedMethod({
       createdBy: currentUserId
     });
     Meteor.call("projects.addMember", {projectId: projectId, userId: currentUserId});
+    Meteor.call("permissions.initializeProjectPermissions", {projectId: projectId});
 
     if (projectType === "kanban") {
       Meteor.call("lists.insert", projectId, "A planifier");
