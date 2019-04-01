@@ -35,7 +35,9 @@ Meteor.methods({
   'labels.remove'(labelId) {
     check(labelId, String);
 
-    Tasks.update({}, { $pull: { labels: labelId } }, {multi: true});
+    // See https://github.com/matb33/meteor-collection-hooks#direct-access-circumventing-hooks
+    // Avoid calling hooks to prevent polluting task last modification date
+    Tasks.direct.update({labels: labelId}, { $pull: { labels: labelId } }, {multi: true});
     Labels.remove(labelId);
   },
 
