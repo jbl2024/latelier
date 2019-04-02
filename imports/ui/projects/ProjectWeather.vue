@@ -180,6 +180,11 @@ export default {
   height: 100%;
   position: relative;
   width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0; 
+  right: 0;
+  bottom: 0;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
