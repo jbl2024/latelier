@@ -191,6 +191,13 @@ export default {
         };
         items.push(item);
       });
+
+      setTimeout(() => { 
+        if (this.$refs.timeline && this.$refs.timeline.redraw) {
+          this.$refs.timeline.redraw();
+        }
+      }, 1000);
+
       return items;
     },
 
