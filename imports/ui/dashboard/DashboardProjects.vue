@@ -306,7 +306,10 @@ export default {
     },
     favorites() {
       const user = Meteor.user() || {profile: {}};
-      const favorites = user.profile.favoriteProjects || [];
+      let favorites = [];
+      if (user && user.profile) {
+        favorites = user.profile.favoriteProjects || [];
+      }
       return Projects.find(
         {_id: {$in: favorites}}, 
         {
