@@ -48,6 +48,7 @@ const messages = {
     "No favorite": "Aucun favori",
     "All": "Tous",
     "Favorites": "Favoris",
+    "Delete attachment?": "Supprimer la pièce jointe ?",
     history: {
       tasks: {
         create: "Création",
@@ -127,7 +128,8 @@ const messages = {
     "Project removed from favorites": "Project removed from favorites",
     "All": "All",
     "Favorites": "Favorites",
-    "No favorite": "No favori",
+    "No favorite": "No favorite",
+    "Delete attachment?": "Supprimer la pièce jointe ?",
     history: {
       tasks: {
         create: "Creation",

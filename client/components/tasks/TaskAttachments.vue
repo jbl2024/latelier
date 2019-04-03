@@ -90,10 +90,18 @@ export default {
     },
 
     deleteAttachment (attachment) {
-      Meteor.call('attachments.remove', attachment._id);
-      Meteor.call('tasks.track', {
-        type: 'tasks.removeAttachment',
-        taskId: this.task._id,
+      this.$confirm(this.$t("Delete attachment?"), {
+        title: attachment.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call('attachments.remove', attachment._id);
+          Meteor.call('tasks.track', {
+            type: 'tasks.removeAttachment',
+            taskId: this.task._id,
+          });
+        }
       });
     },
 
