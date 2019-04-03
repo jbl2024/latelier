@@ -11,6 +11,7 @@ const callbacks = {
       const user = Meteor.users.findOne({ _id: task.assignedTo });
       if (!user) return;
       if (user.emailSettings && !user.emailSettings.tasks.assignTo) return;
+      if (user._id === event.userId) return;
 
       const email = {
         subject(user, task) {
