@@ -18,22 +18,6 @@ export default {
     }
   },
   methods: {
-    formatUser(userId) {
-      if (!userId) {
-        return "";
-      }
-      var user = Meteor.users.findOne({ _id: userId });
-      return user.emails[0].address;
-    },
-
-    formatUserLetters(userId) {
-      if (!userId) {
-        return "";
-      }
-      var user = Meteor.users.findOne({ _id: userId });
-      var emailComponents = user.emails[0].address.split("@");
-      return emailComponents[0][0] + emailComponents[1][0];
-    }
   }
 };
 </script>
