@@ -171,6 +171,7 @@ Meteor.methods({
       for (var i = 0; i < tasks.length; i++) {
         var task  = tasks[i];
         task.order = i*10;
+        
         Tasks.update({_id: task._id}, {$set: {order: task.order}});
       }
     }
@@ -187,29 +188,6 @@ Meteor.methods({
       }
       Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {});
     }
-
-    // if (order != -1 && order != 0) {
-    //   Tasks.update({listId: listId, order: {$gt: order}}, {$inc: {order: 10}}, {}, (error, result) => {
-    //     Tasks.update({_id: taskId}, {$set: {listId: listId, order: order + 10}}, {}, (error, result) => {
-    //       _reorder(listId);
-    //     });
-    //   });
-
-    // } else if (order == 0) {
-    //   Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
-    //     _reorder(listId);
-    //   });
-    // } else {
-    //   var lastTask = Tasks.findOne({projectId: projectId, listId: listId}, {sort: {order: -1}});
-    //   if (lastTask) {
-    //     order = lastTask.order + 10;
-    //   } else {
-    //     order = 10;
-    //   }
-    //   Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
-    //     _reorder(listId);
-    //   });
-    // }
 
     Meteor.call('tasks.track', {
       type: 'tasks.move',
