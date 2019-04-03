@@ -24,27 +24,10 @@ var _checkForCompletion = function(listId, taskId) {
 
 Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
  
-  const hasOrderModification = modifier =>  {
-    if (modifier.$set && modifier.$set.order != undefined) {
-      if (Object.keys(modifier.$set).length === 1) {
-        return true;
-      }
-    }
-    if (modifier.$inc && modifier.$inc.order) {
-      return true;
-    }
-    return false;
-  };
-
   const hasCompletedModification = modifier => {
     if (modifier.$set && modifier.$set.completed != undefined) { 
       return true;
     }
-  }
-
-  if (hasOrderModification(modifier)) {
-    // do not pollute update history with minor order modifications
-    return;
   }
 
   modifier.$set = modifier.$set || {};
@@ -172,11 +155,11 @@ Meteor.methods({
         var task  = tasks[i];
         task.order = i*10;
         
-        Tasks.update({_id: task._id}, {$set: {order: task.order}});
+        Tasks.direct.update({_id: task._id}, {$set: {order: task.order}});
       }
     }
     if (order) {
-      Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
+      Tasks.direct.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
         _reorder(listId);
       });    
     } else {
@@ -186,7 +169,7 @@ Meteor.methods({
       } else {
         order = 10;
       }
-      Tasks.update({_id: taskId}, {$set: {listId: listId, order: order}}, {});
+      Tasks.direct.update({_id: taskId}, {$set: {listId: listId, order: order}}, {});
     }
 
     Meteor.call('tasks.track', {
