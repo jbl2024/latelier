@@ -52,11 +52,13 @@ export default {
     onUpload(e) {
       var file = e.target.files[0];
       var that = this;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
       const upload = Attachments.insert(
         {
           file: file,
           streams: "dynamic",
           chunkSize: "dynamic",
+          transport: transport,
           meta: {
             projectId: this.task.projectId,
             taskId: this.task._id,

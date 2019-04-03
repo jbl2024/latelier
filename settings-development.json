@@ -12,6 +12,7 @@
     "sso": {
       "enabled": true,
       "email": "ct-remote-email"
-    }
+    },
+    "uploadTransport": "http"
   }
 }

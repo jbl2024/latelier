@@ -175,6 +175,7 @@ export default {
       }
 
       const taskName = files[0].name;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
 
       Meteor.call(
         "tasks.insert",
@@ -191,6 +192,7 @@ export default {
                 file: file,
                 streams: "dynamic",
                 chunkSize: "dynamic",
+                transport: transport,
                 meta: {
                   projectId: task.projectId,
                   taskId: task._id,

@@ -7,5 +7,12 @@
   },
   "roles": {
     "admin": ["foo@bar.com"]
+  },
+  "public": {
+    "sso": {
+      "enabled": true,
+      "email": "ct-remote-email"
+    },
+    "uploadTransport": "http|ddp" 
   }
 }
