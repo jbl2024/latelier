@@ -294,6 +294,7 @@ export default {
       }
 
       const taskName = files[0].name;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
 
       files.map(file => {
         const upload = Attachments.insert(
@@ -301,6 +302,7 @@ export default {
             file: file,
             streams: "dynamic",
             chunkSize: "dynamic",
+            transport: transport,
             meta: {
               projectId: task.projectId,
               taskId: task._id,
