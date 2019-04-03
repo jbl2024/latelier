@@ -182,7 +182,10 @@ export default {
     },
 
     isFavorite(user, projectId) {
-      const favorites = user.profile.favoriteProjects || [];
+      let favorites = [];
+      if (user && user.profile) {
+        favorites = user.profile.favoriteProjects || [];
+      }
       return favorites.indexOf(projectId) >= 0;
     },
 
