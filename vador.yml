@@ -6,3 +6,4 @@ ports:
 internal_links:
   /var/lib/projects/latelier/.meteor/local: /vagrant/projects/latelier/.meteor/local
   /var/lib/projects/latelier/node_modules: /vagrant/projects/latelier/node_modules
+  /var/lib/projects/latelier/packages/vue-component-dev-client/.npm: /vagrant/projects/latelier/packages/vue-component-dev-client/.npm
