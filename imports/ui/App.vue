@@ -102,7 +102,8 @@ export default {
       "currentOrganizationId",
       "notifyMessage",
       "showTaskDetail",
-      "selectedTask"
+      "selectedTask",
+      "windowTitle"
     ]),
     showTaskDetail: {
       get() {
@@ -123,6 +124,9 @@ export default {
       if (!show) {
         this.$store.dispatch("notify", "");
       }
+    },
+    windowTitle(title) {
+      document.title = title
     }
   },
   meteor: {

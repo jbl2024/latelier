@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { projectFilters } from "./projectFilters";
+import get from "lodash/get";
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -14,6 +15,7 @@ export const store = new Vuex.Store({
     showTaskDetail: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
+    windowTitle: "",
     notifyMessage: ''
   },
   getters: {
@@ -43,6 +45,14 @@ export const store = new Vuex.Store({
     },
     notify(state, message) {
       state.notifyMessage = message;
+    },
+    updateWindowTitle(state, windowTitle) {
+      let fullTitle = get(Meteor.settings, "public.seo.titlePrefix", "l'atelier");
+      if (windowTitle) {
+        let titleValue = typeof windowTitle === "function" ? windowTitle.call(this) : windowTitle;
+        fullTitle = fullTitle + " - " + titleValue;
+      }
+      state.windowTitle = fullTitle;
     }
   },
   actions: {
@@ -68,6 +78,9 @@ export const store = new Vuex.Store({
     },
     showTaskDetail(context, showTaskDetail) {
       context.commit('updateShowTaskDetail', showTaskDetail);
+    },
+    setWindowTitle (context, windowTitle) {
+      context.commit('updateWindowTitle', windowTitle);
     },
     notify(context, message) {
       context.commit('notify', message);

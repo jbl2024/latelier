@@ -32,20 +32,9 @@ import { Organizations } from '/imports/api/organizations/organizations.js'
 export default {
   mounted(){
     this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
-    let self = this;
-    this.$nextTick(function() {
-      window.addEventListener("resize", function(e) {
-        self.windowWidth = window.innerWidth;
-      });
-    });
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentOrganizationId', 0);    
-  },
-  computed:{
-      tabAlignment(){
-        return this.windowWidth > 600 ? "left" : "fixed";
-      }
   },
   props: {
     organizationId: {
@@ -56,6 +45,9 @@ export default {
   data () {
     return {
       windowWidth: window.innerWidth,
+      title() {
+        return this.$t("Settings")
+      }
     }
   },
   meteor: {

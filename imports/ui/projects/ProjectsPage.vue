@@ -5,8 +5,10 @@
 </template>
 
 <script>
+
 export default {
   mounted () {
+    this.$store.dispatch("setWindowTitle", this.$t("Projects"));
     this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
   },
   beforeDestroy() {
@@ -21,7 +23,11 @@ export default {
   },
 
   data () {
-    return {}
+    return {
+      title() {
+        return this.$t("Projects")
+      }
+    }
   },
   methods: {
   },

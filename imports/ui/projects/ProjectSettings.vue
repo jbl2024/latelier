@@ -35,23 +35,10 @@ export default {
   mounted(){
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
     this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
-    let self = this;
-    this.$nextTick(function() {
-      window.addEventListener("resize", function(e) {
-        self.windowWidth = window.innerWidth;
-      });
-    });
-  },
-  created () {
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentProjectId', 0);    
     this.$store.dispatch('setCurrentOrganizationId', 0);    
-  },
-  computed:{
-      tabAlignment(){
-        return this.windowWidth > 600 ? "left" : "fixed";
-      }
   },
   props: {
     organizationId: {
@@ -65,9 +52,11 @@ export default {
   },
   data () {
     return {
-      windowWidth: window.innerWidth,
       savedProjectName: '',
       editProjectName: false,
+      title() {
+        return this.$t("Settings")
+      }
     }
   },
   meteor: {

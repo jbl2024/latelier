@@ -142,7 +142,11 @@ export default {
       if (this.taskId != 0) {
         this.selectTask(this.taskId);
       }
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("setWindowTitle", project.name);
+      }
+      return project;
     },
     user () {
       return Meteor.user();

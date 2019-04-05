@@ -5,7 +5,11 @@
 </template>
 
 <script>
+
 export default {
+  mounted() {
+    this.$store.dispatch("setWindowTitle", this.$t("Organizations"));
+  },
   data () {
     return {
     }
