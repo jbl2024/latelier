@@ -208,6 +208,20 @@
                   <span>{{ $t('New project') }}</span>
                 </v-tooltip>
               </div>
+              
+
+              <div>
+                <v-tooltip top slot="activator">
+                  <v-btn
+                    icon
+                    @click.stop="openOrganizationTimeline(organization._id)"
+                    slot="activator"
+                  >
+                    <v-icon>timeline</v-icon>
+                  </v-btn>
+                  <span>{{ $t('Timeline') }}</span>
+                </v-tooltip>
+              </div>
 
               <div>
                 <v-tooltip top slot="activator">
@@ -651,6 +665,13 @@ export default {
     openOrganizationSettings(id) {
       this.$router.push({
         name: "organization-settings",
+        params: { organizationId: id }
+      });
+    },
+
+    openOrganizationTimeline(id) {
+      this.$router.push({
+        name: "projects-timeline",
         params: { organizationId: id }
       });
     }
