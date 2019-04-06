@@ -9,6 +9,8 @@ Meteor.publish("projectGroups", function projectGroups(organizationId, name) {
   if (name && name.length > 0) {
     query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
   } 
-  query.organizationId = organizationId;
+  if (organizationId) {
+    query.organizationId = organizationId;
+  }
   return ProjectGroups.find(query);
 });

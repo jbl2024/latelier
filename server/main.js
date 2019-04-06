@@ -41,6 +41,5 @@ Accounts.config({
 });
 
 Meteor.startup(() => {
-  Meteor.call('organizations.fixOrphanProjects');
   Meteor.call('organizations.fixOrphanProjectGroups');
 });

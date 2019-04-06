@@ -19,9 +19,9 @@
               <v-flex sm6 md6>
                 <label>{{ $t('Template') }}</label>
                 <v-radio-group v-model="projectType">
-                  <v-radio label="Vide" value="none"></v-radio>
                   <v-radio label="Kanban" value="kanban"></v-radio>
                   <v-radio :label="$t('People')" value="people"></v-radio>
+                  <v-radio label="Vide" value="none"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex sm6 md6>
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       showDialog: false,
-      projectType: "none",
+      projectType: "kanban",
       projectState: ProjectStates.DEVELOPMENT,
       valid: false,
       name: "",

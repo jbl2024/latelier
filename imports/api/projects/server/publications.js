@@ -55,6 +55,11 @@ publishComposite("allProjects", (name) => {
       {
         // organizations
         find(project) {
+          if (!project.organizationId) {
+            this.ready();
+            return;
+          }
+          
           const userId = Meteor.userId();
           if (Permissions.isAdmin(userId)) {
             return Organizations.find({_id: project.organizationId});
@@ -81,6 +86,10 @@ publishComposite("allProjects", (name) => {
       {
         // groups
         find(project) {
+          if (!project.organizationId) {
+            this.ready();
+            return;
+          }
           return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       }
@@ -140,12 +149,20 @@ publishComposite("project", function(projectId) {
       {
         // groups
         find(project) {
+          if (!project.organizationId) {
+            this.ready();
+            return;
+          }
           return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       },
       {
         // resources
         find(project) {
+          if (!project.organizationId) {
+            this.ready();
+            return;
+          }
           return Resources.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       },

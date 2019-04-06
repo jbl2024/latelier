@@ -7,10 +7,10 @@
           flat
           icon
           color="white"
-          v-if="project && project.organizationId"
-          :to="{ name: 'projects-page', params: {organizationId: project.organizationId} }"
+          v-if="project"
+          :to="{ name: 'dashboard-page' }"
         >
-          <v-icon>domain</v-icon>
+          <v-icon>home</v-icon>
         </v-btn>
         <span class="title" @click="startUpdateProjectName">{{ project.name }}</span>
       </div>

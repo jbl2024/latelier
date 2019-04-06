@@ -62,7 +62,7 @@ Projects.methods.insert = new ValidatedMethod({
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
   validate: new SimpleSchema({
-    organizationId: { type: String },
+    organizationId: { type: String, optional: true },
     name: { type: String },
     projectType: { type: String },
     projectGroupId: { type: String, optional: true },

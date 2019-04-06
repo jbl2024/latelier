@@ -36,8 +36,8 @@ Meteor.methods({
 
       const projects = Projects.find(
         {
-          organizationId: { $in: organizationIds },
-          $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+          $or: [{organizationId: { $in: organizationIds }}, {organizationId: {$exists: false}}],
+          $or: [{ createdBy: userId }, { members: userId }]
         },
         { fields: { _id: 1 } }
       ).fetch();

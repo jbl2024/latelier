@@ -49,6 +49,7 @@ const messages = {
     "All": "Tous",
     "Favorites": "Favoris",
     "Delete attachment?": "Supprimer la pièce jointe ?",
+    "Individuals": "Personnels",
     history: {
       tasks: {
         create: "Création",
@@ -129,7 +130,8 @@ const messages = {
     "All": "All",
     "Favorites": "Favorites",
     "No favorite": "No favorite",
-    "Delete attachment?": "Supprimer la pièce jointe ?",
+    "Delete attachment?": "Delete attachment?",
+    "Individuals": "Individuals",
     history: {
       tasks: {
         create: "Creation",
