@@ -62,6 +62,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
+        v-if="canManageProject(projectId)"
         :to="{ name: 'project-settings', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
@@ -78,6 +79,8 @@
 </template>
 
 <script>
+import { Permissions } from "/imports/api/permissions/permissions"
+
 export default {
   props: {
     projectId: {
@@ -89,7 +92,12 @@ export default {
     return {
       showHistoryDialog: false
     };
-  }
+  },
+  methods: {
+    canManageProject(projectId) {
+      return Permissions.isAdmin(Meteor.userId(), projectId) || Permissions.isAdmin(Meteor.userId());
+    }
+  },
 };
 </script>
 
