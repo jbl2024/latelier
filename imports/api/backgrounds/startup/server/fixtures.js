@@ -22,4 +22,13 @@ function generateFixtures() {
   });
 }
 
+function fixBackgroundLinks() {
+  const users  = Meteor.users.find({"profile.background._id": {$exists: true}}).fetch()
+  users.map(user => {
+    const background = user.profile.background;
+    Meteor.users.update(user._id, {$set: {'profile.background': Backgrounds.link(background)}}); 
+  });
+}
+
 generateFixtures();
+fixBackgroundLinks();

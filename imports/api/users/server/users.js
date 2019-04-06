@@ -4,6 +4,19 @@ import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import { Permissions } from '/imports/api/permissions/permissions'
 
+// Disable client insert/remove/update
+Meteor.users.deny({
+  insert() {
+    return true;
+  },
+  remove() {
+    return true;
+  },
+  update() {
+    return true;
+  }
+});
+
 Meteor.methods({
   "admin.findUsers"(page, filter) {
     

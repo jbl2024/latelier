@@ -169,7 +169,7 @@ export default {
       if (user && user.profile) {
         const background = user.profile.background;
         if (background) {
-          return `background-image: url('${Backgrounds.link(background)}');`;
+          return `background-image: url('${background}');`;
         }
       }
     },

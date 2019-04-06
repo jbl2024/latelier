@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
 import { check } from "meteor/check";
+import { checkLoggedIn } from "/imports/api/permissions/permissions"
 
 
 export const Backgrounds = new FilesCollection({
@@ -23,6 +24,9 @@ if (Meteor.isServer) {
     Backgrounds.collection.rawCollection().createIndex({"metadata.name": 1});
   });
 }
+if (!Backgrounds.methods) {
+  Backgrounds.methods = {};
+}
 
 Meteor.methods({
   'backgrounds.remove'(id) {
@@ -35,3 +39,29 @@ Meteor.methods({
     return Backgrounds.find({}).fetch();
   }
 });
+
+if (Meteor.isServer) {
+  Backgrounds.methods.choose = new ValidatedMethod({
+    name: "backgrounds.choose",
+    validate: new SimpleSchema({
+      backgroundId: { type: String }
+    }).validator(),
+    run({ backgroundId }) {    
+      checkLoggedIn();
+      const background = Backgrounds.findOne({_id: backgroundId});
+      if (!background) {
+        throw new Meteor.Error('not-found');
+      }
+      Meteor.users.update(Meteor.userId(), {$set: {'profile.background': background.link()}}); 
+    }
+  });
+
+  Backgrounds.methods.clear = new ValidatedMethod({
+    name: "backgrounds.clear",
+    validate: null,
+    run() {    
+      checkLoggedIn();
+      Meteor.users.update(Meteor.userId(), {$unset: {'profile.background': 1}});
+    }
+  });
+}

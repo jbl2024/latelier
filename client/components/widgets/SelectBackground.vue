@@ -77,15 +77,25 @@ export default {
     },
 
     selectBackground(image) {
-      Meteor.users.update(Meteor.userId(), {$set: {'profile.background': image}});
-      this.$store.dispatch("notify", this.$t("Background updated"));
-      this.$emit("update:active", false);
+      Meteor.call("backgrounds.choose", {backgroundId: image._id}, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$store.dispatch("notify", this.$t("Background updated"));
+        this.$emit("update:active", false);
+      });
     },
 
     clearBackground() {
-      Meteor.users.update(Meteor.userId(), {$unset: {'profile.background': 1}});
-      this.$store.dispatch("notify", this.$t("Background updated"));
-      this.$emit("update:active", false);
+      Meteor.call("backgrounds.clear", (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$store.dispatch("notify", this.$t("Background updated"));
+        this.$emit("update:active", false);
+      });
     }
   }
 };
