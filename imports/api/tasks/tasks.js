@@ -378,8 +378,12 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error('not-authorized');
     }
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error('task-not-found');
+    }
     Tasks.update({_id: taskId}, {$set: {assignedTo: userId}});
-
+    Meteor.call("projects.addMember", {projectId: task.projectId, userId: userId});
     Meteor.call('tasks.track', {
       type: 'tasks.assignTo',
       taskId: taskId,
