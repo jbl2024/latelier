@@ -101,49 +101,49 @@ export default [
     props: true
   },
   {
-    path: "/projects/:organizationId/:projectId",
+    path: "/projects/:projectId",
     name: "project",
     beforeEnter: isBasicAuth,
     component: Project,
     props: true
   },
   {
-    path: "/projects-settings/:organizationId/:projectId",
+    path: "/projects-settings/:projectId",
     name: "project-settings",
     beforeEnter: isBasicAuth,
     component: ProjectSettings,
     props: true
   },
   {
-    path: "/projects-timeline/:organizationId/:projectId",
+    path: "/projects-timeline/:projectId",
     name: "project-timeline",
     beforeEnter: isBasicAuth,
     component: ProjectTimeline,
     props: true
   },
   {
-    path: "/projects-canvas/:organizationId/:projectId",
+    path: "/projects-canvas/:projectId",
     name: "project-canvas",
     beforeEnter: isBasicAuth,
     component: ProjectCanvas,
     props: true
   },
   {
-    path: "/projects-weather/:organizationId/:projectId",
+    path: "/projects-weather/:projectId",
     name: "project-weather",
     beforeEnter: isBasicAuth,
     component: ProjectWeather,
     props: true
   },
   {
-    path: "/projects-attachments/:organizationId/:projectId",
+    path: "/projects-attachments/:projectId",
     name: "project-attachments-page",
     beforeEnter: isBasicAuth,
     component: ProjectAttachmentsPage,
     props: true
   },
   {
-    path: "/projects/:organizationId/:projectId/:taskId",
+    path: "/projects/:projectId/:taskId",
     name: "project-task",
     beforeEnter: isBasicAuth,
     component: Project,

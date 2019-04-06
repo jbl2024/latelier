@@ -112,7 +112,7 @@ export default {
           }
           this.$router.push({
             name: "project",
-            params: { organizationId: this.organizationId, projectId: result }
+            params: { projectId: result }
           });
         }
       );

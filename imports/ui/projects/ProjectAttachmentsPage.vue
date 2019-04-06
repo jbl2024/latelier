@@ -25,7 +25,7 @@
               <a class="link"  :href="link(attachment)"  target="_blank">{{ attachment.name }}</a>          
             </v-list-tile-title>
             <v-list-tile-sub-title>
-              <router-link class="link-subtitle"  :to="{ name: 'project-task', params: { organizationId: organizationId, projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
+              <router-link class="link-subtitle"  :to="{ name: 'project-task', params: { projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
             </v-list-tile-sub-title>
           </v-list-tile-content>
 
@@ -49,23 +49,15 @@ import { mapState } from 'vuex';
 export default {
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
-    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
   },
   beforeDestroy() {
     this.$store.dispatch('setCurrentProjectId', 0);    
   },
   props: {
-    organizationId: {
-      type: String,
-      default: '0'
-    },
     projectId: {
       type: String,
       default: '0'
     }
-  },
-  computed: {
-    ...mapState(['currentOrganizationId'])
   },
   data () {
     return {

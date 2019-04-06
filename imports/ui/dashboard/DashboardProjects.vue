@@ -38,12 +38,85 @@
             color="primary"
             dark
             dense
-            @click="openOrganization(organization._id)"
           >
             <v-icon>star</v-icon>
             <v-toolbar-title>{{ $t('Favorites')}}</v-toolbar-title>
           </v-toolbar>
         <template v-for="item in favorites">
+          <v-list-tile :key="item._id" @click="openProject(item)">
+            <v-list-tile-avatar :color="getColor(item)">
+              <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content class="pointer">
+              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+              <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
+            </v-list-tile-content>
+            <v-list-tile-action
+              v-for="group in getProjectGroups(item)"
+              class="show-desktop"
+              :key="group._id"
+              @click.stop="selectGroup(group)"
+            >
+              <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop" v-if="canManageProject(item)">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  slot="activator"
+                  color="grey darken-1"
+                  @click.stop="openProjectSettings(item)"
+                >
+                  <v-icon>settings</v-icon>
+                </v-btn>
+                <span>{{ $t('Settings') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  color="grey darken-1"
+                  @click.stop="cloneProject(item._id)"
+                  slot="activator"
+                >
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+                <span>{{ $t('Clone') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+            <v-list-tile-action class="show-desktop" v-if="canDeleteProject(item)">
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  flat
+                  color="grey darken-1"
+                  @click.stop="deleteProject(item._id)"
+                  slot="activator"
+                >
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>{{ $t('Delete') }}</span>
+              </v-tooltip>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-divider inset :key="`divider-${item._id}`"></v-divider>
+        </template>
+      </v-list>
+
+      <v-list two-line subheader class="elevation-1" dense v-if="individuals.length > 0">
+          <v-toolbar
+            class="pointer"
+            color="primary"
+            dark
+            dense
+          >
+            <v-icon>account_circle</v-icon>
+            <v-toolbar-title>{{ $t('Individuals')}}</v-toolbar-title>
+          </v-toolbar>
+        <template v-for="item in individuals">
           <v-list-tile :key="item._id" @click="openProject(item)">
             <v-list-tile-avatar :color="getColor(item)">
               <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
@@ -316,6 +389,22 @@ export default {
           sort: { organizationId: 1, state: 1, name: 1 }
         }
       );
+    },
+    individuals() {
+      const organizationIds = [];
+      Organizations.find({}).fetch().map(organization => {
+        organizationIds.push(organization._id)
+      });
+      return Projects.find(
+        {
+          organizationId: {
+            $nin: organizationIds
+          }
+        },
+        {
+          sort: { state: 1, name: 1 }
+        }
+      );
     }
   },
   methods: {
@@ -358,7 +447,6 @@ export default {
       this.$router.push({
         name: "project",
         params: {
-          organizationId: project.organizationId,
           projectId: project._id
         }
       });

@@ -37,57 +37,52 @@ Meteor.publish("projects", function projectsPublication(organizationId, name, gr
 
 publishComposite("allProjects", (name) => {
   return {
-    // organizations
+    // projects
     find() {
       const userId = Meteor.userId();
       let query = {};
+    
       if (!Permissions.isAdmin(userId)) {
-        query['$or'] = [{members: userId}, {isPublic: true}];
+        query['$or'] = [{createdBy: userId}, {members: userId}];
       }
-      return Organizations.find(query);
+    
+      if (name && name.length > 0) {
+        query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
+      } 
+      return Projects.find(query);
     },
     children: [
       {
-        // projects
-        find(organization) {
+        // organizations
+        find(project) {
           const userId = Meteor.userId();
-          let query = {};
-        
-          if (!Permissions.isAdmin(userId)) {
-            query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
+          if (Permissions.isAdmin(userId)) {
+            return Organizations.find({_id: project.organizationId});
           }
-        
-          if (name && name.length > 0) {
-            query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
-          } 
-                
-          query.organizationId = organization._id;
-          return Projects.find(query);
+          return Organizations.find({_id: project.organizationId, members: userId});
         },
-        children: [
-          {
-            // users
-            find(project) {
-              var members = project.members || [];
-              if (project.createdBy) {
-                members.push(project.createdBy);
-              }
-              if (project.updatedBy) {
-                members.push(project.updatedBy);
-              }
-              return Meteor.users.find(
-                { _id: { $in: members } },
-                { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } }
-              );
-            }
-          },
-          {
-            // groups
-            find(project) {
-              return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
-            }
+      },
+      {
+        // users
+        find(project) {
+          var members = project.members || [];
+          if (project.createdBy) {
+            members.push(project.createdBy);
           }
-        ]
+          if (project.updatedBy) {
+            members.push(project.updatedBy);
+          }
+          return Meteor.users.find(
+            { _id: { $in: members } },
+            { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } }
+          );
+        }
+      },
+      {
+        // groups
+        find(project) {
+          return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
+        }
       }
     ]
   };

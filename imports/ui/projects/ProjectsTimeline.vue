@@ -139,7 +139,6 @@ export default {
       if (items && items.length > 0) {
         const projectId = items[0];
         this.$router.push({
-          name: "project",
           params: { organizationId: this.organizationId, projectId: projectId }
         });
       }

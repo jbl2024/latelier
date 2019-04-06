@@ -277,6 +277,10 @@ Projects.methods.addMember = new ValidatedMethod({
     if (Projects.find({ _id: projectId, members: userId }).count() > 0) {
       return;
     }
+    const project = Projects.findOne({_id: projectId});
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
     Projects.update({ _id: projectId }, { $push: { members: userId } });
   }
 });

@@ -33,7 +33,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
     this.$events.listen("close-task-detail", task => {
       this.$store.dispatch('selectTask', null);
       this.$store.dispatch('showTaskDetail', false);
@@ -46,16 +45,11 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", 0);
-    this.$store.dispatch("setCurrentOrganizationId", 0);
     this.$store.dispatch('selectTask', null);
     this.$store.dispatch('showTaskDetail', false);
     this.$events.off("close-task-detail");
   },
   props: {
-    organizationId: {
-      type: String,
-      default: "0"
-    },
     projectId: {
       type: String,
       default: "0"

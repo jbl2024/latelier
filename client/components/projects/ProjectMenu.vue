@@ -2,9 +2,9 @@
   <div class="project-menu">
     <project-history :projectId="projectId" ref="projectHistory"></project-history>
 
-    <v-list dense class="pt-0" v-if="projectId && organizationId">
+    <v-list dense class="pt-0" v-if="projectId">
       <v-list-tile
-        :to="{ name: 'project', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>list</v-icon>
@@ -14,7 +14,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        :to="{ name: 'project-timeline', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project-timeline', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>timeline</v-icon>
@@ -24,7 +24,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        :to="{ name: 'project-canvas', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project-canvas', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>web</v-icon>
@@ -34,7 +34,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        :to="{ name: 'project-weather', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project-weather', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>wb_sunny</v-icon>
@@ -44,7 +44,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        :to="{ name: 'project-attachments-page', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project-attachments-page', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>attachment</v-icon>
@@ -62,7 +62,7 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
-        :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}"
+        :to="{ name: 'project-settings', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
           <v-icon>settings</v-icon>
@@ -81,10 +81,6 @@
 export default {
   props: {
     projectId: {
-      type: String,
-      default: 0
-    },
-    organizationId: {
       type: String,
       default: 0
     }

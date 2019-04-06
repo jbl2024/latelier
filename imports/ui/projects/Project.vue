@@ -44,7 +44,7 @@
             <span>{{ $t('Remove from favorites') }}</span>
           </v-tooltip>
           </div>
-          <v-btn v-if="canManageProject(project)" icon :to="{ name: 'project-settings', params: { organizationId: organizationId, projectId: projectId }}">
+          <v-btn v-if="canManageProject(project)" icon :to="{ name: 'project-settings', params: { projectId: projectId }}">
             <v-icon>settings</v-icon>
           </v-btn>
         </v-toolbar>
@@ -67,7 +67,6 @@ import { mapState } from "vuex";
 export default {
   mounted () {
     this.$store.dispatch('setCurrentProjectId', this.projectId);    
-    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
     this.$events.listen('close-task-detail', task => {
       this.$store.dispatch('selectTask', null);
       this.$store.dispatch('showTaskDetail', false);
@@ -89,10 +88,6 @@ export default {
     this.$store.dispatch('showTaskDetail', false);
   },
   props: {
-    organizationId: {
-      type: String,
-      default: '0'
-    },
     projectId: {
       type: String,
       default: '0'

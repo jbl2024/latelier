@@ -155,7 +155,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentOrganizationId", "currentProjectId"]),
+    ...mapState(["currentProjectId"]),
     selected: {
       get() {
         return this.$store.state.selectedTask && this.$store.state.selectedTask._id === this.task._id;
@@ -393,7 +393,6 @@ export default {
       this.$router.push({
         name: "project-task",
         params: {
-          organizationId: this.currentOrganizationId,
           projectId: this.task.projectId,
           taskId: this.task._id
         }

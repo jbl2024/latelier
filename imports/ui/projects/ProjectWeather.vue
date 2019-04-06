@@ -83,17 +83,11 @@ export default {
   mixins: [DatesMixin],
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
   },
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", 0);
-    this.$store.dispatch("setCurrentOrganizationId", 0);
   },
   props: {
-    organizationId: {
-      type: String,
-      default: "0"
-    },
     projectId: {
       type: String,
       default: "0"
