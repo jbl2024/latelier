@@ -1,6 +1,6 @@
 <template>
   <div class="organization-settings-manage-users">
-    <select-user @select="onSelectUser" :active.sync="showSelectUserDialog"></select-user>
+    <select-user @select="onSelectUser" :active.sync="showSelectUserDialog" is-admin="canManageOrganization(organization)"></select-user>
     <div class="elevation-1 users">
       <v-list>
         <v-subheader>Membres
@@ -78,6 +78,13 @@ export default {
         this.organization._id,
         user._id
       );
+    },
+
+    canManageOrganization(organization) {
+      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
     }
   }
 };

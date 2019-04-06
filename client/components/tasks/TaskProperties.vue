@@ -2,7 +2,7 @@
 
 <div class="task-properties">
 
-  <select-user @select="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog"></select-user>
+  <select-user @select="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
   <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
   <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
   
@@ -78,6 +78,7 @@
 import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
+import { Permissions } from "/imports/api/permissions/permissions"
 import usersMixin from '/imports/ui/mixins/UsersMixin.js';
 import moment from 'moment';
 import 'moment/locale/fr'
@@ -117,6 +118,10 @@ export default {
     formatDate (date) {
       return moment(date).format('DD/MM/YYYY HH:mm');
     },
+
+    canManageProject(task) {
+      return Permissions.isAdmin(Meteor.userId(), task.projectId) || Permissions.isAdmin(Meteor.userId());
+    }
   }
 };
 </script>

@@ -12,7 +12,7 @@
         <v-card-text>
           <v-tabs>
             <v-tab ripple>{{ $t('Available users') }}</v-tab>
-            <v-tab ripple>{{ $t('Find')}}</v-tab>
+            <v-tab ripple v-if="isAdmin">{{ $t('Find')}}</v-tab>
             <v-tab-item>
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
@@ -30,7 +30,7 @@
               </div>
             </v-tab-item>
 
-            <v-tab-item>
+            <v-tab-item v-if="isAdmin">
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
@@ -121,7 +121,11 @@ export default {
   },
   props: {
     active: Boolean,
-    project: Object
+    project: Object,
+    isAdmin: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {

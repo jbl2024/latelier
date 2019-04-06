@@ -1,6 +1,6 @@
 <template>
   <div class="manage-users elevation-1">
-    <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog"></select-user>
+    <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog" :is-admin="canManageProject(project)"></select-user>
     <v-list v-if="$subReady.user && $subReady.usersInProject">
       <v-subheader>Membres
         <v-btn flat icon @click="showSelectUserDialog = true">
