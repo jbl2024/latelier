@@ -1,7 +1,7 @@
 <template>
   <div class="manage-users elevation-1">
     <select-user @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog"></select-user>
-    <v-list v-if="$subReady.user && $subReady.users">
+    <v-list v-if="$subReady.user && $subReady.usersInProject">
       <v-subheader>Membres
         <v-btn flat icon @click="showSelectUserDialog = true">
           <v-icon>add</v-icon>
@@ -78,8 +78,8 @@ export default {
   },
   meteor: {
     $subscribe: {
-      users: function() {
-        return [];
+      usersInProject: function() {
+        return [this.project._id];
       },
       user: function() {
         return [];

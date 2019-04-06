@@ -5,52 +5,71 @@
       @input="$emit('update:active')"
       max-width="620"
       :fullscreen="$vuetify.breakpoint.xsOnly"
+      lazy
     >
       <v-card>
-        <v-card-title class="headline">{{ $t('Select user')}}</v-card-title>
+        <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
         <v-card-text>
-          <div class="flex-container">
-            <div class="flex0">
-              <v-text-field
-                label="Recherche"
-                single-line
-                v-model="search"
-                append-icon="search"
-                clearable
-                v-on:input="debouncedFilter"
-              ></v-text-field>
-            </div>
-            <div class="flex1">
-              <v-list dense subheader>
-                <v-subheader>
-                  {{ pagination.totalItems}} utilisateurs
-                  <v-btn flat icon @click="$refs.newUser.open()">
-                    <v-icon>add</v-icon>
-                  </v-btn>
-                </v-subheader>
-                <template v-for="user in users">
-                  <v-list-tile :key="user._id" avatar @click="selectUser(user)">
-                    <v-list-tile-avatar :color="isOnline(user)">
-                      <span>{{ formatUserLetters(user) }}</span>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-                    </v-list-tile-content>
-                  </v-list-tile>
-                </template>
-              </v-list>
-            </div>
-            <div class="flex0">
-              <div class="text-xs-center">
-                <v-pagination
-                  v-if="pagination.totalPages > 0"
-                  v-model="page"
-                  :length="pagination.totalPages"
-                ></v-pagination>
+          <v-tabs>
+            <v-tab ripple>{{ $t('Available users') }}</v-tab>
+            <v-tab ripple>{{ $t('Find')}}</v-tab>
+            <v-tab-item>
+              <div class="flex-container">
+                <v-list class="flex1" dense subheader>
+                  <template v-for="user in availableUsers">
+                    <v-list-tile :key="user._id" avatar @click="selectUser(user)">
+                      <v-list-tile-avatar :color="isOnline(user)">
+                        <span class>{{ formatUserLetters(user) }}</span>
+                      </v-list-tile-avatar>
+                      <v-list-tile-content class="pointer">
+                        <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </template>
+                </v-list>
               </div>
-            </div>
-          </div>
+            </v-tab-item>
+
+            <v-tab-item>
+              <div class="flex-container">
+                <div class="flex0">
+                  <v-text-field
+                    label="Recherche"
+                    single-line
+                    v-model="search"
+                    append-icon="search"
+                    clearable
+                    v-on:input="debouncedFilter"
+                  ></v-text-field>
+                </div>
+                <div class="flex1">
+                  <v-list dense subheader>
+                    <template v-for="user in users">
+                      <v-list-tile :key="user._id" avatar @click="selectUser(user)">
+                        <v-list-tile-avatar :color="isOnline(user)">
+                          <span>{{ formatUserLetters(user) }}</span>
+                        </v-list-tile-avatar>
+                        <v-list-tile-content>
+                          <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+                        </v-list-tile-content>
+                      </v-list-tile>
+                    </template>
+                  </v-list>
+                </div>
+                <div class="flex0">
+                  <div class="text-xs-center">
+                    <v-pagination
+                      v-if="pagination.totalPages > 0"
+                      v-model="page"
+                      :length="pagination.totalPages"
+                    ></v-pagination>
+                  </div>
+                </div>
+              </div>
+            </v-tab-item>
+          </v-tabs>
         </v-card-text>
+        <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="closeDialog">Annuler</v-btn>
@@ -69,6 +88,20 @@ import debounce from "lodash/debounce";
 
 export default {
   mixins: [usersMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Select user": "Select user",
+        "Available users": "Available users",
+        "Find": "Find",
+      }, 
+      fr: {
+        "Select user": "Selectionner un utilisateur",
+        "Available users": "Utilisateurs disponibles",
+        "Find": "Rechercher",
+      }
+    }
+  },
   created() {
     this.debouncedFilter = debounce(val => {
       this.search = val;
@@ -105,7 +138,18 @@ export default {
       }
     };
   },
-  meteor: {},
+  meteor: {
+    availableUsers() {
+      if (this.project && this.project.organizationId) {
+        const organization = Organizations.findOne(this.project.organizationId);
+        if (organization) {
+          const members = organization.members || [];
+          return Meteor.users.find({ _id: { $in: members } });
+        }
+      }
+      return Meteor.users.find();
+    }
+  },
   methods: {
     findUsers() {
       const users = Meteor.call(
@@ -160,8 +204,6 @@ export default {
 
 <style scoped>
 .content {
-  margin-left: 24px;
-  margin-right: 24px;
   overflow-y: scroll;
   max-height: 300px;
 }
@@ -186,7 +228,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: 400px;
+  height: 360px;
 }
 
 .flex0 {

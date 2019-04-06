@@ -48,8 +48,8 @@ export default {
   },
   meteor: {
     $subscribe: {
-      users: function() {
-        return [];
+      usersInOrganization: function() {
+        return [this.organization._id];
       }
     },
     organizationUsers: {
