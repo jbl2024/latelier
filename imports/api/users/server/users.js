@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
-import { Permissions } from '/imports/api/permissions/permissions'
+import { Permissions, checkLoggedIn } from '/imports/api/permissions/permissions'
 
 // Disable client insert/remove/update
 Meteor.users.deny({
@@ -237,5 +237,60 @@ Meteor.methods({
         }
       }
     );    
-  }
+  },
+
+  "users.findUsers"(page, filter) {
+    checkLoggedIn();    
+
+    const perPage = 5;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+    let query = {}
+    if (filter && filter.length > 0) {
+      const emails = {
+        $elemMatch: {
+          address: { $regex: ".*" + filter + ".*", $options: "i" }
+        }
+      }     
+
+      query = {
+        $or: [
+          {emails: emails},
+          {"profile.firstName": { $regex: ".*" + filter + ".*", $options: "i" }},
+          {"profile.lastName": { $regex: ".*" + filter + ".*", $options: "i" }}
+        ]
+      }
+    }
+
+    const count = Meteor.users.find(query).count();
+
+    const data = Meteor.users
+      .find(
+        query,
+        {
+          fields: {
+            profile: 1,
+            emails: 1,
+          },
+          skip: skip,
+          limit: perPage,
+          sort: {
+            _id: 1
+          }
+        }
+      )
+      .fetch();
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      data: data
+    };
+  },  
 });
