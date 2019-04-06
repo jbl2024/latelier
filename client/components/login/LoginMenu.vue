@@ -84,7 +84,7 @@
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
-            <v-list-tile-title>Se déconnecter</v-list-tile-title>
+            <v-list-tile-title>{{ $t('Log out') }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -101,9 +101,11 @@ export default {
     messages: {
       en: { 
         "Background": "Background",
+        "Log out": "Log out"
       },
       fr: {
         "Background": "Fond d'écran",
+        "Log out": "Se déconnecter"
       }
     }  
   }, 
