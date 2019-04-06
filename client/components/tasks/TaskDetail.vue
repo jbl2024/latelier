@@ -296,7 +296,7 @@ export default {
     },
 
     showProjectLink(task) {
-      return task && task.project && task.organization;
+      return task && task.project;
     },
 
     showCreatedBy(task) {
