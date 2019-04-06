@@ -7,25 +7,25 @@
             <v-icon>close</v-icon>
           </v-btn>
           <v-toolbar-title>
-            <span>Nouveau projet</span>
+            <span>{{ $t("New project") }}</span>
           </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" ref="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>
+                <v-text-field v-model="name" ref="name" :rules="nameRules" :label="$t('Name')" v-on:keyup.enter="create()" required></v-text-field>
               </v-flex>
               <v-flex sm6 md6>
-                <label>Modèle</label>
+                <label>{{ $t('Template') }}</label>
                 <v-radio-group v-model="projectType">
                   <v-radio label="Vide" value="none"></v-radio>
                   <v-radio label="Kanban" value="kanban"></v-radio>
-                  <v-radio label="Personnes" value="people"></v-radio>
+                  <v-radio :label="$t('People')" value="people"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex sm6 md6>
-                <label>Etat</label>
+                <label>{{ $t('State') }}</label>
                 <v-radio-group v-model="projectState">
                   <v-radio v-for="item in projectStates()" :key="item.value" :label="item.label" :value="item.value"></v-radio>
                 </v-radio-group>
@@ -35,8 +35,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="primary" @click="create" :disabled="!valid">Créer</v-btn>
+          <v-btn flat @click="showDialog = false">{{ $t('Cancel') }}</v-btn>
+          <v-btn color="primary" @click="create" :disabled="!valid">{{ $t('Create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -49,6 +49,26 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
+  i18n: {
+    messages: {
+      en: {
+        "Template": "Template",
+        "State": "State",
+        "Name": "Name",
+        "People": "People",
+        "Name is mandatory": "Name is mandatory",
+        "Name is too short": "Name is too short",
+      },
+      fr: {
+        "Template": "Modèle",
+        "State": "Etat",
+        "Name": "Nom",
+        "People": "Personnes",
+        "Name is mandatory": "Le nom est obligatoire",
+        "Name is too short": "Le nom est trop court",
+      }
+    }
+  },
   props: {
     organizationId: {
       type: String,
@@ -63,8 +83,8 @@ export default {
       valid: false,
       name: "",
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => v.length > 1 || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => v.length > 1 || this.$t('Name is too short')
       ]
     };
   },
