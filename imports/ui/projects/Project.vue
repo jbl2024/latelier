@@ -9,10 +9,6 @@
       @cancel="onCancelDeleteTask"
       @confirm="onConfirmDeleteTask"
     />
-    <project-filters-dialog
-      :active.sync="showFiltersDialog"
-      :projectId="projectId"
-    />
 
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate></v-progress-linear>
@@ -20,34 +16,7 @@
 
     <div v-if="$subReady.project" class="project-wrapper"> 
       <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <v-toolbar dense class="flex0">
-          <v-btn icon @click="showFiltersDialog = true" v-if="$vuetify.breakpoint.smAndDown">
-            <v-icon>filter_list</v-icon>
-          </v-btn>
-
-          <project-filters :projectId="projectId" v-if="$vuetify.breakpoint.mdAndUp"></project-filters>
-          
-          <v-spacer></v-spacer>
-          <div>
-          <v-tooltip top slot="activator" v-if="!isFavorite(user, projectId)">
-            <v-btn icon @click.stop="addToFavorites(user, projectId)" slot="activator">
-              <v-icon>star_border</v-icon>
-            </v-btn>
-            <span>{{ $t('Add to favorites') }}</span>
-          </v-tooltip>
-          </div>
-          <div>
-          <v-tooltip top slot="activator" v-if="isFavorite(user, projectId)">
-            <v-btn icon @click.stop="removeFromFavorites(user, projectId)" slot="activator">
-              <v-icon>star</v-icon>
-            </v-btn>
-            <span>{{ $t('Remove from favorites') }}</span>
-          </v-tooltip>
-          </div>
-          <v-btn v-if="canManageProject(project)" icon :to="{ name: 'project-settings', params: { projectId: projectId }}">
-            <v-icon>settings</v-icon>
-          </v-btn>
-        </v-toolbar>
+        <project-toolbar :user="user" :project="project" class="flex0"></project-toolbar>
         <kanban ref="container" class="kanban-container flex1" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
       </div>
     </div>
@@ -119,7 +88,6 @@ export default {
       editProjectName: false,
       debouncedFilter: '',
       showDeleteTaskDialog: false,
-      showFiltersDialog: false,
       taskToDeleted: undefined
     }
   },
@@ -178,41 +146,7 @@ export default {
       if (this.taskToDelete) {
         Meteor.call("tasks.remove", this.taskToDelete._id);
       }
-    },
-
-    isFavorite(user, projectId) {
-      let favorites = [];
-      if (user && user.profile) {
-        favorites = user.profile.favoriteProjects || [];
-      }
-      return favorites.indexOf(projectId) >= 0;
-    },
-
-    addToFavorites(user, projectId) {
-      Meteor.call("projects.addToUserFavorites", {projectId: projectId, userId: user._id}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
-        }
-        this.$store.dispatch("notify", this.$t('Project added to favorites'));
-      });
-    },
-
-    removeFromFavorites(user, projectId) {
-      Meteor.call("projects.removeFromUserFavorites", {projectId: projectId, userId: user._id}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
-        }
-        this.$store.dispatch("notify", this.$t('Project removed from favorites'));
-      });
-    },
-
-    canManageProject(project) {
-      return Permissions.isAdmin(Meteor.userId(), project._id) || Permissions.isAdmin(Meteor.userId());
     }
-
-     
   }
 }
 </script>
