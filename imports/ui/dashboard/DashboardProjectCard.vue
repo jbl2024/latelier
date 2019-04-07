@@ -34,7 +34,7 @@
         <v-btn
           icon
           flat
-          color="grey lighten-1"
+          color="grey darken-1"
           @click.stop="addToFavorites(user, project._id)"
           slot="activator"
         >
@@ -56,7 +56,7 @@
             icon
             flat
             slot="activator"
-            color="grey lighten-1"
+            color="grey darken-1"
             @click.stop="openProjectSettings(project)"
           >
             <v-icon>settings</v-icon>
@@ -68,7 +68,7 @@
             icon
             flat
             slot="activator"
-            color="grey lighten-1"
+            color="grey darken-1"
             @click.stop="deleteProject(project)"
           >
             <v-icon>delete</v-icon>

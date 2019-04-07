@@ -2,6 +2,7 @@
   <div class="dashboard2-page">
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
+
     <div class="left" v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
@@ -9,15 +10,15 @@
     <div class="left" v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
       <div class="projects-title">
         <v-layout align-center>
-          <v-flex grow>{{ $t('Projects')}}</v-flex>
+          <v-flex grow>{{ $t('Organizations & Projects')}}</v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
               <v-btn small slot="activator" icon>
                 <v-icon>more_vert</v-icon>
               </v-btn>
               <v-list dense>
-                <v-list-tile >
-                  <v-list-tile-title>{{ $t('Delete') }}</v-list-tile-title>
+                <v-list-tile>
+                  <v-list-tile-title @click="newOrganization()">{{ $t('New organization') }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -25,6 +26,19 @@
         </v-layout>
       </div>
       <v-divider></v-divider>
+
+      <template v-if="projects.length == 0 && organizations.length == 0">
+        <empty-state
+          class="main-empty-state"
+          description="Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs"
+          illustration="project"
+        >
+          <v-btn flat @click="newProject()">Créer un nouveau projet</v-btn>
+          <v-btn class="primary" @click="newOrganization()">Créer une organisation</v-btn>
+        </empty-state>
+      </template>
+
+
       <div class="projects-wrapper">
         <template v-if="favorites.length > 0">
           <div class="header">
@@ -131,13 +145,6 @@
             </v-layout>
           </v-container>
         </template>
-
-        <template v-if="organizations.length > 0">
-          <v-divider></v-divider>
-          <div class="bottom-buttons">
-            <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
-          </div>
-        </template>
       </div>
     </div>
     <div class="right">
@@ -200,12 +207,14 @@ export default {
   i18n: {
     messages: {
       en: {
+        "Organizations & Projects": "Organizations & Projects",
         "Updated recently": "Updated recently",
         Late: "Late",
         "Assigned to me": "Assigned to me",
         Recents: "Recents"
       },
       fr: {
+        "Organizations & Projects": "Organisations & Projets",
         "Updated recently": "Modifiées récemment",
         Late: "En retard",
         "Assigned to me": "Assignées à moi",
@@ -304,6 +313,19 @@ export default {
         params: { organizationId: id }
       });
     },
+    openOrganization(id) {
+      this.$router.push({
+        name: "projects-page",
+        params: { organizationId: id }
+      });
+    },
+
+    openOrganizationSettings(id) {
+      this.$router.push({
+        name: "organization-settings",
+        params: { organizationId: id }
+      });
+    },    
     canManageOrganization(organization) {
       if (
         Permissions.isAdmin(Meteor.userId()) ||
@@ -389,9 +411,10 @@ export default {
   flex-direction: column;
   overflow-y: auto;
   width: 340px;
-  height: 100%;
   background-color: white;
   border-left: 1px solid #ddd;
+  display: flex;
+  position: relative;
 }
 
 .action-button {
@@ -413,14 +436,15 @@ export default {
   margin: 22px;
   text-transform: uppercase;
   font-weight: bold;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
+  flex: 0;
 }
 
 .projects-title {
   text-transform: uppercase;
   font-weight: bold;
   margin-bottom: 12px;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   flex: 0;
 }
 
@@ -431,9 +455,24 @@ export default {
 }
 
 .projects-wrapper > .header:first-child {
-  margin-top:24px;
+  margin-top: 24px;
 }
 
+.main-empty-state {
+  margin-top: 24px;
+}
+
+.tabs-wrapper {
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+  display: flex;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66px;
+  bottom: 0;
+}
 </style>
 
 <style>
