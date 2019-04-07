@@ -49,7 +49,7 @@ const messages = {
     "All": "Tous",
     "Favorites": "Favoris",
     "Delete attachment?": "Supprimer la pièce jointe ?",
-    "Individuals": "Personnels",
+    "Individuals": "Sans organisation",
     history: {
       tasks: {
         create: "Création",

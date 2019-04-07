@@ -24,18 +24,17 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div v-if="$subReady.allProjects">
-      <template v-if="projects.length == 0">
+      <template v-if="projects.length == 0 && organizations.length == 0">
         <empty-state
-          v-if="projects.length == 0"
           description="Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs"
           illustration="project"
         >
           <v-btn flat @click="newProject()">Créer un nouveau projet</v-btn>
-          <v-btn class="primary" @click="newProject()">Créer une organisation</v-btn>
+          <v-btn class="primary" @click="newOrganization()">Créer une organisation</v-btn>
         </empty-state>
       </template>
 
-      <template v-if="projects.length > 0">
+      <template v-if="projects.length > 0 || organizations.length > 0">
         <v-list two-line subheader class="elevation-1" dense v-if="favorites.length > 0">
           <v-toolbar class="pointer" color="primary" dark dense>
             <v-icon>star</v-icon>
@@ -105,7 +104,7 @@
           </template>
         </v-list>
 
-        <v-list two-line subheader class="elevation-1" dense v-if="individuals.length > 0">
+        <v-list two-line subheader class="elevation-1" dense>
           <v-toolbar class="pointer" color="primary" dark dense>
             <v-icon>account_circle</v-icon>
             <v-toolbar-title>{{ $t('Individuals')}}</v-toolbar-title>
@@ -208,7 +207,6 @@
                   <span>{{ $t('New project') }}</span>
                 </v-tooltip>
               </div>
-              
 
               <div>
                 <v-tooltip top slot="activator">
@@ -346,6 +344,7 @@
         >
           <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
         </empty-state>
+
       </template>
     </div>
   </div>
