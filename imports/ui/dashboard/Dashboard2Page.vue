@@ -7,125 +7,149 @@
     </div>
 
     <div class="left" v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
-      <template v-if="favorites.length > 0">
-        <div class="header">
-          <div class="header-title">{{ $t('Favorites') }}</div>
-        </div>
-        <v-container fluid grid-list-xl class="projects">
-          <v-layout row wrap>
-            <v-flex v-for="project in favorites" :key="project._id" xs4>
-              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </template>
+      <div class="projects-title">
+        <v-layout align-center>
+          <v-flex grow>{{ $t('Projects')}}</v-flex>
+          <v-flex shrink>
+            <v-menu bottom left class="menu">
+              <v-btn small slot="activator" icon>
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+              <v-list dense>
+                <v-list-tile >
+                  <v-list-tile-title>{{ $t('Delete') }}</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </v-flex>
+        </v-layout>
+      </div>
+      <v-divider></v-divider>
+      <div class="projects-wrapper">
+        <template v-if="favorites.length > 0">
+          <div class="header">
+            <div class="header-title">{{ $t('Favorites') }}</div>
+          </div>
+          <v-container fluid grid-list-xl class="projects">
+            <v-layout row wrap>
+              <v-flex v-for="project in favorites" :key="project._id" xs12 sm6 md4>
+                <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </template>
 
-      <template v-if="individuals.length > 0">
-        <div class="header">
-          <div class="header-title">{{ $t('My projects') }}</div>
-          <div class="header-action">
-            <v-btn flat solo class="action-button" @click="newProject()">
-              <v-icon left>add</v-icon>
-              {{ $t('New project')}}
-            </v-btn>
+        <template v-if="individuals.length > 0">
+          <div class="header">
+            <div class="header-title">{{ $t('Individuals') }}</div>
+            <div class="header-action">
+              <v-btn flat solo class="action-button" @click="newProject()">
+                <v-icon left>add</v-icon>
+                {{ $t('New project')}}
+              </v-btn>
+            </div>
           </div>
-        </div>
-        <v-container fluid grid-list-xl class="projects">
-          <v-layout row wrap>
-            <v-flex v-for="project in individuals" :key="project._id" xs4>
-              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
-      </template>
+          <v-container fluid grid-list-xl class="projects">
+            <v-layout row wrap>
+              <v-flex v-for="project in individuals" :key="project._id" xs6 sm4>
+                <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </template>
 
-      <template v-for="organization in organizations">
-        <div class="header" :key="`header-${organization._id}`">
-          <div class="header-title">
-            {{ organization.name }}
-            <v-tooltip top slot="activator">
-              <v-btn
-                icon
-                small
-                flat
-                color="grey darken-1"
-                @click.stop="openOrganizationTimeline(organization._id)"
-                slot="activator"
-              >
-                <v-icon>timeline</v-icon>
+        <template v-for="organization in organizations">
+          <div class="header" :key="`header-${organization._id}`">
+            <div class="header-title">
+              {{ organization.name }}
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  small
+                  flat
+                  color="grey darken-1"
+                  @click.stop="openOrganizationTimeline(organization._id)"
+                  slot="activator"
+                >
+                  <v-icon>timeline</v-icon>
+                </v-btn>
+                <span>{{ $t('Timeline') }}</span>
+              </v-tooltip>
+              <v-tooltip top slot="activator" v-if="canManageOrganization(organization)">
+                <v-btn
+                  icon
+                  small
+                  flat
+                  color="grey darken-1"
+                  @click.stop="openOrganizationSettings(organization._id)"
+                  slot="activator"
+                >
+                  <v-icon>settings</v-icon>
+                </v-btn>
+                <span>{{ $t('Settings') }}</span>
+              </v-tooltip>
+              <v-tooltip top slot="activator">
+                <v-btn
+                  icon
+                  small
+                  flat
+                  color="grey darken-1"
+                  @click.stop="deleteOrganization(organization)"
+                  v-if="canDeleteOrganization(organization)"
+                  slot="activator"
+                >
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <span>{{ $t('Delete') }}</span>
+              </v-tooltip>
+            </div>
+            <div class="header-action">
+              <v-btn flat solo class="action-button" @click="newProject(organization._id)">
+                <v-icon left>add</v-icon>
+                {{ $t('New project')}}
               </v-btn>
-              <span>{{ $t('Timeline') }}</span>
-            </v-tooltip>
-            <v-tooltip top slot="activator" v-if="canManageOrganization(organization)">
-              <v-btn
-                icon
-                small
-                flat
-                color="grey darken-1"
-                @click.stop="openOrganizationSettings(organization._id)"
-                slot="activator"
-              >
-                <v-icon>settings</v-icon>
-              </v-btn>
-              <span>{{ $t('Settings') }}</span>
-            </v-tooltip>
-            <v-tooltip top slot="activator">
-              <v-btn
-                icon
-                small
-                flat
-                color="grey darken-1"
-                @click.stop="deleteOrganization(organization)"
-                v-if="canDeleteOrganization(organization)"
-                slot="activator"
-              >
-                <v-icon>delete</v-icon>
-              </v-btn>
-              <span>{{ $t('Delete') }}</span>
-            </v-tooltip>
+            </div>
           </div>
-          <div class="header-action">
-            <v-btn flat solo class="action-button" @click="newProject(organization._id)">
-              <v-icon left>add</v-icon>
-              {{ $t('New project')}}
-            </v-btn>
+          <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
+            <v-layout row wrap>
+              <v-flex
+                v-for="project in projectsByOrganization(organization)"
+                :key="project._id"
+                xs4
+              >
+                <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
+              </v-flex>
+              <empty-state
+                small
+                :key="`${organization._id}-empty`"
+                v-if="projectsByOrganization(organization).length == 0"
+                :description="`Aucun projet disponible`"
+                illustration="project"
+              >
+                <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
+              </empty-state>
+            </v-layout>
+          </v-container>
+        </template>
+
+        <template v-if="organizations.length > 0">
+          <v-divider></v-divider>
+          <div class="bottom-buttons">
+            <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
           </div>
-        </div>
-        <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
-          <v-layout row wrap>
-            <v-flex v-for="project in projectsByOrganization(organization)" :key="project._id" xs4>
-              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
-            </v-flex>
-            <empty-state
-              small
-              :key="`${organization._id}-empty`"
-              v-if="projectsByOrganization(organization).length == 0"
-              :description="`Aucun projet disponible`"
-              illustration="project"
-            >
-              <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
-            </empty-state>
-          </v-layout>
-        </v-container>
-      </template>
+        </template>
+      </div>
     </div>
     <div class="right">
       <div class="tasks" v-if="$subReady.user">
-        <div class="tasks-title">
-          {{ $t('Tasks') }}
-        </div>
+        <div class="tasks-title">{{ $t('Tasks') }}</div>
+        <v-divider></v-divider>
 
         <div class="tabs-wrapper">
           <v-tabs v-model="tab">
-            <v-tab>
-              {{ $t('Recents') }}
-            </v-tab>
-            <v-tab>
-              {{ $t('Assigned to me') }}
-            </v-tab>
-            <v-tab>
-              {{ $t('Late') }}
-            </v-tab>
+            <v-tab>{{ $t('Recents') }}</v-tab>
+            <v-tab>{{ $t('Assigned to me') }}</v-tab>
+            <v-tab>{{ $t('Late') }}</v-tab>
 
             <v-tab-item>
               <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
@@ -179,13 +203,13 @@ export default {
         "Updated recently": "Updated recently",
         Late: "Late",
         "Assigned to me": "Assigned to me",
-        "Recents": "Recents",
+        Recents: "Recents"
       },
       fr: {
         "Updated recently": "Modifiées récemment",
         Late: "En retard",
         "Assigned to me": "Assignées à moi",
-        "Recents": "Récentes",
+        Recents: "Récentes"
       }
     }
   },
@@ -339,6 +363,7 @@ export default {
 .header {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .header-title {
@@ -357,18 +382,22 @@ export default {
   overflow-y: auto;
   margin-right: 24px;
   margin-top: 12px;
+  display: flex;
 }
 
 .right {
   flex-direction: column;
   overflow-y: auto;
-  width: 400px;
+  width: 340px;
   height: 100%;
   background-color: white;
+  border-left: 1px solid #ddd;
 }
 
 .action-button {
   text-transform: none;
+  color: #777;
+  font-size: 12px;
 }
 
 .tasks {
@@ -381,11 +410,30 @@ export default {
 }
 
 .tasks-title {
-  margin: 12px;
+  margin: 22px;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.05em;
 }
+
+.projects-title {
+  text-transform: uppercase;
+  font-weight: bold;
+  margin-bottom: 12px;
+  letter-spacing: 0.05em;
+  flex: 0;
+}
+
+.projects-wrapper {
+  flex: 1;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.projects-wrapper > .header:first-child {
+  margin-top:24px;
+}
+
 </style>
 
 <style>
