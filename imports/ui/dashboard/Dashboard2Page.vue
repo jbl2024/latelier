@@ -3,43 +3,74 @@
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
     <div class="left">
-      <div class="header">
-        <div class="header-title">
-          {{ $t('My projects') }}
-        </div>
-        <div class="header-action">
-          <v-btn flat solo class="action-button" @click="newProject()">
-            <v-icon left>add</v-icon>{{ $t('New project')}}
-          </v-btn>
-        </div>
-      </div>
-      <v-container fluid grid-list-xl class="projects">
-        <v-layout row wrap>
-          <v-flex v-for="project in individuals" :key="project._id" xs4>
-            <dashboard-project-card :project="project"></dashboard-project-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
 
-      <v-divider></v-divider>
-      <div class="header">
-        <div class="header-title">
-          {{ $t('Favorites') }}
+      <template v-if="favorites.length > 0">
+        <div class="header" >
+          <div class="header-title">
+            {{ $t('Favorites') }}
+          </div>
         </div>
-      </div>
-      <v-container fluid grid-list-xl class="projects">
-        <v-layout row wrap>
-          <v-flex v-for="project in favorites" :key="project._id" xs4>
-            <dashboard-project-card :project="project"></dashboard-project-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
+        <v-container fluid grid-list-xl class="projects">
+          <v-layout row wrap>
+            <v-flex v-for="project in favorites" :key="project._id" xs4>
+              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </template>
+
+      <template v-if="individuals.length > 0">
+        <div class="header">
+          <div class="header-title">
+            {{ $t('My projects') }}
+          </div>
+          <div class="header-action">
+            <v-btn flat solo class="action-button" @click="newProject()">
+              <v-icon left>add</v-icon>{{ $t('New project')}}
+            </v-btn>
+          </div>
+        </div>
+        <v-container fluid grid-list-xl class="projects">
+          <v-layout row wrap>
+            <v-flex v-for="project in individuals" :key="project._id" xs4>
+              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </template>
+
 
       <template v-for="organization in organizations">
-        <v-divider :key="`divider-${organization._id}`"></v-divider>
         <div class="header" :key="`header-${organization._id}`">
           <div class="header-title">
             {{ organization.name }}
+            <v-tooltip top slot="activator">
+              <v-btn
+                icon
+                small
+                flat
+                color="grey darken-1"
+                @click.stop="openOrganizationTimeline(organization._id)"
+                slot="activator"
+              >
+                <v-icon>timeline</v-icon>
+              </v-btn>
+              <span>{{ $t('Timeline') }}</span>
+            </v-tooltip>
+            <v-tooltip top slot="activator" v-if="canManageOrganization(organization)">
+              <v-btn
+                icon
+                small
+                flat
+                color="grey darken-1"
+                @click.stop="openOrganizationSettings(organization._id)"
+                slot="activator"
+              >
+                <v-icon>settings</v-icon>
+              </v-btn>
+              <span>{{ $t('Settings') }}</span>
+            </v-tooltip>
+
           </div>
           <div class="header-action">
             <v-btn flat solo class="action-button" @click="newProject(organization._id)">
@@ -50,8 +81,8 @@
         </div>
         <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
           <v-layout row wrap>
-            <v-flex v-for="project in projectsByOrganization(organization._id)" :key="project._id" xs4>
-              <dashboard-project-card :project="project"></dashboard-project-card>
+            <v-flex v-for="project in projectsByOrganization(organization)" :key="project._id" xs4>
+              <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
             </v-flex>
           </v-layout>
         </v-container>
@@ -129,6 +160,9 @@ export default {
       },
       organizations: function() {
         return [this.filter];
+      },
+      'user': function() {
+        return [];
       }
     },
     projects() {
@@ -172,6 +206,9 @@ export default {
           sort: { state: 1, name: 1 }
         }
       );
+    },
+    user () {
+      return Meteor.user();
     }
   },
   methods: {
@@ -190,6 +227,18 @@ export default {
     projectsByOrganization(organization) {
       return Projects.find({ organizationId: organization._id }).fetch();
     },
+    openOrganizationTimeline(id) {
+      this.$router.push({
+        name: "projects-timeline",
+        params: { organizationId: id }
+      });
+    },
+    canManageOrganization(organization) {
+      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+        return true;
+      }
+      return false;
+    }
 
   }
 };
@@ -210,10 +259,7 @@ export default {
 
 .header {
   display: flex;
-  flex: 0;
-  height: 100%;
   flex-direction: row;
-  align-items: center;
 }
 
 .header-title {
@@ -227,17 +273,15 @@ export default {
 }
 
 .left {
-  display: flex;
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
   margin-right: 24px;
-  border: 4px solid red;
 }
 
 .right {
   display: flex;
-  width: 400px;
+  width: 320px;
 }
 
 .action-button {

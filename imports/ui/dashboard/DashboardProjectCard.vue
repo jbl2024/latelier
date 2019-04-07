@@ -25,34 +25,83 @@
     </v-card-text>
     <v-divider></v-divider>
     <v-card-actions>
+      <v-btn icon>
+      <v-icon :class="getVisibilityIconClass(project)" :color="getColor(project)">{{ getVisibilityIcon(project) }}</v-icon>
+      </v-btn>
       <v-spacer></v-spacer>
-      <v-btn icon flat color="grey ligthen-1">
-        <v-icon>star</v-icon>
-      </v-btn>
-      <v-btn icon flat color="grey ligthen-1">
-        <v-icon>settings</v-icon>
-      </v-btn>
+
+      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
+        <v-btn
+          icon
+          flat
+          color="grey lighten-1"
+          @click.stop="addToFavorites(user, project._id)"
+          slot="activator"
+        >
+          <v-icon>star_border</v-icon>
+        </v-btn>
+        <span>{{ $t('Add to favorites') }}</span>
+      </v-tooltip>
+
+      <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
+        <v-btn icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
+          <v-icon>star</v-icon>
+        </v-btn>
+        <span>{{ $t('Remove from favorites') }}</span>
+      </v-tooltip>
+
+      <template v-if="canManageProject(project)">
+        <v-tooltip top slot="activator">
+          <v-btn
+            icon
+            flat
+            slot="activator"
+            color="grey lighten-1"
+            @click.stop="openProjectSettings(project)"
+          >
+            <v-icon>settings</v-icon>
+          </v-btn>
+          <span>{{ $t('Settings') }}</span>
+        </v-tooltip>
+        <v-tooltip top slot="activator">
+          <v-btn
+            icon
+            flat
+            slot="activator"
+            color="grey lighten-1"
+            @click.stop="deleteProject(project)"
+          >
+            <v-icon>delete</v-icon>
+          </v-btn>
+          <span>{{ $t('Settings') }}</span>
+        </v-tooltip>
+      </template>
     </v-card-actions>
   </v-card>
 </template>
 
 <script>
+import { Projects } from "/imports/api/projects/projects.js";
+import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+
 export default {
   name: "dashboard-project-card",
   mixins: [DatesMixin],
   props: {
-    project: Object
+    project: Object,
+    user: Object
+
   },
   i18n: {
     messages: {
       en: {
-        "Users": "Users",
-        "Tasks": "Tasks"
+        Users: "Users",
+        Tasks: "Tasks"
       },
       fr: {
-        "Users": "Utilisateurs",
-        "Tasks": "Tâches"
+        Users: "Utilisateurs",
+        Tasks: "Tâches"
       }
     }
   },
@@ -100,6 +149,23 @@ export default {
       return members.length;
     },
 
+    canDeleteProject(project) {
+      if (
+        Permissions.isAdmin(Meteor.userId()) ||
+        project.createdBy === Meteor.userId()
+      ) {
+        return true;
+      }
+      return false;
+    },
+
+    canManageProject(project) {
+      return (
+        Permissions.isAdmin(Meteor.userId(), project._id) ||
+        Permissions.isAdmin(Meteor.userId())
+      );
+    },
+
     openProject(project) {
       this.$router.push({
         name: "project",
@@ -109,6 +175,80 @@ export default {
       });
     },
 
+    openProjectSettings(project) {
+      this.$router.push({
+        name: "project-settings",
+        params: {
+          organizationId: project.organizationId,
+          projectId: project._id
+        }
+      });
+    },
+
+    deleteProject(project) {
+      this.$confirm(this.$t("Delete project?"), {
+        title: project.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "projects.remove",
+            { projectId: project._id },
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Project deleted"));
+            }
+          );
+        }
+      });
+    },
+
+    isFavorite(user, projectId) {
+      let favorites = [];
+      if (user && user.profile) {
+        favorites = user.profile.favoriteProjects || [];
+      }
+      return favorites.indexOf(projectId) >= 0;
+    },
+
+    addToFavorites(user, projectId) {
+      this.$nextTick(() => {
+        Meteor.call(
+          "projects.addToUserFavorites",
+          { projectId: projectId, userId: user._id },
+          (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t("Project added to favorites"));
+          }
+        );
+      });
+    },
+
+    removeFromFavorites(user, projectId) {
+      this.$store.dispatch(
+        "notify",
+        this.$t("Project removed from favorites")
+      );
+      this.$nextTick(() => {
+        Meteor.call(
+          "projects.removeFromUserFavorites",
+          { projectId: projectId, userId: user._id },
+          (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+          }
+        );
+      })
+    }
   }
 };
 </script>
@@ -116,6 +256,7 @@ export default {
 <style scoped>
 .card {
   border-radius: 4px;
+  overflow: hidden;
 }
 
 .card:hover {
@@ -123,9 +264,8 @@ export default {
   cursor: pointer;
 }
 
-
 .card .name {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
 }
 
