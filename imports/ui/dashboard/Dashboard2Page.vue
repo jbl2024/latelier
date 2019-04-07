@@ -2,7 +2,11 @@
   <div class="dashboard2-page">
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
-    <div class="left">
+    <div class="left" v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
+      <v-progress-linear indeterminate></v-progress-linear>
+    </div>
+
+    <div class="left" v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
 
       <template v-if="favorites.length > 0">
         <div class="header" >
@@ -70,6 +74,20 @@
               </v-btn>
               <span>{{ $t('Settings') }}</span>
             </v-tooltip>
+            <v-tooltip top slot="activator">
+              <v-btn
+                icon
+                small
+                flat
+                color="grey darken-1"
+                @click.stop="deleteOrganization(organization)"
+                v-if="canDeleteOrganization(organization)"
+                slot="activator"
+              >
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>{{ $t('Delete') }}</span>
+            </v-tooltip>
 
           </div>
           <div class="header-action">
@@ -84,6 +102,16 @@
             <v-flex v-for="project in projectsByOrganization(organization)" :key="project._id" xs4>
               <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
             </v-flex>
+            <empty-state
+              small
+              :key="`${organization._id}-empty`"
+              v-if="projectsByOrganization(organization).length == 0"
+              :description="`Aucun projet disponible`"
+              illustration="project"
+            >
+              <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
+            </empty-state>
+
           </v-layout>
         </v-container>
       </template>
@@ -238,8 +266,37 @@ export default {
         return true;
       }
       return false;
-    }
-
+    },
+    canDeleteOrganization(organization) {
+      if (
+        Permissions.isAdmin(Meteor.userId()) ||
+        organization.createdBy === Meteor.userId()
+      ) {
+        return true;
+      }
+      return false;
+    },
+    deleteOrganization(organization) {
+      this.$confirm(this.$t("Delete organization?"), {
+        title: organization.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "organizations.remove",
+            organization._id,
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Organization deleted"));
+            }
+          );
+        }
+      });
+    },
   }
 };
 </script>
@@ -248,7 +305,7 @@ export default {
 .dashboard2-page {
   display: flex;
   flex-direction: row;
-  margin: 24px;
+  padding: 24px;
   position: absolute;
   left: 0;
   top: 0;

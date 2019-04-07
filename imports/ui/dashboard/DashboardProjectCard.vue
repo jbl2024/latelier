@@ -7,7 +7,7 @@
       </div>
     </v-card-title>
     <v-divider></v-divider>
-    <v-card-text>
+    <!-- <v-card-text>
       <v-layout>
         <v-flex xs6>
           <div class="indicator sep">
@@ -23,7 +23,7 @@
         </v-flex>
       </v-layout>
     </v-card-text>
-    <v-divider></v-divider>
+    <v-divider></v-divider> -->
     <v-card-actions>
       <v-btn icon>
       <v-icon :class="getVisibilityIconClass(project)" :color="getColor(project)">{{ getVisibilityIcon(project) }}</v-icon>
@@ -249,6 +249,7 @@ export default {
         );
       })
     }
+
   }
 };
 </script>
