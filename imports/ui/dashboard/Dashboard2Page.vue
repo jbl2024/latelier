@@ -7,12 +7,9 @@
     </div>
 
     <div class="left" v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
-
       <template v-if="favorites.length > 0">
-        <div class="header" >
-          <div class="header-title">
-            {{ $t('Favorites') }}
-          </div>
+        <div class="header">
+          <div class="header-title">{{ $t('Favorites') }}</div>
         </div>
         <v-container fluid grid-list-xl class="projects">
           <v-layout row wrap>
@@ -25,12 +22,11 @@
 
       <template v-if="individuals.length > 0">
         <div class="header">
-          <div class="header-title">
-            {{ $t('My projects') }}
-          </div>
+          <div class="header-title">{{ $t('My projects') }}</div>
           <div class="header-action">
             <v-btn flat solo class="action-button" @click="newProject()">
-              <v-icon left>add</v-icon>{{ $t('New project')}}
+              <v-icon left>add</v-icon>
+              {{ $t('New project')}}
             </v-btn>
           </div>
         </div>
@@ -42,7 +38,6 @@
           </v-layout>
         </v-container>
       </template>
-
 
       <template v-for="organization in organizations">
         <div class="header" :key="`header-${organization._id}`">
@@ -88,14 +83,13 @@
               </v-btn>
               <span>{{ $t('Delete') }}</span>
             </v-tooltip>
-
           </div>
           <div class="header-action">
             <v-btn flat solo class="action-button" @click="newProject(organization._id)">
-              <v-icon left>add</v-icon>{{ $t('New project')}}
+              <v-icon left>add</v-icon>
+              {{ $t('New project')}}
             </v-btn>
           </div>
-
         </div>
         <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
           <v-layout row wrap>
@@ -111,17 +105,40 @@
             >
               <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
             </empty-state>
-
           </v-layout>
         </v-container>
       </template>
-
-
     </div>
     <div class="right">
-      <v-card class="tasks">
-        <v-card-title>Tasks</v-card-title>
-      </v-card>
+      <div class="tasks" v-if="$subReady.user">
+        <div class="tasks-title">
+          {{ $t('Tasks') }}
+        </div>
+
+        <div class="tabs-wrapper">
+          <v-tabs v-model="tab">
+            <v-tab>
+              {{ $t('Recents') }}
+            </v-tab>
+            <v-tab>
+              {{ $t('Assigned to me') }}
+            </v-tab>
+            <v-tab>
+              {{ $t('Late') }}
+            </v-tab>
+
+            <v-tab-item>
+              <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
+            </v-tab-item>
+            <v-tab-item>
+              <dashboard-task-list :user="user" type="assignedToMe"></dashboard-task-list>
+            </v-tab-item>
+            <v-tab-item>
+              <dashboard-task-list :user="user" type="late" empty-illustration="celebration"></dashboard-task-list>
+            </v-tab-item>
+          </v-tabs>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -144,7 +161,7 @@ export default {
   components: {
     DashboardTaskList,
     DashboardProjects,
-    DashboardProjectCard,
+    DashboardProjectCard
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
@@ -161,12 +178,14 @@ export default {
       en: {
         "Updated recently": "Updated recently",
         Late: "Late",
-        "Assigned to me": "Assigned to me"
+        "Assigned to me": "Assigned to me",
+        "Recents": "Recents",
       },
       fr: {
         "Updated recently": "Modifiées récemment",
         Late: "En retard",
-        "Assigned to me": "Assignées à moi"
+        "Assigned to me": "Assignées à moi",
+        "Recents": "Récentes",
       }
     }
   },
@@ -189,7 +208,7 @@ export default {
       organizations: function() {
         return [this.filter];
       },
-      'user': function() {
+      user: function() {
         return [];
       }
     },
@@ -235,7 +254,7 @@ export default {
         }
       );
     },
-    user () {
+    user() {
       return Meteor.user();
     }
   },
@@ -262,7 +281,10 @@ export default {
       });
     },
     canManageOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+      if (
+        Permissions.isAdmin(Meteor.userId()) ||
+        organization.createdBy === Meteor.userId()
+      ) {
         return true;
       }
       return false;
@@ -296,7 +318,7 @@ export default {
           );
         }
       });
-    },
+    }
   }
 };
 </script>
@@ -305,7 +327,7 @@ export default {
 .dashboard2-page {
   display: flex;
   flex-direction: row;
-  padding: 24px;
+  padding-left: 24px;
   position: absolute;
   left: 0;
   top: 0;
@@ -321,7 +343,7 @@ export default {
 
 .header-title {
   flex: 1;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: lighter;
 }
 
@@ -334,11 +356,15 @@ export default {
   flex-direction: column;
   overflow-y: auto;
   margin-right: 24px;
+  margin-top: 12px;
 }
 
 .right {
-  display: flex;
-  width: 320px;
+  flex-direction: column;
+  overflow-y: auto;
+  width: 400px;
+  height: 100%;
+  background-color: white;
 }
 
 .action-button {
@@ -354,7 +380,12 @@ export default {
   padding-right: 12px;
 }
 
-
+.tasks-title {
+  margin: 12px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
 </style>
 
 <style>
