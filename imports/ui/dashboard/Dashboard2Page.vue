@@ -452,6 +452,8 @@ export default {
   flex: 1;
   flex-direction: column;
   overflow-y: auto;
+  overflow-x: auto;
+  min-width: 800px;
 }
 
 .projects-wrapper > .header:first-child {
