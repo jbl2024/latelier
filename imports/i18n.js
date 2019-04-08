@@ -50,6 +50,10 @@ const messages = {
     "Favorites": "Favoris",
     "Delete attachment?": "Supprimer la pièce jointe ?",
     "Individuals": "Sans organisation",
+    "Organizations & Projects": "Organisations & Projets",
+    "Late": "En retard",
+    "Assigned to me": "Assignées à moi",
+    "Recents": "Récentes",
     history: {
       tasks: {
         create: "Création",
@@ -132,6 +136,10 @@ const messages = {
     "No favorite": "No favorite",
     "Delete attachment?": "Delete attachment?",
     "Individuals": "Individuals",
+    "Organizations & Projects": "Organizations & Projects",
+    "Late": "Late",
+    "Assigned to me": "Assigned to me",
+    "Recents": "Recents",
     history: {
       tasks: {
         create: "Creation",
