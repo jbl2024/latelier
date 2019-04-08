@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard2-page">
+  <div class="dashboard-desktop">
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
 
@@ -175,9 +175,8 @@
 </template>
 
 <script>
-import DashboardTaskList from "/imports/ui/dashboard/DashboardTaskList";
-import DashboardProjects from "/imports/ui/dashboard/DashboardProjects";
-import DashboardProjectCard from "/imports/ui/dashboard/DashboardProjectCard";
+import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
+import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
 import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
@@ -191,7 +190,6 @@ export default {
   props: {},
   components: {
     DashboardTaskList,
-    DashboardProjects,
     DashboardProjectCard
   },
   mounted() {
@@ -370,7 +368,7 @@ export default {
 </script>
 
 <style scoped>
-.dashboard2-page {
+.dashboard-desktop {
   display: flex;
   flex-direction: row;
   padding-left: 24px;
