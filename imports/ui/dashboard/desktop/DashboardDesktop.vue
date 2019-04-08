@@ -202,24 +202,6 @@ export default {
       this.user = result;
     });
   },
-  i18n: {
-    messages: {
-      en: {
-        "Organizations & Projects": "Organizations & Projects",
-        "Updated recently": "Updated recently",
-        Late: "Late",
-        "Assigned to me": "Assigned to me",
-        Recents: "Recents"
-      },
-      fr: {
-        "Organizations & Projects": "Organisations & Projets",
-        "Updated recently": "Modifiées récemment",
-        Late: "En retard",
-        "Assigned to me": "Assignées à moi",
-        Recents: "Récentes"
-      }
-    }
-  },
   data() {
     return {
       user: null,

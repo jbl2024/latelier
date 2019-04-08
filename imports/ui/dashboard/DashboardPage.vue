@@ -1,6 +1,7 @@
 <template>
   <div class="dashboard-page">
-    <dashboard-desktop></dashboard-desktop>
+    <dashboard-desktop v-if="$vuetify.breakpoint.smAndUp"></dashboard-desktop>
+    <dashboard-mobile v-if="$vuetify.breakpoint.xsOnly"></dashboard-mobile>
   </div>
 </template>
 
@@ -19,3 +20,15 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.dashboard-page {
+  display: flex;
+  min-height: 0;
+  height: 100%;
+  flex-direction: column;
+  position: relative;
+  flex: 1;
+  position: relative;
+}
+</style>

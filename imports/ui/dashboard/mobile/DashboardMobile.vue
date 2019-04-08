@@ -2,7 +2,7 @@
   <div class="dashboard-mobile">
     <new-organization ref="newOrganization"></new-organization>
     <template v-if="user">
-      <div class="show-mobile mobile" v-if="$vuetify.breakpoint.xsOnly">
+      <div class="mobile" v-if="$vuetify.breakpoint.xsOnly">
         <v-bottom-nav :active.sync="bottomNav" :value="true" dark color="primary">
           <v-btn flat value="organizations">
             <span>{{ $t('Projects') }}</span>
@@ -23,20 +23,9 @@
           <v-card class="flex-container">
             <div class="tabs-wrapper">
               <v-tabs v-model="tab" icons-and-text centered>
-                <v-tab>
-                  {{ $t('Updated recently') }}
-                  <v-icon>today</v-icon>
-                </v-tab>
-                <v-tab>
-                  {{ $t('Assigned to me') }}
-                  <v-icon>account_circle</v-icon>
-                </v-tab>
-
-                <v-tab>
-                  {{ $t('Late') }}
-                  <v-icon>alarm_on</v-icon>
-                </v-tab>
-
+                <v-tab>{{ $t('Recents') }}</v-tab>
+                <v-tab>{{ $t('Assigned to me') }}</v-tab>
+                <v-tab>{{ $t('Late') }}</v-tab>
                 <v-tab-item>
                   <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
                 </v-tab-item>
@@ -52,53 +41,6 @@
         </div>
       </div>
 
-      <v-container grid-list-md fluid class="show-desktop" v-if="$vuetify.breakpoint.smAndUp">
-        <v-layout row wrap fill-height>
-          <v-flex xs12 md6>
-            <v-card class="flex-container">
-              <v-toolbar dense color="indigo" dark>
-                <v-toolbar-title>{{ $t('Projects') }}</v-toolbar-title>
-              </v-toolbar>
-              <dashboard-projects></dashboard-projects>
-            </v-card>
-          </v-flex>
-          <v-flex xs12 md6>
-            <v-card class="flex-container">
-              <v-toolbar dense color="indigo" dark>
-                <v-toolbar-title>{{ $t('Tasks') }}</v-toolbar-title>
-              </v-toolbar>
-
-              <div class="tabs-wrapper">
-                <v-tabs v-model="tab" icons-and-text centered>
-                  <v-tab>
-                    {{ $t('Updated recently') }}
-                    <v-icon>today</v-icon>
-                  </v-tab>
-                  <v-tab>
-                    {{ $t('Assigned to me') }}
-                    <v-icon>account_circle</v-icon>
-                  </v-tab>
-
-                  <v-tab>
-                    {{ $t('Late') }}
-                    <v-icon>alarm_on</v-icon>
-                  </v-tab>
-
-                  <v-tab-item>
-                    <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
-                  </v-tab-item>
-                  <v-tab-item>
-                    <dashboard-task-list :user="user" type="assignedToMe"></dashboard-task-list>
-                  </v-tab-item>
-                  <v-tab-item>
-                    <dashboard-task-list :user="user" type="late" empty-illustration="celebration"></dashboard-task-list>
-                  </v-tab-item>
-                </v-tabs>
-              </div>
-            </v-card>
-          </v-flex>
-        </v-layout>
-      </v-container>
     </template>
   </div>
 </template>
@@ -124,20 +66,6 @@ export default {
       }
       this.user = result;
     });
-  },
-  i18n: {
-    messages: {
-      en: {
-        "Updated recently": "Updated recently",
-        Late: "Late",
-        "Assigned to me": "Assigned to me"
-      },
-      fr: {
-        "Updated recently": "Modifiées récemment",
-        Late: "En retard",
-        "Assigned to me": "Assignées à moi"
-      }
-    }
   },
   data() {
     return {
@@ -169,6 +97,7 @@ export default {
   flex-direction: column;
   position: relative;
   flex: 1;
+  position: relative;
 }
 
 .flex-container {
