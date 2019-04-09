@@ -17,8 +17,11 @@
                 <v-icon>more_vert</v-icon>
               </v-btn>
               <v-list dense>
-                <v-list-tile>
-                  <v-list-tile-title @click="newOrganization()">{{ $t('New organization') }}</v-list-tile-title>
+                <v-list-tile @click="newProject()">
+                  <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile @click="newOrganization()">
+                  <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
