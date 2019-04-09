@@ -16,6 +16,16 @@
                 </v-list-tile-content>
               </v-list-tile>
             </template>
+            <v-divider></v-divider>
+            <v-list-tile @click="selectOrganization()">
+              <v-list-tile-avatar>
+                <v-icon></v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content class="pointer">
+                <v-list-tile-title>{{ $t('None') }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+
           </v-list>
         </v-card-text>
         <v-card-actions>
@@ -35,6 +45,16 @@ import { Organizations } from '/imports/api/organizations/organizations.js'
 export default {
   props: {
     active: Boolean,
+  },
+  i18n: {
+    messages: {
+      en: {
+        "None": "None"
+      },
+      fr: {
+        "None": "Aucune"
+      }
+    }
   },
   data () {
     return {

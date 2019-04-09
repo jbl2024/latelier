@@ -1,6 +1,6 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { check, Match } from 'meteor/check';
 import { Projects } from '/imports/api/projects/projects.js'
 import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
 import { Permissions } from "/imports/api/permissions/permissions"
@@ -72,7 +72,7 @@ Meteor.methods({
   },
 
   'organizations.moveProject'(organizationId, projectId) {
-    check(organizationId, String);
+    check(organizationId, Match.Maybe(String));
     check(projectId, String);
 
     ProjectGroups.update({ projects: projectId }, { $pull: { projects: projectId } });

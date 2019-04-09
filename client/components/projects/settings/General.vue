@@ -294,23 +294,28 @@ export default {
     },
 
     onSelectOrganization(organization) {
-      if (organization._id === this.project.organizationId) {
+      let organizationId;
+      if (organization) {
+        organizationId = organization._id
+      }
+
+      if (organizationId && organizationId === this.project.organizationId) {
+        // same organization ? Do not move
         return;
       }
 
       Meteor.call(
         "organizations.moveProject",
-        organization._id,
+        organizationId,
         this.project._id,
         (error, result) => {
           if (error) {
-            console.log(error);
+            this.$store.dispatch("notifyError", error);
             return;
           }
           this.$router.push({
             name: "project-settings",
             params: {
-              organizationId: organization._id,
               projectId: this.project._id
             }
           });
