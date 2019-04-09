@@ -11,7 +11,7 @@ Meteor.methods({
   "dashboards.findTasks"(user, type, page) {
     const userId = Meteor.userId();
 
-    const perPage = 50;
+    const perPage = 25;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;
