@@ -137,7 +137,6 @@ export default {
       } else if (project.endtDate) {
         return "Jusqu'au " + this.formatDate(project.endDate);
       }
-      return this.$t("No dates");
     },
 
     taskCount(project) {
@@ -272,6 +271,7 @@ export default {
 
 .card .subtitle {
   font-size: 12px;
+  min-height: 18px;
 }
 
 .card .indicator {
