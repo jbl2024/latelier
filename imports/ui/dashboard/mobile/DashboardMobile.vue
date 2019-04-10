@@ -71,8 +71,6 @@ export default {
     return {
       user: null,
       tab: null,
-      items: ["web", "shopping", "videos", "images", "news"],
-      text: "foo",
       bottomNav: "organizations"
     };
   },
