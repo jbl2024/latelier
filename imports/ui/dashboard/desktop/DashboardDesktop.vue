@@ -350,7 +350,6 @@ export default {
     onResizeProjects() {
       const projects = this.$refs.projects;
       const width = projects.offsetWidth;
-      console.log(width)
       if (width > 600) {
         this.cardClass = "card3";
       } else if (width <= 600 && width > 400) {
