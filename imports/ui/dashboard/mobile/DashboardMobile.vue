@@ -71,6 +71,7 @@ export default {
     return {
       user: null,
       tab: null,
+      bottomNav: "organizations"
     };
   },
   methods: {
