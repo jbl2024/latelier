@@ -74,6 +74,7 @@ const messages = {
         addNote: "Ajout d'une note",
         removeNote: "Suppression d'une note",
         updateNote: "Modification d'une note",
+        assignTo: "Assignée",
       },
     },
     projects: {
@@ -160,6 +161,7 @@ const messages = {
         addNote: "Add note",
         removeNote: "Remove note",
         updateNote: "Update note",
+        assignTo: "Assigned to",
       }
     },
     projects: {
