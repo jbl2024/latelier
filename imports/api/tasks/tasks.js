@@ -33,7 +33,6 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
   modifier.$set.updatedBy = userId;
-
   if (hasCompletedModification(modifier)) {
     // if completed flag is set, set the "completedAt" attribute
     if (modifier.$set.completed) {
@@ -51,8 +50,9 @@ Meteor.methods({
     check(listId, String);
     check(name, String);
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
+    const userId = Meteor.userId();
+
+    if (!userId) {
       throw new Meteor.Error('not-authorized');
     }
 
@@ -69,15 +69,18 @@ Meteor.methods({
     if (list && list.autoComplete) {
       completed = true;
     }
+    const now = new Date();
+
     var taskId = Tasks.insert({
       name: name,
       order: _findFirstOrder() - 10,
       projectId: projectId,
       listId: listId,
       completed: completed,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      createdBy: Meteor.userId()
+      createdAt: now,
+      updatedAt: now,
+      createdBy: userId,
+      updatedBy: userId
     });
 
     Meteor.call('tasks.track', {
