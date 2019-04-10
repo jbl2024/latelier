@@ -536,7 +536,7 @@ Meteor.methods({
     properties.task = task;
     properties.task.project = project;
     properties.task.list = list;
-    properties.task.url = Meteor.absoluteUrl(`/projects/${project.organizationId}/${project._id}/${task._id}`);
+    properties.task.url = Meteor.absoluteUrl(`/projects/${project._id}/${task._id}`);
 
     Meteor.call('events.track', {
       type: event.type,
