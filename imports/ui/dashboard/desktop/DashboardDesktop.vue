@@ -47,9 +47,9 @@
           <div class="header">
             <div class="header-title">{{ $t('Favorites') }}</div>
           </div>
-          <v-container fluid grid-list-xl class="projects">
+          <v-container fluid grid-list-xl class="projects" v-resize="onResizeProjects" ref="projects">
             <v-layout row wrap>
-              <v-flex v-for="project in favorites" :key="project._id" xs12 sm6 md4>
+              <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
                 <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
               </v-flex>
             </v-layout>
@@ -68,7 +68,7 @@
           </div>
           <v-container fluid grid-list-xl class="projects">
             <v-layout row wrap>
-              <v-flex v-for="project in individuals" :key="project._id" xs6 sm4>
+              <v-flex v-for="project in individuals" :key="project._id" :class="cardClass">
                 <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
               </v-flex>
             </v-layout>
@@ -132,7 +132,7 @@
               <v-flex
                 v-for="project in projectsByOrganization(organization)"
                 :key="project._id"
-                xs4
+                :class="cardClass"
               >
                 <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
               </v-flex>
@@ -210,7 +210,8 @@ export default {
       user: null,
       tab: null,
       filter: "",
-      organizationId: ""
+      organizationId: "",
+      cardClass:"card1"
     };
   },
   meteor: {
@@ -344,6 +345,19 @@ export default {
           );
         }
       });
+    },
+
+    onResizeProjects() {
+      const projects = this.$refs.projects;
+      const width = projects.offsetWidth;
+      console.log(width)
+      if (width > 600) {
+        this.cardClass = "card3";
+      } else if (width <= 600 && width > 400) {
+        this.cardClass = "card2";
+      } else {
+        this.cardClass = "card1";
+      }
     }
   }
 };
@@ -433,7 +447,6 @@ export default {
   flex-direction: column;
   overflow-y: auto;
   overflow-x: auto;
-  min-width: 800px;
 }
 
 .projects-wrapper > .header:first-child {
@@ -455,6 +468,24 @@ export default {
   top: 66px;
   bottom: 0;
 }
+
+.card3 {
+  flex-basis: calc(100%/3);
+  flex-grow: 0;
+  max-width: calc(100%/3);  
+}
+.card2 {
+  flex-basis: calc(100%/2);
+  flex-grow: 0;
+  max-width: calc(100%/2);  
+}
+
+.card1 {
+  flex-basis: 100%;
+  flex-grow: 0;
+  max-width: 100%;
+}
+
 </style>
 
 <style>
