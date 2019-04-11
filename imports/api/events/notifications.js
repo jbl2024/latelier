@@ -1,6 +1,6 @@
 import { Email } from "meteor/email";
 import get from "lodash/get";
-
+import * as htmlToText from 'html-to-text';
 /**
  * Return user ids involved in task as array
  * 
@@ -26,10 +26,6 @@ const buildEmailData = function (options) {
     subject(user, task) {
       return `[${task.project.name}] ${options.subject}`;
     },
-    text(user, task) {
-      return `${options.text}`;
-    },
-
     html(user, task) {
       var email = new MJML(
         Assets.absoluteFilePath(`mjml/${options.template}`)
@@ -52,13 +48,17 @@ const buildEmailData = function (options) {
  * @param {*} emailData 
  */
 const sendEmail = function (user, task, emailData) {
+  const html = emailData.html(user, task);
+  const text = htmlToText.fromString(html, {
+    tables: true
+  });
   try {
     Email.send({
       from: Meteor.settings.email.from,
       to: user.emails[0].address,
       subject: emailData.subject(user, task),
-      text: emailData.text(user, task),
-      html: emailData.html(user, task)
+      text: text,
+      html: html
     });
   } catch(error) {
     console.error(error);      
@@ -85,7 +85,6 @@ export const callbacks = {
     const emailData = buildEmailData({
       template: "tasks.assignTo.mjml",
       subject: "Une tâche vous a été assignée",
-      text: `Tâche ${task.name} assignée`
     });
     sendEmail(user, task, emailData)
   },
@@ -101,7 +100,6 @@ export const callbacks = {
       const emailData = buildEmailData({
         template: "tasks.addNote.mjml",
         subject: `[${task.name}] Une note a été ajoutée`,
-        text: `Note ajoutée`
       });
       sendEmail(user, task, emailData);
     });
@@ -118,7 +116,6 @@ export const callbacks = {
       const emailData = buildEmailData({
         template: "tasks.removeNote.mjml",
         subject: `[${task.name}] Une note a été supprimée`,
-        text: `Note supprimée`
       });
       sendEmail(user, task, emailData);
     });
@@ -135,7 +132,6 @@ export const callbacks = {
       const emailData = buildEmailData({
         template: "tasks.updateNote.mjml",
         subject: `[${task.name}] Une note a été modifiée`,
-        text: `Note modifiée`
       });
       sendEmail(user, task, emailData);
     });
