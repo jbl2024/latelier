@@ -71,8 +71,6 @@ const getUser = function (userId, event, settings) {
   if (user._id === event.userId) return;
   
   const enabled = get(user, `emailSettings.${settings}`, false);
-  console.log(user)
-  console.log(`emailSettings.${event.type}`)
   if (!enabled) return false;
   
   return user;
@@ -82,7 +80,6 @@ export const callbacks = {
   "tasks.assignTo"(event) {
     const task = event.properties.task;
     const user = getUser(task.assignedTo, event, "tasks.assignTo");
-    console.log(user)
     if (!user) return;
 
     const emailData = buildEmailData({
@@ -103,8 +100,8 @@ export const callbacks = {
 
       const emailData = buildEmailData({
         template: "tasks.addNote.mjml",
-        subject: "Une note a été ajoutée",
-        text: "Note ajoutée"
+        subject: `[${task.name}] Une note a été ajoutée`,
+        text: `Note ajoutée`
       });
       sendEmail(user, task, emailData);
     });
@@ -120,8 +117,8 @@ export const callbacks = {
 
       const emailData = buildEmailData({
         template: "tasks.removeNote.mjml",
-        subject: "Une note a été supprimée",
-        text: "Note supprimée"
+        subject: `[${task.name}] Une note a été supprimée`,
+        text: `Note supprimée`
       });
       sendEmail(user, task, emailData);
     });
@@ -137,8 +134,8 @@ export const callbacks = {
 
       const emailData = buildEmailData({
         template: "tasks.updateNote.mjml",
-        subject: "Une note a été modifiée",
-        text: "Note modifiée"
+        subject: `[${task.name}] Une note a été modifiée`,
+        text: `Note modifiée`
       });
       sendEmail(user, task, emailData);
     });
