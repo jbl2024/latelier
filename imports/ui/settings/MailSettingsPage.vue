@@ -5,20 +5,20 @@
     <v-subheader>{{ $t("Email notifications")}}</v-subheader>
 
     <v-list class="elevation-1">
-      <v-list-tile @click="toggleTaskAssignedTo()">
+      <v-list-tile @click="toggleSettings('emailSettings.tasks.assignTo')">
         <v-list-tile-content>
           <v-list-tile-title>{{ $t("A task is assigned to me") }}</v-list-tile-title>
         </v-list-tile-content>
         <v-list-tile-action>
-          <v-switch v-model="user.emailSettings.tasks.assignTo" @click="toggleTaskAssignedTo"></v-switch>
+          <v-switch v-model="user.emailSettings.tasks.assignTo" @click="toggleSettings('emailSettings.tasks.assignTo')"></v-switch>
         </v-list-tile-action>
       </v-list-tile>
-      <v-list-tile @click="toggleTaskAddNote()">
+      <v-list-tile @click="toggleSettings('emailSettings.tasks.update')">
         <v-list-tile-content>
-          <v-list-tile-title>{{ $t("A note has been added") }}</v-list-tile-title>
+          <v-list-tile-title>{{ $t("A task is updated") }}</v-list-tile-title>
         </v-list-tile-content>
         <v-list-tile-action>
-          <v-switch v-model="user.emailSettings.tasks.addNote" @click="toggleTaskAddNote"></v-switch>
+          <v-switch v-model="user.emailSettings.tasks.update" @click="toggleSettings('emailSettings.tasks.update')"></v-switch>
         </v-list-tile-action>
       </v-list-tile>
     </v-list>
@@ -30,6 +30,9 @@
 
 <script>
 import { Permissions } from "/imports/api/permissions/permissions"
+import get from "lodash/get";
+import has from "lodash/has";
+import set from "lodash/set";
 
 
 export default {
@@ -37,24 +40,18 @@ export default {
     messages: {
       "en": {
         "A task is assigned to me": "A task is assigned to me",
-        "A note has been added": "A note has been added"
+        "A task is updated": "A task is updated",
       },
       "fr": {
         "A task is assigned to me": "Une tâche m'est assignée",
-        "A note has been added": "Une note a été ajoutée"
+        "A task is updated": "Une tâche est modifiée",
       }
     }
   },
   props: {
   },
   mounted() {
-    Meteor.call("users.getEmailPreferences", (error, result) => {
-      if (error) {
-        this.$store.dispatch("notifyError", error);
-        return;
-      }
-      this.user = result;
-    })
+    this.refreshUser();
   },
 
   data () {
@@ -63,14 +60,23 @@ export default {
     }
   },
   methods: {
-    toggleTaskAssignedTo() {
-      this.user.emailSettings.tasks.assignTo = !this.user.emailSettings.tasks.assignTo;
+    toggleSettings(property) {
+      if (!has(this.user, property)) {
+        set(this.user, property, false);
+      }
+      set(this.user, property, !get(this.user, property, false));
       Meteor.call('users.updateEmailPreferences', this.user.emailSettings);
+      this.refreshUser();
     },
 
-    toggleTaskAddNote() {
-      this.user.emailSettings.tasks.addNote = !this.user.emailSettings.tasks.addNote;
-      Meteor.call('users.updateEmailPreferences', this.user.emailSettings);
+    refreshUser() {
+      Meteor.call("users.getEmailPreferences", (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.user = result;
+      })
     }
   },
 }

@@ -215,7 +215,8 @@ Meteor.methods({
     if (!user.emailSettings) {
       user.emailSettings = {
         tasks: {
-          assignTo: true
+          assignTo: true,
+          update: true,
         }        
       }
     }
