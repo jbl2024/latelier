@@ -240,7 +240,8 @@ Meteor.methods({
     },  { 
       $set: { 
         "notes.$.content":  note.content,
-        "notes.$.edited":  true
+        "notes.$.edited":  true,
+        "notes.$.editedBy":  Meteor.userId()
       } 
     });
 
