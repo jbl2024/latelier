@@ -26,6 +26,10 @@ import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
 import '../imports/api/dashboards/dashboards.js';
 
+if (Meteor.settings.apm) {
+  Kadira.connect(Meteor.settings.apm.appId, Meteor.settings.apm.appSecret, {endpoint: Meteor.settings.apm.endpoint})
+}
+
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }
