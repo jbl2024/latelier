@@ -42,29 +42,42 @@
                     v-on:input="debouncedFilter"
                   ></v-text-field>
                 </div>
-                <div class="flex1">
-                  <v-list dense subheader>
-                    <template v-for="user in users">
-                      <v-list-tile :key="user._id" avatar @click="selectUser(user)">
-                        <v-list-tile-avatar :color="isOnline(user)">
-                          <span>{{ formatUserLetters(user) }}</span>
-                        </v-list-tile-avatar>
-                        <v-list-tile-content>
-                          <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-                        </v-list-tile-content>
-                      </v-list-tile>
-                    </template>
-                  </v-list>
-                </div>
-                <div class="flex0">
-                  <div class="text-xs-center">
-                    <v-pagination
-                      v-if="pagination.totalPages > 0"
-                      v-model="page"
-                      :length="pagination.totalPages"
-                    ></v-pagination>
+                <template v-if="users.length > 0 && search.length > 0">
+                  <div class="flex1">
+                    <v-list dense subheader>
+                      <template v-for="user in users">
+                        <v-list-tile :key="user._id" avatar @click="selectUser(user)">
+                          <v-list-tile-avatar :color="isOnline(user)">
+                            <span>{{ formatUserLetters(user) }}</span>
+                          </v-list-tile-avatar>
+                          <v-list-tile-content>
+                            <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+                    </v-list>
                   </div>
-                </div>
+                  <div class="flex0">
+                    <div class="text-xs-center">
+                      <v-pagination
+                        v-if="pagination.totalPages > 0"
+                        v-model="page"
+                        :length="pagination.totalPages"
+                      ></v-pagination>
+                    </div>
+                  </div>
+                </template>
+                <template v-if="users.length === 0 && search.length > 0 && isEmail(search)">
+                  <div class="flex1 invite">
+                    <empty-state
+                      :description="$t('No user found, do you want to send an invitation?')"
+                      xs
+                      illustration="empty"
+                    >
+                      <v-btn primary @click="sendInvitation(search)">{{ $t('Send invitation') }}</v-btn>
+                    </empty-state>
+                  </div>
+                </template>
               </div>
             </v-tab-item>
           </v-tabs>
@@ -94,11 +107,19 @@ export default {
         "Select user": "Select user",
         "Available users": "Available users",
         "Find": "Find",
-      }, 
+        "Send invitation": "Send invitation",
+        "Invite user?": "Invite user?",
+        "Invitation sent": "Invitation sent",
+        "No user found, do you want to send an invitation?": "No user found, do you want to send an invitation?"
+      },
       fr: {
         "Select user": "Selectionner un utilisateur",
         "Available users": "Utilisateurs disponibles",
         "Find": "Rechercher",
+        "Send invitation": "Envoyer une invitation",
+        "Invite user?": "Inviter l'utilisateur ?",
+        "Invitation sent": "Invitation envoyée",
+        "No user found, do you want to send an invitation?": "Aucun utilisateur trouvé, voulez-vous envoyer une invitation ?"
       }
     }
   },
@@ -201,6 +222,35 @@ export default {
     selectUser(user) {
       this.$emit("update:active", false);
       this.$emit("select", user);
+    },
+
+    isEmail(email) {
+      var re = /\S+@\S+\.\S+/;
+      return re.test(email);
+    },
+
+    sendInvitation(email) {
+      this.$confirm(this.$t("Invite user?"), {
+        title: email,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Send invitation")
+      }).then(res => {
+        if (res) {
+          Meteor.call("users.invite", email, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t("Invitation sent"));
+            const user = result;
+
+            this.$emit("update:active", false);
+            this.$emit("select", user);
+
+            this.findUsers();
+          });
+        }
+      });
     }
   }
 };
@@ -242,5 +292,10 @@ export default {
 .flex1 {
   flex: 1;
   overflow-y: scroll;
+}
+
+.invite {
+  margin-top: 24px;
+  text-align: center;
 }
 </style>

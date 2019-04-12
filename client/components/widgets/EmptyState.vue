@@ -28,6 +28,10 @@ export default {
     small: {
       type: Boolean,
       default: false
+    },
+    xs: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -39,7 +43,7 @@ export default {
       return Meteor.absoluteUrl(`/illustrations/${this.illustration}.svg`);
     },
     getIllustrationClass() {
-      return `illustration ${this.small ? "small": ""}`;
+      return `illustration ${this.small ? "small": ""} ${this.xs ? "xs": ""}`;
     }
   }
 }
@@ -63,6 +67,9 @@ export default {
   }
   .illustration.small {
     width: 300px;
+  }
+  .illustration.xs {
+    width: 150px;
   }
 }
 
