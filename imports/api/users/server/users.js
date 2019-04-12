@@ -293,5 +293,23 @@ Meteor.methods({
       totalItems: count,
       data: data
     };
-  },  
+  }, 
+  
+  "users.invite"(email) {
+    checkLoggedIn(); 
+
+    const user = {
+      profile: {
+        firstName: '',
+        lastName: '',
+      },
+      email: email,
+      isActive: true,
+      isConfirmed: true
+    };
+    
+    const userId = Meteor.call("admin.addUser", user);
+    return Meteor.users.findOne({_id: userId});
+  }
 });
+
