@@ -6,6 +6,9 @@ export default {
       if (!text) {
         return;
       }
+      const taskUrl = Meteor.absoluteUrl('/tasks/');
+      
+      text = text.replace(/#(\d*)/g,`<a class="task-number" href="${taskUrl}$1">#$1</a>`);
       return linkifyHtml(text);
     }
   }

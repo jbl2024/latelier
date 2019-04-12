@@ -7,6 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
 import { incrementCounter} from './counter';
 import moment from "moment";
+import { checkLoggedIn } from "/imports/api/permissions/permissions"
 
 export const Tasks = new Mongo.Collection('tasks');
 
@@ -537,8 +538,7 @@ Meteor.methods({
       taskId: taskId
     });
   }, 
-  
-  
+    
   'tasks.track' (event) {
     this.unblock();
 
@@ -565,3 +565,25 @@ Meteor.methods({
     })
   }
 });
+
+if (Meteor.isServer) {
+  Meteor.methods({
+    'tasks.getUrl'(taskNumber) {
+      check(taskNumber, Number);
+      checkLoggedIn();
+
+      const task = Tasks.findOne({number: taskNumber});
+      if (!task) {
+        throw new Meteor.Error('not-found');  
+      }
+      const canAccess = Meteor.call("projects.canAccess", {projectId: task.projectId});
+      if (!canAccess) {
+        throw new Meteor.Error('not-authorized');   
+      }
+      return {
+        projectId: task.projectId,
+        taskId: task._id
+      }
+    }
+  });
+}

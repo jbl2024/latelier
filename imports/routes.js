@@ -15,6 +15,7 @@ import OrganizationSettings from "/imports/ui/organizations/OrganizationSettings
 import OrganizationResourcesPage from "/imports/ui/organizations/OrganizationResourcesPage.vue";
 import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
+import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
@@ -147,6 +148,13 @@ export default [
     name: "project-task",
     beforeEnter: isBasicAuth,
     component: Project,
+    props: true
+  },
+  {
+    path: "/tasks/:taskNumber",
+    name: "project-task-number",
+    beforeEnter: isBasicAuth,
+    component: TaskRedirect,
     props: true
   },
   {

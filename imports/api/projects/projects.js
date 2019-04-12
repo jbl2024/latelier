@@ -418,3 +418,25 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
     });
   }
 });
+
+
+Projects.methods.canAccess = new ValidatedMethod({
+  name: "projects.canAccess",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({projectId}) {
+    checkLoggedIn();
+    check(projectId, String);
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const project = Projects.findOne({_id: projectId, $or: [{createdBy: userId}, {members: userId}, {isPublic: true}]});
+    if (project) {
+      return true;
+    } else {
+      throw new Meteor.Error('not-authorized');  
+    }
+  }
+});

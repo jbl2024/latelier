@@ -68,20 +68,28 @@
         {{ formatDate(task.completedAt) }}
       </div>
 
-      <author-line
-        v-if="showCreatedBy(task)"
-        :user-id="task.createdBy"
-        :date="task.createdAt"
-        class="author"
-        :prefix="$t('Created by')"
-      ></author-line>
-      <author-line
-        v-if="showUpdatedBy(task)"
-        :user-id="task.updatedBy"
-        :date="task.updatedAt"
-        class="author"
-        :prefix="$t('Last update by')"
-      ></author-line>
+      <v-layout row>
+        <v-flex shrink>
+          <div class="number">#{{ task.number }}</div>
+        </v-flex>
+        <v-flex>
+          <author-line
+            v-if="showCreatedBy(task)"
+            :user-id="task.createdBy"
+            :date="task.createdAt"
+            class="author"
+            :prefix="$t('Created by')"
+          ></author-line>
+          <author-line
+            v-if="showUpdatedBy(task)"
+            :user-id="task.updatedBy"
+            :date="task.updatedAt"
+            class="author"
+            :prefix="$t('Last update by')"
+          ></author-line>
+        </v-flex>
+      </v-layout>
+
     </div>
 
     <v-divider></v-divider>
@@ -334,6 +342,13 @@ export default {
   color: rgba(0, 0, 0, 0.54);
   font-size: 80%;
 }
+
+.number {
+  color: rgba(0, 0, 0, 0.54);
+  font-size: 80%;
+  margin-right: 4px;
+}
+
 
 .toolbar-button {
   flex: 1;
