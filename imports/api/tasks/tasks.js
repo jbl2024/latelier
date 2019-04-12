@@ -5,13 +5,24 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
+import { incrementCounter} from './counter';
 import moment from "moment";
+import { checkLoggedIn } from "/imports/api/permissions/permissions"
 
 export const Tasks = new Mongo.Collection('tasks');
+
+const Counter = new Mongo.Collection('counters');
+
+const incNumber = function () {
+  return incrementCounter(Counter, "taskNumber");
+}
+
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Tasks.rawCollection().createIndex({listId: 1});
     Tasks.rawCollection().createIndex({projectId: 1});
+    Tasks.rawCollection().createIndex({number: 1}, {unique: true});
   });
 }
 
@@ -82,13 +93,20 @@ Meteor.methods({
       createdBy: userId,
       updatedBy: userId
     });
+    if (Meteor.isServer) {
+      Meteor.call("tasks.setNumber", taskId);
+    }
 
     Meteor.call('tasks.track', {
       type: 'tasks.create',
       taskId: taskId
     });
-
     return Tasks.findOne({_id: taskId});
+  },
+
+  "tasks.setNumber"(taskId) {
+    const number = incNumber();
+    Tasks.update({_id: taskId}, {$set: {number: number}});
   },
 
   'tasks.remove'(taskId) {
@@ -520,8 +538,7 @@ Meteor.methods({
       taskId: taskId
     });
   }, 
-  
-  
+    
   'tasks.track' (event) {
     this.unblock();
 
@@ -548,3 +565,25 @@ Meteor.methods({
     })
   }
 });
+
+if (Meteor.isServer) {
+  Meteor.methods({
+    'tasks.getUrl'(taskNumber) {
+      check(taskNumber, Number);
+      checkLoggedIn();
+
+      const task = Tasks.findOne({number: taskNumber});
+      if (!task) {
+        throw new Meteor.Error('not-found');  
+      }
+      const canAccess = Meteor.call("projects.canAccess", {projectId: task.projectId});
+      if (!canAccess) {
+        throw new Meteor.Error('not-authorized');   
+      }
+      return {
+        projectId: task.projectId,
+        taskId: task._id
+      }
+    }
+  });
+}
