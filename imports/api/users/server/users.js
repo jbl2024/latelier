@@ -3,6 +3,8 @@ import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import { Permissions, checkLoggedIn } from '/imports/api/permissions/permissions'
+import { Email } from "meteor/email";
+import * as htmlToText from 'html-to-text';
 
 // Disable client insert/remove/update
 Meteor.users.deny({
@@ -298,7 +300,7 @@ Meteor.methods({
   "users.invite"(email) {
     checkLoggedIn(); 
 
-    const user = {
+    const userData = {
       profile: {
         firstName: '',
         lastName: '',
@@ -308,8 +310,45 @@ Meteor.methods({
       isConfirmed: true
     };
     
-    const userId = Meteor.call("admin.addUser", user);
-    return Meteor.users.findOne({_id: userId});
+    const userId = Meteor.call("admin.addUser", userData);
+    const user = Meteor.users.findOne({_id: userId});
+    Meteor.call("users.sendInvitation", user);
+    return user;
+  },
+
+  "users.sendInvitation"(user) {
+    this.unblock();
+
+    const emailData = {
+      subject() {
+        return "Invitation à collaborer sur L'atelier";
+      },
+      html() {
+        var email = new MJML(
+          Assets.absoluteFilePath(`mjml/invitation.mjml`)
+        );
+        email.helpers({
+          url: Meteor.absoluteUrl(),
+          emailSettingsUrl: Meteor.absoluteUrl('/settings/mail')
+        });
+        return email.compile();
+      }  
+    }
+    const html = emailData.html();
+    const text = htmlToText.fromString(html, {
+      tables: true
+    });
+    try {
+      Email.send({
+        from: Meteor.settings.email.from,
+        to: user.emails[0].address,
+        subject: emailData.subject(),
+        text: text,
+        html: html
+      });
+    } catch(error) {
+      console.error(error);      
+    }
   }
 });
 

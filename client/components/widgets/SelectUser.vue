@@ -69,11 +69,15 @@
                 </template>
                 <template v-if="users.length === 0 && search.length > 0 && isEmail(search)">
                   <div class="flex1 invite">
-                    <v-btn primary @click="sendInvitation(search)">{{ $t('Send invitation') }}</v-btn>
+                    <empty-state
+                      :description="$t('No user found, do you want to send an invitation?')"
+                      xs
+                      illustration="empty"
+                    >
+                      <v-btn primary @click="sendInvitation(search)">{{ $t('Send invitation') }}</v-btn>
+                    </empty-state>
                   </div>
                 </template>
-
-
               </div>
             </v-tab-item>
           </v-tabs>
@@ -106,7 +110,8 @@ export default {
         "Send invitation": "Send invitation",
         "Invite user?": "Invite user?",
         "Invitation sent": "Invitation sent",
-      }, 
+        "No user found, do you want to send an invitation?": "No user found, do you want to send an invitation?"
+      },
       fr: {
         "Select user": "Selectionner un utilisateur",
         "Available users": "Utilisateurs disponibles",
@@ -114,6 +119,7 @@ export default {
         "Send invitation": "Envoyer une invitation",
         "Invite user?": "Inviter l'utilisateur ?",
         "Invitation sent": "Invitation envoyée",
+        "No user found, do you want to send an invitation?": "Aucun utilisateur trouvé, voulez-vous envoyer une invitation ?"
       }
     }
   },
@@ -235,15 +241,16 @@ export default {
               this.$store.dispatch("notifyError", error);
               return;
             }
-            this.$store.dispatch("notify", this.$t('Invitation sent'));
+            this.$store.dispatch("notify", this.$t("Invitation sent"));
             const user = result;
-      
+
             this.$emit("update:active", false);
             this.$emit("select", user);
+
+            this.findUsers();
           });
         }
       });
-
     }
   }
 };
