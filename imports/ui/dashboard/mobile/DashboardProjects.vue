@@ -384,15 +384,11 @@ export default {
     };
   },
   meteor: {
-    // Subscriptions
     $subscribe: {
-      // Subscribes to the 'threads' publication with no parameters
       allProjects: function() {
-        // Here you can use Vue reactive properties
         return [this.filter];
       },
       organizations: function() {
-        // Here you can use Vue reactive properties
         return [this.filter];
       }
     },
