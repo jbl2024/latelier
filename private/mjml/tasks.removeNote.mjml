@@ -1,0 +1,36 @@
+<mjml>
+  <mj-head>
+    <mj-style inline="inline">
+      .link-nostyle { color: inherit; text-decoration: none }
+    </mj-style>
+    <mj-attributes>
+      <mj-class name="blue" color="blue" />
+      <mj-class name="big" font-size="20px" />
+      <mj-all font-family="Helvetica" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#455a64">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#fff" mj-class="big">
+          L'atelier // {{ task.project.name }}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#fff">
+      <mj-column>
+        <mj-text align="center">Une note a été supprimée de la tâche <b>{{ task.name }}</b></mj-text>
+        <mj-button background-color="#455a64" color="white" href="{{ task.url }}">
+          Ouvrir
+         </mj-button>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#eee">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#888">
+        <a class="link-nostyle" href="{{ emailSettingsUrl }}">Gérer mes notifications</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>

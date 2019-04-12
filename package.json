@@ -12,6 +12,7 @@
     "bcrypt": "^3.0.4",
     "faker": "^4.1.0",
     "fs-extra": "^7.0.1",
+    "html-to-text": "^5.1.1",
     "linkifyjs": "^2.1.8",
     "lodash": "^4.17.11",
     "meteor-node-stubs": "^0.4.1",
