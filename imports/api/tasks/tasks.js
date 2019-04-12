@@ -5,13 +5,23 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from 'meteor/random'
+import { incrementCounter} from './counter';
 import moment from "moment";
 
 export const Tasks = new Mongo.Collection('tasks');
+
+const Counter = new Mongo.Collection('counters');
+
+const incNumber = function () {
+  return incrementCounter(Counter, "taskNumber");
+}
+
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Tasks.rawCollection().createIndex({listId: 1});
     Tasks.rawCollection().createIndex({projectId: 1});
+    Tasks.rawCollection().createIndex({number: 1});
   });
 }
 
@@ -82,13 +92,21 @@ Meteor.methods({
       createdBy: userId,
       updatedBy: userId
     });
+    if (Meteor.isServer) {
+      Meteor.call("tasks.setNumber", taskId);
+    }
 
     Meteor.call('tasks.track', {
       type: 'tasks.create',
       taskId: taskId
     });
-
     return Tasks.findOne({_id: taskId});
+  },
+
+  "tasks.setNumber"(taskId) {
+    const number = incNumber();
+    console.log(number)
+    Tasks.update({_id: taskId}, {$set: {number: number}});
   },
 
   'tasks.remove'(taskId) {
