@@ -53,21 +53,6 @@ publishComposite("allProjects", (name) => {
     },
     children: [
       {
-        // organizations
-        find(project) {
-          if (!project.organizationId) {
-            this.ready();
-            return;
-          }
-          
-          const userId = Meteor.userId();
-          if (Permissions.isAdmin(userId)) {
-            return Organizations.find({_id: project.organizationId});
-          }
-          return Organizations.find({_id: project.organizationId, members: userId});
-        },
-      },
-      {
         // users
         find(project) {
           var members = project.members || [];
