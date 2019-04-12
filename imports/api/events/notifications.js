@@ -65,6 +65,15 @@ const sendEmail = function (user, task, emailData) {
   }
 }
 
+/**
+ * Return user for event
+ * 
+ * If userId is the same as event.userId, it is ignored (no self notifications)
+ * 
+ * @param {} userId 
+ * @param {*} event 
+ * @param {*} settings email notification settings 
+ */
 const getUser = function (userId, event, settings) {
   const user = Meteor.users.findOne({ _id: userId });
   if (!user) return;
