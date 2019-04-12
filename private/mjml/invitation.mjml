@@ -19,8 +19,8 @@
     </mj-section>
     <mj-section background-color="#fff">
       <mj-column>
-        <mj-text align="center">Vous avez été invité à collaborer sur L'ateleir</mj-text>
-        <mj-button background-color="#455a64" color="white" href="{{ task.url }}">
+        <mj-text align="center">Vous avez été invité à collaborer sur L'atelier</mj-text>
+        <mj-button background-color="#455a64" color="white" href="{{ url }}">
           Ouvrir
          </mj-button>
       </mj-column>
