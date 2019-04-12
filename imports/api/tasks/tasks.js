@@ -21,7 +21,7 @@ if (Meteor.isServer) {
   Meteor.startup(() => {
     Tasks.rawCollection().createIndex({listId: 1});
     Tasks.rawCollection().createIndex({projectId: 1});
-    Tasks.rawCollection().createIndex({number: 1});
+    Tasks.rawCollection().createIndex({number: 1}, {unique: true});
   });
 }
 
@@ -105,7 +105,6 @@ Meteor.methods({
 
   "tasks.setNumber"(taskId) {
     const number = incNumber();
-    console.log(number)
     Tasks.update({_id: taskId}, {$set: {number: number}});
   },
 
