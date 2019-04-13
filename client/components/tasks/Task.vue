@@ -11,7 +11,6 @@
       :class="{ dragover, dragup, dragdown, selected, completed }"
       v-show="!hidden"
     >
-    {{ task.order }}
       <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
       <div class="title">
         <v-icon

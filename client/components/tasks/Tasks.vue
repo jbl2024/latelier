@@ -134,7 +134,6 @@ export default {
     onEnd(event) {},
 
     onChange(event) {
-      console.log(event)
       const { added, moved } = event;
       let newIndex = 0;
       let element;
