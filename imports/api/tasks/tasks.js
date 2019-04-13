@@ -167,6 +167,7 @@ Meteor.methods({
   'tasks.move'(projectId, listId, taskId, order) {
     check(listId, String);
     check(taskId, String);
+    check(order, Number);
 
     _checkForCompletion(listId, taskId);
 
@@ -179,19 +180,9 @@ Meteor.methods({
         Tasks.direct.update({_id: task._id}, {$set: {order: task.order}});
       }
     }
-    if (order) {
-      Tasks.direct.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
-        _reorder(listId);
-      });    
-    } else {
-      var lastTask = Tasks.findOne({projectId: projectId, listId: listId}, {sort: {order: -1}});
-      if (lastTask) {
-        order = lastTask.order + 10;
-      } else {
-        order = 10;
-      }
-      Tasks.direct.update({_id: taskId}, {$set: {listId: listId, order: order}}, {});
-    }
+    Tasks.direct.update({_id: taskId}, {$set: {listId: listId, order: order}}, {}, (error, result) => {
+      _reorder(listId);
+    });    
 
     Meteor.call('tasks.track', {
       type: 'tasks.move',
