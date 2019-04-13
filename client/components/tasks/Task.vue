@@ -5,14 +5,14 @@
     @mouseenter="showEditButton = true"
     @mouseleave="showEditButton = false"
   >
-    <drag
+    <dnd-drag
       class="drag"
       :transfer-data="getTransferData(task)"
       :draggable="!editName"
       @dragstart="onDragStart"
       @dragend="onDragEnd"
     >
-      <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
+      <dnd-drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
         <div
           class="card"
           ref="card"
@@ -106,8 +106,8 @@
             </div>
           </div>
         </div>
-      </drop>
-    </drag>
+      </dnd-drop>
+    </dnd-drag>
   </div>
 </template>
 

@@ -1,10 +1,10 @@
 <template>
   <div class="list">
     <new-task :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
-    <drop @drop="(data, event) => { handleDrop(list, data, event) }">
+    <dnd-drop @drop="(data, event) => { handleDrop(list, data, event) }">
       <div class="list-header">
         <div class="swimlane dragscroll">
-          <drag :transfer-data="getTransferData(list)" :draggable="!isListEdited(list, selectedList)">
+          <dnd-drag :transfer-data="getTransferData(list)" :draggable="!isListEdited(list, selectedList)">
             <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
               <div :style="getColor(currentProjectId)" class="flex-container-row">
                 <div class="list-name flex1" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
@@ -67,7 +67,7 @@
               </div>
               </div>
             </div>
-          </drag>
+          </dnd-drag>
         </div>
       </div>
       <div class="tasks-wrapper dragscroll">
@@ -80,7 +80,7 @@
           <div class="list-title" v-if="!showHiddenTasks">Afficher les {{ hiddenTaskCount }} tâches terminées</div>
         </div>
       </div>
-    </drop>
+    </dnd-drop>
   </div>
 </template>
 
