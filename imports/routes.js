@@ -118,42 +118,42 @@ export default [
   {
     path: "/projects-settings/:projectId",
     name: "project-settings",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectSettings,
     props: true
   },
   {
     path: "/projects-timeline/:projectId",
     name: "project-timeline",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectTimeline,
     props: true
   },
   {
     path: "/projects-canvas/:projectId",
     name: "project-canvas",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectCanvas,
     props: true
   },
   {
     path: "/projects-weather/:projectId",
     name: "project-weather",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectWeather,
     props: true
   },
   {
     path: "/projects-attachments/:projectId",
     name: "project-attachments-page",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectAttachmentsPage,
     props: true
   },
   {
     path: "/projects/:projectId/:taskId",
     name: "project-task",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
     props: true
   },
