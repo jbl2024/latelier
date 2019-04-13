@@ -110,7 +110,14 @@ Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(or
 publishComposite("project", function(projectId) {
   return {
     find() {
-      return Projects.find({ _id: projectId });
+      const userId = Meteor.userId();
+      const query = {
+        _id: projectId
+      };
+      if (!Permissions.isAdmin(Meteor.userId())) {
+        query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
+      }
+      return Projects.find(query);
     },
     children: [
       {
