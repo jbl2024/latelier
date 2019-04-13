@@ -576,7 +576,7 @@ if (Meteor.isServer) {
       if (!task) {
         throw new Meteor.Error('not-found');  
       }
-      const canAccess = Meteor.call("projects.canAccess", {projectId: task.projectId});
+      const canAccess = Meteor.call("permissions.canReadProject", {projectId: task.projectId});
       if (!canAccess) {
         throw new Meteor.Error('not-authorized');   
       }

@@ -45,7 +45,7 @@ export const isBasicAuth = (to, from, next) => {
 export const projectAuth = (to, from, next) => {
   const projectId = to.params.projectId;
   Meteor.call(
-    "projects.canAccess",
+    "permissions.canReadProject",
     { projectId: projectId },
     (error, result) => {
       if (error || !result) {

@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import { Projects } from "/imports/api/projects/projects.js";
 
@@ -157,3 +158,26 @@ Permissions.methods.removeAdmin = new ValidatedMethod({
     Permissions.removeAdmin(userId, scope)
   }
 });
+
+if (Meteor.isServer) {
+  Permissions.methods.canReadProject = new ValidatedMethod({
+    name: "permissions.canReadProject",
+    validate: new SimpleSchema({
+      projectId: { type: String }
+    }).validator(),
+    run({projectId}) {
+      checkLoggedIn();
+      check(projectId, String);
+      const userId = Meteor.userId();
+      if (Permissions.isAdmin(userId)) {
+        return true;
+      }
+      const project = Projects.findOne({_id: projectId, $or: [{createdBy: userId}, {members: userId}, {isPublic: true}]});
+      if (project) {
+        return true;
+      } else {
+        throw new Meteor.Error('not-authorized');  
+      }
+    }
+  });
+}
