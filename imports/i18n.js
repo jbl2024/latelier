@@ -1,5 +1,6 @@
 const messages = {
   fr: {
+    'Back': 'Retour',
     'Cancel': 'Annuler',
     'Confirm': 'Confirmer',
     'Delete': 'Supprimer',
@@ -54,6 +55,7 @@ const messages = {
     "Late": "En retard",
     "Assigned to me": "Assignées à moi",
     "Recents": "Récentes",
+    "Access forbidden": "Accès interdit",
     history: {
       tasks: {
         create: "Création",
@@ -87,6 +89,7 @@ const messages = {
     }
   },
   en: {
+    'Back': 'Back',
     'Cancel': 'Cancel',
     'Confirm': 'Confirm',
     'Delete': 'Delete',
@@ -141,6 +144,7 @@ const messages = {
     "Late": "Late",
     "Assigned to me": "Assigned to me",
     "Recents": "Recents",
+    "Access forbidden": "Access forbidden",
     history: {
       tasks: {
         create: "Creation",

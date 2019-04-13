@@ -1,14 +1,16 @@
-import { isBasicAuth } from "../imports/modules/check-auth";
+import { isBasicAuth, projectAuth } from "./router/check-auth";
+import multiguard from 'vue-router-multiguard';
 
 import NotFound from "/imports/ui/pages/NotFound/NotFound.vue";
 
 import Home from "/imports/ui/Home.vue";
-import Auth from "../imports//ui/layout/Auth.vue";
-import Login from "../imports/ui/pages/Auth/Login.vue";
-import RegistrationCompleted from "../imports/ui/pages/Auth/RegistrationCompleted.vue";
-import Register from "../imports/ui/pages/Auth/Register.vue";
-import ForgotPassword from "../imports/ui/pages/Auth/ForgotPassword.vue";
-import ResetPassword from "../imports/ui/pages/Auth/ResetPassword.vue";
+import Auth from "/imports//ui/layout/Auth.vue";
+import Login from "/imports/ui/pages/Auth/Login.vue";
+import Forbidden from "/imports/ui/pages/Forbidden/Forbidden.vue";
+import RegistrationCompleted from "/imports/ui/pages/Auth/RegistrationCompleted.vue";
+import Register from "/imports/ui/pages/Auth/Register.vue";
+import ForgotPassword from "/imports/ui/pages/Auth/ForgotPassword.vue";
+import ResetPassword from "/imports/ui/pages/Auth/ResetPassword.vue";
 
 import OrganizationsPage from "/imports/ui/organizations/OrganizationsPage.vue";
 import OrganizationSettings from "/imports/ui/organizations/OrganizationSettings.vue";
@@ -33,6 +35,11 @@ export default [
     name: "home",
     component: Home,
     beforeEnter: isBasicAuth
+  },
+  {
+    path: "/forbidden/",
+    name: "forbidden",
+    component: Forbidden
   },
   {
     path: "/login",
@@ -104,49 +111,49 @@ export default [
   {
     path: "/projects/:projectId",
     name: "project",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
     props: true
   },
   {
     path: "/projects-settings/:projectId",
     name: "project-settings",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectSettings,
     props: true
   },
   {
     path: "/projects-timeline/:projectId",
     name: "project-timeline",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectTimeline,
     props: true
   },
   {
     path: "/projects-canvas/:projectId",
     name: "project-canvas",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectCanvas,
     props: true
   },
   {
     path: "/projects-weather/:projectId",
     name: "project-weather",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectWeather,
     props: true
   },
   {
     path: "/projects-attachments/:projectId",
     name: "project-attachments-page",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectAttachmentsPage,
     props: true
   },
   {
     path: "/projects/:projectId/:taskId",
     name: "project-task",
-    beforeEnter: isBasicAuth,
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
     props: true
   },
