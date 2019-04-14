@@ -25,6 +25,9 @@
                   ></v-textarea>
                 </v-flex>
                 <v-flex xs12>
+                  <task-labels-in-new-task :project-id="projectId" v-model="labels"></task-labels-in-new-task>
+                </v-flex>
+                <v-flex xs12>
                   <v-checkbox
                     :class="{ hidden: !showMultilineOption }"
                     v-model="multiline"
@@ -32,21 +35,23 @@
                   ></v-checkbox>
                 </v-flex>
               </v-layout>
+
           </v-form>
         </v-card-text>
+
 
         <v-card-actions class="show-desktop">
           <v-spacer></v-spacer>
           <v-btn flat @click="close">{{ $t('Cancel')}}</v-btn>
-          <v-btn color="primary" @click="newTask(false)" :disabled="!valid">{{ $t('Create') }}</v-btn>
-          <v-btn color="primary" @click="newTask(true)" :disabled="!valid">{{ $t('Create and add') }}</v-btn>
+          <v-btn color="primary" @click="newTask(false)" :disabled="!valid || loading">{{ $t('Create') }}</v-btn>
+          <v-btn color="primary" @click="newTask(true)" :disabled="!valid || loading">{{ $t('Create and add') }}</v-btn>
         </v-card-actions>
 
         <v-card-actions class="show-mobile">
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="newTask(false)" :disabled="!valid">{{ $t('Create') }}</v-btn>
+          <v-btn color="primary" @click="newTask(false)" :disabled="!valid || loading">{{ $t('Create') }}</v-btn>
           <v-spacer></v-spacer>
-          <v-btn color="primary" @click="newTask(true)" :disabled="!valid">{{ $t('Create and add') }}</v-btn>
+          <v-btn color="primary" @click="newTask(true)" :disabled="!valid || loading">{{ $t('Create and add') }}</v-btn>
           <v-spacer></v-spacer>
         </v-card-actions>
 
@@ -89,11 +94,13 @@ export default {
   },
   props: {
     active: Boolean,
+    projectId: {
+      type: String
+    },
     listId: {
       type: String
     }
   },
-  mounted() {},
   watch: {
     active(active) {
       if (active) {
@@ -124,12 +131,16 @@ export default {
       showDialog: false,
       name: "",
       multiline: false,
-      showMultilineOption: false
+      showMultilineOption: false,
+      labels: [],
+      loading: false
     };
   },
   methods: {
     reset() {
       this.name = "";
+      this.multiline = false;
+      this.labels = [];
       this.$nextTick(() => {
         this.$refs.name.focus();
       });
@@ -137,21 +148,30 @@ export default {
     newTask(keep) {
       const list = Lists.findOne({ _id: this.listId });
       if (!this.multiline) {
+        this.loading = true;
         Meteor.call(
           "tasks.insert",
           list.projectId,
           this.listId,
           this.name,
+          this.labels.map(l => {return l._id}),
           (error, task) => {
+            this.loading = false;
             if (error) {
               this.$store.dispatch("notifyError", error);
               return;
             } else {
               this.$store.dispatch("notify", this.$t('Task created'));
+              this.reset();
               if (!keep) {
                 this.close();
-              } else {
-                this.reset();
+                this.$router.push({
+                  name: 'project-task',
+                  params: {
+                    projectId: this.projectId,
+                    taskId: task._id
+                  }
+                })
               }
             }
           }
@@ -172,12 +192,14 @@ export default {
           }
         ).then(res => {
           if (res) {
+            this.loading = true;
             tasks.map(name => {
               Meteor.call(
                 "tasks.insert",
                 list.projectId,
                 this.listId,
                 name,
+                this.labels.map(l => {return l._id}),
                 (error, task) => {
                   if (error) {
                     this.$store.dispatch("notifyError", error);
@@ -185,10 +207,10 @@ export default {
                   }
                 }
               );
+              this.loading = false;
+              this.reset();
               if (!keep) {
                 this.close();
-              } else {
-                this.reset();
               }
             });
             this.$store.dispatch("notify", this.$t('Tasks created'));
