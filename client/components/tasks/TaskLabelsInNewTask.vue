@@ -25,6 +25,11 @@ export default {
       labels: this.value      
     };
   },
+  watch: {
+    value(value) {
+      this.labels = value;
+    }
+  },
   methods: {
     getColor (label) {
       return `
