@@ -56,10 +56,11 @@ Tasks.before.update(function (userId, doc, fieldNames, modifier, options) {
 });
 
 Meteor.methods({
-  'tasks.insert'(projectId, listId, name) {
+  'tasks.insert'(projectId, listId, name, labelIds) {
     check(projectId, String);
     check(listId, String);
     check(name, String);
+    check(labelIds, Match.Maybe([String]));
 
     const userId = Meteor.userId();
 
@@ -91,7 +92,8 @@ Meteor.methods({
       createdAt: now,
       updatedAt: now,
       createdBy: userId,
-      updatedBy: userId
+      updatedBy: userId,
+      labels: labelIds || []
     });
     if (Meteor.isServer) {
       Meteor.call("tasks.setNumber", taskId);

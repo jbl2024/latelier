@@ -1,6 +1,6 @@
 <template>
   <div class="list">
-    <new-task :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
+    <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
     <drop @drop="(data, event) => { handleDrop(list, data, event) }">
       <div class="list-header">
         <div class="swimlane dragscroll">

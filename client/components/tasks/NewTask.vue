@@ -25,6 +25,9 @@
                   ></v-textarea>
                 </v-flex>
                 <v-flex xs12>
+                  <task-labels-in-new-task :project-id="projectId" v-model="labels"></task-labels-in-new-task>
+                </v-flex>
+                <v-flex xs12>
                   <v-checkbox
                     :class="{ hidden: !showMultilineOption }"
                     v-model="multiline"
@@ -32,8 +35,10 @@
                   ></v-checkbox>
                 </v-flex>
               </v-layout>
+
           </v-form>
         </v-card-text>
+
 
         <v-card-actions class="show-desktop">
           <v-spacer></v-spacer>
@@ -89,6 +94,9 @@ export default {
   },
   props: {
     active: Boolean,
+    projectId: {
+      type: String
+    },
     listId: {
       type: String
     }
@@ -124,7 +132,8 @@ export default {
       showDialog: false,
       name: "",
       multiline: false,
-      showMultilineOption: false
+      showMultilineOption: false,
+      labels: []
     };
   },
   methods: {
@@ -142,6 +151,7 @@ export default {
           list.projectId,
           this.listId,
           this.name,
+          this.labels.map(l => {return l._id}),
           (error, task) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
@@ -178,6 +188,7 @@ export default {
                 list.projectId,
                 this.listId,
                 name,
+                this.labels.map(l => {return l._id}),
                 (error, task) => {
                   if (error) {
                     this.$store.dispatch("notifyError", error);
