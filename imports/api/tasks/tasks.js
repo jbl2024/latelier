@@ -168,7 +168,7 @@ Meteor.methods({
     const notes = (task.notes || []).map(note => {
       return {
         _id: Random.id(),
-        createdAt: note.now,
+        createdAt: note.createdAt,
         createdBy: note.createdBy,
         edited: note.edited,
         editedBy: note.editedBy,
