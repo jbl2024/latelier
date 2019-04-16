@@ -1,5 +1,5 @@
 <template>
-  <v-card class="card" @click="openProject(project)">
+  <v-card class="card" @click="openProject(project)" :style="getColorCardStyle(project)">
     <v-card-title>
       <div>
         <div class="name">{{ project.name }}</div>
@@ -122,6 +122,13 @@ export default {
 
     getColor(item) {
       return item.color;
+    },
+
+    getColorCardStyle(project) {
+      if (project.color) {
+        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`
+        // return `background: linear-gradient(90deg, ${project.color} 3%, #fff 3%);`
+      }
     },
 
     formatProjectDates(project) {
