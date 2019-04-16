@@ -73,7 +73,7 @@
           >
             <v-icon>delete</v-icon>
           </v-btn>
-          <span>{{ $t('Settings') }}</span>
+          <span>{{ $t('Delete') }}</span>
         </v-tooltip>
       </template>
     </v-card-actions>
