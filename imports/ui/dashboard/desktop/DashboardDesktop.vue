@@ -130,22 +130,27 @@
               </v-btn>
             </div>
           </div>
-          <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
-            <v-list dense two-line class="list" v-if="projectsByOrganization(organization).length > 0">
-              <template v-for="project in projectsByOrganization(organization)">
-                <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
-              </template>
-            </v-list>
+          <v-list
+            :key="`projects-${organization._id}`"
+            dense
+            two-line
+            class="list"
+            v-if="projectsByOrganization(organization).length > 0"
+          >
+            <template v-for="project in projectsByOrganization(organization)">
+              <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
+            </template>
+          </v-list>
 
-            <empty-state
-              small
-              :key="`${organization._id}-empty`"
-              v-if="projectsByOrganization(organization).length == 0"
-              :description="`Aucun projet disponible`"
-              illustration="project"
-            >
-              <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
-            </empty-state>
+          <empty-state
+            small
+            :key="`${organization._id}-empty`"
+            v-if="projectsByOrganization(organization).length == 0"
+            :description="`Aucun projet disponible`"
+            illustration="project"
+          >
+            <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
+          </empty-state>
         </template>
       </div>
     </div>
