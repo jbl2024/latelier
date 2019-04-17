@@ -41,13 +41,18 @@
         </empty-state>
       </template>
 
-
       <div class="projects-wrapper">
         <template v-if="favorites.length > 0">
           <div class="header">
             <div class="header-title">{{ $t('Favorites') }}</div>
           </div>
-          <v-container fluid grid-list-xl class="projects" v-resize="onResizeProjects" ref="projects">
+          <v-container
+            fluid
+            grid-list-xl
+            class="projects"
+            v-resize="onResizeProjects"
+            ref="projects"
+          >
             <v-layout row wrap>
               <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
                 <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
@@ -66,13 +71,11 @@
               </v-btn>
             </div>
           </div>
-          <v-container fluid grid-list-xl class="projects">
-            <v-layout row wrap>
-              <v-flex v-for="project in individuals" :key="project._id" :class="cardClass">
-                <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
-              </v-flex>
-            </v-layout>
-          </v-container>
+          <v-list dense two-line class="list">
+            <template v-for="project in individuals">
+              <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
+            </template>
+          </v-list>
         </template>
 
         <template v-for="organization in organizations">
@@ -127,26 +130,27 @@
               </v-btn>
             </div>
           </div>
-          <v-container fluid grid-list-xl class="projects" :key="`projects-${organization._id}`">
-            <v-layout row wrap>
-              <v-flex
-                v-for="project in projectsByOrganization(organization)"
-                :key="project._id"
-                :class="cardClass"
-              >
-                <dashboard-project-card :project="project" :user="user"></dashboard-project-card>
-              </v-flex>
-              <empty-state
-                small
-                :key="`${organization._id}-empty`"
-                v-if="projectsByOrganization(organization).length == 0"
-                :description="`Aucun projet disponible`"
-                illustration="project"
-              >
-                <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
-              </empty-state>
-            </v-layout>
-          </v-container>
+          <v-list
+            :key="`projects-${organization._id}`"
+            dense
+            two-line
+            class="list"
+            v-if="projectsByOrganization(organization).length > 0"
+          >
+            <template v-for="project in projectsByOrganization(organization)">
+              <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
+            </template>
+          </v-list>
+
+          <empty-state
+            small
+            :key="`${organization._id}-empty`"
+            v-if="projectsByOrganization(organization).length == 0"
+            :description="`Aucun projet disponible`"
+            illustration="project"
+          >
+            <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
+          </empty-state>
         </template>
       </div>
     </div>
@@ -180,6 +184,7 @@
 <script>
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
+import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
@@ -193,7 +198,8 @@ export default {
   props: {},
   components: {
     DashboardTaskList,
-    DashboardProjectCard
+    DashboardProjectCard,
+    DashboardProjectList
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
@@ -211,7 +217,7 @@ export default {
       tab: null,
       filter: "",
       organizationId: "",
-      cardClass:"card1"
+      cardClass: "card1"
     };
   },
   meteor: {
@@ -306,7 +312,7 @@ export default {
         name: "organization-settings",
         params: { organizationId: id }
       });
-    },    
+    },
     canManageOrganization(organization) {
       if (
         Permissions.isAdmin(Meteor.userId()) ||
@@ -469,14 +475,14 @@ export default {
 }
 
 .card3 {
-  flex-basis: calc(100%/3);
+  flex-basis: calc(100% / 3);
   flex-grow: 0;
-  max-width: calc(100%/3);  
+  max-width: calc(100% / 3);
 }
 .card2 {
-  flex-basis: calc(100%/2);
+  flex-basis: calc(100% / 2);
   flex-grow: 0;
-  max-width: calc(100%/2);  
+  max-width: calc(100% / 2);
 }
 
 .card1 {
@@ -485,6 +491,11 @@ export default {
   max-width: 100%;
 }
 
+.list {
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  margin-bottom: 24px;
+}
 </style>
 
 <style>

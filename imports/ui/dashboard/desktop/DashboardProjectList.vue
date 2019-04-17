@@ -1,35 +1,23 @@
 <template>
-  <v-card class="card" @click="openProject(project)" :style="getColorCardStyle(project)">
-    <v-card-title>
-      <div>
-        <div class="name">{{ project.name }}</div>
-        <div class="subtitle grey--text">{{ formatProjectDates(project) }}</div>
-      </div>
-    </v-card-title>
-    <v-divider></v-divider>
-    <!-- <v-card-text>
-      <v-layout>
-        <v-flex xs6>
-          <div class="indicator sep">
-            <div class="legend grey--text">{{ $t('Tasks') }}</div>
-            <div class="number">{{ taskCount(project) }}</div>
-          </div>
-        </v-flex>
-        <v-flex xs6>
-          <div class="indicator">
-            <div class="legend grey--text">{{ $t('Users') }}</div>
-            <div class="number">{{ userCount(project) }}</div>
-          </div>
-        </v-flex>
-      </v-layout>
-    </v-card-text>
-    <v-divider></v-divider> -->
-    <v-card-actions>
-      <v-btn icon>
-      <v-icon :class="getVisibilityIconClass(project)" :color="getColor(project)">{{ getVisibilityIcon(project) }}</v-icon>
-      </v-btn>
-      <v-spacer></v-spacer>
+  <v-list-tile @click="openProject(project)">
+    <v-list-tile-avatar :color="getColor(project)">
+      <v-icon :class="getVisibilityIconClass(project)">{{ getVisibilityIcon(project) }}</v-icon>
+    </v-list-tile-avatar>
+    <v-list-tile-content class="pointer">
+      <v-list-tile-title>{{ project.name }}</v-list-tile-title>
+      <v-list-tile-sub-title>{{ formatProjectDates(project) }}</v-list-tile-sub-title>
+    </v-list-tile-content>
 
+    <v-list-tile-action
+      v-for="group in getProjectGroups(project)"
+      class="show-desktop"
+      :key="group._id"
+      @click.stop="selectGroup(group)"
+    >
+      <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+    </v-list-tile-action>
+
+    <v-list-tile-action>
       <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
         <v-btn
           icon
@@ -43,55 +31,63 @@
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 
-      <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
-        <v-btn icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
-          <v-icon>star</v-icon>
-        </v-btn>
-        <span>{{ $t('Remove from favorites') }}</span>
-      </v-tooltip>
+      <v-btn v-if="isFavorite(user, project._id)" icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
+        <v-icon>star</v-icon>
+      </v-btn>
+    </v-list-tile-action>
 
-      <template v-if="canManageProject(project)">
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="openProjectSettings(project)"
-          >
-            <v-icon>settings</v-icon>
-          </v-btn>
-          <span>{{ $t('Settings') }}</span>
-        </v-tooltip>
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="deleteProject(project)"
-          >
-            <v-icon>delete</v-icon>
-          </v-btn>
-          <span>{{ $t('Delete') }}</span>
-        </v-tooltip>
-      </template>
-    </v-card-actions>
-  </v-card>
+    <v-list-tile-action>
+      <v-menu bottom left class="menu" @click.native.stop>
+        <v-btn slot="activator" icon flat color="grey darken-1">
+          <v-icon>more_vert</v-icon>
+        </v-btn>
+        <v-list dense>
+          <v-list-tile @click="openProjectSettings(project)" v-if="canManageProject(project)">
+            <v-list-tile-action>
+              <v-icon>settings</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ $t('Settings') }}</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="cloneProject(project)">
+            <v-list-tile-action>
+              <v-icon>file_copy</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ $t('Clone') }}</v-list-tile-title>
+          </v-list-tile>
+          <v-list-tile @click="deleteProject(project)" v-if="canManageProject(project)">
+            <v-list-tile-action>
+              <v-icon>delete</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ $t('Delete') }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list>
+      </v-menu>
+    </v-list-tile-action>
+  </v-list-tile>
+</template>
+
+<script>
+export default {};
+</script>
+
+<style>
+</style>
+
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import { ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
-  name: "dashboard-project-card",
+  name: "dashboard-project-list",
   mixins: [DatesMixin],
   props: {
     project: Object,
     user: Object
-
   },
   i18n: {
     messages: {
@@ -120,13 +116,15 @@ export default {
       return "";
     },
 
-    getColor(item) {
-      return item.color;
+    getColor(project) {
+      return project.color;
     },
 
     getColorCardStyle(project) {
       if (project.color) {
-        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`
+        return `background: linear-gradient(0deg, #fff 95%, ${
+          project.color
+        } 95%);`;
         // return `background: linear-gradient(90deg, ${project.color} 3%, #fff 3%);`
       }
     },
@@ -231,17 +229,17 @@ export default {
               this.$store.dispatch("notifyError", error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("Project added to favorites"));
+            this.$store.dispatch(
+              "notify",
+              this.$t("Project added to favorites")
+            );
           }
         );
       });
     },
 
     removeFromFavorites(user, projectId) {
-      this.$store.dispatch(
-        "notify",
-        this.$t("Project removed from favorites")
-      );
+      this.$store.dispatch("notify", this.$t("Project removed from favorites"));
       this.$nextTick(() => {
         Meteor.call(
           "projects.removeFromUserFavorites",
@@ -253,48 +251,48 @@ export default {
             }
           }
         );
-      })
-    }
+      });
+    },
 
+    getProjectGroups(project) {
+      return ProjectGroups.find(
+        { projects: project._id },
+        { sort: { name: 1 } }
+      ).fetch();
+    },
+    selectGroup(group) {
+      var selectedGroup = this.$store.state.selectedGroup;
+      if (selectedGroup && selectedGroup._id === group._id) {
+        this.$store.dispatch("setSelectedGroup", null);
+      } else {
+        this.$store.dispatch("setSelectedGroup", group);
+      }
+    },
+
+    cloneProject(project) {
+      this.$confirm(this.$t("Do you really want to clone this project?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Clone")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "projects.clone",
+            { projectId: project._id },
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+            }
+          );
+        }
+      });
+    }
   }
 };
 </script>
 
 <style scoped>
-.card {
-  border-radius: 4px;
-  overflow: hidden;
-}
 
-.card:hover {
-  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
-  cursor: pointer;
-}
-
-.card .name {
-  font-size: 14px;
-  font-weight: bold;
-}
-
-.card .subtitle {
-  font-size: 12px;
-  min-height: 18px;
-}
-
-.card .indicator {
-  text-align: center;
-}
-
-.card .indicator .legend {
-  font-size: 11px;
-}
-
-.card .indicator .number {
-  font-size: 18px;
-  font-weight: bold;
-}
-
-.card .sep {
-  border-right: 1px solid #ededed;
-}
 </style>
