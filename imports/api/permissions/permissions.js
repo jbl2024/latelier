@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 
 const ApplicationRoles = Object.freeze({
   ADMIN: "admin",
@@ -31,6 +32,10 @@ export const Permissions = {
 
   initializeProjectPermissions(project) {
     Roles.addUsersToRoles(project.createdBy, ApplicationRoles.ADMIN, project._id)
+  },
+
+  initializeOrganizationPermissions(organization) {
+    Roles.addUsersToRoles(organization.createdBy, ApplicationRoles.ADMIN, organization._id)
   },
 
   removeAdmin(userId, scope=Roles.GLOBAL_GROUP) {
@@ -140,6 +145,21 @@ Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
     const userId = project.createdBy;
     if (!userId) return;
     Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
+  }
+});
+
+Permissions.methods.initializeOrganizationPermissions = new ValidatedMethod({
+  name: "permissions.initializeOrganizationPermissions",
+  validate: new SimpleSchema({
+    organizationId: { type: String },
+  }).validator(),
+  run({ organizationId }) {
+    checkLoggedIn();
+    
+    const organization = Organizations.findOne({_id: organizationId});
+    const userId = organization.createdBy;
+    if (!userId) return;
+    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, organizationId);
   }
 });
 

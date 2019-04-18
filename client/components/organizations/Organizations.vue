@@ -114,14 +114,14 @@ export default {
     },
 
     canDeleteOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
         return true;
       }
       return false;
     },
 
     canManageOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId()) || organization.createdBy === Meteor.userId()) {
+      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
         return true;
       }
       return false;

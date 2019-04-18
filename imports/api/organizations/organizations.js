@@ -24,6 +24,8 @@ Meteor.methods({
       createdBy: currentUser
     });
     Meteor.call('organizations.addMember', organizationId, currentUser);
+    Meteor.call("permissions.initializeOrganizationPermissions", {organizationId: organizationId});
+
 
     return organizationId;
   },
