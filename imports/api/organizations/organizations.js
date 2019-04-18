@@ -111,7 +111,7 @@ Meteor.methods({
 
     const projects = Projects.find({organizationId: organizationId});
     projects.map(project => {
-      Meteor.call('projects.removeMember', project._id, userId);
+      Meteor.call('projects.removeMember', {projectId: project._id, userId: userId});
     });
 
     if (Organizations.find({_id: organizationId,  "members" : userId}).count() == 0) {
