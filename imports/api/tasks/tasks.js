@@ -136,6 +136,20 @@ Meteor.methods({
     });
   },
 
+  "tasks.deleteForever"(taskId) {
+    check(taskId, String);
+    checkCanDeleteTask(taskId);
+    
+    Meteor.call("attachments.remove", {taskId: taskId});
+
+    Meteor.call("tasks.track", {
+      type: "tasks.deleteForever",
+      taskId: taskId
+    });
+
+    Tasks.remove(taskId);
+  },
+
   "tasks.restore"(taskId) {
     check(taskId, String);
     checkCanWriteTask(taskId);

@@ -24,6 +24,14 @@
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <v-tooltip top slot="activator">
+                    <v-btn icon ripple @click.stop="deleteForever(task)" slot="activator">
+                      <v-icon color="red">delete_forever</v-icon>
+                    </v-btn>
+                    <span>{{ $t('Delete forever') }}</span>
+                  </v-tooltip>
+                </v-list-tile-action>
+                <v-list-tile-action>
+                  <v-tooltip top slot="activator">
                     <v-btn icon ripple @click.stop="restoreTask(task)" slot="activator">
                       <v-icon color="primary">restore_from_trash</v-icon>
                     </v-btn>
@@ -51,6 +59,22 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
   mixins: [usersMixin, DatesMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Delete task?": "Delete task?",
+        "Task deleted": "Task deleted",
+        "Delete forever": "Delete forever",
+        "Restore from trash": "Restore from trash"
+      },
+      fr: {
+        "Delete task?": "Supprimer la tâche ?",
+        "Task deleted": "Tâche supprimée",
+        "Delete forever": "Supprimer définitivement",
+        "Restore from trash": "Restaurer de la corbeille"
+      }
+    }
+  },
   props: {
     projectId: String
   },
@@ -95,6 +119,26 @@ export default {
         }
         this.refresh();
       });
+    },
+
+    deleteForever(task) {
+      this.$confirm(this.$t("Delete task?"), {
+        title: task.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("tasks.deleteForever", task._id, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('Task deleted'));
+            this.refresh();
+          });
+        }
+      });
+
     }
   }
 };
