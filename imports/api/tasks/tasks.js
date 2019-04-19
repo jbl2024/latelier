@@ -128,8 +128,6 @@ Meteor.methods({
       deletedAt: new Date()
     }});
 
-    Meteor.call("attachments.remove", {taskId: taskId});
-
     Meteor.call("tasks.track", {
       type: "tasks.remove",
       taskId: taskId
