@@ -56,6 +56,7 @@ const messages = {
     "Assigned to me": "Assignées à moi",
     "Recents": "Récentes",
     "Access forbidden": "Accès interdit",
+    "Trashcan": "Corbeille",
     history: {
       tasks: {
         create: "Création",
@@ -145,6 +146,7 @@ const messages = {
     "Assigned to me": "Assigned to me",
     "Recents": "Recents",
     "Access forbidden": "Access forbidden",
+    "Trashcan": "Trashcan",
     history: {
       tasks: {
         create: "Creation",

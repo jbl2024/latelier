@@ -50,3 +50,18 @@ Attachments.methods.remove = new ValidatedMethod({
     }
   }
 });
+
+
+Attachments.methods.restore = new ValidatedMethod({
+  name: "attachments.restore",
+  validate: new SimpleSchema({
+    attachmentId: { type: String, optional: true },
+    projectId: { type: String, optional: true },
+    taskId: { type: String, optional: true }
+  }).validator(),
+  run({ attachmentId, projectId, taskId }) {
+    checkLoggedIn();
+
+    // TODO : Implement method
+  }
+});

@@ -114,6 +114,29 @@ export const checkLoggedIn = () => {
   }
 }
 
+export const checkCanReadProject = (projectId) => {
+  Meteor.call("permissions.canReadProject", {projectId: projectId});
+}
+
+export const checkCanWriteProject = (projectId) => {
+  Meteor.call("permissions.canWriteProject", {projectId: projectId});
+}
+
+export const checkCanDeleteProject = (projectId) => {
+  Meteor.call("permissions.canDeleteProject", {projectId: projectId});
+}
+
+export const checkCanReadTask = (taskId) => {
+  Meteor.call("permissions.canReadTask", {taskId: taskId});
+}
+
+export const checkCanWriteTask = (taskId) => {
+  Meteor.call("permissions.canWriteTask", {taskId: taskId});
+}
+
+export const checkCanDeleteTask = (taskId) => {
+  Meteor.call("permissions.canDeleteTask", {taskId: taskId});
+}
 Permissions.methods = {};
 
 Permissions.methods.setAdmin = new ValidatedMethod({

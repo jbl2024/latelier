@@ -1,6 +1,7 @@
 <template>
   <div class="project-menu">
     <project-history :projectId="projectId" ref="projectHistory"></project-history>
+    <project-trashcan :projectId="projectId" ref="projectTrashcan"></project-trashcan>
 
     <v-list dense class="pt-0" v-if="projectId">
       <v-list-tile
@@ -59,6 +60,14 @@
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>Historique</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile @click="$refs.projectTrashcan.open()">
+        <v-list-tile-action>
+          <v-icon>delete</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ $t('Trashcan') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile

@@ -129,7 +129,7 @@ publishComposite("project", function(projectId) {
       {
         // tasks
         find(project) {
-          return Tasks.find({ projectId: project._id }, { sort: { order: 1 } });
+          return Tasks.find({ projectId: project._id, deleted: {$ne: true} }, { sort: { order: 1 } });
         },
       },
       {

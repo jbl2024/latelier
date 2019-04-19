@@ -1,6 +1,11 @@
 import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
+
+/**
+ * Project
+ */
 
 Permissions.methods.canReadProject = new ValidatedMethod({
   name: "permissions.canReadProject",
@@ -70,6 +75,97 @@ Permissions.methods.canDeleteProject = new ValidatedMethod({
     }
   }
 });
+
+/**
+ * Tasks
+ */
+Permissions.methods.canReadTask = new ValidatedMethod({
+  name: "permissions.canReadTask",
+  validate: new SimpleSchema({
+    taskId: { type: String }
+  }).validator(),
+  run({ taskId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error("not-found");  
+    }
+
+    const project = Projects.findOne({
+      _id: task.projectId,
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    });
+    if (project) {
+      return true;
+    } else {
+      throw new Meteor.Error("not-authorized");
+    }
+  }
+});
+
+Permissions.methods.canWriteTask = new ValidatedMethod({
+  name: "permissions.canWriteTask",
+  validate: new SimpleSchema({
+    taskId: { type: String }
+  }).validator(),
+  run({ taskId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error("not-found");  
+    }
+
+    const project = Projects.findOne({
+      _id: task.projectId,
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    });
+    if (project) {
+      return true;
+    } else {
+      throw new Meteor.Error("not-authorized");
+    }
+  }
+});
+
+Permissions.methods.canDeleteTask = new ValidatedMethod({
+  name: "permissions.canDeleteTask",
+  validate: new SimpleSchema({
+    taskId: { type: String }
+  }).validator(),
+  run({ taskId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error("not-found");  
+    }
+
+    const project = Projects.findOne({
+      _id: task.projectId,
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    });
+    if (project) {
+      return true;
+    } else {
+      throw new Meteor.Error("not-authorized");
+    }
+  }
+});
+
+/**
+ * Attachents
+ */
 
 Permissions.methods.canReadAttachment = new ValidatedMethod({
   name: "permissions.canReadAttachment",

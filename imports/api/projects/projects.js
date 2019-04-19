@@ -7,7 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
-import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions"
+import { Permissions, checkLoggedIn, checkCanReadProject } from "/imports/api/permissions/permissions"
 
 export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
@@ -383,6 +383,30 @@ Projects.methods.getHistory = new ValidatedMethod({
   }
 });
 
+Projects.methods.getTrashcan = new ValidatedMethod({
+  name: "projects.getTrashcan",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({projectId}) {
+    checkLoggedIn();
+    checkCanReadProject(projectId);
+
+    const query = {
+      "properties.task.projectId": projectId
+    };
+
+    const data = Tasks.find({projectId: projectId, deleted: true}, {
+      sort: {
+        createdAt: -1
+      }
+    }).fetch();
+    
+    return {
+      data: data
+    };
+  }
+});
 Projects.methods.addToUserFavorites = new ValidatedMethod({
   name: "projects.addToUserFavorites",
   validate: new SimpleSchema({
