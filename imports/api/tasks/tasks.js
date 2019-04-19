@@ -154,8 +154,26 @@ Meteor.methods({
     check(taskId, String);
     checkCanWriteTask(taskId);
 
+    if (Meteor.isClient) {
+      return;
+    } 
+
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error("not-found");  
+    }
+    let listId = task.listId;
+    if (!listId) {
+      const list = Lists.findOne({projectId: task.projectId});
+      if (list) {
+        listId = list._id;
+      } else {
+        listId = Meteor.call("lists.insert", task.projectId, "Sans nom")._id;
+      }
+    }
     Tasks.update({_id: taskId}, {$set: {
       deleted: false,
+      listId: listId
     }});
 
     Meteor.call("attachments.restore", {taskId: taskId});
