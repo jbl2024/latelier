@@ -113,7 +113,7 @@ Projects.methods.remove = new ValidatedMethod({
 
     Tasks.remove({ projectId: projectId });
     Lists.remove({ projectId: projectId });
-    Attachments.remove({ "meta.projectId": projectId });
+    Meteor.call("attachments.remove", {projectId: projectId});
     Meteor.users.update(
       {},
       { $pull: { "profile.favoriteProjects": projectId } },

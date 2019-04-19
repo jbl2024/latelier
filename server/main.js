@@ -27,6 +27,9 @@ import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
 import '../imports/api/dashboards/dashboards.js';
 
+import '../imports/api/attachments/attachments.js';
+import '../imports/api/attachments/server/methods.js';
+
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }

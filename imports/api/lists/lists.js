@@ -54,7 +54,7 @@ Meteor.methods({
 
     const tasks = Tasks.find({ listId: listId });
     tasks.map(task => {
-      Attachments.remove({ "meta.taskId": task._id });
+      Meteor.call("attachments.remove", {taksId: task._id});
     });
 
     Tasks.remove({ listId: listId });

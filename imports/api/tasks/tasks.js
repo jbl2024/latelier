@@ -120,7 +120,7 @@ Meteor.methods({
       taskId: taskId
     });
 
-    Attachments.remove({ "meta.taskId": taskId });
+    Meteor.call("attachments.remove", taskId);
     Tasks.remove(taskId);
   },
 

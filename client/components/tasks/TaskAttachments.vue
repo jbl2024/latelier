@@ -96,7 +96,7 @@ export default {
         confirmText: this.$t("Delete")
       }).then(res => {
         if (res) {
-          Meteor.call('attachments.remove', attachment._id);
+          Meteor.call('attachments.remove', {attachmentId: attachment._id});
           Meteor.call('tasks.track', {
             type: 'tasks.removeAttachment',
             taskId: this.task._id,
