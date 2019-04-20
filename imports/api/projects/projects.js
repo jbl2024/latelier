@@ -13,6 +13,7 @@ export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Projects.rawCollection().createIndex({ organizationId: 1 });
+    Projects.rawCollection().createIndex({ deleted: 1 });
   });
 }
 
@@ -111,15 +112,21 @@ Projects.methods.remove = new ValidatedMethod({
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
 
-    Tasks.remove({ projectId: projectId });
-    Lists.remove({ projectId: projectId });
-    Meteor.call("attachments.remove", {projectId: projectId});
+    if (Meteor.isClient) {
+      Projects.remove(projectId);
+    }
+
+    Projects.update({_id: projectId}, {$set: {
+      deleted: true,
+      deletedBy: Meteor.userId(),
+      deletedAt: new Date()
+    }});
+    
     Meteor.users.update(
       {},
       { $pull: { "profile.favoriteProjects": projectId } },
       { multi: true }
     );
-    Projects.remove(projectId);
   }
 });
 

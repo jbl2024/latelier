@@ -36,6 +36,7 @@ Meteor.methods({
 
       const projects = Projects.find(
         {
+          deleted: {$ne: true},
           $or: [{organizationId: { $in: organizationIds }}, {organizationId: {$exists: false}}],
           $or: [{ createdBy: userId }, { members: userId }]
         },
@@ -46,6 +47,9 @@ Meteor.methods({
         projectIds.push(project._id);
       });
       query.projectId = { $in: projectIds };
+    } else {
+      const deletedProjectIds = Projects.find({deleted: true}).map(project => { return project._id});
+      query.projectId = { $nin: deletedProjectIds };
     }
 
     let sort = {};
