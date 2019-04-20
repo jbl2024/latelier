@@ -73,7 +73,7 @@
           >
             <v-icon>delete</v-icon>
           </v-btn>
-          <span>{{ $t('Delete') }}</span>
+          <span>{{ $t('Move to trash') }}</span>
         </v-tooltip>
       </template>
     </v-card-actions>
@@ -195,7 +195,7 @@ export default {
       this.$confirm(this.$t("Delete project?"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
+        confirmText: this.$t("Move to trash")
       }).then(res => {
         if (res) {
           Meteor.call(

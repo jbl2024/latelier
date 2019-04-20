@@ -56,6 +56,11 @@ const messages = {
     "Assigned to me": "Assignées à moi",
     "Recents": "Récentes",
     "Access forbidden": "Accès interdit",
+    "Trashcan": "Corbeille",
+    "Delete project?": "Supprimer le projet ?",
+    "No project": "Aucun projet",
+    "Project deleted": "Projet supprimé",
+    "Move to trash": "Placer dans la corbeille",
     history: {
       tasks: {
         create: "Création",
@@ -145,6 +150,11 @@ const messages = {
     "Assigned to me": "Assigned to me",
     "Recents": "Recents",
     "Access forbidden": "Access forbidden",
+    "Trashcan": "Trashcan",
+    "Delete project?": "Delete project?",    
+    "No project": "No project",
+    "Project deleted": "Project deleted",
+    "Move to trash": "Move to trash",
     history: {
       tasks: {
         create: "Creation",

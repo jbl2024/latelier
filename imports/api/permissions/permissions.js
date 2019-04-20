@@ -1,5 +1,4 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from "meteor/check";
 import { Roles } from "meteor/alanning:roles";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
@@ -115,6 +114,29 @@ export const checkLoggedIn = () => {
   }
 }
 
+export const checkCanReadProject = (projectId) => {
+  Meteor.call("permissions.canReadProject", {projectId: projectId});
+}
+
+export const checkCanWriteProject = (projectId) => {
+  Meteor.call("permissions.canWriteProject", {projectId: projectId});
+}
+
+export const checkCanDeleteProject = (projectId) => {
+  Meteor.call("permissions.canDeleteProject", {projectId: projectId});
+}
+
+export const checkCanReadTask = (taskId) => {
+  Meteor.call("permissions.canReadTask", {taskId: taskId});
+}
+
+export const checkCanWriteTask = (taskId) => {
+  Meteor.call("permissions.canWriteTask", {taskId: taskId});
+}
+
+export const checkCanDeleteTask = (taskId) => {
+  Meteor.call("permissions.canDeleteTask", {taskId: taskId});
+}
 Permissions.methods = {};
 
 Permissions.methods.setAdmin = new ValidatedMethod({
@@ -179,25 +201,3 @@ Permissions.methods.removeAdmin = new ValidatedMethod({
   }
 });
 
-if (Meteor.isServer) {
-  Permissions.methods.canReadProject = new ValidatedMethod({
-    name: "permissions.canReadProject",
-    validate: new SimpleSchema({
-      projectId: { type: String }
-    }).validator(),
-    run({projectId}) {
-      checkLoggedIn();
-      check(projectId, String);
-      const userId = Meteor.userId();
-      if (Permissions.isAdmin(userId)) {
-        return true;
-      }
-      const project = Projects.findOne({_id: projectId, $or: [{createdBy: userId}, {members: userId}, {isPublic: true}]});
-      if (project) {
-        return true;
-      } else {
-        throw new Meteor.Error('not-authorized');  
-      }
-    }
-  });
-}

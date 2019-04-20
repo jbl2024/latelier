@@ -68,11 +68,9 @@ export default {
   i18n: {
     messages: {
       en: {
-        "No project": "No project",
         "Projects with start and end date are displayed here": "Projects with start and end date are displayed here"
       },
       fr: {
-        "No project": "Aucun projet",
         "Projects with start and end date are displayed here": "Seuls les projets avec une date de début et une date de fin sont affichés ici"
       }
     }

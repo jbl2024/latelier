@@ -13,7 +13,9 @@ import { Permissions } from "/imports/api/permissions/permissions"
 
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
-  let query = {}
+  let query = {
+    deleted: {$ne: true}
+  }
 
   if (!Permissions.isAdmin(Meteor.userId())) {
     query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
@@ -40,7 +42,7 @@ publishComposite("allProjects", (name) => {
     // projects
     find() {
       const userId = Meteor.userId();
-      let query = {};
+      let query = { deleted: {$ne: true} };
     
       if (!Permissions.isAdmin(userId)) {
         query['$or'] = [{createdBy: userId}, {members: userId}];
@@ -85,6 +87,7 @@ publishComposite("allProjects", (name) => {
 Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(organizationId, name, groupId) {
   var userId = Meteor.userId();
   let query = {
+    deleted: {$ne: true},
     'startDate':{ $ne: null},
     'endDate':{ $ne: null},
   }
@@ -112,7 +115,8 @@ publishComposite("project", function(projectId) {
     find() {
       const userId = Meteor.userId();
       const query = {
-        _id: projectId
+        _id: projectId,
+        deleted: {$ne: true}
       };
       if (!Permissions.isAdmin(Meteor.userId())) {
         query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
@@ -129,7 +133,7 @@ publishComposite("project", function(projectId) {
       {
         // tasks
         find(project) {
-          return Tasks.find({ projectId: project._id }, { sort: { order: 1 } });
+          return Tasks.find({ projectId: project._id, deleted: {$ne: true} }, { sort: { order: 1 } });
         },
       },
       {

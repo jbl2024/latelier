@@ -2,6 +2,7 @@
   <div class="dashboard-desktop">
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
+    <projects-trashcan ref="projectsTrashcan"></projects-trashcan>
 
     <div class="left" v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
       <v-progress-linear indeterminate></v-progress-linear>
@@ -18,10 +19,23 @@
               </v-btn>
               <v-list dense>
                 <v-list-tile @click="newProject()">
+                  <v-list-tile-action>
+                    <v-icon>list</v-icon>
+                  </v-list-tile-action>
                   <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click="newOrganization()">
+                  <v-list-tile-action>
+                    <v-icon>domain</v-icon>
+                  </v-list-tile-action>
                   <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile @click="$refs.projectsTrashcan.open()">
+                  <v-list-tile-action>
+                    <v-icon>delete</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-title>{{ $t('Trashcan') }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>

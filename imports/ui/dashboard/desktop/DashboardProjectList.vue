@@ -58,7 +58,7 @@
             <v-list-tile-action>
               <v-icon>delete</v-icon>
             </v-list-tile-action>
-            <v-list-tile-title>{{ $t('Delete') }}</v-list-tile-title>
+            <v-list-tile-title>{{ $t('Move to trash') }}</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
@@ -193,7 +193,7 @@ export default {
       this.$confirm(this.$t("Delete project?"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
+        confirmText: this.$t("Move to trash")
       }).then(res => {
         if (res) {
           Meteor.call(

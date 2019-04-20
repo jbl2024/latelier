@@ -2,6 +2,7 @@
   <div class="dashboard-projects">
     <new-organization ref="newOrganization"></new-organization>
     <new-project ref="newProject" :organizationId="organizationId"></new-project>
+    <projects-trashcan ref="projectsTrashcan"></projects-trashcan>
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
@@ -96,7 +97,7 @@
                   >
                     <v-icon>delete</v-icon>
                   </v-btn>
-                  <span>{{ $t('Delete') }}</span>
+                  <span>{{ $t('Move to trash') }}</span>
                 </v-tooltip>
               </v-list-tile-action>
             </v-list-tile>
@@ -175,7 +176,7 @@
                   >
                     <v-icon>delete</v-icon>
                   </v-btn>
-                  <span>{{ $t('Delete') }}</span>
+                  <span>{{ $t('Move to trash') }}</span>
                 </v-tooltip>
               </v-list-tile-action>
             </v-list-tile>
@@ -321,7 +322,7 @@
                       >
                         <v-icon>delete</v-icon>
                       </v-btn>
-                      <span>{{ $t('Delete') }}</span>
+                      <span>{{ $t('Move to trash') }}</span>
                     </v-tooltip>
                   </v-list-tile-action>
                 </v-list-tile>
@@ -333,6 +334,7 @@
 
           <div class="bottom-buttons">
             <v-btn @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
+            <v-btn flat @click="$refs.projectsTrashcan.open()">{{ $t('Trashcan') }}</v-btn>
           </div>
         </v-list>
 

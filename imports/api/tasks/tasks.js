@@ -7,7 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { Random } from "meteor/random";
 import { incrementCounter } from "./counter";
 import moment from "moment";
-import { checkLoggedIn } from "/imports/api/permissions/permissions";
+import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask } from "/imports/api/permissions/permissions";
 
 export const Tasks = new Mongo.Collection("tasks");
 
@@ -21,6 +21,7 @@ if (Meteor.isServer) {
   Meteor.startup(() => {
     Tasks.rawCollection().createIndex({ listId: 1 });
     Tasks.rawCollection().createIndex({ projectId: 1 });
+    Tasks.rawCollection().createIndex({ deleted: 1 });
     Tasks.rawCollection().createIndex({ number: 1 }, { unique: true });
   });
 }
@@ -114,15 +115,72 @@ Meteor.methods({
 
   "tasks.remove"(taskId) {
     check(taskId, String);
+    checkCanDeleteTask(taskId);
+
+    if (Meteor.isClient) {
+      Tasks.remove(taskId);
+      return;
+    }
+    
+    Tasks.update({_id: taskId}, {$set: {
+      deleted: true,
+      deletedBy: Meteor.userId(),
+      deletedAt: new Date()
+    }});
 
     Meteor.call("tasks.track", {
       type: "tasks.remove",
       taskId: taskId
     });
+  },
 
-    Attachments.remove({ "meta.taskId": taskId });
+  "tasks.deleteForever"(taskId) {
+    check(taskId, String);
+    checkCanDeleteTask(taskId);
+    
+    Meteor.call("attachments.remove", {taskId: taskId});
+
+    Meteor.call("tasks.track", {
+      type: "tasks.deleteForever",
+      taskId: taskId
+    });
+
     Tasks.remove(taskId);
   },
+
+  "tasks.restore"(taskId) {
+    check(taskId, String);
+    checkCanWriteTask(taskId);
+
+    if (Meteor.isClient) {
+      return;
+    } 
+
+    const task = Tasks.findOne({_id: taskId});
+    if (!task) {
+      throw new Meteor.Error("not-found");  
+    }
+    let listId = task.listId;
+    if (!listId) {
+      const list = Lists.findOne({projectId: task.projectId});
+      if (list) {
+        listId = list._id;
+      } else {
+        listId = Meteor.call("lists.insert", task.projectId, "Sans nom")._id;
+      }
+    }
+    Tasks.update({_id: taskId}, {$set: {
+      deleted: false,
+      listId: listId
+    }});
+
+    Meteor.call("attachments.restore", {taskId: taskId});
+
+    Meteor.call("tasks.track", {
+      type: "tasks.restore",
+      taskId: taskId
+    });
+  },  
 
   "tasks.updateName"(taskId, name) {
     check(taskId, String);
@@ -640,6 +698,9 @@ Meteor.methods({
   },
 
   "tasks.track"(event) {
+    if (!Meteor.isServer) {
+      return;
+    }
     this.unblock();
 
     check(event, {

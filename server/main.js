@@ -11,6 +11,7 @@ import '../imports/api/projects/projects.js';
 import '../imports/api/tasks/server/publications.js';
 import '../imports/api/projects/server/publications.js';
 import '../imports/api/permissions/permissions.js';
+import '../imports/api/permissions/server/methods.js';
 import '../imports/api/users/server/users.js';
 import '../imports/api/users/server/sso.js';
 import '../imports/api/users/server/emailTemplates.js';
@@ -26,6 +27,9 @@ import '../imports/api/healthReports/server/publications.js';
 import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
 import '../imports/api/dashboards/dashboards.js';
+
+import '../imports/api/attachments/attachments.js';
+import '../imports/api/attachments/server/methods.js';
 
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
