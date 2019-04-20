@@ -7,7 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
-import { Permissions, checkLoggedIn, checkCanReadProject } from "/imports/api/permissions/permissions"
+import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
 
 export const Projects = new Mongo.Collection("projects");
 if (Meteor.isServer) {
@@ -112,10 +112,6 @@ Projects.methods.remove = new ValidatedMethod({
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
 
-    if (Meteor.isClient) {
-      Projects.remove(projectId);
-    }
-
     Projects.update({_id: projectId}, {$set: {
       deleted: true,
       deletedBy: Meteor.userId(),
@@ -127,6 +123,43 @@ Projects.methods.remove = new ValidatedMethod({
       { $pull: { "profile.favoriteProjects": projectId } },
       { multi: true }
     );
+  }
+});
+
+Projects.methods.deleteForever = new ValidatedMethod({
+  name: "projects.deleteForever",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({ projectId }) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+
+    Tasks.remove({ projectId: projectId });
+    Lists.remove({ projectId: projectId });
+    Attachments.remove({ "meta.projectId": projectId });
+    Meteor.users.update(
+      {},
+      { $pull: { "profile.favoriteProjects": projectId } },
+      { multi: true }
+    );
+    Projects.remove(projectId);
+  }
+});
+
+Projects.methods.restore = new ValidatedMethod({
+  name: "projects.restore",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({ projectId }) {
+    checkLoggedIn();
+    checkCanWriteProject(projectId);
+
+    Projects.update({_id: projectId}, {$set: {
+      deleted: false,
+    }});
+    
   }
 });
 
@@ -390,18 +423,14 @@ Projects.methods.getHistory = new ValidatedMethod({
   }
 });
 
-Projects.methods.getTrashcan = new ValidatedMethod({
-  name: "projects.getTrashcan",
+Projects.methods.getDeletedTasks = new ValidatedMethod({
+  name: "projects.getDeletedTasks",
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
   run({projectId}) {
     checkLoggedIn();
     checkCanReadProject(projectId);
-
-    const query = {
-      "properties.task.projectId": projectId
-    };
 
     const data = Tasks.find({projectId: projectId, deleted: true}, {
       sort: {
@@ -414,6 +443,34 @@ Projects.methods.getTrashcan = new ValidatedMethod({
     };
   }
 });
+
+Projects.methods.getDeletedProjects = new ValidatedMethod({
+  name: "projects.getDeletedProjects",
+  validate: null,
+  run() {
+    checkLoggedIn();
+
+    const userId = Meteor.userId()
+    let query = {
+      deleted: true
+    }
+  
+    if (!Permissions.isAdmin(userId)) {
+      query['$or'] = [{createdBy: userId}, {members: userId}];
+    }
+  
+    const data = Projects.find(query, {
+      sort: {
+        createdAt: -1
+      }
+    }).fetch();
+    
+    return {
+      data: data
+    };
+  }
+});
+
 Projects.methods.addToUserFavorites = new ValidatedMethod({
   name: "projects.addToUserFavorites",
   validate: new SimpleSchema({

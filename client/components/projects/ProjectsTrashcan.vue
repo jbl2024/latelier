@@ -1,5 +1,5 @@
 <template>
-  <div class="project-trashcan">
+  <div class="projects-trashcan">
     <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="640px">
       <v-toolbar dark color="primary">
         <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
@@ -11,20 +11,20 @@
         <v-card-text class="content">
           <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
           <empty-state
-            v-if="tasks && tasks.length === 0 && !loading"
-            :description="$t('No task')"
+            v-if="projects && projects.length === 0 && !loading"
+            :description="$t('No project')"
             small
             illustration="empty"
           ></empty-state>
-          <v-list v-if="tasks && !loading">
-            <template v-for="task in tasks">
-              <v-list-tile :key="task._id" @click="restoreTask(task)" avatar>
+          <v-list v-if="projects && !loading">
+            <template v-for="project in projects">
+              <v-list-tile :key="project._id" @click="restoreProject(project)" avatar>
                 <v-list-tile-content>
-                  <v-list-tile-title>#{{ task.number }} - {{ task.name }}</v-list-tile-title>
+                  <v-list-tile-title>{{ project.name }}</v-list-tile-title>
                 </v-list-tile-content>
                 <v-list-tile-action>
                   <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="deleteForever(task)" slot="activator">
+                    <v-btn icon ripple @click.stop="deleteForever(project)" slot="activator">
                       <v-icon color="red">delete_forever</v-icon>
                     </v-btn>
                     <span>{{ $t('Delete forever') }}</span>
@@ -32,14 +32,14 @@
                 </v-list-tile-action>
                 <v-list-tile-action>
                   <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="restoreTask(task)" slot="activator">
+                    <v-btn icon ripple @click.stop="restoreProject(project)" slot="activator">
                       <v-icon color="primary">restore_from_trash</v-icon>
                     </v-btn>
                     <span>{{ $t('Restore from trash') }}</span>
                   </v-tooltip>
                 </v-list-tile-action>
               </v-list-tile>
-              <v-divider :key="`divider-${task._id}`"></v-divider>
+              <v-divider :key="`divider-${project._id}`"></v-divider>
             </template>
           </v-list>
         </v-card-text>
@@ -62,26 +62,19 @@ export default {
   i18n: {
     messages: {
       en: {
-        "Delete task?": "Delete task?",
-        "Task deleted": "Task deleted",
         "Delete forever": "Delete forever",
         "Restore from trash": "Restore from trash"
       },
       fr: {
-        "Delete task?": "Supprimer la tâche ?",
-        "Task deleted": "Tâche supprimée",
         "Delete forever": "Supprimer définitivement",
         "Restore from trash": "Restaurer de la corbeille"
       }
     }
   },
-  props: {
-    projectId: String
-  },
   data() {
     return {
       showDialog: false,
-      tasks: [],
+      projects: [],
       loading: true
     };
   },
@@ -97,22 +90,18 @@ export default {
 
     refresh() {
       this.loading = true;
-      Meteor.call(
-        "projects.getDeletedTasks",
-        { projectId: this.projectId },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-          this.tasks = result.data;
+      Meteor.call("projects.getDeletedProjects", (error, result) => {
+        this.loading = false;
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
         }
-      );
+        this.projects = result.data;
+      });
     },
 
-    restoreTask(task) {
-      Meteor.call("tasks.restore", task._id, (error, result) => {
+    restoreProject(project) {
+      Meteor.call("projects.restore", { projectId: project._id }, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -121,24 +110,27 @@ export default {
       });
     },
 
-    deleteForever(task) {
-      this.$confirm(this.$t("Delete task?"), {
-        title: task.name,
+    deleteForever(project) {
+      this.$confirm(this.$t("Delete forever"), {
+        title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       }).then(res => {
         if (res) {
-          Meteor.call("tasks.deleteForever", task._id, (error, result) => {
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-              return;
+          Meteor.call(
+            "projects.deleteForever",
+            {projectId: project._id},
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Project deleted"));
+              this.refresh();
             }
-            this.$store.dispatch("notify", this.$t('Task deleted'));
-            this.refresh();
-          });
+          );
         }
       });
-
     }
   }
 };
