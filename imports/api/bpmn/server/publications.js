@@ -38,10 +38,8 @@ publishComposite("processDiagrams", function(projectId) {
 publishComposite("processDiagram", function(processDiagramId) {
   return {
     find() {
-      console.log(processDiagramId)
       const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
       if (!processDiagram) {
-        console.log('dommage')
         return this.ready();
       }
       checkCanReadProject(processDiagram.projectId);
