@@ -1,6 +1,23 @@
 <template>
   <div class="bpmn-modeler">
-    <v-toolbar dense class="toolbar"></v-toolbar>
+    <v-toolbar dense class="toolbar">
+      <div>
+      <v-tooltip top slot="activator">
+        <v-btn icon @click.stop="undo()" slot="activator">
+          <v-icon>undo</v-icon>
+        </v-btn>
+        <span>{{ $t('Undo') }}</span>
+      </v-tooltip>
+      </div>
+      <div>
+      <v-tooltip top slot="activator">
+        <v-btn icon @click.stop="redo()" slot="activator">
+          <v-icon>redo</v-icon>
+        </v-btn>
+        <span>{{ $t('Redo') }}</span>
+      </v-tooltip>
+      </div>
+    </v-toolbar>
     <div id="canvas" ref="canvas"></div>
   </div>
 </template>
@@ -22,7 +39,8 @@ export default {
   data() {
     return {
       modeler: null,
-      saveDebounce: null
+      saveDebounce: null,
+      xmlCache: null
     };
   },
   watch: {
@@ -42,21 +60,23 @@ export default {
             this.saveDebounce();
           });
         }
-        if (this.processDiagram.xml) {
+        if (this.processDiagram.xml && this.processDiagram.xml !== this.xmlCache)  {
+          console.log("loading")
           this.modeler.importXML(this.processDiagram.xml);
-        } else {
+          this.xmlCache = this.processDiagram.xml;
+        } else if (!this.xmlCache) {
           this.modeler.createDiagram();
         }
       });
     },
 
     save() {
-      console.log("save");
       this.modeler.saveXML({ format: false }, (err, xml) => {
         if (err) {
           this.$store.dispatch("notifyError", error);
           return;
         }
+        this.xmlCache = xml;
         Meteor.call(
           "processDiagrams.saveXML",
           { processDiagramId: this.processDiagram._id, xml: xml },
@@ -68,6 +88,14 @@ export default {
           }
         );
       });
+    },
+
+    undo() {
+      this.modeler.get('commandStack').undo();
+    },
+
+    redo() {
+      this.modeler.get('commandStack').redo();
     }
   }
 };
