@@ -18,7 +18,7 @@
         :to="{ name: 'project-bpmn', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
-          <v-icon>timeline</v-icon>
+          <v-icon>donut_large</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>BPMN</v-list-tile-title>
