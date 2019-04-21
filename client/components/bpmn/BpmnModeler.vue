@@ -61,7 +61,6 @@ export default {
           });
         }
         if (this.processDiagram.xml && this.processDiagram.xml !== this.xmlCache)  {
-          console.log("loading")
           this.modeler.importXML(this.processDiagram.xml);
           this.xmlCache = this.processDiagram.xml;
         } else if (!this.xmlCache) {
