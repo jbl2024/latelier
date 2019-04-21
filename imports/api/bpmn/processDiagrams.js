@@ -36,29 +36,56 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
   }
 });
 
-ProcessDiagrams.methods.create = new ValidatedMethod({
+ProcessDiagrams.methods.update = new ValidatedMethod({
   name: "processDiagrams.update",
   validate: new SimpleSchema({
-    bpmnId: { type: String },
+    processDiagramId: { type: String },
     name: { type: String },
     description: { type: String, optional: true }
   }).validator(),
-  run({ bpmnId, name, description }) {
+  run({ processDiagramId, name, description }) {
     checkLoggedIn();
-    const bpmn = ProcessDiagrams.findOne({ _id: bpmnId });
-    if (!bpmn) {
+    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagrams.projectId);
+    checkCanWriteProject(processDiagram.projectId);
 
     ProcessDiagrams.update(
       {
-        _id: bpmnId
+        _id: processDiagramId
       },
       {
         $set: {
           name: name,
           description: description
+        }
+      }
+    );
+  }
+});
+
+ProcessDiagrams.methods.saveXML = new ValidatedMethod({
+  name: "processDiagrams.saveXML",
+  validate: new SimpleSchema({
+    processDiagramId: { type: String },
+    xml: { type: String }
+  }).validator(),
+  run({ processDiagramId, xml }) {
+    checkLoggedIn();
+    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    if (!processDiagram) {
+      throw new Meteor.Error("not-found");
+    }
+    checkCanWriteProject(processDiagram.projectId);
+
+    ProcessDiagrams.update(
+      {
+        _id: processDiagramId
+      },
+      {
+        $set: {
+          xml: xml
         }
       }
     );

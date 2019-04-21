@@ -4,7 +4,7 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div v-if="$subReady.processDiagram">
-      <bpmn-modeler :xml="processDiagram.xml"></bpmn-modeler>
+      <bpmn-modeler :process-diagram="processDiagram"></bpmn-modeler>
     </div>
   </div>
 </template>
