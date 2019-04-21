@@ -1,49 +1,56 @@
 <template>
   <div class="project-bpmn">
-    <new-process-diagram ref="newProcessDiagram" :projectId="projectId"></new-process-diagram>    
+    <new-process-diagram ref="newProcessDiagram" :projectId="projectId"></new-process-diagram>
     <div v-if="!$subReady.processDiagrams">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div v-if="$subReady.processDiagrams">
-
       <empty-state
         class="empty"
         v-show="processDiagrams.length == 0"
         rounded
         illustration="empty"
         :label="$t('No diagram')"
-        :description="$t('You can add a new diagram')">
+        :description="$t('You can add a new diagram')"
+      >
         <v-btn class="primary" @click="newDiagram()">{{ $t('Add diagram') }}</v-btn>
       </empty-state>
 
       <v-list two-line subheader v-show="processDiagrams.length > 0">
-        <v-subheader>{{ $t('Process diagrams')}}
+        <v-subheader>
+          {{ $t('Process diagrams')}}
           <v-btn fab dark small color="pink" @click="newDiagram()">
             <v-icon>add</v-icon>
           </v-btn>
         </v-subheader>
-        <v-list-tile v-for="processDiagram in processDiagrams" :key="processDiagram._id" 
-            :to="{name: 'project-bpmn-process-diagram', params: {projectId: projectId, processDiagramId: processDiagram._id }}">
+        <v-list-tile
+          v-for="processDiagram in processDiagrams"
+          :key="processDiagram._id"
+          @click="openProcessDiagram(processDiagram)"
+        >
           <v-list-tile-avatar>
             <v-icon>donut_large</v-icon>
-          </v-list-tile-avatar>            
+          </v-list-tile-avatar>
 
           <v-list-tile-content class="pointer">
-            <v-list-tile-title>
-              {{ processDiagram.name }}</a>          
-            </v-list-tile-title>
+            <v-list-tile-title>{{ processDiagram.name }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-html="linkifyHtml(processDiagram.description)"></span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
 
           <v-list-tile-action>
-            <v-btn icon flat color="grey darken-1" @click.stop="deleteProcessDiagram(processDiagram)">
+            <v-btn
+              icon
+              flat
+              color="grey darken-1"
+              @click.stop="deleteProcessDiagram(processDiagram)"
+            >
               <v-icon>delete</v-icon>
             </v-btn>
           </v-list-tile-action>
         </v-list-tile>
-      </v-list> 
+      </v-list>
     </div>
   </div>
 </template>
@@ -57,6 +64,20 @@ import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
   mixins: [TextRenderingMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Process diagrams": "Process diagrams",
+        "Delete diagram?": "Delete diagram?",
+        "Diagram deleted": "Diagram deleted",
+      },
+      fr: {
+        "Process diagrams": "Diagrammes de processus",
+        "Delete diagram?": "Supprimer le diagramme ?",
+        "Diagram deleted": "Diagramme supprimé",
+      }
+    }
+  },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
   },
@@ -98,7 +119,36 @@ export default {
       this.$refs.newProcessDiagram.open();
     },
 
+    openProcessDiagram(processDiagram) {
+      this.$router.push({
+        name: "project-bpmn-process-diagram",
+        params: {
+          projectId: this.projectId,
+          processDiagramId: processDiagram._id
+        }
+      });
+    },
+
     deleteProcessDiagram(processDiagram) {
+      this.$confirm(this.$t("Delete diagram?"), {
+        title: processDiagram.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "processDiagrams.remove",
+            { processDiagramId: processDiagram._id },
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Diagram deleted"));
+            }
+          );
+        }
+      });
     }
   }
 };

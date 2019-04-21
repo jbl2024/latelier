@@ -68,16 +68,16 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
 ProcessDiagrams.methods.remove = new ValidatedMethod({
   name: "processDiagrams.remove",
   validate: new SimpleSchema({
-    bpmnId: { type: String }
+    processDiagramId: { type: String }
   }).validator(),
-  run({ bpmnId }) {
+  run({ processDiagramId }) {
     checkLoggedIn();
-    const bpmn = ProcessDiagrams.findOne({ _id: bpmnId });
-    if (!bpmn) {
+    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagrams.projectId);
+    checkCanWriteProject(processDiagram.projectId);
 
-    ProcessDiagrams.remove({ _id: bpmnId });
+    ProcessDiagrams.remove({ _id: processDiagramId });
   }
 });
