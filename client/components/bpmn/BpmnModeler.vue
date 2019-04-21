@@ -1,24 +1,5 @@
 <template>
-  <div class="bpmn-modeler">
-    <v-toolbar dense class="toolbar">
-      <div>
-      <v-tooltip top slot="activator">
-        <v-btn icon @click.stop="undo()" slot="activator">
-          <v-icon>undo</v-icon>
-        </v-btn>
-        <span>{{ $t('Undo') }}</span>
-      </v-tooltip>
-      </div>
-      <div>
-      <v-tooltip top slot="activator">
-        <v-btn icon @click.stop="redo()" slot="activator">
-          <v-icon>redo</v-icon>
-        </v-btn>
-        <span>{{ $t('Redo') }}</span>
-      </v-tooltip>
-      </div>
-    </v-toolbar>
-    <div id="canvas" ref="canvas"></div>
+  <div id="canvas" ref="canvas">
   </div>
 </template>
 
@@ -101,21 +82,4 @@ export default {
 </script>
 
 <style scoped>
-.bpmn-modeler {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.toolbar {
-  flex: 0;
-}
-
-#canvas {
-  flex: 1;
-}
 </style>
