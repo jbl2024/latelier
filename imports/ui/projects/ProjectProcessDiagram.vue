@@ -88,11 +88,19 @@ export default {
     messages: {
       en: {
         "Empty diagram": "Empty diagram",
-        "Start edition": "Start edition"
+        "Start edition": "Start edition",
+        "Undo": "Undo",
+        "Redo": "Redo",
+        "Edit": "Edit",
+        "Close": "Close",
       },
       fr: {
         "Empty diagram": "Diagramme vide",
-        "Start edition": "Démarrer l'édition"
+        "Start edition": "Démarrer l'édition",
+        "Undo": "Annuler",
+        "Redo": "Refaire",
+        "Edit": "Editer",
+        "Close": "Fermer",
       }
     }
   },
