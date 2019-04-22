@@ -1,6 +1,5 @@
 <template>
-  <div id="canvas" ref="canvas">
-  </div>
+  <div id="canvas" ref="canvas"></div>
 </template>
 
 <script>
@@ -8,6 +7,9 @@ import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Modeler from "bpmn-js/dist/bpmn-modeler.production.min";
+import "diagram-js-minimap/assets/diagram-js-minimap.css";
+import minimapModule from 'diagram-js-minimap';
+
 import debounce from "lodash/debounce";
 
 export default {
@@ -34,14 +36,22 @@ export default {
   },
   methods: {
     refresh() {
+      console.log(minimapModule)
       this.$nextTick(() => {
         if (!this.modeler) {
-          this.modeler = new Modeler({ container: this.$refs.canvas });
+          this.modeler = new Modeler({
+            container: this.$refs.canvas,
+            keyboard: { bindTo: document },
+            additionalModules: [minimapModule]
+          });
           this.modeler.on("element.changed", event => {
             this.saveDebounce();
           });
         }
-        if (this.processDiagram.xml && this.processDiagram.xml !== this.xmlCache)  {
+        if (
+          this.processDiagram.xml &&
+          this.processDiagram.xml !== this.xmlCache
+        ) {
           this.modeler.importXML(this.processDiagram.xml);
           this.xmlCache = this.processDiagram.xml;
         } else if (!this.xmlCache) {
@@ -71,11 +81,11 @@ export default {
     },
 
     undo() {
-      this.modeler.get('commandStack').undo();
+      this.modeler.get("commandStack").undo();
     },
 
     redo() {
-      this.modeler.get('commandStack').redo();
+      this.modeler.get("commandStack").redo();
     }
   }
 };
