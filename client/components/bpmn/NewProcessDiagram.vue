@@ -90,6 +90,13 @@ export default {
             this.$store.dispatch("notifyError", error);
             return;
           }
+          this.$router.push({
+            name: "project-bpmn-process-diagram",
+            params: {
+              projectId: this.projectId,
+              processDiagramId: result
+            }
+          });
         }
       );
       this.showDialog = false;

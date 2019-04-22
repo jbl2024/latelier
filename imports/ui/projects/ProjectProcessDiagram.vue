@@ -62,7 +62,7 @@
         illustration="empty"
         :label="$t('Empty diagram')"
       >
-        <v-btn class="primary" @click="edit()">{{ $t('Start edit') }}</v-btn>
+        <v-btn class="primary" @click="edit()">{{ $t('Start edition') }}</v-btn>
       </empty-state>
 
       <bpmn-modeler
@@ -84,6 +84,18 @@ import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
   mixins: [TextRenderingMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Empty diagram": "Empty diagram",
+        "Start edition": "Start edition"
+      },
+      fr: {
+        "Empty diagram": "Diagramme vide",
+        "Start edition": "Démarrer l'édition"
+      }
+    }
+  },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
   },

@@ -48,7 +48,7 @@ publishComposite("processDiagram", function(processDiagramId) {
     children: [
       {
         find(processDiagram) {
-          return Projects.find({ projectId: processDiagram._id });
+          return Projects.find({ _id: processDiagram.projectId });
         }
       }
     ]
