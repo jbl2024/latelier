@@ -5,6 +5,14 @@
     </div>
     <div v-if="$subReady.processDiagram" class="wrapper">
       <v-toolbar dense class="toolbar">
+        <v-btn
+          icon
+          @click="gotoBpmn()"
+        >
+          <v-icon>donut_large</v-icon>
+        </v-btn>
+        <span class="title">{{ processDiagram.name }}</span>
+        <v-spacer></v-spacer>
         <template v-if="mode === 'view'">
           <div>
             <v-tooltip top slot="activator">
@@ -19,9 +27,9 @@
           <div>
             <v-tooltip top slot="activator">
               <v-btn icon @click.stop="view()" slot="activator">
-                <v-icon>close</v-icon>
+                <v-icon>check</v-icon>
               </v-btn>
-              <span>{{ $t('View') }}</span>
+              <span>{{ $t('Close') }}</span>
             </v-tooltip>
           </div>
           <div>
@@ -46,8 +54,17 @@
         :process-diagram="processDiagram"
         class="bpmn"
         ref="viewer"
-        v-if="mode === 'view'"
+        v-if="mode === 'view' && processDiagram.xml"
       ></bpmn-viewer>
+      <empty-state
+        class="empty"
+        v-show="mode === 'view' && !processDiagram.xml"
+        illustration="empty"
+        :label="$t('Empty diagram')"
+      >
+        <v-btn class="primary" @click="edit()">{{ $t('Start edit') }}</v-btn>
+      </empty-state>
+
       <bpmn-modeler
         :process-diagram="processDiagram"
         class="bpmn"
@@ -115,7 +132,12 @@ export default {
 
     redo() {
       this.$refs.modeler.redo();
+    },
+
+    gotoBpmn() {
+      this.$router.push({ name: 'project-bpmn', params: {projectId: this.projectId} });
     }
+
   }
 };
 </script>

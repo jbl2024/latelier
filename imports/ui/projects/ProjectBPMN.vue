@@ -1,6 +1,7 @@
 <template>
   <div class="project-bpmn">
     <new-process-diagram ref="newProcessDiagram" :projectId="projectId"></new-process-diagram>
+    <edit-process-diagram ref="editProcessDiagram"></edit-process-diagram>
     <div v-if="!$subReady.processDiagrams">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
@@ -35,19 +36,37 @@
           <v-list-tile-content class="pointer">
             <v-list-tile-title>{{ processDiagram.name }}</v-list-tile-title>
             <v-list-tile-sub-title>
-              <span v-html="linkifyHtml(processDiagram.description)"></span>
+              {{ htmlToText(processDiagram.description)}}
             </v-list-tile-sub-title>
           </v-list-tile-content>
 
           <v-list-tile-action>
-            <v-btn
-              icon
-              flat
-              color="grey darken-1"
-              @click.stop="deleteProcessDiagram(processDiagram)"
-            >
-              <v-icon>delete</v-icon>
-            </v-btn>
+            <v-tooltip top slot="activator">
+              <v-btn
+                slot="activator"
+                icon
+                flat
+                color="grey darken-1"
+                @click.stop="editProcessDiagram(processDiagram)"
+              >
+                <v-icon>edit</v-icon>
+              </v-btn>
+              <span>{{ $t('Edit') }}</span>
+            </v-tooltip>
+          </v-list-tile-action>
+          <v-list-tile-action>
+            <v-tooltip top slot="activator">
+              <v-btn
+                slot="activator"
+                icon
+                flat
+                color="grey darken-1"
+                @click.stop="deleteProcessDiagram(processDiagram)"
+              >
+                <v-icon>delete</v-icon>
+              </v-btn>
+              <span>{{ $t('Delete') }}</span>
+            </v-tooltip>
           </v-list-tile-action>
         </v-list-tile>
       </v-list>
@@ -61,6 +80,8 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import * as htmlToText from 'html-to-text';
+
 
 export default {
   mixins: [TextRenderingMixin],
@@ -70,11 +91,17 @@ export default {
         "Process diagrams": "Process diagrams",
         "Delete diagram?": "Delete diagram?",
         "Diagram deleted": "Diagram deleted",
+        "No diagram": "No diagram",
+        "You can add a new diagram": "You can add a new diagram",
+        "Add diagram": "Add diagram"
       },
       fr: {
         "Process diagrams": "Diagrammes de processus",
         "Delete diagram?": "Supprimer le diagramme ?",
         "Diagram deleted": "Diagramme supprimé",
+        "No diagram": "Aucun diagramme",
+        "You can add a new diagram": "Vous pouvez ajouter un diagramme",
+        "Add diagram": "Ajouter un diagramme"
       }
     }
   },
@@ -92,7 +119,7 @@ export default {
   },
   data() {
     return {
-      modeler: null
+      modeler: null,
     };
   },
   meteor: {
@@ -149,6 +176,14 @@ export default {
           );
         }
       });
+    },
+
+    editProcessDiagram(processDiagram) {
+      this.$refs.editProcessDiagram.open(processDiagram);
+    },
+
+    htmlToText(html) {
+      return htmlToText.fromString(html);
     }
   }
 };
