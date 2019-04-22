@@ -7,7 +7,7 @@
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import Modeler from "bpmn-js/dist/bpmn-modeler.development";
+import Modeler from "bpmn-js/dist/bpmn-modeler.production.min";
 import debounce from "lodash/debounce";
 
 export default {

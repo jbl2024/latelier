@@ -6,7 +6,7 @@
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import Viewer from "bpmn-js/dist/bpmn-viewer.development";
+import Viewer from "bpmn-js/dist/bpmn-viewer.production.min";
 
 export default {
   props: {
