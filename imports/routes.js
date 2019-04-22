@@ -20,6 +20,8 @@ import Project from "/imports/ui/projects/Project.vue";
 import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
+import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
+import ProjectProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
@@ -127,6 +129,20 @@ export default [
     name: "project-timeline",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectTimeline,
+    props: true
+  },
+  {
+    path: "/projects-bpmn/:projectId",
+    name: "project-bpmn",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectBPMN,
+    props: true
+  },
+  {
+    path: "/projects-bpmn/:projectId/:processDiagramId",
+    name: "project-bpmn-process-diagram",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectProcessDiagram,
     props: true
   },
   {

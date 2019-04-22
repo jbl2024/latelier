@@ -15,6 +15,16 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
+        :to="{ name: 'project-bpmn', params: { projectId: projectId }}"
+      >
+        <v-list-tile-action>
+          <v-icon>donut_large</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>BPMN</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile
         :to="{ name: 'project-timeline', params: { projectId: projectId }}"
       >
         <v-list-tile-action>
