@@ -43,6 +43,10 @@ export default {
           });
         }
       });
+    },
+
+    saveSVG(cb) {
+      this.viewer.saveSVG(cb);
     }
   }
 };

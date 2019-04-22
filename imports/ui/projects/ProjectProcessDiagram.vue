@@ -13,6 +13,15 @@
         </v-btn>
         <span class="title">{{ processDiagram.name }}</span>
         <v-spacer></v-spacer>
+        <div>
+          <v-tooltip top slot="activator">
+            <v-btn icon @click.stop="exportSVG()" slot="activator">
+              <v-icon>photo</v-icon>
+            </v-btn>
+            <span>{{ $t('Export image') }}</span>
+          </v-tooltip>
+        </div>
+
         <template v-if="mode === 'view'">
           <div>
             <v-tooltip top slot="activator">
@@ -24,14 +33,6 @@
           </div>
         </template>
         <template v-if="mode === 'edit'">
-          <div>
-            <v-tooltip top slot="activator">
-              <v-btn icon @click.stop="view()" slot="activator">
-                <v-icon>check</v-icon>
-              </v-btn>
-              <span>{{ $t('Close') }}</span>
-            </v-tooltip>
-          </div>
           <div>
             <v-tooltip top slot="activator">
               <v-btn icon @click.stop="undo()" slot="activator">
@@ -46,6 +47,14 @@
                 <v-icon>redo</v-icon>
               </v-btn>
               <span>{{ $t('Redo') }}</span>
+            </v-tooltip>
+          </div>
+          <div>
+            <v-tooltip top slot="activator">
+              <v-btn icon @click.stop="view()" slot="activator">
+                <v-icon>check</v-icon>
+              </v-btn>
+              <span>{{ $t('Close') }}</span>
             </v-tooltip>
           </div>
         </template>
@@ -81,6 +90,7 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import { saveAs } from 'file-saver';
 
 export default {
   mixins: [TextRenderingMixin],
@@ -93,6 +103,7 @@ export default {
         "Redo": "Redo",
         "Edit": "Edit",
         "Close": "Close",
+        "Export image": "Export image",
       },
       fr: {
         "Empty diagram": "Diagramme vide",
@@ -101,6 +112,7 @@ export default {
         "Redo": "Refaire",
         "Edit": "Editer",
         "Close": "Fermer",
+        "Export image": "Exporter l'image",
       }
     }
   },
@@ -152,6 +164,19 @@ export default {
 
     redo() {
       this.$refs.modeler.redo();
+    },
+
+    exportSVG() {
+      const cb = (err, svg) => {
+        const blob = new Blob([svg], {type: "image/svg+xml;charset=utf-8"})
+        saveAs(blob, this.processDiagram.name + ".svg");
+      };
+
+      if (this.mode === 'edit') {
+        this.$refs.modeler.saveSVG(cb);
+      } else {
+        this.$refs.viewer.saveSVG(cb);
+      }
     },
 
     gotoBpmn() {

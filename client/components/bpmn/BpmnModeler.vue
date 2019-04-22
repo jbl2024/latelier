@@ -36,7 +36,6 @@ export default {
   },
   methods: {
     refresh() {
-      console.log(minimapModule)
       this.$nextTick(() => {
         if (!this.modeler) {
           this.modeler = new Modeler({
@@ -78,6 +77,10 @@ export default {
           }
         );
       });
+    },
+
+    saveSVG(cb) {
+      this.modeler.saveSVG(cb);
     },
 
     undo() {
