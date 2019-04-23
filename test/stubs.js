@@ -6,7 +6,7 @@ import { sinon } from 'meteor/practicalmeteor:sinon';
 
 function stubUser(currentUserId) {
   if (!currentUserId) {
-    currentUserId = Meteor.users.findOne();
+    currentUserId = Meteor.users.findOne()._id;
   }
   if (!Meteor.userId()) { //dont stub twice just in case
     sinon.stub(Meteor, 'userId', () => currentUserId);
