@@ -34,3 +34,6 @@ email@1.2.3
 simonhochrein:mjml
 gadicohen:headers
 mdg:validated-method
+meteortesting:mocha
+xolvio:cleaner
+practicalmeteor:sinon

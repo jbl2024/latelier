@@ -49,5 +49,7 @@
     },
     "testModule": "test/main.js"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "chai": "^4.2.0"
+  }
 }

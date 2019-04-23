@@ -4,8 +4,11 @@ Meteor.startup(function() {
    };
  });
  
- 
-Accounts.emailTemplates.from  = Meteor.settings.email.from;
+if (Meteor.settings && Meteor.settings.email) {
+  Accounts.emailTemplates.from  = Meteor.settings.email.from;
+} else {
+  Accounts.emailTemplates.from = "noreply@localhost"
+}
 Accounts.emailTemplates.verifyEmail = {
   subject() {
      return "Activate your account now!";
