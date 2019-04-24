@@ -1,27 +1,28 @@
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   methods: {
-    formatDate (date) {
+    formatDate(date) {
       if (!date) return;
-      return moment(date).format('DD/MM/YYYY');
+      return moment(date).format(this.$t("dates.format.date"));
     },
-    formatDateTime (date) {
+    formatDateTime(date) {
       if (!date) return;
-      return moment(date).format('DD/MM/YYYY HH:mm');
+      return moment(date).format(this.$t("dates.format.dateTime"));
     },
-    formatDateDuration (date, prefix) {
+    formatDateDuration(date) {
       var now = moment();
       var noteDate = moment(date);
-      var duration = moment.duration(now.diff(noteDate)).locale('fr');
-      if (!prefix) {
-        prefix = "dans"
-        if (duration > 0) {
-          prefix = 'il y a'
-        }
+      var duration = moment.duration(now.diff(noteDate)).locale(this.$t("dates.locale"));
+      if (duration > 0) {
+        return this.$t("dates.duration.past", {
+          duration: duration.humanize()
+        });
+      } else {
+        return this.$t("dates.duration.future", {
+          duration: duration.humanize()
+        });
       }
-      return `${prefix} ${duration.humanize()}`;
-      
     }
   }
-}
+};

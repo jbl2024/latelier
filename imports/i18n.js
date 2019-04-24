@@ -91,6 +91,17 @@ const messages = {
         PRODUCTION: 'En production',
         ARCHIVED: 'Archivé'
       }
+    },
+    dates: {
+      locale: "fr",
+      format: {
+        date: "DD/MM/YYYY",
+        dateTime: "DD/MM/YYYY HH:mm",
+      },
+      duration: {
+        past: 'il y a {duration}',
+        future: 'dans {duration}',
+      }
     }
   },
   en: {
@@ -184,6 +195,17 @@ const messages = {
         DEVELOPMENT: 'Development',
         PRODUCTION: 'Production',
         ARCHIVED: 'Archived'
+      }
+    },
+    dates: {
+      locale: "en",
+      format: {
+        date: "MM/DD/YYYY",
+        dateTime: "MM/DD/YYYY HH:mm",
+      },
+      duration: {
+        past: '{duration} ago',
+        future: 'in {duration}',
       }
     }
   }

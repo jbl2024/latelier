@@ -12,14 +12,14 @@
           <v-list-tile-content>
             <v-list-tile-title><span class="grey--text text--darken-1 show-desktop"><template v-if="task.organization">[{{ task.organization.name }}]</template> {{ task.project.name}} - </span> {{ task.name }}</v-list-tile-title>
             <v-list-tile-sub-title>
-              Dernière modification {{ formatDateDuration(task.updatedAt) }}
+              {{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}
             </v-list-tile-sub-title>
             <v-list-tile-sub-title>
               <template v-if="task.dueDate && isLate(task)">
-                Est arrivée à échéance <b>{{ formatDateDuration(task.dueDate) }}</b>
+                {{ $t('Expired') }} <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
               <template v-if="task.dueDate && !isLate(task)">
-                Arrive à échéance <b>{{ formatDateDuration(task.dueDate) }}</b>
+                {{ $t('Expires') }} <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
             </v-list-tile-sub-title>
           </v-list-tile-content>
@@ -37,6 +37,21 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 export default {
   name: "dashboard-task-list",
   mixins: [UsersMixin, DatesMixin],
+  i18n: {
+    messages: {
+      en: {
+        "Last update": "Last update",
+        "Expired": "Expired",
+        "Expires": "Expires",
+      },
+      fr: {
+        "Last update": "Dernière modification",
+        "Expired": "Est arrivée à échéance",
+        "Expires": "Arrive à échéance",
+      }
+    }
+  },
+
   mounted() {
     this.$events.listen('close-task-detail', task => {
       this.$store.dispatch('selectTask', null);

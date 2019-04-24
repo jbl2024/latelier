@@ -70,9 +70,10 @@ import moment from "moment";
 import "moment/locale/fr";
 import { VueEditor } from "vue2-editor";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
-  mixins: [TextRenderingMixin],
+  mixins: [DatesMixin, TextRenderingMixin],
   components: {
     VueEditor
   },
@@ -122,19 +123,6 @@ export default {
 
     cancelAddNote() {
       this.editNewNote = false;
-    },
-
-    formatDateDuration(date) {
-      var now = moment();
-      var noteDate = moment(date);
-      var duration = moment.duration(now.diff(noteDate)).locale("fr");
-      return "il y a " + duration.humanize();
-
-      // return moment(date).format('DD/MM/YYYY HH:mm');
-    },
-
-    formatDate(date) {
-      return moment(date).format("DD/MM/YYYY HH:mm");
     },
 
     formatUser(userId) {
