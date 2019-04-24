@@ -2,6 +2,8 @@
 
 A project management tool.
 
+![Kanban](/docs/kanban.png)
+
 ## Features
 
 - [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) task board with realtime updates
@@ -25,24 +27,24 @@ Copy `settings-development.json.sample.json` to `settings-development.json` and 
 
 Settings:
 
-| Key                   | Type          | Description
-|-----------------------|---------------|--------------------------|
-|generateFixtures       | boolean       | If true, users fixtures are generated at startup |
-|disableAccountCreation | boolean       | If true account creation is forbidden |
-|attachmentsPath        | string        | Attachment storage path on fs |
-|email.from             | string        | From email when sending mail |
-|roles.admin            | [string]      | Users matching emails will have the admin role |
-|public.seo.titlePrefix | string        | window.title prefix |
-|sso                    | object        | See below |
-|uploadTransport        | string        | http or ddp |
+| Key                   | Type          | Default value            | Description              |
+|-----------------------|---------------|--------------------------|--------------------------|
+|generateFixtures       | boolean       | false                    | If true, users fixtures are generated at startup |
+|disableAccountCreation | boolean       | false                    | If true account creation is forbidden |
+|attachmentsPath        | string        | /tmp/                    | Attachment storage path on fs |
+|email.from             | string        | noreply@localhost        | From email when sending mail |
+|roles.admin            | [string]      | []                       | Users matching emails will have the admin role |
+|public.seo.titlePrefix | string        | l'atelier                | window.title prefix |
+|sso                    | object        | {}                       | See below |
+|uploadTransport        | string        | ddp                      | http or ddp |
 
 
 sso:
 
-| Key                   | Type          | Description
-|-----------------------|---------------|--------------------------|
-| enabled               | boolean       | If true, sso is enabled |
-| email                 | string        | email header to match user |
+| Key                   | Type          | Default value            | Description                |
+|-----------------------|---------------|--------------------------|----------------------------|
+| enabled               | boolean       | false                    | If true, sso is enabled    |
+| email                 | string        | null                     | email header to match user |
 
 
 Example:
@@ -77,6 +79,20 @@ Example:
 ### Start
 
 ```npm start```
+
+### Screenshots
+
+![Dashboard](/docs/dashboard.png)
+
+![Planning (organization)](/docs/planning1.png)
+
+![Planning (project)](/docs/planning2.png)
+
+![BPMN](/docs/bpmn.png)
+
+![Weather](/docs/weather.png)
+
+![Canvas](/docs/canvas.png)
 
 ### License
 
