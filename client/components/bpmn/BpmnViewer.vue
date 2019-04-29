@@ -8,6 +8,7 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Viewer from "bpmn-js/dist/bpmn-viewer.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
+import "./minimap-custom.css";
 import minimapModule from 'diagram-js-minimap';
 
 export default {

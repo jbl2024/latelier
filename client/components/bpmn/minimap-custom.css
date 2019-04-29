@@ -1,0 +1,8 @@
+/* minimap */
+.djs-minimap:not(.open) .toggle:before {
+  content: 'Carte' !important;
+}
+
+.djs-minimap.open .toggle:before {
+  content: 'Fermer' !important;
+}
