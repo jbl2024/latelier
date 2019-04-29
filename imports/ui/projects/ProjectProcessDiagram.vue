@@ -63,6 +63,7 @@
         :process-diagram="processDiagram"
         class="bpmn"
         ref="viewer"
+        v-on:dblclick.native="edit()"
         v-if="mode === 'view' && processDiagram.xml"
       ></bpmn-viewer>
       <empty-state
