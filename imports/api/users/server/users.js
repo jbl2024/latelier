@@ -305,12 +305,33 @@ Meteor.methods({
         firstName: '',
         lastName: '',
       },
-      email: email,
-      isActive: true,
-      isConfirmed: true
+      email: email
     };
     
-    const userId = Meteor.call("admin.addUser", userData);
+    const existingUser = Meteor.users.findOne({
+      emails: {
+        $elemMatch: {
+          address: { $regex: userData.email, $options: "i" }
+        }
+      }
+    });
+    if (existingUser) {
+      throw new Meteor.Error(401, "email-exists");  
+    }
+
+    const userId = Accounts.createUser({
+      createdAt: new Date(),
+      email: userData.email,
+      profile: userData.profile,
+    });
+    Meteor.users.update(
+      { _id: userId },
+      { $set: {
+        'services.email.verificationTokens': [],
+        'emails.0.verified': true
+      } }
+    );
+    
     const user = Meteor.users.findOne({_id: userId});
     Meteor.call("users.sendInvitation", user);
     return user;
