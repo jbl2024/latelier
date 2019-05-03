@@ -12,6 +12,15 @@
         >
           <v-icon>home</v-icon>
         </v-btn>
+        <v-btn
+          flat
+          icon
+          color="white"
+          v-if="project && project.organizationId"
+          :to="{ name: 'dashboard-organization-page', params: {organizationId: project.organizationId} }"
+        >
+          <v-icon>dashboard</v-icon>
+        </v-btn>
         <span class="title" @click="startUpdateProjectName">{{ project.name }}</span>
       </div>
     </v-toolbar-title>

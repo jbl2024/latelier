@@ -37,7 +37,7 @@ Meteor.publish("projects", function projectsPublication(organizationId, name, gr
   return Projects.find(query);
 });
 
-publishComposite("allProjects", (name) => {
+publishComposite("allProjects", (name, organizationId) => {
   return {
     // projects
     find() {
@@ -51,6 +51,9 @@ publishComposite("allProjects", (name) => {
       if (name && name.length > 0) {
         query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
       } 
+      if (organizationId) {
+        query['organizationId'] = organizationId;
+      }
       return Projects.find(query);
     },
     children: [

@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-desktop">
     <new-organization ref="newOrganization"></new-organization>
-    <new-project ref="newProject" :organizationId="organizationId"></new-project>
+    <new-project ref="newProject" :organizationId="selectedOrganizationId"></new-project>
     <projects-trashcan ref="projectsTrashcan"></projects-trashcan>
 
     <div class="left" v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
@@ -11,26 +11,35 @@
     <div class="left" v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
       <div class="projects-title">
         <v-layout align-center>
-          <v-flex grow>{{ $t('Organizations & Projects')}}</v-flex>
+          <v-flex grow>
+            <v-btn icon :to="{name: 'dashboard-page'}" v-if="organizationId">
+              <v-icon>arrow_back</v-icon>
+            </v-btn>
+
+            <template v-if="!organizationId">{{ $t('Organizations & Projects')}}</template>
+            <template v-if="organizationId">{{ organization.name }}</template>
+          </v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
               <v-btn small slot="activator" icon>
                 <v-icon>more_vert</v-icon>
               </v-btn>
               <v-list dense>
-                <v-list-tile @click="newProject()">
-                  <v-list-tile-action>
-                    <v-icon>list</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile @click="newOrganization()">
-                  <v-list-tile-action>
-                    <v-icon>domain</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
-                </v-list-tile>
-                <v-divider></v-divider>
+                <template v-if="!organizationId">
+                  <v-list-tile @click="newProject()">
+                    <v-list-tile-action>
+                      <v-icon>list</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
+                  </v-list-tile>
+                  <v-list-tile @click="newOrganization()">
+                    <v-list-tile-action>
+                      <v-icon>domain</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
+                  </v-list-tile>
+                  <v-divider></v-divider>
+                </template>
                 <v-list-tile @click="$refs.projectsTrashcan.open()">
                   <v-list-tile-action>
                     <v-icon>delete</v-icon>
@@ -94,8 +103,13 @@
 
         <template v-for="organization in organizations">
           <div class="header" :key="`header-${organization._id}`">
-            <div class="header-title">
-              {{ organization.name }}
+            <div class="header-title" @click="openOrganization(organization._id)">
+              <router-link
+                v-if="!organizationId"
+                class="link"
+                :to="{name: 'dashboard-organization-page', params: {organizationId: organization._id}}"
+              >{{ organization.name }}</router-link>
+              <template v-if="organizationId">{{ organization.name }}</template>
               <v-tooltip top slot="activator">
                 <v-btn
                   icon
@@ -180,13 +194,13 @@
             <v-tab>{{ $t('Late') }}</v-tab>
 
             <v-tab-item>
-              <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
+              <dashboard-task-list :user="user" type="recent" :organization-id="organizationId"></dashboard-task-list>
             </v-tab-item>
             <v-tab-item>
-              <dashboard-task-list :user="user" type="assignedToMe"></dashboard-task-list>
+              <dashboard-task-list :user="user" type="assignedToMe" :organization-id="organizationId"></dashboard-task-list>
             </v-tab-item>
             <v-tab-item>
-              <dashboard-task-list :user="user" type="late" empty-illustration="celebration"></dashboard-task-list>
+              <dashboard-task-list :user="user" type="late" empty-illustration="celebration" :organization-id="organizationId"></dashboard-task-list>
             </v-tab-item>
           </v-tabs>
         </div>
@@ -209,7 +223,9 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   mixins: [DatesMixin],
-  props: {},
+  props: {
+    organizationId: String
+  },
   components: {
     DashboardTaskList,
     DashboardProjectCard,
@@ -230,17 +246,17 @@ export default {
       user: null,
       tab: null,
       filter: "",
-      organizationId: "",
+      selectedOrganizationId: "",
       cardClass: "card1"
     };
   },
   meteor: {
     $subscribe: {
       allProjects: function() {
-        return [this.filter];
+        return [this.filter, this.organizationId];
       },
       organizations: function() {
-        return [this.filter];
+        return [this.filter, this.organizationId];
       },
       user: function() {
         return [];
@@ -256,6 +272,9 @@ export default {
     },
     organizations() {
       return Organizations.find({}, { sort: { name: 1 } });
+    },
+    organization() {
+      return Organizations.findOne();
     },
     favorites() {
       const user = Meteor.user() || { profile: {} };
@@ -302,11 +321,17 @@ export default {
       Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
     },
     newProject(organizationId) {
-      this.organizationId = organizationId;
+      this.selectedOrganizationId = organizationId;
       this.$refs.newProject.open();
     },
     projectsByOrganization(organization) {
       return Projects.find({ organizationId: organization._id }).fetch();
+    },
+    openOrganization(id) {
+      this.$router.push({
+        name: "dashboard-organization-page",
+        params: { organizationId: id }
+      });
     },
     openOrganizationTimeline(id) {
       this.$router.push({
@@ -314,13 +339,6 @@ export default {
         params: { organizationId: id }
       });
     },
-    openOrganization(id) {
-      this.$router.push({
-        name: "projects-page",
-        params: { organizationId: id }
-      });
-    },
-
     openOrganizationSettings(id) {
       this.$router.push({
         name: "organization-settings",
@@ -328,13 +346,19 @@ export default {
       });
     },
     canManageOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
+      if (
+        Permissions.isAdmin(Meteor.userId(), organization._id) ||
+        Permissions.isAdmin(Meteor.userId())
+      ) {
         return true;
       }
       return false;
     },
     canDeleteOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
+      if (
+        Permissions.isAdmin(Meteor.userId(), organization._id) ||
+        Permissions.isAdmin(Meteor.userId())
+      ) {
         return true;
       }
       return false;
@@ -377,6 +401,15 @@ export default {
 </script>
 
 <style scoped>
+.link {
+  text-decoration: none;
+  color: black;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
 .dashboard-desktop {
   display: flex;
   flex-direction: row;

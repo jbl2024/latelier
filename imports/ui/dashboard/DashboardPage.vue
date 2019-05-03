@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-page">
-    <dashboard-desktop v-if="$vuetify.breakpoint.smAndUp"></dashboard-desktop>
-    <dashboard-mobile v-if="$vuetify.breakpoint.xsOnly"></dashboard-mobile>
+    <dashboard-desktop v-if="$vuetify.breakpoint.smAndUp" :organization-id="organizationId"></dashboard-desktop>
+    <dashboard-mobile v-if="$vuetify.breakpoint.xsOnly" :organization-id="organizationId"></dashboard-mobile>
   </div>
 </template>
 
@@ -10,7 +10,9 @@ import DashboardDesktop from "/imports/ui/dashboard/desktop/DashboardDesktop";
 import DashboardMobile from "/imports/ui/dashboard/mobile/DashboardMobile";
 
 export default {
-  props: {},
+  props: {
+    organizationId: String
+  },
   components: {
     DashboardDesktop,
     DashboardMobile

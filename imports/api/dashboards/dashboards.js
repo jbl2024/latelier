@@ -8,7 +8,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 
 Meteor.methods({
-  "dashboards.findTasks"(user, type, page) {
+  "dashboards.findTasks"(user, type, organizationId, page) {
     const userId = Meteor.userId();
 
     const perPage = 25;
@@ -31,6 +31,11 @@ Meteor.methods({
       ).fetch();
       const organizationIds = [];
       organizations.map(organization => {
+        if (organizationId) {
+          if (organization._id !== organizationId) {
+            return;
+          }
+        }
         organizationIds.push(organization._id);
       });
 
@@ -48,8 +53,14 @@ Meteor.methods({
       });
       query.projectId = { $in: projectIds };
     } else {
-      const deletedProjectIds = Projects.find({deleted: true}).map(project => { return project._id});
-      query.projectId = { $nin: deletedProjectIds };
+      if (organizationId) {
+        const projectIds = Projects.find({organizationId: organizationId, deleted: {$ne: true}}).map(project => { return project._id});
+        console.log(organizationId)
+        query.projectId = { $in: projectIds};
+      } else {
+        const deletedProjectIds = Projects.find({deleted: true}).map(project => { return project._id});
+        query.projectId = { $nin: deletedProjectIds };
+      }
     }
 
     let sort = {};
