@@ -201,5 +201,12 @@ export default [
     component: DashboardPage,
     props: true
   },
+  {
+    path: "/dashboard/:organizationId",
+    name: "dashboard-organization-page",
+    beforeEnter: isBasicAuth,
+    component: DashboardPage,
+    props: true
+  },
   { path: "*", name: "not-found", component: NotFound }
 ];

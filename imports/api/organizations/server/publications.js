@@ -5,11 +5,14 @@ import { Permissions } from "/imports/api/permissions/permissions"
 
 import { Organizations } from "../organizations";
 
-Meteor.publish("organizations", function organizations() {
+Meteor.publish("organizations", function organizations(name, organizationId) {
   var userId = Meteor.userId();
   let query = {};
   if (!Permissions.isAdmin(Meteor.userId())) {
     query['$or'] = [{members: userId}, {isPublic: true}];
+  }
+  if (organizationId) {
+    query['_id'] = organizationId;
   }
   return Organizations.find(query);
 });

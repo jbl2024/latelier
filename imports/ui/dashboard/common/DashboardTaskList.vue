@@ -2,24 +2,35 @@
   <div class="dashboard-task-list">
     <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
     <v-list dense three-line v-if="tasks && !loading">
-      <empty-state v-if="tasks.length == 0" :illustration="emptyIllustration" small :label="$t('No task')"></empty-state>
+      <empty-state
+        v-if="tasks.length == 0"
+        :illustration="emptyIllustration"
+        small
+        :label="$t('No task')"
+      ></empty-state>
 
       <template v-for="task in tasks">
         <v-list-tile :key="task._id" @click="openTask(task)" avatar>
           <v-list-tile-avatar :color="isOnline(task.assignedTo)">
-            <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
+            <span class>{{ formatUserLetters(task.assignedTo) }}</span>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title><span class="grey--text text--darken-1 show-desktop"><template v-if="task.organization">[{{ task.organization.name }}]</template> {{ task.project.name}} - </span> {{ task.name }}</v-list-tile-title>
-            <v-list-tile-sub-title>
-              {{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}
-            </v-list-tile-sub-title>
+            <v-list-tile-title>
+              <span class="grey--text text--darken-1 show-desktop">
+                <template v-if="task.organization">[{{ task.organization.name }}]</template>
+                {{ task.project.name}} -
+              </span>
+              {{ task.name }}
+            </v-list-tile-title>
+            <v-list-tile-sub-title>{{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}</v-list-tile-sub-title>
             <v-list-tile-sub-title>
               <template v-if="task.dueDate && isLate(task)">
-                {{ $t('Expired') }} <b>{{ formatDateDuration(task.dueDate) }}</b>
+                {{ $t('Expired') }}
+                <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
               <template v-if="task.dueDate && !isLate(task)">
-                {{ $t('Expires') }} <b>{{ formatDateDuration(task.dueDate) }}</b>
+                {{ $t('Expires') }}
+                <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
             </v-list-tile-sub-title>
           </v-list-tile-content>
@@ -41,44 +52,33 @@ export default {
     messages: {
       en: {
         "Last update": "Last update",
-        "Expired": "Expired",
-        "Expires": "Expires",
+        Expired: "Expired",
+        Expires: "Expires"
       },
       fr: {
         "Last update": "Dernière modification",
-        "Expired": "Est arrivée à échéance",
-        "Expires": "Arrive à échéance",
+        Expired: "Est arrivée à échéance",
+        Expires: "Arrive à échéance"
       }
     }
   },
 
   mounted() {
-    this.$events.listen('close-task-detail', task => {
-      this.$store.dispatch('selectTask', null);
-      this.$store.dispatch('showTaskDetail', false);
+    this.$events.listen("close-task-detail", task => {
+      this.$store.dispatch("selectTask", null);
+      this.$store.dispatch("showTaskDetail", false);
     });
-
-    Meteor.call(
-      "dashboards.findTasks",
-      this.user,
-      this.type,
-      1,
-      (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
-        }
-        this.tasks = result.data;
-      }
-    );
+    this.refresh();
   },
   beforeDestroy() {
-    this.$events.off('close-task-detail');
-    this.$store.dispatch('selectTask', null);
-    this.$store.dispatch('showTaskDetail', false);
+    this.$events.off("close-task-detail");
+    this.$store.dispatch("selectTask", null);
+    this.$store.dispatch("showTaskDetail", false);
   },
   props: {
+    organizationId: {
+      type: String
+    },
     user: {
       type: Object
     },
@@ -91,6 +91,11 @@ export default {
       default: "empty"
     }
   },
+  watch: {
+    organizationId(organizationId) {
+      this.refresh();
+    }
+  },
   data() {
     return {
       loading: true,
@@ -99,12 +104,30 @@ export default {
   },
   methods: {
     openTask(task) {
-      this.$store.dispatch('selectTask', task);
-      this.$store.dispatch('showTaskDetail', true);
+      this.$store.dispatch("selectTask", task);
+      this.$store.dispatch("showTaskDetail", true);
     },
 
     isLate(task) {
       return task.dueDate && task.dueDate <= new Date();
+    },
+
+    refresh() {
+      Meteor.call(
+        "dashboards.findTasks",
+        this.user,
+        this.type,
+        this.organizationId,
+        1,
+        (error, result) => {
+          this.loading = false;
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.tasks = result.data;
+        }
+      );
     }
   }
 };
