@@ -55,7 +55,6 @@ Meteor.methods({
     } else {
       if (organizationId) {
         const projectIds = Projects.find({organizationId: organizationId, deleted: {$ne: true}}).map(project => { return project._id});
-        console.log(organizationId)
         query.projectId = { $in: projectIds};
       } else {
         const deletedProjectIds = Projects.find({deleted: true}).map(project => { return project._id});
