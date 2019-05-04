@@ -35,7 +35,7 @@ export default [
   {
     path: "/",
     name: "home",
-    component: Home,
+    component: DashboardPage,
     beforeEnter: isBasicAuth
   },
   {
