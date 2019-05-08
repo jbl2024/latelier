@@ -110,7 +110,7 @@ Meteor.methods({
 
   "tasks.setNumber"(taskId) {
     const number = incNumber();
-    Tasks.update({ _id: taskId }, { $set: { number: number } });
+    Tasks.direct.update({ _id: taskId }, { $set: { number: number } });
   },
 
   "tasks.remove"(taskId) {
