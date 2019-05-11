@@ -136,104 +136,6 @@ export default {
     }
   },
   methods: {
-    handleDrop(list, data, event) {
-      if (!data) {
-        this.onDropFile(list, event);
-        return;
-      }
-      if (data.type === "task") {
-        var droppedTask = data.data;
-        Meteor.call("tasks.move", list.projectId, list._id, droppedTask._id);
-        return false;
-      } else if (data.type === "list") {
-        var order = list.order - 1;
-        var target = event.toElement || event.target;
-        var middle = target.clientWidth / 2;
-        if (event.offsetX >= middle) {
-          order = list.order + 1;
-        }
-        var droppedList = data.data;
-        Meteor.call("lists.move", list.projectId, droppedList._id, order);
-        return false;
-      }
-    },
-
-    onDropFile(list, event) {
-      const files = [];
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          if (event.dataTransfer.items[i].kind === "file") {
-            const file = event.dataTransfer.items[i].getAsFile();
-            files.push(file);
-          }
-        }
-      } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files[i]);
-        }
-      }
-      if (files.length == 0) {
-        return;
-      }
-
-      const taskName = files[0].name;
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-
-      Meteor.call(
-        "tasks.insert",
-        list.projectId,
-        list._id,
-        taskName,
-        (error, task) => {
-          if (error) {
-            return;
-          }
-          files.map(file => {
-            const upload = Attachments.insert(
-              {
-                file: file,
-                streams: "dynamic",
-                chunkSize: "dynamic",
-                transport: transport,
-                meta: {
-                  projectId: task.projectId,
-                  taskId: task._id,
-                  createdBy: Meteor.userId()
-                }
-              },
-              false
-            );
-
-            upload.on("start", function() {});
-
-            upload.on("end", function(error, fileObj) {
-              if (error) {
-                alert("Error during upload: " + error);
-              } else {
-                Meteor.call("tasks.track", {
-                  type: "tasks.addAttachment",
-                  taskId: task._id
-                });
-              }
-            });
-
-            upload.start();
-          });
-        }
-      );
-      this.removeDragData(event);
-    },
-
-    removeDragData(event) {
-      if (event.dataTransfer.items) {
-        // Use DataTransferItemList interface to remove the drag data
-        event.dataTransfer.items.clear();
-      } else {
-        // Use DataTransfer interface to remove the drag data
-        event.dataTransfer.clearData();
-      }
-    },
-
     editList(list) {
       this.selectedList = list;
       this.savedName = this.selectedList.name;
@@ -389,7 +291,6 @@ export default {
   font-size: 12px;
   padding: 4px;
   margin-top: 4px;
-  margin-bottom: 24px;
   width: 100%;
   font-weight: normal;
   color: #777;

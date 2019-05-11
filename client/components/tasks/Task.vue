@@ -8,8 +8,7 @@
     <div
       class="card"
       ref="card"
-      :class="{ dragover, dragup, dragdown, selected, completed }"
-      v-show="!hidden"
+      :class="{ selected, completed }"
     >
       <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
       <div class="title">
@@ -164,10 +163,6 @@ export default {
     return {
       editName: false,
       savedName: "",
-      dragover: false,
-      dragup: false,
-      dragdown: false,
-      hidden: false,
       showEditButton: false,
       completed: false,
       showConfirmDeleteDialog: false,
@@ -188,156 +183,6 @@ export default {
     }
   },
   methods: {
-    getTransferData(task) {
-      return {
-        type: "task",
-        data: task
-      };
-    },
-
-    onDragStart() {
-      this.hidden = true;
-    },
-
-    onDragEnd() {
-      this.hidden = false;
-    },
-
-    handleDrop(data, event) {
-      event.stopPropagation();
-      this.dragover = false;
-      this.dragup = false;
-      this.dragdown = false;
-
-      if (!data) {
-        this.onDropFile(this.task, event);
-        return;
-      }
-
-      if (data.type === "task") {
-        let order = this.task.order;
-        const droppedTask = data.data;
-        const target = event.toElement || event.target;
-        const middle = target.clientHeight / 2;
-        if (event.offsetY < middle) {
-          order = order - 1;
-        } else {
-          order = order + 1;
-        }
-        Meteor.call(
-          "tasks.move",
-          this.task.projectId,
-          this.task.listId,
-          droppedTask._id,
-          order
-        );
-        return false;
-      } else if (data.type === "list") {
-        const list = Lists.findOne({ _id: this.task.listId });
-        let order = list.order - 1;
-        const target = event.toElement || event.target;
-        const middle = target.clientWidth / 2;
-        if (event.offsetX >= middle) {
-          order = list.order + 1;
-        }
-        const droppedList = data.data;
-        Meteor.call("lists.move", list.projectId, droppedList._id, order);
-        return false;
-      }
-    },
-
-    handleDragOver(data, event) {
-      if (!data) {
-        return;
-      }
-      if (data.type === "task") {
-        if (data.data._id == this.task._id) {
-          this.dragover = false;
-          return;
-        }
-        var target = event.toElement || event.target;
-        var middle = target.clientHeight / 2;
-        if (event.offsetY >= middle) {
-          this.dragup = false;
-          this.dragdown = true;
-        } else {
-          this.dragup = true;
-          this.dragdown = false;
-        }
-      }
-      this.dragover = true;
-    },
-    handleDragLeave(data, event) {
-      this.dragover = false;
-      this.dragup = false;
-      this.dragdown = false;
-    },
-
-    onDropFile(task, event) {
-      const files = [];
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          if (event.dataTransfer.items[i].kind === "file") {
-            const file = event.dataTransfer.items[i].getAsFile();
-            files.push(file);
-          }
-        }
-      } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files[i]);
-        }
-      }
-      if (files.length == 0) {
-        return;
-      }
-
-      const taskName = files[0].name;
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-
-      files.map(file => {
-        const upload = Attachments.insert(
-          {
-            file: file,
-            streams: "dynamic",
-            chunkSize: "dynamic",
-            transport: transport,
-            meta: {
-              projectId: task.projectId,
-              taskId: task._id,
-              createdBy: Meteor.userId()
-            }
-          },
-          false
-        );
-
-        upload.on("start", function() {});
-
-        upload.on("end", function(error, fileObj) {
-          if (error) {
-            alert("Error during upload: " + error);
-          } else {
-            Meteor.call("tasks.track", {
-              type: "tasks.addAttachment",
-              taskId: task._id
-            });
-          }
-        });
-
-        upload.start();
-      });
-      this.removeDragData(event);
-    },
-
-    removeDragData(event) {
-      if (event.dataTransfer.items) {
-        // Use DataTransferItemList interface to remove the drag data
-        event.dataTransfer.items.clear();
-      } else {
-        // Use DataTransfer interface to remove the drag data
-        event.dataTransfer.clearData();
-      }
-    },
-
     startUpdateName(e) {
       if (e) {
         e.stopPropagation();
