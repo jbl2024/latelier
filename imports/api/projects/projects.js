@@ -426,21 +426,53 @@ Projects.methods.getHistory = new ValidatedMethod({
 Projects.methods.getDeletedTasks = new ValidatedMethod({
   name: "projects.getDeletedTasks",
   validate: new SimpleSchema({
-    projectId: { type: String }
+    projectId: { type: String },
+    page: {type: Number}
   }).validator(),
-  run({projectId}) {
+  run({projectId, page}) {
     checkLoggedIn();
     checkCanReadProject(projectId);
 
-    const data = Tasks.find({projectId: projectId, deleted: true}, {
+    const perPage = 10;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+    const query = {projectId: projectId, deleted: true};
+    const count = Tasks.find(query).count();
+    const data = Tasks.find(query, {
+      skip: skip,
+      limit: perPage,
       sort: {
         createdAt: -1
       }
     }).fetch();
     
     return {
+      rowsPerPage: perPage,
+      totalItems: count,
       data: data
     };
+  }
+});
+
+Projects.methods.flushTrashcan = new ValidatedMethod({
+  name: "projects.flushTrashcan",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+  }).validator(),
+  run({projectId}) {
+    checkLoggedIn();
+    checkCanWriteProject(projectId);
+    const query = {projectId: projectId, deleted: true};
+    const tasks = Tasks.find(query);
+    tasks.map(task => {
+      Meteor.call("tasks.deleteForever", task._id);
+    });
   }
 });
 

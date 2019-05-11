@@ -61,6 +61,8 @@ const messages = {
     "No project": "Aucun projet",
     "Project deleted": "Projet supprimé",
     "Move to trash": "Placer dans la corbeille",
+    "Close": "Fermer",
+    "Do you really want to delete this task?": "Voulez-vous vraiment supprimer cette tâche ?",
     history: {
       tasks: {
         create: "Création",
@@ -166,6 +168,8 @@ const messages = {
     "No project": "No project",
     "Project deleted": "Project deleted",
     "Move to trash": "Move to trash",
+    "Close": "Close",
+    "Do you really want to delete this task?": "Do you really want to delete this task?",
     history: {
       tasks: {
         create: "Creation",

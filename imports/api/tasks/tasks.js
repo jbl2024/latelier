@@ -83,7 +83,10 @@ Meteor.methods({
       completed = true;
     }
     const now = new Date();
-
+    let number;
+    if (Meteor.isServer) {
+      number = incNumber();
+    }
     var taskId = Tasks.insert({
       name: name,
       order: _findFirstOrder() - 10,
@@ -94,12 +97,9 @@ Meteor.methods({
       updatedAt: now,
       createdBy: userId,
       updatedBy: userId,
+      number: number,
       labels: labelIds || []
     });
-
-    if (Meteor.isServer) {
-      Meteor.call("tasks.setNumber", taskId);
-    }
     
     Meteor.call("tasks.track", {
       type: "tasks.create",

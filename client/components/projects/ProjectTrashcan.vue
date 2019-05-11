@@ -43,9 +43,13 @@
             </template>
           </v-list>
         </v-card-text>
+          <div class="text-xs-center">
+            <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
+          </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="close()">Fermer</v-btn>
+          <v-btn color="error" @click="flush()">{{ $t('Flush') }}</v-btn>
+          <v-btn flat @click="close()">{{ $t('Close')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -63,17 +67,28 @@ export default {
     messages: {
       en: {
         "Delete task?": "Delete task?",
+        "Delete all tasks?": "Delete all tasks?",
         "Task deleted": "Task deleted",
+        "Tasks deleted": "Tasks deleted",
         "Delete forever": "Delete forever",
-        "Restore from trash": "Restore from trash"
+        "Restore from trash": "Restore from trash",
+        "Flush": "Flush",
       },
       fr: {
         "Delete task?": "Supprimer la tâche ?",
+        "Delete all tasks?": "Supprimer toutes les tâches ?",
         "Task deleted": "Tâche supprimée",
+        "Tasks deleted": "Tâches supprimées",
         "Delete forever": "Supprimer définitivement",
-        "Restore from trash": "Restaurer de la corbeille"
+        "Restore from trash": "Restaurer de la corbeille",
+        "Flush": "Vider",
       }
     }
+  },
+  watch: {
+    page(page) {
+      this.refresh();
+    },
   },
   props: {
     projectId: String
@@ -82,7 +97,13 @@ export default {
     return {
       showDialog: false,
       tasks: [],
-      loading: true
+      loading: true,
+      page: 1,
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 0,
+        totalPages: 0
+      }
     };
   },
   methods: {
@@ -99,17 +120,33 @@ export default {
       this.loading = true;
       Meteor.call(
         "projects.getDeletedTasks",
-        { projectId: this.projectId },
+        { projectId: this.projectId, page: this.page },
         (error, result) => {
           this.loading = false;
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;
           }
+          this.pagination.totalItems = result.totalItems;
+          this.pagination.rowsPerPage = result.rowsPerPage;
+          this.pagination.totalPages = this.calculateTotalPages();
           this.tasks = result.data;
         }
       );
     },
+
+    calculateTotalPages() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      )
+        return 0;
+
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
+    },
+
 
     restoreTask(task) {
       Meteor.call("tasks.restore", task._id, (error, result) => {
@@ -139,6 +176,27 @@ export default {
         }
       });
 
+    },
+
+    flush() {
+      this.$confirm(this.$t("Delete all tasks?"), {
+        title: this.$t('Confirm'),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          this.loading = true;
+          Meteor.call("projects.flushTrashcan", { projectId: this.projectId }, (error, result) => {
+            this.loading = false;
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('Tasks deleted'));
+            this.refresh();
+          });
+        }
+      });
     }
   }
 };
@@ -147,6 +205,7 @@ export default {
 <style scoped>
 .content {
   overflow-y: auto;
-  max-height: 500px;
+  max-height: 400px;
+  min-height: 400px;
 }
 </style>
