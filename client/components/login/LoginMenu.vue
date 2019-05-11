@@ -1,14 +1,5 @@
 <template>
   <div class="login-menu">
-    <confirm-dialog
-      :active.sync="showConfirmDialog"
-      title="Confirmer la déconnexion ?"
-      content="Voulez vous vous déconnecter ?"
-      confirm-text="Se déconnecter"
-      cancel-text="Annuler"
-      @cancel="onCancelLogout"
-      @confirm="onConfirmLogout"
-    />
     <select-background :active.sync="showSelectBackgroundDialog"></select-background>
 
     <template v-if="!isConnected">
@@ -79,7 +70,7 @@
             <v-list-tile-title>{{ $t('Email notifications') }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-list-tile @click="showConfirmDialog = true">
+        <v-list-tile @click="logout()">
           <v-list-tile-action>
             <v-icon>exit_to_app</v-icon>
           </v-list-tile-action>
@@ -101,17 +92,18 @@ export default {
     messages: {
       en: { 
         "Background": "Background",
-        "Log out": "Log out"
+        "Log out": "Log out",
+        "Do you want to log out?": "Do you want to log out?"
       },
       fr: {
         "Background": "Fond d'écran",
-        "Log out": "Se déconnecter"
+        "Log out": "Se déconnecter",
+        "Do you want to log out?": "Voulez-vous vous déconnecter ?"
       }
     }  
   }, 
   data() {
     return {
-      showConfirmDialog: false,
       showSelectBackgroundDialog: false
     };
   },
@@ -131,16 +123,15 @@ export default {
   
   methods: {
     logout() {
-      Meteor.logout();
-    },
-
-    onCancelLogout() {
-      showConfirmDialog = false;
-    },
-
-    onConfirmLogout() {
-      showConfirmDialog = false;
-      this.logout();
+      this.$confirm(this.$t("Do you want to log out?"), {
+        title: this.$t('Confirm'),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Log out")
+      }).then(res => {
+        if (res) {
+          Meteor.logout();
+        }
+      });
     },
 
     isAdmin() {
