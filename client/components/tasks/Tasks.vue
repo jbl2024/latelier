@@ -31,10 +31,11 @@ export default {
         this.handleMove(event);
       }
     };
-    Sortable.create(this.$refs.tasks, options);
+    this.sortable = Sortable.create(this.$refs.tasks, options);
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
+    this.sortable.destroy();
   },
   props: {
     projectId: {
@@ -59,7 +60,8 @@ export default {
   },
   data() {
     return {
-      filterName: ""
+      filterName: "",
+      sortable: null,
     };
   },
   meteor: {

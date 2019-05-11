@@ -34,7 +34,10 @@ export default {
         this.handleMove(event);
       }
     };
-    Sortable.create(this.$refs.kanban, options);
+    this.sortable = Sortable.create(this.$refs.kanban, options);
+  },
+  beforeDestroy() {
+    this.sortable.destroy();
   },
   props: {
     projectId: {
@@ -48,7 +51,8 @@ export default {
   },
   data () {
     return {
-      scrollEnabled: false
+      scrollEnabled: false,
+      sortable: null
     }
   },
   meteor: {
