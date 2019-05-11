@@ -139,7 +139,7 @@ export default {
       const taskId = event.item.dataset.id;
       const index = event.newIndex;
       if (index < this.tasks.length) {
-        const nextTask = this.tasks[event.newIndex];
+        const nextTask = this.tasks[index];
         Meteor.call(
           "tasks.move",
           this.projectId,

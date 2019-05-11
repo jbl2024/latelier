@@ -72,7 +72,6 @@
     </div>
     <div class="tasks-wrapper dragscroll">
       <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">{{ $t('Add new task')}}</v-btn>
-      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
       <div
         class="task show-hidden"
         @click="showHiddenTasks = !showHiddenTasks"
@@ -87,6 +86,7 @@
           v-if="!showHiddenTasks"
         >Afficher les {{ hiddenTaskCount }} tâches terminées</div>
       </div>
+      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
     </div>
   </div>
 </template>
