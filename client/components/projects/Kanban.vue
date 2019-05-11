@@ -22,6 +22,8 @@ export default {
   },
   mounted() {
     const options = {
+      delayOnTouchOnly: true,
+      delay: 250,
       animation: 150,
       handle: ".list-header",
       group: "lists",

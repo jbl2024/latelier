@@ -24,7 +24,7 @@
     "path": "^0.12.7",
     "pretty-checkbox": "^3.0.3",
     "showdown": "^1.9.0",
-    "sortablejs": "^1.8.3",
+    "sortablejs": "^1.9.0",
     "vue": "^2.6.0",
     "vue-color": "^2.7.0",
     "vue-dragscroll": "^1.8.3",

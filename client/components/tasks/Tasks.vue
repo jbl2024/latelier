@@ -20,6 +20,8 @@ export default {
     });
 
     const options = {
+      delayOnTouchOnly: true,
+      delay: 250,
       animation: 150,
       group: "tasks",
       onUpdate: (event) => {
