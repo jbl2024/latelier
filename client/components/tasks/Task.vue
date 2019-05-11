@@ -5,109 +5,104 @@
     @mouseenter="showEditButton = true"
     @mouseleave="showEditButton = false"
   >
-    <drag
-      class="drag"
-      :transfer-data="getTransferData(task)"
-      :draggable="!editName"
-      @dragstart="onDragStart"
-      @dragend="onDragEnd"
+    <div
+      class="card"
+      ref="card"
+      :class="{ dragover, dragup, dragdown, selected, completed }"
+      v-show="!hidden"
     >
-      <drop @drop="handleDrop" @dragover="handleDragOver" @dragleave="handleDragLeave">
-        <div
-          class="card"
-          ref="card"
-          :class="{ dragover, dragup, dragdown, selected, completed }"
-          v-show="!hidden"
-        >
-          <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-          <div class="title">
-            <v-icon
-              icon
-              flat
-              v-show="showEditButton && !editName"
-              class="edit-button"
-              small
-              color="grey darken-1"
-              @click.stop="startUpdateName"
-            >edit</v-icon>
-            <v-icon
-              icon
-              flat
-              v-show="showEditButton && !editName"
-              class="delete-button"
-              small
-              color="grey darken-1"
-              @click.stop="deleteTask"
-            >delete</v-icon>
-            
-            <div class="title-wrapper">
-              <div class="checkbox" v-if="!editName">
-                <div class="pretty p-svg p-curve">
-                  <input
-                    type="checkbox"
-                    v-show="!editName"
-                    v-model="completed"
-                    @click="e => e.stopPropagation()"
-                  >
-                  <div class="state p-primary">
-                    <svg class="svg svg-icon" viewBox="0 0 20 20">
-                      <path
-                        d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                        style="stroke: white;fill:white;"
-                      ></path>
-                    </svg>
-                    <label></label>
-                  </div>
-                </div>
+      <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
+      <div class="title">
+        <v-icon
+          icon
+          flat
+          v-show="showEditButton && !editName"
+          class="edit-button"
+          small
+          color="grey darken-1"
+          @click.stop="startUpdateName"
+        >edit</v-icon>
+        <v-icon
+          icon
+          flat
+          v-show="showEditButton && !editName"
+          class="delete-button"
+          small
+          color="grey darken-1"
+          @click.stop="deleteTask"
+        >delete</v-icon>
+
+        <div class="title-wrapper">
+          <div class="checkbox" v-if="!editName">
+            <div class="pretty p-svg p-curve">
+              <input
+                type="checkbox"
+                v-show="!editName"
+                v-model="completed"
+                @click="e => e.stopPropagation()"
+              >
+              <div class="state p-primary">
+                <svg class="svg svg-icon" viewBox="0 0 20 20">
+                  <path
+                    d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                    style="stroke: white;fill:white;"
+                  ></path>
+                </svg>
+                <label></label>
               </div>
-
-              <div v-show="!editName" :class="getClassForName(task)" v-html="linkifyHtml(task.name)"></div>
-              <v-icon class="has-notes" small color="blue darken-1" v-show="hasNotes(task) && !editName">chat</v-icon>
-
-              <span v-show="editName" class="edit">
-                <v-textarea 
-                  ref="name" 
-                  class="edit-name"
-                  @focus.native="$event.target.select()" 
-                  label="Titre de la tâche"
-                  outline
-                  v-model="task.name" 
-                  @keyup.ctrl.enter="updateName"></v-textarea>
-                <v-btn icon flat @click.native="updateName">
-                  <v-icon>check_circle</v-icon>
-                </v-btn>
-
-                <v-btn icon flat @click.native="cancelUpdateName">
-                  <v-icon>cancel</v-icon>
-                </v-btn>
-              </span>
             </div>
           </div>
-          <v-divider v-if="hasChecklist(task)"></v-divider>
-          <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
+          <div v-show="!editName" :class="getClassForName(task)" v-html="linkifyHtml(task.name)"></div>
+          <v-icon
+            class="has-notes"
+            small
+            color="blue darken-1"
+            v-show="hasNotes(task) && !editName"
+          >chat</v-icon>
 
-          <div class="completed-date" v-if="task.completedAt">
-            {{ $t('Completed on') }}
-            {{ formatDateTime(task.completedAt) }}
-          </div>
+          <span v-show="editName" class="edit">
+            <v-textarea
+              ref="name"
+              class="edit-name"
+              @focus.native="$event.target.select()"
+              label="Titre de la tâche"
+              outline
+              v-model="task.name"
+              @keyup.ctrl.enter="updateName"
+            ></v-textarea>
+            <v-btn icon flat @click.native="updateName">
+              <v-icon>check_circle</v-icon>
+            </v-btn>
 
-          <v-divider v-if="hasFooterData(task)"></v-divider>
-          <div class="footer" v-if="hasFooterData(task)">
-            <div class="due-date">
-              <template v-if="task.dueDate">
-                <v-icon class="alarm-icon">alarm_on</v-icon>
-                {{ formatDateTime(task.dueDate) }}
-              </template>
-            </div>
-            <div class="avatar">
-              <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-                <span>{{ formatUserLetters(task.assignedTo) }}</span>
-              </v-avatar>
-            </div>
-          </div>
+            <v-btn icon flat @click.native="cancelUpdateName">
+              <v-icon>cancel</v-icon>
+            </v-btn>
+          </span>
         </div>
-      </drop>
-    </drag>
+      </div>
+      <v-divider v-if="hasChecklist(task)"></v-divider>
+      <task-checklist :task="task" :hide-if-empty="true" class="checklist"></task-checklist>
+
+      <div class="completed-date" v-if="task.completedAt">
+        {{ $t('Completed on') }}
+        {{ formatDateTime(task.completedAt) }}
+      </div>
+
+      <v-divider v-if="hasFooterData(task)"></v-divider>
+      <div class="footer" v-if="hasFooterData(task)">
+        <div class="due-date">
+          <template v-if="task.dueDate">
+            <v-icon class="alarm-icon">alarm_on</v-icon>
+            {{ formatDateTime(task.dueDate) }}
+          </template>
+        </div>
+        <div class="avatar">
+          <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
+            <span>{{ formatUserLetters(task.assignedTo) }}</span>
+          </v-avatar>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -158,7 +153,10 @@ export default {
     ...mapState(["currentProjectId"]),
     selected: {
       get() {
-        return this.$store.state.selectedTask && this.$store.state.selectedTask._id === this.task._id;
+        return (
+          this.$store.state.selectedTask &&
+          this.$store.state.selectedTask._id === this.task._id
+        );
       }
     }
   },
@@ -185,7 +183,7 @@ export default {
         }
       }
     },
-    "completed"(completed) {
+    completed(completed) {
       Meteor.call("tasks.complete", this.task._id, completed);
     }
   },
@@ -434,8 +432,8 @@ export default {
       }
     },
 
-    deleteTask () {
-      this.$events.fire('delete-task', this.task);  
+    deleteTask() {
+      this.$events.fire("delete-task", this.task);
     }
   }
 };
@@ -446,7 +444,8 @@ export default {
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
-  transition: box-shadow 0.5s ease, opacity 0.5s ease, background-color 0.5s ease;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease,
+    background-color 0.5s ease;
   position: relative;
 }
 
@@ -490,7 +489,7 @@ export default {
 }
 
 .selected {
-  background-color: #C5CAE9;
+  background-color: #c5cae9;
 }
 .pretty .state label:before {
   background-color: white;
@@ -510,14 +509,12 @@ export default {
   flex-direction: row;
 }
 
-
 .checkbox {
   font-size: 13px;
   flex-grow: 0;
   flex-shrink: 0;
   margin-top: 2px;
 }
-
 
 .name {
   font-size: 12px;
@@ -615,5 +612,4 @@ export default {
   width: 30px;
   height: 30px;
 }
-
 </style>

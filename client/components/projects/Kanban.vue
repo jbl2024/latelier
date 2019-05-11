@@ -1,5 +1,5 @@
 <template>
-  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove">
+  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove" ref="kanban">
       <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
         <list :list="list" class="kanban-list-item dragscroll" :data-id="list._id" :ref="list._id"></list>
       </div>  
@@ -14,6 +14,7 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import { dragscroll } from 'vue-dragscroll'
+import * as Sortable from "sortablejs";
 
 export default {
   directives: {
