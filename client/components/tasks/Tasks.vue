@@ -1,5 +1,5 @@
 <template>
-  <div class="tasks" ref="tasks">
+  <div class="tasks dragscroll" ref="tasks">
     <template v-for="task in tasks">
       <task :task="task" :key="task._id" class="task" v-if="showCompleted(task, showHiddenTasks)" :data-id="task._id"></task>
     </template>
