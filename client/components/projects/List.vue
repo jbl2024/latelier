@@ -1,86 +1,93 @@
 <template>
   <div class="list">
     <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
-    <drop @drop="(data, event) => { handleDrop(list, data, event) }">
-      <div class="list-header">
-        <div class="swimlane dragscroll">
-          <drag :transfer-data="getTransferData(list)" :draggable="!isListEdited(list, selectedList)">
-            <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
-              <div :style="getColor(currentProjectId)" class="flex-container-row">
-                <div class="list-name flex1" @click="editList(list)" v-if="hiddenTaskCount  == 0">{{list.name}} ({{ taskCount }})</div>
-                <div class="list-name flex1" @click="editList(list)" v-if="hiddenTaskCount > 0">{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
-                <v-menu bottom left class="flex0">
-                  <v-btn dark small slot="activator" icon>
-                    <v-icon>more_vert</v-icon>
-                  </v-btn>
-                  <v-list dense>
-                    <v-list-tile @click="newTaskInline(list._id)">
-                      <v-list-tile-action>
-                        <v-icon>add</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-title>{{ $t('Add new task') }}</v-list-tile-title>
-                      
-                    </v-list-tile>
-                    <v-list-tile @click="deleteList(list._id)">
-                      <v-list-tile-action>
-                        <v-icon>delete</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-title>Supprimer</v-list-tile-title>
-                    </v-list-tile>
-                    <v-divider></v-divider>
-                    <v-list-tile @click="list.autoComplete = !list.autoComplete">
-                      <v-list-tile-action >
-                        <v-checkbox
-                          :input-value="list.autoComplete"
-                        ></v-checkbox>
-                      </v-list-tile-action> 
-                      <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
-                    </v-list-tile>
-                    <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
-                      <v-list-tile-action >
-                        <v-checkbox
-                          :input-value="list.catchCompleted"
-                        ></v-checkbox>
-                      </v-list-tile-action> 
-                      <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
-                    </v-list-tile>
-                  </v-list>
-                </v-menu>
-              </div>
-            </div>
-            <div class="list-edit flex-container-row" v-show="isListEdited(list, selectedList)">
-              <input
-                type="text"
-                ref="name"
-                v-model="list.name"
-                class="flex1"
-                v-on:keyup.enter="updateName(list)"
-              >
-              <div class="flex0">
-              <div class="flex-container-row">
+    <div class="list-header">
+      <div class="swimlane dragscroll">
+        <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
+          <div :style="getColor(currentProjectId)" class="flex-container-row">
+            <div
+              class="list-name flex1"
+              @click="editList(list)"
+              v-if="hiddenTaskCount  == 0"
+            >{{list.name}} ({{ taskCount }})</div>
+            <div
+              class="list-name flex1"
+              @click="editList(list)"
+              v-if="hiddenTaskCount > 0"
+            >{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
+            <v-menu bottom left class="flex0">
+              <v-btn dark small slot="activator" icon>
+                <v-icon>more_vert</v-icon>
+              </v-btn>
+              <v-list dense>
+                <v-list-tile @click="newTaskInline(list._id)">
+                  <v-list-tile-action>
+                    <v-icon>add</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-title>{{ $t('Add new task') }}</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile @click="deleteList(list._id)">
+                  <v-list-tile-action>
+                    <v-icon>delete</v-icon>
+                  </v-list-tile-action>
+                  <v-list-tile-title>Supprimer</v-list-tile-title>
+                </v-list-tile>
+                <v-divider></v-divider>
+                <v-list-tile @click="list.autoComplete = !list.autoComplete">
+                  <v-list-tile-action>
+                    <v-checkbox :input-value="list.autoComplete"></v-checkbox>
+                  </v-list-tile-action>
+                  <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
+                </v-list-tile>
+                <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
+                  <v-list-tile-action>
+                    <v-checkbox :input-value="list.catchCompleted"></v-checkbox>
+                  </v-list-tile-action>
+                  <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
+                </v-list-tile>
+              </v-list>
+            </v-menu>
+          </div>
+        </div>
+        <div class="list-edit flex-container-row" v-show="isListEdited(list, selectedList)">
+          <input
+            type="text"
+            ref="name"
+            v-model="list.name"
+            class="flex1"
+            v-on:keyup.enter="updateName(list)"
+          >
+          <div class="flex0">
+            <div class="flex-container-row">
               <v-btn flat icon @click.native="updateName(list)">
                 <v-icon>check_circle</v-icon>
               </v-btn>
               <v-btn flat icon @click.native="cancelUpdate(list)">
                 <v-icon>cancel</v-icon>
               </v-btn>
-              </div>
-              </div>
             </div>
-          </drag>
+          </div>
         </div>
       </div>
-      <div class="tasks-wrapper dragscroll">
-        <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">
-            {{ $t('Add new task')}}
-        </v-btn>
-        <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
-        <div class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks" v-if="hiddenTaskCount > 0">
-          <div class="list-title" v-if="showHiddenTasks">Masquer les {{ hiddenTaskCount }} tâches terminées</div>
-          <div class="list-title" v-if="!showHiddenTasks">Afficher les {{ hiddenTaskCount }} tâches terminées</div>
-        </div>
+    </div>
+    <div class="tasks-wrapper dragscroll">
+      <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">{{ $t('Add new task')}}</v-btn>
+      <div
+        class="task show-hidden"
+        @click="showHiddenTasks = !showHiddenTasks"
+        v-if="hiddenTaskCount > 0"
+      >
+        <div
+          class="list-title"
+          v-if="showHiddenTasks"
+        >Masquer les {{ hiddenTaskCount }} tâches terminées</div>
+        <div
+          class="list-title"
+          v-if="!showHiddenTasks"
+        >Afficher les {{ hiddenTaskCount }} tâches terminées</div>
       </div>
-    </drop>
+      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
+    </div>
   </div>
 </template>
 
@@ -98,7 +105,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentProjectId"]),
+    ...mapState(["currentProjectId"])
   },
   data() {
     return {
@@ -129,109 +136,6 @@ export default {
     }
   },
   methods: {
-    handleDrop(list, data, event) {
-      if (!data) {
-        this.onDropFile(list, event);
-        return;
-      }
-      if (data.type === "task") {
-        var droppedTask = data.data;
-        Meteor.call(
-          "tasks.move",
-          list.projectId,
-          list._id,
-          droppedTask._id
-        );
-        return false;
-      } else if (data.type === "list") {
-        var order = list.order - 1;
-        var target = event.toElement || event.target;
-        var middle = target.clientWidth / 2;
-        if (event.offsetX >= middle) {
-          order = list.order + 1;
-        }
-        var droppedList = data.data;
-        Meteor.call("lists.move", list.projectId, droppedList._id, order);
-        return false;
-      }
-    },
-
-    onDropFile(list, event) {
-      const files = [];
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          if (event.dataTransfer.items[i].kind === "file") {
-            const file = event.dataTransfer.items[i].getAsFile();
-            files.push(file);
-          }
-        }
-      } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files[i]);
-        }
-      }
-      if (files.length == 0) {
-        return;
-      }
-
-      const taskName = files[0].name;
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-
-      Meteor.call(
-        "tasks.insert",
-        list.projectId,
-        list._id,
-        taskName,
-        (error, task) => {
-          if (error) {
-            return;
-          }
-          files.map(file => {
-            const upload = Attachments.insert(
-              {
-                file: file,
-                streams: "dynamic",
-                chunkSize: "dynamic",
-                transport: transport,
-                meta: {
-                  projectId: task.projectId,
-                  taskId: task._id,
-                  createdBy: Meteor.userId()
-                }
-              },
-              false
-            );
-
-            upload.on("start", function() {});
-
-            upload.on("end", function(error, fileObj) {
-              if (error) {
-                alert("Error during upload: " + error);
-              } else {
-                Meteor.call("tasks.track", {
-                  type: "tasks.addAttachment",
-                  taskId: task._id
-                });
-              }
-            });
-
-            upload.start();
-          });
-        }
-      );
-      this.removeDragData(event);
-    },
-
-    removeDragData(event) {
-      if (event.dataTransfer.items) {
-        // Use DataTransferItemList interface to remove the drag data
-        event.dataTransfer.items.clear();
-      } else {
-        // Use DataTransfer interface to remove the drag data
-        event.dataTransfer.clearData();
-      }
-    },
-
     editList(list) {
       this.selectedList = list;
       this.savedName = this.selectedList.name;
@@ -387,7 +291,6 @@ export default {
   font-size: 12px;
   padding: 4px;
   margin-top: 4px;
-  margin-bottom: 24px;
   width: 100%;
   font-weight: normal;
   color: #777;
@@ -454,7 +357,7 @@ export default {
 }
 
 .flex-container-row {
-  display:flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
 }

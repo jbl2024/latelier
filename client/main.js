@@ -41,9 +41,6 @@ Vue.use(VueI18n)
 import VueMeteorTracker from "vue-meteor-tracker";
 Vue.use(VueMeteorTracker);
 
-import VueDragDrop from 'vue-drag-drop';
-Vue.use(VueDragDrop);
-
 import VueEvents from 'vue-event-handler'
 Vue.use(VueEvents);
 

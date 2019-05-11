@@ -83,30 +83,28 @@ Meteor.methods({
       ).fetch();
       for (var i = 0; i < lists.length; i++) {
         var list = lists[i];
-        list.order = i + 1;
+        list.order = i*10;
         Lists.update({ _id: list._id }, { $set: { order: list.order } });
       }
     };
 
-    if (order == -1) {
-      var lastList = Lists.findOne(
-        { projectId: projectId },
-        { sort: { order: -1 } }
+    if (order) {
+      Lists.update(
+        { _id: listId },
+        { $set: { order: order } },
+        {},
+        (error, result) => {
+          _reorder(projectId);
+        }
       );
+    } else {
+      const lastList = Lists.findOne({ listId: listId}, {sort: { order: -1}});
       if (lastList) {
-        order = lastList.order + 1;
+        order = lastList.order + 10;
       } else {
-        order = 1;
+        order = 10;
       }
     }
-    Lists.update(
-      { _id: listId },
-      { $set: { order: order } },
-      {},
-      (error, result) => {
-        _reorder(projectId);
-      }
-    );
   },
 
   "lists.autoComplete"(listId, autoComplete) {

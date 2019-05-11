@@ -1,6 +1,6 @@
 <template>
-  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove">
-      <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll">
+  <div class="kanban" @click="e => hideProperties(e)" v-dragscroll="scrollEnabled" @mousemove="onMouseMove" ref="kanban">
+      <div v-for="list in lists" :key='list._id' class="kanban-flex dragscroll" :data-id="list._id">
         <list :list="list" class="kanban-list-item dragscroll" :data-id="list._id" :ref="list._id"></list>
       </div>  
       <div class="swimlane dragscroll new">
@@ -14,10 +14,25 @@ import { Projects } from '/imports/api/projects/projects.js'
 import { Lists } from '/imports/api/lists/lists.js'
 import { Tasks } from '/imports/api/tasks/tasks.js'
 import { dragscroll } from 'vue-dragscroll'
+import * as Sortable from "sortablejs";
 
 export default {
   directives: {
     'dragscroll': dragscroll
+  },
+  mounted() {
+    const options = {
+      animation: 150,
+      handle: ".list-header",
+      group: "lists",
+      onUpdate: (event) => {
+        this.handleMove(event);
+      },
+      onAdd: (event) => {
+        this.handleMove(event);
+      }
+    };
+    Sortable.create(this.$refs.kanban, options);
   },
   props: {
     projectId: {
@@ -58,7 +73,36 @@ export default {
       } else {
         this.scrollEnabled = false;
       }
+    },
+
+    handleMove (event) {
+      const listId = event.item.dataset.id;
+      const index = event.newIndex;
+      const oldIndex = event.oldIndex;
+      if (index < this.lists.length) {
+        const nextList = this.lists[index];
+        let inc;
+        if (oldIndex < index) {
+          inc = 1;
+        } else {
+          inc = -1;
+        }
+
+        Meteor.call(
+          "lists.move",
+          this.projectId,
+          listId,
+          nextList.order + inc
+        );
+      } else {
+        Meteor.call(
+          "lists.move",
+          this.projectId,
+          listId,
+        );
+      }
     }
+
   }
 }
 </script>
