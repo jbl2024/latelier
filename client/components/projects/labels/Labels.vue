@@ -17,12 +17,12 @@
             :item-value="getItemValue"
             menu-props="closeOnContentClick"
           >
-            <template slot="selection" slot-scope="{item, index}">
-              <v-chip :style="getStyleForChip(item)" v-if="index <= 2">{{ item.name }}</v-chip>
+            <template v-slot:selection="{ item, index }">
+              <v-chip :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
               <span
-                v-if="index > 2"
+                v-if="index === 1"
                 class="grey--text caption"
-              >(+{{ selectedLabels.length - 3 }} {{ $t('others') }})</span>
+              >(+{{ selectedLabels.length - 1 }} {{ $t('others') }})</span>
             </template>
           </v-autocomplete>
         </div>
