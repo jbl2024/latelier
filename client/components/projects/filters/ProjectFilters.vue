@@ -13,7 +13,7 @@
       :item-value="getObjectForUser"
       menu-props="closeOnContentClick"
     >
-      <template slot="selection" slot-scope="{item, index}">
+      <template v-slot:selection="{ item, index }">
         <div class="avatar" v-if="index <= 2">
           <v-avatar size="24" :color="isOnline(item)">
             <span>{{ formatUserLetters(item) }}</span>
@@ -38,7 +38,7 @@
       :item-value="getObjectForUser"
       menu-props="closeOnContentClick"
     >
-      <template slot="selection" slot-scope="{item, index}">
+      <template v-slot:selection="{ item, index }">
         <div class="avatar" v-if="index <= 2">
           <v-avatar size="24" :color="isOnline(item)">
             <span>{{ formatUserLetters(item) }}</span>
