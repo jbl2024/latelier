@@ -392,16 +392,30 @@ Projects.methods.updateEstimatedSize = new ValidatedMethod({
 Projects.methods.getHistory = new ValidatedMethod({
   name: "projects.getHistory",
   validate: new SimpleSchema({
-    projectId: { type: String }
+    projectId: { type: String },
+    page: { type: Number },
   }).validator(),
-  run({projectId}) {
+  run({projectId, page}) {
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
     const query = {
       "properties.task.projectId": projectId
     };
 
+    const perPage = 4;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const count = Events.find(query).count();
     const data = Events.find(query, {
+      skip: skip,
+      limit: perPage,
       sort: {
         createdAt: -1
       }
@@ -418,7 +432,9 @@ Projects.methods.getHistory = new ValidatedMethod({
     });
 
     return {
-      data: dataWithUsers
+      rowsPerPage: perPage,
+      totalItems: count,
+      data: dataWithUsers,
     };
   }
 });

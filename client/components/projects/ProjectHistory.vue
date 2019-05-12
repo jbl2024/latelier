@@ -32,6 +32,9 @@
 
           </v-timeline>
         </v-card-text>
+        <div class="text-xs-center">
+          <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
+        </div>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="close()">Fermer</v-btn>
@@ -50,11 +53,22 @@ export default {
   props: {
     projectId: String
   },
+  watch: {
+    page(page) {
+      this.refresh();
+    },
+  },
   data () {
     return {
       showDialog: false,
       history: [],
-      loading: true
+      loading: true,
+      page: 1,
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 0,
+        totalPages: 0
+      }
     }
   },
   methods: {
@@ -69,14 +83,29 @@ export default {
 
     refresh () {
       this.loading = true;
-      Meteor.call('projects.getHistory', {projectId: this.projectId}, (error, result) => {
+      Meteor.call('projects.getHistory', {projectId: this.projectId, page: this.page}, (error, result) => {
         this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
         this.history = result.data;
       })
+    },
+
+    calculateTotalPages() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      )
+        return 0;
+
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
     }
 
   }
@@ -86,7 +115,8 @@ export default {
 <style scoped>
 .content {
   overflow-y: auto;
-  max-height: 500px;
+  max-height: 450px;
+  min-height: 450px;
 }
 
 </style>
