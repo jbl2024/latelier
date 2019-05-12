@@ -12,7 +12,7 @@
               Heure
             </v-tab>
             <v-tab-item>
-              <v-date-picker v-model="date" locale="fr-fr"></v-date-picker>
+              <v-date-picker v-model="date" locale="fr-fr" @dblclick.native="checkDblClick"></v-date-picker>
             </v-tab-item>
             <v-tab-item>
               <v-time-picker v-model="hour" format="24hr"></v-time-picker>
@@ -56,6 +56,13 @@ export default {
       }
       this.$emit("update:active", false);
       this.$emit("select", dateTime);
+    },
+
+    checkDblClick(event) {
+      const target = event.target;
+      if (target.classList.contains('v-btn__content')) {
+        this.selectDate();
+      }
     }
   }
 };
