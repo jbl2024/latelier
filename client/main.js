@@ -65,6 +65,7 @@ Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea', '.ql-editor'] 
 import App from '/imports/ui/App.vue';
 import { store } from '/imports/store/store';
 import routes from '/imports/routes.js'
+import '/imports/favicon.js'
 import messages from '/imports/i18n.js'
 
 import confirm from '/imports/confirm/confirm.js'
