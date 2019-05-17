@@ -106,7 +106,7 @@
       >Aucune description</div>
 
       <div v-show="editDescription">
-        <rich-editor ref="description" v-model="task.description"></rich-editor>
+        <rich-editor ref="description" v-model="task.description" @submit="updateDescription"></rich-editor>
         <v-btn icon flat @click="updateDescription">
           <v-icon>check_circle</v-icon>
         </v-btn>

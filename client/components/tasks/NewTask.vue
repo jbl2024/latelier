@@ -21,7 +21,7 @@
                     required
                     :rules="nameRules"
                     v-model="name"
-                    @keyup.ctrl.enter="newTask(false)"
+                    @keydown.shift.enter="newTask(false)"
                   ></v-textarea>
                 </v-flex>
                 <v-flex xs12>

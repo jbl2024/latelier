@@ -67,7 +67,7 @@
               label="Titre de la tâche"
               outline
               v-model="task.name"
-              @keyup.ctrl.enter="updateName"
+              @keydown.shift.enter="updateName"
             ></v-textarea>
             <v-btn icon flat @click.native="updateName">
               <v-icon>check_circle</v-icon>

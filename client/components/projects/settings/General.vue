@@ -18,7 +18,7 @@
         </div>
 
         <div v-show="editDescription">
-          <rich-editor ref="description" v-model="project.description"></rich-editor>
+          <rich-editor ref="description" v-model="project.description" @submit="updateDescription"></rich-editor>
           <v-btn icon @click="updateDescription">
             <v-icon>check_circle</v-icon>
           </v-btn>
