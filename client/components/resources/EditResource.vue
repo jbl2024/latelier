@@ -7,7 +7,7 @@
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
             <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" @keyup.enter="update()" required></v-text-field>
-            <v-textarea v-model="description" label="Description" @keyup.ctrl.enter="update()" required></v-textarea>
+            <v-textarea v-model="description" label="Description" @keydown.shift.enter="update()" required></v-textarea>
           </v-form>
         </v-card-text>
         <v-card-actions>

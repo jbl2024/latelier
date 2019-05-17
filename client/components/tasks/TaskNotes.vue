@@ -24,7 +24,7 @@
               </author-line>
               <div class="ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
               <template v-if="isNoteEdited(note._id)">
-                <rich-editor v-model="selectedNote.content" autofocus></rich-editor>
+                <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn flat icon @click="updateNote">
                   <v-icon>check_circle</v-icon>
                 </v-btn>
@@ -46,8 +46,8 @@
         <v-divider inset></v-divider>
       </template>
 
-    <div v-show="editNewNote">
-      <rich-editor v-model="note" ref="newNote"></rich-editor>
+    <div v-if="editNewNote">
+      <rich-editor v-model="note" ref="newNote" @submit="addNote" autofocus></rich-editor>
       <v-btn flat icon @click="addNote">
         <v-icon>check_circle</v-icon>
       </v-btn>
