@@ -3,13 +3,14 @@
     class="editor"
     v-model="content"
     ref="editor"
-    @keyup.ctrl.enter="addNote"
+    :editorOptions="editorSettings"
     :editorToolbar="customToolbar"
   ></vue-editor>
 </template>
 
 <script>
 import { VueEditor } from "vue2-editor";
+import _Quill from "quill";
 
 export default {
   components: {
@@ -37,7 +38,9 @@ export default {
   },
   mounted() {
     if (this.autofocus) {
-      this.focus();
+      this.$nextTick(() => {
+        this.focus();
+      })
     }
   },
   data() {
@@ -47,14 +50,29 @@ export default {
         ["bold", "italic", "underline", "strike"],
         [{ list: "ordered" }, { list: "bullet" }],
         ["code-block", "blockquote"]
-      ]
+      ],
+      editorSettings: {
+        modules: {
+          keyboard: {
+            bindings: {
+              tab: {
+                key: "enter",
+                shiftKey: true,
+                handler: () => {
+                  this.$emit("submit");
+                }
+              }
+            }
+          }
+        }
+      }
     };
   },
   methods: {
     focus() {
       this.$refs.editor.quill.focus();
     }
-  },
+  }
 };
 </script>
 
