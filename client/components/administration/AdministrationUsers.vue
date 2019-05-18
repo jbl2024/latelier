@@ -6,7 +6,7 @@
       max-width="640"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
-      <user-detail :user="user" v-if="user" @close="closeDetail()" @saved="findUsers()"></user-detail>
+      <user-detail @close="closeDetail()" @saved="findUsers()" ref="userDetail"></user-detail>
     </v-dialog>
     <new-user ref="newUser" @created="findUsers()"></new-user>
     <v-container>
@@ -101,7 +101,6 @@ export default {
       search: "",
       debouncedFilter: null,
       users: [],
-      user: null,
       showUserDetail: false,
       page: 1,
       pagination: {
@@ -171,7 +170,7 @@ export default {
     },
 
     openDetail(user) {
-      this.user = user;
+      this.$refs.userDetail.open(user);
       this.showUserDetail = true;
     },
 

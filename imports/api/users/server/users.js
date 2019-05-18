@@ -74,6 +74,14 @@ Meteor.methods({
         }
       )
       .fetch();
+    
+    data.map(user => {
+      user.features = {
+        emailVerified: user.emails[0].verified,
+        isActive: Permissions.isActive(user),
+        isAdmin: Permissions.isAdmin(user)
+      };
+    });
 
     return {
       rowsPerPage: perPage,
@@ -90,7 +98,6 @@ Meteor.methods({
     }
 
     const _id = user._id;
-    delete user._id;
     Meteor.users.update(
       {
         _id: _id
@@ -102,6 +109,31 @@ Meteor.methods({
         }
       }
     );
+
+    const features = user.features || {};
+    if (user._id !== Meteor.userId()) {
+      if (features.isActive && !Permissions.isActive(user)) {
+        Meteor.call("admin.activateUser", user._id);
+      } else if (!features.isActive && Permissions.isActive(user)) {
+        Meteor.call("admin.deactivateUser", user._id);
+      }
+      if (features.emailVerified && !user.emails[0].verified) {
+        Meteor.call("admin.confirmEmail", user._id);
+      } else if (!features.emailVerified && user.emails[0].verified) {
+        Meteor.call("admin.unconfirmEmail", user._id);
+      }
+      if (features.isAdmin && !Permissions.isAdmin(user)) {
+        Permissions.setAdmin(user._id);
+      } else if (!features.isAdmin && Permissions.isAdmin(user)) {
+        Permissions.removeAdmin(user._id);
+        Meteor.users.update(user._id, {
+          $set: {
+              "services.resume.loginTokens": []
+          }
+        });    
+      }
+    }
+    
   },
 
   "admin.deactivateUser"(userId) {

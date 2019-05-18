@@ -1,5 +1,5 @@
 <template>
-  <v-card class="user-detail">
+  <v-card class="user-detail" v-if="user">
     <confirm-dialog
       :active.sync="showConfirmDeleteUserDialog"
       title="Confirmer la suppression ?"
@@ -22,7 +22,7 @@
           <v-icon>more_vert</v-icon>
         </v-btn>
         <v-list>
-          <v-list-tile v-if="!isMe(user)" @click="showConfirmDeleteUserDialog = true">
+          <v-list-tile v-if="!isMe()" @click="showConfirmDeleteUserDialog = true">
             <v-list-tile-title>Supprimer</v-list-tile-title>
           </v-list-tile>
         </v-list>
@@ -31,11 +31,14 @@
     <v-card-text>
       <v-container grid-list-md>
         <v-layout wrap="">
-          <v-flex xs12 sm6 md6>
-            <v-switch v-if="!isMe(user)" :label="`${isActive ? 'Compte activé' : 'Compte déactivé'}`" v-model="isActive"></v-switch>
+          <v-flex xs12 sm4 md4>
+            <v-switch v-if="!isMe()" :label="`${user.features.isActive ? 'Compte activé' : 'Compte déactivé'}`" v-model="user.features.isActive"></v-switch>
           </v-flex>
-          <v-flex xs12 sm6 md6>
-            <v-switch v-if="!isMe(user)" :label="`${isConfirmed ? 'Mail confirmé' : 'Mail non confirmé'}`" v-model="isConfirmed"></v-switch>
+          <v-flex xs12 sm4 md4>
+            <v-switch v-if="!isMe()" :label="`${user.features.emailVerified ? 'Mail confirmé' : 'Mail non confirmé'}`" v-model="user.features.emailVerified"></v-switch>
+          </v-flex>
+          <v-flex xs12 sm4 md4>
+            <v-switch v-if="!isMe()" :label="$t('Admin rights')" v-model="user.features.isAdmin"></v-switch>
           </v-flex>
           <v-flex xs12>
             <v-divider></v-divider>
@@ -67,82 +70,44 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 
 export default {
-  props: {
-    user: {
-      type: Object,
-      dialog: Boolean
+  i18n: {
+    messages: {
+      en: {
+        "Admin rights": "Admin rights",
+        "User updated": "User updated",
+      },
+      fr: {
+        "Admin rights": "Droits admin",
+        "User updated": "Utilisateur mis à jour",
+      }
     }
   },
   data() {
     return {
+      user: null,
       showConfirmDeleteUserDialog: false,
-      isActive: false,
-      isConfirmed: false
     };
   },
-  watch: {
-    user: {
-      immediate: true,
-      handler(user) {
-        this.isActive = Permissions.isActive(user);
-        this.isConfirmed = user.emails[0].verified;
-      }
-    },
-    isActive(active, prevValue) {
-      if (active != prevValue) {
-        if (active) {
-          this.activate();
-        } else {
-          this.deactivate();
-        }
-      }
-    },
-    isConfirmed(confirmed, prevValue) {
-      if (confirmed != prevValue) {
-        if (confirmed) {
-          this.confirm();
-        } else {
-          this.unconfirm();
-        }
-      }
-    }
-  },
   methods: {
-    isMe(user) {
-      return user._id == Meteor.userId();
+    isMe() {
+      return this.user._id == Meteor.userId();
     },
-
+    open(user) {
+      this.user = user;
+    },
     close() {
       this.$emit("close");
     },
     save() {
-      Meteor.call("admin.updateUser", this.user);
-      this.$emit("saved");
-      this.$emit("close");
-    },
-
-    deactivate() {
-      Meteor.call("admin.deactivateUser", this.user._id);
-      this.$emit("saved");
-      this.$emit("close");
-    },
-
-    activate() {
-      Meteor.call("admin.activateUser", this.user._id);
-      this.$emit("saved");
-      this.$emit("close");
-    },
-
-    confirm() {
-      Meteor.call("admin.confirmEmail", this.user._id);
-      this.$emit("saved");
-      this.$emit("close");
-    },
-
-    unconfirm() {
-      Meteor.call("admin.unconfirmEmail", this.user._id);
-      this.$emit("saved");
-      this.$emit("close");
+      Meteor.call("admin.updateUser", this.user, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$store.dispatch("notify", this.$t('User updated'));
+        this.$emit("saved");
+        this.$emit("close");
+      });
     },
 
     onCancelDeleteUser() {},
