@@ -7,6 +7,7 @@
           class="text"
           type="number"
           prepend-icon="timer"
+          :readonly="loading"
           v-model="size"
         ></v-text-field>
       </v-flex>
@@ -16,6 +17,7 @@
           class="text"
           type="number"
           prepend-icon="timelapse"
+          :readonly="loading"
           v-model="spent"
         ></v-text-field>
       </v-flex>
@@ -31,6 +33,18 @@ import debounce from "lodash/debounce";
 
 export default {
   name: "task-estimations-in-detail",
+  i18n: {
+    messages: {
+      en: {
+        "Size": "Size",
+        "Spent": "Spent"
+      },
+      fr: {
+        "Size": "Durée",
+        "Spent": "Réalisé"
+      }
+    }
+  },
   props: {
     task: {
       type: Object
@@ -40,7 +54,7 @@ export default {
     task: {
       immediate: true,
       handler(task) {
-        if (task.estimation) {
+        if (task && task.estimation) {
           this.size = task.estimation.size;
           this.spent = task.estimation.spent;
         } else {
@@ -59,16 +73,25 @@ export default {
   data() {
     return {
       size: null,
-      spent: null
+      spent: null,
+      loading: false
     };
   },
   methods: {
     debounceSize: debounce(function () {
-      Meteor.call("tasks.updateSize", this.task._id, parseInt(this.size, 10));
+      if (!this.task._id) return;
+      this.loading = true;
+      Meteor.call("tasks.updateSize", this.task._id, parseInt(this.size, 10), (error, result) => {
+        this.loading = false;
+      });
     }, 500),
 
     debounceSpent: debounce(function () {
-      Meteor.call("tasks.updateSpent", this.task._id, parseInt(this.spent, 10));
+      if (!this.task._id) return;
+      this.loading = true;
+      Meteor.call("tasks.updateSpent", this.task._id, parseInt(this.spent, 10), (error, result) => {
+        this.loading = false;
+      });
     }, 500)
   }
 };
