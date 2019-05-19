@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { projectFilters } from "./projectFilters";
 import get from "lodash/get";
+import { Features } from '../api/features/features';
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -15,11 +16,16 @@ export const store = new Vuex.Store({
     showTaskDetail: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
+    projectFeatures: [],
     windowTitle: "",
     notifyMessage: ''
   },
   getters: {
-    // Compute derived state based on the current state. More like computed property.
+    hasProjectFeature: (state) => (feature) => {
+      return state.projectFeatures.find(feat => {
+        return feat == feature
+      }) ? true: false;
+    }  
   },
   mutations: {
     updateSelectedGroup(state, selectedGroup) {
@@ -33,6 +39,9 @@ export const store = new Vuex.Store({
     },
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
+    },
+    setProjectFeatures(state, features) {
+      state.projectFeatures = features;
     },
     updateCurrentOrganizationId(state, currentOrganizationId) {
       state.currentOrganizationId = currentOrganizationId;
@@ -67,7 +76,15 @@ export const store = new Vuex.Store({
     },
     setCurrentProjectId (context, projectId) {
       context.commit('projectFilters/clearSelectedLabels');
+      Meteor.call("features.load", {objectId: projectId}, (error, result) => {
+        context.commit("setProjectFeatures", result);
+      })
       context.commit('updateCurrentProjectId', projectId);
+    },
+    reloadProjectFeatures (context, projectId) {
+      Meteor.call("features.load", {objectId: projectId}, (error, result) => {
+        context.commit("setProjectFeatures", result);
+      })
     },
     setCurrentOrganizationId (context, organizationId) {
       context.commit('clearSelectedGroup');

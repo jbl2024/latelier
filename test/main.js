@@ -1,6 +1,7 @@
 import assert from "assert";
 import "/server/main"
 import "/test/api/users/users.test"
+import "/test/api/features/features.test"
 import "/test/api/bpmn/processDiagrams.test"
 
 describe("latelier", function () {

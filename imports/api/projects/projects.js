@@ -7,6 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
+import { Features } from "/imports/api/features/features";
 import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
 
 export const Projects = new Mongo.Collection("projects");
@@ -552,5 +553,31 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
     Meteor.users.update(userId, {
       $pull: { "profile.favoriteProjects": projectId }
     });
+  }
+});
+
+Projects.methods.addFeature = new ValidatedMethod({
+  name: "projects.addFeature",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    feature: { type: String }
+  }).validator(),
+  run({projectId, feature}) {
+    checkLoggedIn();
+    checkCanWriteProject(projectId);
+    Meteor.call("features.enable", {objectId: projectId, name: feature});
+  }
+});
+
+Projects.methods.removeFeature = new ValidatedMethod({
+  name: "projects.removeFeature",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    feature: { type: String }
+  }).validator(),
+  run({projectId, feature}) {
+    checkLoggedIn();
+    checkCanWriteProject(projectId);
+    Meteor.call("features.disable", {objectId: projectId, name: feature});
   }
 });
