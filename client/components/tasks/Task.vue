@@ -89,10 +89,18 @@
 
       <v-divider v-if="hasFooterData(task)"></v-divider>
       <div class="footer" v-if="hasFooterData(task)">
-        <div class="due-date">
+        <div class="footer-left">
           <template v-if="task.dueDate">
-            <v-icon class="alarm-icon">alarm_on</v-icon>
+            <v-icon small>alarm_on</v-icon>
             {{ formatDateTime(task.dueDate) }}
+          </template>
+          <template v-if="task.estimation && task.estimation.size">
+            <v-icon small>timer</v-icon>
+            {{ task.estimation.size }}
+          </template>
+          <template v-if="task.estimation && task.estimation.spent">
+            <v-icon small>timelapse</v-icon>
+            {{ task.estimation.spent }}
           </template>
         </div>
         <div class="avatar">
@@ -265,7 +273,7 @@ export default {
     },
 
     hasFooterData(task) {
-      return task.dueDate || task.assignedTo;
+      return task.dueDate || task.assignedTo || (task.estimation && (task.estimation.size || task.estimation.spent));
     },
 
     getColor(projectId) {
@@ -312,8 +320,13 @@ export default {
   align-items: center;
 }
 
-.due-date {
-  margin-left: 12px;
+.footer .v-icon {
+  margin-left: 8px;
+}
+
+.footer-left {
+  margin-left: 4px;
+  margin-top: 8px;
   color: #666;
   font-size: 11px;
 }
@@ -416,9 +429,6 @@ export default {
   padding-bottom: 8px;
 }
 
-.labels {
-}
-
 .avatar {
   font-size: 11px;
   margin-top: 5px;
@@ -428,10 +438,6 @@ export default {
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-.alarm-icon {
-  position: relative;
-  top: 4px;
-}
 
 .edit-button {
   overflow: hidden;

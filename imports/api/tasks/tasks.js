@@ -212,6 +212,28 @@ Meteor.methods({
     });
   },
 
+  "tasks.updateSize"(taskId, size) {
+    check(taskId, String);
+    check(size, Match.Maybe(Number));
+    Tasks.update({ _id: taskId }, { $set: { "estimation.size": size } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.updateDescription",
+      taskId: taskId
+    });
+  },
+
+  "tasks.updateSpent"(taskId, spent) {
+    check(taskId, String);
+    check(spent, Match.Maybe(Number));
+    Tasks.update({ _id: taskId }, { $set: { "estimation.spent": spent } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.updateDescription",
+      taskId: taskId
+    });
+  },
+
   "tasks.clone"(taskId) {
     check(taskId, String);
 

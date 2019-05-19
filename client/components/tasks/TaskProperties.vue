@@ -67,6 +67,10 @@
         </v-list-tile-action>
       </v-list-tile>
   </v-list>
+
+  <v-subheader>{{ $t('Estimations') }}</v-subheader>
+  <task-estimations-in-detail :task="task"></task-estimations-in-detail>
+
   <v-subheader>Pièces jointes</v-subheader>
   <task-attachments :task="task"></task-attachments>
 
