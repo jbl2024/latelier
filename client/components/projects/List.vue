@@ -208,6 +208,10 @@ export default {
     },
 
     getEstimations(tasks) {
+      if (!this.$store.getters.hasProjectFeature('estimation')) {
+        return;
+      }
+
       if (!tasks || tasks.length == 0) {
         return;
       }
