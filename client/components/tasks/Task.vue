@@ -94,13 +94,15 @@
             <v-icon small>alarm_on</v-icon>
             {{ formatDateTime(task.dueDate) }}
           </template>
-          <template v-if="task.estimation && task.estimation.size">
-            <v-icon small>timer</v-icon>
-            {{ task.estimation.size }}
-          </template>
-          <template v-if="task.estimation && task.estimation.spent">
-            <v-icon small>timelapse</v-icon>
-            {{ task.estimation.spent }}
+          <template v-if="this.isProjectEstimationFeatureEnabled()">
+            <template v-if="task.estimation && task.estimation.size">
+              <v-icon small>timer</v-icon>
+              {{ task.estimation.size }}
+            </template>
+            <template v-if="task.estimation && task.estimation.spent">
+              <v-icon small>timelapse</v-icon>
+              {{ task.estimation.spent }}
+            </template>
           </template>
         </div>
         <div class="avatar">
@@ -273,7 +275,18 @@ export default {
     },
 
     hasFooterData(task) {
-      return task.dueDate || task.assignedTo || (task.estimation && (task.estimation.size || task.estimation.spent));
+      return task.dueDate || task.assignedTo || this.hasEstimationData(task);
+    },
+
+    hasEstimationData(task) {
+      if (!this.isProjectEstimationFeatureEnabled()) {
+        return false;
+      }
+      return task.estimation && (task.estimation.size || task.estimation.spent);
+    },
+
+    isProjectEstimationFeatureEnabled() {
+      return this.$store.getters.hasProjectFeature('estimation');
     },
 
     getColor(projectId) {
