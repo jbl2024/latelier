@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
-    "test": "meteor test --once --driver-package meteortesting:mocha",
+    "test": "MOCHA_TIMEOUT=5000 meteor test --once --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },

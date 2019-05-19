@@ -68,8 +68,10 @@
       </v-list-tile>
   </v-list>
 
-  <v-subheader>{{ $t('Estimations') }}</v-subheader>
-  <task-estimations-in-detail :task="task"></task-estimations-in-detail>
+  <template v-if="isEstimationEnabled">
+    <v-subheader>{{ $t('Estimations') }}</v-subheader>
+    <task-estimations-in-detail :task="task"></task-estimations-in-detail>
+  </template>
 
   <v-subheader>Pièces jointes</v-subheader>
   <task-attachments :task="task"></task-attachments>
@@ -94,11 +96,19 @@ export default {
       type: Object
     }
   },
+  watch: {
+    task(task) {
+      if (task) {
+        this.loadEstimationFeature(task);
+      }
+    }
+  },
   data() {
     return {
       showChooseAssignedToDialog: false,
       showSelectDueDate: false,
       showSelectStartDate: false,
+      isEstimationEnabled: false
     };
   },
   methods: {
@@ -125,6 +135,12 @@ export default {
 
     canManageProject(task) {
       return Permissions.isAdmin(Meteor.userId(), task.projectId) || Permissions.isAdmin(Meteor.userId());
+    },
+
+    loadEstimationFeature(task) {
+      Meteor.call("features.isEnabled", {objectId: task.projectId, name: "estimation"}, (error, result) => {
+        this.isEstimationEnabled = result;
+      })
     }
   }
 };
