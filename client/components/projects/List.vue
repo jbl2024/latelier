@@ -9,7 +9,7 @@
               class="list-name flex1"
               @click="editList(list)"
               v-if="hiddenTaskCount  == 0"
-            >{{list.name}} ({{ taskCount }})</div>
+            >{{list.name}} ({{ taskCount }}) {{ getEstimations(tasksForEstimation) }}</div>
             <div
               class="list-name flex1"
               @click="editList(list)"
@@ -131,6 +131,9 @@ export default {
     taskCount() {
       return Tasks.find({ listId: this.list._id }).count();
     },
+    tasksForEstimation() {
+      return Tasks.find({listId: this.list._id, estimation: {$exists: true}});
+    },
     hiddenTaskCount() {
       return Tasks.find({ listId: this.list._id, completed: true }).count();
     }
@@ -202,6 +205,23 @@ export default {
       } else {
         return "background-color: #2D6293";
       }
+    },
+
+    getEstimations(tasks) {
+      if (!tasks || tasks.length == 0) {
+        return;
+      }
+      let size = 0;
+      let spent = 0;
+      tasks.map(task => {
+        if (task.estimation.size) {
+          size = size + task.estimation.size 
+        }
+        if (task.estimation.spent) {
+          spent = spent + task.estimation.spent;
+        }
+      })
+      return `(${size}/${spent})`
     }
   }
 };
