@@ -81,6 +81,11 @@ export const store = new Vuex.Store({
       })
       context.commit('updateCurrentProjectId', projectId);
     },
+    reloadProjectFeatures (context, projectId) {
+      Meteor.call("features.load", {objectId: projectId}, (error, result) => {
+        context.commit("setProjectFeatures", result);
+      })
+    },
     setCurrentOrganizationId (context, organizationId) {
       context.commit('clearSelectedGroup');
       context.commit('updateCurrentOrganizationId', organizationId);

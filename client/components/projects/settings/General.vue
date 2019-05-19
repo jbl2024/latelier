@@ -3,6 +3,7 @@
     <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
     <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate" :disableTime="true"></select-date>
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup" :organizationId="project.organizationId"></select-group>
+    <select-feature @select="onSelectFeature" :active.sync="showSelectFeature" :project-id="project._id"></select-feature>
     <select-organization @select="onSelectOrganization" :active.sync="showSelectOrganization"></select-organization>
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
 
@@ -28,6 +29,29 @@
         </div>
       </div>
     </div>
+
+    <v-subheader>{{ $t("Features") }}
+        <v-btn flat icon @click="showSelectFeature = true">
+          <v-icon>add</v-icon>
+        </v-btn>
+    </v-subheader>
+    <v-list class="elevation-1" v-if="projectFeatures.length > 0">
+      <template v-for="feature in projectFeatures" >
+        <v-list-tile :key="feature._id">
+          <v-list-tile-avatar>
+            <v-icon>folder</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{feature}}</v-list-tile-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+          <v-btn flat icon @click.stop="removeFeature(feature)">
+            <v-icon>delete</v-icon>
+          </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+      </template>
+    </v-list>    
 
     <v-subheader>{{ $t("State") }}</v-subheader>
     <div class="elevation-1 state">
@@ -183,6 +207,7 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import { mapState } from "vuex";
 
 export default {
   name: "project-settings-general",
@@ -195,6 +220,9 @@ export default {
       Meteor.call("projects.updateState", {projectId: this.project._id, state: state});
     }
   },
+  computed: {
+    ...mapState(["projectFeatures"])
+  },
   data() {
     return {
       showSelectStartDate: false,
@@ -202,6 +230,7 @@ export default {
       showSelectGroup: false,
       showSelectOrganization: false,
       showSelectColor: false,
+      showSelectFeature: false,
       editDescription: false,
       editEstimatedSize: false
     };
@@ -259,7 +288,8 @@ export default {
         "No description": "no description",
         "The project is public": "The project is public",
         "The project is private": "The project is private",
-        "State": "State"
+        "State": "State",
+        "Features": "Features",
       },
       fr: {
         "Description": "Description",
@@ -272,7 +302,8 @@ export default {
         "No description": "Aucune description",
         "The project is public": "Le projet est public",
         "The project is private": "Le projet est privé",
-        "State": "Etat"
+        "State": "Etat",
+        "Features": "Fonctionnalités",
       }
     }
   },  
@@ -291,6 +322,18 @@ export default {
 
     onSelectGroup(group) {
       Meteor.call("projectGroups.addProject", group._id, this.project._id);
+    },
+
+    onSelectFeature(feature) {
+      Meteor.call("projects.addFeature", {projectId: this.project._id, feature: feature}, (error, result) => {
+        this.$store.dispatch("reloadProjectFeatures", this.project._id);
+      });
+    },
+
+    removeFeature(feature) {
+      Meteor.call("projects.removeFeature", {projectId: this.project._id, feature: feature}, (error, result) => {
+        this.$store.dispatch("reloadProjectFeatures", this.project._id);
+      });
     },
 
     onSelectOrganization(organization) {
