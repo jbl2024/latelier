@@ -138,7 +138,7 @@ export default {
     },
 
     loadEstimationFeature(task) {
-      Meteor.call("features.isEnabled", {objectId: task.projectId, name: "estimation"}, (error, result) => {
+      Meteor.call("projects.hasFeature", {projectId: task.projectId, feature: "estimation"}, (error, result) => {
         this.isEstimationEnabled = result;
       })
     }

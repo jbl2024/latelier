@@ -9,7 +9,6 @@ import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
 import { Resources } from "../../resources/resources";
 import { Permissions } from "/imports/api/permissions/permissions"
-import { Features } from "/imports/api/features/features"
 
 
 Meteor.publish("projects", function projectsPublication(organizationId, name, groupId) {
@@ -174,13 +173,6 @@ publishComposite("project", function(projectId) {
             { _id: { $in: members } },
             { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } }
           );
-        }
-      },
-
-      {
-        // features
-        find(project) {
-          return Features.find({objectId: project._id});
         }
       }
     ]

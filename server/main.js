@@ -34,9 +34,6 @@ import '../imports/api/attachments/server/methods.js';
 import '../imports/api/bpmn/processDiagrams';
 import '../imports/api/bpmn/server/publications';
 
-import '../imports/api/features/features';
-import '../imports/api/features/server/methods';
-
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }

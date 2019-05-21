@@ -7,7 +7,6 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
-import { Features } from "/imports/api/features/features";
 import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
 
 export const Projects = new Mongo.Collection("projects");
@@ -556,28 +555,58 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
   }
 });
 
-Projects.methods.addFeature = new ValidatedMethod({
-  name: "projects.addFeature",
-  validate: new SimpleSchema({
-    projectId: { type: String },
-    feature: { type: String }
-  }).validator(),
-  run({projectId, feature}) {
-    checkLoggedIn();
-    checkCanWriteProject(projectId);
-    Meteor.call("features.enable", {objectId: projectId, name: feature});
-  }
-});
+if (Meteor.isServer) {
+  Projects.methods.addFeature = new ValidatedMethod({
+    name: "projects.addFeature",
+    validate: new SimpleSchema({
+      projectId: { type: String },
+      feature: { type: String }
+    }).validator(),
+    run({projectId, feature}) {
+      checkLoggedIn();
+      checkCanWriteProject(projectId);
+      Projects.update({_id: projectId}, { $addToSet: { features: feature } })
+    }
+  });
 
-Projects.methods.removeFeature = new ValidatedMethod({
-  name: "projects.removeFeature",
-  validate: new SimpleSchema({
-    projectId: { type: String },
-    feature: { type: String }
-  }).validator(),
-  run({projectId, feature}) {
-    checkLoggedIn();
-    checkCanWriteProject(projectId);
-    Meteor.call("features.disable", {objectId: projectId, name: feature});
-  }
-});
+  Projects.methods.removeFeature = new ValidatedMethod({
+    name: "projects.removeFeature",
+    validate: new SimpleSchema({
+      projectId: { type: String },
+      feature: { type: String }
+    }).validator(),
+    run({projectId, feature}) {
+      checkLoggedIn();
+      checkCanWriteProject(projectId);
+      Projects.update({ _id: projectId }, { $pull: { features: feature } });
+    }
+  });
+
+  Projects.methods.loadFeatures = new ValidatedMethod({
+    name: "projects.loadFeatures",
+    validate: new SimpleSchema({
+      projectId: { type: String },
+    }).validator(),
+    run({projectId}) {
+      checkLoggedIn();
+      checkCanReadProject(projectId);
+      const project = Projects.findOne({_id: projectId});
+      return project.features || [];
+    }
+  });
+  
+  Projects.methods.hasFeature = new ValidatedMethod({
+    name: "projects.hasFeature",
+    validate: new SimpleSchema({
+      projectId: { type: String },
+      feature: { type: String },
+    }).validator(),
+    run({projectId, feature}) {
+      checkLoggedIn();
+      checkCanReadProject(projectId);
+      const project = Projects.findOne({_id: projectId});
+      const features = project.features || [];
+      return features.find(feat => { return feat === feature});
+    }
+  });
+}

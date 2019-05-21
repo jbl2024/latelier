@@ -2,7 +2,6 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import { projectFilters } from "./projectFilters";
 import get from "lodash/get";
-import { Features } from '../api/features/features';
 Vue.use(Vuex)
 
 export const store = new Vuex.Store({
@@ -76,13 +75,13 @@ export const store = new Vuex.Store({
     },
     setCurrentProjectId (context, projectId) {
       context.commit('projectFilters/clearSelectedLabels');
-      Meteor.call("features.load", {objectId: projectId}, (error, result) => {
+      Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
         context.commit("setProjectFeatures", result);
       })
       context.commit('updateCurrentProjectId', projectId);
     },
     reloadProjectFeatures (context, projectId) {
-      Meteor.call("features.load", {objectId: projectId}, (error, result) => {
+      Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
         context.commit("setProjectFeatures", result);
       })
     },
