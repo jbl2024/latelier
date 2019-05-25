@@ -53,10 +53,12 @@ export default {
   i18n: {
     messages: {
       en: {
-        None: "None"
+        "Select a project": "Select a project",
+        "None": "None"
       },
       fr: {
-        None: "Aucun"
+        "Select a project": "Sélectionner un projet",
+        "None": "Aucun"
       }
     }
   },
