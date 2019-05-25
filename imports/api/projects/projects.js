@@ -259,7 +259,8 @@ Projects.methods.clone = new ValidatedMethod({
       startDate: project.startDate,
       members: project.members,
       endDate: project.endDate,
-      estimatedSize: project.estimatedSize
+      estimatedSize: project.estimatedSize,
+      color: project.color
     });
 
     var newProject = Projects.findOne(newProjectId);
@@ -289,17 +290,7 @@ Projects.methods.clone = new ValidatedMethod({
 
       var tasks = Tasks.find({ listId: list._id });
       tasks.map(task => {
-        Tasks.insert({
-          name: task.name,
-          order: task.order,
-          description: task.description,
-          notes: task.notes,
-          checklist: task.checklist,
-          projectId: newProjectId,
-          listId: newListId,
-          createdAt: new Date(),
-          createdBy: Meteor.userId()
-        });
+        Meteor.call("tasks.clone", task._id, task.name, newProjectId, newListId, true /* keepDates */);
       });
     });
     return newProjectId;

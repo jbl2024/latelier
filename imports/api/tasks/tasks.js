@@ -234,10 +234,15 @@ Meteor.methods({
     });
   },
 
-  "tasks.clone"(taskId) {
+  "tasks.clone"(taskId, name, projectId, listId, keepDates) {
     check(taskId, String);
+    check(name, Match.Maybe(String));
+    check(projectId, Match.Maybe(String))
+    check(listId, Match.Maybe(String))
+    check(keepDates, Match.Maybe(Boolean))
 
     checkLoggedIn();
+
     const userId = Meteor.userId();
     const now = new Date();
 
@@ -245,6 +250,11 @@ Meteor.methods({
     if (!task) {
       throw new Meteor.Error("not-found");
     }
+
+    if (!name) name = task.name;
+    if (!projectId) projectId = task.projectId;
+    if (!listId) listId = task.listId;
+
     const notes = (task.notes || []).map(note => {
       return {
         _id: Random.id(),
@@ -267,17 +277,17 @@ Meteor.methods({
     })
 
     const clonedTask = {
-      projectId: task.projectId,
-      listId: task.listId,
-      name: "Copie de " + task.name,
+      projectId: projectId,
+      listId: listId,
+      name: task.name,
       description: task.description,
       order: task.order - 1,
       completed: task.completed,
       assignedTo: task.assignedTo,
-      createdAt: now,
-      updatedAt: now,
-      createdBy: userId,
-      updatedBy: userId,
+      createdAt: !keepDates ? now : task.createdAt,
+      updatedAt: !keepDates ? now : task.updatedAt,
+      createdBy: !keepDates ? userId : task.createdBy,
+      updatedBy: !keepDates ? userId : task.updatedBy,
       labels: task.labels,
       notes: notes,
       checklist: checklist,

@@ -283,6 +283,8 @@ export default {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;
+              } else {
+                this.$store.dispatch("notify", this.$t('Project cloned successfully'));
               }
             }
           );

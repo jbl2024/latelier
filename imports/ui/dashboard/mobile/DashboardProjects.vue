@@ -466,7 +466,13 @@ export default {
 
     onConfirmCloneProject() {
       this.showConfirmCloneDialog = false;
-      Meteor.call("projects.clone", { projectId: this.projectId });
+      Meteor.call("projects.clone", { projectId: this.projectId }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+        } else {
+          this.$store.dispatch("notify", this.$t('Project cloned successfully'));
+        }
+      });
     },
 
     onCancelCloneProject() {
