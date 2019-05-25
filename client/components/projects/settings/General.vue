@@ -188,7 +188,7 @@
           <v-icon>cloud_upload</v-icon>
         </v-btn>
     </v-subheader>
-    <labels project-id="project._id" mode="settings"></labels>
+    <labels :project-id="project._id" mode="settings"></labels>
 
     <v-subheader>{{ $t("Organization") }}</v-subheader>
     <v-list class="elevation-1" v-if="$subReady.organizations">
