@@ -70,8 +70,8 @@ Projects.methods.create = new ValidatedMethod({
     state: { type: String }
   }).validator(),
   run({ organizationId, name, projectType, projectGroupId, state }) {
-    const currentUserId = Meteor.userId();
     checkLoggedIn();
+    const currentUserId = Meteor.userId();
 
     const projectId = Projects.insert({
       organizationId: organizationId,
@@ -257,6 +257,7 @@ Projects.methods.clone = new ValidatedMethod({
       createdBy: Meteor.userId(),
       state: project.state,
       startDate: project.startDate,
+      members: project.members,
       endDate: project.endDate,
       estimatedSize: project.estimatedSize
     });
@@ -301,6 +302,7 @@ Projects.methods.clone = new ValidatedMethod({
         });
       });
     });
+    return newProjectId;
   }
 });
 
