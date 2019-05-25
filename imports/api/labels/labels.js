@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Tasks } from "/imports/api/tasks/tasks";
+import { checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
 
 export const Labels = new Mongo.Collection('labels');
 if (Meteor.isServer) {
@@ -15,6 +16,7 @@ Meteor.methods({
     check(projectId, String);
     check(name, String);
     check(color, String);
+    checkCanWriteProject(projectId);
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
@@ -74,5 +76,19 @@ Meteor.methods({
 
     Labels.update({_id: labelId}, {$set: {color: color, name: name}});
   },
+
+  'labels.import'(from, to) {
+    check(from, String);
+    check(to, String);
+    checkCanReadProject(from);
+    checkCanWriteProject(to);
+
+    const labels = Labels.find({projectId: from}) || [];
+    labels.map(label => {
+      if (!Labels.findOne({projectId: to, name: label.name})) {
+        Meteor.call("labels.create", to, label.name, label.color);
+      }
+    })
+  }
 
 });
