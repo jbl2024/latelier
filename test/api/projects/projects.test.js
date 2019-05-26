@@ -3,7 +3,9 @@ import { expect } from 'chai';
 
 import { initData } from "/test/fixtures/fixtures";
 import { Projects } from "/imports/api/projects/projects";
+import { Labels } from "/imports/api/labels/labels";
 import { ProjectStates } from "/imports/api/projects/projects";
+import { Permissions } from "/imports/api/permissions/permissions"
 import { createStubs, restoreStubs } from "/test/stubs"
 
 if (Meteor.isServer) {
@@ -36,6 +38,61 @@ if (Meteor.isServer) {
       expect(projectB_id).to.not.be.null;
       const projectB = Projects.findOne(projectB_id);
       expect(projectB.members).to.be.an('array').that.include(userId);
+    });
+
+    it("delete forever should remove associated objects", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = {userId: userId};
+      const projectIds = []
+      const labelIds = []
+      for (let i = 0; i < 10; i++) {
+        const projectId = Projects.methods.create._execute(context, {
+          name: "project",
+          projectType: "kanban",
+          state: ProjectStates.PRODUCTION
+        });
+        projectIds.push(projectId);
+        const labelId = Labels.methods.create._execute(context, {
+          projectId: projectId,
+          name: "a label",
+          color: "a color"
+        });
+        labelIds.push(labelId);
+        expect(projectId).to.not.be.null;
+      }
+
+      expect(projectIds).to.have.lengthOf(10);
+      expect(labelIds).to.have.lengthOf(10);
+
+      const userData = {
+        createdAt: new Date(),
+        email: "foo@bar.com",
+      };
+      const otherUserId = Accounts.createUser(userData);
+      Permissions.methods.setAdmin._execute(context, {userId: otherUserId, scope: projectIds[0]});
+      Permissions.methods.setAdmin._execute(context, {userId: otherUserId, scope: projectIds[1]});
+      Permissions.methods.setAdmin._execute(context, {userId: otherUserId, scope: projectIds[2]});
+
+      expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.true;
+      expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
+      expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
+      expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
+      expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
+
+      expect(Labels.findOne({projectId: projectIds[0]})).not.to.be.undefined;
+
+      Projects.methods.deleteForever._execute(context, {
+        projectId: projectIds[0]
+      });
+
+      expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
+      expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
+      expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
+      expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
+      expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
+
+      expect(Labels.findOne({projectId: projectIds[0]})).to.be.undefined;
+
     });
   });
 }

@@ -137,12 +137,23 @@ Projects.methods.deleteForever = new ValidatedMethod({
 
     Tasks.remove({ projectId: projectId });
     Lists.remove({ projectId: projectId });
+    Labels.remove({ projectId: projectId });
     Attachments.remove({ "meta.projectId": projectId });
     Meteor.users.update(
       {},
       { $pull: { "profile.favoriteProjects": projectId } },
       { multi: true }
     );
+    const projectGroups = ProjectGroups.find({ projects: projectId });
+    projectGroups.map(projectGroup => {
+      Meteor.call("projectGroups.removeProjet", projectGroup._id, projectId);
+    });
+
+    const query = {};
+    query[`roles.${projectId}`] = {$exists: true};
+    const update = {$unset: {}};
+    update.$unset['roles.'+projectId] = 1;
+    Meteor.users.update(query, update, {multi: true});
     Projects.remove(projectId);
   }
 });
