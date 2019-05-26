@@ -136,13 +136,6 @@ export default {
       }
       this.startUpdateName();
     });
-    this.$events.listen("task-edit-name-after-creation", task => {
-      if (task._id !== this.task._id) {
-        return;
-      }
-      this.justCreated = true;
-      this.startUpdateName();
-    });
     this.$events.listen("task-cancel-edit-name", task => {
       if (task._id !== this.task._id) {
         this.cancelUpdateName();
