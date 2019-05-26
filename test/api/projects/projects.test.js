@@ -73,6 +73,12 @@ if (Meteor.isServer) {
       Permissions.methods.setAdmin._execute(context, {userId: otherUserId, scope: projectIds[1]});
       Permissions.methods.setAdmin._execute(context, {userId: otherUserId, scope: projectIds[2]});
 
+      Projects.methods.addToUserFavorites._execute(context, {
+        projectId: projectIds[0],
+        userId: Meteor.userId()
+      });
+      
+      expect(Meteor.users.findOne({_id: Meteor.userId()}).profile.favoriteProjects).to.be.an('array').that.include(projectIds[0]);
       expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.true;
       expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
       expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
@@ -85,6 +91,7 @@ if (Meteor.isServer) {
         projectId: projectIds[0]
       });
 
+      expect(Meteor.users.findOne({_id: Meteor.userId()}).profile.favoriteProjects).to.be.an('array').that.not.include(projectIds[0]);
       expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
       expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
       expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
