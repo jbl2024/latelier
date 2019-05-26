@@ -38,6 +38,38 @@
         </div>
       </template>
 
+      <v-list class="pt-0" v-if="mode === 'settings'">
+        <v-list-tile
+          @click="openMenu(label._id)"
+          v-for="label in labels"
+          :key="label._id"
+        >
+          <v-list-tile-action>
+            <v-icon :style="getColor(label)">label</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
+          </v-list-tile-content>
+
+          <v-list-tile-action>
+            <v-btn icon ripple @click.stop="openMenu(label._id)">
+              <v-icon>settings</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+
+        <v-list-tile @click="$refs.newLabel.open()">
+          <v-list-tile-action>
+            <v-icon>add</v-icon>
+          </v-list-tile-action>
+
+          <v-list-tile-content>
+            <v-list-tile-title>Créer...</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+
       <v-list dense class="pt-0" v-if="mode === 'menu'">
         <v-subheader>Labels</v-subheader>
         <v-list-tile
@@ -123,7 +155,7 @@ export default {
   },
   methods: {
     removeLabel(label) {
-      Meteor.call("labels.remove", label._id);
+      Meteor.call("labels.remove", {labelId: label._id});
     },
 
     openMenu(id) {

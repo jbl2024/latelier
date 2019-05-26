@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Tasks } from "/imports/api/tasks/tasks";
+import { checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
 
 export const Labels = new Mongo.Collection('labels');
 if (Meteor.isServer) {
@@ -10,69 +11,100 @@ if (Meteor.isServer) {
   });
 }
 
-Meteor.methods({
-  'labels.create'(projectId, name, color) {
-    check(projectId, String);
-    check(name, String);
-    check(color, String);
+Labels.methods = {}
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error('not-authorized');
-    }
+Labels.methods.create = new ValidatedMethod({
+  name: "labels.create",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    name: { type: String },
+    color: { type: String },
+  }).validator(),
+  run({ projectId, name, color}) {
+    checkLoggedIn();
+    checkCanWriteProject(projectId);
 
-    var labelId = Labels.insert({
+    const labelId = Labels.insert({
       projectId: projectId,
       name: name,
       color: color,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
+    return labelId;   
+  }
+});
 
-    return labelId;
-  },
 
-  'labels.remove'(labelId) {
-    check(labelId, String);
-
-    // See https://github.com/matb33/meteor-collection-hooks#direct-access-circumventing-hooks
-    // Avoid calling hooks to prevent polluting task last modification date
+Labels.methods.remove = new ValidatedMethod({
+  name: "labels.remove",
+  validate: new SimpleSchema({
+    labelId: { type: String }
+  }).validator(),
+  run({ labelId}) {
+    checkLoggedIn();
+    const label = Labels.findOne({_id: labelId});
+    if (!label) {
+      throw new Meteor.Error("not-found");      
+    }
+    checkCanWriteProject(label.projectId);
     Tasks.direct.update({labels: labelId}, { $pull: { labels: labelId } }, {multi: true});
     Labels.remove(labelId);
-  },
+  }
+});
 
-  'labels.updateName'(labelId, name) {
-    check(labelId, String);
-    check(name, String);
-    if (name.length == 0) {
-      throw new Meteor.Error('invalid-name');
+
+Labels.methods.updateColor = new ValidatedMethod({
+  name: "labels.updateColor",
+  validate: new SimpleSchema({
+    labelId: { type: String },
+    color: { type: String }
+  }).validator(),
+  run({ labelId, color}) {
+    checkLoggedIn();
+    const label = Labels.findOne({_id: labelId});
+    if (!label) {
+      throw new Meteor.Error("not-found");      
     }
-
-    Labels.update({_id: labelId}, {$set: {name: name}});
-  },
-
-  'labels.updateColor'(labelId, color) {
-    check(labelId, String);
-    check(color, String);
-    if (color.length == 0) {
-      throw new Meteor.Error('invalid-color');
-    }
-
+    checkCanWriteProject(label.projectId);
     Labels.update({_id: labelId}, {$set: {color: color}});
-  },
+  }
+});
 
-  'labels.updateNameAndColor'(labelId, name, color) {
-    check(labelId, String);
-    check(name, String);
-    check(color, String);
-    if (name.length == 0) {
-      throw new Meteor.Error('invalid-name');
+Labels.methods.updateNameAndColor = new ValidatedMethod({
+  name: "labels.updateNameAndColor",
+  validate: new SimpleSchema({
+    labelId: { type: String },
+    name: { type: String },
+    color: { type: String }
+  }).validator(),
+  run({ labelId, name, color}) {
+    checkLoggedIn();
+    const label = Labels.findOne({_id: labelId});
+    if (!label) {
+      throw new Meteor.Error("not-found");      
     }
-    if (color.length == 0) {
-      throw new Meteor.Error('invalid-color');
-    }
-
+    checkCanWriteProject(label.projectId);
     Labels.update({_id: labelId}, {$set: {color: color, name: name}});
-  },
+  }
+});
 
+Labels.methods.import = new ValidatedMethod({
+  name: "labels.import",
+  validate: new SimpleSchema({
+    from: { type: String },
+    to: { type: String },
+  }).validator(),
+  run({ from, to}) {
+    checkLoggedIn();
+    checkCanReadProject(from);
+    checkCanWriteProject(to);
+
+    const labels = Labels.find({projectId: from}) || [];
+    labels.map(label => {
+      if (!Labels.findOne({projectId: to, name: label.name})) {
+        Meteor.call("labels.create", {projectId: to, name: label.name, color: label.color});
+      }
+    })
+  }
 });

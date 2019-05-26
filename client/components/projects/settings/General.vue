@@ -5,6 +5,7 @@
     <select-group @select="onSelectGroup" :active.sync="showSelectGroup" :organizationId="project.organizationId"></select-group>
     <select-feature @select="onSelectFeature" :active.sync="showSelectFeature" :project-id="project._id"></select-feature>
     <select-organization @select="onSelectOrganization" :active.sync="showSelectOrganization"></select-organization>
+    <select-project @select="importLabels" :active.sync="showSelectProject"></select-project>
     <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
 
     <v-subheader>{{ $t("Description")}}</v-subheader>
@@ -182,6 +183,13 @@
       </template>
     </v-list>
 
+    <v-subheader>{{ $t("Labels") }}
+        <v-btn flat icon @click="showSelectProject = true">
+          <v-icon>cloud_upload</v-icon>
+        </v-btn>
+    </v-subheader>
+    <labels :project-id="project._id" mode="settings"></labels>
+
     <v-subheader>{{ $t("Organization") }}</v-subheader>
     <v-list class="elevation-1" v-if="$subReady.organizations">
       <v-list-tile @click="showSelectOrganization = true">
@@ -229,6 +237,7 @@ export default {
       showSelectEndDate: false,
       showSelectGroup: false,
       showSelectOrganization: false,
+      showSelectProject: false,
       showSelectColor: false,
       showSelectFeature: false,
       editDescription: false,
@@ -364,6 +373,10 @@ export default {
           });
         }
       );
+    },
+
+    importLabels(project) {
+      Meteor.call("labels.import", {from: project._id, to: this.project._id});
     },
 
     startEditDescription() {
