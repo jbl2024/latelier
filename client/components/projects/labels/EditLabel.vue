@@ -66,9 +66,11 @@ export default {
     updateNameAndColor() {
       Meteor.call(
         "labels.updateNameAndColor",
-        this.label._id,
-        this.label.name,
-        this.label.color,
+        {
+          labelId: this.label._id,
+          name: this.label.name,
+          color: this.label.color
+        },
         (error, result) => {
           if (error) {
             console.log(error);
