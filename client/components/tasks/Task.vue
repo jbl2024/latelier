@@ -168,8 +168,7 @@ export default {
       savedName: "",
       showEditButton: false,
       completed: false,
-      showConfirmDeleteDialog: false,
-      justCreated: false
+      showConfirmDeleteDialog: false
     };
   },
   watch: {
@@ -211,12 +210,8 @@ export default {
         (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
-            if (this.justCreated) {
-              Meteor.call("tasks.remove", this.task._id);
-            }
             return;
           }
-          this.justCreated = false;
         }
       );
     },
@@ -226,9 +221,6 @@ export default {
         e.stopPropagation();
       }
       this.editName = false;
-      if (this.justCreated) {
-        Meteor.call("tasks.remove", this.task._id);
-      }
     },
 
     selectTask(e) {
