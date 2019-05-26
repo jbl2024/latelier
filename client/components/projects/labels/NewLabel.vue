@@ -51,7 +51,7 @@ export default {
       this.showDialog = true;
     },
     create () {
-      Meteor.call('labels.create', this.projectId, this.name, this.color, '#000', (error, result) => { 
+      Meteor.call('labels.create', {projectId: this.projectId, name: this.name, color: this.color}, (error, result) => { 
         if (error) {
           console.log(error)
           return;

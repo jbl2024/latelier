@@ -275,7 +275,7 @@ Projects.methods.clone = new ValidatedMethod({
 
     var labels = Labels.find({ projectId: projectId });
     labels.map(label => {
-      Meteor.call("labels.create", newProjectId, label.name, label.color);
+      Meteor.call("labels.create", {projectId: newProjectId, name: label.name, color: label.color});
     });
 
     var lists = Lists.find({ projectId: projectId });

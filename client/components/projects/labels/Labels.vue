@@ -155,7 +155,7 @@ export default {
   },
   methods: {
     removeLabel(label) {
-      Meteor.call("labels.remove", label._id);
+      Meteor.call("labels.remove", {labelId: label._id});
     },
 
     openMenu(id) {

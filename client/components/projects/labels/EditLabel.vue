@@ -81,7 +81,7 @@ export default {
 
     remove() {
       if (confirm("Voulez-vous supprimer définitivement ce label ?")) {
-        Meteor.call("labels.remove", this.label._id, (error, result) => {
+        Meteor.call("labels.remove", {labelId: this.label._id}, (error, result) => {
           if (error) {
             console.log(error);
             return;

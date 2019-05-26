@@ -376,7 +376,7 @@ export default {
     },
 
     importLabels(project) {
-      Meteor.call("labels.import", project._id, this.project._id);
+      Meteor.call("labels.import", {from: project._id, to: this.project._id});
     },
 
     startEditDescription() {
