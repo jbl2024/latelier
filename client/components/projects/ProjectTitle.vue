@@ -1,5 +1,5 @@
 <template>
-  <div class="project-title">
+  <div class="project-title" v-if="project">
     <v-toolbar-title class="align-left" v-show="!editProjectName">
       <div>
         <slot></slot>
@@ -7,7 +7,16 @@
           flat
           icon
           color="white"
-          v-if="project"
+          v-if="showKanbanLink"
+          :to="{ name: 'project', params: { projectId: project._id } }"
+        >
+          <v-icon>arrow_back</v-icon>
+        </v-btn>
+        <v-btn
+          flat
+          icon
+          color="white"
+          v-if="!showKanbanLink"
           :to="{ name: 'dashboard-page' }"
         >
           <v-icon>home</v-icon>
@@ -16,7 +25,7 @@
           flat
           icon
           color="white"
-          v-if="project && project.organizationId"
+          v-if="!showKanbanLink && project.organizationId"
           :to="{ name: 'dashboard-organization-page', params: {organizationId: project.organizationId} }"
         >
           <v-icon>dashboard</v-icon>
@@ -63,12 +72,6 @@ import { Projects } from "/imports/api/projects/projects.js";
 import debounce from "lodash/debounce";
 
 export default {
-  props: {
-    projectId: {
-      type: String,
-      default: 0
-    }
-  },
   created() {
     this.debouncedFilter = debounce(val => {
       this.$events.fire("filter-tasks", val);
@@ -83,6 +86,34 @@ export default {
   beforeDestroy() {
     this.$events.off('reset-filter-tasks');
   },
+  watch: {
+    '$route': {
+      deep: true,
+      handler: function (refreshPage) {
+        const page = this.$router.currentRoute.name;
+        if (page !== 'project' && page !== 'project-task') {
+          this.showKanbanLink = true;
+        } else {
+          this.showKanbanLink = false;
+        }
+      }
+    }
+  },
+  props: {
+    projectId: {
+      type: String,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      savedProjectName: "",
+      editProjectName: false,
+      savedValue: "",
+      debouncedFilter: "",
+      showKanbanLink: false
+    }
+  },
   meteor: {
     project: {
       params() {
@@ -95,14 +126,6 @@ export default {
         return Projects.findOne({ _id: id }) || {};
       }
     }
-  },
-  data() {
-    return {
-      savedProjectName: "",
-      editProjectName: false,
-      savedValue: "",
-      debouncedFilter: ""
-    };
   },
   methods: {
     startUpdateProjectName() {

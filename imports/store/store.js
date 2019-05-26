@@ -21,7 +21,7 @@ export const store = new Vuex.Store({
   },
   getters: {
     hasProjectFeature: (state) => (feature) => {
-      return state.projectFeatures.find(feat => {
+      return state.projectFeatures && state.projectFeatures.find(feat => {
         return feat == feature
       }) ? true: false;
     }  
