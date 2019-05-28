@@ -18,12 +18,8 @@
           
         </div>
         <div class="right" v-show="showButtons === item._id">
-          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">
-            <v-icon>list</v-icon>
-          </v-btn>
-          <v-btn icon @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}">
-            <v-icon s-icon>delete</v-icon>
-          </v-btn>
+          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">list</v-icon>
+          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}" s-icon>delete</v-icon>
         </div>
         <div class="clear"></div>
       </div>
@@ -177,8 +173,9 @@ export default {
 }
 
 .right {
-  position: absolute;
-  right: 0;
+  position: relative;
+  right: 8px;
+  top: 12px;
   white-space: nowrap;
   overflow: hidden;
   box-sizing: border-box;
@@ -239,7 +236,7 @@ pre {
 }
 .pretty {
     white-space: normal !important;
-    max-width: 176px;
+    max-width: 210px;
 }
 
 @media (max-width: 600px) {
