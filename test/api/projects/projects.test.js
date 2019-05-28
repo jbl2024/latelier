@@ -40,6 +40,31 @@ if (Meteor.isServer) {
       expect(projectB.members).to.be.an('array').that.include(userId);
     });
 
+    it("clone project keep features", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = {userId: userId};
+      const projectA_id = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      })
+      expect(projectA_id).to.not.be.null;
+
+      Projects.methods.addFeature._execute(context, {
+        projectId: projectA_id,
+        feature: "estimation"
+      });
+      const projectA = Projects.findOne(projectA_id);
+      expect(projectA.features).to.be.an('array').that.include("estimation");
+
+      const projectB_id = Projects.methods.clone._execute(context, {
+        projectId: projectA_id
+      })
+      expect(projectB_id).to.not.be.null;
+      const projectB = Projects.findOne(projectB_id);
+      expect(projectB.features).to.be.an('array').that.include("estimation");
+    });
+
     it("delete forever should remove associated objects", async function() {
       const userId = Meteor.users.findOne()._id;
       const context = {userId: userId};

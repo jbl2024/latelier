@@ -271,7 +271,8 @@ Projects.methods.clone = new ValidatedMethod({
       members: project.members,
       endDate: project.endDate,
       estimatedSize: project.estimatedSize,
-      color: project.color
+      color: project.color,
+      features: project.features
     });
 
     var newProject = Projects.findOne(newProjectId);
