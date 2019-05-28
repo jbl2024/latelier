@@ -237,5 +237,28 @@ pre {
 .pretty .state label:before {
   background-color: white;
 }
+.pretty {
+    white-space: normal !important;
+    max-width: 176px;
+}
+
+@media (max-width: 600px) {
+  .pretty {
+    max-width: 260px;
+  }
+}
+
+
+.pretty .state label{
+      text-indent: 0;
+      padding-left: 2rem;
+}
+
+.pretty .state label:after, 
+.pretty .state label:before{
+     top: 0;
+}
+
+
 
 </style>
