@@ -1,6 +1,8 @@
 <template>
   <div class>
     <v-app>
+      <select-background :active.sync="showSelectBackgroundDialog"></select-background>
+
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
         <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
         <v-toolbar-title
@@ -20,9 +22,14 @@
         <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
         <v-avatar dark>
           <v-menu offset-y>
-            <v-btn icon slot="activator">
-              <v-icon>account_circle</v-icon>
-            </v-btn>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>account_circle</v-icon>
+              </v-btn>
+            </template>            
             <login-menu></login-menu>
           </v-menu>
         </v-avatar>
@@ -111,6 +118,14 @@ export default {
       },
       set(value) {
         this.$store.dispatch("showTaskDetail", value);
+      }
+    },
+    showSelectBackgroundDialog: {
+      get() {
+        return this.$store.state.showSelectBackgroundDialog;
+      },
+      set(value) {
+        this.$store.dispatch("showSelectBackgroundDialog", value);
       }
     }
   },

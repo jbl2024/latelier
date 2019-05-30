@@ -1,6 +1,5 @@
 <template>
   <div class="login-menu">
-    <select-background :active.sync="showSelectBackgroundDialog"></select-background>
 
     <template v-if="!isConnected">
       <v-list dense class="pt-0">
@@ -53,7 +52,7 @@
         </v-list-tile>
       </v-list>
       <v-list dense class="pt-0">
-        <v-list-tile @click="showSelectBackgroundDialog = true">
+        <v-list-tile @click="$store.dispatch('showSelectBackgroundDialog', true)">
           <v-list-tile-action>
             <v-icon>photo_library</v-icon>
           </v-list-tile-action>
@@ -104,7 +103,6 @@ export default {
   }, 
   data() {
     return {
-      showSelectBackgroundDialog: false
     };
   },
   meteor: {

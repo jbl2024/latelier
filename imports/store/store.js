@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
   state: {
     selectedGroup: {},
     selectedTask: null,
+    showSelectBackgroundDialog: false,
     showCategories: false,
     showTaskDetail: false,
     currentOrganizationId: 0,
@@ -32,6 +33,9 @@ export const store = new Vuex.Store({
     },
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
+    },
+    updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
+      state.showSelectBackgroundDialog = showSelectBackgroundDialog
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -72,6 +76,9 @@ export const store = new Vuex.Store({
     },
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
+    },
+    showSelectBackgroundDialog (context, showSelectBackgroundDialog) {
+      context.commit('updateShowSelectBackgroundDialog', showSelectBackgroundDialog);
     },
     setCurrentProjectId (context, projectId) {
       context.commit('projectFilters/clearSelectedLabels');
