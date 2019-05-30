@@ -236,7 +236,7 @@ pre {
 }
 .pretty {
     white-space: normal !important;
-    max-width: 210px;
+    max-width: 200px;
 }
 
 @media (max-width: 600px) {
