@@ -27,6 +27,13 @@ if (Meteor.isServer) {
       } else if (callbacks[event.type]) {
         callbacks[event.type](event);
       }
+    },
+
+    "events.removeProject"(projectId) {
+      this.unblock();
+
+      check(projectId, String);
+      Events.remove({"properties.task.project._id": projectId});
     }
   });
 }

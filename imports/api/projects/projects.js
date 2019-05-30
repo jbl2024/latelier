@@ -145,6 +145,7 @@ Projects.methods.deleteForever = new ValidatedMethod({
     HealthReports.remove({ projectId: projectId });
     Canvas.remove({ projectId: projectId });
     Attachments.remove({ "meta.projectId": projectId });
+    Meteor.call("events.removeProject", projectId);
     Meteor.users.update(
       {},
       { $pull: { "profile.favoriteProjects": projectId } },
