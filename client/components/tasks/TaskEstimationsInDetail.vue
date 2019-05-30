@@ -55,8 +55,8 @@ export default {
       immediate: true,
       handler(task) {
         if (task && task.estimation) {
-          this.size = task.estimation.size;
-          this.spent = task.estimation.spent;
+          if (this.size !== task.estimation.size) this.size = task.estimation.size;
+          if (this.spent !== task.estimation.spent) this.spent = task.estimation.spent;
         } else {
           this.size = null;
           this.spent = null;
@@ -80,6 +80,8 @@ export default {
   methods: {
     debounceSize: debounce(function () {
       if (!this.task._id) return;
+      if (this.task.estimation && this.task.estimation.size && this.task.estimation.size === parseInt(this.size, 10)) return;
+      
       this.loading = true;
       Meteor.call("tasks.updateSize", this.task._id, parseInt(this.size, 10), (error, result) => {
         this.loading = false;
@@ -88,6 +90,8 @@ export default {
 
     debounceSpent: debounce(function () {
       if (!this.task._id) return;
+      if (this.task.estimation && this.task.estimation.spent && this.task.estimation.spent === parseInt(this.spent, 10)) return;
+
       this.loading = true;
       Meteor.call("tasks.updateSpent", this.task._id, parseInt(this.spent, 10), (error, result) => {
         this.loading = false;

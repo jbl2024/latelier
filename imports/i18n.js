@@ -85,6 +85,10 @@ const messages = {
         removeNote: "Suppression d'une note",
         updateNote: "Modification d'une note",
         assignTo: "Assignée",
+        updateEstimation: {
+          size: "Modification de l'estimation",
+          spent: "Modification de la durée passée"
+        }
       },
     },
     projects: {
@@ -193,6 +197,10 @@ const messages = {
         removeNote: "Remove note",
         updateNote: "Update note",
         assignTo: "Assigned to",
+        updateEstimation: {
+          size: "Update estimation size",
+          spent: "Update spent time on task"
+        }
       }
     },
     projects: {
