@@ -5,6 +5,9 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
+import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams.js";
+import { HealthReports } from "/imports/api/healthReports/healthReports.js";
+import { Canvas } from "/imports/api/canvas/canvas.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
 import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
@@ -138,6 +141,9 @@ Projects.methods.deleteForever = new ValidatedMethod({
     Tasks.remove({ projectId: projectId });
     Lists.remove({ projectId: projectId });
     Labels.remove({ projectId: projectId });
+    ProcessDiagrams.remove({ projectId: projectId });
+    HealthReports.remove({ projectId: projectId });
+    Canvas.remove({ projectId: projectId });
     Attachments.remove({ "meta.projectId": projectId });
     Meteor.users.update(
       {},
