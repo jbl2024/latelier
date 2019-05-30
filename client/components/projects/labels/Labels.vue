@@ -23,7 +23,7 @@
                   <v-icon :style="getColor(data.item)">label</v-icon>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                  <v-list-tile-title>{{ data.item.name }}</v-list-tile-title>
+                  <v-list-tile-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-tile-title>
                 </v-list-tile-content>
               </template>
             </template>
@@ -192,6 +192,13 @@ export default {
 
     getItemValue(item) {
       return item;
+    },
+
+    isSelected(item) {
+      const isSelected = this.selectedLabels.some(aLabel => {
+        return aLabel._id === item._id;
+      });
+      return isSelected;
     }
   }
 };
@@ -215,5 +222,9 @@ export default {
 }
 .auto-complete {
   max-width: 320px;
+}
+
+.selected {
+  font-size: bold;
 }
 </style>
