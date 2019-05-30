@@ -218,7 +218,7 @@ Meteor.methods({
     Tasks.update({ _id: taskId }, { $set: { "estimation.size": size } });
 
     Meteor.call("tasks.track", {
-      type: "tasks.updateDescription",
+      type: "tasks.updateEstimation.size",
       taskId: taskId
     });
   },
@@ -229,7 +229,7 @@ Meteor.methods({
     Tasks.update({ _id: taskId }, { $set: { "estimation.spent": spent } });
 
     Meteor.call("tasks.track", {
-      type: "tasks.updateDescription",
+      type: "tasks.updateEstimation.spent",
       taskId: taskId
     });
   },
