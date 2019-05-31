@@ -21,7 +21,8 @@ Meteor.methods({
       skip = 0;
     }
     let query = {
-      completed: false
+      completed: false,
+      deleted: { $ne: true }
     };
 
     if (!Permissions.isAdmin(userId)) {
