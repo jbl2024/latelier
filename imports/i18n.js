@@ -64,6 +64,7 @@ const messages = {
     "Move to trash": "Placer dans la corbeille",
     "Close": "Fermer",
     "Do you really want to delete this task?": "Voulez-vous vraiment supprimer cette tâche ?",
+    "History": "Historique",
     history: {
       tasks: {
         create: "Création",
@@ -176,6 +177,7 @@ const messages = {
     "Move to trash": "Move to trash",
     "Close": "Close",
     "Do you really want to delete this task?": "Do you really want to delete this task?",
+    "History": "History",
     history: {
       tasks: {
         create: "Creation",
