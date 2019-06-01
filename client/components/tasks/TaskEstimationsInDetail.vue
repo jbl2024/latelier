@@ -58,7 +58,7 @@ export default {
           if (this.size !== task.estimation.size) this.size = task.estimation.size;
           if (this.spent !== task.estimation.spent) this.spent = task.estimation.spent;
         } else {
-          this.size = null
+          this.size = null;
           this.spent = null;
         }
       }
