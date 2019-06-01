@@ -23,8 +23,8 @@
              <span slot="opposite"></span>
               <v-card class="elevation-2">
                 <v-card-text>
-                  <div>{{ item.properties.task.name }}</div>
-                  <div class="grey--text">{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ item.user }}</div>
+                  <div class="task-name">{{ item.properties.task.name }}</div>
+                  <div>{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ item.user }}</div>
                 </v-card-text>
               </v-card>
 
@@ -117,6 +117,10 @@ export default {
   overflow-y: auto;
   max-height: 450px;
   min-height: 450px;
+}
+
+.task-name {
+  font-weight: bold;
 }
 
 </style>
