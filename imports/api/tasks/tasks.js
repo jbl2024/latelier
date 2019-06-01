@@ -4,12 +4,15 @@ import { check, Match } from "meteor/check";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Attachments } from "/imports/api/attachments/attachments";
+import { Events } from "/imports/api/events/events.js";
+
 import { Random } from "meteor/random";
 import { incrementCounter } from "./counter";
 import moment from "moment";
 import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask } from "/imports/api/permissions/permissions";
 
 export const Tasks = new Mongo.Collection("tasks");
+Tasks.methods = {};
 
 const Counter = new Mongo.Collection("counters");
 
@@ -764,6 +767,56 @@ Meteor.methods({
       type: event.type,
       properties: properties
     });
+  }
+});
+
+Tasks.methods.getHistory = new ValidatedMethod({
+  name: "tasks.getHistory",
+  validate: new SimpleSchema({
+    taskId: { type: String },
+    page: { type: Number },
+  }).validator(),
+  run({taskId, page}) {
+    checkLoggedIn();
+    checkCanReadTask(taskId);
+    const query = {
+      "properties.task._id": taskId
+    };
+
+    const perPage = 4;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const count = Events.find(query).count();
+    const data = Events.find(query, {
+      skip: skip,
+      limit: perPage,
+      sort: {
+        createdAt: -1
+      }
+    }).fetch();
+
+    const dataWithUsers = [];
+    data.map(item => {
+      item.user = item.userId;
+      const user = Meteor.users.findOne({ _id: item.userId });
+      if (user) {
+        item.user = user.emails[0].address;
+      }
+      dataWithUsers.push(item);
+    });
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      data: dataWithUsers,
+    };
   }
 });
 

@@ -2,6 +2,7 @@
   <div class>
     <v-app>
       <select-background :active.sync="showSelectBackgroundDialog"></select-background>
+      <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
 
       <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
         <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
@@ -74,6 +75,8 @@
         </v-card>
       </v-navigation-drawer>
 
+
+
       <v-content class="main-content">
         <v-container class="page-container" fluid>
           <router-view></router-view>
@@ -108,7 +111,6 @@ export default {
       "currentProjectId",
       "currentOrganizationId",
       "notifyMessage",
-      "showTaskDetail",
       "selectedTask",
       "windowTitle"
     ]),
@@ -118,6 +120,14 @@ export default {
       },
       set(value) {
         this.$store.dispatch("showTaskDetail", value);
+      }
+    },
+    showTaskHistory: {
+      get() {
+        return this.$store.state.showTaskHistory;
+      },
+      set(value) {
+        this.$store.dispatch("showTaskHistory", value);
       }
     },
     showSelectBackgroundDialog: {

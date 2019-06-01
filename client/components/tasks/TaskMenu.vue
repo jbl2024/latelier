@@ -4,6 +4,12 @@
       <v-icon>more_vert</v-icon>
     </v-btn>
     <v-list dense>
+      <v-list-tile @click="openHistory()">
+        <v-list-tile-action>
+          <v-icon>track_changes</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-title>{{ $t('History') }}</v-list-tile-title>
+      </v-list-tile>
       <v-list-tile @click="cloneTask(task._id)">
         <v-list-tile-action>
           <v-icon>file_copy</v-icon>
@@ -78,6 +84,9 @@ export default {
           this.$events.fire("close-task-detail");
         }
       });
+    },
+    openHistory() {
+      this.$store.dispatch("showTaskHistory", true)
     }
   }
 };

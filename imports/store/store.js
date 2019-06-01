@@ -14,6 +14,7 @@ export const store = new Vuex.Store({
     showSelectBackgroundDialog: false,
     showCategories: false,
     showTaskDetail: false,
+    showTaskHistory: false,
     currentOrganizationId: 0,
     currentProjectId: 0,
     projectFeatures: [],
@@ -39,6 +40,9 @@ export const store = new Vuex.Store({
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
+    },
+    updateShowTaskHistory(state, showTaskHistory) {
+      state.showTaskHistory = showTaskHistory;
     },
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
@@ -114,6 +118,9 @@ export const store = new Vuex.Store({
       } else {
         context.commit('notify', error.error);
       }
+    },
+    showTaskHistory(context, showTaskHistory) {
+      context.commit('updateShowTaskHistory', showTaskHistory);
     }
   }
 });
