@@ -6,7 +6,7 @@
           <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title>
-          Historique
+          {{ $t('History') }}
         </v-toolbar-title>
       </v-toolbar>       
       <v-card>
