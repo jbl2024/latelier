@@ -193,13 +193,14 @@ export default {
         ).then(res => {
           if (res) {
             this.loading = true;
+            const labelIds = this.labels.map(l => {return l._id});
             tasks.map(name => {
               Meteor.call(
                 "tasks.insert",
                 list.projectId,
                 this.listId,
                 name,
-                this.labels.map(l => {return l._id}),
+                labelIds,
                 (error, task) => {
                   if (error) {
                     this.$store.dispatch("notifyError", error);
