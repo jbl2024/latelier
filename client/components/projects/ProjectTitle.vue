@@ -89,6 +89,7 @@ export default {
   watch: {
     '$route': {
       deep: true,
+      immediate: true,
       handler: function (refreshPage) {
         const page = this.$router.currentRoute.name;
         if (page !== 'project' && page !== 'project-task') {
