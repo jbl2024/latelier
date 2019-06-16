@@ -9,7 +9,7 @@
       <user-detail @close="closeDetail()" @saved="findUsers()" ref="userDetail"></user-detail>
     </v-dialog>
     <new-user ref="newUser" @created="findUsers()"></new-user>
-    <v-container>
+    <v-container fluid>
       <v-layout row wrap>
         <v-flex xs12 sm6>
           <v-text-field
@@ -20,6 +20,21 @@
             clearable
             v-on:input="debouncedFilter"
           ></v-text-field>
+        </v-flex>
+        <v-flex sm6></v-flex>
+        <v-flex xs12 sm3>
+          <v-switch
+            v-model="filterOnline"
+            :label="$t('Online')">
+          </v-switch>
+        </v-flex>
+        <v-flex xs12 sm3>
+          <v-switch
+            v-model="filterAway"
+            :label="$t('Away')">
+          </v-switch>
+        </v-flex>
+        <v-flex xs12 sm3>
         </v-flex>
       </v-layout>
     </v-container>
@@ -81,6 +96,12 @@ export default {
       } else {
         this.findUsers();
       }
+    },
+    filterOnline() {
+      this.findUsers();
+    },
+    filterAway() {
+      this.findUsers();
     }
   },
   props: {},
@@ -89,10 +110,14 @@ export default {
       en: {
         "Delete user?": "Delete user?",
         "User deleted": "User deleted",
+        "Online": "Online",
+        "Away": "Away",
       },
       fr: {
         "Delete user?": "Supprimer l'utilisateur ?",
         "User deleted": "Utilisateur supprimé",
+        "Online": "En ligne",
+        "Away": "Absent",
       }
     }
   },  
@@ -107,7 +132,9 @@ export default {
         totalItems: 0,
         rowsPerPage: 0,
         totalPages: 0
-      }
+      },
+      filterOnline: false,
+      filterAway: false
     };
   },
   methods: {
@@ -116,6 +143,8 @@ export default {
         "admin.findUsers",
         this.page,
         this.search,
+        this.filterOnline,
+        this.filterAway,
         (error, result) => {
           if (error) {
             console.log(error);

@@ -20,7 +20,7 @@ Meteor.users.deny({
 });
 
 Meteor.methods({
-  "admin.findUsers"(page, filter) {
+  "admin.findUsers"(page, filter, isOnline, isAway) {
     
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
@@ -50,6 +50,14 @@ Meteor.methods({
           {"profile.lastName": { $regex: ".*" + filter + ".*", $options: "i" }}
         ]
       }
+    }
+    if (isOnline) {
+      if (!query['$or']) query = { $or: []};
+      query['$or'].push({statusConnection: 'online'});
+    }
+    if (isAway) {
+      if (!query['$or']) query = { $or: []};
+      query['$or'].push({statusConnection: 'away'});
     }
 
     const count = Meteor.users.find(query).count();
