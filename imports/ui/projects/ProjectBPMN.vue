@@ -61,6 +61,20 @@
                 icon
                 flat
                 color="grey darken-1"
+                @click.stop="cloneProcessDiagram(processDiagram)"
+              >
+                <v-icon>file_copy</v-icon>
+              </v-btn>
+              <span>{{ $t('Clone') }}</span>
+            </v-tooltip>
+          </v-list-tile-action>
+          <v-list-tile-action>
+            <v-tooltip top slot="activator">
+              <v-btn
+                slot="activator"
+                icon
+                flat
+                color="grey darken-1"
                 @click.stop="deleteProcessDiagram(processDiagram)"
               >
                 <v-icon>delete</v-icon>
@@ -93,7 +107,9 @@ export default {
         "Diagram deleted": "Diagram deleted",
         "No diagram": "No diagram",
         "You can add a new diagram": "You can add a new diagram",
-        "Add diagram": "Add diagram"
+        "Add diagram": "Add diagram",
+        "Clone diagram?": "Clone diagram?",
+        "Diagram cloned": "Diagram cloned",
       },
       fr: {
         "Process diagrams": "Diagrammes de processus",
@@ -101,7 +117,10 @@ export default {
         "Diagram deleted": "Diagramme supprimé",
         "No diagram": "Aucun diagramme",
         "You can add a new diagram": "Vous pouvez ajouter un diagramme",
-        "Add diagram": "Ajouter un diagramme"
+        "Add diagram": "Ajouter un diagramme",
+        "Clone diagram?": "Dupliquer le diagramme ?",
+        "Diagram cloned": "Diagramme dupliqué",
+
       }
     }
   },
@@ -180,6 +199,28 @@ export default {
 
     editProcessDiagram(processDiagram) {
       this.$refs.editProcessDiagram.open(processDiagram);
+    },
+
+    cloneProcessDiagram(processDiagram) {
+      this.$confirm(this.$t("Clone diagram?"), {
+        title: processDiagram.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Clone")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "processDiagrams.clone",
+            { processDiagramId: processDiagram._id },
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Diagram cloned"));
+            }
+          );
+        }
+      });
     },
 
     htmlToText(html) {

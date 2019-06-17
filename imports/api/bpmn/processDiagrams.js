@@ -108,3 +108,28 @@ ProcessDiagrams.methods.remove = new ValidatedMethod({
     ProcessDiagrams.remove({ _id: processDiagramId });
   }
 });
+
+ProcessDiagrams.methods.clone = new ValidatedMethod({
+  name: "processDiagrams.clone",
+  validate: new SimpleSchema({
+    processDiagramId: { type: String }
+  }).validator(),
+  run({ processDiagramId }) {
+    checkLoggedIn();
+    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    if (!processDiagram) {
+      throw new Meteor.Error("not-found");
+    }
+    checkCanWriteProject(processDiagram.projectId);
+    
+    const id = ProcessDiagrams.insert({
+      projectId: processDiagram.projectId,
+      name: "Copie de " + processDiagram.name,
+      description: processDiagram.description,
+      createdAt: new Date(),
+      createdBy: Meteor.userId(),
+      xml: processDiagram.xml
+    });
+    return id;
+  }
+});
