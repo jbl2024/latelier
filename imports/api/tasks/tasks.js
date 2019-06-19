@@ -596,14 +596,21 @@ Meteor.methods({
       throw new Meteor.Error("task-not-found");
     }
     Tasks.update({ _id: taskId }, { $set: { assignedTo: userId } });
-    Meteor.call("projects.addMember", {
-      projectId: task.projectId,
-      userId: userId
-    });
+
     Meteor.call("tasks.track", {
       type: "tasks.assignTo",
       taskId: taskId
     });
+
+    if (Meteor.isServer) {
+      if (Projects.find({ _id: task.projectId, members: userId }).count() > 0) {
+        return;
+      }
+      Meteor.call("projects.addMember", {
+        projectId: task.projectId,
+        userId: userId
+      });
+    }
   },
 
   "tasks.removeAssignedTo"(taskId) {
