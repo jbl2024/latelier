@@ -19,6 +19,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
+    this.$store.dispatch("setShowDashboardTitle", true);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setShowDashboardTitle", false);
   }
 };
 </script>

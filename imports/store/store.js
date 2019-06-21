@@ -15,6 +15,8 @@ export const store = new Vuex.Store({
     showCategories: false,
     showTaskDetail: false,
     showTaskHistory: false,
+    showDashboardTitle: false,
+    dashboardFilter: "",
     currentOrganizationId: 0,
     currentProjectId: 0,
     projectFeatures: [],
@@ -43,6 +45,12 @@ export const store = new Vuex.Store({
     },
     updateShowTaskHistory(state, showTaskHistory) {
       state.showTaskHistory = showTaskHistory;
+    },
+    updateShowDashboardTitle(state, showDashboardTitle) {
+      state.showDashboardTitle = showDashboardTitle;
+    },
+    updateDashboardFilter(state, dashboardFilter) {
+      state.dashboardFilter = dashboardFilter;
     },
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
@@ -80,6 +88,12 @@ export const store = new Vuex.Store({
     },
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
+    },
+    setShowDashboardTitle (context, showDashboardTitle) {
+      context.commit('updateShowDashboardTitle', showDashboardTitle);
+    },
+    setDashboardFilter (context, dashboardFilter) {
+      context.commit('updateDashboardFilter', dashboardFilter);
     },
     showSelectBackgroundDialog (context, showSelectBackgroundDialog) {
       context.commit('updateShowSelectBackgroundDialog', showSelectBackgroundDialog);
