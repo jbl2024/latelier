@@ -163,9 +163,9 @@
             dense
             two-line
             class="list"
-            v-if="projectsByOrganization(organization).length > 0"
+            v-if="projectsByOrganization(organization, dashboardFilter).length > 0"
           >
-            <template v-for="project in projectsByOrganization(organization)">
+            <template v-for="project in projectsByOrganization(organization, dashboardFilter)">
               <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
             </template>
           </v-list>
@@ -173,7 +173,7 @@
           <empty-state
             small
             :key="`${organization._id}-empty`"
-            v-if="projectsByOrganization(organization).length == 0"
+            v-if="dashboardFilter === '' && projectsByOrganization(organization).length == 0"
             :description="`Aucun projet disponible`"
             illustration="project"
           >
@@ -241,11 +241,15 @@ export default {
       this.user = result;
     });
   },
+  computed: {
+    ...mapState([
+      "dashboardFilter",
+    ])
+  },
   data() {
     return {
       user: null,
       tab: null,
-      filter: "",
       selectedOrganizationId: "",
       cardClass: "card1"
     };
@@ -253,22 +257,34 @@ export default {
   meteor: {
     $subscribe: {
       allProjects: function() {
-        return [this.filter, this.organizationId];
+        return ["", this.organizationId];
       },
       organizations: function() {
-        return [this.filter, this.organizationId];
+        return ["", this.organizationId];
       },
       user: function() {
         return [];
       }
     },
-    projects() {
-      return Projects.find(
-        {},
-        {
-          sort: { organizationId: 1, state: 1, name: 1 }
+    projects: {
+      params() {
+        return {
+          name: this.dashboardFilter
+        };
+      },
+      deep: false,
+      update({ name }) {  
+        const query = {};    
+        if (name && name.length > 0) {
+          query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
         }
-      );
+        return Projects.find(
+          query,
+          {
+            sort: { organizationId: 1, state: 1, name: 1 }
+          }
+        );
+      }
     },
     organizations() {
       return Organizations.find({}, { sort: { name: 1 } });
@@ -276,36 +292,51 @@ export default {
     organization() {
       return Organizations.findOne();
     },
-    favorites() {
-      const user = Meteor.user() || { profile: {} };
-      let favorites = [];
-      if (user && user.profile) {
-        favorites = user.profile.favoriteProjects || [];
-      }
-      return Projects.find(
-        { _id: { $in: favorites } },
-        {
-          sort: { organizationId: 1, state: 1, name: 1 }
+    favorites: {
+      params() {
+        return {
+          name: this.dashboardFilter
+        };
+      },
+      deep: false,
+      update({ name }) {  
+        const user = Meteor.user() || { profile: {} };
+        let favorites = [];
+        if (user && user.profile) {
+          favorites = user.profile.favoriteProjects || [];
         }
-      );
-    },
-    individuals() {
-      const organizationIds = [];
-      Organizations.find({})
-        .fetch()
-        .map(organization => {
-          organizationIds.push(organization._id);
-        });
-      return Projects.find(
-        {
-          organizationId: {
-            $nin: organizationIds
+        let query = { _id: { $in: favorites } }         
+        if (name && name.length > 0) {
+          query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
+        }
+        return Projects.find(
+          query,
+          {
+            sort: { organizationId: 1, state: 1, name: 1 }
           }
-        },
-        {
-          sort: { state: 1, name: 1 }
+        );
+      }
+    },
+    individuals: {
+      params() {
+        return {
+          name: this.dashboardFilter
+        };
+      },
+      deep: false,
+      update({ name }) {  
+        const organizationIds = [];
+        Organizations.find({})
+          .fetch()
+          .map(organization => {
+            organizationIds.push(organization._id);
+          });
+        let query = { organizationId: { $nin: organizationIds } }         
+        if (name && name.length > 0) {
+          query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
         }
-      );
+        return Projects.find(query, { sort: { state: 1, name: 1 }});
+      }
     },
     user() {
       return Meteor.user();
@@ -324,8 +355,12 @@ export default {
       this.selectedOrganizationId = organizationId;
       this.$refs.newProject.open();
     },
-    projectsByOrganization(organization) {
-      return Projects.find({ organizationId: organization._id }).fetch();
+    projectsByOrganization(organization, name) {
+      let query = { organizationId: organization._id };         
+      if (name && name.length > 0) {
+        query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
+      }
+      return Projects.find(query, {sort: { name: 1 }}).fetch();
     },
     openOrganization(id) {
       this.$router.push({

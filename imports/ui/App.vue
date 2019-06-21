@@ -18,6 +18,7 @@
           v-if="currentProjectId == 0 && currentOrganizationId != 0"
           :organizationId="currentOrganizationId"
         ></organization-title>
+        <dashboard-title v-if="showDashboardTitle"></dashboard-title>
         <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
         <v-spacer></v-spacer>
         <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
@@ -108,6 +109,7 @@ export default {
   computed: {
     ...mapState([
       "showCategories",
+      "showDashboardTitle",
       "currentProjectId",
       "currentOrganizationId",
       "notifyMessage",
