@@ -745,6 +745,38 @@ Meteor.methods({
     });
   },
 
+  "tasks.addAttachment"(taskId) {
+    check(taskId, String);
+    checkCanWriteTask(taskId);
+
+    if (Meteor.isClient) {
+      return;
+    } 
+    Tasks.update({ _id: taskId }, { $set: { updatedAt: new Date(), updatedBy: Meteor.userId()}});
+    
+    Meteor.call('tasks.track', {
+      type: 'tasks.addAttachment',
+      taskId: taskId,
+    });
+  },
+
+  "tasks.removeAttachment"(taskId, attachmentId) {
+    check(taskId, String);
+    check(attachmentId, String);
+    checkCanWriteTask(taskId);
+
+    if (Meteor.isClient) {
+      return;
+    } 
+    Tasks.update({ _id: taskId }, { $set: { updatedAt: new Date(), updatedBy: Meteor.userId()}});
+
+    Meteor.call('attachments.remove', {attachmentId: attachmentId});
+    Meteor.call('tasks.track', {
+      type: 'tasks.removeAttachment',
+      taskId: taskId,
+    });
+  },
+
   "tasks.track"(event) {
     if (!Meteor.isServer) {
       return;

@@ -53,6 +53,12 @@
           </div>
           <div v-show="!editName" :class="getClassForName(task)" v-html="linkifyHtml(task.name)"></div>
           <v-icon
+            :class="getClassForAttachment(task)"
+            small
+            color="blue darken-1"
+            v-show="hasAttachments(task) && !editName"
+          >attach_file</v-icon>
+          <v-icon
             class="has-notes"
             small
             color="blue darken-1"
@@ -259,6 +265,10 @@ export default {
       return false;
     },
 
+    hasAttachments(task) {
+      return Attachments.find({'meta.taskId': task._id}).count() > 0
+    },
+
     hasFooterData(task) {
       return task.dueDate || task.assignedTo || this.hasEstimationData(task);
     },
@@ -285,6 +295,10 @@ export default {
 
     deleteTask() {
       this.$events.fire("delete-task", this.task);
+    },
+    
+    getClassForAttachment(task) {
+      return this.hasNotes(task) ? "has-attachments-shifted" : "has-attachments";
     }
   }
 };
@@ -452,6 +466,18 @@ export default {
 }
 
 .has-notes {
+  position: absolute;
+  right: 8px;
+  top: 24px;
+}
+
+.has-attachments-shifted {
+  position: absolute;
+  right: 24px;
+  top: 24px;
+}
+
+.has-attachments {
   position: absolute;
   right: 8px;
   top: 24px;

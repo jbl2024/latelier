@@ -77,11 +77,7 @@ export default {
         if (error) {
           alert("Error during upload: " + error);
         } else {
-          Meteor.call('tasks.track', {
-            type: 'tasks.addAttachment',
-            taskId: that.task._id,
-          });
-
+          Meteor.call('tasks.addAttachment', that.task._id);          
           that.file = null;
         }
       });
@@ -96,11 +92,7 @@ export default {
         confirmText: this.$t("Delete")
       }).then(res => {
         if (res) {
-          Meteor.call('attachments.remove', {attachmentId: attachment._id});
-          Meteor.call('tasks.track', {
-            type: 'tasks.removeAttachment',
-            taskId: this.task._id,
-          });
+          Meteor.call('tasks.removeAttachment', this.task._id, attachment._id);          
         }
       });
     },
