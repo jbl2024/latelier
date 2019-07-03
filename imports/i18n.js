@@ -225,7 +225,7 @@ const messages = {
       }
     }
   }
-};
+},
  oc: {
     'Back': 'Tornar',
     'Cancel': 'Anullar',
@@ -338,6 +338,6 @@ const messages = {
         future: "d'aquí {duration}",
       }
     }
-},
+};
 
 export default messages;
