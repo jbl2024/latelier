@@ -51,6 +51,9 @@ export default {
       },
       fr: {
         "New process diagram": "Nouveau diagramme"
+      },
+      oc: {
+        "New process diagram": "Nòu diagrama"
       }
     }
   },
