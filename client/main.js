@@ -66,7 +66,7 @@ import App from '/imports/ui/App.vue';
 import { store } from '/imports/store/store';
 import routes from '/imports/routes.js'
 import '/imports/favicon.js'
-import messages from '/imports/i18n.js'
+import messages from '/imports/i18n/i18n.js'
 
 import confirm from '/imports/confirm/confirm.js'
 Vue.use(confirm);
