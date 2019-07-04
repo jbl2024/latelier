@@ -224,9 +224,8 @@ const messages = {
         future: 'in {duration}',
       }
     }
-  }
-},
- oc: {
+  },
+  oc: {
     'Back': 'Tornar',
     'Cancel': 'Anullar',
     'Confirm': 'Confirmar',
@@ -338,6 +337,8 @@ const messages = {
         future: "d'aquí {duration}",
       }
     }
+  }  
 };
+
 
 export default messages;
