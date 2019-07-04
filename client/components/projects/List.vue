@@ -75,7 +75,7 @@
       <div
         class="task show-hidden"
         @click="showHiddenTasks = !showHiddenTasks"
-        v-if="hiddenTaskCount > 0"
+        v-if="hiddenTaskCount > 0 && !forceShowHiddenTask"
       >
         <div
           class="list-title"
@@ -86,7 +86,7 @@
           v-if="!showHiddenTasks"
         >Afficher les {{ hiddenTaskCount }} tâches terminées</div>
       </div>
-      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="showHiddenTasks"></tasks>
+      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"></tasks>
     </div>
   </div>
 </template>
@@ -107,10 +107,23 @@ export default {
   computed: {
     ...mapState(["currentProjectId"])
   },
+  mounted() {
+    this.$events.listen("filter-tasks", name => {
+      if (name && name.length > 0) {
+        this.forceShowHiddenTask = true;
+      } else {
+        this.forceShowHiddenTask = false;
+      }
+    });
+  }, 
+  beforeDestroy() {
+    this.$events.off("filter-tasks");
+  },
   data() {
     return {
       selectedList: {},
       savedName: "",
+      forceShowHiddenTask: false,
       showHiddenTasks: false,
       showNewTaskDialog: false
     };
