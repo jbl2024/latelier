@@ -64,6 +64,7 @@ export default {
     "Close": "Fermer",
     "Do you really want to delete this task?": "Voulez-vous vraiment supprimer cette tâche ?",
     "History": "Historique",
+    "Search...": "Rechercher...",
     history: {
       tasks: {
         create: "Création",
