@@ -113,6 +113,7 @@ import { Labels } from "/imports/api/labels/labels.js";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
+import { colors } from '/imports/colors.js'
 
 export default {
   props: {
@@ -172,8 +173,10 @@ export default {
     },
 
     getStyleForChip(label) {
-      const color = `background-color: ${label.color}`;
-      return color;
+      return `
+        background-color: ${label.color};
+        color: ${colors.getLabelColor(label.color)}
+      `
     },
 
     getClassForName(label, selectedLabels) {
