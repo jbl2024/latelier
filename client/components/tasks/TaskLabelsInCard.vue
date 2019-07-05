@@ -1,7 +1,9 @@
 <template>
 
 <div class="task-labels">
-  <div class="label" v-for="label in labels" :key="label._id" :style="getColor(label)"></div>
+  <div class="label" v-for="label in labels" :key="label._id" :style="getColor(label)">
+    {{ label.name }}
+  </div>
 </div>
 
 </template>
@@ -51,8 +53,14 @@ export default {
 }
 
 .label {
-  width: 48px;
-  height: 8px;
+  /* width: 52px; */
+  /* height: 8px; */
+  height: 16px;
   margin-right: 4px;
+  font-size: 8px;
+  padding: 2px;
+  text-transform: uppercase;
+  overflow-x: hidden;
+  text-align: center;
 }
 </style>
