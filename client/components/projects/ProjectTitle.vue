@@ -40,7 +40,7 @@
       solo-inverted
       hide-details
       prepend-inner-icon="search"
-      label="Rechercher..."
+      :label="$t('Search...')"
       class="hidden-sm-and-down align-remaining"
       v-on:input="debouncedFilter"
     ></v-text-field>
