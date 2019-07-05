@@ -3,8 +3,8 @@
     <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
     <div class="list-header">
       <div class="swimlane dragscroll">
-        <div v-show="!isListEdited(list, selectedList)" :style="getColor(currentProjectId)">
-          <div :style="getColor(currentProjectId)" class="flex-container-row">
+        <div v-show="!isListEdited(list, selectedList)" :style="getColor()">
+          <div :style="getColor()" class="flex-container-row">
             <div
               class="list-name flex1"
               @click="editList(list)"
@@ -16,7 +16,7 @@
               v-if="hiddenTaskCount > 0"
             >{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
             <v-menu bottom left class="flex0">
-              <v-btn dark small slot="activator" icon>
+              <v-btn :dark="isDark()" small slot="activator" icon>
                 <v-icon>more_vert</v-icon>
               </v-btn>
               <v-list dense>
@@ -96,6 +96,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
+import { colors } from '/imports/colors'
 import { mapState } from "vuex";
 
 export default {
@@ -105,7 +106,16 @@ export default {
     }
   },
   computed: {
-    ...mapState(["currentProjectId"])
+    ...mapState(["currentProjectId"]),
+    projectColor: {
+      get() {
+        const project = Projects.findOne({ _id: this.currentProjectId });
+        if (project && project.color) {
+          return project.color;
+        }
+        return null;
+      }
+    }
   },
   mounted() {
     this.$events.listen("filter-tasks", name => {
@@ -211,13 +221,25 @@ export default {
       };
     },
 
-    getColor(projectId) {
-      const project = Projects.findOne({ _id: projectId });
-      if (project && project.color) {
-        return "background-color: " + project.color;
+    getColor() {
+      if (this.projectColor) {
+        return `
+          background-color: ${this.projectColor};
+          color: ${colors.getLabelColor(this.projectColor)}
+        `
       } else {
-        return "background-color: #2D6293";
+        return `
+          background-color: #2D6293;
+          color: white;
+        `
       }
+    },
+
+    isDark() {
+      if (this.projectColor) {
+        return !colors.isDark(this.projectColor);  
+      } 
+      return true;
     },
 
     getEstimations(tasks) {
@@ -343,7 +365,6 @@ export default {
 .list-name {
   display: inline-block;
   margin-left: 4px;
-  color: white;
 }
 
 @media (max-width: 600px) {
@@ -356,7 +377,7 @@ export default {
 }
 
 .list-name:hover {
-  background-color: #323742;
+  /* background-color: #323742; */
   cursor: pointer;
 }
 
