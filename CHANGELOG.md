@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Display label name color according to background on project toolbar
+- Display list name color & button according to background
 - Display hidden tasks when search filter is set
 - Split i18n main file in one file per language
 
