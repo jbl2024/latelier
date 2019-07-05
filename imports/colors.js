@@ -6,5 +6,13 @@ export const colors = {
       color += color.slice(1);
     }
     return (color.replace('#', '0x')) > (0xffffff / 2) ? '#333' : '#fff';
+  },
+
+  isDark(color) {
+    if (color.length < 5) {
+      color += color.slice(1);
+    }
+    return (color.replace('#', '0x')) > (0xffffff / 2) ? true : false;
+
   }
 }
