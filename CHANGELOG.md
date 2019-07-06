@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+## [1.7.7] - 2019-07-06
+### Added
 - Changelog
 - Occitan translation (on main i18n file), by Quenty31
 - More translations
@@ -24,4 +31,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   + @babel/runtime@7.5.1
   + vue-router@3.0.7
   + vuetify@1.5.16
-### Removed
