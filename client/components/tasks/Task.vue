@@ -303,8 +303,51 @@ export default {
       return this.hasNotes(task) ? "has-attachments-shifted" : "has-attachments";
     },
 
-    onDrop(e) {
-      e.preventDefault();
+    onDrop(event) {
+      event.preventDefault();
+      const task = this.task;
+      const files = [];
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          if (event.dataTransfer.items[i].kind === "file") {
+            const file = event.dataTransfer.items[i].getAsFile();
+            files.push(file);
+          }
+        }
+      } else {
+        for (let i = 0; i < event.dataTransfer.files.length; i++) {
+          files.push(event.dataTransfer.files[i]);
+        }
+      }
+      if (files.length == 0) {
+        return;
+      }
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
+      files.map(file => {
+        const upload = Attachments.insert(
+          {
+            file: file,
+            streams: "dynamic",
+            chunkSize: "dynamic",
+            transport: transport,
+            meta: {
+              projectId: task.projectId,
+              taskId: task._id,
+              createdBy: Meteor.userId()
+            }
+          },
+          false
+        );
+        upload.on("start", function() {});
+        upload.on("end", function(error, fileObj) {
+          if (error) {
+            alert("Error during upload: " + error);
+          } else {
+            Meteor.call('tasks.addAttachment', task._id);          
+          }
+        });
+        upload.start();
+      });
     },
 
     onDragOver(e) {
