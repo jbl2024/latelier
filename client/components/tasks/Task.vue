@@ -1,5 +1,7 @@
 <template>
   <div
+    @drop="onDrop"
+    @dragover="onDragOver"
     class="task"
     @click="selectTask"
     @mouseenter="showEditButton = true"
@@ -299,6 +301,14 @@ export default {
     
     getClassForAttachment(task) {
       return this.hasNotes(task) ? "has-attachments-shifted" : "has-attachments";
+    },
+
+    onDrop(e) {
+      e.preventDefault();
+    },
+
+    onDragOver(e) {
+      e.preventDefault();
     }
   }
 };
