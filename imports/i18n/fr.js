@@ -65,6 +65,7 @@ export default {
     "Do you really want to delete this task?": "Voulez-vous vraiment supprimer cette tâche ?",
     "History": "Historique",
     "Search...": "Rechercher...",
+    "Attachments": "Pièces jointes",
     history: {
       tasks: {
         create: "Création",

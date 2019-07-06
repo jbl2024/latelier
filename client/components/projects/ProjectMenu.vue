@@ -11,7 +11,7 @@
           <v-icon>list</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Tâches</v-list-tile-title>
+          <v-list-tile-title>{{ $t('Tasks') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
@@ -21,7 +21,7 @@
           <v-icon>donut_large</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>BPMN</v-list-tile-title>
+          <v-list-tile-title>{{ $t('BPMN') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
@@ -31,7 +31,7 @@
           <v-icon>timeline</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Planning</v-list-tile-title>
+          <v-list-tile-title>{{ $t('Planning') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
@@ -61,7 +61,7 @@
           <v-icon>attachment</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Pièces jointes</v-list-tile-title>
+          <v-list-tile-title>{{ $t('Attachments') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile @click="$refs.projectHistory.open()">
@@ -69,7 +69,7 @@
           <v-icon>track_changes</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Historique</v-list-tile-title>
+          <v-list-tile-title>{{ $t('History') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile @click="$refs.projectTrashcan.open()">
@@ -88,7 +88,7 @@
           <v-icon>settings</v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
-          <v-list-tile-title>Paramètres</v-list-tile-title>
+          <v-list-tile-title>{{ $t('Settings') }}</v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
     </v-list>
