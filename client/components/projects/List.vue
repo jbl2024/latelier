@@ -1,5 +1,5 @@
 <template>
-  <div class="list">
+  <div class="list" @drop="onDrop" @dragover="onDragOver">
     <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
     <div class="list-header">
       <div class="swimlane dragscroll">
@@ -261,7 +261,72 @@ export default {
         }
       })
       return `(${size}/${spent})`
-    }
+    },
+
+    onDrop(event) {
+      event.preventDefault();
+
+      const files = [];
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          if (event.dataTransfer.items[i].kind === "file") {
+            const file = event.dataTransfer.items[i].getAsFile();
+            files.push(file);
+          }
+        }
+      } else {
+        for (let i = 0; i < event.dataTransfer.files.length; i++) {
+          files.push(event.dataTransfer.files[i]);
+        }
+      }
+      if (files.length == 0) {
+        return;
+      }
+      event.stopPropagation();
+
+      const taskName = files[0].name;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
+      Meteor.call(
+        "tasks.insert",
+        this.list.projectId,
+        this.list._id,
+        taskName,
+        (error, task) => {
+          if (error) {
+            return;
+          }
+          files.map(file => {
+            const upload = Attachments.insert(
+              {
+                file: file,
+                streams: "dynamic",
+                chunkSize: "dynamic",
+                transport: transport,
+                meta: {
+                  projectId: task.projectId,
+                  taskId: task._id,
+                  createdBy: Meteor.userId()
+                }
+              },
+              false
+            );
+            upload.on("start", function() {});
+            upload.on("end", function(error, fileObj) {
+              if (error) {
+                alert("Error during upload: " + error);
+              } else {
+                Meteor.call('tasks.addAttachment', task._id);          
+              }
+            });
+            upload.start();
+          });
+        }
+      );
+    },
+
+    onDragOver(e) {
+      e.preventDefault();
+    }    
   }
 };
 </script>

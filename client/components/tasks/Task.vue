@@ -322,6 +322,8 @@ export default {
       if (files.length == 0) {
         return;
       }
+      event.stopPropagation();
+
       const transport = Meteor.settings.public.uploadTransport || "ddp";
       files.map(file => {
         const upload = Attachments.insert(
