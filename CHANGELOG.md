@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changelog
 - Occitan translation (on main i18n file), by Quenty31
 - More translations
+- Drop file on list & task to add attachment
 
 ### Changed
 - Display label name color according to background on project toolbar
