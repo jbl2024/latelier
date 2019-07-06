@@ -5,7 +5,7 @@
       <v-card>
         <v-card-title class="headline">Editer le label</v-card-title>
         <v-card-text>
-          <v-form v-model="valid">
+          <v-form v-model="valid" v-on:submit.prevent>
             <v-text-field v-model="label.name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="updateNameAndColor()"></v-text-field>
             <v-btn color="primary" @click="showSelectColor = true" class="btn-color">
               Choisir une couleur
