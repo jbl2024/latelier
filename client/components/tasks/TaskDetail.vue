@@ -58,7 +58,7 @@
     <div class="authors">
       <template v-if="showProjectLink(taskObject)">
         <div>
-          <router-link :to="{ name: 'project', params: { projectId: taskObject.project._id } }">
+          <router-link :to="{ name: 'project-task', params: { projectId: taskObject.project._id, taskId: taskObject._id } }">
           [{{ taskObject.project.name}}]
           </router-link>
         </div>
