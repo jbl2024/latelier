@@ -10,8 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Prevent page refresh when form is submited with enter key on Edit label dialog
 - Link in task detail in dashboard opens task in project (instead of project only)
+- Files are displayed in dedicated tab on task property
+- Fix attachments page display when a task is soft deleted
 
 ### Removed
+- Resources
 
 ## [1.7.7] - 2019-07-06
 ### Added
