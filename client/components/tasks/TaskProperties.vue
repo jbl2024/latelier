@@ -73,9 +73,6 @@
     <task-estimations-in-detail :task="task"></task-estimations-in-detail>
   </template>
 
-  <v-subheader>Pièces jointes</v-subheader>
-  <task-attachments :task="task"></task-attachments>
-
 </div>
 
 </template>
