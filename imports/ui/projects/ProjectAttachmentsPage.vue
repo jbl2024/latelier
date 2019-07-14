@@ -25,7 +25,7 @@
               <a class="link"  :href="link(attachment)"  target="_blank">{{ attachment.name }}</a>          
             </v-list-tile-title>
             <v-list-tile-sub-title>
-              <router-link class="link-subtitle"  :to="{ name: 'project-task', params: { projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
+              <router-link class="link-subtitle" :to="{ name: 'project-task', params: { projectId: attachment.meta.projectId, taskId: attachment.meta.taskId }}">{{ getTask(attachment).name }}</router-link>
             </v-list-tile-sub-title>
           </v-list-tile-content>
 
@@ -81,7 +81,10 @@ export default {
         };
       },
       update ({projectId}) {
-        return Attachments.find({'meta.projectId': this.projectId}, {sort: {'meta.taskId': 1, 'name': 1}});
+        const attachments = Attachments.find({'meta.projectId': this.projectId}, {sort: {'meta.taskId': 1, 'name': 1}}).fetch();
+        return attachments.filter(attachment => {
+          return Tasks.findOne({_id: attachment.meta.taskId}) 
+        })
       }
     }    
   },
