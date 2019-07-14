@@ -296,7 +296,6 @@ Meteor.methods({
       checklist: checklist,
       startDate: task.startDate,
       dueDate: task.dueDate,
-      resources: task.resources
     };
 
     const clonedTaskId = Tasks.insert(clonedTask);
@@ -702,45 +701,6 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.removeLabel",
-      taskId: taskId
-    });
-  },
-
-  "tasks.addResource"(taskId, resourceId) {
-    check(taskId, String);
-    check(resourceId, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
-    if (Tasks.find({ _id: taskId, resources: resourceId }).count() > 0) {
-      return;
-    }
-    Tasks.update({ _id: taskId }, { $push: { resources: resourceId } });
-
-    Meteor.call("tasks.track", {
-      type: "tasks.addResource",
-      taskId: taskId
-    });
-  },
-
-  "tasks.removeResource"(taskId, resourceId) {
-    check(taskId, String);
-    check(resourceId, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
-
-    if (Tasks.find({ _id: taskId, resources: resourceId }).count() == 0) {
-      return;
-    }
-    Tasks.update({ _id: taskId }, { $pull: { resources: resourceId } });
-
-    Meteor.call("tasks.track", {
-      type: "tasks.removeResource",
       taskId: taskId
     });
   },

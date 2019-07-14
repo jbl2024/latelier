@@ -11,7 +11,6 @@ export default {
     'Deletion is permanent': 'La suppression est définitive',
     'Properties': 'Propriétés',
     'Notes': 'Notes',
-    'Resources': 'Ressources',
     'List': 'Liste',
     'Completed on': 'Terminée le',
     'Created by': 'Créée par',

@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix attachments page display when a task is soft deleted
 
 ### Removed
-- Resources (link to resource screens for now)
+- Resources
 
 ## [1.7.7] - 2019-07-06
 ### Added

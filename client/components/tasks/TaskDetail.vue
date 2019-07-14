@@ -233,19 +233,6 @@ export default {
       }
     },
 
-    resourcesCount: {
-      params() {
-        return {
-          id: this.taskId
-        };
-      },
-      update({ id }) {
-        const task = Tasks.findOne({ _id: id }) || {};
-        const resources = task.resources || [];
-        return resources.length;
-      }
-    },
-
     attachmentsCount: {
       params() {
         return {

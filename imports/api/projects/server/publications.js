@@ -7,7 +7,6 @@ import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
 import { Attachments } from "../../attachments/attachments";
-import { Resources } from "../../resources/resources";
 import { Permissions } from "/imports/api/permissions/permissions"
 
 
@@ -153,16 +152,6 @@ publishComposite("project", function(projectId) {
             return;
           }
           return ProjectGroups.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
-        }
-      },
-      {
-        // resources
-        find(project) {
-          if (!project.organizationId) {
-            this.ready();
-            return;
-          }
-          return Resources.find({ organizationId: project.organizationId }, { sort: { name: 1 } });
         }
       },
       {

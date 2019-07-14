@@ -11,7 +11,6 @@ export default {
   'Deletion is permanent': 'Deletion is permanent',
   'Properties': 'Properties',
   'Notes': 'Notes',
-  'Resources': 'Resources',
   'List': 'List',
   'Completed on': 'Completed on',
   'Created by': 'Created by',

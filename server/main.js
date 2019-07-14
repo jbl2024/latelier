@@ -6,7 +6,6 @@ import '../imports/startup/server/permissions.js';
 import '../imports/startup/server/userPresence.js';
 import '../imports/api/organizations/organizations.js';
 import '../imports/api/organizations/server/publications.js';
-import '../imports/api/resources/server/publications.js';
 import '../imports/api/projects/projects.js';
 import '../imports/api/tasks/server/publications.js';
 import '../imports/api/projects/server/publications.js';
