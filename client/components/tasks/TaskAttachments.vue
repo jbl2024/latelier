@@ -118,6 +118,9 @@ export default {
 
 <style scoped>
 
+input {
+  padding: 14px;
+}
 .progress {
   text-align: center;
 }

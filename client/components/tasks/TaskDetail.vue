@@ -122,7 +122,7 @@
       <v-tab id="tab-properties">{{ $t('Properties') }}</v-tab>
       <v-tab id="tab-notes">{{ getLabel($t('Notes'), notesCount) }}</v-tab>
       <v-tab id="tab-checklist">{{ getLabel($t('List'), checklistCount) }}</v-tab>
-      <v-tab id="tab-resources">{{ getLabel($t('Resources'), resourcesCount) }}</v-tab>
+      <v-tab id="tab-attachments">{{ getLabel($t('Attachments'), attachmentsCount) }}</v-tab>
 
       <v-tab-item>
         <task-properties :task="task"></task-properties>
@@ -134,7 +134,7 @@
         <task-checklist-in-detail :task="task"></task-checklist-in-detail>
       </v-tab-item>
       <v-tab-item>
-        <task-resources :task="task"></task-resources>
+        <task-attachments :task="task"></task-attachments>
       </v-tab-item>
     </v-tabs>
   </div>
@@ -144,6 +144,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Attachments } from "/imports/api/attachments/attachments";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
@@ -243,7 +244,20 @@ export default {
         const resources = task.resources || [];
         return resources.length;
       }
-    }
+    },
+
+    attachmentsCount: {
+      params() {
+        return {
+          id: this.taskId
+        };
+      },
+      update({ id }) {
+        const task = Tasks.findOne({ _id: id }) || {};
+        return Attachments.find({'meta.taskId': task._id}).count();
+      }
+    },
+
   },
   methods: {
     requestClose() {
