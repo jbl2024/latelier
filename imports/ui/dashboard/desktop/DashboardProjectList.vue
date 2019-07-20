@@ -60,8 +60,7 @@
             </v-list-tile-action>
             <v-list-tile-title>{{ $t('Move to trash') }}</v-list-tile-title>
           </v-list-tile>
-          <v-divider></v-divider>
-          <v-list-tile @click="leaveProject(project)">
+          <v-list-tile @click="leaveProject(project)" v-if="canLeaveProject(project)">
             <v-list-tile-action>
               <v-icon>exit_to_app</v-icon>
             </v-list-tile-action>
@@ -175,6 +174,10 @@ export default {
         Permissions.isAdmin(Meteor.userId(), project._id) ||
         Permissions.isAdmin(Meteor.userId())
       );
+    },
+
+    canLeaveProject(project) {
+      return Meteor.userId() !== project.createdBy;
     },
 
     openProject(project) {
