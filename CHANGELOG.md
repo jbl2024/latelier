@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Members can leave project
 
 ### Changed
 - Prevent page refresh when form is submited with enter key on Edit label dialog

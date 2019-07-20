@@ -65,6 +65,8 @@ export default {
   "History": "History",
   "Search...": "Search...",
   "Attachments": "Attachments",
+  "Leave project": "Leave project",
+  "Leave project?": "Leave project?",
   history: {
     tasks: {
       create: "Creation",

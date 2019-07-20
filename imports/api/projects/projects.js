@@ -359,6 +359,27 @@ Projects.methods.removeMember = new ValidatedMethod({
   }
 });
 
+Projects.methods.leave = new ValidatedMethod({
+  name: "projects.leave",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+  }).validator(),
+  run({projectId}) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+
+    if (Projects.find({ _id: projectId, members: userId }).count() == 0) {
+      return;
+    }
+    Projects.update({ _id: projectId }, { $pull: { members: userId } });
+    Tasks.update(
+      { projectId: projectId, assignedTo: userId },
+      { $set: { assignedTo: null } },
+      { multi: true }
+    );
+  }
+});
+
 Projects.methods.setStartDate = new ValidatedMethod({
   name: "projects.setStartDate",
   validate: new SimpleSchema({

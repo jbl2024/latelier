@@ -65,6 +65,8 @@ export default {
     "History": "Historique",
     "Search...": "Rechercher...",
     "Attachments": "Pièces jointes",
+    "Leave project": "Quitter le projet",
+    "Leave project?": "Quitter le projet ?",  
     history: {
       tasks: {
         create: "Création",
