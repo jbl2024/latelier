@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Link in task detail in dashboard opens task in project (instead of project only)
 - Files are displayed in dedicated tab on task property
 - Fix attachments page display when a task is soft deleted
+- Upgraded lodash version to 4.17.15
 
 ### Removed
 - Resources
