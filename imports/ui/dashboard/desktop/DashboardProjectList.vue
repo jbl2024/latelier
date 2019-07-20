@@ -60,6 +60,13 @@
             </v-list-tile-action>
             <v-list-tile-title>{{ $t('Move to trash') }}</v-list-tile-title>
           </v-list-tile>
+          <v-divider></v-divider>
+          <v-list-tile @click="leaveProject(project)">
+            <v-list-tile-action>
+              <v-icon>exit_to_app</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-title>{{ $t('Leave project') }}</v-list-tile-title>
+          </v-list-tile>
         </v-list>
       </v-menu>
     </v-list-tile-action>
@@ -205,6 +212,27 @@ export default {
                 return;
               }
               this.$store.dispatch("notify", this.$t("Project deleted"));
+            }
+          );
+        }
+      });
+    },
+
+    leaveProject(project) {
+      this.$confirm(this.$t("Leave project?"), {
+        title: project.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Leave")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "projects.leave",
+            { projectId: project._id },
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
             }
           );
         }
