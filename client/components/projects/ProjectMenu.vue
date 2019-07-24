@@ -55,6 +55,16 @@
         </v-list-tile-content>
       </v-list-tile>
       <v-list-tile
+        :to="{ name: 'project-databases', params: { projectId: projectId }}"
+      >
+        <v-list-tile-action>
+          <v-icon>library_books</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>{{ $t('Databases') }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+      <v-list-tile
         :to="{ name: 'project-attachments-page', params: { projectId: projectId }}"
       >
         <v-list-tile-action>

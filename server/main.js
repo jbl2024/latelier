@@ -33,6 +33,9 @@ import '../imports/api/attachments/server/methods.js';
 import '../imports/api/bpmn/processDiagrams';
 import '../imports/api/bpmn/server/publications';
 
+import '../imports/api/databases/databases.js';
+import '../imports/api/databases/server/publications.js';
+
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));
 }

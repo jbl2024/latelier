@@ -25,6 +25,8 @@ import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
+import ProjectDatabases from "/imports/ui/projects/ProjectDatabases.vue";
+import ProjectDatabase from "/imports/ui/projects/ProjectDatabase.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
@@ -163,6 +165,20 @@ export default [
     name: "project-task",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
+    props: true
+  },
+  {
+    path: "/projects-databases/:projectId",
+    name: "project-databases",
+    beforeEnter: isBasicAuth,
+    component: ProjectDatabases,
+    props: true
+  },
+  {
+    path: "/projects-databases/:projectId/:databaseId",
+    name: "project-database",
+    beforeEnter: isBasicAuth,
+    component: ProjectDatabase,
     props: true
   },
   {
