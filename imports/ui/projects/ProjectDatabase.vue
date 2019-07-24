@@ -31,9 +31,6 @@ import { Tables } from "/imports/api/databases/databases.js";
 
 import ProjectTable from "/imports/ui/projects/ProjectTable.vue";
 
-import Handsontable from "handsontable";
-import "handsontable/dist/handsontable.full.css";
-
 export default {
   components: {
     ProjectTable
