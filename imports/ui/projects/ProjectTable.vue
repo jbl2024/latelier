@@ -4,7 +4,7 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div class="wrapper">
-      <div ref="hot" class="hot"></div>
+      <div ref="spreadsheet" class="spreadsheet"></div>
     </div>
   </div>
 </template>
@@ -13,15 +13,18 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tables } from "/imports/api/databases/databases.js";
 
+import jexcel from "jexcel/dist/jexcel";
+import "jexcel/dist/jexcel.min.css";
+
 import Handsontable from "handsontable";
 import "handsontable/dist/handsontable.full.css";
 
 export default {
   beforeDestroy() {
-    if (this.hot) {
-      this.hot.destroy();
-      this.hot = null;
-    }
+    // if (this.spreadsheet) {
+    //   jexcel.destroy(this.$refs.spreadsheet, true);
+    //   this.spreadsheet = null;
+    // }
   },
   props: {
     tableId: {
@@ -48,8 +51,9 @@ export default {
   data() {
     return {
       records: null,
+      columns: [],
       table: null,
-      hot: null
+      spreadsheet: null
     };
   },
   methods: {
@@ -81,35 +85,37 @@ export default {
     },
 
     initializeTable() {
-      const columns = [];
-      const headers = [];
-      this.table.columns.map(column => {
-        columns.push({
-          data: column._id
-        });
-        headers.push(column.name);
-      });
-      if (this.hot) {
-        this.hot.destroy();
-      }
-      this.hot = new Handsontable(this.$refs.hot, {
-        data: this.records,
-        colHeaders: headers,
-        rowHeaders: true,
-        columns: columns,
-        manualColumnResize: true,
-        manualRowResize: true,  
-        columnSorting: true,      
-        minSpareRows: 1,
-        afterChange: (changes, source) => {
-          if (!changes) return;
-          changes.forEach(([row, prop, oldValue, newValue]) => {
-            const data = this.hot.getSourceDataAtRow(row);
-            Meteor.call('databases.updateRecord', this.tableId, data);
-          });
-        }
+      this.columns = [{
+        title: "_id",
+        width: 300,
+        type: "hidden"
+      }];
+      const data = [];
 
+      this.table.columns.map(column => {
+        this.columns.push({title: column.name, _id: column._id});
       });
+
+      this.records.map(record => {
+        const item = [record._id];
+        this.columns.map(column => {
+          if (!column._id) return;
+          item.push(record[column._id])
+        });
+        data.push(item)
+      })
+      const options = {
+        columns: this.columns,
+        data: data,
+        onchange: this.onChange
+      }
+      this.spreadsheet = jexcel(this.$refs.spreadsheet, options);
+    },
+
+    onChange(instance, cell, x, y, value) {
+      console.log(this.columns[x]);
+      // this.records[this.columns[x]._id] = value;
+      // Meteor.call('databases.updateRecord', this.tableId, data);
     }
   }
 };
