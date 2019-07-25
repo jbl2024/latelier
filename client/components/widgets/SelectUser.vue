@@ -11,10 +11,10 @@
         <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
         <v-card-text>
           <v-tabs ref="tabs" v-if="active">
-            <v-tab v-if="project">{{ $t('Project') }}</v-tab>
-            <v-tab v-if="project">{{ $t('Organization') }}</v-tab>
+            <v-tab v-if="!hideProject && project">{{ $t('Project') }}</v-tab>
+            <v-tab v-if="project && project.organizationId">{{ $t('Organization') }}</v-tab>
             <v-tab v-if="isAdmin">{{ $t('Find')}}</v-tab>
-            <v-tab-item v-if="project">
+            <v-tab-item v-if="!hideProject && project">
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in projectUsers">
@@ -30,7 +30,7 @@
                 </v-list>
               </div>
             </v-tab-item>
-            <v-tab-item v-if="project">
+            <v-tab-item v-if="project && project.organizationId">
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in organizationUsers">
@@ -160,6 +160,10 @@ export default {
   },
   props: {
     active: Boolean,
+    hideProject: { 
+      type :Boolean,
+      default: false
+    },
     project: Object,
     isAdmin: {
       type: Boolean,
