@@ -2,7 +2,7 @@
 
 <div class="task-properties">
 
-  <select-user @select="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
+  <select-user @select="onChooseAssignedTo" :project="project" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
   <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
   <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
   
@@ -105,8 +105,14 @@ export default {
       showChooseAssignedToDialog: false,
       showSelectDueDate: false,
       showSelectStartDate: false,
-      isEstimationEnabled: false
+      isEstimationEnabled: false,
     };
+  },
+  computed: {
+     project() {
+       if (!this.task) return;
+       return Projects.findOne({_id: this.task.projectId});
+    }
   },
   methods: {
 

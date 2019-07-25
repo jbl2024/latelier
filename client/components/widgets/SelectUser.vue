@@ -11,12 +11,29 @@
         <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
         <v-card-text>
           <v-tabs>
-            <v-tab ripple>{{ $t('Available users') }}</v-tab>
+            <v-tab ripple v-show="project">{{ $t('Project') }}</v-tab>
+            <v-tab ripple>{{ $t('Organization') }}</v-tab>
             <v-tab ripple v-if="isAdmin">{{ $t('Find')}}</v-tab>
+            <v-tab-item v-show="project">
+              <div class="flex-container">
+                <v-list class="flex1" dense subheader>
+                  <template v-for="user in projectUsers">
+                    <v-list-tile :key="user._id" avatar @click="selectUser(user)">
+                      <v-list-tile-avatar :color="isOnline(user)">
+                        <span class>{{ formatUserLetters(user) }}</span>
+                      </v-list-tile-avatar>
+                      <v-list-tile-content class="pointer">
+                        <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
+                      </v-list-tile-content>
+                    </v-list-tile>
+                  </template>
+                </v-list>
+              </div>
+            </v-tab-item>
             <v-tab-item>
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
-                  <template v-for="user in availableUsers">
+                  <template v-for="user in organizationUsers">
                     <v-list-tile :key="user._id" avatar @click="selectUser(user)">
                       <v-list-tile-avatar :color="isOnline(user)">
                         <span class>{{ formatUserLetters(user) }}</span>
@@ -163,8 +180,13 @@ export default {
       }
     };
   },
-  meteor: {
-    availableUsers() {
+  computed: {
+     projectUsers() {
+      if (this.project) {
+        return Meteor.users.find({ _id: { $in: this.project.members } });
+      }
+    },
+    organizationUsers() {
       if (this.project && this.project.organizationId) {
         const organization = Organizations.findOne(this.project.organizationId);
         if (organization) {
@@ -172,7 +194,6 @@ export default {
           return Meteor.users.find({ _id: { $in: members } });
         }
       }
-      return Meteor.users.find();
     }
   },
   methods: {
