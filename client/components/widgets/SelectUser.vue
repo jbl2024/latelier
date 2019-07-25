@@ -10,11 +10,11 @@
       <v-card>
         <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
         <v-card-text>
-          <v-tabs>
-            <v-tab ripple v-show="project">{{ $t('Project') }}</v-tab>
-            <v-tab ripple>{{ $t('Organization') }}</v-tab>
-            <v-tab ripple v-if="isAdmin">{{ $t('Find')}}</v-tab>
-            <v-tab-item v-show="project">
+          <v-tabs ref="tabs" v-if="active">
+            <v-tab v-if="project">{{ $t('Project') }}</v-tab>
+            <v-tab v-if="project">{{ $t('Organization') }}</v-tab>
+            <v-tab v-if="isAdmin">{{ $t('Find')}}</v-tab>
+            <v-tab-item v-if="project">
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in projectUsers">
@@ -30,7 +30,7 @@
                 </v-list>
               </div>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="project">
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in organizationUsers">
@@ -56,6 +56,7 @@
                     v-model="search"
                     append-icon="search"
                     clearable
+                    autofocus
                     v-on:input="debouncedFilter"
                   ></v-text-field>
                 </div>
@@ -167,6 +168,7 @@ export default {
   },
   data() {
     return {
+      selectedTab: 0,
       search: "",
       debouncedFilter: null,
       users: [],
