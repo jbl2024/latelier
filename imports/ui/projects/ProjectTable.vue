@@ -4,7 +4,7 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
     <div class="wrapper">
-      <slim-grid class="spreadsheet" :height="300" enable-add-row :data="records" pk="_id" :editable="true" :column-options="columns" v-if="records"></slim-grid>
+      <div ref="spreadsheet" class="spreadsheet"></div>
     </div>
   </div>
 </template>
@@ -13,12 +13,16 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tables } from "/imports/api/databases/databases.js";
 
-import { Editors } from 'slickgrid-es6';
-import SlimGrid from 'vue-slimgrid';
-import "vue-slimgrid/dist/slimgrid.css"
+import jexcel from "jexcel/dist/jexcel";
+import "jexcel/dist/jexcel.min.css";
 
 export default {
-  components: { SlimGrid },  
+  beforeDestroy() {
+    // if (this.spreadsheet) {
+    //   jexcel.destroy(this.$refs.spreadsheet, true);
+    //   this.spreadsheet = null;
+    // }
+  },
   props: {
     tableId: {
       type: String,
@@ -44,8 +48,9 @@ export default {
   data() {
     return {
       records: null,
+      columns: [],
       table: null,
-      columns: {}
+      spreadsheet: null
     };
   },
   methods: {
@@ -71,22 +76,38 @@ export default {
         this.initializeTable();
       });
     },
-
+    newColumn() {
+    },
     initializeTable() {
-      this.columns = {
-        tableId: {
-          // hidden: true,
-          editor: Editors.Text
-        }
-      };
+      this.columns = [{
+        title: "_id",
+        width: 300,
+        type: "hidden"
+      }];
+      const data = [];
       this.table.columns.map(column => {
-        this.columns[column._id] = {
-          name: column.name,
-          editor: Editors.Text
-        }
+        this.columns.push({title: column.name, _id: column._id});
       });
+      this.records.map(record => {
+        const item = [record._id];
+        this.columns.map(column => {
+          if (!column._id) return;
+          item.push(record[column._id])
+        });
+        data.push(item)
+      })
+      const options = {
+        columns: this.columns,
+        data: data,
+        onchange: this.onChange
+      }
+      this.spreadsheet = jexcel(this.$refs.spreadsheet, options);
+    },
+    onChange(instance, cell, x, y, value) {
+      console.log(this.columns[x]);
+      // this.records[this.columns[x]._id] = value;
+      // Meteor.call('databases.updateRecord', this.tableId, data);
     }
-
   }
 };
 </script>
@@ -100,7 +121,6 @@ export default {
   flex-direction: column;
   position: relative;
 }
-
 .wrapper {
   flex:1;
   overflow-y: scroll;
@@ -108,10 +128,9 @@ export default {
   display: flex;
   min-height: 0;
 }
-
 .spreadsheet {
   overflow: scroll;
-  /* height: 100%;
-  width: 100%; */
+  height: 100%;
+  width: 100%;
 }
 </style>

@@ -144,6 +144,7 @@ h1 {
 
 .tab-wrapper {
   height: 400px;
+
 }
 
 </style>
