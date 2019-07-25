@@ -56,7 +56,7 @@ export default {
   },
   methods: {
     loadTable(tableId) {
-      Meteor.call('databases.findTable', tableId, (error, result) => {
+      Meteor.call("databases.findTable", tableId, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -65,7 +65,7 @@ export default {
         if (this.table) {
           this.loadRecords(this.table);
         }
-      })
+      });
     },
     loadRecords(table) {
       Meteor.call("databases.loadRecords", table._id, (error, result) => {
@@ -77,67 +77,77 @@ export default {
         this.initializeTable();
       });
     },
-    newColumn() {
-    },
+    newColumn() {},
     initializeTable() {
-      this.columns = [{
-        title: "_id",
-        width: 300,
-        type: "hidden"
-      }];
+      this.columns = [
+        {
+          title: "_id",
+          width: 300,
+          type: "hidden"
+        }
+      ];
       this.data = [];
       this.table.columns.map(column => {
-        this.columns.push({title: column.name, _id: column._id});
+        this.columns.push({ 
+          title: column.name, 
+          _id: column._id,
+          width: 300,
+        });
       });
       this.records.map(record => {
         const item = [record._id];
         this.columns.map(column => {
           if (!column._id) return;
-          item.push(record[column._id])
+          item.push(record[column._id]);
         });
-        this.data.push(item)
-      })
+        this.data.push(item);
+      });
       const options = {
         columns: this.columns,
         data: this.data,
         onchange: this.onChange,
         oninsertrow: this.onNewRow
-      }
+      };
       this.spreadsheet = jexcel(this.$refs.spreadsheet, options);
     },
 
     onChange(instance, cell, x, y, value) {
-      console.log(cell)
+      console.log(cell);
       const row = instance.jexcel.getRowData(y);
       const recordId = row[0];
       const columnId = this.columns[x]._id;
 
       const record = this.records.find(r => {
         return r._id === recordId;
-      })
+      });
       if (!record) {
         return;
       }
       record[columnId] = value;
-      Meteor.call('databases.updateRecord', this.tableId, record);
+      Meteor.call("databases.updateRecord", this.tableId, record);
     },
 
     onNewRow(instance, rowNumber, numOfRows, rowRecords, insertBefore) {
       const record = {
         tableId: this.tableId
-      }
+      };
       this.columns.map(column => {
         record[column._id] = "";
       });
 
-      Meteor.call('databases.updateRecord', this.tableId, record, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "databases.updateRecord",
+        this.tableId,
+        record,
+        (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.data[rowNumber + 1][0] = result._id;
+          this.records.push(result);
         }
-        this.data[rowNumber+1][0] = result._id;
-        this.records.push(result);
-      });
+      );
     }
   }
 };
@@ -147,13 +157,13 @@ export default {
 .project-table {
   background-color: White;
   display: flex;
-  min-height:0;
+  min-height: 0;
   height: 100%;
   flex-direction: column;
   position: relative;
 }
 .wrapper {
-  flex:1;
+  flex: 1;
   overflow-y: scroll;
   position: relative;
   display: flex;

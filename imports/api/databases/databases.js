@@ -33,6 +33,8 @@ Meteor.methods({
       createdBy: Meteor.userId()
     });
     Meteor.call("databases.initializeTable", databaseId)
+    Meteor.call("databases.initializeTable", databaseId)
+    Meteor.call("databases.initializeTable", databaseId)
 
     return databaseId;
   },
