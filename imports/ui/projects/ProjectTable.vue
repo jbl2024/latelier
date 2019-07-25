@@ -50,7 +50,8 @@ export default {
       records: null,
       columns: [],
       table: null,
-      spreadsheet: null
+      spreadsheet: null,
+      data: []
     };
   },
   methods: {
@@ -84,7 +85,7 @@ export default {
         width: 300,
         type: "hidden"
       }];
-      const data = [];
+      this.data = [];
       this.table.columns.map(column => {
         this.columns.push({title: column.name, _id: column._id});
       });
@@ -94,19 +95,49 @@ export default {
           if (!column._id) return;
           item.push(record[column._id])
         });
-        data.push(item)
+        this.data.push(item)
       })
       const options = {
         columns: this.columns,
-        data: data,
-        onchange: this.onChange
+        data: this.data,
+        onchange: this.onChange,
+        oninsertrow: this.onNewRow
       }
       this.spreadsheet = jexcel(this.$refs.spreadsheet, options);
     },
+
     onChange(instance, cell, x, y, value) {
-      console.log(this.columns[x]);
-      // this.records[this.columns[x]._id] = value;
-      // Meteor.call('databases.updateRecord', this.tableId, data);
+      console.log(cell)
+      const row = instance.jexcel.getRowData(y);
+      const recordId = row[0];
+      const columnId = this.columns[x]._id;
+
+      const record = this.records.find(r => {
+        return r._id === recordId;
+      })
+      if (!record) {
+        return;
+      }
+      record[columnId] = value;
+      Meteor.call('databases.updateRecord', this.tableId, record);
+    },
+
+    onNewRow(instance, rowNumber, numOfRows, rowRecords, insertBefore) {
+      const record = {
+        tableId: this.tableId
+      }
+      this.columns.map(column => {
+        record[column._id] = "";
+      });
+
+      Meteor.call('databases.updateRecord', this.tableId, record, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.data[rowNumber+1][0] = result._id;
+        this.records.push(result);
+      });
     }
   }
 };

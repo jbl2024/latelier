@@ -139,12 +139,23 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
+    record.tableId = tableId;
     if (!record._id) {
       delete record._id;
-      record.tableId = tableId;
-      Records.insert(record);
+      const recordId = Records.insert(record);
+      return Records.findOne({_id: recordId});
     } else {
       Records.update({_id: record._id}, {$set: record});
     }
+  },
+
+  "databases.deleteRecord"(tableId, record) {
+    check(tableId, String);
+    check(record, Object);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    Records.remove({_id: record._id, tableId: tableId});
   }
 });
