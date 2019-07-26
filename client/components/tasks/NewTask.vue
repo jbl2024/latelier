@@ -7,7 +7,7 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
-        <v-card-title class="headline">{{ $t('New task') }}</v-card-title>
+        <v-card-title class="headline">{{ $t('Add new task') }}</v-card-title>
         <v-card-text>
           <v-form v-model="valid" class="form" v-on:submit.prevent>
               <v-layout wrap>
@@ -81,7 +81,6 @@ export default {
         "Tasks created": "Task created",
       },
       fr: {
-        "New task": "Nouvelle tâche",
         Title: "Titre",
         "Really create {count} tasks?": "Vous allez créer {count} tâches",
         "Create {count} tasks": "Créer {count} tâches",
