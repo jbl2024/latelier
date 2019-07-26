@@ -64,6 +64,11 @@ export default {
   "Do you really want to delete this task?": "Volètz vertadièrament suprimir aqueste trabalh ?",
   "History": "Istoric",
   "Search...": "Cercar...",
+  "Attachments": "Pèças juntas",
+  "Leave project": "Quitar lo projècte",
+	"Leave project?": "Quitar lo projècte ?",
+  "Project": "Projècte",
+	"Organization": "Organizacion",
   history: {
     tasks: {
       create: "Creacion",
