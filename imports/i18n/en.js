@@ -67,6 +67,8 @@ export default {
   "Attachments": "Attachments",
   "Leave project": "Leave project",
   "Leave project?": "Leave project?",
+  "Project": "Project",
+  "Organization": "Organization",
   history: {
     tasks: {
       create: "Creation",

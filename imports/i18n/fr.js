@@ -67,6 +67,8 @@ export default {
     "Attachments": "Pièces jointes",
     "Leave project": "Quitter le projet",
     "Leave project?": "Quitter le projet ?",  
+    "Project": "Projet",
+    "Organization": "Organisation",
     history: {
       tasks: {
         create: "Création",
