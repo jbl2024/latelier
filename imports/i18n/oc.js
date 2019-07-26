@@ -69,7 +69,8 @@ export default {
   "Leave project": "Quitar lo projècte",
 	"Leave project?": "Quitar lo projècte ?",
   "Project": "Projècte",
-	"Organization": "Organizacion",
+  "Organization": "Organizacion",
+  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "",
   history: {
     tasks: {
       create: "Creacion",

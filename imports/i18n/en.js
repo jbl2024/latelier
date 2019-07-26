@@ -70,6 +70,7 @@ export default {
   "Leave project?": "Leave project?",
   "Project": "Project",
   "Organization": "Organization",
+  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.",
   history: {
     tasks: {
       create: "Creation",
