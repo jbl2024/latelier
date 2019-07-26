@@ -24,7 +24,7 @@
     </div>
     <div v-if="$subReady.projects">
       <empty-state v-if="projects.length == 0" :description="`Aucun projet disponible`" illustration="project">
-        <v-btn class="primary" @click="newProject">Créer un nouveau projet</v-btn>
+        <v-btn class="primary" @click="newProject">{{ $t('Create new project')}}</v-btn>
       </empty-state>
       <v-list two-line subheader v-show="projects.length != 0" class="elevation-1">
         <v-subheader>

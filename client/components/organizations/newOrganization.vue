@@ -2,7 +2,7 @@
   <div class="new-organization">
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
-        <v-card-title class="headline">Nouvelle organisation</v-card-title>
+        <v-card-title class="headline">{{ $t('New organization') }}</v-card-title>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
             <v-text-field v-model="name" ref="name" :rules="nameRules" label="Nom" v-on:keyup.enter="create()" required></v-text-field>

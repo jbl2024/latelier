@@ -31,6 +31,7 @@ export default {
     "New project": "Nouveau projet",
     "New organization": "Nouvelle organisation",
     "Create new organization": "Créer une nouvelle organisation",
+    "Create new project": "Créer un nouveau projet",
     "New label": "Nouveau label",
     "Add new task": "Ajouter une tâche",
     "Assigned to": "Assignées à",

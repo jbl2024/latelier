@@ -59,8 +59,8 @@
           description="Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs"
           illustration="project"
         >
-          <v-btn flat @click="newProject()">Créer un nouveau projet</v-btn>
-          <v-btn class="primary" @click="newOrganization()">Créer une organisation</v-btn>
+          <v-btn flat @click="newProject()">{{ $t('Create new project') }}</v-btn>
+          <v-btn class="primary" @click="newOrganization()">{{ $t('Create new organization')}}</v-btn>
         </empty-state>
       </template>
 
@@ -177,7 +177,7 @@
             :description="`Aucun projet disponible`"
             illustration="project"
           >
-            <v-btn class="primary" @click="newProject(organization._id)">Créer un nouveau projet</v-btn>
+            <v-btn class="primary" @click="newProject(organization._id)">{{ $t('Create new project') }}</v-btn>
           </empty-state>
         </template>
       </div>
