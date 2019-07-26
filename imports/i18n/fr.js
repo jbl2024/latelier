@@ -71,6 +71,16 @@ export default {
     "Project": "Projet",
     "Organization": "Organisation",
     "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs",
+    "Duties": "Responsabilités",
+    "Unassigned": "Non assignée",
+    "Start date": "Date de début", 
+    "End date": "Date de fin", 
+    "None": "Aucune",   
+    "Add label": "Ajouter un label",
+    "No notes": "Aucune note",
+    "Add note": "Ajouter une note",
+    "edited": "éditée",
+    "New list": "Nouvelle liste",
     history: {
       tasks: {
         create: "Création",

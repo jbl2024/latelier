@@ -3,7 +3,7 @@
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <new-label ref="newLabel" :projectId="projectId"></new-label>  
       <v-card>
-        <v-card-title class="headline">Sélectionner un label</v-card-title>
+        <v-card-title class="headline">{{ $t('Add label') }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-list class="content">

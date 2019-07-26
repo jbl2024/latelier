@@ -19,10 +19,10 @@
             <v-icon>calendar_today</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Date de début</v-list-tile-title>
+            <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-              <span v-show="!project.startDate">Aucune</span>
+              <span v-show="!project.startDate">{{ $t('None') }}</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -34,10 +34,10 @@
             <v-icon>alarm_on</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Date de fin</v-list-tile-title>
+            <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-              <span v-show="!project.endDate">Aucune</span>
+              <span v-show="!project.endDate">{{ $t('None') }}</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>

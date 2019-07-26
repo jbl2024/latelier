@@ -3,7 +3,7 @@
 <div class="task-labels-in-new-task">
   <select-label ref="selectLabel" :projectId="projectId" @select="onSelectLabel"></select-label>  
   <v-chip v-for="label in labels" close :key="label._id" :style="getColor(label)" @input="removeLabel(label)">{{ label.name }}</v-chip>
-  <v-btn round v-show="labels.length == 0" @click="$refs.selectLabel.open()">Ajouter un label</v-btn>
+  <v-btn round v-show="labels.length == 0" @click="$refs.selectLabel.open()">{{ $t('Add label') }}</v-btn>
   <v-btn v-show="labels.length > 0" fab small @click="$refs.selectLabel.open()">
     <v-icon>add</v-icon>
   </v-btn>

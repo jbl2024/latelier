@@ -71,6 +71,16 @@ export default {
   "Project": "Project",
   "Organization": "Organization",
   "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.",
+  "Duties": "Duties",
+  "Unassigned": "Unassigned",
+  "Start date": "Start date", 
+  "End date": "End date", 
+  "None": "None", 
+  "Add label": "Add label",
+  "No notes": "No notes",
+  "Add note": "Add note",
+  "edited": "edited",
+  "New list": "New list",
   history: {
     tasks: {
       create: "Creation",

@@ -3,10 +3,9 @@
     <empty-state
       v-show="!hasNotes(task.notes) && !editNewNote"
       icon="note"
-      label="Aucune note"
-      description="Vous pouvez ajouter des notes."
+      :label="$t('No notes')"
     >
-      <v-btn class="primary" @click="startNewNote">Ajouter une note</v-btn>
+      <v-btn class="primary" @click="startNewNote">{{ $t('Add note')}}</v-btn>
     </empty-state>
 
       <template v-for="note in task.notes">
@@ -82,18 +81,6 @@ export default {
       type: Object
     }
   },
-  i18n: {
-    messages: {
-      en: { 
-        "Add note": "Add note",
-        "edited": "edited",
-      },
-      fr: {
-        "Add note": "Ajouter une note",
-        "edited": "éditée",
-      }
-    }  
-  },   
   data() {
     return {
       editNewNote: false,

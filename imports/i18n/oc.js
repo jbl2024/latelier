@@ -71,6 +71,9 @@ export default {
   "Project": "Projècte",
   "Organization": "Organizacion",
   "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "",
+  "Add label": "Ajustar una etiqueta",
+  "Add note": "Ajustar una nòta",
+  "New list": "Novèla lista",
   history: {
     tasks: {
       create: "Creacion",
