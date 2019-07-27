@@ -109,6 +109,8 @@ export default {
     "Features": "Fonctionnalités",
     "Members": "Members",
     "Background.None": "Aucun",
+    "Automatically mark as completed": "Terminer automatiquement",
+    "Catch completed tasks": "Attraper les tâches terminées",
     history: {
       tasks: {
         create: "Création",

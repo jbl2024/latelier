@@ -37,13 +37,13 @@
                   <v-list-tile-action>
                     <v-checkbox :input-value="list.autoComplete"></v-checkbox>
                   </v-list-tile-action>
-                  <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
+                  <v-list-tile-title>{{ $t('Automatically mark as completed')}}</v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
                   <v-list-tile-action>
                     <v-checkbox :input-value="list.catchCompleted"></v-checkbox>
                   </v-list-tile-action>
-                  <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
+                  <v-list-tile-title>{{ $t('Catch completed tasks') }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
