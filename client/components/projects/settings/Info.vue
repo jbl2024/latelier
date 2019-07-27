@@ -7,7 +7,7 @@
             <div class="ql-editor-view" v-html="markDown(project.description)"></div>
           </div>
           <div v-show="!project.description">
-            Aucune description
+            {{ $t('No description') }}
           </div>
         </div>
     </div>

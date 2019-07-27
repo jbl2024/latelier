@@ -103,7 +103,7 @@
       <div
         v-show="!task.description && !editDescription"
         @click="startEditDescription"
-      >Aucune description</div>
+      >{{ $t('No description') }}</div>
 
       <div v-show="editDescription">
         <rich-editor ref="description" v-model="task.description" @submit="updateDescription"></rich-editor>

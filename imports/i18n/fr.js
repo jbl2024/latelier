@@ -111,6 +111,7 @@ export default {
     "Background.None": "Aucun",
     "Automatically mark as completed": "Terminer automatiquement",
     "Catch completed tasks": "Attraper les tâches terminées",
+    "New item": "Nouvel item",
     history: {
       tasks: {
         create: "Création",

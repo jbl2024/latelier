@@ -37,7 +37,7 @@
         <div
           v-show="!organization.description && !editDescription"
           @click="startEditDescription"
-        >Aucune description</div>
+        >{{ $t('No description') }}</div>
         <div v-show="editDescription">
           <v-textarea
             ref="description"

@@ -102,7 +102,7 @@ export default {
   "Color": "Color",
   "Categories": "Categories",
   "Organization": "Organization",
-  "No description": "no description",
+  "No description": "No description",
   "The project is public": "The project is public",
   "The project is private": "The project is private",
   "State": "State",
@@ -111,6 +111,7 @@ export default {
   "Background.None": "None",
   "Automatically mark as completed": "Automatically mark as completed",
   "Catch completed tasks": "Catch completed tasks",
+  "New item": "New item",
   history: {
     tasks: {
       create: "Creation",
