@@ -30,7 +30,7 @@
                   <v-list-tile-action>
                     <v-icon>delete</v-icon>
                   </v-list-tile-action>
-                  <v-list-tile-title>Supprimer</v-list-tile-title>
+                  <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>
                 </v-list-tile>
                 <v-divider></v-divider>
                 <v-list-tile @click="list.autoComplete = !list.autoComplete">

@@ -81,7 +81,19 @@ export default {
     "Add note": "Ajouter une note",
     "edited": "éditée",
     "New list": "Nouvelle liste",
-    history: {
+    "Template": "Modèle",
+    "State": "Etat",
+    "Name": "Nom",
+    "People": "Personnes",
+    "Name is mandatory": "Le nom est obligatoire",
+    "Name is too short": "Le nom est trop court",
+    "Email is mandatory": "L'email est obligatoire",
+    "Invalid email": "Email invalide",
+    "Password is mandatory": "Le mot de passe est obligatoire",
+    "Password is too short": "Le mot de passe est trop court",
+    "Welcome back!": "Ravi de voir revoir!",
+    "Empty": "Vide",
+      history: {
       tasks: {
         create: "Création",
         updateName: "Modification du nom",

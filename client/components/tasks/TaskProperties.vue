@@ -37,7 +37,6 @@
           <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
           <v-list-tile-sub-title>
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
-            <span v-show="!task.startDate">{{ $t('None') }}</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
@@ -57,7 +56,6 @@
           <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
           <v-list-tile-sub-title>
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
-            <span v-show="!task.dueDate">{{ $t('None') }}</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>

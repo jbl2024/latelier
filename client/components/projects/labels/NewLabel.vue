@@ -6,7 +6,7 @@
         <v-card-title class="headline">Créer un label</v-card-title>
         <v-card-text>
           <v-form v-model="valid" class="form" v-on:submit.prevent>
-            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="create()"></v-text-field>
+            <v-text-field v-model="name" v-focus :rules="nameRules" :label="$t('Name')" required v-on:keyup.enter="create()"></v-text-field>
 
             <v-btn color="primary" @click="showSelectColor = true" class="btn-color">
               Choisir une couleur
@@ -17,8 +17,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="primary" @click="create" :disabled="!valid">Créer</v-btn>
+          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn color="primary" @click="create" :disabled="!valid">{{ this.$t('Create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -41,8 +41,8 @@ export default {
       name: '',
       color: '#000',
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => v.length > 1 || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => v.length > 1 || this.$t('Name is too short')
       ]
     }
   },

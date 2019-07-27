@@ -38,7 +38,7 @@
                 <v-text-field label="Prénom" v-model="user.profile.firstName"></v-text-field>
               </v-flex>
               <v-flex xs12 sm6 md6>
-                <v-text-field label="Nom" v-model="user.profile.lastName"></v-text-field>
+                <v-text-field :label="$t('Name')" v-model="user.profile.lastName"></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-text-field label="Email*" required :rules="emailRules" v-model="user.email"></v-text-field>
@@ -79,8 +79,8 @@ export default {
     return {
       valid: false,
       emailRules: [
-        v => !!v || "Email obligatoire",
-        v => (v.length > 1 && v.indexOf('@') > -1) || "Email invalide"
+        v => !!v || this.$t('Email is mandatory'),
+        v => (v.length > 1 && v.indexOf('@') > -1) || this.$t('Invalid email')
       ],
       showDialog: false,
       user: {

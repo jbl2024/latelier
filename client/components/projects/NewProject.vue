@@ -21,7 +21,7 @@
                 <v-radio-group v-model="projectType">
                   <v-radio label="Kanban" value="kanban"></v-radio>
                   <v-radio :label="$t('People')" value="people"></v-radio>
-                  <v-radio label="Vide" value="none"></v-radio>
+                  <v-radio :label="$t('Empty')" value="none"></v-radio>
                 </v-radio-group>
               </v-flex>
               <v-flex sm6 md6>
@@ -49,26 +49,6 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
-  i18n: {
-    messages: {
-      en: {
-        "Template": "Template",
-        "State": "State",
-        "Name": "Name",
-        "People": "People",
-        "Name is mandatory": "Name is mandatory",
-        "Name is too short": "Name is too short",
-      },
-      fr: {
-        "Template": "Modèle",
-        "State": "Etat",
-        "Name": "Nom",
-        "People": "Personnes",
-        "Name is mandatory": "Le nom est obligatoire",
-        "Name is too short": "Le nom est trop court",
-      }
-    }
-  },
   props: {
     organizationId: {
       type: String,

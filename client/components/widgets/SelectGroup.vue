@@ -29,7 +29,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">Annuler</v-btn>
+          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

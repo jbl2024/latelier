@@ -16,7 +16,7 @@
           <v-form v-model="valid" v-on:submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" :rules="nameRules" label="Nom" required></v-text-field>
+                <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <v-list two-line class="elevation-1 date">
@@ -28,7 +28,6 @@
                       <v-list-tile-title>{{ $t('Date') }}</v-list-tile-title>
                       <v-list-tile-sub-title>
                         <span v-show="date">{{ formatDate(date) }}</span>
-                        <span v-show="!date">{{ $t('None') }}</span>
                       </v-list-tile-sub-title>
                     </v-list-tile-content>
                     <v-list-tile-action>
@@ -108,8 +107,8 @@ export default {
       name: "",
       weather: "",
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => (v && v.length > 1) || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => (v && v.length > 1) || this.$t('Name is too short')
       ],
       description: "",
       items: ["sunny", "cloudy", "storm"]

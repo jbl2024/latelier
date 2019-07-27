@@ -22,7 +22,6 @@
             <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-              <span v-show="!project.startDate">{{ $t('None') }}</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>
@@ -37,7 +36,6 @@
             <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-              <span v-show="!project.endDate">{{ $t('None') }}</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
         </v-list-tile>

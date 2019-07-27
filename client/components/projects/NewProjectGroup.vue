@@ -6,13 +6,13 @@
         <v-card-title class="headline">Nouvelle catégorie</v-card-title>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
-            <v-text-field v-model="name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="create()"></v-text-field>
+            <v-text-field v-model="name" v-focus :rules="nameRules" :label="$t('Name')" required v-on:keyup.enter="create()"></v-text-field>
           </v-form>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="info" @click="create" :disabled="!valid">Créer</v-btn>
+          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn color="info" @click="create" :disabled="!valid">{{ this.$t('Create') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -37,8 +37,8 @@ export default {
       valid: false,
       name: '',
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => v.length > 0 || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => v.length > 0 || this.$t('Name is too short')
       ]
     }
   },

@@ -23,7 +23,7 @@
         </v-btn>
         <v-list>
           <v-list-tile v-if="!isMe()" @click="showConfirmDeleteUserDialog = true">
-            <v-list-tile-title>Supprimer</v-list-tile-title>
+            <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>
           </v-list-tile>
         </v-list>
       </v-menu>
