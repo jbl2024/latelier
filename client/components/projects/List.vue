@@ -118,6 +118,11 @@ export default {
     }
   },
   mounted() {
+    this.$events.listen("edit-list", listId => {
+      if (listId === this.list._id) {
+        this.editList(this.list);
+      }
+    }),
     this.$events.listen("filter-tasks", name => {
       if (name && name.length > 0) {
         this.forceShowHiddenTask = true;
@@ -128,6 +133,7 @@ export default {
   }, 
   beforeDestroy() {
     this.$events.off("filter-tasks");
+    this.$events.off("edit-list");
   },
   data() {
     return {

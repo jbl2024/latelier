@@ -70,6 +70,7 @@ export default {
         if (error) {
           return;
         }
+        this.$events.fire('edit-list', createdList._id);
       });
     },
 
