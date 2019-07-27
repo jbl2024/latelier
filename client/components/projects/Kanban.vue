@@ -66,7 +66,7 @@ export default {
     },
 
     newListInline () {
-      Meteor.call('lists.insert', this.projectId, $t('New list'), (error, createdList) => { 
+      Meteor.call('lists.insert', this.projectId, this.$t('New list'), (error, createdList) => { 
         if (error) {
           return;
         }
