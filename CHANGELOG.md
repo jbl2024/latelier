@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - More i18n translations
+- Edit list name right after creation
 
 ### Changed
 - Display previous members in project filter toolbar
