@@ -1,19 +1,19 @@
 export default {
-    'Back': 'Retour',
-    'Cancel': 'Annuler',
-    'Confirm': 'Confirmer',
-    'Delete': 'Supprimer',
-    'Create': 'Créer',
-    'Update': 'Mettre à jour',
-    'Canvas': 'Canevas',
-    'Weather': 'Météo',
-    'Description': 'Description',
-    'Deletion is permanent': 'La suppression est définitive',
-    'Properties': 'Propriétés',
-    'Notes': 'Notes',
-    'List': 'Liste',
-    'Completed on': 'Terminée le',
-    'Created by': 'Créée par',
+    "Back": "Retour",
+    "Cancel": "Annuler",
+    "Confirm": "Confirmer",
+    "Delete": "Supprimer",
+    "Create": "Créer",
+    "Update": "Mettre à jour",
+    "Canvas": "Canevas",
+    "Weather": "Météo",
+    "Description": "Description",
+    "Deletion is permanent": "La suppression est définitive",
+    "Properties": "Propriétés",
+    "Notes": "Notes",
+    "List": "Liste",
+    "Completed on": "Terminée le",
+    "Created by": "Créée par",
     "Convert element to task?": "Transformer en tâche ?",
     "Delete element?": "Supprimer l'élément ?",
     "Convert": "Convertir",
@@ -133,10 +133,10 @@ export default {
     },
     projects: {
       state: {
-        PLANNED: 'Planifié',
-        DEVELOPMENT: 'En développement',
-        PRODUCTION: 'En production',
-        ARCHIVED: 'Archivé'
+        PLANNED: "Planifié",
+        DEVELOPMENT: "En développement",
+        PRODUCTION: "En production",
+        ARCHIVED: "Archivé"
       }
     },
     dates: {
@@ -146,8 +146,8 @@ export default {
         dateTime: "DD/MM/YYYY HH:mm",
       },
       duration: {
-        past: 'il y a {duration}',
-        future: 'dans {duration}',
+        past: "il y a {duration}",
+        future: "dans {duration}",
       }
     }
 };

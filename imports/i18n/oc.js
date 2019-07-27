@@ -1,19 +1,19 @@
 export default {
-  'Back': 'Tornar',
-  'Cancel': 'Anullar',
-  'Confirm': 'Confirmar',
-  'Delete': 'Suprimir',
-  'Create': 'Crear',
-  'Update': 'Actualizar',
-  'Canvas': 'Canevas',
-  'Weather': 'Meteo',
-  'Description': 'Descripcion',
-  'Deletion is permanent': 'La supression es definitiva',
-  'Properties': 'Proprietats',
-  'Notes': 'Nòtas',
-  'List': 'Lista',
-  'Completed on': 'Acabat lo',
-  'Created by': 'Creat per',
+  "Back": "Tornar",
+  "Cancel": "Anullar",
+  "Confirm": "Confirmar",
+  "Delete": "Suprimir",
+  "Create": "Crear",
+  "Update": "Actualizar",
+  "Canvas": "Canevas",
+  "Weather": "Meteo",
+  "Description": "Descripcion",
+  "Deletion is permanent": "La supression es definitiva",
+  "Properties": "Proprietats",
+  "Notes": "Nòtas",
+  "List": "Lista",
+  "Completed on": "Acabat lo",
+  "Created by": "Creat per",
   "Convert element to task?": "Transformar en trabalh ?",
   "Delete element?": "Suprimir l'element ?",
   "Convert": "Convertir",
@@ -103,10 +103,10 @@ export default {
   },
   projects: {
     state: {
-      PLANNED: 'Planificat',
-      DEVELOPMENT: 'En desvolopament',
-      PRODUCTION: 'En produccion',
-      ARCHIVED: 'Archivat'
+      PLANNED: "Planificat",
+      DEVELOPMENT: "En desvolopament",
+      PRODUCTION: "En produccion",
+      ARCHIVED: "Archivat"
     }
   },
   dates: {
@@ -116,7 +116,7 @@ export default {
       dateTime: "DD/MM/YYYY HH:mm",
     },
     duration: {
-      past: 'fa {duration}',
+      past: "fa {duration}",
       future: "d'aquí {duration}",
     }
   }

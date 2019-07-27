@@ -1,19 +1,19 @@
 export default {
-  'Back': 'Back',
-  'Cancel': 'Cancel',
-  'Confirm': 'Confirm',
-  'Delete': 'Delete',
-  'Create': 'Create',
-  'Update': 'Update',
-  'Canvas': 'Canvas',
-  'Weather': 'Weather',
-  'Description': 'Description',
-  'Deletion is permanent': 'Deletion is permanent',
-  'Properties': 'Properties',
-  'Notes': 'Notes',
-  'List': 'List',
-  'Completed on': 'Completed on',
-  'Created by': 'Created by',
+  "Back": "Back",
+  "Cancel": "Cancel",
+  "Confirm": "Confirm",
+  "Delete": "Delete",
+  "Create": "Create",
+  "Update": "Update",
+  "Canvas": "Canvas",
+  "Weather": "Weather",
+  "Description": "Description",
+  "Deletion is permanent": "Deletion is permanent",
+  "Properties": "Properties",
+  "Notes": "Notes",
+  "List": "List",
+  "Completed on": "Completed on",
+  "Created by": "Created by",
   "Convert element to task?": "Convert element to task?",
   "Delete element?": "Delete element?",
   "Convert": "Convert",
@@ -135,10 +135,10 @@ export default {
   },
   projects: {
     state: {
-      PLANNED: 'Planned',
-      DEVELOPMENT: 'Development',
-      PRODUCTION: 'Production',
-      ARCHIVED: 'Archived'
+      PLANNED: "Planned",
+      DEVELOPMENT: "Development",
+      PRODUCTION: "Production",
+      ARCHIVED: "Archived"
     }
   },
   dates: {
@@ -148,8 +148,8 @@ export default {
       dateTime: "MM/DD/YYYY HH:mm",
     },
     duration: {
-      past: '{duration} ago',
-      future: 'in {duration}',
+      past: "{duration} ago",
+      future: "in {duration}",
     }
   }
 };
