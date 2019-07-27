@@ -6,7 +6,7 @@
 
 
   <v-list dense class="pt-0">
-    <v-subheader>Catégories</v-subheader>
+    <v-subheader>{{ $t('Categories') }}</v-subheader>
     <v-list-tile 
         @click="selectGroup(group)"
         v-for="group in groups"
@@ -36,7 +36,7 @@
       </v-list-tile-action>
 
       <v-list-tile-content>
-        <v-list-tile-title>Créer...</v-list-tile-title>
+        <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
   </v-list>

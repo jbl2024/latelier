@@ -51,7 +51,7 @@
       </v-list-tile>
     </v-list>
 
-    <v-subheader>Catégories
+    <v-subheader>{{ $t('Categories') }}
     </v-subheader>
     <v-list class="elevation-1">
       <template v-for="group in assignedGroups" >
