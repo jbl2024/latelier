@@ -70,7 +70,7 @@ export default {
 	"Leave project?": "Quitar lo projècte ?",
   "Project": "Projècte",
   "Organization": "Organizacion",
-  "Avètz pas cap de projècte pel moment. Podètz començar de crear un projècte o una organizacion que contenga de membres e diferents projèctes.": "",
+  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "Avètz pas cap de projècte pel moment. Podètz començar de crear un projècte o una organizacion que contenga de membres e diferents projèctes.",
   "Add label": "Ajustar una etiqueta",
   "Add note": "Ajustar una nòta",
   "New list": "Novèla lista",
