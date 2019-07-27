@@ -3,7 +3,7 @@
     <select-user @select="onSelectUser" :active.sync="showSelectUserDialog" :is-admin="canManageOrganization(organization)"></select-user>
     <div class="elevation-1 users">
       <v-list v-if="$subReady.user && $subReady.usersInOrganization">
-        <v-subheader>Membres
+        <v-subheader>{{ $t('Members') }}
           <v-btn flat icon @click="showSelectUserDialog = true">
             <v-icon>add</v-icon>
           </v-btn>

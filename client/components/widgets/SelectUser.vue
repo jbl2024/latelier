@@ -51,7 +51,7 @@
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
-                    label="Recherche"
+                    :label="$t('Search...')"
                     single-line
                     v-model="search"
                     append-icon="search"

@@ -2,7 +2,7 @@
   <div class="manage-users elevation-1">
     <select-user hide-project @select="onSelectUser" :project="project" :active.sync="showSelectUserDialog" :is-admin="canManageProject(project)"></select-user>
     <v-list v-if="$subReady.user && $subReady.usersInProject">
-      <v-subheader>Membres
+      <v-subheader>{{ $t('Members') }}
         <v-btn flat icon @click="showSelectUserDialog = true">
           <v-icon>add</v-icon>
         </v-btn>

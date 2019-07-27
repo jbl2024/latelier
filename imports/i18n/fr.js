@@ -104,6 +104,7 @@ export default {
     "The project is private": "Le projet est privé",
     "State": "Etat",
     "Features": "Fonctionnalités",
+    "Members": "Members",
     history: {
       tasks: {
         create: "Création",
