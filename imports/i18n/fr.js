@@ -93,7 +93,18 @@ export default {
     "Password is too short": "Le mot de passe est trop court",
     "Welcome back!": "Ravi de voir revoir!",
     "Empty": "Vide",
-      history: {
+    "Visibility": "Visibilité",
+    "Size": "Taille",
+    "Dates": "Dates",
+    "Color": "Couleur",
+    "Categories": "Catégories",
+    "Organization": "Organisation",
+    "No description": "Aucune description",
+    "The project is public": "Le projet est public",
+    "The project is private": "Le projet est privé",
+    "State": "Etat",
+    "Features": "Fonctionnalités",
+    history: {
       tasks: {
         create: "Création",
         updateName: "Modification du nom",

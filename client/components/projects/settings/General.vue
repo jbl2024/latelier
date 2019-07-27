@@ -85,7 +85,7 @@
           {{ project.estimatedSize }}
         </div>
         <div v-show="!project.estimatedSize && !editEstimatedSize">
-          Aucune estimation
+          {{ $t('None') }}
         </div>
 
         <div v-show="editEstimatedSize">
@@ -281,39 +281,7 @@ export default {
         }
       }
     }
-  },
-  i18n: {
-    messages: {
-      en: { 
-        "Description": "Description",
-        "Visibility": "Visibility",
-        "Size": "Size",
-        "Dates": "Dates",
-        "Color": "Color",
-        "Categories": "Categories",
-        "Organization": "Organization",
-        "No description": "no description",
-        "The project is public": "The project is public",
-        "The project is private": "The project is private",
-        "State": "State",
-        "Features": "Features",
-      },
-      fr: {
-        "Description": "Description",
-        "Visibility": "Visibilité",
-        "Size": "Taille",
-        "Dates": "Dates",
-        "Color": "Couleur",
-        "Categories": "Catégories",
-        "Organization": "Organisation",
-        "No description": "Aucune description",
-        "The project is public": "Le projet est public",
-        "The project is private": "Le projet est privé",
-        "State": "Etat",
-        "Features": "Fonctionnalités",
-      }
-    }
-  },  
+  }, 
   methods: {
     onSelectStartDate(date) {
       Meteor.call("projects.setStartDate", {projectId: this.project._id, startDate: date});

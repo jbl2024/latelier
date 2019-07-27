@@ -95,6 +95,17 @@ export default {
   "Empty": "Empty",
   "Select background": "Select background",
   "Background updated": "Background updated",
+  "Visibility": "Visibility",
+  "Size": "Size",
+  "Dates": "Dates",
+  "Color": "Color",
+  "Categories": "Categories",
+  "Organization": "Organization",
+  "No description": "no description",
+  "The project is public": "The project is public",
+  "The project is private": "The project is private",
+  "State": "State",
+  "Features": "Features",
   history: {
     tasks: {
       create: "Creation",
