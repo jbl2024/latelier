@@ -85,7 +85,7 @@
           {{ project.estimatedSize }}
         </div>
         <div v-show="!project.estimatedSize && !editEstimatedSize">
-          {{ $t('None') }}
+          {{ $t('Estimation.None') }}
         </div>
 
         <div v-show="editEstimatedSize">

@@ -22,6 +22,7 @@
                 <span class=""></span>
               </v-list-tile-avatar>
               <v-list-tile-content class="pointer">
+                  <v-list-tile-title>{{ $t('Background.None') }} </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>
@@ -56,20 +57,6 @@ export default {
       backgrounds: undefined,
     };
   },
-  i18n: {
-    messages: {
-      en: { 
-        "Select background": "Select background",
-        "None": "None",
-        "Background updated": "Background updated",
-      },
-      fr: {
-        "Select background": "Sélectionner un fond d'écran",
-        "None": "Aucun",
-        "Background updated": "Fond mis à jour",
-      }
-    }  
-  },  
   methods: {
     closeDialog() {
       this.$emit("update:active", false);

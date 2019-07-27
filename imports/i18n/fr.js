@@ -75,7 +75,8 @@ export default {
     "Unassigned": "Non assignée",
     "Start date": "Date de début", 
     "End date": "Date de fin", 
-    "None": "Aucune",   
+    "Date.None": "Aucune",   
+    "Estimation.None": "Aucune",
     "Add label": "Ajouter un label",
     "No notes": "Aucune note",
     "Add note": "Ajouter une note",
@@ -93,6 +94,8 @@ export default {
     "Password is too short": "Le mot de passe est trop court",
     "Welcome back!": "Ravi de voir revoir!",
     "Empty": "Vide",
+    "Select background": "Sélectionner un fond d'écran",
+    "Background updated": "Fond d'écran mis à jour",  
     "Visibility": "Visibilité",
     "Size": "Taille",
     "Dates": "Dates",
@@ -105,6 +108,7 @@ export default {
     "State": "Etat",
     "Features": "Fonctionnalités",
     "Members": "Members",
+    "Background.None": "Aucun",
     history: {
       tasks: {
         create: "Création",

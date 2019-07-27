@@ -75,7 +75,8 @@ export default {
   "Unassigned": "Unassigned",
   "Start date": "Start date", 
   "End date": "End date", 
-  "None": "None", 
+  "Date.None": "None", 
+  "Estimation.None": "None",
   "Add label": "Add label",
   "No notes": "No notes",
   "Add note": "Add note",
@@ -107,6 +108,7 @@ export default {
   "State": "State",
   "Features": "Features",
   "Members": "Members",
+  "Background.None": "None",
   history: {
     tasks: {
       create: "Creation",
