@@ -384,7 +384,7 @@ Projects.methods.setStartDate = new ValidatedMethod({
   name: "projects.setStartDate",
   validate: new SimpleSchema({
     projectId: { type: String },
-    startDate: { type: String}
+    startDate: { type: String, optional: true }
   }).validator(),
   run({projectId, startDate}) {
     checkLoggedIn();
@@ -397,7 +397,7 @@ Projects.methods.setEndDate = new ValidatedMethod({
   name: "projects.setEndDate",
   validate: new SimpleSchema({
     projectId: { type: String },
-    endDate: { type: String }
+    endDate: { type: String, optional: true }
   }).validator(),
   run({projectId, endDate}) {
     checkLoggedIn();
