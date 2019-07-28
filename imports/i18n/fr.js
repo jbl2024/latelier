@@ -156,6 +156,7 @@ export default {
       duration: {
         past: "il y a {duration}",
         future: "dans {duration}",
+        by: "{duration} par {user}" 
       }
     }
 };

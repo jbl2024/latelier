@@ -118,6 +118,7 @@ export default {
     duration: {
       past: "fa {duration}",
       future: "d'aquí {duration}",
+      by: "{duration} per {user}" 
     }
   }
 };
