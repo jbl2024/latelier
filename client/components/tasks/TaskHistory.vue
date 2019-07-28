@@ -36,7 +36,7 @@
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="close()">Fermer</v-btn>
+          <v-btn flat @click="close()">{{ this.$t('Close') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -112,6 +112,8 @@ export default {
     "Automatically mark as completed": "Terminer automatiquement",
     "Catch completed tasks": "Attraper les tâches terminées",
     "New item": "Nouvel item",
+    "A task is assigned to me": "Une tâche m'est assignée",
+    "A task is updated": "Une tâche est modifiée",
     history: {
       tasks: {
         create: "Création",

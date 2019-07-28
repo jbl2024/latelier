@@ -59,7 +59,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn flat @click.native="close()">Fermer</v-btn>
+      <v-btn flat @click.native="close()">{{ this.$t('Close') }}</v-btn>
       <v-btn color="primary" @click.native="save()">Mettre à jour</v-btn>
     </v-card-actions>
   </v-card>

@@ -112,51 +112,53 @@ export default {
   "Automatically mark as completed": "Automatically mark as completed",
   "Catch completed tasks": "Catch completed tasks",
   "New item": "New item",
-  history: {
-    tasks: {
-      create: "Creation",
-      updateName: "Update name",
-      updateDescription: "Update description",
-      addLabel: "Add label",
-      removeLabel: "Remove label",
-      addChecklistItem: "Add item",
-      removeChecklistItem: "Delete item",
-      toggleCheckItem: "Update item",
-      convertItemToTask: "Convert item totask",
-      move: "Move",
-      addAttachment: "Add attachment",
-      removeAttachment: "Delete attachment",
-      remove: "Delete",
-      setDueDate: "Due date",
-      complete: "Completed",
-      addNote: "Add note",
-      removeNote: "Remove note",
-      updateNote: "Update note",
-      assignTo: "Assigned to",
-      updateEstimation: {
-        size: "Update estimation size",
-        spent: "Update spent time on task"
+  "A task is assigned to me": "A task is assigned to me",
+  "A task is updated": "A task is updated",
+  "history": {
+    "tasks": {
+      "create": "Creation",
+      "updateName": "Update name",
+      "updateDescription": "Update description",
+      "addLabel": "Add label",
+      "removeLabel": "Remove label",
+      "addChecklistItem": "Add item",
+      "removeChecklistItem": "Delete item",
+      "toggleCheckItem": "Update item",
+      "convertItemToTask": "Convert item totask",
+      "move": "Move",
+      "addAttachment": "Add attachment",
+      "removeAttachment": "Delete attachment",
+      "remove": "Delete",
+      "setDueDate": "Due date",
+      "complete": "Completed",
+      "addNote": "Add note",
+      "removeNote": "Remove note",
+      "updateNote": "Update note",
+      "assignTo": "Assigned to",
+      "updateEstimation": {
+        "size": "Update estimation size",
+        "spent": "Update spent time on task"
       }
     }
   },
-  projects: {
-    state: {
-      PLANNED: "Planned",
-      DEVELOPMENT: "Development",
-      PRODUCTION: "Production",
-      ARCHIVED: "Archived"
+  "projects": {
+    "state": {
+      "PLANNED": "Planned",
+      "DEVELOPMENT": "Development",
+      "PRODUCTION": "Production",
+      "ARCHIVED": "Archived"
     }
   },
-  dates: {
-    locale: "en",
-    format: {
-      date: "MM/DD/YYYY",
-      dateTime: "MM/DD/YYYY HH:mm",
+  "dates": {
+    "locale": "en",
+    "format": {
+      "date": "MM/DD/YYYY",
+      "dateTime": "MM/DD/YYYY HH:mm",
     },
-    duration: {
-      past: "{duration} ago",
-      future: "in {duration}",
-      by: "{duration} by {user}" 
+    "duration": {
+      "past": "{duration} ago",
+      "future": "in {duration}",
+      "by": "{duration} by {user}" 
     }
   }
 };

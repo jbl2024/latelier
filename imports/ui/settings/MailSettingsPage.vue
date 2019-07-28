@@ -36,18 +36,6 @@ import set from "lodash/set";
 
 
 export default {
-  i18n: {
-    messages: {
-      "en": {
-        "A task is assigned to me": "A task is assigned to me",
-        "A task is updated": "A task is updated",
-      },
-      "fr": {
-        "A task is assigned to me": "Une tâche m'est assignée",
-        "A task is updated": "Une tâche est modifiée",
-      }
-    }
-  },
   props: {
   },
   mounted() {
