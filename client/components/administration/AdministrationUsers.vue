@@ -13,7 +13,7 @@
       <v-layout row wrap>
         <v-flex xs12 sm6>
           <v-text-field
-            :label="$t('Search...')"
+            :label="$t('Search') + '...'"
             single-line
             v-model="search"
             append-icon="search"
