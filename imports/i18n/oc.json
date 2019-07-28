@@ -1,4 +1,4 @@
-export default {
+{
   "Back": "Tornar",
   "Cancel": "Anullar",
   "Confirm": "Confirmar",
@@ -23,7 +23,6 @@ export default {
   "No task": "Cap de trabalh",
   "Delete list?": "Suprimir la lista ?",
   "Organizations": "Organizacions",
-  "Tasks": "Trabalhs",
   "Projects": "Projèctes",
   "Settings": "Paramètres",
   "Clone": "Duplicar",
@@ -67,58 +66,58 @@ export default {
   "Search...": "Cercar...",
   "Attachments": "Pèças juntas",
   "Leave project": "Quitar lo projècte",
-	"Leave project?": "Quitar lo projècte ?",
+  "Leave project?": "Quitar lo projècte ?",
   "Project": "Projècte",
   "Organization": "Organizacion",
   "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "Avètz pas cap de projècte pel moment. Podètz començar de crear un projècte o una organizacion que contenga de membres e diferents projèctes.",
   "Add label": "Ajustar una etiqueta",
   "Add note": "Ajustar una nòta",
   "New list": "Novèla lista",
-  history: {
-    tasks: {
-      create: "Creacion",
-      updateName: "Modificacion del nom",
-      updateDescription: "Modificacion de la descripcion",
-      addLabel: "Apondon d'una etiqueta",
-      removeLabel: "Supression d'una etiqueta",
-      addChecklistItem: "Apondon d'un item",
-      removeChecklistItem: "Supression d'un item",
-      toggleCheckItem: "Modificacion d'un item",
-      convertItemToTask: "Conversion d'un item en trabalh",
-      move: "Desplaçament",
-      addAttachment: "Apondon d'una pèça junta",
-      removeAttachment: "Supression d'una pèça junta",
-      remove: "Supression",
-      setDueDate: "Tèrme",
-      complete: "Completats",
-      addNote: "Apondon d'una nòta",
-      removeNote: "Supression d'una nòta",
-      updateNote: "Modificacion d'una nòta",
-      assignTo: "Assignat",
-      updateEstimation: {
-        size: "Modificacion de l'estimacion",
-        spent: "Modificacion de la durada passada"
+  "history": {
+    "tasks": {
+      "create": "Creacion",
+      "updateName": "Modificacion del nom",
+      "updateDescription": "Modificacion de la descripcion",
+      "addLabel": "Apondon d'una etiqueta",
+      "removeLabel": "Supression d'una etiqueta",
+      "addChecklistItem": "Apondon d'un item",
+      "removeChecklistItem": "Supression d'un item",
+      "toggleCheckItem": "Modificacion d'un item",
+      "convertItemToTask": "Conversion d'un item en trabalh",
+      "move": "Desplaçament",
+      "addAttachment": "Apondon d'una pèça junta",
+      "removeAttachment": "Supression d'una pèça junta",
+      "remove": "Supression",
+      "setDueDate": "Tèrme",
+      "complete": "Completats",
+      "addNote": "Apondon d'una nòta",
+      "removeNote": "Supression d'una nòta",
+      "updateNote": "Modificacion d'una nòta",
+      "assignTo": "Assignat",
+      "updateEstimation": {
+        "size": "Modificacion de l'estimacion",
+        "spent": "Modificacion de la durada passada"
       }
-    },
-  },
-  projects: {
-    state: {
-      PLANNED: "Planificat",
-      DEVELOPMENT: "En desvolopament",
-      PRODUCTION: "En produccion",
-      ARCHIVED: "Archivat"
     }
   },
-  dates: {
-    locale: "oc",
-    format: {
-      date: "DD/MM/YYYY",
-      dateTime: "DD/MM/YYYY HH:mm",
+  "projects": {
+    "state": {
+      "PLANNED": "Planificat",
+      "DEVELOPMENT": "En desvolopament",
+      "PRODUCTION": "En produccion",
+      "ARCHIVED": "Archivat"
+    }
+  },
+  "dates": {
+    "locale": "oc",
+    "format": {
+      "date": "DD/MM/YYYY",
+      "dateTime": "DD/MM/YYYY HH:mm"
     },
-    duration: {
-      past: "fa {duration}",
-      future: "d'aquí {duration}",
-      by: "{duration} per {user}" 
+    "duration": {
+      "past": "fa {duration}",
+      "future": "d'aquí {duration}",
+      "by": "{duration} per {user}"
     }
   }
-};
+}

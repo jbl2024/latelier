@@ -1,4 +1,4 @@
-export default {
+{
   "Back": "Back",
   "Cancel": "Cancel",
   "Confirm": "Confirm",
@@ -23,7 +23,6 @@ export default {
   "No task": "No task",
   "Delete list?": "Delete list?",
   "Organizations": "Organizations",
-  "Tasks": "Tasks",
   "Projects": "Projects",
   "Settings": "Settings",
   "Clone": "Clone",
@@ -57,7 +56,7 @@ export default {
   "Recents": "Recents",
   "Access forbidden": "Access forbidden",
   "Trashcan": "Trashcan",
-  "Delete project?": "Delete project?",    
+  "Delete project?": "Delete project?",
   "No project": "No project",
   "Project deleted": "Project deleted",
   "Move to trash": "Move to trash",
@@ -69,13 +68,12 @@ export default {
   "Leave project": "Leave project",
   "Leave project?": "Leave project?",
   "Project": "Project",
-  "Organization": "Organization",
   "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.",
   "Duties": "Duties",
   "Unassigned": "Unassigned",
-  "Start date": "Start date", 
-  "End date": "End date", 
-  "Date.None": "None", 
+  "Start date": "Start date",
+  "End date": "End date",
+  "Date.None": "None",
   "Estimation.None": "None",
   "Add label": "Add label",
   "No notes": "No notes",
@@ -105,7 +103,6 @@ export default {
   "No description": "No description",
   "The project is public": "The project is public",
   "The project is private": "The project is private",
-  "State": "State",
   "Features": "Features",
   "Members": "Members",
   "Background.None": "None",
@@ -153,12 +150,12 @@ export default {
     "locale": "en",
     "format": {
       "date": "MM/DD/YYYY",
-      "dateTime": "MM/DD/YYYY HH:mm",
+      "dateTime": "MM/DD/YYYY HH:mm"
     },
     "duration": {
       "past": "{duration} ago",
       "future": "in {duration}",
-      "by": "{duration} by {user}" 
+      "by": "{duration} by {user}"
     }
   }
-};
+}

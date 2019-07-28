@@ -1,6 +1,6 @@
-import {default as fr} from './fr';
-import {default as en} from './en';
-import {default as oc} from './oc';
+import * as fr from './fr.json'
+import * as en from './en.json'
+import * as oc from './oc.json'
 
 const messages = {
   fr: fr,
