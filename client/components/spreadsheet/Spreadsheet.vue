@@ -4,7 +4,7 @@
       <t-column v-for="column in columns" :key="column._id" :column="column" class="column"></t-column>
     </div>
     <div class="content">
-      <t-row  v-for="row in data" :key="row._id" :row="row" :columns="columns"></t-row>
+      <t-row  v-for="row in data" :key="row._id" :record="row" :columns="columns"></t-row>
     </div>
   </div>
 </template>
