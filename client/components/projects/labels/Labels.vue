@@ -65,7 +65,7 @@
           </v-list-tile-action>
 
           <v-list-tile-content>
-            <v-list-tile-title>Créer...</v-list-tile-title>
+            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>
@@ -100,7 +100,7 @@
           </v-list-tile-action>
 
           <v-list-tile-content>
-            <v-list-tile-title>Créer...</v-list-tile-title>
+            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
       </v-list>

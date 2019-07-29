@@ -30,20 +30,20 @@
                   <v-list-tile-action>
                     <v-icon>delete</v-icon>
                   </v-list-tile-action>
-                  <v-list-tile-title>Supprimer</v-list-tile-title>
+                  <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>
                 </v-list-tile>
                 <v-divider></v-divider>
                 <v-list-tile @click="list.autoComplete = !list.autoComplete">
                   <v-list-tile-action>
                     <v-checkbox :input-value="list.autoComplete"></v-checkbox>
                   </v-list-tile-action>
-                  <v-list-tile-title>Terminer automatiquement</v-list-tile-title>
+                  <v-list-tile-title>{{ $t('Automatically mark as completed')}}</v-list-tile-title>
                 </v-list-tile>
                 <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
                   <v-list-tile-action>
                     <v-checkbox :input-value="list.catchCompleted"></v-checkbox>
                   </v-list-tile-action>
-                  <v-list-tile-title>Attraper les tâche terminées</v-list-tile-title>
+                  <v-list-tile-title>{{ $t('Catch completed tasks') }}</v-list-tile-title>
                 </v-list-tile>
               </v-list>
             </v-menu>
@@ -118,6 +118,11 @@ export default {
     }
   },
   mounted() {
+    this.$events.listen("edit-list", listId => {
+      if (listId === this.list._id) {
+        this.editList(this.list);
+      }
+    }),
     this.$events.listen("filter-tasks", name => {
       if (name && name.length > 0) {
         this.forceShowHiddenTask = true;
@@ -128,6 +133,7 @@ export default {
   }, 
   beforeDestroy() {
     this.$events.off("filter-tasks");
+    this.$events.off("edit-list");
   },
   data() {
     return {

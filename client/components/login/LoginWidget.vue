@@ -58,25 +58,15 @@ export default {
     notifyText: "",
     sending: false,
     emailRules: [
-      v => !!v || "L'email est obligatoire",
-      v => v.length > 1 || "L'email est trop cours"
+      v => !!v || this.$t('Email is mandatory'),
+      v => v.length > 1 || this.$t('Invalid email')
     ],
     passwordRules: [
-      v => !!v || "Le mot de passe est obligatoire",
-      v => v.length > 1 || "Le mot de passe est trop cours"
+      v => !!v || this.$t('Password is mandatory'),
+      v => v.length > 1 || this.$t('Password is too short')
     ]
 
   }),
-  i18n: {
-    messages: {
-      en: { 
-        "Welcome back!": "Welcome back!",
-      },
-      fr: {
-        "Welcome back!": "Ravi de vous revoir!",
-      }
-    }  
-  },
   methods: {
     clearForm() {
       this.form.email = null;

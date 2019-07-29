@@ -15,7 +15,7 @@
     </div>
     <div v-if="$subReady.organizations">
       <empty-state v-if="organizations.length == 0" :description="`Aucune organisation disponible`" illustration="empty">
-        <v-btn class="primary" @click="newOrganization">Créer une organisation</v-btn>
+        <v-btn class="primary" @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
       </empty-state>
       <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
 

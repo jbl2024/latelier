@@ -85,7 +85,7 @@
           {{ project.estimatedSize }}
         </div>
         <div v-show="!project.estimatedSize && !editEstimatedSize">
-          Aucune estimation
+          {{ $t('Estimation.None') }}
         </div>
 
         <div v-show="editEstimatedSize">
@@ -109,10 +109,9 @@
             <v-icon>calendar_today</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Date de début</v-list-tile-title>
+            <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-              <span v-show="!project.startDate">Aucune</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -129,10 +128,9 @@
             <v-icon>alarm_on</v-icon>
           </v-list-tile-avatar>
           <v-list-tile-content>
-            <v-list-tile-title>Date de fin</v-list-tile-title>
+            <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
             <v-list-tile-sub-title>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-              <span v-show="!project.endDate">Aucune</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
@@ -283,39 +281,7 @@ export default {
         }
       }
     }
-  },
-  i18n: {
-    messages: {
-      en: { 
-        "Description": "Description",
-        "Visibility": "Visibility",
-        "Size": "Size",
-        "Dates": "Dates",
-        "Color": "Color",
-        "Categories": "Categories",
-        "Organization": "Organization",
-        "No description": "no description",
-        "The project is public": "The project is public",
-        "The project is private": "The project is private",
-        "State": "State",
-        "Features": "Features",
-      },
-      fr: {
-        "Description": "Description",
-        "Visibility": "Visibilité",
-        "Size": "Taille",
-        "Dates": "Dates",
-        "Color": "Couleur",
-        "Categories": "Catégories",
-        "Organization": "Organisation",
-        "No description": "Aucune description",
-        "The project is public": "Le projet est public",
-        "The project is private": "Le projet est privé",
-        "State": "Etat",
-        "Features": "Fonctionnalités",
-      }
-    }
-  },  
+  }, 
   methods: {
     onSelectStartDate(date) {
       Meteor.call("projects.setStartDate", {projectId: this.project._id, startDate: date});

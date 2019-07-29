@@ -2,11 +2,11 @@
 
 <div class="task-properties">
 
-  <select-user @select="onChooseAssignedTo" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
+  <select-user @select="onChooseAssignedTo" :project="project" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
   <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
   <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
   
-  <v-subheader>Responsabilités</v-subheader>
+  <v-subheader>{{ $t('Duties') }}</v-subheader>
   <v-list class="elevation-1">
     <v-list-tile @click="showChooseAssignedToDialog = true">
       <v-list-tile-avatar :color="isOnline(task.assignedTo)">
@@ -16,7 +16,7 @@
       <v-list-tile-title>
         <span v-show="task.assignedTo">Assignée à </span>
         <span>{{ formatUser(task.assignedTo) }}</span>
-        <span v-show="!task.assignedTo">Non assignée </span>
+        <span v-show="!task.assignedTo">{{ $t('Unassigned')}}</span>
       </v-list-tile-title>
       </v-list-tile-content>
       <v-list-tile-action>
@@ -34,10 +34,9 @@
           <v-icon>calendar_today</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title>Date de début</v-list-tile-title>
+          <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
           <v-list-tile-sub-title>
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
-            <span v-show="!task.startDate">Aucune</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
@@ -54,10 +53,9 @@
           <v-icon>alarm_on</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title>Date de fin</v-list-tile-title>
+          <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
           <v-list-tile-sub-title>
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
-            <span v-show="!task.dueDate">Aucune</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
@@ -105,8 +103,14 @@ export default {
       showChooseAssignedToDialog: false,
       showSelectDueDate: false,
       showSelectStartDate: false,
-      isEstimationEnabled: false
+      isEstimationEnabled: false,
     };
+  },
+  computed: {
+     project() {
+       if (!this.task) return;
+       return Projects.findOne({_id: this.task.projectId});
+    }
   },
   methods: {
 

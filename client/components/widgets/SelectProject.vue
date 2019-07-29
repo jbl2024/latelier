@@ -27,7 +27,6 @@
                 <v-icon></v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content class="pointer">
-                <v-list-tile-title>{{ $t('None') }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>

@@ -7,7 +7,7 @@
       hide-details
       clearable
       prepend-inner-icon="search"
-      :label="$t('Search...')"
+      :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
       v-on:input="debouncedFilter"
     ></v-text-field>

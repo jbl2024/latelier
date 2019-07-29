@@ -46,7 +46,7 @@
     <v-text-field
       class="add-item"
       preprend-icon="check_box_outline_blank"
-      label="Nouvel item"
+      :label="$t('New item')"
       v-model="item"
       ref="newItem"
       @keyup.enter="addItem"

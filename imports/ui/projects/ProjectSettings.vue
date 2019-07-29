@@ -8,10 +8,10 @@
 
       <v-tabs>
         <v-tab id="tab-general">
-          Paramètres
+          {{ $t('Settings') }}
         </v-tab>
         <v-tab id="tab-users">
-          Utilisateurs
+          {{ $t('Users') }}
         </v-tab>
         <v-tab-item>
           <project-settings-general :project="project"></project-settings-general>

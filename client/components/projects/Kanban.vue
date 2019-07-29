@@ -4,7 +4,7 @@
         <list :list="list" class="kanban-list-item dragscroll" :data-id="list._id" :ref="list._id"></list>
       </div>  
       <div class="swimlane dragscroll new">
-        <h2 @click="newListInline">Nouvelle liste</h2>
+        <h2 @click="newListInline">{{ $t('New list') }}</h2>
       </div>
   </div>
 </template>
@@ -66,10 +66,11 @@ export default {
     },
 
     newListInline () {
-      Meteor.call('lists.insert', this.projectId, 'Nouvelle liste', (error, createdList) => { 
+      Meteor.call('lists.insert', this.projectId, this.$t('New list'), (error, createdList) => { 
         if (error) {
           return;
         }
+        this.$events.fire('edit-list', createdList._id);
       });
     },
 

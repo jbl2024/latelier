@@ -14,7 +14,7 @@
           <v-form v-model="valid" v-on:submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" ref="name" :rules="nameRules" label="Nom" required></v-text-field>
+                <v-text-field v-model="name" ref="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
               </v-flex>
               <v-flex xs12>
                 <label>{{ $t('Description') }}</label>
@@ -55,8 +55,8 @@ export default {
       valid: false,
       name: "",
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => v.length > 1 || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => v.length > 1 || this.$t('Name is too short')
       ],
       description: ""
     };

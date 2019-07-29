@@ -155,11 +155,36 @@ publishComposite("project", function(projectId) {
         }
       },
       {
+        // organizations
+        find(project) {
+          if (!project.organizationId) {
+            this.ready();
+            return;
+          }
+          return Organizations.find({ _id: project.organizationId }, { sort: { name: 1 } });
+        }
+      },
+      {
         // users
         find(project) {
-          var members = project.members || [];
+          const members = Array.from(project.members) || [];
+          const tasks = Tasks.find({ projectId: project._id, deleted: {$ne: true} }, {fields: { createdBy: 1, updatedBy: 1}})
+          tasks.map(task => {
+            if (task.createdBy) members.push(task.createdBy)
+            if (task.updatedBy) members.push(task.updatedBy)
+          })
+
+          if (project.organizationId) {
+            const organization = Organizations.findOne({ _id: project.organizationId }, { fields: {members: 1}});
+            if (organization) {
+              organization.members.map(member => {
+                members.push(member);
+              })
+            }
+          }
+
           return Meteor.users.find(
-            { _id: { $in: members } },
+            { _id: { $in: [...new Set(members)] } },
             { fields: { profile: 1, status: 1, statusDefault: 1, statusConnection: 1, emails: 1 } }
           );
         }

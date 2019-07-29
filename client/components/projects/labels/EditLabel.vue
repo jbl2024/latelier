@@ -6,7 +6,7 @@
         <v-card-title class="headline">Editer le label</v-card-title>
         <v-card-text>
           <v-form v-model="valid" v-on:submit.prevent>
-            <v-text-field v-model="label.name" v-focus :rules="nameRules" label="Nom" required v-on:keyup.enter="updateNameAndColor()"></v-text-field>
+            <v-text-field v-model="label.name" v-focus :rules="nameRules" :label="$t('Name')" required v-on:keyup.enter="updateNameAndColor()"></v-text-field>
             <v-btn color="primary" @click="showSelectColor = true" class="btn-color">
               Choisir une couleur
             </v-btn>
@@ -15,8 +15,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">Annuler</v-btn>
-          <v-btn color="error" @click="remove">Supprimer</v-btn>
+          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn color="error" @click="remove">{{ this.$t('Delete') }}</v-btn>
           <v-btn color="primary" @click="updateNameAndColor" :disabled="!valid">Modifier</v-btn>
         </v-card-actions>
       </v-card>
@@ -40,8 +40,8 @@ export default {
       label: {},
       name: "",
       nameRules: [
-        v => !!v || "Le nom est obligatoire",
-        v => (v && v.length > 1) || "Le nom est trop court"
+        v => !!v || this.$t('Name is mandatory'),
+        v => (v && v.length > 1) || this.$t('Name is too short')
       ]
     };
   },

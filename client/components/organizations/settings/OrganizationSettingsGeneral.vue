@@ -10,7 +10,7 @@
         <div v-show="!organization.name && !editName" @click="startEditName">Aucun nom</div>
         <div v-show="editName">
           <v-text-field
-            label="Nom"
+            :label="$t('Name')"
             ref="name"
             v-focus
             v-model="organization.name"
@@ -37,7 +37,7 @@
         <div
           v-show="!organization.description && !editDescription"
           @click="startEditDescription"
-        >Aucune description</div>
+        >{{ $t('No description') }}</div>
         <div v-show="editDescription">
           <v-textarea
             ref="description"

@@ -8,10 +8,10 @@
 
       <v-tabs>
         <v-tab id="tab-general">
-          Paramètres
+          {{ $t('Settings' )}}
         </v-tab>
         <v-tab id="tab-users">
-          Utilisateurs
+          {{ $t('Users') }}
         </v-tab>
         <v-tab-item>
           <organization-settings-general :organization="organization"></organization-settings-general>

@@ -3,7 +3,7 @@
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <new-label ref="newLabel" :projectId="projectId"></new-label>  
       <v-card>
-        <v-card-title class="headline">Sélectionner un label</v-card-title>
+        <v-card-title class="headline">{{ $t('Add label') }}</v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-list class="content">
@@ -22,7 +22,7 @@
                 <v-icon>label</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-content class="cursor">
-                <v-list-tile-title>Créer...</v-list-tile-title>
+                <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
@@ -31,7 +31,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">Annuler</v-btn>
+          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -24,7 +24,7 @@
               <v-card class="elevation-2">
                 <v-card-text>
                   <div class="task-name">{{ item.properties.task.name }}</div>
-                  <div>{{ $t(`history.${item.type}`) }} {{ formatDateDuration(item.createdAt) }} par {{ item.user }}</div>
+                  <div>{{ $t(`history.${item.type}`) }} <span class="grey--text">{{ $t('dates.duration.by', { duration: formatDateDuration(item.createdAt), user: item.user}) }}</span></div>
                 </v-card-text>
               </v-card>
 
@@ -37,7 +37,7 @@
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="close()">Fermer</v-btn>
+          <v-btn flat @click="close()">{{ this.$t('Close') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -122,5 +122,6 @@ export default {
 .task-name {
   font-weight: bold;
 }
+
 
 </style>
