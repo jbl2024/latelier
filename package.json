@@ -16,7 +16,7 @@
     "file-saver": "^2.0.2",
     "fs-extra": "^7.0.1",
     "html-to-text": "^5.1.1",
-    "jexcel": "^3.3.0",
+    "jexcel": "^3.3.3",
     "linkifyjs": "^2.1.8",
     "lodash": ">=4.17.13",
     "meteor-node-stubs": "^0.4.1",
