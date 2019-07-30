@@ -111,6 +111,8 @@
   "New item": "Nouvel item",
   "A task is assigned to me": "Une tâche m'est assignée",
   "A task is updated": "Une tâche est modifiée",
+  "Select": "Sélectionner",
+  "Select date": "Sélectionner une date",
   "history": {
     "tasks": {
       "create": "Création",

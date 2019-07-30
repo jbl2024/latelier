@@ -2,9 +2,9 @@
   <div class="select-date">
     <v-dialog :value="active" @input="$emit('update:active')" max-width="320" persistent :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
-        <v-card-title class="headline">Choisir une date</v-card-title>
+        <v-card-title class="headline">{{ $t('Select date') }}</v-card-title>
         <v-card-text>
-          <v-tabs grow>
+          <v-tabs grow v-if="active">
             <v-tab>
               Date
             </v-tab>
@@ -22,7 +22,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
-          <v-btn color="info" @click="selectDate" :disabled="!date">Sélectionner</v-btn>
+          <v-btn color="info" @click="selectDate" :disabled="!date">{{ $t('Select') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
