@@ -626,9 +626,11 @@ Meteor.methods({
     });
   },
 
-  "tasks.setDueDate"(taskId, dueDate) {
+  "tasks.setDueDate"(taskId, dueDate, reminder) {
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(String));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (dueDate) {
@@ -638,7 +640,8 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate } });
+
+    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate, reminderDueDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setDueDate",
@@ -646,9 +649,11 @@ Meteor.methods({
     });
   },
 
-  "tasks.setStartDate"(taskId, startDate) {
+  "tasks.setStartDate"(taskId, startDate, reminder) {
     check(taskId, String);
     check(startDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(String));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (startDate) {
@@ -658,7 +663,7 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate } });
+    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate, reminderStartDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setStartDate",
