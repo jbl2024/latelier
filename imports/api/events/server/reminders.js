@@ -16,16 +16,31 @@ const findUserIdsInvolvedInTask = function (task) {
   return userIds;
 }
 
+const clearJobs = function (jobName, taskId)  {
+  const existingJobs = Jobs.collection.find({
+    name: jobName,
+    arguments: taskId
+  })
+  existingJobs.map(job => {
+    Jobs.remove(job._id);
+  })
+}
+
 Jobs.register({
-  sendReminderDueDate: function(userId, taskId) {
+  sendReminderDueDate: function(taskId) {
+    console.log('#############################################')
+    // Jobs.clear("success", "sendReminderDueDate", taskId);
     // const users = findUserIdsInvolvedInTask(task);
-    console.log('it works')
     this.success();
+    clearJobs("sendReminderDueDate", taskId);
   },
-  sendReminderStartDate: function(userId, taskId) {
+  sendReminderStartDate: function(taskId) {
+    console.log('#############################################')
+    // Jobs.clear("success", "sendReminderStartDate", taskId);
     // const users = findUserIdsInvolvedInTask(task);
     console.log('it works')
     this.success();
+    clearJobs("sendReminderStartDate", taskId);
   }
 });
 
@@ -35,22 +50,13 @@ export const callbacks = {
   "tasks.setDueDate"(event) {
     const task = event.properties.task;
     const taskId = task._id;
-    const existingJobs = Jobs.collection.find({
-      name: "sendReminderDueDate",
-      arguments: taskId
-    })
-    existingJobs.map(job => {
-      Jobs.remove(job._id);
-    })
+    clearJobs("sendReminderDueDate", taskId);
 
     if (!task.reminderDueDate || task.reminderDueDate === "never" || !task.dueDate) {
       return;
     }
 
-    const offset = task.reminderDueDate;
-    if (task.reminderDueDate === 'ondate') {
-      offset = 0;
-    }
+    const offset = parseInt(task.reminderDueDate, 10);
     const when = moment(task.dueDate).subtract(offset, 'minutes');
 
     Jobs.run("sendReminderDueDate", taskId, {
@@ -61,22 +67,12 @@ export const callbacks = {
   "tasks.setStartDate"(event) {
     const task = event.properties.task;
     const taskId = task._id;
-    const existingJobs = Jobs.collection.find({
-      name: "sendReminderStartDate",
-      arguments: taskId
-    })
-    existingJobs.map(job => {
-      Jobs.remove(job._id);
-    })
-
+    clearJobs("sendReminderStartDate", taskId);
     if (!task.reminderStartDate || task.reminderStartDate === "never" || !task.startDate) {
       return;
     }
 
-    const offset = task.reminderStartDate;
-    if (task.reminderStartDate === 'ondate') {
-      offset = 0;
-    }
+    const offset = parseInt(task.reminderStartDate, 10);
     const when = moment(task.startDate).subtract(offset, 'minutes');
 
     Jobs.run("sendReminderStartDate", taskId, {
