@@ -629,7 +629,7 @@ Meteor.methods({
   "tasks.setDueDate"(taskId, dueDate, reminder) {
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
-    check(reminder, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
     if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
@@ -652,7 +652,7 @@ Meteor.methods({
   "tasks.setStartDate"(taskId, startDate, reminder) {
     check(taskId, String);
     check(startDate, Match.Maybe(String));
-    check(reminder, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
     if (reminder === 'never') reminder = null;
 
     let convertedDate = null;

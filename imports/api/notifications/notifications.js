@@ -5,7 +5,7 @@ import { check } from "meteor/check";
 export const Notifications = new Mongo.Collection("notifications");
 if (Meteor.isServer) {
   Meteor.startup(() => {
-    Projects.rawCollection().createIndex({ userId: 1 });
+    Notifications.rawCollection().createIndex({ userId: 1 });
   });
 }
 

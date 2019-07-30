@@ -54,11 +54,11 @@ export default {
       reminders: [
         {text: this.$t('Never'), value: 'never'},
         {text: this.$t('On due date'), value: 'ondate'},
-        {text: this.$t('15 minutes before'), value: '15'},
-        {text: this.$t('1 hour before'), value: '60'},
-        {text: this.$t('2 hours before'), value: '120'},
-        {text: this.$t('1 day before'), value: '1140'},
-        {text: this.$t('2 days before'), value: '2280'},
+        {text: this.$t('15 minutes before'), value: 15},
+        {text: this.$t('1 hour before'), value: 60},
+        {text: this.$t('2 hours before'), value: 120},
+        {text: this.$t('1 day before'), value: 1140},
+        {text: this.$t('2 days before'), value: 2280},
       ]
     };
   },
