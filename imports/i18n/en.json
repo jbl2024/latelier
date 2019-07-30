@@ -111,6 +111,8 @@
   "New item": "New item",
   "A task is assigned to me": "A task is assigned to me",
   "A task is updated": "A task is updated",
+  "Select": "Select",
+  "Select date": "Select date",
   "history": {
     "tasks": {
       "create": "Creation",
