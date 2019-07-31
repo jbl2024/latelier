@@ -9,8 +9,8 @@ if (Meteor.isServer) {
 }
 
 export const NotificationTypes = Object.freeze({
-  TASK_REMINDER_START_DATE: "task_reminder_start_date",
-  TASK_REMINDER_DUE_DATE: "task_reminder_due_date",
+  TASK_REMINDER_START_DATE: "tasks.reminderStartDate",
+  TASK_REMINDER_DUE_DATE: "tasks.reminderDueDate",
 });
 
 Notifications.methods = {};

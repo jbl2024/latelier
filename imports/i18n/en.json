@@ -142,12 +142,10 @@
       "updateEstimation": {
         "size": "Update estimation size",
         "spent": "Update spent time on task"
-      }
+      },
+      "reminderStartDate": "Task is starting soon",
+      "reminderDueDate": "Task is due soon"  
     }
-  },
-  "notifications": {
-    "task_reminder_start_date": "Task is starting soon",
-    "task_reminder_due_date": "Task is due soon"
   },
   "projects": {
     "state": {

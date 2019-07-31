@@ -141,12 +141,10 @@
       "updateEstimation": {
         "size": "Modification de l'estimation",
         "spent": "Modification de la durée passée"
-      }
+      },
+      "reminderStartDate": "La tâche démarre bientôt",
+      "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
     }
-  },
-  "notifications": {
-    "task_reminder_start_date": "La tâche démarre bientôt",
-    "task_reminder_due_date": "La date d'échéance de la tâche expire bientôt"
   },
   "projects": {
     "state": {

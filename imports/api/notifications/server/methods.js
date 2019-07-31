@@ -49,7 +49,7 @@ Notifications.methods.load = new ValidatedMethod({
       userId: Meteor.userId()
     };
 
-    const perPage = 4;
+    const perPage = 25;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;

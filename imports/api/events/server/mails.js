@@ -40,6 +40,15 @@ const buildEmailData = function (options) {
   }
 }
 
+const addNotification = function (to, task, type, byId) {
+  Meteor.call("notifications.create", {
+    userId: to._id,
+    type: type,
+    properties: { taskId: task._id, user: Meteor.users.findOne({ _id: byId })}
+  })
+}
+
+
 /**
  * Send email using data build with buildEmailData
  * 
@@ -91,6 +100,8 @@ export const callbacks = {
     const user = getUser(task.assignedTo, event, "tasks.assignTo");
     if (!user) return;
 
+    addNotification(user, task, "tasks.assignTo", event.userId);
+
     const emailData = buildEmailData({
       template: "tasks.assignTo.mjml",
       subject: "Une tâche vous a été assignée",
@@ -105,6 +116,8 @@ export const callbacks = {
     userIds.map(userId => {
       const user = getUser(userId, event, "tasks.update");
       if (!user) return;
+
+      addNotification(user, task, "tasks.addNote", event.userId);
 
       const emailData = buildEmailData({
         template: "tasks.addNote.mjml",
@@ -122,6 +135,8 @@ export const callbacks = {
       const user = getUser(userId, event, "tasks.update");
       if (!user) return;
 
+      addNotification(user, task, "tasks.removeNote", event.userId);
+
       const emailData = buildEmailData({
         template: "tasks.removeNote.mjml",
         subject: `[${task.name}] Une note a été supprimée`,
@@ -137,6 +152,8 @@ export const callbacks = {
     userIds.map(userId => {
       const user = getUser(userId, event, "tasks.update");
       if (!user) return;
+
+      addNotification(user, task, "tasks.updateNote", event.userId);
 
       const emailData = buildEmailData({
         template: "tasks.updateNote.mjml",
