@@ -113,6 +113,9 @@
   "A task is updated": "A task is updated",
   "Select": "Select",
   "Select date": "Select date",
+  "Notification center": "Notification center",
+  "Open notification center": "Open notification center",
+  "Notification deleted": "Notification deleted",
   "history": {
     "tasks": {
       "create": "Creation",
@@ -139,6 +142,10 @@
         "spent": "Update spent time on task"
       }
     }
+  },
+  "notifications": {
+    "task_reminder_start_date": "Task is starting soon",
+    "task_reminder_due_date": "Task is due soon"
   },
   "projects": {
     "state": {

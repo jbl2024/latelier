@@ -35,6 +35,19 @@
             <login-menu></login-menu>
           </v-menu>
         </v-avatar>
+        <v-avatar dark v-if="isConnected">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                icon
+                v-on="on"
+              >
+                <v-icon>notifications</v-icon>
+              </v-btn>
+            </template>            
+            <notifications-menu></notifications-menu>
+          </v-menu>
+        </v-avatar>
       </v-toolbar>
 
       <v-hover open-delay="300">
@@ -157,6 +170,12 @@ export default {
     }
   },
   meteor: {
+    isConnected() {
+      if (Meteor) {
+        return Meteor.userId();
+      }
+      return false;
+    },
     email() {
       if (Meteor) {
         const user = Meteor.user();

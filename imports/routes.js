@@ -29,6 +29,7 @@ import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
+import NotificationCenterPage from "/imports/ui/notifications/NotificationCenterPage.vue";
 
 export default [
   {
@@ -200,5 +201,13 @@ export default [
     component: DashboardPage,
     props: true
   },
+  {
+    path: "/notification-center",
+    name: "notification-center-page",
+    beforeEnter: isBasicAuth,
+    component: NotificationCenterPage,
+    props: true
+  },
+
   { path: "*", name: "not-found", component: NotFound }
 ];

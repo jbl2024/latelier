@@ -19,6 +19,7 @@ Jobs.register({
     if (!task) return;
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
+    console.log(userIds)
 
     userIds.map(userId => {
       if (!userId) return;

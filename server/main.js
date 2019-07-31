@@ -35,6 +35,7 @@ import '../imports/api/bpmn/server/publications';
 
 import '../imports/api/notifications/notifications.js';
 import '../imports/api/notifications/server/methods.js';
+import '../imports/api/notifications/server/publications.js';
 
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText('loader.html'));

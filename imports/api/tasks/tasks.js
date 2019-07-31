@@ -826,14 +826,17 @@ Tasks.methods.getHistory = new ValidatedMethod({
 });
 
 Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
-  let userIds = [task.assignedTo, task.createdBy, task.updatedBy];
+  let userIds = [];
+  if (task.assignedTo) userIds.push(task.assignedTo);
+  if (task.createdBy) userIds.push(task.createdBy);
+  if (task.updatedBy) userIds.push(task.updatedBy);
   if (task.notes && task.notes.length > 0) {
     task.notes.map(note => {
-      userIds.push(note.createdBy);
-      userIds.push(note.editedBy);
+      if (note.createdBy) userIds.push(note.createdBy);
+      if (note.editedBy) userIds.push(note.editedBy);
     });
-    userIds = [...new Set(userIds)]; // remove duplicates
   }
+  userIds = [...new Set(userIds)]; // remove duplicates
   return userIds;
 }
 
