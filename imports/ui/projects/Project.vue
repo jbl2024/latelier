@@ -68,6 +68,11 @@ export default {
           this.selectTask(taskId);
         }
       }
+    },
+    projectId: {
+      handler (projectId) {
+        this.$store.dispatch('setCurrentProjectId', this.projectId);    
+      }
     }
   },
 
