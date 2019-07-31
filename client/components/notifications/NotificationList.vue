@@ -1,5 +1,5 @@
 <template>
-  <v-list two-line dense class="pt-0">
+  <v-list three-line dense class="pt-0">
     <v-list-tile
       @click="openDetail(notification)"
       v-for="notification in notifications"
@@ -19,17 +19,6 @@
         </v-btn>
       </v-list-tile-action>
     </v-list-tile>
-    <template v-if="showNotificationCenterLink">
-      <v-divider></v-divider>
-      <v-list-tile :to="{ name: 'notification-center-page' }">
-        <v-list-tile-avatar>
-          <v-icon>alarm_on</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Open notification center') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </template>
   </v-list>
 </template>
 

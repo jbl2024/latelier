@@ -1,8 +1,18 @@
 <template>
   <div class="notifications-menu">
-    <template v-if="$subReady.notifications">
-      <notification-list :notifications="notifications" show-notification-center-link></notification-list>
-    </template>
+    <v-card>
+      <template v-if="$subReady.notifications">
+        <notification-list :notifications="notifications"></notification-list>
+      </template>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          color="primary"
+          flat
+          :to="{ name: 'notification-center-page' }"
+        >{{ $t('Open notification center') }}</v-btn>
+      </v-card-actions>
+    </v-card>
   </div>
 </template>
 

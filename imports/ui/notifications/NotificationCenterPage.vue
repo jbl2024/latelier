@@ -2,10 +2,22 @@
   <div class="notification-center-page">
     <v-subheader>{{ $t("Notification center")}}</v-subheader>
     <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-    <notification-list :notifications="notifications" @refresh="refresh"></notification-list>
-    <div class="text-xs-center">
-      <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
-    </div>
+    <empty-state
+      v-if="pagination.totalPages == 0"
+      :description="$t('No notifications') "
+      illustration="notifications_empty"
+    ></empty-state>
+
+    <template v-if="pagination.totalPages > 0">
+      <notification-list :notifications="notifications" @refresh="refresh"></notification-list>
+      <div class="text-xs-center">
+        <v-pagination
+          v-if="pagination.totalPages > 0"
+          v-model="page"
+          :length="pagination.totalPages"
+        ></v-pagination>
+      </div>
+    </template>
   </div>
 </template>
 
