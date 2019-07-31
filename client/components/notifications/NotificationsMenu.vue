@@ -21,7 +21,7 @@ export default {
     },
 
     notifications() {
-      return Notifications.find();
+      return Notifications.find({}, { sort: { createdAt: -1 } });
     }
   },
   methods: {}

@@ -36,10 +36,23 @@ Jobs.register({
   },
 
   sendReminderStartDate: function(taskId) {
-    console.log("#############################################");
-    // Jobs.clear("success", "sendReminderStartDate", taskId);
-    // const users = findUserIdsInvolvedInTask(task);
-    console.log("it works");
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) return;
+
+    const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
+    console.log(userIds)
+
+    userIds.map(userId => {
+      if (!userId) return;
+      Meteor.call("notifications.create", {
+        userId: userId,
+        type: NotificationTypes.TASK_REMINDER_START_DATE,
+        properties: {
+          taskId: task._id
+        }
+      });
+    });
+
     this.remove();
   }
 });
