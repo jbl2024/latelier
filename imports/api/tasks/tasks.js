@@ -13,6 +13,7 @@ import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask 
 
 export const Tasks = new Mongo.Collection("tasks");
 Tasks.methods = {};
+Tasks.helpers = {};
 
 const Counter = new Mongo.Collection("counters");
 
@@ -823,6 +824,18 @@ Tasks.methods.getHistory = new ValidatedMethod({
     };
   }
 });
+
+Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
+  let userIds = [task.assignedTo, task.createdBy, task.updatedBy];
+  if (task.notes && task.notes.length > 0) {
+    task.notes.map(note => {
+      userIds.push(note.createdBy);
+      userIds.push(note.editedBy);
+    });
+    userIds = [...new Set(userIds)]; // remove duplicates
+  }
+  return userIds;
+}
 
 if (Meteor.isServer) {
   Meteor.methods({
