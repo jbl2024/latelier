@@ -35,37 +35,7 @@
             <login-menu></login-menu>
           </v-menu>
         </v-avatar>
-        <v-avatar dark v-if="isConnected && !$vuetify.breakpoint.xsOnly">
-          <v-menu offset-y>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-              >
-                <v-badge color="red" :value="notificationsCount > 0">
-                  <template v-slot:badge>
-                    <span>{{ notificationsCount }}</span>
-                  </template>
-                  <v-icon>notifications</v-icon>
-                </v-badge>                  
-              </v-btn>
-            </template>            
-            <notifications-menu></notifications-menu>
-          </v-menu>
-        </v-avatar>
-        <v-avatar dark v-if="isConnected && $vuetify.breakpoint.xsOnly">
-          <v-btn
-            icon
-            :to="{ name: 'notification-center-page' }"
-          >
-            <v-badge color="red" :value="notificationsCount > 0">
-              <template v-slot:badge>
-                <span>{{ notificationsCount }}</span>
-              </template>
-              <v-icon>notifications</v-icon>
-            </v-badge>                  
-          </v-btn>
-        </v-avatar>
+        <notification-button></notification-button>
       </v-toolbar>
 
       <v-hover open-delay="300">

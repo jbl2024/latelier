@@ -9,7 +9,7 @@ Meteor.publish("notifications", function notifications() {
 
   const transform = data => {
     const properties = data.properties;
-    if (properties.taskId) {
+    if (properties && properties.taskId) {
       const task = Tasks.findOne({ _id: properties.taskId });
       data.task = task;
     }
@@ -19,6 +19,7 @@ Meteor.publish("notifications", function notifications() {
   const observer = Notifications.find(query, {
     limit: 25,
     sort: {
+      read: -1,
       createdAt: -1
     }
   }).observeChanges({

@@ -15,7 +15,7 @@
       <v-list-tile-action>
         <v-list-tile-action-text>{{ formatDateDuration(notification.createdAt) }}</v-list-tile-action-text>
         <v-btn icon ripple @click.stop="removeNotification(notification)">
-          <v-icon color="grey lighten-1">check</v-icon>
+          <v-icon color="grey lighten-1">close</v-icon>
         </v-btn>
       </v-list-tile-action>
     </v-list-tile>

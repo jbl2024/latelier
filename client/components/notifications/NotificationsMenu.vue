@@ -26,12 +26,35 @@
 </template>
 
 <script>
+import debounce from "lodash/debounce";
 import { Notifications } from "/imports/api/notifications/notifications.js";
 
 export default {
+  created() {
+    this.debouncedShown = debounce(val => {
+      const notificationIds = [];
+      this.notifications.map(notification => {
+        if (!notification.read) notificationIds.push(notification._id);
+      });
+      Meteor.call("notifications.markAsRead", { notificationIds: notificationIds});
+    }, 2000);
+  },
+  props: {
+    shown: Boolean,
+  },
   data() {
     return {};
   },
+  watch: {
+    shown(shown) {
+      if (shown) {
+        this.debouncedShown(true);
+      } else {
+        this.debouncedShown.cancel();
+      }
+    }
+  },
+
   meteor: {
     $subscribe: {
       notifications: function() {
