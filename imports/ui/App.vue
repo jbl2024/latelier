@@ -42,9 +42,9 @@
                 icon
                 v-on="on"
               >
-                <v-badge color="red">
+                <v-badge color="red" :value="notificationsCount > 0">
                   <template v-slot:badge>
-                    <span>!</span>
+                    <span>{{ notificationsCount }}</span>
                   </template>
                   <v-icon>notifications</v-icon>
                 </v-badge>                  
@@ -58,9 +58,9 @@
             icon
             :to="{ name: 'notification-center-page' }"
           >
-            <v-badge color="red">
+            <v-badge color="red" :value="notificationsCount > 0">
               <template v-slot:badge>
-                <span>!</span>
+                <span>{{ notificationsCount }}</span>
               </template>
               <v-icon>notifications</v-icon>
             </v-badge>                  
@@ -199,6 +199,14 @@ export default {
         const user = Meteor.user();
         if (user) {
           return user.emails[0].address;
+        }
+      }
+    },
+    notificationsCount() {
+      if (Meteor) {
+        const user = Meteor.user();
+        if (user && user.notifications) {
+          return user.notifications.count;
         }
       }
     },

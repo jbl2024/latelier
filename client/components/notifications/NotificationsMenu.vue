@@ -6,7 +6,7 @@
           xs
           class="empty-state"
           v-if="notifications.length == 0"
-          :description="$t('No notifications') "
+          :description="$t('No notification') "
           illustration="notifications_empty"
         ></empty-state>
 

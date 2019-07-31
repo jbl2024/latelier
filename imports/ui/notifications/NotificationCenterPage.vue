@@ -3,8 +3,8 @@
     <v-subheader>{{ $t("Notification center")}}</v-subheader>
     <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
     <empty-state
-      v-if="pagination.totalPages == 0"
-      :description="$t('No notifications') "
+      v-if="!loading && pagination.totalPages == 0"
+      :description="$t('No notification') "
       illustration="notifications_empty"
     ></empty-state>
 

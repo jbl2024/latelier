@@ -14,10 +14,27 @@ Notifications.methods.create = new ValidatedMethod({
       userId: userId,
       type: type,
       properties: properties,
+      read: false,
       createdAt: new Date()
     });
+    Meteor.call("notifications.updateProfile", {userId: userId});
 
     return notificationId;
+  }
+});
+
+
+Notifications.methods.markAsRead = new ValidatedMethod({
+  name: "notifications.markAsRead",
+  validate: new SimpleSchema({
+    notificationIds: { type: [String] },
+  }).validator(),
+  run({ notificationIds }) {
+    const userId = Meteor.userId();
+    notificationIds.map(id => {
+      Notifications.update({_id: id, userId: userId}, {$set: {read: true}});
+    });
+    Meteor.call("notifications.updateProfile", {userId: userId});
   }
 });
 
@@ -76,5 +93,20 @@ Notifications.methods.remove = new ValidatedMethod({
       throw new Meteor.Error("not-authorized");
     }
     Notifications.remove({ _id: notificationId });
+
+    Meteor.call("notifications.updateProfile", {userId: Meteor.userId()});
+  }
+});
+
+Notifications.methods.updateProfile = new ValidatedMethod({
+  name: "notifications.updateProfile",
+  validate: new SimpleSchema({
+    userId: { type: String }
+  }).validator(),
+  run({ userId }) {
+    this.unblock();
+
+    const count = Notifications.find({userId: userId, read: false}).count()
+    Meteor.users.update(userId, {$set: {'notifications.count': count}})
   }
 });
