@@ -13,6 +13,7 @@
       <v-card-text class="content">
         <empty-state
           class="empty-state"
+          small
           v-if="!loading && pagination.totalPages == 0"
           :description="$t('No notification') "
           illustration="notifications_empty"
@@ -133,6 +134,6 @@ export default {
 
 
 .empty-state {
-  padding-top: 24px;
+  padding-top: 64px;
 }
 </style>
