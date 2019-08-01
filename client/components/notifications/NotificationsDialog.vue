@@ -12,7 +12,6 @@
     <v-card>
       <v-card-text class="content">
         <empty-state
-          xs
           class="empty-state"
           v-if="!loading && pagination.totalPages == 0"
           :description="$t('No notification') "

@@ -68,12 +68,6 @@ Notifications.methods.load = new ValidatedMethod({
       }
     }).fetch();
 
-    data.map(item => {
-      if (item.properties.taskId) {
-        item.task = Tasks.findOne({ _id: item.properties.taskId });
-      }
-    });
-
     return {
       rowsPerPage: perPage,
       totalItems: count,

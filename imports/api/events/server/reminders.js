@@ -26,7 +26,7 @@ Jobs.register({
         userId: userId,
         type: NotificationTypes.TASK_REMINDER_DUE_DATE,
         properties: {
-          taskId: task._id
+          task: task
         }
       });
     });
@@ -46,7 +46,7 @@ Jobs.register({
         userId: userId,
         type: NotificationTypes.TASK_REMINDER_START_DATE,
         properties: {
-          taskId: task._id
+          task: task
         }
       });
     });

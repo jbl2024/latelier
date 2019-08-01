@@ -44,7 +44,7 @@ const addNotification = function (to, task, type, byId) {
   Meteor.call("notifications.create", {
     userId: to._id,
     type: type,
-    properties: { taskId: task._id, user: Meteor.users.findOne({ _id: byId })}
+    properties: { task: task, user: Meteor.users.findOne({ _id: byId })}
   })
 }
 

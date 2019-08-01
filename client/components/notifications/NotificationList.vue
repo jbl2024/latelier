@@ -9,7 +9,7 @@
         <v-icon>{{ getIcon(notification) }}</v-icon>
       </v-list-tile-avatar>
       <v-list-tile-content>
-        <v-list-tile-title :class="{ unread: !notification.read }">{{ notification.task.name }}</v-list-tile-title>
+        <v-list-tile-title :class="{ unread: !notification.read }">{{ notification.properties.task.name }}</v-list-tile-title>
         <v-list-tile-sub-title>
           {{ $t(`history.${notification.type}`) }}
           <template
@@ -48,8 +48,8 @@ export default {
       this.$router.push({
         name: "project-task",
         params: {
-          projectId: notification.task.projectId,
-          taskId: notification.task._id
+          projectId: notification.properties.task.projectId,
+          taskId: notification.properties.task._id
         }
       });
       this.$emit("click");
