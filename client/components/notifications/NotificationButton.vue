@@ -1,22 +1,8 @@
 <template>
   <div class="notification-button">
-    <v-avatar dark v-if="isConnected && !$vuetify.breakpoint.xsOnly">
-      <v-menu offset-y v-model="menu">
-        <template v-slot:activator="{ on }">
-          <v-btn icon v-on="on">
-            <v-badge color="red" :value="notificationsCount > 0">
-              <template v-slot:badge>
-                <span>{{ notificationsCount }}</span>
-              </template>
-              <v-icon>notifications</v-icon>
-            </v-badge>
-          </v-btn>
-        </template>
-        <notifications-menu :shown="menu"></notifications-menu>
-      </v-menu>
-    </v-avatar>
-    <v-avatar dark v-if="isConnected && $vuetify.breakpoint.xsOnly">
-      <v-btn icon :to="{ name: 'notification-center-page' }">
+    <notifications-dialog :active.sync="showDialog"></notifications-dialog>
+    <v-avatar dark v-if="isConnected">
+      <v-btn icon @click="showDialog = true">
         <v-badge color="red" :value="notificationsCount > 0">
           <template v-slot:badge>
             <span>{{ notificationsCount }}</span>
@@ -33,7 +19,7 @@
 export default {
   data() {
     return {
-      menu: false
+      showDialog: false
     }
   },
   meteor: {

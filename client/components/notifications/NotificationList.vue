@@ -52,6 +52,7 @@ export default {
           taskId: notification.task._id
         }
       });
+      this.$emit("click");
     },
     removeNotification(notification) {
       Meteor.call(
