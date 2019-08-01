@@ -21,7 +21,7 @@
         <notification-list :notifications="notifications" @refresh="refresh" @click="close"></notification-list>
       </v-card-text>
       <div class="text-xs-center">
-        <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
+        <v-pagination v-if="pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
       </div>
       <v-card-actions>
         <v-spacer></v-spacer>
