@@ -17,24 +17,26 @@ Notifications.methods.create = new ValidatedMethod({
       read: false,
       createdAt: new Date()
     });
-    Meteor.call("notifications.updateProfile", {userId: userId});
-
+    Meteor.call("notifications.updateProfile", { userId: userId });
+    Meteor.call("notifications.purge", { userId: userId });
     return notificationId;
   }
 });
 
-
 Notifications.methods.markAsRead = new ValidatedMethod({
   name: "notifications.markAsRead",
   validate: new SimpleSchema({
-    notificationIds: { type: [String] },
+    notificationIds: { type: [String] }
   }).validator(),
   run({ notificationIds }) {
     const userId = Meteor.userId();
     notificationIds.map(id => {
-      Notifications.update({_id: id, userId: userId}, {$set: {read: true}});
+      Notifications.update(
+        { _id: id, userId: userId },
+        { $set: { read: true } }
+      );
     });
-    Meteor.call("notifications.updateProfile", {userId: userId});
+    Meteor.call("notifications.updateProfile", { userId: userId });
   }
 });
 
@@ -88,7 +90,7 @@ Notifications.methods.remove = new ValidatedMethod({
     }
     Notifications.remove({ _id: notificationId });
 
-    Meteor.call("notifications.updateProfile", {userId: Meteor.userId()});
+    Meteor.call("notifications.updateProfile", { userId: Meteor.userId() });
   }
 });
 
@@ -100,7 +102,30 @@ Notifications.methods.updateProfile = new ValidatedMethod({
   run({ userId }) {
     this.unblock();
 
-    const count = Notifications.find({userId: userId, read: false}).count()
-    Meteor.users.update(userId, {$set: {'notifications.count': count}})
+    const count = Notifications.find({ userId: userId, read: false }).count();
+    Meteor.users.update(userId, { $set: { "notifications.count": count } });
+  }
+});
+
+Notifications.methods.purge = new ValidatedMethod({
+  name: "notifications.purge",
+  validate: new SimpleSchema({
+    userId: { type: String }
+  }).validator(),
+  run({ userId }) {
+    this.unblock();
+
+    const count = Notifications.find({ userId: userId }).count();
+    const keep = Meteor.settings.notificationsPerUser || 50;
+    if (count > keep) {
+      const notifications = Notifications.find(
+        { userId: userId },
+        { sort: { createdAt: 1 } }
+      ).fetch();
+      const toDelete = count - keep;
+      for (let i = 0; i < toDelete; i++) {
+        Notifications.remove({ _id: notifications[i]._id });
+      }
+    }
   }
 });
