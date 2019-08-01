@@ -6,7 +6,8 @@ export const Events = new Mongo.Collection("events");
 if (Meteor.isServer) {
   import { callbacks as mailsCB} from "./server/mails";
   import { callbacks as remindersCB } from "./server/reminders";
-  const callbacks = [mailsCB, remindersCB];
+  import { callbacks as notificationsCB } from "./server/notifications";
+  const callbacks = [mailsCB, remindersCB, notificationsCB];
 
   Meteor.methods({
     "events.track"(event) {
@@ -26,6 +27,9 @@ if (Meteor.isServer) {
       callbacks.map(cb => {
         if (cb[event.type]) {
           cb[event.type](event);
+        }
+        if (cb["*"]) {
+          cb["*"](event);
         }
       });
     },
