@@ -16,7 +16,10 @@ const clearJobs = function(jobName, taskId) {
 Jobs.register({
   sendReminderDueDate: function(taskId) {
     const task = Tasks.findOne({ _id: taskId });
-    if (!task) return;
+    if (!task) {
+      this.remove();
+      return;
+    }
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
@@ -36,7 +39,10 @@ Jobs.register({
 
   sendReminderStartDate: function(taskId) {
     const task = Tasks.findOne({ _id: taskId });
-    if (!task) return;
+    if (!task) {
+      this.remove();
+      return;
+    }
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
@@ -95,5 +101,12 @@ export const callbacks = {
     Jobs.run("sendReminderStartDate", taskId, {
       date: when.toDate()
     });
+  },
+
+  "tasks.remove"(event) {
+    const task = event.properties.task;
+    const taskId = task._id;
+    clearJobs("sendReminderDueDate", taskId);
+    clearJobs("sendReminderStartDate", taskId);
   }
 };
