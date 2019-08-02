@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - More i18n translations
 - Edit list name right after creation
+- Task reminder
 - Notifications
 
 ### Changed
