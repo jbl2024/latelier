@@ -68,6 +68,7 @@ export const callbacks = {
     clearJobs("sendReminderDueDate", taskId);
 
     if (
+      task.completed ||
       !task.reminderDueDate ||
       task.reminderDueDate === "never" ||
       !task.dueDate
@@ -88,6 +89,7 @@ export const callbacks = {
     const taskId = task._id;
     clearJobs("sendReminderStartDate", taskId);
     if (
+      task.completed ||
       !task.reminderStartDate ||
       task.reminderStartDate === "never" ||
       !task.startDate
@@ -108,5 +110,32 @@ export const callbacks = {
     const taskId = task._id;
     clearJobs("sendReminderDueDate", taskId);
     clearJobs("sendReminderStartDate", taskId);
+  },
+
+  "tasks.complete"(event) {
+    const task = event.properties.task;
+    const taskId = task._id;
+    clearJobs("sendReminderDueDate", taskId);
+    clearJobs("sendReminderStartDate", taskId);
+  },
+
+  "tasks.uncomplete"(event) {
+    const task = event.properties.task;
+    if (task.dueDate) {
+      callbacks["tasks.setDueDate"](event);
+    }
+    if (task.startDate) {
+      callbacks["tasks.setStartDate"](event);
+    }
+  },
+
+  "tasks.restore"(event) {
+    const task = event.properties.task;
+    if (task.dueDate) {
+      callbacks["tasks.setDueDate"](event);
+    }
+    if (task.startDate) {
+      callbacks["tasks.setStartDate"](event);
+    }
   }
 };
