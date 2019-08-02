@@ -111,6 +111,12 @@
   "New item": "Nouvel item",
   "A task is assigned to me": "Une tâche m'est assignée",
   "A task is updated": "Une tâche est modifiée",
+  "Select": "Sélectionner",
+  "Select date": "Sélectionner une date",
+  "Notification center": "Centre de notification",
+  "Open notification center": "Ouvrir le centre de notification",
+  "Notification deleted": "Notification supprimée",
+  "No notification": "Aucune notification",
   "history": {
     "tasks": {
       "create": "Création",
@@ -135,7 +141,9 @@
       "updateEstimation": {
         "size": "Modification de l'estimation",
         "spent": "Modification de la durée passée"
-      }
+      },
+      "reminderStartDate": "La tâche démarre bientôt",
+      "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
     }
   },
   "projects": {

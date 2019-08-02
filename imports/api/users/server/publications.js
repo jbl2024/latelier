@@ -51,7 +51,8 @@ Meteor.publish("user", function() {
         statusDefault: 1,
         statusConnection: 1,
         emails: 1,
-        roles: 1
+        roles: 1,
+        notifications: 1
       }
     }
   );

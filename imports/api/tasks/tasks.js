@@ -13,6 +13,7 @@ import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask 
 
 export const Tasks = new Mongo.Collection("tasks");
 Tasks.methods = {};
+Tasks.helpers = {};
 
 const Counter = new Mongo.Collection("counters");
 
@@ -626,9 +627,11 @@ Meteor.methods({
     });
   },
 
-  "tasks.setDueDate"(taskId, dueDate) {
+  "tasks.setDueDate"(taskId, dueDate, reminder) {
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (dueDate) {
@@ -638,7 +641,8 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate } });
+
+    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate, reminderDueDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setDueDate",
@@ -646,9 +650,11 @@ Meteor.methods({
     });
   },
 
-  "tasks.setStartDate"(taskId, startDate) {
+  "tasks.setStartDate"(taskId, startDate, reminder) {
     check(taskId, String);
     check(startDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (startDate) {
@@ -658,7 +664,7 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate } });
+    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate, reminderStartDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setStartDate",
@@ -818,6 +824,21 @@ Tasks.methods.getHistory = new ValidatedMethod({
     };
   }
 });
+
+Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
+  let userIds = [];
+  if (task.assignedTo) userIds.push(task.assignedTo);
+  if (task.createdBy) userIds.push(task.createdBy);
+  if (task.updatedBy) userIds.push(task.updatedBy);
+  if (task.notes && task.notes.length > 0) {
+    task.notes.map(note => {
+      if (note.createdBy) userIds.push(note.createdBy);
+      if (note.editedBy) userIds.push(note.editedBy);
+    });
+  }
+  userIds = [...new Set(userIds)]; // remove duplicates
+  return userIds;
+}
 
 if (Meteor.isServer) {
   Meteor.methods({

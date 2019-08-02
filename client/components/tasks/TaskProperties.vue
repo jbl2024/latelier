@@ -3,8 +3,8 @@
 <div class="task-properties">
 
   <select-user @select="onChooseAssignedTo" :project="project" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
-  <select-date @select="onSelectDueDate" :active.sync="showSelectDueDate"></select-date>
-  <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate"></select-date>
+  <select-date @select="onSelectDueDate" reminder :active.sync="showSelectDueDate"></select-date>
+  <select-date @select="onSelectStartDate" reminder :active.sync="showSelectStartDate"></select-date>
   
   <v-subheader>{{ $t('Duties') }}</v-subheader>
   <v-list class="elevation-1">
@@ -39,6 +39,9 @@
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
+        <v-list-tile-action v-if="task.reminderStartDate">
+          <v-icon>alarm_on</v-icon>
+        </v-list-tile-action>
         <v-list-tile-action>
           <v-btn flat icon @click.stop="onSelectStartDate(null)">
             <v-icon>delete</v-icon>
@@ -50,7 +53,7 @@
 
       <v-list-tile @click="showSelectDueDate = true">
         <v-list-tile-avatar>
-          <v-icon>alarm_on</v-icon>
+          <v-icon>alarm</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
           <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
@@ -58,6 +61,9 @@
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
           </v-list-tile-sub-title>
         </v-list-tile-content>
+        <v-list-tile-action v-if="task.reminderDueDate">
+          <v-icon>alarm_on</v-icon>
+        </v-list-tile-action>
         <v-list-tile-action>
           <v-btn flat icon @click.stop="onSelectDueDate(null)">
             <v-icon>delete</v-icon>
@@ -122,12 +128,12 @@ export default {
       Meteor.call('tasks.removeAssignedTo', this.task._id);
     },
 
-    onSelectDueDate (date) {
-      Meteor.call('tasks.setDueDate', this.task._id, date);
+    onSelectDueDate (date, reminder) {
+      Meteor.call('tasks.setDueDate', this.task._id, date, reminder);
     },
 
-    onSelectStartDate (date) {
-      Meteor.call('tasks.setStartDate', this.task._id, date);
+    onSelectStartDate (date, reminder) {
+      Meteor.call('tasks.setStartDate', this.task._id, date, reminder);
     },
 
     formatDate (date) {

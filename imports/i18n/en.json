@@ -111,6 +111,12 @@
   "New item": "New item",
   "A task is assigned to me": "A task is assigned to me",
   "A task is updated": "A task is updated",
+  "Select": "Select",
+  "Select date": "Select date",
+  "Notification center": "Notification center",
+  "Open notification center": "Open notification center",
+  "Notification deleted": "Notification deleted",
+  "No notification": "No notification",
   "history": {
     "tasks": {
       "create": "Creation",
@@ -126,6 +132,7 @@
       "addAttachment": "Add attachment",
       "removeAttachment": "Delete attachment",
       "remove": "Delete",
+      "setStartDate": "Start date",
       "setDueDate": "Due date",
       "complete": "Completed",
       "addNote": "Add note",
@@ -135,7 +142,9 @@
       "updateEstimation": {
         "size": "Update estimation size",
         "spent": "Update spent time on task"
-      }
+      },
+      "reminderStartDate": "Task is starting soon",
+      "reminderDueDate": "Task is due soon"  
     }
   },
   "projects": {

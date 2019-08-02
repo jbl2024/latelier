@@ -1,10 +1,14 @@
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
-import { callbacks } from "./notifications";
 
 export const Events = new Mongo.Collection("events");
 
 if (Meteor.isServer) {
+  import { callbacks as mailsCB} from "./server/mails";
+  import { callbacks as remindersCB } from "./server/reminders";
+  import { callbacks as notificationsCB } from "./server/notifications";
+  const callbacks = [mailsCB, remindersCB, notificationsCB];
+
   Meteor.methods({
     "events.track"(event) {
       check(event, {
@@ -20,13 +24,14 @@ if (Meteor.isServer) {
 
       Events.insert(event);
 
-      if (callbacks[event.type] && Array.isArray(callbacks[event.type])) {
-        callbacks[event.type].map(cb => {
-          cb(event);
-        });
-      } else if (callbacks[event.type]) {
-        callbacks[event.type](event);
-      }
+      callbacks.map(cb => {
+        if (cb[event.type]) {
+          cb[event.type](event);
+        }
+        if (cb["*"]) {
+          cb["*"](event);
+        }
+      });
     },
 
     "events.removeProject"(projectId) {
