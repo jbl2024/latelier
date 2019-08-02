@@ -4,6 +4,7 @@ import "/test/api/users/users.test"
 import "/test/api/bpmn/processDiagrams.test"
 import "/test/api/projects/projects.test"
 import "/test/api/labels/labels.test"
+import "/test/api/notifications/notifications.test"
 
 describe("latelier", function () {
   it("package.json has correct name", async function () {
