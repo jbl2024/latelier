@@ -135,6 +135,7 @@
       "setStartDate": "Start date",
       "setDueDate": "Due date",
       "complete": "Completed",
+      "uncomplete": "Not completed",
       "addNote": "Add note",
       "removeNote": "Remove note",
       "updateNote": "Update note",

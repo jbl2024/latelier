@@ -134,6 +134,7 @@
       "remove": "Suppression",
       "setDueDate": "Date d'échéance",
       "complete": "Complétée",
+      "uncomplete": "Non complétée",
       "addNote": "Ajout d'une note",
       "removeNote": "Suppression d'une note",
       "updateNote": "Modification d'une note",

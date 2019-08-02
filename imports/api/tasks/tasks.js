@@ -332,8 +332,10 @@ Meteor.methods({
     Tasks.update({ _id: taskId }, { $set: { completed: completed } });
     const task = Tasks.findOne({ _id: taskId });
     Meteor.call("lists.findTasksToCatch", task.projectId);
+
+    const type = 
     Meteor.call("tasks.track", {
-      type: "tasks.complete",
+      type: completed ? "tasks.complete" : "tasks.uncomplete",
       taskId: taskId
     });
   },
