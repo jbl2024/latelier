@@ -117,6 +117,7 @@
   "Open notification center": "Ouvrir le centre de notification",
   "Notification deleted": "Notification supprimée",
   "No notification": "Aucune notification",
+  "Reminder": "Rappel",
   "history": {
     "tasks": {
       "create": "Création",
@@ -165,5 +166,14 @@
       "future": "dans {duration}",
       "by": "{duration} par {user}"
     }
+  },
+  "reminders": {
+    "never": "Jamais",
+    "onDueDate": "A la date d'échéance",
+    "15minutes": "15 minutes avant",
+    "1hour": "1 heure avant",
+    "2hours": "2 heures avant",
+    "1day": "1 jour avant",
+    "2days": "2 jours avant"
   }
 }

@@ -52,13 +52,13 @@ export default {
       hour: null,
       selectedReminder: null,
       reminders: [
-        {text: this.$t('Never'), value: 'never'},
-        {text: this.$t('On due date'), value: "0"},
-        {text: this.$t('15 minutes before'), value: "15"},
-        {text: this.$t('1 hour before'), value: "60"},
-        {text: this.$t('2 hours before'), value: "120"},
-        {text: this.$t('1 day before'), value: "1140"},
-        {text: this.$t('2 days before'), value: "2280"},
+        {text: this.$t('reminders.never'), value: 'never'},
+        {text: this.$t('reminders.onDueDate'), value: "0"},
+        {text: this.$t('reminders.15minutes'), value: "15"},
+        {text: this.$t('reminders.1hour'), value: "60"},
+        {text: this.$t('reminders.2hours'), value: "120"},
+        {text: this.$t('reminders.1day'), value: "1140"},
+        {text: this.$t('reminders.2days'), value: "2280"},
       ]
     };
   },
