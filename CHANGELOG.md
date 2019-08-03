@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Edit list name right after creation
 - Task reminder
 - Notifications
+- Watchers
 
 ### Changed
 - Display previous members in project filter toolbar

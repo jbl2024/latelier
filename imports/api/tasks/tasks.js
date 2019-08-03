@@ -293,6 +293,7 @@ Meteor.methods({
       createdBy: !keepDates ? userId : task.createdBy,
       updatedBy: !keepDates ? userId : task.updatedBy,
       labels: task.labels,
+      watchers: task.watchers,
       notes: notes,
       checklist: checklist,
       startDate: task.startDate,
@@ -629,6 +630,54 @@ Meteor.methods({
     });
   },
 
+  "tasks.addWatcher"(taskId, userId) {
+    check(taskId, String);
+    check(userId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) {
+      throw new Meteor.Error("task-not-found");
+    }
+    Tasks.update({ _id: taskId }, { $push: { watchers: userId } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.addWatcher",
+      taskId: taskId
+    });
+
+    if (Meteor.isServer) {
+      if (Projects.find({ _id: task.projectId, members: userId }).count() > 0) {
+        return;
+      }
+      Meteor.call("projects.addMember", {
+        projectId: task.projectId,
+        userId: userId
+      });
+    }
+  },
+
+  "tasks.removeWatcher"(taskId, userId) {
+    check(taskId, String);
+    check(userId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
+
+    if (Tasks.find({ _id: taskId, watchers: userId }).count() == 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $pull: { watchers: userId } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.removeWatcher",
+      taskId: taskId
+    });
+  },
+
   "tasks.setDueDate"(taskId, dueDate, reminder) {
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
@@ -836,6 +885,11 @@ Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
     task.notes.map(note => {
       if (note.createdBy) userIds.push(note.createdBy);
       if (note.editedBy) userIds.push(note.editedBy);
+    });
+  }
+  if (task.watchers && task.watchers.length > 0) {
+    task.watchers.map(watcher => {
+      userIds.push(watcher);
     });
   }
   userIds = [...new Set(userIds)]; // remove duplicates
