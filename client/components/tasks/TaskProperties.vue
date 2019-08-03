@@ -2,32 +2,12 @@
 
 <div class="task-properties">
 
+  <select-user @select="onChooseWatcher" :project="project" :active.sync="showChooseWatcherDialog" :is-admin="canManageProject(task)"></select-user>
   <select-user @select="onChooseAssignedTo" :project="project" :active.sync="showChooseAssignedToDialog" :is-admin="canManageProject(task)"></select-user>
   <select-date @select="onSelectDueDate" reminder :active.sync="showSelectDueDate"></select-date>
   <select-date @select="onSelectStartDate" reminder :active.sync="showSelectStartDate"></select-date>
   
-  <v-subheader>{{ $t('Duties') }}</v-subheader>
-  <v-list class="elevation-1">
-    <v-list-tile @click="showChooseAssignedToDialog = true">
-      <v-list-tile-avatar :color="isOnline(task.assignedTo)">
-        <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-      <v-list-tile-title>
-        <span v-show="task.assignedTo">Assignée à </span>
-        <span>{{ formatUser(task.assignedTo) }}</span>
-        <span v-show="!task.assignedTo">{{ $t('Unassigned')}}</span>
-      </v-list-tile-title>
-      </v-list-tile-content>
-      <v-list-tile-action>
-        <v-btn icon flat @click.stop="removeAssignedTo">
-          <v-icon color="grey">delete</v-icon>
-        </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
-  </v-list>
-
-  <v-subheader>Dates</v-subheader>
+  <v-subheader>{{ $t('Dates') }} </v-subheader>
   <v-list two-line class="elevation-1">
       <v-list-tile @click="showSelectStartDate = true">
         <v-list-tile-avatar>
@@ -72,6 +52,66 @@
       </v-list-tile>
   </v-list>
 
+  <v-subheader>{{ $t('Duties') }}
+    <v-btn color="grey lighten-1" flat icon @click="addMeAsAssignedTo">
+      <v-icon>account_circle</v-icon>
+    </v-btn>
+  </v-subheader>
+  <v-list class="elevation-1">
+    <v-list-tile @click="showChooseAssignedToDialog = true">
+      <v-list-tile-avatar :color="isOnline(task.assignedTo)">
+        <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
+      </v-list-tile-avatar>
+      <v-list-tile-content>
+      <v-list-tile-title>
+        <span>{{ formatUser(task.assignedTo) }}</span>
+        <span v-show="!task.assignedTo">{{ $t('Unassigned')}}</span>
+      </v-list-tile-title>
+      </v-list-tile-content>
+      <v-list-tile-action>
+        <v-btn icon flat @click.stop="removeAssignedTo">
+          <v-icon color="grey">delete</v-icon>
+        </v-btn>
+      </v-list-tile-action>
+    </v-list-tile>
+  </v-list>
+
+  <v-subheader>{{ $t('Watchers') }}
+    <v-btn color="grey lighten-1" flat icon @click="addMeAsWatcher">
+      <v-icon>account_circle</v-icon>
+    </v-btn>
+  </v-subheader>
+  <v-list class="elevation-1">
+    <v-list-tile v-for="watcher in task.watchers" :key="watcher">
+      <v-list-tile-avatar :color="isOnline(watcher)">
+        <span class="">{{ formatUserLetters(watcher) }}</span>
+      </v-list-tile-avatar>
+      <v-list-tile-content>
+      <v-list-tile-title>
+        <span>{{ formatUser(watcher) }}</span>
+        <span v-show="!watcher">{{ $t('Unassigned')}}</span>
+      </v-list-tile-title>
+      </v-list-tile-content>
+      <v-list-tile-action>
+        <v-btn icon flat @click.stop="removeWatcher(watcher)">
+          <v-icon color="grey">delete</v-icon>
+        </v-btn>
+      </v-list-tile-action>
+    </v-list-tile>
+
+    <v-list-tile @click="showChooseWatcherDialog = true">
+      <v-list-tile-avatar>
+        <v-icon>add</v-icon>
+      </v-list-tile-avatar>
+      <v-list-tile-content>
+      <v-list-tile-title>
+        <span v-show="!task.assignedTo">{{ $t('Add')}}</span>
+      </v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </v-list>
+
+
   <template v-if="isEstimationEnabled">
     <v-subheader>{{ $t('Estimations') }}</v-subheader>
     <task-estimations-in-detail :task="task"></task-estimations-in-detail>
@@ -107,6 +147,7 @@ export default {
   data() {
     return {
       showChooseAssignedToDialog: false,
+      showChooseWatcherDialog: false,
       showSelectDueDate: false,
       showSelectStartDate: false,
       isEstimationEnabled: false,
@@ -120,13 +161,30 @@ export default {
   },
   methods: {
 
+    onChooseWatcher (user) {
+      Meteor.call('tasks.addWatcher', this.task._id, user._id);
+    },
+
+    addMeAsWatcher () {
+      Meteor.call('tasks.addWatcher', this.task._id, Meteor.userId());
+    },
+
+    removeWatcher (watcher) {
+      Meteor.call('tasks.removeWatcher', this.task._id, watcher);
+    },
+
     onChooseAssignedTo (user) {
       Meteor.call('tasks.assignTo', this.task._id, user._id);
     },
 
-    removeAssignedTo () {
-      Meteor.call('tasks.removeAssignedTo', this.task._id);
+    addMeAsAssignedTo () {
+      Meteor.call('tasks.assignTo', this.task._id, Meteor.userId());
     },
+
+    removeAssignedTo () {
+      if (this.task.assignedTo) Meteor.call('tasks.removeAssignedTo', this.task._id);
+    },
+
 
     onSelectDueDate (date, reminder) {
       Meteor.call('tasks.setDueDate', this.task._id, date, reminder);
