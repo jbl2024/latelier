@@ -182,7 +182,7 @@ export default {
     },
 
     removeAssignedTo () {
-      Meteor.call('tasks.removeAssignedTo', this.task._id);
+      if (this.task.assignedTo) Meteor.call('tasks.removeAssignedTo', this.task._id);
     },
 
 

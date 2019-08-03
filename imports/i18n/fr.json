@@ -140,6 +140,7 @@
       "removeNote": "Suppression d'une note",
       "updateNote": "Modification d'une note",
       "assignTo": "Assignée",
+      "removeAssignedTo": "Suppression du responsable",
       "addWatcher": "Ajout d'un observateur",
       "removeWatcher": "Suppression d'un observateur",
       "updateEstimation": {

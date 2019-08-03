@@ -141,6 +141,7 @@
       "removeNote": "Remove note",
       "updateNote": "Update note",
       "assignTo": "Assigned to",
+      "removeAssignedTo": "Remove assigned to",
       "addWatcher": "Add watcher",
       "removeWatcher": "Remove watcher",
       "updateEstimation": {
