@@ -64,7 +64,6 @@
       </v-list-tile-avatar>
       <v-list-tile-content>
       <v-list-tile-title>
-        <span v-show="task.assignedTo">Assignée à </span>
         <span>{{ formatUser(task.assignedTo) }}</span>
         <span v-show="!task.assignedTo">{{ $t('Unassigned')}}</span>
       </v-list-tile-title>
