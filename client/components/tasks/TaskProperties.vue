@@ -27,7 +27,7 @@
     </v-list-tile>
   </v-list>
 
-  <v-subheader>Dates</v-subheader>
+  <v-subheader>{{ $t('Dates') }} </v-subheader>
   <v-list two-line class="elevation-1">
       <v-list-tile @click="showSelectStartDate = true">
         <v-list-tile-avatar>
