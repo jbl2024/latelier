@@ -10,6 +10,8 @@ if (Meteor.isServer) {
   });
 }
 
+HealthReports.methods = {};
+
 Meteor.methods({
   "healthReports.create"(projectId, name, description, date, weather) {
     check(projectId, String);
@@ -93,5 +95,5 @@ Meteor.methods({
     check(id, String);
     check(name, String);
     HealthReports.update({ _id: id }, { $set: { name: name } });
-  }
+  },
 });

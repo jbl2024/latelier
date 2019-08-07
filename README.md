@@ -37,7 +37,7 @@ Settings:
 |public.seo.titlePrefix | string        | l'atelier                | window.title prefix |
 |sso                    | object        | {}                       | See below |
 |uploadTransport        | string        | ddp                      | http or ddp |
-
+|notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
 
 sso:
 

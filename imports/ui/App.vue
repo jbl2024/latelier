@@ -35,6 +35,7 @@
             <login-menu></login-menu>
           </v-menu>
         </v-avatar>
+        <notification-button></notification-button>
       </v-toolbar>
 
       <v-hover open-delay="300">
@@ -157,11 +158,25 @@ export default {
     }
   },
   meteor: {
+    isConnected() {
+      if (Meteor) {
+        return Meteor.userId();
+      }
+      return false;
+    },
     email() {
       if (Meteor) {
         const user = Meteor.user();
         if (user) {
           return user.emails[0].address;
+        }
+      }
+    },
+    notificationsCount() {
+      if (Meteor) {
+        const user = Meteor.user();
+        if (user && user.notifications) {
+          return user.notifications.count;
         }
       }
     },

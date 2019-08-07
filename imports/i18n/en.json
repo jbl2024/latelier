@@ -73,8 +73,8 @@
   "Unassigned": "Unassigned",
   "Start date": "Start date",
   "End date": "End date",
-  "Date.None": "None",
-  "Estimation.None": "None",
+  "DateNone": "None",
+  "EstimationNone": "None",
   "Add label": "Add label",
   "No notes": "No notes",
   "Add note": "Add note",
@@ -105,12 +105,21 @@
   "The project is private": "The project is private",
   "Features": "Features",
   "Members": "Members",
-  "Background.None": "None",
+  "BackgroundNone": "None",
   "Automatically mark as completed": "Automatically mark as completed",
   "Catch completed tasks": "Catch completed tasks",
   "New item": "New item",
   "A task is assigned to me": "A task is assigned to me",
   "A task is updated": "A task is updated",
+  "Select": "Select",
+  "Select date": "Select date",
+  "Notifications": "Notifications",
+  "Notification deleted": "Notification deleted",
+  "No notification": "No notification",
+  "Reminder": "Reminder",
+  "Watchers": "Watchers",
+  "Users": "Users",
+  "Add": "Add",
   "history": {
     "tasks": {
       "create": "Creation",
@@ -126,16 +135,23 @@
       "addAttachment": "Add attachment",
       "removeAttachment": "Delete attachment",
       "remove": "Delete",
+      "setStartDate": "Start date",
       "setDueDate": "Due date",
       "complete": "Completed",
+      "uncomplete": "Not completed",
       "addNote": "Add note",
       "removeNote": "Remove note",
       "updateNote": "Update note",
       "assignTo": "Assigned to",
+      "removeAssignedTo": "Remove assigned to",
+      "addWatcher": "Add watcher",
+      "removeWatcher": "Remove watcher",
       "updateEstimation": {
         "size": "Update estimation size",
         "spent": "Update spent time on task"
-      }
+      },
+      "reminderStartDate": "Task is starting soon",
+      "reminderDueDate": "Task is due soon"  
     }
   },
   "projects": {
@@ -157,5 +173,14 @@
       "future": "in {duration}",
       "by": "{duration} by {user}"
     }
+  },
+  "reminders": {
+    "never": "Never",
+    "onDueDate": "On due date",
+    "15minutes": "15 minutes before",
+    "1hour": "1 hour before",
+    "2hours": "2 hours before",
+    "1day": "1 day before",
+    "2days": "2 days before"
   }
 }

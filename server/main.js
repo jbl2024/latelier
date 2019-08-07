@@ -22,6 +22,7 @@ import '../imports/api/labels/server/publications.js';
 import '../imports/api/canvas/canvas.js';
 import '../imports/api/canvas/server/publications.js';
 import '../imports/api/healthReports/healthReports.js';
+import '../imports/api/healthReports/server/methods.js';
 import '../imports/api/healthReports/server/publications.js';
 import '../imports/api/events/events.js';
 import '../imports/api/backgrounds/startup/server/fixtures.js';
@@ -32,6 +33,9 @@ import '../imports/api/attachments/server/methods.js';
 
 import '../imports/api/bpmn/processDiagrams';
 import '../imports/api/bpmn/server/publications';
+
+import '../imports/api/notifications/notifications.js';
+import '../imports/api/notifications/server/methods.js';
 
 import '../imports/api/databases/databases.js';
 import '../imports/api/databases/server/publications.js';

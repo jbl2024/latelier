@@ -356,6 +356,12 @@ Projects.methods.removeMember = new ValidatedMethod({
       { $set: { assignedTo: null } },
       { multi: true }
     );
+
+    Tasks.update(
+      { projectId: projectId, watchers: userId },
+      { $pull: { watchers: userId} },
+      { multi: true }
+    );
   }
 });
 
@@ -377,6 +383,13 @@ Projects.methods.leave = new ValidatedMethod({
       { $set: { assignedTo: null } },
       { multi: true }
     );
+
+    Tasks.update(
+      { projectId: projectId, watchers: userId },
+      { $pull: { watchers: userId} },
+      { multi: true }
+    );
+
   }
 });
 

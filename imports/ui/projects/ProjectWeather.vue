@@ -1,17 +1,6 @@
 <template>
   <div class="project-weather">
     <new-health-report ref="newHealthReport" :projectId="projectId"></new-health-report>
-    <edit-health-report ref="editHealthReport" :report="selectedReport"></edit-health-report>
-    <confirm-dialog
-      :active.sync="showConfirmDelete"
-      :title="$t('Confirm')"
-      :content="$t('Deletion is permanent')"
-      :confirm-text="$t('Delete')"
-      :cancel-text="$t('Cancel')"
-      @cancel="onCancelDelete"
-      @confirm="onConfirmDelete"
-    />
-
     <div v-if="!healthReports">
       <v-progress-linear indeterminate></v-progress-linear>
     </div>
@@ -34,35 +23,7 @@
               </v-flex>
               <template v-for="report in healthReports">
                 <v-flex xs12 sm6 offset-sm3 :key="report._id">
-                  <v-card>
-                    <v-layout row>
-                      <v-flex xs7>
-                        <v-card-title primary-title>
-                          <div>
-                            <div class="headline">{{ report.name }}</div>
-                            <div>{{ formatDate(report.date) }}</div>
-                          </div>
-                        </v-card-title>
-                      </v-flex>
-                      <v-flex xs5>
-                        <v-img :src="getIcon(report.weather)" height="125px" contain></v-img>
-                      </v-flex>
-                    </v-layout>
-                    <v-card-text>
-                      <div v-if="report.description" class="ql-editor-view" v-html="report.description"></div>
-                    </v-card-text>
-                    <v-divider light></v-divider>
-
-                    <v-card-actions class="pa-3" color="white">
-                      <v-spacer></v-spacer>
-                      <v-btn icon @click="editReport(report)">
-                        <v-icon>edit</v-icon>
-                      </v-btn>
-                      <v-btn icon @click="deleteReport(report)">
-                        <v-icon>delete</v-icon>
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
+                  <health-report-card :report="report"></health-report-card>
                 </v-flex>
               </template>
             </v-layout>
@@ -107,8 +68,6 @@ export default {
   },
   data() {
     return {
-      showConfirmDelete: false,
-      selectedReport: null
     };
   },
   meteor: {
@@ -135,21 +94,6 @@ export default {
   methods: {
     newHealthReport() {
       this.$refs.newHealthReport.open();
-    },
-    editReport(report) {
-      this.selectedReport = report;
-      this.$refs.editHealthReport.open();
-    },
-    deleteReport(report) {
-      this.selectedReport = report;
-      this.showConfirmDelete = true;
-    },
-    onCancelDelete() {},
-    onConfirmDelete() {
-      Meteor.call("healthReports.remove", this.selectedReport._id);
-    },
-    getIcon(weather) {
-      return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     },
     getBackgroundUrl(user) {
       if (user && user.profile) {

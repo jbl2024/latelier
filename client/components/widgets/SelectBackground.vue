@@ -22,7 +22,7 @@
                 <span class=""></span>
               </v-list-tile-avatar>
               <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ $t('Background.None') }} </v-list-tile-title>
+                  <v-list-tile-title>{{ $t('BackgroundNone') }} </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list>

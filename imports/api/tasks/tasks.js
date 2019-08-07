@@ -13,6 +13,7 @@ import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask 
 
 export const Tasks = new Mongo.Collection("tasks");
 Tasks.methods = {};
+Tasks.helpers = {};
 
 const Counter = new Mongo.Collection("counters");
 
@@ -292,6 +293,7 @@ Meteor.methods({
       createdBy: !keepDates ? userId : task.createdBy,
       updatedBy: !keepDates ? userId : task.updatedBy,
       labels: task.labels,
+      watchers: task.watchers,
       notes: notes,
       checklist: checklist,
       startDate: task.startDate,
@@ -331,8 +333,10 @@ Meteor.methods({
     Tasks.update({ _id: taskId }, { $set: { completed: completed } });
     const task = Tasks.findOne({ _id: taskId });
     Meteor.call("lists.findTasksToCatch", task.projectId);
+
+    const type = 
     Meteor.call("tasks.track", {
-      type: "tasks.complete",
+      type: completed ? "tasks.complete" : "tasks.uncomplete",
       taskId: taskId
     });
   },
@@ -626,9 +630,59 @@ Meteor.methods({
     });
   },
 
-  "tasks.setDueDate"(taskId, dueDate) {
+  "tasks.addWatcher"(taskId, userId) {
+    check(taskId, String);
+    check(userId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
+
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) {
+      throw new Meteor.Error("task-not-found");
+    }
+    Tasks.update({ _id: taskId }, { $push: { watchers: userId } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.addWatcher",
+      taskId: taskId
+    });
+
+    if (Meteor.isServer) {
+      if (Projects.find({ _id: task.projectId, members: userId }).count() > 0) {
+        return;
+      }
+      Meteor.call("projects.addMember", {
+        projectId: task.projectId,
+        userId: userId
+      });
+    }
+  },
+
+  "tasks.removeWatcher"(taskId, userId) {
+    check(taskId, String);
+    check(userId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
+
+    if (Tasks.find({ _id: taskId, watchers: userId }).count() == 0) {
+      return;
+    }
+    Tasks.update({ _id: taskId }, { $pull: { watchers: userId } });
+
+    Meteor.call("tasks.track", {
+      type: "tasks.removeWatcher",
+      taskId: taskId
+    });
+  },
+
+  "tasks.setDueDate"(taskId, dueDate, reminder) {
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (dueDate) {
@@ -638,7 +692,8 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate } });
+
+    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate, reminderDueDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setDueDate",
@@ -646,9 +701,11 @@ Meteor.methods({
     });
   },
 
-  "tasks.setStartDate"(taskId, startDate) {
+  "tasks.setStartDate"(taskId, startDate, reminder) {
     check(taskId, String);
     check(startDate, Match.Maybe(String));
+    check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    if (reminder === 'never') reminder = null;
 
     let convertedDate = null;
     if (startDate) {
@@ -658,7 +715,7 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate } });
+    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate, reminderStartDate: reminder } });
 
     Meteor.call("tasks.track", {
       type: "tasks.setStartDate",
@@ -818,6 +875,26 @@ Tasks.methods.getHistory = new ValidatedMethod({
     };
   }
 });
+
+Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
+  let userIds = [];
+  if (task.assignedTo) userIds.push(task.assignedTo);
+  if (task.createdBy) userIds.push(task.createdBy);
+  if (task.updatedBy) userIds.push(task.updatedBy);
+  if (task.notes && task.notes.length > 0) {
+    task.notes.map(note => {
+      if (note.createdBy) userIds.push(note.createdBy);
+      if (note.editedBy) userIds.push(note.editedBy);
+    });
+  }
+  if (task.watchers && task.watchers.length > 0) {
+    task.watchers.map(watcher => {
+      userIds.push(watcher);
+    });
+  }
+  userIds = [...new Set(userIds)]; // remove duplicates
+  return userIds;
+}
 
 if (Meteor.isServer) {
   Meteor.methods({

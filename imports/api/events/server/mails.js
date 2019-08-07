@@ -1,20 +1,8 @@
 import { Email } from "meteor/email";
 import get from "lodash/get";
+import { Tasks } from "/imports/api/tasks/tasks";
 import * as htmlToText from 'html-to-text';
-/**
- * Return user ids involved in task as array
- * 
- * @param {*} task 
- */
-const findUserIdsInvolvedInTask = function (task) {
-  let userIds = [task.assignedTo, task.createdBy, task.updatedBy];
-  task.notes.map(note => {
-    userIds.push(note.createdBy);
-    userIds.push(note.editedBy);
-  });
-  userIds = [...new Set(userIds)]; // remove duplicates
-  return userIds;
-}
+
 
 /**
  * Build email data suitable for sendEmail
@@ -100,7 +88,7 @@ export const callbacks = {
 
   "tasks.addNote"(event) {
     const task = event.properties.task;
-    const userIds = findUserIdsInvolvedInTask(task);
+    const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
     userIds.map(userId => {
       const user = getUser(userId, event, "tasks.update");
@@ -116,7 +104,7 @@ export const callbacks = {
   
   "tasks.removeNote"(event) {
     const task = event.properties.task;
-    const userIds = findUserIdsInvolvedInTask(task);
+    const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
     userIds.map(userId => {
       const user = getUser(userId, event, "tasks.update");
@@ -132,7 +120,7 @@ export const callbacks = {
   
   "tasks.updateNote"(event) {
     const task = event.properties.task;
-    const userIds = findUserIdsInvolvedInTask(task);
+    const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
     userIds.map(userId => {
       const user = getUser(userId, event, "tasks.update");
