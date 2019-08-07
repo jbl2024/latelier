@@ -1,33 +1,36 @@
 <template>
-  <v-card>
+  <v-card @click="show = !show" class="card">
     <edit-health-report ref="editHealthReport" :report="selectedReport"></edit-health-report>
-    <v-layout row>
-      <v-flex xs7>
-        <v-card-title primary-title>
-          <div>
-            <div class="headline">{{ report.name }}</div>
-            <div>{{ formatDate(report.date) }}</div>
-          </div>
-        </v-card-title>
-      </v-flex>
-      <v-flex xs5>
-        <v-img :src="getIcon(report.weather)" height="125px" contain></v-img>
-      </v-flex>
-    </v-layout>
+    <v-card-title primary-title>
+      <div>
+        <div class="headline">{{ report.name }}</div>
+        <div>{{ formatDate(report.date) }}</div>
+      </div>
+    </v-card-title>
+    <v-img :src="getIcon(report.weather)" height="125px" contain></v-img>
     <v-card-text>
       <div v-if="report.description" class="ql-editor-view" v-html="report.description"></div>
     </v-card-text>
     <v-divider light></v-divider>
 
     <v-card-actions class="pa-3" color="white">
-      <v-spacer></v-spacer>
-      <v-btn icon @click="editReport(report)">
+      <v-btn icon @click.stop="editReport(report)">
         <v-icon>edit</v-icon>
       </v-btn>
-      <v-btn icon @click="deleteReport(report)">
+      <v-btn icon @click.stop="deleteReport(report)">
         <v-icon>delete</v-icon>
       </v-btn>
+      <v-spacer></v-spacer>
+      <v-btn icon @click.stop="show = !show">
+        <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+      </v-btn>
     </v-card-actions>
+    <v-slide-y-transition>
+      <v-card-text v-show="show">
+        <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+        <task-list :tasks="tasks"></task-list>
+      </v-card-text>
+    </v-slide-y-transition>
   </v-card>
 </template>
 
@@ -41,8 +44,20 @@ export default {
   },
   data() {
     return {
+      show: false,
+      loading: false,
       showConfirmDelete: false,
-      selectedReport: null
+      selectedReport: null,
+      tasks: null,
+      taskCount: 0,
+    };
+  },
+  watch: {
+    show(show) {
+      if (show) {
+        this.loading = true;
+        this.refreshTasks();
+      }
     }
   },
   methods: {
@@ -55,24 +70,50 @@ export default {
     },
     deleteReport(report) {
       this.$confirm(this.$t("Confirm"), {
-        title: this.$t('Deletion is permanent'),
+        title: this.$t("Deletion is permanent"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       }).then(res => {
         if (res) {
-          Meteor.call("healthReports.remove", this.selectedReport._id, (error, result) => {
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-              return;
+          Meteor.call(
+            "healthReports.remove",
+            report._id,
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Report deleted"));
             }
-            this.$store.dispatch("notify", this.$t('Report deleted'));
-          });
+          );
         }
       });
+    },
+
+    refreshTasks() {
+      Meteor.call(
+        "healthReports.findTasks",
+        {
+          id: this.report._id,
+          page: 1
+        },
+        (error, result) => {
+          this.loading = false;
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.tasks = result.data;
+          this.taskCount = result.data.totalItems;
+        }
+      );
     }
   }
 };
 </script>
 
 <style scoped>
+.card {
+  cursor: pointer;
+}
 </style>
