@@ -18,10 +18,6 @@ import "jexcel/dist/jexcel.min.css";
 
 export default {
   beforeDestroy() {
-    // if (this.spreadsheet) {
-    //   jexcel.destroy(this.$refs.spreadsheet, true);
-    //   this.spreadsheet = null;
-    // }
   },
   props: {
     tableId: {
