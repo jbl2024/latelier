@@ -117,9 +117,9 @@
   "Notification deleted": "Notificacion suprimida",
   "No notification": "Cap de notificacion",
   "Reminder": "Recòrd",
-  "Watchers": "Watchers",
-  "Users": "Users",
-  "Add": "Add",
+  "Watchers": "Observators",
+  "Users": "Utilizaires",
+  "Add": "Ajustar",
   "history": {
     "tasks": {
       "create": "Creacion",
@@ -143,9 +143,9 @@
       "removeNote": "Supression d'una nòta",
       "updateNote": "Modificacion d'una nòta",
       "assignTo": "Assignat",
-      "removeAssignedTo": "Remove assigned to",
-      "addWatcher": "Add watcher",
-      "removeWatcher": "Remove watcher",
+      "removeAssignedTo": "Levar l’assignacion",
+      "addWatcher": "Ajustar un observator",
+      "removeWatcher": "Levar l’observator",
       "updateEstimation": {
         "size": "Modificacion de l'estimacion",
         "spent": "Modificacion de la durada passada"
