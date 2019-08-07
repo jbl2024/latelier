@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Completed tasks are displayed in weather report
 
 ### Changed
 - Fix i18n string with dot 
