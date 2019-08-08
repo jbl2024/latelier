@@ -1,16 +1,7 @@
-import { Projects } from "../../api/projects/projects.js";
-import { Lists } from "../../api/lists/lists.js";
 import faker from "faker";
-import { Organizations } from "../../api/organizations/organizations.js";
-
 
 function generateFixtures() {
   var users = Meteor.users.find().fetch();
-  users.map(user => {
-    if (user._id != "TAGRk8jBBZAkMMYmc") {
-      //Meteor.users.remove(user._id);
-    }
-  });
   if (Meteor.users.find().count() <= 2) {
     faker.locale = "fr";
 
