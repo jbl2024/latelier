@@ -59,9 +59,14 @@ sso:
 Example:
 ```
 {
-  "generateFixtures": true,
+  "generateFixtures": false,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
+  "notificationsPerUser": 50,
+  "users": {
+    "search": "admin",
+    "invite": "admin"
+  },
   "email": {
     "from": "noreply@localhost"
   },
