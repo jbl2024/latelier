@@ -41,6 +41,7 @@ Settings:
 |users                  | object        | {}                       | See below |
 
 users:
+
 | Key                   | Type                    | Default value            | Description                    |
 |-----------------------|-------------------------|--------------------------|--------------------------------|
 | search                | string ("admin", "all") | all                      | Who can search existing users  |
