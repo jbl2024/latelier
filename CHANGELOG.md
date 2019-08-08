@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Fix i18n string with dot 
+- Fix task creation in completed list (completedAt was not set)
 - When creating task in completed list, completedAt field is correctly set
 - Fixtures emails are generated using @latelierdesprojets.fr
 - Update README.md
