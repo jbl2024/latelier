@@ -7,10 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 - Completed tasks are displayed in weather report
+- Settings to restrict user search & invitation to admin only 
 
 ### Changed
 - Fix i18n string with dot 
 - When creating task in completed list, completedAt field is correctly set
+- Fixtures emails are generated using @latelierdesprojets.fr
+- Update README.md
 
 ### Removed
 

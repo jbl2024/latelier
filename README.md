@@ -38,6 +38,14 @@ Settings:
 |sso                    | object        | {}                       | See below |
 |uploadTransport        | string        | ddp                      | http or ddp |
 |notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
+|users                  | object        | {}                       | See below |
+
+users:
+| Key                   | Type          | Default value            | Description                    |
+|-----------------------|---------------|--------------------------|--------------------------------|
+| search                | string ("admin", "all") | all            | Who can search existing users  |
+| invite                | string ("admin", "all") | all            | Who can invite people          |
+
 
 sso:
 
@@ -71,6 +79,12 @@ Example:
   }
 }
 ```
+
+### Fixtures (dev only feature)
+ 
+If ```generateFixtures``` parameter is set to true, 50 users are created at startup (if user count is <= 2).
+Default password for generated users is ```password```.
+
 
 ### Install dependencies
 
