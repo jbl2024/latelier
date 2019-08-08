@@ -80,13 +80,15 @@ Meteor.methods({
       }
       return 0;
     };
+    const now = new Date();
 
-    var completed = false;
+    let completed = false;
+    let completedAt;
     var list = Lists.findOne({ _id: listId });
     if (list && list.autoComplete) {
       completed = true;
+      completedAt = now;
     }
-    const now = new Date();
     let number;
     if (Meteor.isServer) {
       number = incNumber();
@@ -97,6 +99,7 @@ Meteor.methods({
       projectId: projectId,
       listId: listId,
       completed: completed,
+      completedAt: completedAt,
       createdAt: now,
       updatedAt: now,
       createdBy: userId,
