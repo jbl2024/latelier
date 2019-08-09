@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - When creating task in completed list, completedAt field is correctly set
 - Fixtures emails are generated using @latelierdesprojets.fr
 - Update README.md
+- Helth reports are loaded with meteor method instead of publication
 
 ### Removed
 

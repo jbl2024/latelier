@@ -155,6 +155,7 @@ export default {
         this.date,
         this.weather,
         (error, result) => {
+          this.$emit("created");
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;

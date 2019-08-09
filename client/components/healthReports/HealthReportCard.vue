@@ -1,6 +1,6 @@
 <template>
   <v-card @click="show = !show" class="card">
-    <edit-health-report ref="editHealthReport" :report="selectedReport"></edit-health-report>
+    <edit-health-report ref="editHealthReport" :report="selectedReport" @updated="$emit('updated')"></edit-health-report>
     <v-card-title primary-title>
       <div>
         <div class="headline">{{ report.name }}</div>
@@ -79,6 +79,7 @@ export default {
             "healthReports.remove",
             report._id,
             (error, result) => {
+              this.$emit("updated");
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;

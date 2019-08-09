@@ -150,6 +150,7 @@ export default {
         this.date,
         this.weather,
         (error, result) => {
+          this.$emit("updated");
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;

@@ -1,35 +1,40 @@
 <template>
   <div class="project-weather">
-    <new-health-report ref="newHealthReport" :projectId="projectId"></new-health-report>
-    <div v-if="!healthReports">
-      <v-progress-linear indeterminate></v-progress-linear>
-    </div>
-    <template v-if="healthReports">
-      <empty-state
-        class="empty"
-        v-if="healthReports.length == 0"
-        illustration="weather"
-        :description="$t('No report defined')"
-      >
-        <v-btn class="info" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
-      </empty-state>
+    <new-health-report ref="newHealthReport" :projectId="projectId" @created="refresh"></new-health-report>
+    <empty-state
+      class="empty"
+      v-if="healthReports.length == 0 && !loading"
+      illustration="weather"
+      :description="$t('No report defined')"
+    >
+      <v-btn class="info" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+    </empty-state>
 
-      <template v-if="healthReports.length > 0">
-        <div class="container-wrapper" :style="getBackgroundUrl(user)">
-          <v-container fluid grid-list-lg>
-            <v-layout row wrap>
-              <v-flex xs12 sm6 offset-sm3>
-                <v-btn block @click="newHealthReport">{{ $t('Add report') }}</v-btn>
-              </v-flex>
-              <template v-for="report in healthReports">
-                <v-flex xs12 sm6 offset-sm3 :key="report._id">
-                  <health-report-card :report="report"></health-report-card>
-                </v-flex>
-              </template>
-            </v-layout>
-          </v-container>
+    <template v-if="healthReports.length > 0">
+      <div class="container-wrapper" :style="getBackgroundUrl(user)">
+        <div v-if="loading">
+          <v-progress-linear indeterminate></v-progress-linear>
         </div>
-      </template>
+        <v-container fluid grid-list-lg>
+          <v-layout row wrap>
+            <v-flex xs12 sm6 offset-sm3>
+              <v-btn block @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+            </v-flex>
+            <template v-for="report in healthReports">
+              <v-flex xs12 sm6 offset-sm3 :key="report._id">
+                <health-report-card :report="report" @updated="refresh"></health-report-card>
+              </v-flex>
+            </template>
+          </v-layout>
+        </v-container>
+        <div class="text-xs-center" v-if="pagination.totalPages > 1">
+          <v-pagination
+            v-if="pagination.totalPages > 0"
+            v-model="page"
+            :length="pagination.totalPages"
+          ></v-pagination>
+        </div>
+      </div>
     </template>
   </div>
 </template>
@@ -37,13 +42,14 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { HealthReports } from "/imports/api/healthReports/healthReports.js";
-import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
+import { Backgrounds } from "/imports/api/backgrounds/backgrounds.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
   mixins: [DatesMixin],
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.refresh();
   },
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", 0);
@@ -66,32 +72,73 @@ export default {
       }
     }
   },
+  watch: {
+    page(page) {
+      this.refresh();
+    }
+  },
   data() {
     return {
+      loading: false,
+      healthReports: [],
+      page: 1,
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 0,
+        totalPages: 0
+      }
     };
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      healthReports: function() {
+      project: function() {
         return [this.projectId];
       }
     },
     project() {
       return Projects.findOne();
     },
-    healthReports() {
-      return HealthReports.find({}, { sort: { date: -1 } });
-    },
-    currentReport() {
-      return HealthReports.findOne({}, { sort: { date: -1 } });
-    },
-    user () {
+    user() {
       return Meteor.user();
     }
-
   },
   methods: {
+    refresh() {
+      this.loading = true;
+      Meteor.call(
+        "healthReports.findHealthReports",
+        {
+          projectId: this.projectId,
+          page: this.page
+        },
+        (error, result) => {
+          this.loading = false;
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.pagination.totalItems = result.totalItems;
+          this.pagination.rowsPerPage = result.rowsPerPage;
+          this.pagination.totalPages = this.calculateTotalPages();
+
+          this.healthReports = result.data;
+        }
+      );
+    },
+
+    calculateTotalPages() {
+      if (
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
+      )
+        return 0;
+
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
+    },
+
     newHealthReport() {
       this.$refs.newHealthReport.open();
     },
@@ -102,8 +149,7 @@ export default {
           return `background-image: url('${background}');`;
         }
       }
-    },
-
+    }
   }
 };
 </script>
@@ -120,7 +166,7 @@ export default {
   width: 100%;
   position: absolute;
   left: 0;
-  top: 0; 
+  top: 0;
   right: 0;
   bottom: 0;
   -webkit-background-size: cover;
@@ -133,10 +179,9 @@ export default {
   background-attachment: fixed;
 }
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   .container-wrapper {
     min-height: 100vh;
   }
 }
-
 </style>
