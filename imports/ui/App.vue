@@ -249,7 +249,8 @@ export default {
 
 @media (min-width: 961px) {
   .drawer {
-    top: 64px;
+    top: 64px !important;
+
   }
   .drawer-wrapper {
     position: relative;
