@@ -427,6 +427,7 @@ export default {
   color: #777;
   cursor: pointer;
   background-color: #e5e5e5;
+  border-radius: 2px;
 }
 
 @media (max-width: 600px) {
