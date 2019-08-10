@@ -46,7 +46,7 @@
         </v-btn>
       </v-subheader>
       <template v-for="user in users">
-        <v-list-item :key="user._id" avatar @click="openDetail(user)">
+        <v-list-item :key="user._id" @click="openDetail(user)">
           <v-list-item-avatar :color="isOnline(user)">
             <span>{{ formatUserLetters(user) }}</span>
           </v-list-item-avatar>

@@ -4,8 +4,8 @@
       <select-background :active.sync="showSelectBackgroundDialog"></select-background>
       <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
 
-      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
-        <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
+      <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-app-bar-nav-icon>
         <v-toolbar-title
           style="width: 300px"
           class="ml-12 mr-12"
@@ -36,7 +36,7 @@
           </v-menu>
         </v-avatar>
         <notification-button></notification-button>
-      </v-toolbar>
+      </v-app-bar>
 
       <v-hover open-delay="300">
       <v-navigation-drawer

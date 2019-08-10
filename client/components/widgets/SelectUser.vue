@@ -18,7 +18,7 @@
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in projectUsers">
-                    <v-list-item :key="user._id" avatar @click="selectUser(user)">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
                         <span class>{{ formatUserLetters(user) }}</span>
                       </v-list-item-avatar>
@@ -34,7 +34,7 @@
               <div class="flex-container">
                 <v-list class="flex1" dense subheader>
                   <template v-for="user in organizationUsers">
-                    <v-list-item :key="user._id" avatar @click="selectUser(user)">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
                         <span class>{{ formatUserLetters(user) }}</span>
                       </v-list-item-avatar>
@@ -64,7 +64,7 @@
                   <div class="flex1">
                     <v-list dense subheader>
                       <template v-for="user in users">
-                        <v-list-item :key="user._id" avatar @click="selectUser(user)">
+                        <v-list-item :key="user._id" @click="selectUser(user)">
                           <v-list-item-avatar :color="isOnline(user)">
                             <span>{{ formatUserLetters(user) }}</span>
                           </v-list-item-avatar>

@@ -73,7 +73,7 @@
               class="edit-name"
               @focus.native="$event.target.select()"
               label="Titre de la tâche"
-              outline
+              outlined
               v-model="task.name"
               @keydown.shift.enter="updateName"
             ></v-textarea>

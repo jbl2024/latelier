@@ -17,7 +17,7 @@
                     class="edit-name"
                     @focus.native="$event.target.select()"
                     :label="$t('Title')"
-                    outline
+                    outlined
                     required
                     :rules="nameRules"
                     v-model="name"
