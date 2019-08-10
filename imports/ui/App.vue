@@ -1,6 +1,6 @@
 <template>
-  <div class>
-    <v-app>
+  <div>
+    <v-app v-resize="onResizeApp">
       <select-background :active.sync="showSelectBackgroundDialog"></select-background>
       <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
 
@@ -181,6 +181,14 @@ export default {
     $subscribe: {
       user: function() {
         return [];
+      }
+    }
+  },
+  methods: {
+    onResizeApp() {
+      const width = window.innerWidth;
+      if (width >= 1264 && !this.drawer) {
+        this.drawer = true;
       }
     }
   }
