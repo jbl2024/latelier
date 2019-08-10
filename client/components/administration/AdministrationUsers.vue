@@ -1,6 +1,7 @@
 <template>
   <div class="administration-users elevation-1">
     <v-dialog
+      eager
       v-model="showUserDetail"
       class="detail"
       max-width="640"
@@ -9,7 +10,7 @@
       <user-detail @close="closeDetail()" @saved="findUsers()" ref="userDetail"></user-detail>
     </v-dialog>
     <new-user ref="newUser" @created="findUsers()"></new-user>
-    <v-container fluid>
+    <v-container fluid class="filters">
       <v-layout row wrap>
         <v-flex xs12 sm6>
           <v-text-field
@@ -38,7 +39,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-    <v-list dense subheader>
+    <v-list subheader>
       <v-subheader inset>
         {{ pagination.totalItems}} utilisateurs
         <v-btn text icon @click="$refs.newUser.open()">
@@ -232,5 +233,9 @@ export default {
 
 .deactivated {
   text-decoration: line-through;
+}
+
+.filters { 
+  padding: 42px;
 }
 </style>

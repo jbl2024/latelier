@@ -20,7 +20,7 @@
       <v-list two-line subheader v-show="processDiagrams.length > 0">
         <v-subheader>
           {{ $t('Process diagrams')}}
-          <v-btn fab dark small color="pink" @click="newDiagram()">
+          <v-btn icon dark small color="primary" @click="newDiagram()">
             <v-icon>add</v-icon>
           </v-btn>
         </v-subheader>
