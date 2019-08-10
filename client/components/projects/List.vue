@@ -471,6 +471,11 @@ export default {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
 }
+.list-edit {
+  position: absolute;
+  top: -8px;
+  width: 100%;
+}
 
 .list-edit input {
   background-color: white;

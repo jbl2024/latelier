@@ -15,7 +15,7 @@
             <v-tab v-if="isAdmin">{{ $t('Find')}}</v-tab>
             <v-tab-item v-if="!hideProject && project">
               <div class="flex-container">
-                <v-list class="flex1" dense subheader>
+                <v-list class="flex1" subheader>
                   <template v-for="user in projectUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
@@ -31,7 +31,7 @@
             </v-tab-item>
             <v-tab-item v-if="project && project.organizationId">
               <div class="flex-container">
-                <v-list class="flex1" dense subheader>
+                <v-list class="flex1" subheader>
                   <template v-for="user in organizationUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
@@ -61,7 +61,7 @@
                 </div>
                 <template v-if="users.length > 0 && search.length > 0">
                   <div class="flex1">
-                    <v-list dense subheader>
+                    <v-list subheader>
                       <template v-for="user in users">
                         <v-list-item :key="user._id" @click="selectUser(user)">
                           <v-list-item-avatar :color="isOnline(user)">

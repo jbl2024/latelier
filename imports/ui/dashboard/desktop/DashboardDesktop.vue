@@ -12,7 +12,7 @@
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
-            <v-btn small icon :to="{name: 'dashboard-page'}" v-if="organizationId">
+            <v-btn class="back-button" small icon :to="{name: 'dashboard-page'}" v-if="organizationId">
               <v-icon>arrow_back</v-icon>
             </v-btn>
 
@@ -450,6 +450,10 @@ export default {
 
 .link:hover {
   text-decoration: underline;
+}
+
+.back-button {
+  margin-right: 12px;
 }
 
 .dashboard-desktop {
