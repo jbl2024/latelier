@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+
+### Changed
+
+### Removed
+
+## [1.8.1] - 2019-08-10
+### Added
 - Completed tasks are displayed in weather report
 - Settings to restrict user search & invitation to admin only 
 
