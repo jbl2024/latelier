@@ -90,6 +90,7 @@ export default {
 
 .btn-color {
   margin-left: 0;
+  margin-bottom: 6px;
   width: 100%;
 }
 
