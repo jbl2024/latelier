@@ -149,7 +149,7 @@ pre {
   white-space: pre-wrap;
 }
 .task-notes {
-  padding-bottom: 24px;
+  padding-bottom: 12px;
 }
 .empty-state {
   transition: none;
