@@ -5,7 +5,6 @@
       @input="$emit('update:active')"
       max-width="620"
       :fullscreen="$vuetify.breakpoint.xsOnly"
-      lazy
     >
       <v-card>
         <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
