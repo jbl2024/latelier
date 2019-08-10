@@ -8,7 +8,6 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-app-bar-nav-icon>
         <v-toolbar-title
           style="width: 300px"
-          class="ml-12 mr-12"
           v-show="currentProjectId == 0 && currentOrganizationId == 0"
         >
           <span class="title ml-12 mr-12">L'atelier</span>
