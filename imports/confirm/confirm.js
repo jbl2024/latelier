@@ -1,17 +1,25 @@
 import Confirm from './Confirm.vue'
 
-function Install (Vue, options) {
-  const property = (options && options.property) || '$confirm'
+function Install (Vue, options = {}) {
+  const property = options.property || '$confirm'
+  delete options.property
+  const vuetify = options.vuetify
+  delete options.vuetify
+  if (!vuetify) {
+    console.warn('Module vuetify-confirm needs vuetify instance. Use Vue.use(VuetifyConfirm, { vuetify })')
+  }
+  const Ctor = Vue.extend(Object.assign({ vuetify }, Confirm))
   function createDialogCmp (options) {
+    const container = document.querySelector('[data-app=true]') || document.body
     return new Promise(resolve => {
-      const cmp = new Vue(Object.assign(Confirm, {
-        destroyed: (c) => {
-          document.body.removeChild(cmp.$el)
+      const cmp = new Ctor(Object.assign({}, {
+        propsData: Object.assign({}, Vue.prototype.$confirm.options, options),
+        destroyed: () => {
+          container.removeChild(cmp.$el)
           resolve(cmp.value)
         }
       }))
-      Object.assign(cmp, Vue.prototype.$confirm.options || {}, options)
-      document.body.appendChild(cmp.$mount().$el)
+      container.appendChild(cmp.$mount().$el)
     })
   }
   
@@ -23,6 +31,5 @@ function Install (Vue, options) {
   Vue.prototype[property] = show
   Vue.prototype[property].options = options || {}
 }
-
 
 export default Install

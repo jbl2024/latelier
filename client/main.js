@@ -79,7 +79,7 @@ import '/imports/favicon.js'
 import messages from '/imports/i18n/i18n.js'
 
 import confirm from '/imports/confirm/confirm.js'
-Vue.use(confirm);
+Vue.use(confirm, { vuetify });
 
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000

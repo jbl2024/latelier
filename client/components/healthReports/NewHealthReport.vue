@@ -19,7 +19,7 @@
                 <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-list two-line class="elevation-1 date">
+                <v-list two-lines class="elevation-1 date">
                     <v-list-item @click="showSelectDate = true">
                       <v-list-item-avatar>
                         <v-icon>calendar_today</v-icon>
@@ -56,7 +56,7 @@
 
               <v-flex xs12>
                 <label>{{ $t('Description') }}</label>
-                <rich-editor v-model="description" ref="description"></rich-editor>
+                <rich-editor v-model="description" ref="description" class="editor"></rich-editor>
               </v-flex>
 
             </v-layout>
@@ -174,5 +174,8 @@ export default {
 <style scoped>
 .date {
   margin-bottom: 24px;
+}
+
+.editor {
 }
 </style>
