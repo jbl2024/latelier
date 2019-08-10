@@ -118,7 +118,7 @@
     </div>
     <v-divider></v-divider>
 
-    <v-tabs grow>
+    <v-tabs grow show-arrows>
       <v-tabs-slider color="accent"></v-tabs-slider>
       <v-tab id="tab-properties">{{ $t('Properties') }}</v-tab>
       <v-tab id="tab-notes">{{ getLabel($t('Notes'), notesCount) }}</v-tab>
