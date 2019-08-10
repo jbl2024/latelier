@@ -1,12 +1,12 @@
 <template>
-  <v-toolbar dense class="flex0">
+  <v-toolbar dense class="flex0" ref="toolbar" v-resize="onResizeToolbar">
     <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
 
-    <v-btn icon @click="showFiltersDialog = true" v-if="$vuetify.breakpoint.smAndDown">
+    <v-btn icon @click="showFiltersDialog = true" v-if="showFilters">
       <v-icon>filter_list</v-icon>
     </v-btn>
 
-    <project-filters :projectId="project._id" v-if="$vuetify.breakpoint.mdAndUp"></project-filters>
+    <project-filters :projectId="project._id" v-if="!showFilters"></project-filters>
 
     <v-spacer></v-spacer>
     <div>
@@ -51,6 +51,7 @@ export default {
   },
   data() {
     return {
+      showFilters: false,
       showFiltersDialog: false
     };
   },
@@ -99,7 +100,20 @@ export default {
         Permissions.isAdmin(Meteor.userId(), project._id) ||
         Permissions.isAdmin(Meteor.userId())
       );
+    },
+
+    onResizeToolbar() {
+      const toolbar = this.$refs.toolbar.$el;
+      const width = toolbar.offsetWidth;
+      console.log(width)
+      if (width < 780) {
+        this.showFilters = true;
+      } else {
+        this.showFilters = false;
+      }
     }
+
+    
   }
 };
 </script>
