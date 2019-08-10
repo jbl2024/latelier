@@ -105,7 +105,6 @@ export default {
     onResizeToolbar() {
       const toolbar = this.$refs.toolbar.$el;
       const width = toolbar.offsetWidth;
-      console.log(width)
       if (width < 780) {
         this.showFilters = true;
       } else {
