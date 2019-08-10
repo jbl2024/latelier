@@ -358,7 +358,6 @@ export default {
     width: 274px;
     display: inline-block;
     margin-right: 8px;
-    padding-right: 2px;
   }
 
   .tasks-wrapper {
@@ -366,7 +365,7 @@ export default {
     overflow-y: auto;
     flex: 1;
     position: absolute;
-    top: 40px;
+    top: 44px;
     left: 0;
     right: 0;
     bottom: 0;
