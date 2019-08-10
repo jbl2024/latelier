@@ -196,6 +196,7 @@
 
         <div class="tabs-wrapper">
           <v-tabs v-model="tab">
+            <v-tabs-slider color="accent"></v-tabs-slider>
             <v-tab>{{ $t('Recents') }}</v-tab>
             <v-tab>{{ $t('Assigned to me') }}</v-tab>
             <v-tab>{{ $t('Late') }}</v-tab>

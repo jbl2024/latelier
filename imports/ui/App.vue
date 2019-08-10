@@ -38,13 +38,12 @@
         <notification-button></notification-button>
       </v-app-bar>
 
-      <v-hover open-delay="300">
+      <v-hover open-delay="300" v-slot:default="{ hover }">
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="drawer"
         fixed
         dark
-        slot-scope="{ hover }"
         left
         width="270px"
         class="drawer"

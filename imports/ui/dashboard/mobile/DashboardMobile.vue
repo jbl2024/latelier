@@ -3,7 +3,7 @@
     <new-organization ref="newOrganization"></new-organization>
     <template v-if="user">
       <div class="mobile" v-if="$vuetify.breakpoint.xsOnly">
-        <v-bottom-nav :active.sync="bottomNav" :value="true" dark color="primary">
+        <v-bottom-navigation v-model="bottomNav" :value="true" dark color="primary">
           <v-btn text value="organizations">
             <span>{{ $t('Projects') }}</span>
             <v-icon>domain</v-icon>
@@ -13,7 +13,7 @@
             <span>{{ $t('Tasks') }}</span>
             <v-icon>list</v-icon>
           </v-btn>
-        </v-bottom-nav>
+        </v-bottom-navigation>
         <div class="mobile-organizations" v-if="bottomNav === 'organizations'">
           <v-card class="flex-container">
             <dashboard-projects></dashboard-projects>

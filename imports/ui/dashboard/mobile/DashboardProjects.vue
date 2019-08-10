@@ -59,44 +59,50 @@
                 <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    slot="activator"
-                    color="grey darken-1"
-                    @click.stop="openProjectSettings(item)"
-                  >
-                    <v-icon>settings</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      v-on="on"
+                      color="grey darken-1"
+                      @click.stop="openProjectSettings(item)"
+                    >
+                      <v-icon>settings</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Settings') }}</span>
                 </v-tooltip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    color="grey darken-1"
-                    @click.stop="cloneProject(item._id)"
-                    slot="activator"
-                  >
-                    <v-icon>file_copy</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      color="grey darken-1"
+                      @click.stop="cloneProject(item._id)"
+                      v-on="on"
+                    >
+                      <v-icon>file_copy</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Clone') }}</span>
                 </v-tooltip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    color="grey darken-1"
-                    @click.stop="deleteProject(item._id)"
-                    slot="activator"
-                  >
-                    <v-icon>delete</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      color="grey darken-1"
+                      @click.stop="deleteProject(item._id)"
+                      v-on="on"
+                    >
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Move to trash') }}</span>
                 </v-tooltip>
               </v-list-item-action>
@@ -112,10 +118,12 @@
             <v-spacer></v-spacer>
 
             <div>
-              <v-tooltip top slot="activator">
-                <v-btn icon @click.stop="newProject()" slot="activator">
-                  <v-icon>add</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon @click.stop="newProject()" v-on="on">
+                    <v-icon>add</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('New project') }}</span>
               </v-tooltip>
             </div>
@@ -138,44 +146,50 @@
                 <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    slot="activator"
-                    color="grey darken-1"
-                    @click.stop="openProjectSettings(item)"
-                  >
-                    <v-icon>settings</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      v-on="on"
+                      color="grey darken-1"
+                      @click.stop="openProjectSettings(item)"
+                    >
+                      <v-icon>settings</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Settings') }}</span>
                 </v-tooltip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    color="grey darken-1"
-                    @click.stop="cloneProject(item._id)"
-                    slot="activator"
-                  >
-                    <v-icon>file_copy</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      color="grey darken-1"
+                      @click.stop="cloneProject(item._id)"
+                      v-on="on"
+                    >
+                      <v-icon>file_copy</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Clone') }}</span>
                 </v-tooltip>
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    text
-                    color="grey darken-1"
-                    @click.stop="deleteProject(item._id)"
-                    slot="activator"
-                  >
-                    <v-icon>delete</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      text
+                      color="grey darken-1"
+                      @click.stop="deleteProject(item._id)"
+                      v-on="on"
+                    >
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Move to trash') }}</span>
                 </v-tooltip>
               </v-list-item-action>
@@ -201,51 +215,59 @@
               <v-spacer></v-spacer>
 
               <div>
-                <v-tooltip top slot="activator">
-                  <v-btn icon @click.stop="newProject(organization._id)" slot="activator">
-                    <v-icon>add</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn icon @click.stop="newProject(organization._id)" v-on="on">
+                      <v-icon>add</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('New project') }}</span>
                 </v-tooltip>
               </div>
 
               <div>
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    @click.stop="openOrganizationTimeline(organization._id)"
-                    slot="activator"
-                  >
-                    <v-icon>timeline</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      @click.stop="openOrganizationTimeline(organization._id)"
+                      v-on="on"
+                    >
+                      <v-icon>timeline</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Timeline') }}</span>
                 </v-tooltip>
               </div>
 
               <div>
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    @click.stop="openOrganizationSettings(organization._id)"
-                    v-if="canManageOrganization(organization)"
-                    slot="activator"
-                  >
-                    <v-icon>settings</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      @click.stop="openOrganizationSettings(organization._id)"
+                      v-if="canManageOrganization(organization)"
+                      v-on="on"
+                    >
+                      <v-icon>settings</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Settings') }}</span>
                 </v-tooltip>
               </div>
 
               <div>
-                <v-tooltip top slot="activator">
-                  <v-btn
-                    icon
-                    @click.stop="deleteOrganization(organization)"
-                    v-if="canDeleteOrganization(organization)"
-                    slot="activator"
-                  >
-                    <v-icon>delete</v-icon>
-                  </v-btn>
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      icon
+                      @click.stop="deleteOrganization(organization)"
+                      v-if="canDeleteOrganization(organization)"
+                      v-on="on"
+                    >
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </template>
                   <span>{{ $t('Delete') }}</span>
                 </v-tooltip>
               </div>
@@ -284,44 +306,50 @@
                     <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
                   </v-list-item-action>
                   <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
-                    <v-tooltip top slot="activator">
-                      <v-btn
-                        icon
-                        text
-                        slot="activator"
-                        color="grey darken-1"
-                        @click.stop="openProjectSettings(item)"
-                      >
-                        <v-icon>settings</v-icon>
-                      </v-btn>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          icon
+                          text
+                          v-on="on"
+                          color="grey darken-1"
+                          @click.stop="openProjectSettings(item)"
+                        >
+                          <v-icon>settings</v-icon>
+                        </v-btn>
+                      </template>
                       <span>{{ $t('Settings') }}</span>
                     </v-tooltip>
                   </v-list-item-action>
                   <v-list-item-action class="show-desktop">
-                    <v-tooltip top slot="activator">
-                      <v-btn
-                        icon
-                        text
-                        color="grey darken-1"
-                        @click.stop="cloneProject(item._id)"
-                        slot="activator"
-                      >
-                        <v-icon>file_copy</v-icon>
-                      </v-btn>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            text
+                            color="grey darken-1"
+                            @click.stop="cloneProject(item._id)"
+                            v-on="on"
+                          >
+                            <v-icon>file_copy</v-icon>
+                          </v-btn>
+                      </template>
                       <span>{{ $t('Clone') }}</span>
                     </v-tooltip>
                   </v-list-item-action>
                   <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
-                    <v-tooltip top slot="activator">
-                      <v-btn
-                        icon
-                        text
-                        color="grey darken-1"
-                        @click.stop="deleteProject(item._id)"
-                        slot="activator"
-                      >
-                        <v-icon>delete</v-icon>
-                      </v-btn>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          icon
+                          text
+                          color="grey darken-1"
+                          @click.stop="deleteProject(item._id)"
+                          v-on="on"
+                        >
+                          <v-icon>delete</v-icon>
+                        </v-btn>
+                      </template>
                       <span>{{ $t('Move to trash') }}</span>
                     </v-tooltip>
                   </v-list-item-action>
