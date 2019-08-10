@@ -55,8 +55,12 @@ const vuetify = new Vuetify({
     iconfont: 'md',
   },
   theme: {
-    primary: "#455A64",
-    accent: "#F9A825",
+    themes: {
+      light: {    
+        primary: "#455A64",
+        accent: "#F9A825"
+      }
+    }
   }
 });
 
