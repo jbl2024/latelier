@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <v-list dense three-line v-if="tasks">
+    <v-list three-line v-if="tasks">
       <empty-state
         v-if="tasks.length == 0"
         :illustration="emptyIllustration"

@@ -23,7 +23,7 @@
         <v-spacer></v-spacer>
         <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
         <v-avatar dark>
-          <v-menu offset-y>
+          <v-menu offset-x offset-y>
             <template v-slot:activator="{ on }">
               <v-btn
                 icon
@@ -196,6 +196,9 @@ export default {
 .search {
   width: 100%;
 }
+html {
+  font-size: 14px;
+}
 
 .main-content {
   overflow-y: auto;
@@ -227,22 +230,24 @@ export default {
   flex: 1;
 }
 
-.drawer .v-list {
-}
-
-.drawer .v-list .v-list__tile {
+/* .drawer .v-list .v-list-item {
   color: #aaa !important;
-}
+} */
 
 .drawer .v-icon {
   color: gray;
 }
 
-.drawer .v-list a.v-list__tile--active {
+.drawer .v-list a.v-list-item--active {
   color: white !important;
 }
 
-.drawer .v-list__tile--active .v-icon {
+.drawer .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #aaa !important;
+}
+
+
+.drawer .v-list-item--active .v-icon {
   color: white !important;
 }
 
@@ -283,8 +288,8 @@ export default {
   top: 0;
   overflow-y: auto;
 } */
-.list__tile--active .list__tile__action,
-.list__tile--active .list__tile__action .icon {
+.list-item--active .list-item__action,
+.list-item--active .list-item__action .icon {
   color: white;
 }
 </style>

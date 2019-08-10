@@ -6,7 +6,6 @@
       <template v-if="mode === 'select'">
         <div class="compact-form" v-if="labels.length > 0">
           <v-autocomplete
-            dense
             class="auto-complete"
             v-model="selectedLabels"
             :items="labels"
@@ -70,7 +69,7 @@
         </v-list-item>
       </v-list>
 
-      <v-list dense class="pt-0" v-if="mode === 'menu'">
+      <v-list v-if="mode === 'menu'">
         <v-subheader>Labels</v-subheader>
         <v-list-item
           @click="selectLabel(label)"
@@ -79,19 +78,20 @@
           @mouseover="showButtons = label._id"
           @mouseleave="showButtons = null"
         >
-          <v-list-item-action>
+          <v-list-item-avatar>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-item-action>
+          </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn icon @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
+            <v-btn icon small @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
               <v-icon color="grey lighten-1">settings</v-icon>
             </v-btn>
           </v-list-item-action>
+
         </v-list-item>
 
         <v-list-item @click="$refs.newLabel.open()">

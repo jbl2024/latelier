@@ -12,7 +12,7 @@
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
-            <v-btn icon :to="{name: 'dashboard-page'}" v-if="organizationId">
+            <v-btn small icon :to="{name: 'dashboard-page'}" v-if="organizationId">
               <v-icon>arrow_back</v-icon>
             </v-btn>
 
@@ -26,7 +26,7 @@
                   <v-icon>more_vert</v-icon>
                 </v-btn>
               </template>
-              <v-list dense>
+              <v-list>
                 <template v-if="!organizationId">
                   <v-list-item @click="newProject()">
                     <v-list-item-action>
@@ -96,7 +96,7 @@
               </v-btn>
             </div>
           </div>
-          <v-list dense two-line class="list">
+          <v-list two-line class="list">
             <template v-for="project in individuals">
               <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
             </template>
@@ -168,7 +168,6 @@
           </div>
           <v-list
             :key="`projects-${organization._id}`"
-            dense
             two-line
             class="list"
             v-if="projectsByOrganization(organization, dashboardFilter).length > 0"

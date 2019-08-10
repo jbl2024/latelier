@@ -3,7 +3,7 @@
     <project-history :projectId="projectId" ref="projectHistory"></project-history>
     <project-trashcan :projectId="projectId" ref="projectTrashcan"></project-trashcan>
 
-    <v-list dense class="pt-0" v-if="projectId">
+    <v-list class="pt-0" v-if="projectId">
       <v-list-item
         :to="{ name: 'project', params: { projectId: projectId }}"
       >

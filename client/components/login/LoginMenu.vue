@@ -2,7 +2,7 @@
   <div class="login-menu">
 
     <template v-if="!isConnected">
-      <v-list dense class="pt-0">
+      <v-list class="pt-0">
         <v-list-item :to="{ name: 'login'}">
           <v-list-item-action>
             <v-icon>person</v-icon>
@@ -31,7 +31,7 @@
     </template>
     <template v-if="isConnected && $subReady.user">
       <v-divider></v-divider>
-      <v-list dense class="pt-0">
+      <v-list class="pt-0">
         <v-list-item :to="{ name: 'dashboard-page'}">
           <v-list-item-action>
             <v-icon>dashboard</v-icon>
@@ -41,7 +41,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list dense class="pt-0" v-if="isAdmin()">
+      <v-list class="pt-0" v-if="isAdmin()">
         <v-list-item :to="{ name: 'administration-page'}">
           <v-list-item-action>
             <v-icon>verified_user</v-icon>
@@ -51,7 +51,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-list dense class="pt-0">
+      <v-list class="pt-0">
         <v-list-item @click="$store.dispatch('showSelectBackgroundDialog', true)">
           <v-list-item-action>
             <v-icon>photo_library</v-icon>
