@@ -11,36 +11,36 @@
       @sorted="objectSortOccurred"
     >
       <template v-for="item in task.checklist">
-        <v-list-tile :key="item._id">
-          <v-list-tile-action>
+        <v-list-item :key="item._id">
+          <v-list-item-action>
             <v-checkbox v-model="item.checked" @change="toggleCheckItem(item)"></v-checkbox>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>
               <input
                 type="text"
                 v-model.lazy="item.name"
                 class="edit"
                 v-on:change="updateItem(item)"
               >
-            </v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action class="sortHandle">
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action class="sortHandle">
             <v-icon style="cursor: row-resize">
               drag_handle
             </v-icon>
-          </v-list-tile-action>
-          <v-list-tile-action>
+          </v-list-item-action>
+          <v-list-item-action>
             <v-btn icon ripple @click="event => { convertToTask(event, item)}">
               <v-icon>list</v-icon>
             </v-btn>
-          </v-list-tile-action>
-          <v-list-tile-action>
+          </v-list-item-action>
+          <v-list-item-action>
             <v-btn icon ripple @click="event => { deleteItem(event, item)}">
               <v-icon>delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </template>
     </v-list>
     <v-text-field

@@ -12,7 +12,7 @@
         <v-card-text>{{ message }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="choose(false)">{{ cancelText}}</v-btn>
+          <v-btn text @click="choose(false)">{{ cancelText}}</v-btn>
           <v-btn color="error" @click="choose(true)">{{ confirmText }}</v-btn>
         </v-card-actions>
       </v-card>

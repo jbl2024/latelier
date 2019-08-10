@@ -86,7 +86,7 @@
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
-        <v-btn icon flat @click="showSnackbar = false">
+        <v-btn icon text @click="showSnackbar = false">
           <v-icon>close</v-icon>
         </v-btn>
       </v-snackbar>

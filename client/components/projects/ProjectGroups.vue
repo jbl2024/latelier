@@ -7,38 +7,38 @@
 
   <v-list dense class="pt-0">
     <v-subheader>{{ $t('Categories') }}</v-subheader>
-    <v-list-tile 
+    <v-list-item 
         @click="selectGroup(group)"
         v-for="group in groups"
         :key="group._id" 
         @mouseover="showButtons = group._id" 
         @mouseleave="showButtons = null">
 
-      <v-list-tile-action>
+      <v-list-item-action>
         <v-icon :style="getColor(group)">folder</v-icon>
-      </v-list-tile-action>
+      </v-list-item-action>
 
-      <v-list-tile-content class="pointer">
-        <v-list-tile-title :class="getColor(group)">{{ group.name }}</v-list-tile-title>
-      </v-list-tile-content>
+      <v-list-item-content class="pointer">
+        <v-list-item-title :class="getColor(group)">{{ group.name }}</v-list-item-title>
+      </v-list-item-content>
 
-      <v-list-tile-action>
+      <v-list-item-action>
         <v-btn icon ripple @click.stop="openMenu(group._id)" v-show="showButtons === group._id"> 
           <v-icon color="grey lighten-1">settings</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
 
-    <v-list-tile @click="$refs.newProjectGroup.open()"> 
+    <v-list-item @click="$refs.newProjectGroup.open()"> 
 
-      <v-list-tile-action>
+      <v-list-item-action>
         <v-icon>add</v-icon>
-      </v-list-tile-action>
+      </v-list-item-action>
 
-      <v-list-tile-content>
-        <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
+      <v-list-item-content>
+        <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 
 </div>

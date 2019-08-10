@@ -32,9 +32,9 @@
           </v-card-actions>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn flat :to="{ name: 'login'}">Déjà un compte ?</v-btn>
+            <v-btn text :to="{ name: 'login'}">Déjà un compte ?</v-btn>
             <v-spacer></v-spacer>
-            <v-btn flat :to="{ name: 'forgot-password'}">Mot de passe oublié ?</v-btn>
+            <v-btn text :to="{ name: 'forgot-password'}">Mot de passe oublié ?</v-btn>
           </v-card-actions>
           <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
         </v-card>

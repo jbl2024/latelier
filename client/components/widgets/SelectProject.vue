@@ -11,29 +11,29 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="project in projects">
-              <v-list-tile :key="project._id" @click="selectProject(project)">
-                <v-list-tile-avatar :color="getColor(project)">
+              <v-list-item :key="project._id" @click="selectProject(project)">
+                <v-list-item-avatar :color="getColor(project)">
                   <v-icon :class="getVisibilityIconClass(project)">{{ getVisibilityIcon(project) }}</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ project.name }}</v-list-tile-title>
-                  <v-list-tile-sub-title>{{ formatProjectDates(project) }}</v-list-tile-sub-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ project.name }}</v-list-item-title>
+                  <v-list-item-subtitle>{{ formatProjectDates(project) }}</v-list-item-subtitle>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <v-divider></v-divider>
-            <v-list-tile @click="selectProject()">
-              <v-list-tile-avatar>
+            <v-list-item @click="selectProject()">
+              <v-list-item-avatar>
                 <v-icon></v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="pointer">
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-content class="pointer">
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ $t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ $t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

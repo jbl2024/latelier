@@ -41,24 +41,24 @@
     <v-list dense subheader>
       <v-subheader inset>
         {{ pagination.totalItems}} utilisateurs
-        <v-btn flat icon @click="$refs.newUser.open()">
+        <v-btn text icon @click="$refs.newUser.open()">
           <v-icon>add</v-icon>
         </v-btn>
       </v-subheader>
       <template v-for="user in users">
-        <v-list-tile :key="user._id" avatar @click="openDetail(user)">
-          <v-list-tile-avatar :color="isOnline(user)">
+        <v-list-item :key="user._id" avatar @click="openDetail(user)">
+          <v-list-item-avatar :color="isOnline(user)">
             <span>{{ formatUserLetters(user) }}</span>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title :class="getClass(user)">{{ formatUser(user) }}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title :class="getClass(user)">{{ formatUser(user) }}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
               <v-icon>delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </template>
     </v-list>
     <div class="text-xs-center">

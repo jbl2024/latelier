@@ -5,7 +5,7 @@
         <v-text-field
           @focus="$event.target.select()"
           solo
-          flat
+          text
           hide-details
           prepend-inner-icon="edit"
           label="Saisir un nom..."
@@ -26,7 +26,7 @@
       </div>
 
       <div class="toolbar-button" v-if="!editTaskName">
-        <v-btn icon flat @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
+        <v-btn icon text @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <v-icon>close</v-icon>
         </v-btn>
       </div>
@@ -107,11 +107,11 @@
 
       <div v-show="editDescription">
         <rich-editor ref="description" v-model="task.description" @submit="updateDescription"></rich-editor>
-        <v-btn icon flat @click="updateDescription">
+        <v-btn icon text @click="updateDescription">
           <v-icon>check_circle</v-icon>
         </v-btn>
 
-        <v-btn icon flat @click="cancelUpdateDescription">
+        <v-btn icon text @click="cancelUpdateDescription">
           <v-icon>cancel</v-icon>
         </v-btn>
       </div>

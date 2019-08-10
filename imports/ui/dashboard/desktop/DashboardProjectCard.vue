@@ -33,7 +33,7 @@
       <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
         <v-btn
           icon
-          flat
+          text
           color="grey darken-1"
           @click.stop="addToFavorites(user, project._id)"
           slot="activator"
@@ -44,7 +44,7 @@
       </v-tooltip>
 
       <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
-        <v-btn icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
+        <v-btn icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
           <v-icon>star</v-icon>
         </v-btn>
         <span>{{ $t('Remove from favorites') }}</span>
@@ -54,7 +54,7 @@
         <v-tooltip top slot="activator">
           <v-btn
             icon
-            flat
+            text
             slot="activator"
             color="grey darken-1"
             @click.stop="openProjectSettings(project)"
@@ -66,7 +66,7 @@
         <v-tooltip top slot="activator">
           <v-btn
             icon
-            flat
+            text
             slot="activator"
             color="grey darken-1"
             @click.stop="deleteProject(project)"

@@ -22,31 +22,31 @@
                 </v-btn>
               </template>
               <v-list dense>
-                <v-list-tile @click="newTaskInline(list._id)">
-                  <v-list-tile-action>
+                <v-list-item @click="newTaskInline(list._id)">
+                  <v-list-item-action>
                     <v-icon>add</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('Add new task') }}</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile @click="deleteList(list._id)">
-                  <v-list-tile-action>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t('Add new task') }}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="deleteList(list._id)">
+                  <v-list-item-action>
                     <v-icon>delete</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>
-                </v-list-tile>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ this.$t('Delete') }}</v-list-item-title>
+                </v-list-item>
                 <v-divider></v-divider>
-                <v-list-tile @click="list.autoComplete = !list.autoComplete">
-                  <v-list-tile-action>
+                <v-list-item @click="list.autoComplete = !list.autoComplete">
+                  <v-list-item-action>
                     <v-checkbox :input-value="list.autoComplete"></v-checkbox>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('Automatically mark as completed')}}</v-list-tile-title>
-                </v-list-tile>
-                <v-list-tile @click="list.catchCompleted = !list.catchCompleted">
-                  <v-list-tile-action>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t('Automatically mark as completed')}}</v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="list.catchCompleted = !list.catchCompleted">
+                  <v-list-item-action>
                     <v-checkbox :input-value="list.catchCompleted"></v-checkbox>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('Catch completed tasks') }}</v-list-tile-title>
-                </v-list-tile>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t('Catch completed tasks') }}</v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </div>
@@ -61,10 +61,10 @@
           >
           <div class="flex0">
             <div class="flex-container-row">
-              <v-btn flat icon @click.native="updateName(list)">
+              <v-btn text icon @click.native="updateName(list)">
                 <v-icon>check_circle</v-icon>
               </v-btn>
-              <v-btn flat icon @click.native="cancelUpdate(list)">
+              <v-btn text icon @click.native="cancelUpdate(list)">
                 <v-icon>cancel</v-icon>
               </v-btn>
             </div>

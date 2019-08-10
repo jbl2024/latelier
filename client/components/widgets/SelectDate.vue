@@ -28,7 +28,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
           <v-btn color="info" @click="selectDate" :disabled="!date">{{ $t('Select') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -91,7 +91,7 @@ export default {
   display: none;
 }
 
-.flatpickr-confirm {
+.textpickr-confirm {
   cursor: pointer;
   padding: 24px;
   border-top: 1px solid #aaa;

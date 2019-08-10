@@ -1,29 +1,29 @@
 <template>
   <v-list three-line dense class="pt-0">
-    <v-list-tile
+    <v-list-item
       @click="openDetail(notification)"
       v-for="notification in notifications"
       :key="notification._id"
     >
-      <v-list-tile-avatar>
+      <v-list-item-avatar>
         <v-icon>{{ getIcon(notification) }}</v-icon>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-        <v-list-tile-title :class="{ unread: !notification.read }">{{ notification.properties.task.name }}</v-list-tile-title>
-        <v-list-tile-sub-title>
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title :class="{ unread: !notification.read }">{{ notification.properties.task.name }}</v-list-item-title>
+        <v-list-item-subtitle>
           {{ $t(`history.${notification.type}`) }}
           <template
             v-if="notification.properties.user"
           >({{ formatUser(notification.properties.user) }} )</template>
-        </v-list-tile-sub-title>
-      </v-list-tile-content>
-      <v-list-tile-action>
-        <v-list-tile-action-text>{{ formatDateDuration(notification.createdAt) }}</v-list-tile-action-text>
+        </v-list-item-subtitle>
+      </v-list-item-content>
+      <v-list-item-action>
+        <v-list-item-action-text>{{ formatDateDuration(notification.createdAt) }}</v-list-item-action-text>
         <v-btn icon ripple @click.stop="removeNotification(notification)">
           <v-icon color="grey lighten-1">close</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
   </v-list>
 </template>
 

@@ -2,32 +2,32 @@
 
 <div class="organization-menu">
     <v-list dense class="pt-0">
-      <v-list-tile :to="{ name: 'projects-page', params: {organizationId: organizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
+      <v-list-item :to="{ name: 'projects-page', params: {organizationId: organizationId}}" @click="showNavigation = false">
+        <v-list-item-action>
           <v-icon>pages</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Projets</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Projets</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-      <v-list-tile :to="{ name: 'projects-timeline', params: {organizationId: organizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
+      <v-list-item :to="{ name: 'projects-timeline', params: {organizationId: organizationId}}" @click="showNavigation = false">
+        <v-list-item-action>
           <v-icon>timeline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Planning</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Planning</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
 
-      <v-list-tile :to="{ name: 'organization-settings', params: {organizationId: organizationId}}" @click="showNavigation = false">
-        <v-list-tile-action>
+      <v-list-item :to="{ name: 'organization-settings', params: {organizationId: organizationId}}" @click="showNavigation = false">
+        <v-list-item-action>
           <v-icon>settings</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>Parametres</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>Parametres</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <v-divider></v-divider>
 </div>

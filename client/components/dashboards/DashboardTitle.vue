@@ -2,7 +2,7 @@
   <div class="dashboard-title">
     <v-text-field
       v-model="savedValue"
-      flat
+      text
       solo-inverted
       hide-details
       clearable

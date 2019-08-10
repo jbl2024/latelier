@@ -5,7 +5,7 @@
     <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card v-if="report">
         <v-toolbar dark color="primary">
-          <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+          <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
             <v-icon>close</v-icon>
           </v-btn>
           <v-toolbar-title>
@@ -20,22 +20,22 @@
               </v-flex>
               <v-flex xs12>
                 <v-list two-line class="elevation-1 date">
-                  <v-list-tile @click="showSelectDate = true">
-                    <v-list-tile-avatar>
+                  <v-list-item @click="showSelectDate = true">
+                    <v-list-item-avatar>
                       <v-icon>calendar_today</v-icon>
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                      <v-list-tile-title>{{ $t('Date') }}</v-list-tile-title>
-                      <v-list-tile-sub-title>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ $t('Date') }}</v-list-item-title>
+                      <v-list-item-subtitle>
                         <span v-show="date">{{ formatDate(date) }}</span>
-                      </v-list-tile-sub-title>
-                    </v-list-tile-content>
-                    <v-list-tile-action>
-                      <v-btn flat icon @click.stop="onSelectDate(null)">
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn text icon @click.stop="onSelectDate(null)">
                         <v-icon>delete</v-icon>
                       </v-btn>
-                    </v-list-tile-action>
-                  </v-list-tile>
+                    </v-list-item-action>
+                  </v-list-item>
                 </v-list>
               </v-flex>
               <v-flex xs12>
@@ -58,7 +58,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">{{ $t('Cancel') }}</v-btn>
+          <v-btn text @click="showDialog = false">{{ $t('Cancel') }}</v-btn>
           <v-btn color="primary" @click="create" :disabled="!valid || !coherent">{{ $t('Update') }}</v-btn>
         </v-card-actions>
       </v-card>

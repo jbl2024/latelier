@@ -32,25 +32,25 @@
     </div>
 
     <v-subheader>{{ $t("Features") }}
-        <v-btn flat icon @click="showSelectFeature = true">
+        <v-btn text icon @click="showSelectFeature = true">
           <v-icon>add</v-icon>
         </v-btn>
     </v-subheader>
     <v-list class="elevation-1" v-if="projectFeatures.length > 0">
       <template v-for="feature in projectFeatures" >
-        <v-list-tile :key="feature._id">
-          <v-list-tile-avatar>
+        <v-list-item :key="feature._id">
+          <v-list-item-avatar>
             <v-icon>folder</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{feature}}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-          <v-btn flat icon @click.stop="removeFeature(feature)">
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{feature}}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+          <v-btn text icon @click.stop="removeFeature(feature)">
             <v-icon>delete</v-icon>
           </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </template>
     </v-list>    
 
@@ -65,17 +65,17 @@
     </div>
     <v-subheader>{{ $t("Visibility") }}</v-subheader>
     <v-list class="elevation-1">
-      <v-list-tile @click="toggleProjectVisibility(project)">
-        <v-list-tile-avatar>
+      <v-list-item @click="toggleProjectVisibility(project)">
+        <v-list-item-avatar>
           <v-icon>{{getVisibilityIcon(project)}}</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ getVisibilityText(project) }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ getVisibilityText(project) }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
           <v-switch v-model="project.isPublic" @click="toggleProjectVisibility(project)"></v-switch>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
 
     <v-subheader>{{ $t("Size")}}</v-subheader>
@@ -90,11 +90,11 @@
 
         <div v-show="editEstimatedSize">
           <v-text-field v-focus v-model="project.estimatedSize" @keyup.enter="updateEstimatedSize" label="Estimation de la taille du projet"></v-text-field>
-          <v-btn flat icon @click.stop="updateEstimatedSize">
+          <v-btn text icon @click.stop="updateEstimatedSize">
             <v-icon>check_circle</v-icon>
           </v-btn>
 
-          <v-btn flat icon @click.stop="cancelUpdateEstimatedSize">
+          <v-btn text icon @click.stop="cancelUpdateEstimatedSize">
             <v-icon>cancel</v-icon>
           </v-btn>
 
@@ -104,41 +104,41 @@
 
     <v-subheader>{{ $t("Dates") }}</v-subheader>
     <v-list two-line class="elevation-1">
-        <v-list-tile @click="showSelectStartDate = true">
-          <v-list-tile-avatar>
+        <v-list-item @click="showSelectStartDate = true">
+          <v-list-item-avatar>
             <v-icon>calendar_today</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
+            <v-list-item-subtitle>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn flat icon @click.stop="onSelectStartDate(null)">
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="onSelectStartDate(null)">
               <v-icon>delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-list-tile @click="showSelectEndDate = true">
-          <v-list-tile-avatar>
+        <v-list-item @click="showSelectEndDate = true">
+          <v-list-item-avatar>
             <v-icon>alarm_on</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
+            <v-list-item-subtitle>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-            <v-btn flat icon @click.stop="onSelectEndDate(null)">
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="onSelectEndDate(null)">
               <v-icon>delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
 
     </v-list>
 
@@ -146,43 +146,43 @@
     <v-subheader>{{ $t("Color") }}</v-subheader>
 
     <v-list class="elevation-1">
-      <v-list-tile @click="showSelectColor = true">
-        <v-list-tile-content>
+      <v-list-item @click="showSelectColor = true">
+        <v-list-item-content>
           <div class="color" ref="color" :style="getColor(project)"></div>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-btn flat icon @click.stop="removeColor()">
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn text icon @click.stop="removeColor()">
             <v-icon>delete</v-icon>
           </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
 
     <v-subheader>{{ $t("Categories") }}
-        <v-btn flat icon @click="showSelectGroup = true">
+        <v-btn text icon @click="showSelectGroup = true">
           <v-icon>add</v-icon>
         </v-btn>
     </v-subheader>
     <v-list class="elevation-1" v-if="assignedGroups.length > 0">
       <template v-for="group in assignedGroups" >
-        <v-list-tile :key="group._id">
-          <v-list-tile-avatar>
+        <v-list-item :key="group._id">
+          <v-list-item-avatar>
             <v-icon>folder</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{group.name}}</v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
-          <v-btn flat icon @click.stop="removeGroup(group)">
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{group.name}}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+          <v-btn text icon @click.stop="removeGroup(group)">
             <v-icon>delete</v-icon>
           </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </template>
     </v-list>
 
     <v-subheader>{{ $t("Labels") }}
-        <v-btn flat icon @click="showSelectProject = true">
+        <v-btn text icon @click="showSelectProject = true">
           <v-icon>cloud_upload</v-icon>
         </v-btn>
     </v-subheader>
@@ -190,14 +190,14 @@
 
     <v-subheader>{{ $t("Organization") }}</v-subheader>
     <v-list class="elevation-1" v-if="$subReady.organizations">
-      <v-list-tile @click="showSelectOrganization = true">
+      <v-list-item @click="showSelectOrganization = true">
         <v-avatar>
           <v-icon>folder</v-icon>
         </v-avatar>
-        <v-list-tile-content>
-        <v-list-tile-title><template v-if="organization">{{ organization.name}}</template></v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-item-content>
+        <v-list-item-title><template v-if="organization">{{ organization.name}}</template></v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
   </div>

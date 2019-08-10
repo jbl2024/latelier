@@ -3,7 +3,7 @@
     <v-toolbar-title class="align-left" v-show="!editOrganizationName">
       <div>
         <slot></slot>
-        <v-btn icon flat @click="goTo('dashboard-page')">
+        <v-btn icon text @click="goTo('dashboard-page')">
           <v-icon>home</v-icon>
         </v-btn>
         <span
@@ -14,7 +14,7 @@
     </v-toolbar-title>
     <v-text-field
       v-show="!editOrganizationName"
-      flat
+      text
       solo-inverted
       hide-details
       prepend-inner-icon="search"
@@ -27,7 +27,7 @@
       <v-text-field
         @focus="$event.target.select()"
         style="width: 500px"
-        flat
+        text
         solo-inverted
         hide-details
         prepend-inner-icon="edit"

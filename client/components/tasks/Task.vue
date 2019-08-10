@@ -16,7 +16,7 @@
       <div class="title">
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="edit-button"
           small
@@ -25,7 +25,7 @@
         >edit</v-icon>
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="delete-button"
           small
@@ -77,11 +77,11 @@
               v-model="task.name"
               @keydown.shift.enter="updateName"
             ></v-textarea>
-            <v-btn icon flat @click.native="updateName">
+            <v-btn icon text @click.native="updateName">
               <v-icon>check_circle</v-icon>
             </v-btn>
 
-            <v-btn icon flat @click.native="cancelUpdateName">
+            <v-btn icon text @click.native="cancelUpdateName">
               <v-icon>cancel</v-icon>
             </v-btn>
           </span>

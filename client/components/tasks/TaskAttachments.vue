@@ -4,23 +4,23 @@
   <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
   <v-progress-linear indeterminate v-show="isUploading"></v-progress-linear>
   <v-list>
-    <v-list-tile v-for="attachment in attachments" :key="attachment._id">
-      <v-list-tile-avatar>
+    <v-list-item v-for="attachment in attachments" :key="attachment._id">
+      <v-list-item-avatar>
         <v-icon>description</v-icon>
-      </v-list-tile-avatar>            
+      </v-list-item-avatar>            
 
-      <v-list-tile-content class="pointer">
-        <v-list-tile-title>
+      <v-list-item-content class="pointer">
+        <v-list-item-title>
           <a :href="link(attachment)"  target="_blank">{{ attachment.name }}</a>          
-        </v-list-tile-title>
-      </v-list-tile-content>
+        </v-list-item-title>
+      </v-list-item-content>
 
-      <v-list-tile-action>
+      <v-list-item-action>
         <v-btn icon ripple @click.stop="deleteAttachment(attachment)">
           <v-icon>delete</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
   </v-list> 
 </div>
 

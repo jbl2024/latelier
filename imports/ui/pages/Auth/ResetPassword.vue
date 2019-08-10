@@ -24,9 +24,9 @@
           </v-card-actions>
           <v-divider></v-divider>
           <v-card-actions>
-            <v-btn flat :to="{ name: 'register'}">{{ $t('Register')}}</v-btn>
+            <v-btn text :to="{ name: 'register'}">{{ $t('Register')}}</v-btn>
             <v-spacer></v-spacer>
-            <v-btn flat :to="{ name: 'login'}">{{ $t('Already have an account?') }}</v-btn>
+            <v-btn text :to="{ name: 'login'}">{{ $t('Already have an account?') }}</v-btn>
           </v-card-actions>
           <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
         </v-card>

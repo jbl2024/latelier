@@ -9,106 +9,106 @@
   
   <v-subheader>{{ $t('Dates') }} </v-subheader>
   <v-list two-line class="elevation-1">
-      <v-list-tile @click="showSelectStartDate = true">
-        <v-list-tile-avatar>
+      <v-list-item @click="showSelectStartDate = true">
+        <v-list-item-avatar>
           <v-icon>calendar_today</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
-          <v-list-tile-sub-title>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
+          <v-list-item-subtitle>
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
-          </v-list-tile-sub-title>
-        </v-list-tile-content>
-        <v-list-tile-action v-if="task.reminderStartDate">
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action v-if="task.reminderStartDate">
           <v-icon>alarm_on</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-action>
-          <v-btn flat icon @click.stop="onSelectStartDate(null)">
+        </v-list-item-action>
+        <v-list-item-action>
+          <v-btn text icon @click.stop="onSelectStartDate(null)">
             <v-icon>delete</v-icon>
           </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
 
       <v-divider></v-divider>
 
-      <v-list-tile @click="showSelectDueDate = true">
-        <v-list-tile-avatar>
+      <v-list-item @click="showSelectDueDate = true">
+        <v-list-item-avatar>
           <v-icon>alarm</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
-          <v-list-tile-sub-title>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
+          <v-list-item-subtitle>
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
-          </v-list-tile-sub-title>
-        </v-list-tile-content>
-        <v-list-tile-action v-if="task.reminderDueDate">
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action v-if="task.reminderDueDate">
           <v-icon>alarm_on</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-action>
-          <v-btn flat icon @click.stop="onSelectDueDate(null)">
+        </v-list-item-action>
+        <v-list-item-action>
+          <v-btn text icon @click.stop="onSelectDueDate(null)">
             <v-icon>delete</v-icon>
           </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
   </v-list>
 
   <v-subheader>{{ $t('Duties') }}
-    <v-btn color="grey lighten-1" flat icon @click="addMeAsAssignedTo">
+    <v-btn color="grey lighten-1" text icon @click="addMeAsAssignedTo">
       <v-icon>account_circle</v-icon>
     </v-btn>
   </v-subheader>
   <v-list class="elevation-1">
-    <v-list-tile @click="showChooseAssignedToDialog = true">
-      <v-list-tile-avatar :color="isOnline(task.assignedTo)">
+    <v-list-item @click="showChooseAssignedToDialog = true">
+      <v-list-item-avatar :color="isOnline(task.assignedTo)">
         <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-      <v-list-tile-title>
+      </v-list-item-avatar>
+      <v-list-item-content>
+      <v-list-item-title>
         <span>{{ formatUser(task.assignedTo) }}</span>
         <span v-show="!task.assignedTo">{{ $t('Unassigned')}}</span>
-      </v-list-tile-title>
-      </v-list-tile-content>
-      <v-list-tile-action>
-        <v-btn icon flat @click.stop="removeAssignedTo">
+      </v-list-item-title>
+      </v-list-item-content>
+      <v-list-item-action>
+        <v-btn icon text @click.stop="removeAssignedTo">
           <v-icon color="grey">delete</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
   </v-list>
 
   <v-subheader>{{ $t('Watchers') }}
-    <v-btn color="grey lighten-1" flat icon @click="addMeAsWatcher">
+    <v-btn color="grey lighten-1" text icon @click="addMeAsWatcher">
       <v-icon>account_circle</v-icon>
     </v-btn>
   </v-subheader>
   <v-list class="elevation-1">
-    <v-list-tile v-for="watcher in task.watchers" :key="watcher">
-      <v-list-tile-avatar :color="isOnline(watcher)">
+    <v-list-item v-for="watcher in task.watchers" :key="watcher">
+      <v-list-item-avatar :color="isOnline(watcher)">
         <span class="">{{ formatUserLetters(watcher) }}</span>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-      <v-list-tile-title>
+      </v-list-item-avatar>
+      <v-list-item-content>
+      <v-list-item-title>
         <span>{{ formatUser(watcher) }}</span>
         <span v-show="!watcher">{{ $t('Unassigned')}}</span>
-      </v-list-tile-title>
-      </v-list-tile-content>
-      <v-list-tile-action>
-        <v-btn icon flat @click.stop="removeWatcher(watcher)">
+      </v-list-item-title>
+      </v-list-item-content>
+      <v-list-item-action>
+        <v-btn icon text @click.stop="removeWatcher(watcher)">
           <v-icon color="grey">delete</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
 
-    <v-list-tile @click="showChooseWatcherDialog = true">
-      <v-list-tile-avatar>
+    <v-list-item @click="showChooseWatcherDialog = true">
+      <v-list-item-avatar>
         <v-icon>add</v-icon>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-      <v-list-tile-title>
+      </v-list-item-avatar>
+      <v-list-item-content>
+      <v-list-item-title>
         <span v-show="!task.assignedTo">{{ $t('Add')}}</span>
-      </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
+      </v-list-item-title>
+      </v-list-item-content>
+    </v-list-item>
   </v-list>
 
 

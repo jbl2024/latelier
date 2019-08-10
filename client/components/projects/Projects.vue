@@ -37,33 +37,33 @@
         <template v-for="item in projectStates()">
           <v-subheader :key="item.value">{{ item.label }}</v-subheader>
           <template v-for="item in filterProjectsByState(projects, item.value)">
-            <v-list-tile :key="item._id" @click="openProject(item._id)">
-              <v-list-tile-avatar :color="getColor(item)">
+            <v-list-item :key="item._id" @click="openProject(item._id)">
+              <v-list-item-avatar :color="getColor(item)">
                 <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="pointer">
-                <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ formatProjectDates(item) }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
+              </v-list-item-avatar>
+              <v-list-item-content class="pointer">
+                <v-list-item-title>{{ item.name }}</v-list-item-title>
+                <v-list-item-subtitle>{{ formatProjectDates(item) }}</v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
                 <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
-              </v-list-tile-action>
-              <v-list-tile-action class="show-desktop" v-if="canManageProject(item)">
-                <v-btn icon flat color="grey darken-1" @click.stop="openProjectSettings(item._id)">
+              </v-list-item-action>
+              <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
+                <v-btn icon text color="grey darken-1" @click.stop="openProjectSettings(item._id)">
                   <v-icon>settings</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-action class="show-desktop">
-                <v-btn icon flat color="grey darken-1" @click.stop="cloneProject(item._id)">
+              </v-list-item-action>
+              <v-list-item-action class="show-desktop">
+                <v-btn icon text color="grey darken-1" @click.stop="cloneProject(item._id)">
                   <v-icon>file_copy</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-              <v-list-tile-action class="show-desktop" v-if="canDeleteProject(item)">
-                <v-btn icon flat color="grey darken-1" @click.stop="deleteProject(item._id)">
+              </v-list-item-action>
+              <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
+                <v-btn icon text color="grey darken-1" @click.stop="deleteProject(item._id)">
                   <v-icon>delete</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           </template>
         </template>
 

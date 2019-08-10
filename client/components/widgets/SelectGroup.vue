@@ -8,28 +8,28 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="group in groups">
-              <v-list-tile :key='group._id' @click="selectGroup(group)">
-                <v-list-tile-avatar >
+              <v-list-item :key='group._id' @click="selectGroup(group)">
+                <v-list-item-avatar >
                   <v-icon>folder</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="cursor">
-                  <v-list-tile-title>{{ group.name }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="cursor">
+                  <v-list-item-title>{{ group.name }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
-            <v-list-tile @click="$refs.newProjectGroup.open()">
-              <v-list-tile-avatar >
+            <v-list-item @click="$refs.newProjectGroup.open()">
+              <v-list-item-avatar >
                 <v-icon>folder</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="cursor">
-                <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-content class="cursor">
+                <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

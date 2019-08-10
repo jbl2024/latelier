@@ -19,12 +19,12 @@
           >
             <template v-slot:item="data">
               <template>
-                <v-list-tile-action>
+                <v-list-item-action>
                   <v-icon :style="getColor(data.item)">label</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-tile-title>
-                </v-list-tile-content>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-item-title>
+                </v-list-item-content>
               </template>
             </template>
             <template v-slot:selection="{ item, index }">
@@ -39,70 +39,70 @@
       </template>
 
       <v-list class="pt-0" v-if="mode === 'settings'">
-        <v-list-tile
+        <v-list-item
           @click="openMenu(label._id)"
           v-for="label in labels"
           :key="label._id"
         >
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
-          </v-list-tile-content>
+          <v-list-item-content>
+            <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
+          </v-list-item-content>
 
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-btn icon ripple @click.stop="openMenu(label._id)">
               <v-icon>settings</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
 
-        <v-list-tile @click="$refs.newLabel.open()">
-          <v-list-tile-action>
+        <v-list-item @click="$refs.newLabel.open()">
+          <v-list-item-action>
             <v-icon>add</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
       <v-list dense class="pt-0" v-if="mode === 'menu'">
         <v-subheader>Labels</v-subheader>
-        <v-list-tile
+        <v-list-item
           @click="selectLabel(label)"
           v-for="label in labels"
           :key="label._id"
           @mouseover="showButtons = label._id"
           @mouseleave="showButtons = null"
         >
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
-          </v-list-tile-content>
+          <v-list-item-content>
+            <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
+          </v-list-item-content>
 
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
               <v-icon color="grey lighten-1">settings</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
 
-        <v-list-tile @click="$refs.newLabel.open()">
-          <v-list-tile-action>
+        <v-list-item @click="$refs.newLabel.open()">
+          <v-list-item-action>
             <v-icon>add</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </template>
   </div>

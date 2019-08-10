@@ -24,28 +24,28 @@
             <v-icon>add</v-icon>
           </v-btn>
         </v-subheader>
-        <v-list-tile
+        <v-list-item
           v-for="processDiagram in processDiagrams"
           :key="processDiagram._id"
           @click="openProcessDiagram(processDiagram)"
         >
-          <v-list-tile-avatar>
+          <v-list-item-avatar>
             <v-icon>donut_large</v-icon>
-          </v-list-tile-avatar>
+          </v-list-item-avatar>
 
-          <v-list-tile-content class="pointer">
-            <v-list-tile-title>{{ processDiagram.name }}</v-list-tile-title>
-            <v-list-tile-sub-title>
+          <v-list-item-content class="pointer">
+            <v-list-item-title>{{ processDiagram.name }}</v-list-item-title>
+            <v-list-item-subtitle>
               {{ htmlToText(processDiagram.description)}}
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
+            </v-list-item-subtitle>
+          </v-list-item-content>
 
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-tooltip top slot="activator">
               <v-btn
                 slot="activator"
                 icon
-                flat
+                text
                 color="grey darken-1"
                 @click.stop="editProcessDiagram(processDiagram)"
               >
@@ -53,13 +53,13 @@
               </v-btn>
               <span>{{ $t('Edit') }}</span>
             </v-tooltip>
-          </v-list-tile-action>
-          <v-list-tile-action>
+          </v-list-item-action>
+          <v-list-item-action>
             <v-tooltip top slot="activator">
               <v-btn
                 slot="activator"
                 icon
-                flat
+                text
                 color="grey darken-1"
                 @click.stop="cloneProcessDiagram(processDiagram)"
               >
@@ -67,13 +67,13 @@
               </v-btn>
               <span>{{ $t('Clone') }}</span>
             </v-tooltip>
-          </v-list-tile-action>
-          <v-list-tile-action>
+          </v-list-item-action>
+          <v-list-item-action>
             <v-tooltip top slot="activator">
               <v-btn
                 slot="activator"
                 icon
-                flat
+                text
                 color="grey darken-1"
                 @click.stop="deleteProcessDiagram(processDiagram)"
               >
@@ -81,8 +81,8 @@
               </v-btn>
               <span>{{ $t('Delete') }}</span>
             </v-tooltip>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </v-list>
     </div>
   </div>

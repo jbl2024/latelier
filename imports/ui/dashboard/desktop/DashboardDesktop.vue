@@ -21,31 +21,33 @@
           </v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
-              <v-btn small slot="activator" icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
+              <template v-slot:activator="{ on }">
+                <v-btn small v-on="on" icon>
+                  <v-icon>more_vert</v-icon>
+                </v-btn>
+              </template>
               <v-list dense>
                 <template v-if="!organizationId">
-                  <v-list-tile @click="newProject()">
-                    <v-list-tile-action>
+                  <v-list-item @click="newProject()">
+                    <v-list-item-action>
                       <v-icon>list</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile @click="newOrganization()">
-                    <v-list-tile-action>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ $t('New project') }}</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="newOrganization()">
+                    <v-list-item-action>
                       <v-icon>domain</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
-                  </v-list-tile>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ $t('New organization') }}</v-list-item-title>
+                  </v-list-item>
                   <v-divider></v-divider>
                 </template>
-                <v-list-tile @click="$refs.projectsTrashcan.open()">
-                  <v-list-tile-action>
+                <v-list-item @click="$refs.projectsTrashcan.open()">
+                  <v-list-item-action>
                     <v-icon>delete</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('Trashcan') }}</v-list-tile-title>
-                </v-list-tile>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t('Trashcan') }}</v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </v-flex>
@@ -59,7 +61,7 @@
           :description="$t('You don\'t have any project yet. You can start by creating a project or an organization that may contain members and different projects.')"
           illustration="project"
         >
-          <v-btn flat @click="newProject()">{{ $t('Create new project') }}</v-btn>
+          <v-btn text @click="newProject()">{{ $t('Create new project') }}</v-btn>
           <v-btn class="primary" @click="newOrganization()">{{ $t('Create new organization')}}</v-btn>
         </empty-state>
       </template>
@@ -88,7 +90,7 @@
           <div class="header">
             <div class="header-title">{{ $t('Individuals') }}</div>
             <div class="header-action">
-              <v-btn flat solo class="action-button" @click="newProject()">
+              <v-btn text solo class="action-button" @click="newProject()">
                 <v-icon left>add</v-icon>
                 {{ $t('New project')}}
               </v-btn>
@@ -114,7 +116,7 @@
                 <v-btn
                   icon
                   small
-                  flat
+                  text
                   color="grey darken-1"
                   @click.stop="openOrganizationTimeline(organization._id)"
                   slot="activator"
@@ -127,7 +129,7 @@
                 <v-btn
                   icon
                   small
-                  flat
+                  text
                   color="grey darken-1"
                   @click.stop="openOrganizationSettings(organization._id)"
                   slot="activator"
@@ -140,7 +142,7 @@
                 <v-btn
                   icon
                   small
-                  flat
+                  text
                   color="grey darken-1"
                   @click.stop="deleteOrganization(organization)"
                   v-if="canDeleteOrganization(organization)"
@@ -152,7 +154,7 @@
               </v-tooltip>
             </div>
             <div class="header-action">
-              <v-btn flat solo class="action-button" @click="newProject(organization._id)">
+              <v-btn text solo class="action-button" @click="newProject(organization._id)">
                 <v-icon left>add</v-icon>
                 {{ $t('New project')}}
               </v-btn>
