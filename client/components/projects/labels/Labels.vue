@@ -88,7 +88,7 @@
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
+            <v-btn icon @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
               <v-icon color="grey lighten-1">settings</v-icon>
             </v-btn>
           </v-list-item-action>
