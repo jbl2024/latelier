@@ -6,7 +6,7 @@
       <v-progress-linear v-model="completion"></v-progress-linear>
     </div>
     <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
-      <div>
+      <div class="parent">
         <div class="check">
 
           <div class="pretty p-default">
@@ -143,6 +143,7 @@ export default {
 <style scoped>
 .task-checklist {
   margin-bottom: 12px;
+  position: relative;
 }
 .fade-enter-active,
 .fade-leave-active {
@@ -172,8 +173,12 @@ export default {
   margin-top: 12px;
 }
 
-.right {
+.parent {
   position: relative;
+}
+
+.right {
+  position: absolute;
   right: 8px;
   top: 12px;
   white-space: nowrap;

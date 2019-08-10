@@ -13,7 +13,7 @@
       :class="{ selected, completed }"
     >
       <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-      <div class="title">
+      <div class="task-title">
         <v-icon
           icon
           text
@@ -420,8 +420,13 @@ export default {
   background-color: white;
 }
 
-.title {
+.task-title {
   position: relative;
+  font-size: 20px !important;
+  font-weight: 500;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  font-family: Roboto,sans-serif !important;
 }
 
 .title-wrapper {
