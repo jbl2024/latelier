@@ -23,7 +23,7 @@
         <v-spacer></v-spacer>
         <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
         <v-avatar dark>
-          <v-menu offset-x offset-y>
+          <v-menu offset-y eager>
             <template v-slot:activator="{ on }">
               <v-btn
                 icon
