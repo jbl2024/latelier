@@ -36,8 +36,8 @@
       </template>
 
       <template v-if="projects.length > 0 || organizations.length > 0">
-        <v-list two-line subheader class="elevation-1" dense v-if="favorites.length > 0">
-          <v-toolbar class="pointer" color="primary" dark dense>
+        <v-list two-line subheader class="elevation-1" v-if="favorites.length > 0">
+          <v-toolbar class="pointer" color="primary" dark>
             <v-icon>star</v-icon>
             <v-toolbar-title>{{ $t('Favorites')}}</v-toolbar-title>
           </v-toolbar>
@@ -111,8 +111,8 @@
           </template>
         </v-list>
 
-        <v-list two-line subheader class="elevation-1" dense>
-          <v-toolbar class="pointer" color="primary" dark dense>
+        <v-list two-line subheader class="elevation-1">
+          <v-toolbar class="pointer" color="primary" dark>
             <v-icon>account_circle</v-icon>
             <v-toolbar-title>{{ $t('Individuals')}}</v-toolbar-title>
             <v-spacer></v-spacer>
@@ -198,14 +198,13 @@
           </template>
         </v-list>
 
-        <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1" dense>
+        <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
           <template v-for="organization in organizations">
             <v-toolbar
               :key="`${organization._id}-toolbar`"
               class="pointer"
               color="primary"
               dark
-              dense
               @click="openOrganization(organization._id)"
             >
               <v-icon>domain</v-icon>
