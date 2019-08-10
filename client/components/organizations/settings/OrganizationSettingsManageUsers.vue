@@ -9,7 +9,7 @@
           </v-btn>
         </v-subheader>
         <template v-for="user in organizationUsers">
-          <v-list-item :key="user._id" avatar>
+          <v-list-item :key="user._id">
             <v-list-item-avatar :color="isOnline(user)">
               <span class="">{{ formatUserLetters(user) }}</span>
             </v-list-item-avatar>
@@ -30,10 +30,12 @@
             </v-list-item-action>
 
             <v-list-item-action v-if="canManageOrganization(organization) && isAdmin(user, organization) && userId != user._id">
-              <v-tooltip top slot="activator">
-                <v-btn icon ripple @click.stop="removeAdmin(user, organization)" slot="activator">
-                  <v-icon color="red">security</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon ripple @click.stop="removeAdmin(user, organization)" v-on="on">
+                    <v-icon color="red">security</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Remove admin rights') }}</span>
               </v-tooltip>
             </v-list-item-action>

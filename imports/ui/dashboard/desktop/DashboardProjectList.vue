@@ -18,16 +18,18 @@
     </v-list-item-action>
 
     <v-list-item-action>
-      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
-        <v-btn
-          icon
-          text
-          color="grey darken-1"
-          @click.stop="addToFavorites(user, project._id)"
-          slot="activator"
-        >
-          <v-icon>star_border</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="!isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            text
+            color="grey darken-1"
+            @click.stop="addToFavorites(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>star_border</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 

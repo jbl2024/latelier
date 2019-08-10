@@ -8,7 +8,7 @@
         </v-btn>
       </v-subheader>
       <template v-for="user in projectUsers">
-        <v-list-item :key="user._id" avatar>
+        <v-list-item :key="user._id">
           <v-list-item-avatar :color="isOnline(user)">
             <span class="">{{ formatUserLetters(user) }}</span>
           </v-list-item-avatar>
@@ -18,19 +18,23 @@
           </v-list-item-content>
 
           <v-list-item-action v-if="canManageProject(project) && !isAdmin(user, project) && userId != user._id">
-            <v-tooltip top slot="activator">
-              <v-btn icon ripple @click.stop="setAdmin(user, project)" slot="activator">
-                <v-icon color="grey">security</v-icon>
-              </v-btn>
+            <v-tooltip>
+              <template v-slot:activator="{ on }">
+                <v-btn icon ripple @click.stop="setAdmin(user, project)" v-on="on">
+                  <v-icon color="grey">security</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Grant admin rights') }}</span>
             </v-tooltip>
           </v-list-item-action>
 
           <v-list-item-action v-if="canManageProject(project) && isAdmin(user, project) && userId != user._id">
-            <v-tooltip top slot="activator">
-              <v-btn icon ripple @click.stop="removeAdmin(user, project)" slot="activator">
-                <v-icon color="red">security</v-icon>
-              </v-btn>
+            <v-tooltip>
+              <template v-slot:activator="{ on }">
+                <v-btn icon ripple @click.stop="removeAdmin(user, project)" v-on="on">
+                  <v-icon color="red">security</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Remove admin rights') }}</span>
             </v-tooltip>
           </v-list-item-action>

@@ -112,44 +112,50 @@
                 :to="{name: 'dashboard-organization-page', params: {organizationId: organization._id}}"
               >{{ organization.name }}</router-link>
               <template v-if="organizationId">{{ organization.name }}</template>
-              <v-tooltip top slot="activator">
-                <v-btn
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn
                   icon
                   small
                   text
                   color="grey darken-1"
                   @click.stop="openOrganizationTimeline(organization._id)"
-                  slot="activator"
-                >
-                  <v-icon>timeline</v-icon>
-                </v-btn>
+                  v-on="on"
+                  >
+                    <v-icon>timeline</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Timeline') }}</span>
               </v-tooltip>
-              <v-tooltip top slot="activator" v-if="canManageOrganization(organization)">
-                <v-btn
+              <v-tooltip top v-if="canManageOrganization(organization)">
+                <template v-slot:activator="{ on }">
+                  <v-btn
                   icon
                   small
                   text
                   color="grey darken-1"
                   @click.stop="openOrganizationSettings(organization._id)"
-                  slot="activator"
-                >
-                  <v-icon>settings</v-icon>
-                </v-btn>
+                  v-on="on"
+                  >
+                    <v-icon>settings</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Settings') }}</span>
               </v-tooltip>
-              <v-tooltip top slot="activator">
-                <v-btn
-                  icon
-                  small
-                  text
-                  color="grey darken-1"
-                  @click.stop="deleteOrganization(organization)"
-                  v-if="canDeleteOrganization(organization)"
-                  slot="activator"
-                >
-                  <v-icon>delete</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">                
+                  <v-btn
+                    icon
+                    small
+                    text
+                    color="grey darken-1"
+                    @click.stop="deleteOrganization(organization)"
+                    v-if="canDeleteOrganization(organization)"
+                    v-on="on"
+                  >
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>

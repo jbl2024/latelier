@@ -18,23 +18,27 @@
           ></empty-state>
           <v-list v-if="projects && !loading">
             <template v-for="project in projects">
-              <v-list-item :key="project._id" @click="restoreProject(project)" avatar>
+              <v-list-item :key="project._id" @click="restoreProject(project)">
                 <v-list-item-content>
                   <v-list-item-title>{{ project.name }}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="deleteForever(project)" slot="activator">
-                      <v-icon color="red">delete_forever</v-icon>
-                    </v-btn>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon ripple @click.stop="deleteForever(project)" v-on="on">
+                        <v-icon color="red">delete_forever</v-icon>
+                      </v-btn>
+                    </template>
                     <span>{{ $t('Delete forever') }}</span>
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
-                  <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="restoreProject(project)" slot="activator">
-                      <v-icon color="primary">restore_from_trash</v-icon>
-                    </v-btn>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon ripple @click.stop="restoreProject(project)" v-on="on">
+                        <v-icon color="primary">restore_from_trash</v-icon>
+                      </v-btn>
+                    </template>
                     <span>{{ $t('Restore from trash') }}</span>
                   </v-tooltip>
                 </v-list-item-action>

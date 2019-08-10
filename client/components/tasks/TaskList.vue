@@ -9,7 +9,7 @@
       ></empty-state>
 
       <template v-for="task in tasks">
-        <v-list-item :key="task._id" @click.stop="openTask(task)" avatar>
+        <v-list-item :key="task._id" @click.stop="openTask(task)">
           <v-list-item-avatar :color="isOnline(task.assignedTo)">
             <span class>{{ formatUserLetters(task.assignedTo) }}</span>
           </v-list-item-avatar>

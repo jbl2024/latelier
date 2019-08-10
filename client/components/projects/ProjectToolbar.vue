@@ -10,18 +10,22 @@
 
     <v-spacer></v-spacer>
     <div>
-      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
-        <v-btn icon @click.stop="addToFavorites(user, project._id)" slot="activator">
-          <v-icon>star_border</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="!isFavorite(user, project._id)">
+          <template v-slot:activator="{ on }">
+            <v-btn icon @click.stop="addToFavorites(user, project._id)" v-on="on">
+              <v-icon>star_border</v-icon>
+            </v-btn>
+          </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
     </div>
     <div>
-      <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
-        <v-btn icon @click.stop="removeFromFavorites(user, project._id)" slot="activator">
-          <v-icon>star</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+          <v-btn icon @click.stop="removeFromFavorites(user, project._id)" v-on="on">
+            <v-icon>star</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Remove from favorites') }}</span>
       </v-tooltip>
     </div>

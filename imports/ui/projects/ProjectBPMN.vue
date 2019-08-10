@@ -41,44 +41,50 @@
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-tooltip top slot="activator">
-              <v-btn
-                slot="activator"
-                icon
-                text
-                color="grey darken-1"
-                @click.stop="editProcessDiagram(processDiagram)"
-              >
-                <v-icon>edit</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="editProcessDiagram(processDiagram)"
+                >
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Edit') }}</span>
             </v-tooltip>
           </v-list-item-action>
           <v-list-item-action>
-            <v-tooltip top slot="activator">
-              <v-btn
-                slot="activator"
-                icon
-                text
-                color="grey darken-1"
-                @click.stop="cloneProcessDiagram(processDiagram)"
-              >
-                <v-icon>file_copy</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="cloneProcessDiagram(processDiagram)"
+                >
+                  <v-icon>file_copy</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Clone') }}</span>
             </v-tooltip>
           </v-list-item-action>
           <v-list-item-action>
-            <v-tooltip top slot="activator">
-              <v-btn
-                slot="activator"
-                icon
-                text
-                color="grey darken-1"
-                @click.stop="deleteProcessDiagram(processDiagram)"
-              >
-                <v-icon>delete</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  v-on="on"
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="deleteProcessDiagram(processDiagram)"
+                >
+                  <v-icon>delete</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Delete') }}</span>
             </v-tooltip>
           </v-list-item-action>
