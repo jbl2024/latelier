@@ -148,7 +148,9 @@ pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
-
+.task-notes {
+  padding-bottom: 24px;
+}
 .empty-state {
   transition: none;
 }
@@ -171,6 +173,7 @@ pre {
 }
 
 .center {
+  margin-top: 24px;
   text-align: center;
 }
 
