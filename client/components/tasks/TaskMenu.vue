@@ -1,8 +1,10 @@
 <template>
   <v-menu bottom left class="menu">
-    <v-btn slot="activator" icon>
-      <v-icon>more_vert</v-icon>
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" icon>
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+    </template>
     <v-list dense>
       <v-list-tile @click="openHistory()">
         <v-list-tile-action>

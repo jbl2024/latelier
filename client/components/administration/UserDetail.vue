@@ -18,9 +18,11 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu bottom left>
-        <v-btn slot="activator" icon>
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
         <v-list>
           <v-list-tile v-if="!isMe()" @click="showConfirmDeleteUserDialog = true">
             <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>

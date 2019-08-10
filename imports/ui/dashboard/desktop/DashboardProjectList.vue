@@ -38,9 +38,11 @@
 
     <v-list-tile-action>
       <v-menu bottom left class="menu" @click.native.stop>
-        <v-btn slot="activator" icon flat color="grey darken-1">
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon flat color="grey darken-1">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
         <v-list dense>
           <v-list-tile @click="openProjectSettings(project)" v-if="canManageProject(project)">
             <v-list-tile-action>

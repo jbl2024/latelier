@@ -16,9 +16,11 @@
               v-if="hiddenTaskCount > 0"
             >{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
             <v-menu bottom left class="flex0">
-              <v-btn :dark="isDark()" small slot="activator" icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
+              <template v-slot:activator="{ on }">
+                <v-btn :dark="isDark()" small v-on="on" icon>
+                  <v-icon>more_vert</v-icon>
+                </v-btn>
+              </template>
               <v-list dense>
                 <v-list-tile @click="newTaskInline(list._id)">
                   <v-list-tile-action>

@@ -8,10 +8,10 @@
         <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
         <v-toolbar-title
           style="width: 300px"
-          class="ml-3 mr-5"
+          class="ml-12 mr-12"
           v-show="currentProjectId == 0 && currentOrganizationId == 0"
         >
-          <span class="title ml-3 mr-5">L'atelier</span>
+          <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
 
         <organization-title

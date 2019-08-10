@@ -19,10 +19,12 @@
             </v-list-tile-content>
 
             <v-list-tile-action v-if="canManageOrganization(organization) && !isAdmin(user, organization) && userId != user._id">
-              <v-tooltip top slot="activator">
-                <v-btn icon ripple @click.stop="setAdmin(user, organization)" slot="activator">
-                  <v-icon color="grey">security</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon ripple @click.stop="setAdmin(user, organization)" v-on="on">
+                    <v-icon color="grey">security</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Grant admin rights') }}</span>
               </v-tooltip>
             </v-list-tile-action>
