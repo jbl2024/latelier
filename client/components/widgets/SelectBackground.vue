@@ -1,35 +1,40 @@
 <template>
   <div class="select-background">
 
-    <v-dialog :value="active" @input="$emit('update:active')" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" max-width="800" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">{{ $t('Select background') }}</v-card-title>
-        <v-card-text>
-          <v-list two-line class="content" v-if="backgrounds">
-            <template v-for="image in backgrounds">
-              <v-list-item :key='image._id' @click="selectBackground(image)">
-                <v-list-item-avatar>
-                  <span class=""></span>
-                </v-list-item-avatar>
-                <v-list-item-content class="pointer">
-                  <v-list-item-title>{{ image.meta.name }} </v-list-item-title>
-                  <v-list-item-subtitle v-html="image.meta.credits"></v-list-item-subtitle>
+        <v-card-text class="backgrounds-wrapper">
+          <div class="backgrounds">
+            <v-card
+              @click="selectBackground(image)"
+              v-for="image in backgrounds"
+              :key="image._id"
+              max-width="344"
+              tile class="mx-auto background-card"
+            >
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title class="headline">{{ image.meta.name }} </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
-            </template>
-            <v-divider></v-divider>
-            <v-list-item @click="clearBackground()">
-              <v-list-item-avatar>
-                <span class=""></span>
-              </v-list-item-avatar>
-              <v-list-item-content class="pointer">
-                  <v-list-item-title>{{ $t('BackgroundNone') }} </v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
+
+              <v-img
+                :src="thumbnail(image)"
+                :alt="image.meta.name"
+                height="194"
+              ></v-img>
+
+              <v-card-text v-html="image.meta.credits">
+              </v-card-text>
+            </v-card>
+          </div>
+
+
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <v-btn text @click="clearBackground">{{ $t('BackgroundNone') }} </v-btn>
           <v-btn text @click="closeDialog">{{ $t('Cancel') }} </v-btn>
         </v-card-actions>
       </v-card>
@@ -83,6 +88,10 @@ export default {
         this.$store.dispatch("notify", this.$t("Background updated"));
         this.$emit("update:active", false);
       });
+    },
+
+    thumbnail(background) {
+      return Backgrounds.link(background, "thumbnail");
     }
   }
 };
@@ -111,4 +120,21 @@ export default {
   height: 38px;
   padding-top: 8px;
 }
+@media (min-width: 601px) {
+  .backgrounds-wrapper {
+    height: 480px;
+    overflow-y: scroll;
+  }
+}
+
+.backgrounds {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+}
+
+.background-card {
+  margin: 12px;
+}
+
 </style>

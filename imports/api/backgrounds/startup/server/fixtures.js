@@ -1,4 +1,5 @@
 import { Backgrounds } from "/imports/api/backgrounds/backgrounds";
+import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";
 
 import * as path from "path";
 
@@ -11,7 +12,18 @@ function generateFixtures() {
     const credits = background.credits;
 
     const existingBackground = Backgrounds.findOne({'meta.name': name, 'meta.userId': {$exists : false}});
-    if (existingBackground) return;
+    if (existingBackground) {
+      if (!existingBackground.versions.thumbnail) {
+        createThumbnails(Backgrounds, existingBackground, (error, fileRef) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+      }
+      Backgrounds.
+      if (existingBackground.meta.)
+      return;
+    }
 
     Backgrounds.addFile(backgroundPath, {
       meta: {
