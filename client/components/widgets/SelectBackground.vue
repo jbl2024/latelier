@@ -5,7 +5,7 @@
       <v-card>
         <v-card-title class="headline">{{ $t('Select background') }}</v-card-title>
         <v-card-text>
-          <v-list class="content" v-if="backgrounds">
+          <v-list two-line class="content" v-if="backgrounds">
             <template v-for="image in backgrounds">
               <v-list-item :key='image._id' @click="selectBackground(image)">
                 <v-list-item-avatar>
@@ -13,6 +13,7 @@
                 </v-list-item-avatar>
                 <v-list-item-content class="pointer">
                   <v-list-item-title>{{ image.meta.name }} </v-list-item-title>
+                  <v-list-item-subtitle v-html="image.meta.credits"></v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
             </template>
