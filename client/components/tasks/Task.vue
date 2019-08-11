@@ -13,10 +13,10 @@
       :class="{ selected, completed }"
     >
       <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-      <div class="title">
+      <div class="task-title">
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="edit-button"
           small
@@ -25,7 +25,7 @@
         >edit</v-icon>
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="delete-button"
           small
@@ -72,16 +72,16 @@
               ref="name"
               class="edit-name"
               @focus.native="$event.target.select()"
-              label="Titre de la tâche"
-              outline
+              outlined
+              solo
               v-model="task.name"
               @keydown.shift.enter="updateName"
             ></v-textarea>
-            <v-btn icon flat @click.native="updateName">
+            <v-btn icon text @click.native="updateName">
               <v-icon>check_circle</v-icon>
             </v-btn>
 
-            <v-btn icon flat @click.native="cancelUpdateName">
+            <v-btn icon text @click.native="cancelUpdateName">
               <v-icon>cancel</v-icon>
             </v-btn>
           </span>
@@ -420,8 +420,13 @@ export default {
   background-color: white;
 }
 
-.title {
+.task-title {
   position: relative;
+  font-size: 20px !important;
+  font-weight: 500;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  font-family: Roboto,sans-serif !important;
 }
 
 .title-wrapper {

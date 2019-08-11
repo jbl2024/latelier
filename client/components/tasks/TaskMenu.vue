@@ -1,27 +1,29 @@
 <template>
   <v-menu bottom left class="menu">
-    <v-btn slot="activator" icon>
-      <v-icon>more_vert</v-icon>
-    </v-btn>
-    <v-list dense>
-      <v-list-tile @click="openHistory()">
-        <v-list-tile-action>
+    <template v-slot:activator="{ on }">
+      <v-btn v-on="on" icon>
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+    </template>
+    <v-list>
+      <v-list-item @click="openHistory()">
+        <v-list-item-action>
           <v-icon>track_changes</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>{{ $t('History') }}</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile @click="cloneTask(task._id)">
-        <v-list-tile-action>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t('History') }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item @click="cloneTask(task._id)">
+        <v-list-item-action>
           <v-icon>file_copy</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>{{ $t('Clone') }}</v-list-tile-title>
-      </v-list-tile>
-      <v-list-tile @click="deleteTask(task._id)">
-        <v-list-tile-action>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
+      </v-list-item>
+      <v-list-item @click="deleteTask(task._id)">
+        <v-list-item-action>
           <v-icon>delete</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-title>{{ $t('Move to trash') }}</v-list-tile-title>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t('Move to trash') }}</v-list-item-title>
+      </v-list-item>
     </v-list>
   </v-menu>
 </template>

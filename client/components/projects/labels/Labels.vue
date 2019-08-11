@@ -4,9 +4,8 @@
     <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
     <template v-if="$subReady.labels">
       <template v-if="mode === 'select'">
-        <div class="compact-form" v-if="labels.length > 0">
+        <div v-if="labels.length > 0">
           <v-autocomplete
-            dense
             class="auto-complete"
             v-model="selectedLabels"
             :items="labels"
@@ -19,16 +18,16 @@
           >
             <template v-slot:item="data">
               <template>
-                <v-list-tile-action>
+                <v-list-item-action>
                   <v-icon :style="getColor(data.item)">label</v-icon>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-tile-title>
-                </v-list-tile-content>
+                </v-list-item-action>
+                <v-list-item-content>
+                  <v-list-item-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-item-title>
+                </v-list-item-content>
               </template>
             </template>
             <template v-slot:selection="{ item, index }">
-              <v-chip :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
+              <v-chip small :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
               <span
                 v-if="index === 1"
                 class="grey--text caption"
@@ -39,70 +38,69 @@
       </template>
 
       <v-list class="pt-0" v-if="mode === 'settings'">
-        <v-list-tile
+        <v-list-item
           @click="openMenu(label._id)"
           v-for="label in labels"
           :key="label._id"
         >
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
-          </v-list-tile-content>
+          <v-list-item-content>
+            <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
+          </v-list-item-content>
 
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-btn icon ripple @click.stop="openMenu(label._id)">
               <v-icon>settings</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
 
-        <v-list-tile @click="$refs.newLabel.open()">
-          <v-list-tile-action>
+        <v-list-item @click="$refs.newLabel.open()">
+          <v-list-item-action>
             <v-icon>add</v-icon>
-          </v-list-tile-action>
+          </v-list-item-action>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
 
-      <v-list dense class="pt-0" v-if="mode === 'menu'">
+      <v-list v-if="mode === 'menu'" dense>
         <v-subheader>Labels</v-subheader>
-        <v-list-tile
+        <v-list-item
           @click="selectLabel(label)"
           v-for="label in labels"
           :key="label._id"
           @mouseover="showButtons = label._id"
           @mouseleave="showButtons = null"
         >
-          <v-list-tile-action>
+          <v-list-item-icon>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-tile-action>
+          </v-list-item-icon>
 
-          <v-list-tile-content>
-            <v-list-tile-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-tile-title>
-          </v-list-tile-content>
+          <v-list-item-content>
+            <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
+          </v-list-item-content>
 
-          <v-list-tile-action>
-            <v-btn icon ripple @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
-              <v-icon color="grey lighten-1">settings</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          <v-list-item-action>
+            <v-icon small color="grey lighten-1" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">settings</v-icon>
+          </v-list-item-action>
 
-        <v-list-tile @click="$refs.newLabel.open()">
-          <v-list-tile-action>
+        </v-list-item>
+
+        <v-list-item @click="$refs.newLabel.open()">
+          <v-list-item-icon>
             <v-icon>add</v-icon>
-          </v-list-tile-action>
+          </v-list-item-icon>
 
-          <v-list-tile-content>
-            <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </template>
   </div>
@@ -216,13 +214,6 @@ export default {
   font-weight: bold;
 }
 
-.compact-form {
-  position: relative;
-  top: 7px;
-  transform: scale(0.875);
-  transform-origin: left;
-  display: inline-block;
-}
 .auto-complete {
   max-width: 320px;
 }

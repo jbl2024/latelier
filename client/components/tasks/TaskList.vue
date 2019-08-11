@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <v-list dense three-line v-if="tasks">
+    <v-list three-line v-if="tasks">
       <empty-state
         v-if="tasks.length == 0"
         :illustration="emptyIllustration"
@@ -9,20 +9,20 @@
       ></empty-state>
 
       <template v-for="task in tasks">
-        <v-list-tile :key="task._id" @click.stop="openTask(task)" avatar>
-          <v-list-tile-avatar :color="isOnline(task.assignedTo)">
+        <v-list-item :key="task._id" @click.stop="openTask(task)">
+          <v-list-item-avatar :color="isOnline(task.assignedTo)">
             <span class>{{ formatUserLetters(task.assignedTo) }}</span>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
               <span class="grey--text text--darken-1 show-desktop">
                 <template v-if="task.organization">[{{ task.organization.name }}]</template>
                 {{ task.project.name}} -
               </span>
               {{ task.name }}
-            </v-list-tile-title>
-            <v-list-tile-sub-title>{{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}</v-list-tile-sub-title>
-            <v-list-tile-sub-title>
+            </v-list-item-title>
+            <v-list-item-subtitle>{{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}</v-list-item-subtitle>
+            <v-list-item-subtitle>
               <template v-if="task.dueDate && isLate(task)">
                 {{ $t('Expired') }}
                 <b>{{ formatDateDuration(task.dueDate) }}</b>
@@ -31,9 +31,9 @@
                 {{ $t('Expires') }}
                 <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
         <v-divider inset :key="`divider-${task._id}`"></v-divider>
       </template>
     </v-list>

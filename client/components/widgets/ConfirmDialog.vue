@@ -6,7 +6,7 @@
         <v-card-text>{{ content }}</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="cancelDialog">{{ cancelText}}</v-btn>
+          <v-btn text @click="cancelDialog">{{ cancelText}}</v-btn>
           <v-btn color="error" @click="confirmDialog">{{ confirmText }}</v-btn>
         </v-card-actions>
       </v-card>

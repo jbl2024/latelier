@@ -1,75 +1,79 @@
 <template>
-  <v-list-tile @click="openProject(project)">
-    <v-list-tile-avatar :color="getColor(project)">
+  <v-list-item @click="openProject(project)">
+    <v-list-item-avatar :color="getColor(project)">
       <v-icon :class="getVisibilityIconClass(project)">{{ getVisibilityIcon(project) }}</v-icon>
-    </v-list-tile-avatar>
-    <v-list-tile-content class="pointer">
-      <v-list-tile-title>{{ project.name }}</v-list-tile-title>
-      <v-list-tile-sub-title>{{ formatProjectDates(project) }}</v-list-tile-sub-title>
-    </v-list-tile-content>
+    </v-list-item-avatar>
+    <v-list-item-content class="pointer">
+      <v-list-item-title>{{ project.name }}</v-list-item-title>
+      <v-list-item-subtitle>{{ formatProjectDates(project) }}</v-list-item-subtitle>
+    </v-list-item-content>
 
-    <v-list-tile-action
+    <v-list-item-action
       v-for="group in getProjectGroups(project)"
       class="show-desktop"
       :key="group._id"
       @click.stop="selectGroup(group)"
     >
       <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
-    </v-list-tile-action>
+    </v-list-item-action>
 
-    <v-list-tile-action>
-      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
-        <v-btn
-          icon
-          flat
-          color="grey darken-1"
-          @click.stop="addToFavorites(user, project._id)"
-          slot="activator"
-        >
-          <v-icon>star_border</v-icon>
-        </v-btn>
+    <v-list-item-action>
+      <v-tooltip top v-if="!isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            text
+            color="grey darken-1"
+            @click.stop="addToFavorites(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>star_border</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 
-      <v-btn v-if="isFavorite(user, project._id)" icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
+      <v-btn v-if="isFavorite(user, project._id)" icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
         <v-icon>star</v-icon>
       </v-btn>
-    </v-list-tile-action>
+    </v-list-item-action>
 
-    <v-list-tile-action>
-      <v-menu bottom left class="menu" @click.native.stop>
-        <v-btn slot="activator" icon flat color="grey darken-1">
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+    <v-list-item-action>
+      <v-menu bottom left class="menu">
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon text color="grey darken-1" @click.native.stop>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
         <v-list dense>
-          <v-list-tile @click="openProjectSettings(project)" v-if="canManageProject(project)">
-            <v-list-tile-action>
+          <v-list-item @click="openProjectSettings(project)" v-if="canManageProject(project)">
+            <v-list-item-action>
               <v-icon>settings</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ $t('Settings') }}</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="cloneProject(project)">
-            <v-list-tile-action>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="cloneProject(project)">
+            <v-list-item-action>
               <v-icon>file_copy</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ $t('Clone') }}</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="deleteProject(project)" v-if="canManageProject(project)">
-            <v-list-tile-action>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="deleteProject(project)" v-if="canManageProject(project)">
+            <v-list-item-action>
               <v-icon>delete</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ $t('Move to trash') }}</v-list-tile-title>
-          </v-list-tile>
-          <v-list-tile @click="leaveProject(project)" v-if="canLeaveProject(project)">
-            <v-list-tile-action>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t('Move to trash') }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="leaveProject(project)" v-if="canLeaveProject(project)">
+            <v-list-item-action>
               <v-icon>exit_to_app</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-title>{{ $t('Leave project') }}</v-list-tile-title>
-          </v-list-tile>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t('Leave project') }}</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-menu>
-    </v-list-tile-action>
-  </v-list-tile>
+    </v-list-item-action>
+  </v-list-item>
 </template>
 
 <script>

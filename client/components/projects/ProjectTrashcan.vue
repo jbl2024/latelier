@@ -2,7 +2,7 @@
   <div class="project-trashcan">
     <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="640px">
       <v-toolbar dark color="primary">
-        <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
           <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ $t('Trashcan')}}</v-toolbar-title>
@@ -18,27 +18,31 @@
           ></empty-state>
           <v-list v-if="tasks && !loading">
             <template v-for="task in tasks">
-              <v-list-tile :key="task._id" @click="restoreTask(task)" avatar>
-                <v-list-tile-content>
-                  <v-list-tile-title>#{{ task.number }} - {{ task.name }}</v-list-tile-title>
-                </v-list-tile-content>
-                <v-list-tile-action>
-                  <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="deleteForever(task)" slot="activator">
-                      <v-icon color="red">delete_forever</v-icon>
-                    </v-btn>
+              <v-list-item :key="task._id" @click="restoreTask(task)">
+                <v-list-item-content>
+                  <v-list-item-title>#{{ task.number }} - {{ task.name }}</v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon ripple @click.stop="deleteForever(task)" v-on="on">
+                        <v-icon color="red">delete_forever</v-icon>
+                      </v-btn>
+                    </template>
                     <span>{{ $t('Delete forever') }}</span>
                   </v-tooltip>
-                </v-list-tile-action>
-                <v-list-tile-action>
-                  <v-tooltip top slot="activator">
-                    <v-btn icon ripple @click.stop="restoreTask(task)" slot="activator">
-                      <v-icon color="primary">restore_from_trash</v-icon>
-                    </v-btn>
+                </v-list-item-action>
+                <v-list-item-action>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn icon ripple @click.stop="restoreTask(task)" v-on="on">
+                        <v-icon color="primary">restore_from_trash</v-icon>
+                      </v-btn>
+                    </template>
                     <span>{{ $t('Restore from trash') }}</span>
                   </v-tooltip>
-                </v-list-tile-action>
-              </v-list-tile>
+                </v-list-item-action>
+              </v-list-item>
               <v-divider :key="`divider-${task._id}`"></v-divider>
             </template>
           </v-list>
@@ -49,7 +53,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="error" @click="flush()">{{ $t('Flush') }}</v-btn>
-          <v-btn flat @click="close()">{{ $t('Close')}}</v-btn>
+          <v-btn text @click="close()">{{ $t('Close')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

@@ -2,7 +2,7 @@
   <div class="task-history">
     <v-dialog :value="active" @input="$emit('update:active')" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="60%">
       <v-toolbar dark color="primary">
-        <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
           <v-icon>close</v-icon>
         </v-btn>
         <v-toolbar-title>
@@ -36,7 +36,7 @@
         </div>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="close()">{{ this.$t('Close') }}</v-btn>
+          <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

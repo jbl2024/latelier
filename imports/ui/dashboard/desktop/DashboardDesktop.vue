@@ -12,7 +12,7 @@
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
-            <v-btn icon :to="{name: 'dashboard-page'}" v-if="organizationId">
+            <v-btn class="back-button" small icon :to="{name: 'dashboard-page'}" v-if="organizationId">
               <v-icon>arrow_back</v-icon>
             </v-btn>
 
@@ -21,31 +21,33 @@
           </v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
-              <v-btn small slot="activator" icon>
-                <v-icon>more_vert</v-icon>
-              </v-btn>
-              <v-list dense>
+              <template v-slot:activator="{ on }">
+                <v-btn small v-on="on" icon>
+                  <v-icon>more_vert</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
                 <template v-if="!organizationId">
-                  <v-list-tile @click="newProject()">
-                    <v-list-tile-action>
+                  <v-list-item @click="newProject()">
+                    <v-list-item-action>
                       <v-icon>list</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-title>{{ $t('New project') }}</v-list-tile-title>
-                  </v-list-tile>
-                  <v-list-tile @click="newOrganization()">
-                    <v-list-tile-action>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ $t('New project') }}</v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="newOrganization()">
+                    <v-list-item-action>
                       <v-icon>domain</v-icon>
-                    </v-list-tile-action>
-                    <v-list-tile-title>{{ $t('New organization') }}</v-list-tile-title>
-                  </v-list-tile>
+                    </v-list-item-action>
+                    <v-list-item-title>{{ $t('New organization') }}</v-list-item-title>
+                  </v-list-item>
                   <v-divider></v-divider>
                 </template>
-                <v-list-tile @click="$refs.projectsTrashcan.open()">
-                  <v-list-tile-action>
+                <v-list-item @click="$refs.projectsTrashcan.open()">
+                  <v-list-item-action>
                     <v-icon>delete</v-icon>
-                  </v-list-tile-action>
-                  <v-list-tile-title>{{ $t('Trashcan') }}</v-list-tile-title>
-                </v-list-tile>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t('Trashcan') }}</v-list-item-title>
+                </v-list-item>
               </v-list>
             </v-menu>
           </v-flex>
@@ -59,7 +61,7 @@
           :description="$t('You don\'t have any project yet. You can start by creating a project or an organization that may contain members and different projects.')"
           illustration="project"
         >
-          <v-btn flat @click="newProject()">{{ $t('Create new project') }}</v-btn>
+          <v-btn text @click="newProject()">{{ $t('Create new project') }}</v-btn>
           <v-btn class="primary" @click="newOrganization()">{{ $t('Create new organization')}}</v-btn>
         </empty-state>
       </template>
@@ -88,13 +90,13 @@
           <div class="header">
             <div class="header-title">{{ $t('Individuals') }}</div>
             <div class="header-action">
-              <v-btn flat solo class="action-button" @click="newProject()">
+              <v-btn text solo class="action-button" @click="newProject()">
                 <v-icon left>add</v-icon>
                 {{ $t('New project')}}
               </v-btn>
             </div>
           </div>
-          <v-list dense two-line class="list">
+          <v-list two-line class="list">
             <template v-for="project in individuals">
               <dashboard-project-list :key="project._id" :project="project" :user="user"></dashboard-project-list>
             </template>
@@ -110,49 +112,55 @@
                 :to="{name: 'dashboard-organization-page', params: {organizationId: organization._id}}"
               >{{ organization.name }}</router-link>
               <template v-if="organizationId">{{ organization.name }}</template>
-              <v-tooltip top slot="activator">
-                <v-btn
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn
                   icon
                   small
-                  flat
+                  text
                   color="grey darken-1"
                   @click.stop="openOrganizationTimeline(organization._id)"
-                  slot="activator"
-                >
-                  <v-icon>timeline</v-icon>
-                </v-btn>
+                  v-on="on"
+                  >
+                    <v-icon>timeline</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Timeline') }}</span>
               </v-tooltip>
-              <v-tooltip top slot="activator" v-if="canManageOrganization(organization)">
-                <v-btn
+              <v-tooltip top v-if="canManageOrganization(organization)">
+                <template v-slot:activator="{ on }">
+                  <v-btn
                   icon
                   small
-                  flat
+                  text
                   color="grey darken-1"
                   @click.stop="openOrganizationSettings(organization._id)"
-                  slot="activator"
-                >
-                  <v-icon>settings</v-icon>
-                </v-btn>
+                  v-on="on"
+                  >
+                    <v-icon>settings</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Settings') }}</span>
               </v-tooltip>
-              <v-tooltip top slot="activator">
-                <v-btn
-                  icon
-                  small
-                  flat
-                  color="grey darken-1"
-                  @click.stop="deleteOrganization(organization)"
-                  v-if="canDeleteOrganization(organization)"
-                  slot="activator"
-                >
-                  <v-icon>delete</v-icon>
-                </v-btn>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">                
+                  <v-btn
+                    icon
+                    small
+                    text
+                    color="grey darken-1"
+                    @click.stop="deleteOrganization(organization)"
+                    v-if="canDeleteOrganization(organization)"
+                    v-on="on"
+                  >
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Delete') }}</span>
               </v-tooltip>
             </div>
             <div class="header-action">
-              <v-btn flat solo class="action-button" @click="newProject(organization._id)">
+              <v-btn text solo class="action-button" @click="newProject(organization._id)">
                 <v-icon left>add</v-icon>
                 {{ $t('New project')}}
               </v-btn>
@@ -160,7 +168,6 @@
           </div>
           <v-list
             :key="`projects-${organization._id}`"
-            dense
             two-line
             class="list"
             v-if="projectsByOrganization(organization, dashboardFilter).length > 0"
@@ -189,6 +196,7 @@
 
         <div class="tabs-wrapper">
           <v-tabs v-model="tab">
+            <v-tabs-slider color="accent"></v-tabs-slider>
             <v-tab>{{ $t('Recents') }}</v-tab>
             <v-tab>{{ $t('Assigned to me') }}</v-tab>
             <v-tab>{{ $t('Late') }}</v-tab>
@@ -443,6 +451,10 @@ export default {
 
 .link:hover {
   text-decoration: underline;
+}
+
+.back-button {
+  margin-right: 12px;
 }
 
 .dashboard-desktop {

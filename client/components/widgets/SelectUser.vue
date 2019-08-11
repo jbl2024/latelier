@@ -5,7 +5,6 @@
       @input="$emit('update:active')"
       max-width="620"
       :fullscreen="$vuetify.breakpoint.xsOnly"
-      lazy
     >
       <v-card>
         <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
@@ -16,32 +15,32 @@
             <v-tab v-if="isAdmin">{{ $t('Find')}}</v-tab>
             <v-tab-item v-if="!hideProject && project">
               <div class="flex-container">
-                <v-list class="flex1" dense subheader>
+                <v-list class="flex1" subheader>
                   <template v-for="user in projectUsers">
-                    <v-list-tile :key="user._id" avatar @click="selectUser(user)">
-                      <v-list-tile-avatar :color="isOnline(user)">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
+                      <v-list-item-avatar :color="isOnline(user)">
                         <span class>{{ formatUserLetters(user) }}</span>
-                      </v-list-tile-avatar>
-                      <v-list-tile-content class="pointer">
-                        <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
+                      </v-list-item-avatar>
+                      <v-list-item-content class="pointer">
+                        <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
                   </template>
                 </v-list>
               </div>
             </v-tab-item>
             <v-tab-item v-if="project && project.organizationId">
               <div class="flex-container">
-                <v-list class="flex1" dense subheader>
+                <v-list class="flex1" subheader>
                   <template v-for="user in organizationUsers">
-                    <v-list-tile :key="user._id" avatar @click="selectUser(user)">
-                      <v-list-tile-avatar :color="isOnline(user)">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
+                      <v-list-item-avatar :color="isOnline(user)">
                         <span class>{{ formatUserLetters(user) }}</span>
-                      </v-list-tile-avatar>
-                      <v-list-tile-content class="pointer">
-                        <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-                      </v-list-tile-content>
-                    </v-list-tile>
+                      </v-list-item-avatar>
+                      <v-list-item-content class="pointer">
+                        <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
                   </template>
                 </v-list>
               </div>
@@ -62,16 +61,16 @@
                 </div>
                 <template v-if="users.length > 0 && search.length > 0">
                   <div class="flex1">
-                    <v-list dense subheader>
+                    <v-list subheader>
                       <template v-for="user in users">
-                        <v-list-tile :key="user._id" avatar @click="selectUser(user)">
-                          <v-list-tile-avatar :color="isOnline(user)">
+                        <v-list-item :key="user._id" @click="selectUser(user)">
+                          <v-list-item-avatar :color="isOnline(user)">
                             <span>{{ formatUserLetters(user) }}</span>
-                          </v-list-tile-avatar>
-                          <v-list-tile-content>
-                            <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-                          </v-list-tile-content>
-                        </v-list-tile>
+                          </v-list-item-avatar>
+                          <v-list-item-content>
+                            <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
                       </template>
                     </v-list>
                   </div>
@@ -103,7 +102,7 @@
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

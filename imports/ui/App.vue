@@ -1,17 +1,16 @@
 <template>
-  <div class>
-    <v-app>
+  <div>
+    <v-app v-resize="onResizeApp">
       <select-background :active.sync="showSelectBackgroundDialog"></select-background>
       <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
 
-      <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
-        <v-toolbar-side-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-toolbar-side-icon>
+      <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
+        <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-app-bar-nav-icon>
         <v-toolbar-title
           style="width: 300px"
-          class="ml-3 mr-5"
           v-show="currentProjectId == 0 && currentOrganizationId == 0"
         >
-          <span class="title ml-3 mr-5">L'atelier</span>
+          <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
 
         <organization-title
@@ -23,7 +22,7 @@
         <v-spacer></v-spacer>
         <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
         <v-avatar dark>
-          <v-menu offset-y>
+          <v-menu offset-y eager>
             <template v-slot:activator="{ on }">
               <v-btn
                 icon
@@ -36,15 +35,14 @@
           </v-menu>
         </v-avatar>
         <notification-button></notification-button>
-      </v-toolbar>
+      </v-app-bar>
 
-      <v-hover open-delay="300">
+      <v-hover open-delay="300" v-slot:default="{ hover }">
       <v-navigation-drawer
         :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="drawer"
         fixed
         dark
-        slot-scope="{ hover }"
         left
         width="270px"
         class="drawer"
@@ -86,7 +84,7 @@
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
-        <v-btn icon flat @click="showSnackbar = false">
+        <v-btn icon text @click="showSnackbar = false">
           <v-icon>close</v-icon>
         </v-btn>
       </v-snackbar>
@@ -185,6 +183,14 @@ export default {
         return [];
       }
     }
+  },
+  methods: {
+    onResizeApp() {
+      const width = window.innerWidth;
+      if (width >= 1264 && !this.drawer) {
+        this.drawer = true;
+      }
+    }
   }
 };
 </script>
@@ -195,6 +201,9 @@ export default {
 }
 .search {
   width: 100%;
+}
+html {
+  font-size: 14px;
 }
 
 .main-content {
@@ -227,29 +236,32 @@ export default {
   flex: 1;
 }
 
-.drawer .v-list {
-}
-
-.drawer .v-list .v-list__tile {
+/* .drawer .v-list .v-list-item {
   color: #aaa !important;
-}
+} */
 
 .drawer .v-icon {
   color: gray;
 }
 
-.drawer .v-list a.v-list__tile--active {
+.drawer .v-list a.v-list-item--active {
   color: white !important;
 }
 
-.drawer .v-list__tile--active .v-icon {
+.drawer .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+  color: #aaa !important;
+}
+
+
+.drawer .v-list-item--active .v-icon {
   color: white !important;
 }
 
 
 @media (min-width: 961px) {
   .drawer {
-    top: 64px;
+    top: 64px !important;
+
   }
   .drawer-wrapper {
     position: relative;
@@ -282,8 +294,13 @@ export default {
   top: 0;
   overflow-y: auto;
 } */
-.list__tile--active .list__tile__action,
-.list__tile--active .list__tile__action .icon {
+.list-item--active .list-item__action,
+.list-item--active .list-item__action .icon {
   color: white;
+}
+
+.v-btn--fab.v-size--default {
+  height: 42px;
+  width: 42px;
 }
 </style>

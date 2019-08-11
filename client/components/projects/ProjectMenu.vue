@@ -3,94 +3,94 @@
     <project-history :projectId="projectId" ref="projectHistory"></project-history>
     <project-trashcan :projectId="projectId" ref="projectTrashcan"></project-trashcan>
 
-    <v-list dense class="pt-0" v-if="projectId">
-      <v-list-tile
+    <v-list class="pt-0" v-if="projectId">
+      <v-list-item
         :to="{ name: 'project', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>list</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Tasks') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Tasks') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-bpmn', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>donut_large</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('BPMN') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('BPMN') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-timeline', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>timeline</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Planning') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Planning') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-canvas', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>web</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Canvas') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Canvas') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-weather', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>wb_sunny</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Weather') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Weather') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-attachments-page', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>attachment</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Attachments') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile @click="$refs.projectHistory.open()">
-        <v-list-tile-action>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Attachments') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item @click="$refs.projectHistory.open()">
+        <v-list-item-action>
           <v-icon>track_changes</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('History') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile @click="$refs.projectTrashcan.open()">
-        <v-list-tile-action>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('History') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item @click="$refs.projectTrashcan.open()">
+        <v-list-item-action>
           <v-icon>delete</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Trashcan') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-      <v-list-tile
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Trashcan') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         v-if="canManageProject(projectId)"
         :to="{ name: 'project-settings', params: { projectId: projectId }}"
       >
-        <v-list-tile-action>
+        <v-list-item-action>
           <v-icon>settings</v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t('Settings') }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <v-divider></v-divider>
     <labels :projectId="projectId"></labels>

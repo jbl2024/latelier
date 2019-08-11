@@ -3,46 +3,47 @@
     <div class="progress">
       <v-progress-linear v-model="completion"></v-progress-linear>
     </div>
-    <v-list
-      dense
+
+    <v-simple-table
       class="tasks-wrapper elevation-1"
       v-if="task.checklist && task.checklist.length > 0"
-      v-sortable-list
-      @sorted="objectSortOccurred"
     >
-      <template v-for="item in task.checklist">
-        <v-list-tile :key="item._id">
-          <v-list-tile-action>
-            <v-checkbox v-model="item.checked" @change="toggleCheckItem(item)"></v-checkbox>
-          </v-list-tile-action>
-          <v-list-tile-content>
-            <v-list-tile-title>
-              <input
-                type="text"
-                v-model.lazy="item.name"
-                class="edit"
-                v-on:change="updateItem(item)"
-              >
-            </v-list-tile-title>
-          </v-list-tile-content>
-          <v-list-tile-action class="sortHandle">
-            <v-icon style="cursor: row-resize">
-              drag_handle
-            </v-icon>
-          </v-list-tile-action>
-          <v-list-tile-action>
-            <v-btn icon ripple @click="event => { convertToTask(event, item)}">
-              <v-icon>list</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-          <v-list-tile-action>
-            <v-btn icon ripple @click="event => { deleteItem(event, item)}">
+      <tbody v-sortable-list="objectSortOccurred">
+        <tr v-for="item in task.checklist" :key="item._id">
+          <td class="check">
+            <div class="checkbox">
+              <div class="pretty p-svg p-curve">
+                <input
+                  type="checkbox"
+                  v-model="item.checked"
+                  @change="toggleCheckItem(item)"
+                  @click="e => e.stopPropagation()"
+                >
+                <div class="state p-primary">
+                  <svg class="svg svg-icon" viewBox="0 0 20 20">
+                    <path
+                      d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                      style="stroke: white;fill:white;"
+                    ></path>
+                  </svg>
+                  <label></label>
+                </div>
+              </div>
+            </div>
+          </td>
+          <td>
+            <input type="text" v-model.lazy="item.name" class="edit" v-on:change="updateItem(item)" />
+          </td>
+          <td class="sortHandle text-right">
+            <v-icon style="cursor: row-resize">drag_handle</v-icon>
+            <v-btn small icon ripple @click="event => { deleteItem(event, item)}">
               <v-icon>delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
-      </template>
-    </v-list>
+          </td>
+        </tr>
+      </tbody>
+    </v-simple-table>
+
     <v-text-field
       class="add-item"
       preprend-icon="check_box_outline_blank"
@@ -71,7 +72,7 @@ export default {
           handle: ".sortHandle",
           animation: 150,
           onUpdate: function(event) {
-            vnode.child.$emit("sorted", event);
+            binding.value(event);
           }
         };
         Sortable.create(el, options);
@@ -99,9 +100,9 @@ export default {
         let completedItems = 0;
         task.checklist.map(item => {
           if (item.checked) {
-            completedItems = completedItems + 1; 
+            completedItems = completedItems + 1;
           }
-        })
+        });
         this.completion = 100 * (completedItems / totalItems);
       }
     }
@@ -152,7 +153,6 @@ export default {
           Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
         }
       });
-
     },
 
     toggleCheckItem(item) {
@@ -188,10 +188,11 @@ export default {
     },
 
     objectSortOccurred({ oldIndex, newIndex }) {
+      console.log('coucou')
       const moved = this.task.checklist.splice(oldIndex, 1)[0];
       this.task.checklist.splice(newIndex, 0, moved);
       Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
-    },
+    }
   }
 };
 </script>
@@ -221,4 +222,13 @@ export default {
 .edit {
   width: 100%;
 }
+
+.checkbox {
+  font-size: 13px;
+}
+.check {
+  width: 48px;
+  padding-right: 0;
+}
+
 </style>

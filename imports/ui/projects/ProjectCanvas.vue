@@ -6,8 +6,8 @@
     <template v-if="canvas && canvas.data">
       <v-container fluid grid-list-md>
         <v-layout row wrap>
-          <v-flex xs12 d-flex>
-            <canvas-item title="But" headline="" :item.sync="data.goal">
+          <v-flex xs12>
+            <canvas-item flex-grow-1 title="But" headline="" :item.sync="data.goal">
               <template slot="headline">
               Quelle est l'intention à l'origine du projet ? (cause et besoin)<br/>
               Pourquoi ce projet est-il porteur de sens et important ? et pour qui ? <br/> 
@@ -16,7 +16,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?" :item.sync="data.budget">
               <template slot="headline">
                 Quelles sont les finances nécessaires ? disponibles ? <br/>
@@ -26,7 +26,7 @@
 
             </canvas-item>
           </v-flex>
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Equipe" :item.sync="data.team">
               <template slot="headline">
                 Qui est / devrait en faire partie ?<br/>
@@ -37,7 +37,7 @@
               </template>
             </canvas-item>
           </v-flex>
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Conditions" :item.sync="data.requirements">
               <template slot="headline">
               Forces, faits, événements et personnes connues qui influencent le projet ?<br/>
@@ -47,7 +47,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Ressources" :item.sync="data.resources">
               <template slot="headline">
               Quelles sont les ressources nécessaires ? <br/>
@@ -58,7 +58,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Risques & opportunités" :item.sync="data.risks">
               <template slot="headline">
                   Quels sont les évenements futurs et incertains qui menaceraient ou favoriseraient le projet ?<br/>
@@ -67,7 +67,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Jalons" :item.sync="data.milestones">
               <template slot="headline">
                 Quelles sont les étapes clés de progression ?<br/>
@@ -79,7 +79,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Qualité" :item.sync="data.quality">
               <template slot="headline">
               Qu‘est ce qui rend le CLIENT vraiment heureux au regard :<br/>
@@ -90,7 +90,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Résultats" :item.sync="data.outcome">
               <template slot="headline">
               Qu‘est-ce que le projet est censé livré au CLIENT ? C‘est plutôt :<br/>
@@ -101,7 +101,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 sm4 d-flex>
+          <v-flex xs12 sm4>
             <canvas-item title="Clients" :item.sync="data.customers">
               <template slot="headline">
               Qui est vraiment le client ? Des personnes qui :<br/>
@@ -113,7 +113,7 @@
             </canvas-item>
           </v-flex>
 
-          <v-flex xs12 class="bloc" d-flex>
+          <v-flex xs12 class="bloc">
             <canvas-item title="Calendrier" :item.sync="data.planning">
               <template slot="headline">
                 Quand le projet démarre-t-il réellement ? <br/>

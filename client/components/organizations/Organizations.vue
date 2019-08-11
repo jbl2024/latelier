@@ -27,25 +27,25 @@
         </v-subheader>
 
         <template v-for="item in organizations">
-          <v-list-tile :key="item._id" @click="openOrganization(item._id)">
-            <v-list-tile-avatar>
+          <v-list-item :key="item._id" @click="openOrganization(item._id)">
+            <v-list-item-avatar>
               <v-icon>domain</v-icon>
-            </v-list-tile-avatar>
-            <v-list-tile-content class="pointer">
-              <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-              <v-list-tile-sub-title>{{ item.description }}</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action class="show-desktop" v-if="canManageOrganization(item)">
-              <v-btn icon flat color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
+            </v-list-item-avatar>
+            <v-list-item-content class="pointer">
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action class="show-desktop" v-if="canManageOrganization(item)">
+              <v-btn icon text color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
                 <v-icon>settings</v-icon>
               </v-btn>
-            </v-list-tile-action>
-            <v-list-tile-action class="show-desktop" v-if="canDeleteOrganization(item)">
-              <v-btn icon flat color="grey darken-1" @click.stop="deleteOrganization(item._id)">
+            </v-list-item-action>
+            <v-list-item-action class="show-desktop" v-if="canDeleteOrganization(item)">
+              <v-btn icon text color="grey darken-1" @click.stop="deleteOrganization(item._id)">
                 <v-icon>delete</v-icon>
               </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
         </template>
       </v-list>
     </div>

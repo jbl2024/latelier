@@ -7,20 +7,20 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="feature in features">
-              <v-list-tile :key='feature' @click="selectFeature(feature)">
-                <v-list-tile-avatar >
+              <v-list-item :key='feature' @click="selectFeature(feature)">
+                <v-list-item-avatar >
                   <v-icon>folder</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="cursor">
-                  <v-list-tile-title>{{ feature }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="cursor">
+                  <v-list-item-title>{{ feature }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
           </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ $t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ $t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

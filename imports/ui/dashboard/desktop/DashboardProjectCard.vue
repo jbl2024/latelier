@@ -30,49 +30,57 @@
       </v-btn>
       <v-spacer></v-spacer>
 
-      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
-        <v-btn
-          icon
-          flat
-          color="grey darken-1"
-          @click.stop="addToFavorites(user, project._id)"
-          slot="activator"
-        >
-          <v-icon>star_border</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="!isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+            <v-btn
+            icon
+            text
+            color="grey darken-1"
+            @click.stop="addToFavorites(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>star_border</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 
-      <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
-        <v-btn icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
-          <v-icon>star</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+          <v-btn icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" v-on="on">
+            <v-icon>star</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Remove from favorites') }}</span>
       </v-tooltip>
 
       <template v-if="canManageProject(project)">
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="openProjectSettings(project)"
-          >
-            <v-icon>settings</v-icon>
-          </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              text
+              v-on="on"
+              color="grey darken-1"
+              @click.stop="openProjectSettings(project)"
+            >
+              <v-icon>settings</v-icon>
+            </v-btn>
+          </template>
           <span>{{ $t('Settings') }}</span>
         </v-tooltip>
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="deleteProject(project)"
-          >
-            <v-icon>delete</v-icon>
-          </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              text
+              v-on="on"
+              color="grey darken-1"
+              @click.stop="deleteProject(project)"
+            >
+              <v-icon>delete</v-icon>
+            </v-btn>
+          </template>
           <span>{{ $t('Move to trash') }}</span>
         </v-tooltip>
       </template>

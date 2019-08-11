@@ -7,29 +7,29 @@
         <v-card-text>
           <v-list class="content" v-if="backgrounds">
             <template v-for="image in backgrounds">
-              <v-list-tile :key='image._id' @click="selectBackground(image)">
-                <v-list-tile-avatar>
+              <v-list-item :key='image._id' @click="selectBackground(image)">
+                <v-list-item-avatar>
                   <span class=""></span>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ image.meta.name }} </v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ image.meta.name }} </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <v-divider></v-divider>
-            <v-list-tile @click="clearBackground()">
-              <v-list-tile-avatar>
+            <v-list-item @click="clearBackground()">
+              <v-list-item-avatar>
                 <span class=""></span>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ $t('BackgroundNone') }} </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ $t('BackgroundNone') }} </v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ $t('Cancel') }} </v-btn>
+          <v-btn text @click="closeDialog">{{ $t('Cancel') }} </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

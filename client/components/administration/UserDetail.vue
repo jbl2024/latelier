@@ -10,7 +10,7 @@
       @confirm="onConfirmDeleteUser"
     />
     <v-toolbar dark color="primary">
-      <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
+      <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
         <v-icon>close</v-icon>
       </v-btn>
       <v-toolbar-title>
@@ -18,13 +18,15 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-menu bottom left>
-        <v-btn slot="activator" icon>
-          <v-icon>more_vert</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
         <v-list>
-          <v-list-tile v-if="!isMe()" @click="showConfirmDeleteUserDialog = true">
-            <v-list-tile-title>{{ this.$t('Delete') }}</v-list-tile-title>
-          </v-list-tile>
+          <v-list-item v-if="!isMe()" @click="showConfirmDeleteUserDialog = true">
+            <v-list-item-title>{{ this.$t('Delete') }}</v-list-item-title>
+          </v-list-item>
         </v-list>
       </v-menu>
     </v-toolbar>
@@ -59,7 +61,7 @@
     </v-card-text>
     <v-card-actions>
       <v-spacer></v-spacer>
-      <v-btn flat @click.native="close()">{{ this.$t('Close') }}</v-btn>
+      <v-btn text @click.native="close()">{{ this.$t('Close') }}</v-btn>
       <v-btn color="primary" @click.native="save()">Mettre à jour</v-btn>
     </v-card-actions>
   </v-card>

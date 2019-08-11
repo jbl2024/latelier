@@ -7,29 +7,29 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="organization in organizations">
-              <v-list-tile :key='organization._id' @click="selectOrganization(organization)">
-                <v-list-tile-avatar>
+              <v-list-item :key='organization._id' @click="selectOrganization(organization)">
+                <v-list-item-avatar>
                   <v-icon>domain</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ organization.name }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ organization.name }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
             <v-divider></v-divider>
-            <v-list-tile @click="selectOrganization()">
-              <v-list-tile-avatar>
+            <v-list-item @click="selectOrganization()">
+              <v-list-item-avatar>
                 <v-icon></v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="pointer">
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-content class="pointer">
+              </v-list-item-content>
+            </v-list-item>
 
           </v-list>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

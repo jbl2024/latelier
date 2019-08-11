@@ -50,7 +50,7 @@
         >(+{{ selectedUpdatedBy.length - 3 }} {{ $t('others') }})</span>
       </template>
     </v-autocomplete>
-    <labels :projectId="projectId" mode="select"></labels>
+    <labels :projectId="projectId" mode="select" class="compact-form"></labels>
   </div>
 </template>
 
@@ -150,7 +150,7 @@ export default {
 
 .compact-form {
   position: relative;
-  top: 7px;
+  top: 10px;
   transform: scale(0.875);
   transform-origin: left;
 }

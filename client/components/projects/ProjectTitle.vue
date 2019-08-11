@@ -4,7 +4,7 @@
       <div>
         <slot></slot>
         <v-btn
-          flat
+          text
           icon
           color="white"
           v-if="showKanbanLink"
@@ -13,7 +13,7 @@
           <v-icon>arrow_back</v-icon>
         </v-btn>
         <v-btn
-          flat
+          text
           icon
           color="white"
           v-if="!showKanbanLink"
@@ -22,7 +22,7 @@
           <v-icon>home</v-icon>
         </v-btn>
         <v-btn
-          flat
+          text
           icon
           color="white"
           v-if="!showKanbanLink && project.organizationId"
@@ -36,7 +36,7 @@
     <v-text-field
       v-model="savedValue"
       v-show="!editProjectName"
-      flat
+      text
       solo-inverted
       hide-details
       prepend-inner-icon="search"
@@ -48,7 +48,7 @@
       <v-text-field
         @focus="$event.target.select()"
         style="width: 500px"
-        flat
+        text
         solo-inverted
         hide-details
         prepend-inner-icon="edit"

@@ -14,46 +14,56 @@
         <span class="title">{{ processDiagram.name }}</span>
         <v-spacer></v-spacer>
         <div>
-          <v-tooltip top slot="activator">
-            <v-btn icon @click.stop="exportSVG()" slot="activator">
-              <v-icon>photo</v-icon>
-            </v-btn>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn icon @click.stop="exportSVG()" v-on="on">
+                <v-icon>photo</v-icon>
+              </v-btn>
+            </template>
             <span>{{ $t('Export image') }}</span>
           </v-tooltip>
         </div>
 
         <template v-if="mode === 'view'">
           <div>
-            <v-tooltip top slot="activator">
-              <v-btn icon @click.stop="edit()" slot="activator">
-                <v-icon>edit</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon @click.stop="edit()" v-on="on">
+                  <v-icon>edit</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Edit') }}</span>
             </v-tooltip>
           </div>
         </template>
         <template v-if="mode === 'edit'">
           <div>
-            <v-tooltip top slot="activator">
-              <v-btn icon @click.stop="undo()" slot="activator">
-                <v-icon>undo</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon @click.stop="undo()" v-on="on">
+                  <v-icon>undo</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Undo') }}</span>
             </v-tooltip>
           </div>
           <div>
-            <v-tooltip top slot="activator">
-              <v-btn icon @click.stop="redo()" slot="activator">
-                <v-icon>redo</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon @click.stop="redo()" v-on="on">
+                  <v-icon>redo</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Redo') }}</span>
             </v-tooltip>
           </div>
           <div>
-            <v-tooltip top slot="activator">
-              <v-btn icon @click.stop="view()" slot="activator">
-                <v-icon>check</v-icon>
-              </v-btn>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn icon @click.stop="view()" v-on="on">
+                  <v-icon>check</v-icon>
+                </v-btn>
+              </template>
               <span>{{ $t('Close') }}</span>
             </v-tooltip>
           </div>

@@ -13,7 +13,7 @@
     </v-card-text>
     <v-divider light></v-divider>
 
-    <v-card-actions class="pa-3" color="white">
+    <v-card-actions color="white">
       <v-btn icon @click.stop="editReport(report)">
         <v-icon>edit</v-icon>
       </v-btn>

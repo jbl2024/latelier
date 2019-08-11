@@ -48,12 +48,22 @@ import colors from 'vuetify/es5/util/colors'
 
 // Vuetify
 import Vuetify from 'vuetify'
-Vue.use(Vuetify, {
+Vue.use(Vuetify);
+
+const vuetify = new Vuetify({
+  icons: {
+    iconfont: 'md',
+  },
   theme: {
-    primary: "#455A64",
-    accent: "#F9A825",
+    themes: {
+      light: {    
+        primary: "#455A64",
+        accent: "#F9A825"
+      }
+    }
   }
 });
+
 
 import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
 
@@ -69,7 +79,7 @@ import '/imports/favicon.js'
 import messages from '/imports/i18n/i18n.js'
 
 import confirm from '/imports/confirm/confirm.js'
-Vue.use(confirm);
+Vue.use(confirm, { vuetify });
 
 Meteor.startup(() => {
   // Time of inactivity to set user as away automaticly. Default 60000
@@ -106,6 +116,7 @@ Meteor.startup(() => {
     i18n,
     router,
     store,
+    vuetify,
     render: h => h(App),
   }).$mount('app');
 

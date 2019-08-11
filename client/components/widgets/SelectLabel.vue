@@ -8,30 +8,30 @@
         <v-card-text>
           <v-list class="content">
             <template v-for="label in labels">
-              <v-list-tile :key='label._id' @click="selectLabel(label)">
-                <v-list-tile-avatar>
+              <v-list-item :key='label._id' @click="selectLabel(label)">
+                <v-list-item-avatar>
                   <v-icon :style="getColor(label)">label</v-icon>
-                </v-list-tile-avatar>
-                <v-list-tile-content class="pointer">
-                  <v-list-tile-title>{{ label.name }}</v-list-tile-title>
-                </v-list-tile-content>
-              </v-list-tile>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ label.name }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </template>
-            <v-list-tile @click="$refs.newLabel.open()">
-              <v-list-tile-avatar >
+            <v-list-item @click="$refs.newLabel.open()">
+              <v-list-item-avatar >
                 <v-icon>label</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content class="cursor">
-                <v-list-tile-title>{{ this.$t('Create') }}...</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-content class="cursor">
+                <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
 
           </v-list>
         </v-card-text>
         <v-divider></v-divider>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

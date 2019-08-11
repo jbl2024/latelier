@@ -14,68 +14,68 @@
 
     <v-subheader>Dates</v-subheader>
     <v-list two-line class="elevation-1">
-        <v-list-tile>
-          <v-list-tile-avatar>
+        <v-list-item>
+          <v-list-item-avatar>
             <v-icon>calendar_today</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('Start date') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
+            <v-list-item-subtitle>
               <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
 
         <v-divider></v-divider>
 
-        <v-list-tile>
-          <v-list-tile-avatar>
+        <v-list-item>
+          <v-list-item-avatar>
             <v-icon>alarm_on</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ $t('End date') }}</v-list-tile-title>
-            <v-list-tile-sub-title>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
+            <v-list-item-subtitle>
               <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-            </v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
     </v-list>
 
     <v-subheader>Couleur</v-subheader>
 
     <v-list class="elevation-1">
-      <v-list-tile>
-        <v-list-tile-content>
+      <v-list-item>
+        <v-list-item-content>
           <div class="color" ref="color" :style="getColor(project)"></div>
-        </v-list-tile-content>
-      </v-list-tile>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
     <v-subheader>{{ $t('Categories') }}
     </v-subheader>
     <v-list class="elevation-1">
       <template v-for="group in assignedGroups" >
-        <v-list-tile :key="group._id">
-          <v-list-tile-avatar>
+        <v-list-item :key="group._id">
+          <v-list-item-avatar>
             <v-icon>folder</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{group.name}}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{group.name}}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </template>
     </v-list>
 
     <v-subheader>Organisation</v-subheader>
     <v-list class="elevation-1" v-if="$subReady.organizations">
-      <v-list-tile>
+      <v-list-item>
         <v-avatar>
           <v-icon>folder</v-icon>
         </v-avatar>
-        <v-list-tile-content>
-        <v-list-tile-title>{{ organization.name}}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+        <v-list-item-content>
+        <v-list-item-title>{{ organization.name}}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
   </div>
