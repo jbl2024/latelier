@@ -1,7 +1,7 @@
 <template>
   <v-menu bottom left class="menu">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon class="toolbar-button">
+      <v-btn v-on="on" icon>
         <v-icon>more_vert</v-icon>
       </v-btn>
     </template>
@@ -95,9 +95,4 @@ export default {
 </script>
 
 <style scoped>
-.toolbar-button .v-btn--fab.v-size--default {
-  height: 42px;
-  width: 42px;
-}
-
 </style>

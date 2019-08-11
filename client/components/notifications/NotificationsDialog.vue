@@ -129,7 +129,7 @@ export default {
 .content {
   overflow-y: auto;
   max-height: 450px;
-  min-height: 450px;
+  min-height: 470px;
 }
 
 

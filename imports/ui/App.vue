@@ -298,4 +298,9 @@ html {
 .list-item--active .list-item__action .icon {
   color: white;
 }
+
+.v-btn--fab.v-size--default {
+  height: 42px;
+  width: 42px;
+}
 </style>
