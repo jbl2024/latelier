@@ -176,6 +176,4 @@ export default {
   margin-bottom: 24px;
 }
 
-.editor {
-}
 </style>
