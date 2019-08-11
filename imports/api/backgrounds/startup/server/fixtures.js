@@ -20,8 +20,6 @@ function generateFixtures() {
           }
         });
       }
-      Backgrounds.
-      if (existingBackground.meta.)
       return;
     }
 
