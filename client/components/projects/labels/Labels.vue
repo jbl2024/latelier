@@ -4,7 +4,7 @@
     <edit-label ref="editLabel" :labelId="selectedLabelId"></edit-label>
     <template v-if="$subReady.labels">
       <template v-if="mode === 'select'">
-        <div class="compact-form" v-if="labels.length > 0">
+        <div v-if="labels.length > 0">
           <v-autocomplete
             class="auto-complete"
             v-model="selectedLabels"
@@ -216,13 +216,6 @@ export default {
   font-weight: bold;
 }
 
-.compact-form {
-  position: relative;
-  top: 7px;
-  transform: scale(0.875);
-  transform-origin: left;
-  display: inline-block;
-}
 .auto-complete {
   max-width: 320px;
 }
