@@ -1,6 +1,6 @@
 <template>
   <div class="task-list">
-    <v-list three-line v-if="tasks">
+    <v-list two-line v-if="tasks">
       <empty-state
         v-if="tasks.length == 0"
         :illustration="emptyIllustration"
@@ -15,12 +15,14 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-              <span class="grey--text text--darken-1 show-desktop">
-                <template v-if="task.organization">[{{ task.organization.name }}]</template>
-                {{ task.project.name}} -
-              </span>
-              {{ task.name }}
+              <span class="black--text">{{ task.name }}</span>
             </v-list-item-title>
+            <v-list-item-subtitle>
+              <span class="grey--text text--darken-1 show-desktop">
+                <template v-if="task.organization">{{ task.organization.name }} / </template>
+                {{ task.project.name}}
+              </span>
+            </v-list-item-subtitle>
             <v-list-item-subtitle>{{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}</v-list-item-subtitle>
             <v-list-item-subtitle>
               <template v-if="task.dueDate && isLate(task)">
