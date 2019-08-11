@@ -41,7 +41,7 @@
             </v-btn>
           </div>
         </div>
-        <v-divider inset></v-divider>
+        <v-divider inset :key="note._id"></v-divider>
       </template>
 
     <div v-if="editNewNote">
