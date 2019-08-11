@@ -27,7 +27,7 @@
               </template>
             </template>
             <template v-slot:selection="{ item, index }">
-              <v-chip :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
+              <v-chip small :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
               <span
                 v-if="index === 1"
                 class="grey--text caption"
