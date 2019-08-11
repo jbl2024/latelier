@@ -51,7 +51,7 @@ Notifications.methods.load = new ValidatedMethod({
       userId: Meteor.userId()
     };
 
-    const perPage = 5;
+    const perPage = 4;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;

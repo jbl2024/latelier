@@ -19,7 +19,7 @@
                 <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
               </v-flex>
               <v-flex xs12>
-                <v-list two-lines class="elevation-1 date">
+                <v-list two-line class="elevation-1 date">
                     <v-list-item @click="showSelectDate = true">
                       <v-list-item-avatar>
                         <v-icon>calendar_today</v-icon>

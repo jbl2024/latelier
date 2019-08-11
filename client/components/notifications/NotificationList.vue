@@ -1,5 +1,5 @@
 <template>
-  <v-list three-line>
+  <v-list two-line>
     <template v-for="(notification, index) in notifications">
       <v-list-item
         @click="openDetail(notification)"
@@ -26,6 +26,7 @@
         </v-list-item-action>
       </v-list-item>
       <v-divider
+        inset
         v-if="index + 1 < notifications.length"
         :key="index"
       ></v-divider>
