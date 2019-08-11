@@ -69,7 +69,7 @@
         </v-list-item>
       </v-list>
 
-      <v-list v-if="mode === 'menu'">
+      <v-list v-if="mode === 'menu'" dense>
         <v-subheader>Labels</v-subheader>
         <v-list-item
           @click="selectLabel(label)"
@@ -78,26 +78,24 @@
           @mouseover="showButtons = label._id"
           @mouseleave="showButtons = null"
         >
-          <v-list-item-avatar>
+          <v-list-item-icon>
             <v-icon :style="getColor(label)">label</v-icon>
-          </v-list-item-avatar>
+          </v-list-item-icon>
 
           <v-list-item-content>
             <v-list-item-title :class="getClassForName(label, selectedLabels)">{{ label.name }}</v-list-item-title>
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-btn icon x-small @click.stop="openMenu(label._id)" v-show="showButtons === label._id">
-              <v-icon color="grey lighten-1">settings</v-icon>
-            </v-btn>
+            <v-icon small color="grey lighten-1" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">settings</v-icon>
           </v-list-item-action>
 
         </v-list-item>
 
         <v-list-item @click="$refs.newLabel.open()">
-          <v-list-item-action>
+          <v-list-item-icon>
             <v-icon>add</v-icon>
-          </v-list-item-action>
+          </v-list-item-icon>
 
           <v-list-item-content>
             <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>
