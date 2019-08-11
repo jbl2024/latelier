@@ -11,11 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
-## [1.9.0] - 2019-08-11
+## [2.0.0] - 2019-08-11
 ### Added
 
 ### Changed
-- Migration to vuetify 2.0
+- Upgrade to vuetify 2.0
 
 ### Removed
 
