@@ -1,11 +1,11 @@
 <template>
   <v-menu bottom left class="menu">
     <template v-slot:activator="{ on }">
-      <v-btn v-on="on" icon>
+      <v-btn v-on="on" icon class="toolbar-button">
         <v-icon>more_vert</v-icon>
       </v-btn>
     </template>
-    <v-list dense>
+    <v-list>
       <v-list-item @click="openHistory()">
         <v-list-item-action>
           <v-icon>track_changes</v-icon>
@@ -95,4 +95,9 @@ export default {
 </script>
 
 <style scoped>
+.toolbar-button .v-btn--fab.v-size--default {
+  height: 42px;
+  width: 42px;
+}
+
 </style>

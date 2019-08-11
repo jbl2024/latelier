@@ -359,6 +359,11 @@ export default {
   margin-right: 8px;
 }
 
+.toolbar-button .v-btn--fab.v-size--default {
+  height: 42px;
+  width: 42px;
+}
+
 .toolbar-title {
   flex: 2;
   font-size: 18px;
