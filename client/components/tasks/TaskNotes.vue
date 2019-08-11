@@ -2,7 +2,6 @@
   <div class="task-notes">
     <empty-state
       v-show="!hasNotes(task.notes) && !editNewNote"
-      icon="note"
       :label="$t('No notes')"
     >
       <v-btn class="primary" @click="startNewNote">{{ $t('Add note')}}</v-btn>
@@ -201,5 +200,9 @@ pre {
 
 .note-actions {
   flex: 0;
+}
+
+.empty-state {
+  margin-top: 24px;
 }
 </style>
