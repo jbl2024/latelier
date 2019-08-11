@@ -472,8 +472,6 @@ export default {
   -webkit-overflow-scrolling: touch;
 }
 .list-edit {
-  position: absolute;
-  top: -8px;
   width: 100%;
 }
 
