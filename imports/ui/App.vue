@@ -28,7 +28,7 @@
                 icon
                 v-on="on"
               >
-                <v-icon>account_circle</v-icon>
+                <v-icon>mdi-account-circle</v-icon>
               </v-btn>
             </template>            
             <login-menu></login-menu>
@@ -85,7 +85,7 @@
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
         <v-btn icon text @click="showSnackbar = false">
-          <v-icon>close</v-icon>
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-snackbar>
     </v-app>

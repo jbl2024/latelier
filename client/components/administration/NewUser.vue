@@ -8,7 +8,7 @@
     <v-card class="new-user">
       <v-toolbar dark color="primary">
         <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
-          <v-icon>close</v-icon>
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>
           <span>{{ $t('New user') }}</span>

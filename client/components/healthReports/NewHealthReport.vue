@@ -6,7 +6,7 @@
       <v-card>
         <v-toolbar dark color="primary">
           <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
-            <v-icon>close</v-icon>
+            <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
             <span>{{ $t('New report') }} </span>
@@ -22,7 +22,7 @@
                 <v-list two-line class="elevation-1 date">
                     <v-list-item @click="showSelectDate = true">
                       <v-list-item-avatar>
-                        <v-icon>calendar_today</v-icon>
+                        <v-icon>mdi-calendar-today</v-icon>
                       </v-list-item-avatar>
                       <v-list-item-content>
                         <v-list-item-title>{{ $t('Date') }}</v-list-item-title>
@@ -32,7 +32,7 @@
                       </v-list-item-content>
                       <v-list-item-action>
                         <v-btn text icon @click.stop="onSelectDate(null)">
-                          <v-icon>delete</v-icon>
+                          <v-icon>mdi-delete</v-icon>
                         </v-btn>
                       </v-list-item-action>
                     </v-list-item>

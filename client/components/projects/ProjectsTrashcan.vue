@@ -3,7 +3,7 @@
     <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="640px">
       <v-toolbar dark color="primary">
         <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
-          <v-icon>close</v-icon>
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>{{ $t('Trashcan')}}</v-toolbar-title>
       </v-toolbar>
@@ -26,7 +26,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-btn icon ripple @click.stop="deleteForever(project)" v-on="on">
-                        <v-icon color="red">delete_forever</v-icon>
+                        <v-icon color="red">mdi-delete-forever</v-icon>
                       </v-btn>
                     </template>
                     <span>{{ $t('Delete forever') }}</span>
@@ -36,7 +36,7 @@
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
                       <v-btn icon ripple @click.stop="restoreProject(project)" v-on="on">
-                        <v-icon color="primary">restore_from_trash</v-icon>
+                        <v-icon color="primary">mdi-delete-restore</v-icon>
                       </v-btn>
                     </template>
                     <span>{{ $t('Restore from trash') }}</span>

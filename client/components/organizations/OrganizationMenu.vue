@@ -4,7 +4,7 @@
     <v-list dense class="pt-0">
       <v-list-item :to="{ name: 'projects-page', params: {organizationId: organizationId}}" @click="showNavigation = false">
         <v-list-item-action>
-          <v-icon>pages</v-icon>
+          <v-icon>mdi-google-pages</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Projets</v-list-item-title>
@@ -13,7 +13,7 @@
 
       <v-list-item :to="{ name: 'projects-timeline', params: {organizationId: organizationId}}" @click="showNavigation = false">
         <v-list-item-action>
-          <v-icon>timeline</v-icon>
+          <v-icon>mdi-chart-timeline-variant</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Planning</v-list-item-title>
@@ -22,7 +22,7 @@
 
       <v-list-item :to="{ name: 'organization-settings', params: {organizationId: organizationId}}" @click="showNavigation = false">
         <v-list-item-action>
-          <v-icon>settings</v-icon>
+          <v-icon>mdi-settings</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>Parametres</v-list-item-title>

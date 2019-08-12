@@ -17,7 +17,7 @@
             :label="$t('Search') + '...'"
             single-line
             v-model="search"
-            append-icon="search"
+            append-icon="mdi-magnify"
             clearable
             v-on:input="debouncedFilter"
           ></v-text-field>
@@ -43,7 +43,7 @@
       <v-subheader inset>
         {{ pagination.totalItems}} utilisateurs
         <v-btn text icon @click="$refs.newUser.open()">
-          <v-icon>add</v-icon>
+          <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-subheader>
       <template v-for="user in users">
@@ -56,7 +56,7 @@
           </v-list-item-content>
           <v-list-item-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>

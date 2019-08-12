@@ -18,19 +18,19 @@
             <v-menu bottom left class="flex0">
               <template v-slot:activator="{ on }">
                 <v-btn :dark="isDark()" small v-on="on" icon>
-                  <v-icon>more_vert</v-icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
               <v-list dense>
                 <v-list-item @click="newTaskInline(list._id)">
                   <v-list-item-action>
-                    <v-icon>add</v-icon>
+                    <v-icon>mdi-plus</v-icon>
                   </v-list-item-action>
                   <v-list-item-title>{{ $t('Add new task') }}</v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="deleteList(list._id)">
                   <v-list-item-action>
-                    <v-icon>delete</v-icon>
+                    <v-icon>mdi-delete</v-icon>
                   </v-list-item-action>
                   <v-list-item-title>{{ this.$t('Delete') }}</v-list-item-title>
                 </v-list-item>
@@ -62,10 +62,10 @@
           <div class="flex0">
             <div class="flex-container-row">
               <v-btn text icon @click.native="updateName(list)">
-                <v-icon>check_circle</v-icon>
+                <v-icon>mdi-check-circle</v-icon>
               </v-btn>
               <v-btn text icon @click.native="cancelUpdate(list)">
-                <v-icon>cancel</v-icon>
+                <v-icon>mdi-close-circle</v-icon>
               </v-btn>
             </div>
           </div>

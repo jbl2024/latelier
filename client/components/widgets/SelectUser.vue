@@ -53,7 +53,7 @@
                     :label="$t('Search') + '...'"
                     single-line
                     v-model="search"
-                    append-icon="search"
+                    append-icon="mdi-magnify"
                     clearable
                     autofocus
                     v-on:input="debouncedFilter"

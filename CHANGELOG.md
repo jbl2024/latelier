@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Background thumbnails
 - NASA background
 - Notes on task: always display note editor
-- When creating note, user is added as watcher
+- When creating task, user is added as watcher
+- Migrate to Material Design Icons (https://materialdesignicons.com/)
 
 ### Changed
 - Improve edit task name (textarea in task detail, cancel restore previous name in list view)
@@ -17,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Upgraded vue2-editor to latest version (2.10.0)
 
 ### Removed
+- Google Material Icons
 
 ## [2.0.0] - 2019-08-11
 ### Added

@@ -21,10 +21,10 @@
         <div v-if="editContent" class="edit-content">
           <rich-editor autofocus v-model="content" @submit="updateContent"></rich-editor>
           <v-btn icon text @click.native="updateContent">
-            <v-icon>check_circle</v-icon>
+            <v-icon>mdi-check-circle</v-icon>
           </v-btn>
           <v-btn icon text @click.native="cancelUpdateContent">
-            <v-icon>cancel</v-icon>
+            <v-icon>mdi-close-circle</v-icon>
           </v-btn>
         </div>
       </v-card-text>

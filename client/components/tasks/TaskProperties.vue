@@ -11,7 +11,7 @@
   <v-list two-line class="elevation-1">
       <v-list-item @click="showSelectStartDate = true">
         <v-list-item-avatar>
-          <v-icon>calendar_today</v-icon>
+          <v-icon>mdi-calendar-today</v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
@@ -20,11 +20,11 @@
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action v-if="task.reminderStartDate">
-          <v-icon>alarm_on</v-icon>
+          <v-icon>mdi-alarm-check</v-icon>
         </v-list-item-action>
         <v-list-item-action>
           <v-btn text icon @click.stop="onSelectStartDate(null)">
-            <v-icon>delete</v-icon>
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -33,7 +33,7 @@
 
       <v-list-item @click="showSelectDueDate = true">
         <v-list-item-avatar>
-          <v-icon>alarm</v-icon>
+          <v-icon>mdi-alarm</v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
@@ -42,11 +42,11 @@
           </v-list-item-subtitle>
         </v-list-item-content>
         <v-list-item-action v-if="task.reminderDueDate">
-          <v-icon>alarm_on</v-icon>
+          <v-icon>mdi-alarm-check</v-icon>
         </v-list-item-action>
         <v-list-item-action>
           <v-btn text icon @click.stop="onSelectDueDate(null)">
-            <v-icon>delete</v-icon>
+            <v-icon>mdi-delete</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -54,7 +54,7 @@
 
   <v-subheader>{{ $t('Duties') }}
     <v-btn color="grey lighten-1" text icon @click="addMeAsAssignedTo">
-      <v-icon>account_circle</v-icon>
+      <v-icon>mdi-account-circle</v-icon>
     </v-btn>
   </v-subheader>
   <v-list class="elevation-1">
@@ -70,7 +70,7 @@
       </v-list-item-content>
       <v-list-item-action>
         <v-btn icon text @click.stop="removeAssignedTo">
-          <v-icon color="grey">delete</v-icon>
+          <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
@@ -78,7 +78,7 @@
 
   <v-subheader>{{ $t('Watchers') }}
     <v-btn color="grey lighten-1" text icon @click="addMeAsWatcher">
-      <v-icon>account_circle</v-icon>
+      <v-icon>mdi-account-circle</v-icon>
     </v-btn>
   </v-subheader>
   <v-list class="elevation-1">
@@ -94,14 +94,14 @@
       </v-list-item-content>
       <v-list-item-action>
         <v-btn icon text @click.stop="removeWatcher(watcher)">
-          <v-icon color="grey">delete</v-icon>
+          <v-icon color="grey">mdi-delete</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
 
     <v-list-item @click="showChooseWatcherDialog = true">
       <v-list-item-avatar>
-        <v-icon>add</v-icon>
+        <v-icon>mdi-plus</v-icon>
       </v-list-item-avatar>
       <v-list-item-content>
       <v-list-item-title>

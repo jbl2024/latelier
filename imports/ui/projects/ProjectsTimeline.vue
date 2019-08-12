@@ -7,7 +7,7 @@
 
     <template v-if="$subReady.projectsForTimeline">
       <empty-state v-show="count == 0"
-        icon="timeline"
+        icon="mdi-chart-timeline-variant"
         :label="$t('No project')"
         :description="$t('Projects with start and end date are displayed here')">
       </empty-state>

@@ -6,12 +6,12 @@
         <v-bottom-navigation v-model="bottomNav" :value="true" dark color="primary">
           <v-btn text value="organizations">
             <span>{{ $t('Projects') }}</span>
-            <v-icon>domain</v-icon>
+            <v-icon>mdi-domain</v-icon>
           </v-btn>
 
           <v-btn text value="tasks">
             <span>{{ $t('Tasks') }}</span>
-            <v-icon>list</v-icon>
+            <v-icon>mdi-format-list-bulleted</v-icon>
           </v-btn>
         </v-bottom-navigation>
         <div class="mobile-organizations" v-if="bottomNav === 'organizations'">

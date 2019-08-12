@@ -11,7 +11,7 @@
     />
     <v-toolbar dark color="primary">
       <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
-        <v-icon>close</v-icon>
+        <v-icon>mdi-close</v-icon>
       </v-btn>
       <v-toolbar-title>
         <span>{{ user.profile.firstName}} {{ user.profile.lastName }}</span>
@@ -20,7 +20,7 @@
       <v-menu bottom left>
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon>
-            <v-icon>more_vert</v-icon>
+            <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
         <v-list>

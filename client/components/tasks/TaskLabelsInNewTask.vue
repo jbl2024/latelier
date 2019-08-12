@@ -5,7 +5,7 @@
   <v-chip v-for="label in labels" close :key="label._id" :style="getColor(label)" @update:active="removeLabel(label)">{{ label.name }}</v-chip>
   <v-btn rounded v-show="labels.length == 0" @click="$refs.selectLabel.open()">{{ $t('Add label') }}</v-btn>
   <v-btn v-show="labels.length > 0" fab small @click="$refs.selectLabel.open()">
-    <v-icon>add</v-icon>
+    <v-icon>mdi-plus</v-icon>
   </v-btn>
 </div>
 

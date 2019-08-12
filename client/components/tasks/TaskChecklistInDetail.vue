@@ -35,9 +35,9 @@
             <input type="text" v-model.lazy="item.name" class="edit" v-on:change="updateItem(item)" />
           </td>
           <td class="sortHandle text-right">
-            <v-icon style="cursor: row-resize">drag_handle</v-icon>
+            <v-icon style="cursor: row-resize">mdi-drag-vertical</v-icon>
             <v-btn small icon ripple @click="event => { deleteItem(event, item)}">
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </td>
         </tr>
@@ -46,7 +46,7 @@
 
     <v-text-field
       class="add-item"
-      preprend-icon="check_box_outline_blank"
+      preprend-icon="mdi-checkbox-blank-outline"
       :label="$t('New item')"
       v-model="item"
       ref="newItem"

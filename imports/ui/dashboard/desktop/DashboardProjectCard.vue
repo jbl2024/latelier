@@ -39,7 +39,7 @@
             @click.stop="addToFavorites(user, project._id)"
             v-on="on"
           >
-            <v-icon>star_border</v-icon>
+            <v-icon>mdi-star-outline</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('Add to favorites') }}</span>
@@ -48,7 +48,7 @@
       <v-tooltip top v-if="isFavorite(user, project._id)">
         <template v-slot:activator="{ on }">
           <v-btn icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" v-on="on">
-            <v-icon>star</v-icon>
+            <v-icon>mdi-star</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('Remove from favorites') }}</span>
@@ -64,7 +64,7 @@
               color="grey darken-1"
               @click.stop="openProjectSettings(project)"
             >
-              <v-icon>settings</v-icon>
+              <v-icon>mdi-settings</v-icon>
             </v-btn>
           </template>
           <span>{{ $t('Settings') }}</span>
@@ -78,7 +78,7 @@
               color="grey darken-1"
               @click.stop="deleteProject(project)"
             >
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
           <span>{{ $t('Move to trash') }}</span>
@@ -116,9 +116,9 @@ export default {
   methods: {
     getVisibilityIcon(project) {
       if (project.isPublic) {
-        return "visibility";
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {

@@ -27,14 +27,14 @@
             @click.stop="addToFavorites(user, project._id)"
             v-on="on"
           >
-            <v-icon>star_border</v-icon>
+            <v-icon>mdi-star-outline</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 
       <v-btn v-if="isFavorite(user, project._id)" icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
-        <v-icon>star</v-icon>
+        <v-icon>mdi-star</v-icon>
       </v-btn>
     </v-list-item-action>
 
@@ -42,31 +42,31 @@
       <v-menu bottom left class="menu">
         <template v-slot:activator="{ on }">
           <v-btn v-on="on" icon text color="grey darken-1" @click.native.stop>
-            <v-icon>more_vert</v-icon>
+            <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
         <v-list dense>
           <v-list-item @click="openProjectSettings(project)" v-if="canManageProject(project)">
             <v-list-item-action>
-              <v-icon>settings</v-icon>
+              <v-icon>mdi-settings</v-icon>
             </v-list-item-action>
             <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="cloneProject(project)">
             <v-list-item-action>
-              <v-icon>file_copy</v-icon>
+              <v-icon>mdi-content-copy</v-icon>
             </v-list-item-action>
             <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="deleteProject(project)" v-if="canManageProject(project)">
             <v-list-item-action>
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-list-item-action>
             <v-list-item-title>{{ $t('Move to trash') }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="leaveProject(project)" v-if="canLeaveProject(project)">
             <v-list-item-action>
-              <v-icon>exit_to_app</v-icon>
+              <v-icon>mdi-exit-to-app</v-icon>
             </v-list-item-action>
             <v-list-item-title>{{ $t('Leave project') }}</v-list-item-title>
           </v-list-item>
@@ -114,9 +114,9 @@ export default {
   methods: {
     getVisibilityIcon(project) {
       if (project.isPublic) {
-        return "visibility";
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {

@@ -9,7 +9,7 @@
           icon
           @click="gotoBpmn()"
         >
-          <v-icon>donut_large</v-icon>
+          <v-icon>mdi-chart-donut</v-icon>
         </v-btn>
         <span class="title">{{ processDiagram.name }}</span>
         <v-spacer></v-spacer>
@@ -17,7 +17,7 @@
           <v-tooltip top>
             <template v-slot:activator="{ on }">
               <v-btn icon @click.stop="exportSVG()" v-on="on">
-                <v-icon>photo</v-icon>
+                <v-icon>mdi-image</v-icon>
               </v-btn>
             </template>
             <span>{{ $t('Export image') }}</span>
@@ -29,7 +29,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn icon @click.stop="edit()" v-on="on">
-                  <v-icon>edit</v-icon>
+                  <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Edit') }}</span>
@@ -41,7 +41,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn icon @click.stop="undo()" v-on="on">
-                  <v-icon>undo</v-icon>
+                  <v-icon>mdi-undo</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Undo') }}</span>
@@ -51,7 +51,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn icon @click.stop="redo()" v-on="on">
-                  <v-icon>redo</v-icon>
+                  <v-icon>mdi-redo</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Redo') }}</span>
@@ -61,7 +61,7 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn icon @click.stop="view()" v-on="on">
-                  <v-icon>check</v-icon>
+                  <v-icon>mdi-check</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Close') }}</span>

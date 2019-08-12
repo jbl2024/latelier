@@ -30,7 +30,7 @@
         <v-subheader>
           <router-link class="link" :to="{ name: 'dashboard-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
           <v-btn fab dark small color="pink" @click="newProject">
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
 
@@ -50,17 +50,17 @@
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
                 <v-btn icon text color="grey darken-1" @click.stop="openProjectSettings(item._id)">
-                  <v-icon>settings</v-icon>
+                  <v-icon>mdi-settings</v-icon>
                 </v-btn>
               </v-list-item-action>
               <v-list-item-action class="show-desktop">
                 <v-btn icon text color="grey darken-1" @click.stop="cloneProject(item._id)">
-                  <v-icon>file_copy</v-icon>
+                  <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </v-list-item-action>
               <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
                 <v-btn icon text color="grey darken-1" @click.stop="deleteProject(item._id)">
-                  <v-icon>delete</v-icon>
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
@@ -232,9 +232,9 @@ export default {
 
     getVisibilityIcon(project) {
       if (project.isPublic) {
-        return "visibility";
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {
