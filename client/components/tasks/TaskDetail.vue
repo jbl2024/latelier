@@ -2,24 +2,20 @@
   <div class="task-detail">
     <div class="toolbar">
       <div class="title edit toolbar-title" v-show="editTaskName">
-        <v-text-field
-          @focus="$event.target.select()"
-          solo
-          text
-          hide-details
-          prepend-inner-icon="edit"
-          label="Saisir un nom..."
+
+        <v-textarea
           ref="name"
+          class="edit-name"
+          autofocus
+          outlined
+          solo
+          auto-grow
           v-model="task.name"
-          v-on:keyup.enter="updateTaskName"
-        ></v-text-field>
-      </div>
-      <div class="toolbar-button" v-if="editTaskName">
+          @keydown.shift.enter="updateTaskName"
+        ></v-textarea>
         <v-btn icon @click="updateTaskName">
           <v-icon>check_circle</v-icon>
         </v-btn>
-      </div>
-      <div class="toolbar-button" v-if="editTaskName">
         <v-btn icon @click="cancelUpdateTaskName">
           <v-icon>cancel</v-icon>
         </v-btn>
@@ -47,7 +43,7 @@
       </div>
 
       <div class="toolbar-title" @click="startEditTaskName" v-if="!editTaskName">
-        <span v-html="linkifyHtml(task.name)"></span>
+        <span class="task-name" v-html="linkifyHtml(task.name)"></span>
       </div>
       <div class="toolbar-button" v-if="!editTaskName">
         <task-menu :task="task"></task-menu>
@@ -345,6 +341,12 @@ export default {
   font-size: 80%;
 }
 
+.task-name {
+  cursor: text;
+}
+.edit-name {
+  font-weight: normal;
+}
 .number {
   color: rgba(0, 0, 0, 0.54);
   font-size: 80%;

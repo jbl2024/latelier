@@ -71,8 +71,10 @@
             <v-textarea
               ref="name"
               class="edit-name"
-              @focus.native="$event.target.select()"
+              background-color="white"
+              autofocus
               outlined
+              auto-grow
               solo
               v-model="task.name"
               @keydown.shift.enter="updateName"
@@ -146,7 +148,7 @@ export default {
     });
     this.$events.listen("task-cancel-edit-name", task => {
       if (task._id !== this.task._id) {
-        this.cancelUpdateName();
+        this.editName = false;
       }
     });
   },
@@ -218,6 +220,7 @@ export default {
         (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
+            this.task.name = this.savedName;
             return;
           }
         }
@@ -229,6 +232,7 @@ export default {
         e.stopPropagation();
       }
       this.editName = false;
+      this.task.name = this.savedName;
     },
 
     selectTask(e) {
@@ -472,8 +476,7 @@ export default {
 }
 
 .edit-name {
-  /* font-size: 12px;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif; */
+  font-weight: normal;
 }
 
 .checklist {
