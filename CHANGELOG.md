@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Background thumbnails
 - NASA background
 - Notes on task: always display note editor
-- When creating note, user is added as watcher
+- When creating task, user is added as watcher
 - Migrate to Material Design Icons (https://materialdesignicons.com/)
 
 ### Changed
