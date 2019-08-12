@@ -120,12 +120,18 @@ export default {
   height: 38px;
   padding-top: 8px;
 }
+
+.backgrounds-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
 @media (min-width: 601px) {
   .backgrounds-wrapper {
     height: 480px;
     overflow-y: scroll;
   }
 }
+
 
 .backgrounds {
   display: flex;
