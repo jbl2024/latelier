@@ -132,6 +132,13 @@ export default {
   }
 }
 
+@media (max-width: 600px) {
+  .backgrounds-wrapper {
+    height: 460px;
+    overflow-y: scroll;
+  }
+}
+
 
 .backgrounds {
   display: flex;
