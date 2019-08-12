@@ -33,8 +33,8 @@
 
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
           <v-btn color="error" text @click="clearBackground">{{ $t('BackgroundNone') }} </v-btn>
+          <v-spacer></v-spacer>
           <v-btn text @click="closeDialog">{{ $t('Cancel') }} </v-btn>
         </v-card-actions>
       </v-card>
