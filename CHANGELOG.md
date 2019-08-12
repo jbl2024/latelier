@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - NASA background
 
 ### Changed
+- Improve edit task name (textarea in task detail, cancel restore previous name in list view)
 
 ### Removed
 
