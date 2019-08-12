@@ -2,7 +2,7 @@
 
 <div class="author-line">
     <template v-if="prefix">{{ prefix }}</template>
-    <b>{{ formatUser(userId)}}</b> {{ formatDateDuration(date) }} ({{ formatDate(date) }}) <slot></slot>
+    <b>{{ formatUser(userId)}}</b><template v-if="date"> {{ formatDateDuration(date) }} ({{ formatDate(date) }})</template> <slot></slot>
 </div>
 
 </template>

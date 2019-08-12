@@ -1,17 +1,11 @@
 <template>
   <div class="task-notes">
-    <empty-state
-      v-show="!hasNotes(task.notes) && !editNewNote"
-      :label="$t('No notes')"
-    >
-      <v-btn class="primary" @click="startNewNote">{{ $t('Add note')}}</v-btn>
-    </empty-state>
 
       <template v-for="note in task.notes">
         <div class="note" :key="note._id">
         
           <div class="note-avatar">
-            <author-avatar :user-id="note.createdBy"></author-avatar> 
+            <author-avatar small :user-id="note.createdBy"></author-avatar> 
           </div>
 
           <div class="note-content">
@@ -41,22 +35,22 @@
             </v-btn>
           </div>
         </div>
-        <v-divider inset :key="note._id"></v-divider>
+        <v-divider inset :key="`divider-${note._id}`"></v-divider>
       </template>
 
-    <div v-if="editNewNote">
-      <rich-editor v-model="note" ref="newNote" @submit="addNote" autofocus></rich-editor>
-      <v-btn text icon @click="addNote">
-        <v-icon>check_circle</v-icon>
-      </v-btn>
-      <v-btn text icon @click="cancelAddNote">
-        <v-icon>cancel</v-icon>
-      </v-btn>
-    </div>
 
-    <div class="center" v-if="!editNewNote">
-      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">{{ $t('Add note') }}</v-btn>
-    </div>
+      <div class="note">
+        <div class="note-avatar">
+          <author-avatar small :user-id="currentUserId"></author-avatar> 
+        </div>
+        <div class="note-content">
+          <author-line class="note-author" :user-id="currentUserId"></author-line>
+          <rich-editor v-model="note" @submit="addNote"></rich-editor>
+          <v-btn color="primary" class="add-note" @click="addNote">
+            {{ $t('Add note') }}
+          </v-btn>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -80,9 +74,13 @@ export default {
       type: Object
     }
   },
+  computed: {
+    currentUserId() {
+      if (Meteor && Meteor.userId) return Meteor.userId();
+    }
+  },
   data() {
     return {
-      editNewNote: false,
       note: "",
       selectedNote: null
     };
@@ -92,23 +90,13 @@ export default {
       return notes && notes.length > 0;
     },
 
-    startNewNote() {
-      this.editNewNote = true;
-      this.note = "";
-      this.$nextTick(() => this.$refs.newNote.focus());
-    },
-
     addNote() {
-      this.editNewNote = false;
       Meteor.call("tasks.addNote", this.task._id, this.note);
+      this.note = "";
     },
 
     deleteNote(note) {
       Meteor.call("tasks.removeNote", this.task._id, note._id);
-    },
-
-    cancelAddNote() {
-      this.editNewNote = false;
     },
 
     formatUser(userId) {
@@ -204,5 +192,9 @@ pre {
 
 .empty-state {
   margin-top: 24px;
+}
+
+.add-note {
+  margin-top: 8px;
 }
 </style>

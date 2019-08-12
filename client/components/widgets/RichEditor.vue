@@ -76,9 +76,16 @@ export default {
 };
 </script>
 
+<style scoped>
+</style>
 <style>
 .ql-toolbar svg {
   width: 16px !important;
   height: 16px !important;
 }
+
+.ql-editor {
+  min-height:120px;
+}
+
 </style>
