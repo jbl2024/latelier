@@ -1,7 +1,7 @@
 <template>
   <div class="select-background">
 
-    <v-dialog :value="active" @input="$emit('update:active')" max-width="800" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" max-width="620" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">{{ $t('Select background') }}</v-card-title>
         <v-card-text class="backgrounds-wrapper">
@@ -34,7 +34,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn text @click="clearBackground">{{ $t('BackgroundNone') }} </v-btn>
+          <v-btn color="error" text @click="clearBackground">{{ $t('BackgroundNone') }} </v-btn>
           <v-btn text @click="closeDialog">{{ $t('Cancel') }} </v-btn>
         </v-card-actions>
       </v-card>
