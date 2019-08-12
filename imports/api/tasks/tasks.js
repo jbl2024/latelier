@@ -104,6 +104,7 @@ Meteor.methods({
       updatedAt: now,
       createdBy: userId,
       updatedBy: userId,
+      watchers: [userId],
       number: number,
       labels: labelIds || []
     });
@@ -882,14 +883,6 @@ Tasks.methods.getHistory = new ValidatedMethod({
 Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
   let userIds = [];
   if (task.assignedTo) userIds.push(task.assignedTo);
-  if (task.createdBy) userIds.push(task.createdBy);
-  if (task.updatedBy) userIds.push(task.updatedBy);
-  if (task.notes && task.notes.length > 0) {
-    task.notes.map(note => {
-      if (note.createdBy) userIds.push(note.createdBy);
-      if (note.editedBy) userIds.push(note.editedBy);
-    });
-  }
   if (task.watchers && task.watchers.length > 0) {
     task.watchers.map(watcher => {
       userIds.push(watcher);
