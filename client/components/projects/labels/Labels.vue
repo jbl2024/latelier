@@ -19,7 +19,7 @@
             <template v-slot:item="data">
               <template>
                 <v-list-item-action>
-                  <v-icon :style="getColor(data.item)">label</v-icon>
+                  <v-icon :style="getColor(data.item)">mdi-label</v-icon>
                 </v-list-item-action>
                 <v-list-item-content>
                   <v-list-item-title><span :class="isSelected(data.item) ? 'selected' : ''">{{ data.item.name }}</span></v-list-item-title>
@@ -44,7 +44,7 @@
           :key="label._id"
         >
           <v-list-item-action>
-            <v-icon :style="getColor(label)">label</v-icon>
+            <v-icon :style="getColor(label)">mdi-label</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
@@ -53,14 +53,14 @@
 
           <v-list-item-action>
             <v-btn icon ripple @click.stop="openMenu(label._id)">
-              <v-icon>settings</v-icon>
+              <v-icon>mdi-settings</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
 
         <v-list-item @click="$refs.newLabel.open()">
           <v-list-item-action>
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-list-item-action>
 
           <v-list-item-content>
@@ -79,7 +79,7 @@
           @mouseleave="showButtons = null"
         >
           <v-list-item-icon>
-            <v-icon :style="getColor(label)">label</v-icon>
+            <v-icon :style="getColor(label)">mdi-label</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>
@@ -87,14 +87,14 @@
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-icon small color="grey lighten-1" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">settings</v-icon>
+            <v-icon small color="grey lighten-1" @click.stop="openMenu(label._id)" v-show="showButtons === label._id">mdi-settings</v-icon>
           </v-list-item-action>
 
         </v-list-item>
 
         <v-list-item @click="$refs.newLabel.open()">
           <v-list-item-icon>
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-list-item-icon>
 
           <v-list-item-content>

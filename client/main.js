@@ -52,7 +52,7 @@ Vue.use(Vuetify);
 
 const vuetify = new Vuetify({
   icons: {
-    iconfont: 'md',
+    iconfont: 'mdi',
   },
   theme: {
     themes: {

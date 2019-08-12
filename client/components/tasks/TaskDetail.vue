@@ -14,16 +14,16 @@
           @keydown.shift.enter="updateTaskName"
         ></v-textarea>
         <v-btn icon @click="updateTaskName">
-          <v-icon>check_circle</v-icon>
+          <v-icon>mdi-check-circle</v-icon>
         </v-btn>
         <v-btn icon @click="cancelUpdateTaskName">
-          <v-icon>cancel</v-icon>
+          <v-icon>mdi-close-circle</v-icon>
         </v-btn>
       </div>
 
       <div class="toolbar-button" v-if="!editTaskName">
         <v-btn icon text @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
-          <v-icon>close</v-icon>
+          <v-icon>mdi-close</v-icon>
         </v-btn>
       </div>
 
@@ -104,11 +104,11 @@
       <div v-show="editDescription">
         <rich-editor ref="description" v-model="task.description" @submit="updateDescription"></rich-editor>
         <v-btn icon text @click="updateDescription">
-          <v-icon>check_circle</v-icon>
+          <v-icon>mdi-check-circle</v-icon>
         </v-btn>
 
         <v-btn icon text @click="cancelUpdateDescription">
-          <v-icon>cancel</v-icon>
+          <v-icon>mdi-close-circle</v-icon>
         </v-btn>
       </div>
     </div>

@@ -10,7 +10,7 @@
             <template v-for="label in labels">
               <v-list-item :key='label._id' @click="selectLabel(label)">
                 <v-list-item-avatar>
-                  <v-icon :style="getColor(label)">label</v-icon>
+                  <v-icon :style="getColor(label)">mdi-label</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="pointer">
                   <v-list-item-title>{{ label.name }}</v-list-item-title>
@@ -19,7 +19,7 @@
             </template>
             <v-list-item @click="$refs.newLabel.open()">
               <v-list-item-avatar >
-                <v-icon>label</v-icon>
+                <v-icon>mdi-label</v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="cursor">
                 <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>

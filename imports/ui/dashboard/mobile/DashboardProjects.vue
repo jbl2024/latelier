@@ -38,7 +38,7 @@
       <template v-if="projects.length > 0 || organizations.length > 0">
         <v-list two-line subheader class="elevation-1" v-if="favorites.length > 0">
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon>star</v-icon>
+            <v-icon>mdi-star</v-icon>
             <v-toolbar-title>{{ $t('Favorites')}}</v-toolbar-title>
           </v-toolbar>
           <template v-for="item in favorites">
@@ -68,7 +68,7 @@
                       color="grey darken-1"
                       @click.stop="openProjectSettings(item)"
                     >
-                      <v-icon>settings</v-icon>
+                      <v-icon>mdi-settings</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Settings') }}</span>
@@ -84,7 +84,7 @@
                       @click.stop="cloneProject(item._id)"
                       v-on="on"
                     >
-                      <v-icon>file_copy</v-icon>
+                      <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Clone') }}</span>
@@ -100,7 +100,7 @@
                       @click.stop="deleteProject(item._id)"
                       v-on="on"
                     >
-                      <v-icon>delete</v-icon>
+                      <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Move to trash') }}</span>
@@ -113,7 +113,7 @@
 
         <v-list two-line subheader class="elevation-1">
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon>account_circle</v-icon>
+            <v-icon>mdi-account-circle</v-icon>
             <v-toolbar-title>{{ $t('Individuals')}}</v-toolbar-title>
             <v-spacer></v-spacer>
 
@@ -121,7 +121,7 @@
               <v-tooltip top>
                 <template v-slot:activator="{ on }">
                   <v-btn icon @click.stop="newProject()" v-on="on">
-                    <v-icon>add</v-icon>
+                    <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('New project') }}</span>
@@ -155,7 +155,7 @@
                       color="grey darken-1"
                       @click.stop="openProjectSettings(item)"
                     >
-                      <v-icon>settings</v-icon>
+                      <v-icon>mdi-settings</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Settings') }}</span>
@@ -171,7 +171,7 @@
                       @click.stop="cloneProject(item._id)"
                       v-on="on"
                     >
-                      <v-icon>file_copy</v-icon>
+                      <v-icon>mdi-content-copy</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Clone') }}</span>
@@ -187,7 +187,7 @@
                       @click.stop="deleteProject(item._id)"
                       v-on="on"
                     >
-                      <v-icon>delete</v-icon>
+                      <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Move to trash') }}</span>
@@ -207,7 +207,7 @@
               dark
               @click="openOrganization(organization._id)"
             >
-              <v-icon>domain</v-icon>
+              <v-icon>mdi-domain</v-icon>
 
               <v-toolbar-title>{{ organization.name}}</v-toolbar-title>
 
@@ -217,7 +217,7 @@
                 <v-tooltip top>
                   <template v-slot:activator="{ on }">
                     <v-btn icon @click.stop="newProject(organization._id)" v-on="on">
-                      <v-icon>add</v-icon>
+                      <v-icon>mdi-plus</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('New project') }}</span>
@@ -232,7 +232,7 @@
                       @click.stop="openOrganizationTimeline(organization._id)"
                       v-on="on"
                     >
-                      <v-icon>timeline</v-icon>
+                      <v-icon>mdi-chart-timeline-variant</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Timeline') }}</span>
@@ -248,7 +248,7 @@
                       v-if="canManageOrganization(organization)"
                       v-on="on"
                     >
-                      <v-icon>settings</v-icon>
+                      <v-icon>mdi-settings</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Settings') }}</span>
@@ -264,7 +264,7 @@
                       v-if="canDeleteOrganization(organization)"
                       v-on="on"
                     >
-                      <v-icon>delete</v-icon>
+                      <v-icon>mdi-delete</v-icon>
                     </v-btn>
                   </template>
                   <span>{{ $t('Delete') }}</span>
@@ -314,7 +314,7 @@
                           color="grey darken-1"
                           @click.stop="openProjectSettings(item)"
                         >
-                          <v-icon>settings</v-icon>
+                          <v-icon>mdi-settings</v-icon>
                         </v-btn>
                       </template>
                       <span>{{ $t('Settings') }}</span>
@@ -330,7 +330,7 @@
                             @click.stop="cloneProject(item._id)"
                             v-on="on"
                           >
-                            <v-icon>file_copy</v-icon>
+                            <v-icon>mdi-content-copy</v-icon>
                           </v-btn>
                       </template>
                       <span>{{ $t('Clone') }}</span>
@@ -346,7 +346,7 @@
                           @click.stop="deleteProject(item._id)"
                           v-on="on"
                         >
-                          <v-icon>delete</v-icon>
+                          <v-icon>mdi-delete</v-icon>
                         </v-btn>
                       </template>
                       <span>{{ $t('Move to trash') }}</span>
@@ -557,9 +557,9 @@ export default {
 
     getVisibilityIcon(project) {
       if (project.isPublic) {
-        return "visibility";
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {

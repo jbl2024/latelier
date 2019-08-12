@@ -9,7 +9,7 @@
             <template v-for="organization in organizations">
               <v-list-item :key='organization._id' @click="selectOrganization(organization)">
                 <v-list-item-avatar>
-                  <v-icon>domain</v-icon>
+                  <v-icon>mdi-domain</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="pointer">
                   <v-list-item-title>{{ organization.name }}</v-list-item-title>

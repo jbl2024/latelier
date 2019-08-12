@@ -15,7 +15,7 @@
         @mouseleave="showButtons = null">
 
       <v-list-item-action>
-        <v-icon :style="getColor(group)">folder</v-icon>
+        <v-icon :style="getColor(group)">mdi-folder</v-icon>
       </v-list-item-action>
 
       <v-list-item-content class="pointer">
@@ -24,7 +24,7 @@
 
       <v-list-item-action>
         <v-btn icon ripple @click.stop="openMenu(group._id)" v-show="showButtons === group._id"> 
-          <v-icon color="grey lighten-1">settings</v-icon>
+          <v-icon color="grey lighten-1">mdi-settings</v-icon>
         </v-btn>
       </v-list-item-action>
     </v-list-item>
@@ -32,7 +32,7 @@
     <v-list-item @click="$refs.newProjectGroup.open()"> 
 
       <v-list-item-action>
-        <v-icon>add</v-icon>
+        <v-icon>mdi-plus</v-icon>
       </v-list-item-action>
 
       <v-list-item-content>

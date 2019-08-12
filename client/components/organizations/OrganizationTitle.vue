@@ -4,7 +4,7 @@
       <div>
         <slot></slot>
         <v-btn icon text @click="goTo('dashboard-page')">
-          <v-icon>home</v-icon>
+          <v-icon>mdi-home</v-icon>
         </v-btn>
         <span
           class="title hidden-xs-only"
@@ -17,7 +17,7 @@
       text
       solo-inverted
       hide-details
-      prepend-inner-icon="search"
+      prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
       v-on:input="debouncedFilter"
@@ -30,17 +30,17 @@
         text
         solo-inverted
         hide-details
-        prepend-inner-icon="edit"
+        prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
         ref="name"
         v-model="organization.name"
         v-on:keyup.enter="updateOrganizationName"
       ></v-text-field>
       <v-btn icon @click="updateOrganizationName">
-        <v-icon>check_circle</v-icon>
+        <v-icon>mdi-check-circle</v-icon>
       </v-btn>
       <v-btn icon @click="cancelUpdateOrganizationName">
-        <v-icon>cancel</v-icon>
+        <v-icon>mdi-close-circle</v-icon>
       </v-btn>
     </div>
   </div>

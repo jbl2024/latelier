@@ -22,7 +22,7 @@
           small
           color="grey darken-1"
           @click.stop="startUpdateName"
-        >edit</v-icon>
+        >mdi-pencil</v-icon>
         <v-icon
           icon
           text
@@ -31,7 +31,7 @@
           small
           color="grey darken-1"
           @click.stop="deleteTask"
-        >delete</v-icon>
+        >mdi-delete</v-icon>
 
         <div class="title-wrapper">
           <div class="checkbox" v-if="!editName">
@@ -59,13 +59,13 @@
             small
             color="blue darken-1"
             v-show="hasAttachments(task) && !editName"
-          >attach_file</v-icon>
+          >mdi-paperclip</v-icon>
           <v-icon
             class="has-notes"
             small
             color="blue darken-1"
             v-show="hasNotes(task) && !editName"
-          >chat</v-icon>
+          >mdi-message-text</v-icon>
 
           <span v-show="editName" class="edit">
             <v-textarea
@@ -80,11 +80,11 @@
               @keydown.shift.enter="updateName"
             ></v-textarea>
             <v-btn icon text @click.native="updateName">
-              <v-icon>check_circle</v-icon>
+              <v-icon>mdi-check-circle</v-icon>
             </v-btn>
 
             <v-btn icon text @click.native="cancelUpdateName">
-              <v-icon>cancel</v-icon>
+              <v-icon>mdi-close-circle</v-icon>
             </v-btn>
           </span>
         </div>
@@ -101,16 +101,16 @@
       <div class="footer" v-if="hasFooterData(task)">
         <div class="footer-left">
           <template v-if="task.dueDate">
-            <v-icon small>alarm_on</v-icon>
+            <v-icon small>mdi-alarm-check</v-icon>
             {{ formatDateTime(task.dueDate) }}
           </template>
           <template v-if="this.isProjectEstimationFeatureEnabled()">
             <template v-if="task.estimation && task.estimation.size">
-              <v-icon small>timer</v-icon>
+              <v-icon small>mdi-timer</v-icon>
               {{ task.estimation.size }}
             </template>
             <template v-if="task.estimation && task.estimation.spent">
-              <v-icon small>timelapse</v-icon>
+              <v-icon small>mdi-timelapse</v-icon>
               {{ task.estimation.spent }}
             </template>
           </template>

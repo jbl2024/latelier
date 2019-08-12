@@ -8,7 +8,7 @@
       <empty-state
         v-show="attachments.length == 0"
         rounded
-        icon="attachment"
+        icon="mdi-attachment"
         label="Aucune pièce jointe"
         description="Vous pouvez ajouter une pièce jointe sur une tâche">
       </empty-state>
@@ -17,7 +17,7 @@
         <v-subheader>Pièces jointes</v-subheader>
         <v-list-item v-for="attachment in attachments" :key="attachment._id">
           <v-list-item-avatar>
-            <v-icon>description</v-icon>
+            <v-icon>mdi-file-document</v-icon>
           </v-list-item-avatar>            
 
           <v-list-item-content class="pointer">
@@ -31,7 +31,7 @@
 
           <v-list-item-action>
             <v-btn icon text color="grey darken-1" @click.stop="deleteAttachment(attachment)">
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>

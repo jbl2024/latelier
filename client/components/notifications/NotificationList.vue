@@ -21,7 +21,7 @@
         <v-list-item-action>
           <v-list-item-action-text>{{ formatDateDuration(notification.createdAt) }}</v-list-item-action-text>
           <v-btn icon ripple @click.stop="removeNotification(notification)">
-            <v-icon color="grey lighten-1">close</v-icon>
+            <v-icon color="grey lighten-1">mdi-close</v-icon>
           </v-btn>
         </v-list-item-action>
       </v-list-item>
@@ -79,9 +79,9 @@ export default {
 
     getIcon(notification) {
       if (notification.type === NotificationTypes.TASK_REMINDER_START_DATE || notification.type === NotificationTypes.TASK_REMINDER_DUE_DATE) {
-        return "alarm";
+        return "mdi-alarm";
       } else {
-        return "edit";
+        return "mdi-pencil";
       }
     }
   }

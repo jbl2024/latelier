@@ -4,7 +4,7 @@
     <v-list v-if="$subReady.user && $subReady.usersInProject">
       <v-subheader>{{ $t('Members') }}
         <v-btn text icon @click="showSelectUserDialog = true">
-          <v-icon>add</v-icon>
+          <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-subheader>
       <template v-for="user in projectUsers">
@@ -21,7 +21,7 @@
             <v-tooltip>
               <template v-slot:activator="{ on }">
                 <v-btn icon ripple @click.stop="setAdmin(user, project)" v-on="on">
-                  <v-icon color="grey">security</v-icon>
+                  <v-icon color="grey">mdi-security</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Grant admin rights') }}</span>
@@ -32,7 +32,7 @@
             <v-tooltip>
               <template v-slot:activator="{ on }">
                 <v-btn icon ripple @click.stop="removeAdmin(user, project)" v-on="on">
-                  <v-icon color="red">security</v-icon>
+                  <v-icon color="red">mdi-security</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Remove admin rights') }}</span>
@@ -41,7 +41,7 @@
 
           <v-list-item-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
 

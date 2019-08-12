@@ -10,7 +10,7 @@
             <template v-for="group in groups">
               <v-list-item :key='group._id' @click="selectGroup(group)">
                 <v-list-item-avatar >
-                  <v-icon>folder</v-icon>
+                  <v-icon>mdi-folder</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="cursor">
                   <v-list-item-title>{{ group.name }}</v-list-item-title>
@@ -19,7 +19,7 @@
             </template>
             <v-list-item @click="$refs.newProjectGroup.open()">
               <v-list-item-avatar >
-                <v-icon>folder</v-icon>
+                <v-icon>mdi-folder</v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="cursor">
                 <v-list-item-title>{{ this.$t('Create') }}...</v-list-item-title>

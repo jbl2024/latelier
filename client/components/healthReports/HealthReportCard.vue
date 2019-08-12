@@ -15,14 +15,14 @@
 
     <v-card-actions color="white">
       <v-btn icon @click.stop="editReport(report)">
-        <v-icon>edit</v-icon>
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
       <v-btn icon @click.stop="deleteReport(report)">
-        <v-icon>delete</v-icon>
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn icon @click.stop="show = !show">
-        <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
       </v-btn>
     </v-card-actions>
     <v-slide-y-transition>

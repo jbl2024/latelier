@@ -9,7 +9,7 @@
             <template v-for="feature in features">
               <v-list-item :key='feature' @click="selectFeature(feature)">
                 <v-list-item-avatar >
-                  <v-icon>folder</v-icon>
+                  <v-icon>mdi-folder</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="cursor">
                   <v-list-item-title>{{ feature }}</v-list-item-title>

@@ -18,20 +18,20 @@
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn text icon @click="updateNote">
-                  <v-icon>check_circle</v-icon>
+                  <v-icon>mdi-check-circle</v-icon>
                 </v-btn>
                 <v-btn text icon @click="cancelUpdateNote">
-                  <v-icon>cancel</v-icon>
+                  <v-icon>mdi-close-circle</v-icon>
                 </v-btn>
               </template>
           </div>
 
           <div class="note-actions" v-if="!isNoteEdited(note._id)">
             <v-btn small icon ripple @click="startEditNote(note)">
-              <v-icon small color="grey lighten-1">edit</v-icon>
+              <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
             </v-btn>
             <v-btn small icon ripple @click="deleteNote(note)">
-              <v-icon small color="grey lighten-1">delete</v-icon>
+              <v-icon small color="grey lighten-1">mdi-delete</v-icon>
             </v-btn>
           </div>
         </div>

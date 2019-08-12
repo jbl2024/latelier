@@ -2,25 +2,25 @@
   <v-menu bottom left class="menu">
     <template v-slot:activator="{ on }">
       <v-btn v-on="on" icon>
-        <v-icon>more_vert</v-icon>
+        <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </template>
     <v-list>
       <v-list-item @click="openHistory()">
         <v-list-item-action>
-          <v-icon>track_changes</v-icon>
+          <v-icon>mdi-history</v-icon>
         </v-list-item-action>
         <v-list-item-title>{{ $t('History') }}</v-list-item-title>
       </v-list-item>
       <v-list-item @click="cloneTask(task._id)">
         <v-list-item-action>
-          <v-icon>file_copy</v-icon>
+          <v-icon>mdi-content-copy</v-icon>
         </v-list-item-action>
         <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
       </v-list-item>
       <v-list-item @click="deleteTask(task._id)">
         <v-list-item-action>
-          <v-icon>delete</v-icon>
+          <v-icon>mdi-delete</v-icon>
         </v-list-item-action>
         <v-list-item-title>{{ $t('Move to trash') }}</v-list-item-title>
       </v-list-item>

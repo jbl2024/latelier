@@ -16,7 +16,7 @@
     <v-list two-line class="elevation-1">
         <v-list-item>
           <v-list-item-avatar>
-            <v-icon>calendar_today</v-icon>
+            <v-icon>mdi-calendar-today</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
@@ -30,7 +30,7 @@
 
         <v-list-item>
           <v-list-item-avatar>
-            <v-icon>alarm_on</v-icon>
+            <v-icon>mdi-alarm-check</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
@@ -57,7 +57,7 @@
       <template v-for="group in assignedGroups" >
         <v-list-item :key="group._id">
           <v-list-item-avatar>
-            <v-icon>folder</v-icon>
+            <v-icon>mdi-folder</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>{{group.name}}</v-list-item-title>
@@ -70,7 +70,7 @@
     <v-list class="elevation-1" v-if="$subReady.organizations">
       <v-list-item>
         <v-avatar>
-          <v-icon>folder</v-icon>
+          <v-icon>mdi-folder</v-icon>
         </v-avatar>
         <v-list-item-content>
         <v-list-item-title>{{ organization.name}}</v-list-item-title>

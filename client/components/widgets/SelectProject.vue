@@ -101,9 +101,9 @@ export default {
 
     getVisibilityIcon(project) {
       if (project.isPublic) {
-        return "visibility";
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {

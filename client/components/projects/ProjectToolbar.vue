@@ -3,7 +3,7 @@
     <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
 
     <v-btn icon @click="showFiltersDialog = true" v-if="showFilters">
-      <v-icon>filter_list</v-icon>
+      <v-icon>mdi-filter-variant</v-icon>
     </v-btn>
 
     <project-filters :projectId="project._id" v-if="!showFilters"></project-filters>
@@ -13,7 +13,7 @@
       <v-tooltip top v-if="!isFavorite(user, project._id)">
           <template v-slot:activator="{ on }">
             <v-btn icon @click.stop="addToFavorites(user, project._id)" v-on="on">
-              <v-icon>star_border</v-icon>
+              <v-icon>mdi-star-outline</v-icon>
             </v-btn>
           </template>
         <span>{{ $t('Add to favorites') }}</span>
@@ -23,7 +23,7 @@
       <v-tooltip top v-if="isFavorite(user, project._id)">
         <template v-slot:activator="{ on }">
           <v-btn icon @click.stop="removeFromFavorites(user, project._id)" v-on="on">
-            <v-icon>star</v-icon>
+            <v-icon>mdi-star</v-icon>
           </v-btn>
         </template>
         <span>{{ $t('Remove from favorites') }}</span>
@@ -34,7 +34,7 @@
       icon
       :to="{ name: 'project-settings', params: { projectId: project._id }}"
     >
-      <v-icon>settings</v-icon>
+      <v-icon>mdi-settings</v-icon>
     </v-btn>
   </v-toolbar>
 </template>

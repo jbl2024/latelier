@@ -22,14 +22,14 @@
         <v-subheader>
           <router-link class="link" :to="{ name: 'dashboard-page' }">{{ $t('Dashboard') }}</router-link>&nbsp;> {{ $t('Organizations') }}
           <v-btn fab dark small color="pink" @click="newOrganization">
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
 
         <template v-for="item in organizations">
           <v-list-item :key="item._id" @click="openOrganization(item._id)">
             <v-list-item-avatar>
-              <v-icon>domain</v-icon>
+              <v-icon>mdi-domain</v-icon>
             </v-list-item-avatar>
             <v-list-item-content class="pointer">
               <v-list-item-title>{{ item.name }}</v-list-item-title>
@@ -37,12 +37,12 @@
             </v-list-item-content>
             <v-list-item-action class="show-desktop" v-if="canManageOrganization(item)">
               <v-btn icon text color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
-                <v-icon>settings</v-icon>
+                <v-icon>mdi-settings</v-icon>
               </v-btn>
             </v-list-item-action>
             <v-list-item-action class="show-desktop" v-if="canDeleteOrganization(item)">
               <v-btn icon text color="grey darken-1" @click.stop="deleteOrganization(item._id)">
-                <v-icon>delete</v-icon>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>

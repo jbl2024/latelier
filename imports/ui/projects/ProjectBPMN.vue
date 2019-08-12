@@ -21,7 +21,7 @@
         <v-subheader>
           {{ $t('Process diagrams')}}
           <v-btn icon dark small color="primary" @click="newDiagram()">
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
         <v-list-item
@@ -30,7 +30,7 @@
           @click="openProcessDiagram(processDiagram)"
         >
           <v-list-item-avatar>
-            <v-icon>donut_large</v-icon>
+            <v-icon>mdi-chart-donut</v-icon>
           </v-list-item-avatar>
 
           <v-list-item-content class="pointer">
@@ -50,7 +50,7 @@
                   color="grey darken-1"
                   @click.stop="editProcessDiagram(processDiagram)"
                 >
-                  <v-icon>edit</v-icon>
+                  <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Edit') }}</span>
@@ -66,7 +66,7 @@
                   color="grey darken-1"
                   @click.stop="cloneProcessDiagram(processDiagram)"
                 >
-                  <v-icon>file_copy</v-icon>
+                  <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Clone') }}</span>
@@ -82,7 +82,7 @@
                   color="grey darken-1"
                   @click.stop="deleteProcessDiagram(processDiagram)"
                 >
-                  <v-icon>delete</v-icon>
+                  <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
               <span>{{ $t('Delete') }}</span>

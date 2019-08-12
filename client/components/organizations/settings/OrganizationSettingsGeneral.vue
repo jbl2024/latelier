@@ -17,10 +17,10 @@
             @keyup.enter="updateName"
           ></v-text-field>
           <v-btn icon @click="updateName">
-            <v-icon>check_circle</v-icon>
+            <v-icon>mdi-check-circle</v-icon>
           </v-btn>
           <v-btn icon @click="cancelUpdateName">
-            <v-icon>cancel</v-icon>
+            <v-icon>mdi-close-circle</v-icon>
           </v-btn>
         </div>
       </div>
@@ -47,10 +47,10 @@
             @keydown.shift.enter="updateDescription"
           ></v-textarea>
           <v-btn icon @click="updateDescription">
-            <v-icon>check_circle</v-icon>
+            <v-icon>mdi-check-circle</v-icon>
           </v-btn>
           <v-btn icon @click="cancelUpdateDescription">
-            <v-icon>cancel</v-icon>
+            <v-icon>mdi-close-circle</v-icon>
           </v-btn>
         </div>
       </div>

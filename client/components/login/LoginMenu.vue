@@ -5,7 +5,7 @@
       <v-list class="pt-0">
         <v-list-item :to="{ name: 'login'}">
           <v-list-item-action>
-            <v-icon>person</v-icon>
+            <v-icon>mdi-account</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Se connecter</v-list-item-title>
@@ -34,7 +34,7 @@
       <v-list class="pt-0">
         <v-list-item :to="{ name: 'dashboard-page'}">
           <v-list-item-action>
-            <v-icon>dashboard</v-icon>
+            <v-icon>mdi-view-dashboard</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t('Dashboard') }}</v-list-item-title>
@@ -44,7 +44,7 @@
       <v-list class="pt-0" v-if="isAdmin()">
         <v-list-item :to="{ name: 'administration-page'}">
           <v-list-item-action>
-            <v-icon>verified_user</v-icon>
+            <v-icon>mdi-shield-check</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Administration</v-list-item-title>
@@ -54,7 +54,7 @@
       <v-list class="pt-0">
         <v-list-item @click="$store.dispatch('showSelectBackgroundDialog', true)">
           <v-list-item-action>
-            <v-icon>photo_library</v-icon>
+            <v-icon>mdi-image-multiple</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t('Background') }}</v-list-item-title>
@@ -63,7 +63,7 @@
         <v-divider></v-divider>
         <v-list-item :to="{ name: 'mail-settings-page'}">
           <v-list-item-action>
-            <v-icon>mail</v-icon>
+            <v-icon>mdi-email</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t('Email notifications') }}</v-list-item-title>
@@ -71,7 +71,7 @@
         </v-list-item>
         <v-list-item @click="logout()">
           <v-list-item-action>
-            <v-icon>exit_to_app</v-icon>
+            <v-icon>mdi-exit-to-app</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>{{ $t('Log out') }}</v-list-item-title>

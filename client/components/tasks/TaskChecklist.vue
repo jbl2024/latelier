@@ -18,8 +18,8 @@
           
         </div>
         <div class="right" v-show="showButtons === item._id">
-          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">list</v-icon>
-          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}" s-icon>delete</v-icon>
+          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">mdi-format-list-bulleted</v-icon>
+          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}">mdi-delete</v-icon>
         </div>
         <div class="clear"></div>
       </div>

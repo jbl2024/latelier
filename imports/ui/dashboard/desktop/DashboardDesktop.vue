@@ -13,7 +13,7 @@
         <v-layout align-center>
           <v-flex grow>
             <v-btn class="back-button" small icon :to="{name: 'dashboard-page'}" v-if="organizationId">
-              <v-icon>arrow_back</v-icon>
+              <v-icon>mdi-arrow-left</v-icon>
             </v-btn>
 
             <template v-if="!organizationId">{{ $t('Organizations & Projects')}}</template>
@@ -23,20 +23,20 @@
             <v-menu bottom left class="menu">
               <template v-slot:activator="{ on }">
                 <v-btn small v-on="on" icon>
-                  <v-icon>more_vert</v-icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
               <v-list>
                 <template v-if="!organizationId">
                   <v-list-item @click="newProject()">
                     <v-list-item-action>
-                      <v-icon>list</v-icon>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
                     </v-list-item-action>
                     <v-list-item-title>{{ $t('New project') }}</v-list-item-title>
                   </v-list-item>
                   <v-list-item @click="newOrganization()">
                     <v-list-item-action>
-                      <v-icon>domain</v-icon>
+                      <v-icon>mdi-domain</v-icon>
                     </v-list-item-action>
                     <v-list-item-title>{{ $t('New organization') }}</v-list-item-title>
                   </v-list-item>
@@ -44,7 +44,7 @@
                 </template>
                 <v-list-item @click="$refs.projectsTrashcan.open()">
                   <v-list-item-action>
-                    <v-icon>delete</v-icon>
+                    <v-icon>mdi-delete</v-icon>
                   </v-list-item-action>
                   <v-list-item-title>{{ $t('Trashcan') }}</v-list-item-title>
                 </v-list-item>
@@ -91,7 +91,7 @@
             <div class="header-title">{{ $t('Individuals') }}</div>
             <div class="header-action">
               <v-btn text solo class="action-button" @click="newProject()">
-                <v-icon left>add</v-icon>
+                <v-icon left>mdi-plus</v-icon>
                 {{ $t('New project')}}
               </v-btn>
             </div>
@@ -122,7 +122,7 @@
                   @click.stop="openOrganizationTimeline(organization._id)"
                   v-on="on"
                   >
-                    <v-icon>timeline</v-icon>
+                    <v-icon>mdi-chart-timeline-variant</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('Timeline') }}</span>
@@ -137,7 +137,7 @@
                   @click.stop="openOrganizationSettings(organization._id)"
                   v-on="on"
                   >
-                    <v-icon>settings</v-icon>
+                    <v-icon>mdi-settings</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('Settings') }}</span>
@@ -153,7 +153,7 @@
                     v-if="canDeleteOrganization(organization)"
                     v-on="on"
                   >
-                    <v-icon>delete</v-icon>
+                    <v-icon>mdi-delete</v-icon>
                   </v-btn>
                 </template>
                 <span>{{ $t('Delete') }}</span>
@@ -161,7 +161,7 @@
             </div>
             <div class="header-action">
               <v-btn text solo class="action-button" @click="newProject(organization._id)">
-                <v-icon left>add</v-icon>
+                <v-icon left>mdi-plus</v-icon>
                 {{ $t('New project')}}
               </v-btn>
             </div>

@@ -8,7 +8,7 @@
       <div class="progress" v-if="showProgress && count > 0">
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
-      <empty-state v-show="count == 0" icon="timeline" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
+      <empty-state v-show="count == 0" icon="mdi-chart-timeline-variant" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
       </empty-state>
 
       <div class="timeline">
