@@ -9,10 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Background thumbnails
 - NASA background
 - Notes on task: always display note editor
-- Upgraded vue2-editor to latest version (2.10.0)
+- When creating note, user is added as watcher
 
 ### Changed
 - Improve edit task name (textarea in task detail, cancel restore previous name in list view)
+- Send notification only to assigned to & watchers
+- Upgraded vue2-editor to latest version (2.10.0)
 
 ### Removed
 
