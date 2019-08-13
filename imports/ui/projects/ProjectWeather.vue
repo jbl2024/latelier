@@ -11,18 +11,18 @@
     </empty-state>
 
     <template v-if="healthReports.length > 0">
-      <div class="container-wrapper" :style="getBackgroundUrl(user)">
+      <div v-resize="onResize" ref="container" class="container-wrapper" :style="getBackgroundUrl(user)">
         <div v-if="loading">
           <v-progress-linear indeterminate></v-progress-linear>
         </div>
         <v-container fluid grid-list-lg>
-          <v-layout row wrap>
-            <v-flex xs12 sm6 offset-sm3>
-              <v-btn block @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+          <v-layout row wrap >
+            <v-flex xs12 :md6="!narrow" :offset-md3="!narrow">
+              <v-btn :class="{'cards-narrow': narrow }" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
             </v-flex>
             <template v-for="report in healthReports">
-              <v-flex xs12 sm6 offset-sm3 :key="report._id">
-                <health-report-card :report="report" @updated="refresh"></health-report-card>
+              <v-flex :key="report._id" xs12 :md6="!narrow" :offset-md3="!narrow" >
+                <health-report-card :class="{'cards-narrow': narrow }" :report="report" @updated="refresh"></health-report-card>
               </v-flex>
             </template>
           </v-layout>
@@ -82,6 +82,7 @@ export default {
       loading: false,
       healthReports: [],
       page: 1,
+      narrow: false,
       pagination: {
         totalItems: 0,
         rowsPerPage: 0,
@@ -149,6 +150,17 @@ export default {
           return `background-image: url('${background}');`;
         }
       }
+    },
+
+    onResize() {
+      const width = this.$refs.container.offsetWidth;
+      console.log(width)
+      if (width < 780 && width > 600) {
+        this.narrow = true;
+      } else {
+        this.narrow = false;
+      }
+
     }
   }
 };
@@ -177,6 +189,16 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+}
+
+.cards-wide {
+  /* margin-left: 256px;
+  margin-right: 256px; */
+}
+
+.cards-narrow {
+  margin-left: 64px;
+  margin-right: 64px;
 }
 
 @media (max-width: 600px) {
