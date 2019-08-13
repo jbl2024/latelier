@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Improve edit task name (textarea in task detail, cancel restore previous name in list view)
+- Improve health cards display when task is selected
 - Send notification only to assigned to & watchers
 - Upgraded vue2-editor to latest version (2.10.0)
 
