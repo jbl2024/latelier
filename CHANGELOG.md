@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve health cards display when task is selected
 - Send notification only to assigned to & watchers
 - Upgraded vue2-editor to latest version (2.10.0)
+- Upgrade to vuetify@2.0.7
 
 ### Removed
 - Google Material Icons
