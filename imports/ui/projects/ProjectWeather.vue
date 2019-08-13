@@ -18,7 +18,7 @@
         <v-container fluid grid-list-lg>
           <v-layout row wrap >
             <v-flex xs12 :md6="!narrow" :offset-md3="!narrow">
-              <v-btn :class="{'cards-narrow': narrow }" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+              <v-btn color="primary" :class="{'cards-narrow': narrow }" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
             </v-flex>
             <template v-for="report in healthReports">
               <v-flex :key="report._id" xs12 :md6="!narrow" :offset-md3="!narrow" >
