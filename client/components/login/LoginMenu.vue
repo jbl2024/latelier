@@ -13,7 +13,7 @@
         </v-list-item>
         <v-list-item :to="{ name: 'register'}">
           <v-list-item-action>
-            <v-icon>person_add</v-icon>
+            <v-icon>mdi-account-plus</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Créer un compte</v-list-item-title>
@@ -21,7 +21,7 @@
         </v-list-item>
         <v-list-item :to="{ name: 'forgot-password'}">
           <v-list-item-action>
-            <v-icon>security</v-icon>
+            <v-icon>mdi-security</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Mot de passe perdu</v-list-item-title>
