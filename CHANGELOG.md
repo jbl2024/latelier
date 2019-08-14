@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Notes on task: always display note editor
 - When creating task, user is added as watcher
 - Migrate to Material Design Icons (https://materialdesignicons.com/)
+- Notifications can be mark as read & deleted in bulk
 
 ### Changed
 - Improve edit task name (textarea in task detail, cancel restore previous name in list view)

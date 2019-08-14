@@ -40,6 +40,32 @@ Notifications.methods.markAsRead = new ValidatedMethod({
   }
 });
 
+Notifications.methods.markAllAsRead = new ValidatedMethod({
+  name: "notifications.markAllAsRead",
+  validate: null,
+  run() {
+    const userId = Meteor.userId();
+    Notifications.update(
+      { userId: userId, read: false },
+      { $set: { read: true } },
+      { multi: true }
+    );
+    Meteor.call("notifications.updateProfile", { userId: userId });
+  }
+});
+
+Notifications.methods.clear = new ValidatedMethod({
+  name: "notifications.clear",
+  validate: null,
+  run() {
+    const userId = Meteor.userId();
+    Notifications.remove(
+      { userId: userId }
+    );
+    Meteor.call("notifications.updateProfile", { userId: userId });
+  }
+});
+
 Notifications.methods.load = new ValidatedMethod({
   name: "notifications.load",
   validate: new SimpleSchema({

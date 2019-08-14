@@ -8,6 +8,28 @@
         <v-toolbar-title>
           {{ $t('Notifications') }}
         </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-menu bottom left class="menu">
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="markAllAsRead()">
+              <v-list-item-action>
+                <v-icon>mdi-check</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('Mark all as read') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="removeAll()">
+              <v-list-item-action>
+                <v-icon>mdi-delete</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('Clear notifications') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>       
     <v-card>
       <v-card-text class="content">
@@ -120,6 +142,34 @@ export default {
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
       );
+    },
+
+    markAllAsRead() {
+      Meteor.call("notifications.markAllAsRead", (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.refresh();
+      });
+    },
+
+    removeAll() {
+      this.$confirm(this.$t("All notifications will be deleted"), {
+        title:  this.$t('Clear notifications?'),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("notifications.clear", (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.refresh();
+          });
+        }
+      });
     }
   }
 };
