@@ -105,7 +105,7 @@
       </v-list-item-avatar>
       <v-list-item-content>
       <v-list-item-title>
-        <span v-show="!task.assignedTo">{{ $t('Add')}}</span>
+        {{ $t('Add')}}
       </v-list-item-title>
       </v-list-item-content>
     </v-list-item>
