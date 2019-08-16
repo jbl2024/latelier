@@ -4,7 +4,7 @@
     <div class="list-header">
       <div class="swimlane dragscroll">
         <div v-show="!isListEdited(list, selectedList)" :style="getColor()">
-          <div :style="getColor()" class="flex-container-row">
+          <div :style="getColor()" class="flex-container-row list-name-wrapper">
             <div
               class="list-name flex1"
               @click="editList(list)"
@@ -349,6 +349,7 @@ export default {
   }
   .tasks-wrapper {
     width: 100%;
+    margin-top: 4px;
   }
 }
 
@@ -435,6 +436,11 @@ export default {
     width: auto;
   }
 }
+
+.list-name-wrapper {
+  padding: 5px;
+}
+
 .list-name {
   display: inline-block;
   margin-left: 4px;
@@ -445,7 +451,6 @@ export default {
     width: 280px;
     display: inline-block;
     margin-left: 4px;
-    color: white;
   }
 }
 
