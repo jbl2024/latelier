@@ -595,14 +595,21 @@ Meteor.methods({
     check(taskId, String);
     check(userId, String);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkCanWriteTask(taskId)
+
     const task = Tasks.findOne({ _id: taskId });
-    if (!task) {
-      throw new Meteor.Error("task-not-found");
+    if (!task) throw new Meteor.Error("task-not-found");
+    if (task.assignedTo === userId) return; 
+
+    const previousAssignee = task.assignedTo;
+    if (previousAssignee) {
+      Meteor.call("tasks.addWatcher", taskId, previousAssignee);
     }
+
     Tasks.update({ _id: taskId }, { $set: { assignedTo: userId } });
+
+    Meteor.call("tasks.removeWatcher", taskId, userId);
 
     Meteor.call("tasks.track", {
       type: "tasks.assignTo",
@@ -622,10 +629,15 @@ Meteor.methods({
 
   "tasks.removeAssignedTo"(taskId) {
     check(taskId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) throw new Meteor.Error("task-not-found");
+    const assignee = task.assignedTo;
+    if (!assignee) return;
+    Meteor.call("tasks.addWatcher", taskId, assignee);
+
     Tasks.update({ _id: taskId }, { $set: { assignedTo: null } });
 
     Meteor.call("tasks.track", {
@@ -640,13 +652,15 @@ Meteor.methods({
     checkLoggedIn();
     checkCanWriteTask(taskId);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("task-not-found");
     }
+
+    const watchers = task.watchers || [];
+    const alreadyWatching = watchers.find(w => { return w === userId});
+    if (alreadyWatching) return;
+
     Tasks.update({ _id: taskId }, { $push: { watchers: userId } });
 
     Meteor.call("tasks.track", {
