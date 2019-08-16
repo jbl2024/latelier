@@ -203,6 +203,12 @@ export default {
     },
 
     loadEstimationFeature(task) {
+      const currentProjectId = this.$store.state.currentProjectId;
+      if (task.projectId === currentProjectId) {
+        this.isEstimationEnabled = this.$store.getters.hasProjectFeature('estimation');
+        return;
+      }
+
       Meteor.call("projects.hasFeature", {projectId: task.projectId, feature: "estimation"}, (error, result) => {
         this.isEstimationEnabled = result;
       })
