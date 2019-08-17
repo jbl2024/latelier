@@ -127,14 +127,16 @@ export default {
 
 @media (min-width: 601px) {
   .backgrounds-wrapper {
-    height: 480px;
+    height: calc(100vh - 200px);
+    min-height: 360px;
+    max-height: 530px;
     overflow-y: scroll;
   }
 }
 
 @media (max-width: 600px) {
   .backgrounds-wrapper {
-    height: 460px;
+    height: 440px;
     overflow-y: scroll;
   }
 }

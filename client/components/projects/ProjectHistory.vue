@@ -9,8 +9,8 @@
           Historique
         </v-toolbar-title>
       </v-toolbar>       
-      <v-card>
-        <v-card-text class="content">
+      <v-card class="flex-container">
+        <v-card-text class="flex1">
           <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
 
           <v-timeline :dense="$vuetify.breakpoint.xsOnly" clipped dense v-if="!loading"> 
@@ -32,13 +32,15 @@
 
           </v-timeline>
         </v-card-text>
-        <div class="text-xs-center">
-          <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
+        <div class="flex0">
+          <div class="text-xs-center">
+            <v-pagination v-if="showDialog && pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
+          </div>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
+          </v-card-actions>
         </div>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
-        </v-card-actions>
       </v-card>
     </v-dialog>
   </div>    
@@ -113,15 +115,28 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: auto;
-  max-height: 450px;
-  min-height: 450px;
-}
 
 .task-name {
   font-weight: bold;
 }
 
+@media (min-width: 601px) {
+  .flex-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    min-height: 360px;
+    max-height: 530px;
+  }
+
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1;
+    overflow-y: scroll;
+  }
+}
 
 </style>

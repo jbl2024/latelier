@@ -31,8 +31,8 @@
           </v-list>
         </v-menu>
       </v-toolbar>       
-    <v-card>
-      <v-card-text class="content">
+    <v-card class="flex-container">
+      <v-card-text class="flex1">
         <empty-state
           class="empty-state"
           small
@@ -43,13 +43,15 @@
 
         <notification-list :notifications="notifications" @refresh="refresh" @click="close"></notification-list>
       </v-card-text>
-      <div class="text-xs-center">
-        <v-pagination v-if="active && pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
+      <div class="flex0">
+        <div class="text-xs-center">
+          <v-pagination v-if="active && pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
+        </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
+        </v-card-actions>
       </div>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
-      </v-card-actions>
     </v-card>
     </v-dialog>
   </div>
@@ -176,14 +178,24 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: auto;
-  height: 420px;
-}
 
-.toolbar {
-  height: 48px;
-  border: 4px solid black;
+@media (min-width: 601px) {
+  .flex-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    min-height: 360px;
+    max-height: 530px;
+  }
+
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1;
+    overflow-y: scroll;
+  }
 }
 
 .empty-state {
