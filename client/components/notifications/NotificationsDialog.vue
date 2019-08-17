@@ -44,7 +44,7 @@
         <notification-list :notifications="notifications" @refresh="refresh" @click="close"></notification-list>
       </v-card-text>
       <div class="text-xs-center">
-        <v-pagination v-if="pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
+        <v-pagination v-if="active && pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
       </div>
       <v-card-actions>
         <v-spacer></v-spacer>
@@ -178,10 +178,13 @@ export default {
 <style scoped>
 .content {
   overflow-y: auto;
-  max-height: 450px;
-  min-height: 470px;
+  height: 420px;
 }
 
+.toolbar {
+  height: 48px;
+  border: 4px solid black;
+}
 
 .empty-state {
   padding-top: 64px;
