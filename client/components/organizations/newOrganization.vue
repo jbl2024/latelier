@@ -41,7 +41,7 @@ export default {
       this.$nextTick(() => this.$refs.name.focus());
     },
     create () {
-      Meteor.call('organizations.create', this.name, (error, result) => { 
+      Meteor.call('organizations.create', { name: this.name }, (error, result) => { 
         if (error) {
           console.log(error)
           return;

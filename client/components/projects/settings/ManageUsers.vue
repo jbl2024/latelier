@@ -68,18 +68,6 @@ export default {
       showSelectUserDialog: false
     };
   },
-  i18n: {
-    messages: {
-      en: {
-        "Grant admin rights": "Grant admin rights",
-        "Remove admin rights": "Remove admin rights",
-      },
-      fr: {
-        "Grant admin rights": "Donner les droits d'administration",
-        "Remove admin rights": "Enlever les droits d'administration",
-      }
-    }
-  },
   meteor: {
     $subscribe: {
       usersInProject: function() {

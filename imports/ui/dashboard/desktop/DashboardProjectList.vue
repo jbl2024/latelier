@@ -90,7 +90,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { ProjectStates } from "/imports/api/projects/projects.js";
+import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 export default {
   name: "dashboard-project-list",
@@ -113,14 +113,14 @@ export default {
   },
   methods: {
     getVisibilityIcon(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "mdi-eye";
       }
       return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "";
       }
       return "";

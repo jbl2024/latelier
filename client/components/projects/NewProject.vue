@@ -30,6 +30,24 @@
                   <v-radio v-for="item in projectStates()" :key="item.value" :label="item.label" :value="item.value"></v-radio>
                 </v-radio-group>
               </v-flex>
+              <v-flex xs12 v-if="organizationId">
+
+                <v-subheader>{{ $t("Access rights") }}</v-subheader>
+                <v-list class="elevation-1">
+                  <v-list-item @click="allowOrganization = !allowOrganization">
+                    <v-list-item-avatar>
+                      <v-icon>{{getVisibilityIcon(allowOrganization)}}</v-icon>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ getVisibilityText(allowOrganization) }}</v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-switch v-model="allowOrganization" @click="allowOrganization = !allowOrganization"></v-switch>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-flex>
+
             </v-layout>
           </v-form>
         </v-card-text>
@@ -46,7 +64,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
-import { ProjectStates } from "/imports/api/projects/projects.js";
+import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 export default {
   props: {
@@ -60,6 +78,7 @@ export default {
       showDialog: false,
       projectType: "kanban",
       projectState: ProjectStates.DEVELOPMENT,
+      allowOrganization: true,
       valid: false,
       name: "",
       nameRules: [
@@ -83,7 +102,8 @@ export default {
           name: this.name,
           projectType: this.projectType,
           projectGroupId: this.$store.state.selectedGroup._id,
-          state: this.projectState
+          state: this.projectState,
+          accessRights: this.allowOrganization ? ProjectAccessRights.ORGANIZATION : ProjectAccessRights.PRIVATE
         },
         (error, result) => {
           if (error) {
@@ -107,6 +127,21 @@ export default {
         })
       });
       return states;
+    },
+
+    getVisibilityIcon(allowOrganization) {
+      if (allowOrganization) {
+        return "mdi-eye";
+      }
+      return "mdi-eye-off";
+    },
+
+    getVisibilityText (allowOrganization) {
+      if (allowOrganization) {
+        return this.$t('Organization');
+      } else {
+        return this.$t('The project is private');
+      }
     }
   }
 };

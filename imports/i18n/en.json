@@ -124,6 +124,9 @@
   "Watchers": "Watchers",
   "Users": "Users",
   "Add": "Add",
+  "Access rights": "Access rights",
+  "Grant admin rights": "Grant admin rights",
+  "Remove admin rights": "Remove admin rights",
   "history": {
     "tasks": {
       "create": "Creation",

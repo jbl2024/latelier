@@ -92,7 +92,7 @@ export default {
 
     onConfirmDeleteOrganization() {
       this.showConfirmDialog = false;
-      Meteor.call("organizations.remove", this.organizationId);
+      Meteor.call("organizations.remove", {organizationId: this.organizationId});
     },
 
     onCancelDeleteOrganization() {

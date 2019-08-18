@@ -90,9 +90,10 @@ export default {
     updateDescription() {
       this.editDescription = false;
       Meteor.call(
-        "organizations.updateDescription",
-        this.organization._id,
-        this.organization.description
+        "organizations.updateDescription", {
+          organizationId: this.organization._id,
+          description: this.organization.description
+        }
       );
     },
 
@@ -110,9 +111,10 @@ export default {
     updateName() {
       this.editName = false;
       Meteor.call(
-        "organizations.updateName",
-        this.organization._id,
-        this.organization.name
+        "organizations.updateName", {
+          organizationId: this.organization._id,
+          name: this.organization.name
+        }
       );
     },
 

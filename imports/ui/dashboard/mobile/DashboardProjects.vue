@@ -385,7 +385,7 @@ import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
-import { ProjectStates } from "/imports/api/projects/projects.js";
+import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
@@ -556,14 +556,14 @@ export default {
     },
 
     getVisibilityIcon(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "mdi-eye";
       }
       return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "";
       }
       return "";
