@@ -5,8 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
 ### Added
-- Permissions on organization are automatically set on projects
+
+### Changed
+
+### Removed
+
+## [2.2.0] - 2019-08-18
+### Added
+- Permissions on organization are propagated to projects
 
 ### Changed
 
