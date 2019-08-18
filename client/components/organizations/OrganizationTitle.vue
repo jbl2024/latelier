@@ -92,9 +92,10 @@ export default {
     updateOrganizationName() {
       this.editOrganizationName = false;
       Meteor.call(
-        "organizations.updateName",
-        this.organization._id,
-        this.organization.name
+        "organizations.updateName", {
+          organizationId: this.organization._id,
+          name: this.organization.name
+        }
       );
     },
 

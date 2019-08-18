@@ -63,7 +63,7 @@
         v-model="project.state"
       ></v-select>
     </div>
-    <v-subheader>{{ $t("Visibility") }}</v-subheader>
+    <v-subheader>{{ $t("Access rights") }}</v-subheader>
     <v-list class="elevation-1">
       <v-list-item @click="toggleProjectVisibility(project)">
         <v-list-item-avatar>
@@ -73,7 +73,7 @@
           <v-list-item-title>{{ getVisibilityText(project) }}</v-list-item-title>
         </v-list-item-content>
         <v-list-item-action>
-          <v-switch v-model="project.isPublic" @click="toggleProjectVisibility(project)"></v-switch>
+          <v-switch v-model="allowedOrganization" @click="toggleProjectVisibility(project)"></v-switch>
         </v-list-item-action>
       </v-list-item>
     </v-list>
@@ -206,7 +206,7 @@
 <script>
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Projects } from "/imports/api/projects/projects.js";
-import { ProjectStates } from "/imports/api/projects/projects.js";
+import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
@@ -227,7 +227,19 @@ export default {
     }
   },
   computed: {
-    ...mapState(["projectFeatures"])
+    ...mapState(["projectFeatures"]),
+    allowedOrganization: {
+      get() {
+        return this.project && this.project.accessRights === ProjectAccessRights.ORGANIZATION
+      },
+      set(value) {
+        if (value) { 
+          this.project.accessRights = ProjectAccessRights.ORGANIZATION;
+        } else {
+          this.project.accessRights = ProjectAccessRights.PRIVATE;
+        }
+      }
+    }
   },
   data() {
     return {
@@ -239,7 +251,7 @@ export default {
       showSelectColor: false,
       showSelectFeature: false,
       editDescription: false,
-      editEstimatedSize: false
+      editEstimatedSize: false,
     };
   },
   meteor: {
@@ -323,9 +335,10 @@ export default {
       }
 
       Meteor.call(
-        "organizations.moveProject",
-        organizationId,
-        this.project._id,
+        "organizations.moveProject", {
+          organizationId: organizationId,
+          projectId: this.project._id,
+        },
         (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
@@ -409,24 +422,28 @@ export default {
     },
 
     getVisibilityIcon(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "mdi-eye";
       }
       return "mdi-eye-off";
     },
 
     getVisibilityText(project) {
-      if (project.isPublic) {
-        return "Tout le monde voit ce projet";
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
+        return this.$t("Organization");
       }
-      return "Limitée aux membres du projet";
+      return this.$t("The project is private");
     },
 
     toggleProjectVisibility(project) {
-      project.isPublic = !project.isPublic;
-      Meteor.call("projects.updateIsPublic", {projectId: project._id, isPublic: project.isPublic});
-      if (!project.isPublic) {
-        this.$store.dispatch("notify", this.$t("The project is public"));
+      if (project.accessRights === "private") {
+        project.accessRights = "organization";
+      } else {
+        project.accessRights = "private";
+      }
+      Meteor.call("projects.updateAccessRights", {projectId: project._id, accessRights: project.accessRights});
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
+        this.$store.dispatch("notify", this.$t("Organization"));
       } else {
         this.$store.dispatch("notify", this.$t("The project is private"));
       }

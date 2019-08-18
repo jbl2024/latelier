@@ -414,8 +414,9 @@ export default {
       }).then(res => {
         if (res) {
           Meteor.call(
-            "organizations.remove",
-            organization._id,
+            "organizations.remove", {
+              organizationId: organization._id,
+            },
             (error, result) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);

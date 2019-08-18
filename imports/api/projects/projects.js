@@ -27,6 +27,11 @@ export const ProjectStates = Object.freeze({
   ARCHIVED: "archived"
 });
 
+export const ProjectAccessRights = Object.freeze({
+  ORGANIZATION: "organization",
+  PRIVATE: "private",
+});
+
 Projects.methods = {};
 
 const checkIfAdminOrCreator = (projectId) => {
@@ -39,6 +44,15 @@ const checkIfAdminOrCreator = (projectId) => {
   const project = Projects.findOne(projectId);
   if (project.createdBy != Meteor.userId()) {
     throw new Meteor.Error("not-authorized");
+  }
+}
+
+const checkIfAdmin = (projectId) => {
+  if (Permissions.isAdmin(Meteor.userId())) {
+    return true;
+  }
+  if (Permissions.isAdmin(Meteor.userId(), projectId)) {
+    return true;
   }
 }
 
@@ -70,9 +84,10 @@ Projects.methods.create = new ValidatedMethod({
     name: { type: String },
     projectType: { type: String },
     projectGroupId: { type: String, optional: true },
-    state: { type: String }
+    state: { type: String },
+    accessRights: { type: String, optional: true}
   }).validator(),
-  run({ organizationId, name, projectType, projectGroupId, state }) {
+  run({ organizationId, name, projectType, projectGroupId, state, accessRights }) {
     checkLoggedIn();
     const currentUserId = Meteor.userId();
 
@@ -81,7 +96,8 @@ Projects.methods.create = new ValidatedMethod({
       name,
       state,
       createdAt: new Date(),
-      createdBy: currentUserId
+      createdBy: currentUserId,
+      accessRights: accessRights
     });
     Meteor.call("projects.addMember", {projectId: projectId, userId: currentUserId});
     Meteor.call("permissions.initializeProjectPermissions", {projectId: projectId});
@@ -101,6 +117,12 @@ Projects.methods.create = new ValidatedMethod({
 
     if (projectGroupId) {
       Meteor.call("projectGroups.addProject", projectGroupId, projectId);
+    }
+    if (organizationId && accessRights === ProjectAccessRights.ORGANIZATION) {
+      Meteor.call("organizations.propagateMembership", {
+        organizationId: organizationId,
+        projectId: projectId,
+      }) 
     }
     return projectId;
   }
@@ -256,6 +278,31 @@ Projects.methods.updateIsPublic = new ValidatedMethod({
   }
 });
 
+Projects.methods.updateAccessRights = new ValidatedMethod({
+  name: "projects.updateAccessRights",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    accessRights: { type: String }
+  }).validator(),
+  run({projectId, accessRights}) {
+    checkLoggedIn();
+    checkIfAdmin(projectId);
+
+    const project = Projects.findOne({_id: projectId});
+    if (!project) {
+      throw new Meteor.Error("invalid-project");
+    }
+    Projects.update({ _id: projectId }, { $set: { accessRights: accessRights } });
+
+    if (accessRights === ProjectAccessRights.ORGANIZATION && project.organizationId) {
+      Meteor.call("organizations.propagateMembership", {
+        organizationId: project.organizationId,
+        projectId: project._id
+      });
+    }
+  }
+});
+
 Projects.methods.clone = new ValidatedMethod({
   name: "projects.clone",
   validate: new SimpleSchema({
@@ -362,6 +409,10 @@ Projects.methods.removeMember = new ValidatedMethod({
       { $pull: { watchers: userId} },
       { multi: true }
     );
+
+    if (Permissions.isAdmin(userId, projectId)) {
+      Permissions.removeAdmin(userId, projectId);  
+    }
   }
 });
 

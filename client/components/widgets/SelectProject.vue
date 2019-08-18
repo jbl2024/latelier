@@ -43,6 +43,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 export default {
   mixins: [DatesMixin],
@@ -100,14 +101,14 @@ export default {
     },
 
     getVisibilityIcon(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "mdi-eye";
       }
       return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "";
       }
       return "";

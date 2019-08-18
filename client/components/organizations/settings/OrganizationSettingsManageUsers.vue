@@ -98,14 +98,15 @@ export default {
   },
   methods: {
     onSelectUser(user) {
-      Meteor.call("organizations.addMember", this.organization._id, user._id);
+      Meteor.call("organizations.addMember", {organizationId: this.organization._id, userId: user._id});
     },
 
     removeUser(user) {
       Meteor.call(
-        "organizations.removeMember",
-        this.organization._id,
-        user._id
+        "organizations.removeMember", {
+          organizationId: this.organization._id,
+          userId: user._id
+        }
       );
     },
 
@@ -121,25 +122,27 @@ export default {
     },
 
     setAdmin(user, organization) {
-      if (this.canManageOrganization(organization)) {
-        Permissions.methods.setAdmin.call({userId: user._id, scope: organization._id}, (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-        });
-      }
+      Meteor.call("organizations.setAdmin", {
+        organizationId: organization._id,
+        userId: user._id
+      }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+      });
     },
 
     removeAdmin(user, organization) {
-      if (this.canManageOrganization(organization)) {
-        Permissions.methods.removeAdmin.call({userId: user._id, scope: organization._id}, (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-        });
-      }
+      Meteor.call("organizations.removeAdmin", {
+        organizationId: organization._id,
+        userId: user._id
+      }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+      });
     }
 
   }

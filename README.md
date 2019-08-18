@@ -12,6 +12,7 @@ A project management tool.
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
 - Projects grouped by organization
 - Project weather like status
+- Permissions per organization & per project
 
 ## Installation
 
