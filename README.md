@@ -22,6 +22,10 @@ This application is built with [Meteor](https://www.meteor.com/) framework.
 
 See https://www.meteor.com/install for installation instructions.
 
+### Requirements
+
+GraphicsMagick is required to generate thumbnails
+
 ### Configuration
 
 Copy `settings-development.json.sample.json` to `settings-development.json` and update values matching your configuration
