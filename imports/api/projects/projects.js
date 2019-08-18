@@ -409,6 +409,10 @@ Projects.methods.removeMember = new ValidatedMethod({
       { $pull: { watchers: userId} },
       { multi: true }
     );
+
+    if (Permissions.isAdmin(userId, projectId)) {
+      Permissions.removeAdmin(userId, projectId);  
+    }
   }
 });
 

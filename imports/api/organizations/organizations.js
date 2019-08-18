@@ -216,6 +216,10 @@ Organizations.methods.removeMember = new ValidatedMethod({
       }
     });
 
+    if (Permissions.isAdmin(userId, organizationId)) {
+      Permissions.removeAdmin(userId, organizationId);  
+    }
+
     Organizations.update(
       { _id: organizationId },
       { $pull: { members: userId } }
