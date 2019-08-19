@@ -196,14 +196,29 @@ export default {
 </script>
 
 <style>
+/* override vuetify default theme */
+html {
+  font-size: 14px;
+}
+
+.v-btn--fab.v-size--default {
+  height: 42px;
+  width: 42px;
+}
+
+/* colors for main drawer (left): labels are set to white when activated */
+.list-item--active .list-item__action,
+.list-item--active .list-item__action .icon {
+  color: white;
+}
+
+
+/* app theme */
 #app {
   background-color: #e5e5e5;
 }
 .search {
   width: 100%;
-}
-html {
-  font-size: 14px;
 }
 
 .main-content {
@@ -286,21 +301,4 @@ html {
   }
 }
 
-/* .drawer .drawer-wrapper {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  top: 0;
-  overflow-y: auto;
-} */
-.list-item--active .list-item__action,
-.list-item--active .list-item__action .icon {
-  color: white;
-}
-
-.v-btn--fab.v-size--default {
-  height: 42px;
-  width: 42px;
-}
 </style>
