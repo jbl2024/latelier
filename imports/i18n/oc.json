@@ -124,6 +124,9 @@
   "Watchers": "Observators",
   "Users": "Utilizaires",
   "Add": "Ajustar",
+  "Access rights": "Dreches d’accès",
+  "Grant admin rights": "Donar los dreches d’admin",
+  "Remove admin rights": "Tirar los dreches d’admin",
   "history": {
     "tasks": {
       "create": "Creacion",
