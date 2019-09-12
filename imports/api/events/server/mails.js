@@ -67,7 +67,7 @@ const getUser = function (userId, event, settings) {
   if (!user) return;
   if (user._id === event.userId) return;
   
-  const enabled = get(user, `emailSettings.${settings}`, false);
+  const enabled = get(user, `emailSettings.${settings}`, true);
   if (!enabled) return false;
   
   return user;
