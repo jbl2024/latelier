@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reminder: 1 week before
 
 ### Changed
+- Multiple uploads enabled on single task
 - Email notifications are enabled by default
 - Update occitan translation, by Quenty31
 - Upgrade to vuetify@2.0.9

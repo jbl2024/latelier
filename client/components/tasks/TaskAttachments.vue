@@ -1,7 +1,7 @@
 <template>
 
 <div class="task-attachments">
-  <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
+  <input type="file" multiple v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
   <v-progress-linear indeterminate v-show="isUploading"></v-progress-linear>
   <v-list>
     <v-list-item v-for="attachment in attachments" :key="attachment._id">
@@ -50,8 +50,14 @@ export default {
   },
   methods: {
     onUpload(e) {
-      var file = e.target.files[0];
-      var that = this;
+      const files = e.target.files || [];
+      for (var i = 0; i < files.length; i++) {
+        this.uploadFile(files[i]);
+      }      
+    },
+
+    uploadFile(file) {
+      const that = this;
       const transport = Meteor.settings.public.uploadTransport || "ddp";
       const upload = Attachments.insert(
         {
