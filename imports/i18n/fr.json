@@ -90,7 +90,7 @@
   "Invalid email": "Email invalide",
   "Password is mandatory": "Le mot de passe est obligatoire",
   "Password is too short": "Le mot de passe est trop court",
-  "Welcome back!": "Ravi de voir revoir!",
+  "Welcome back!": "Ravi de vous revoir!",
   "Empty": "Vide",
   "Select background": "Sélectionner un fond d'écran",
   "Background updated": "Fond d'écran mis à jour",
@@ -116,10 +116,17 @@
   "Notifications": "Notifications",
   "Notification deleted": "Notification supprimée",
   "No notification": "Aucune notification",
+  "Clear notifications": "Effacer les notifications",
+  "Clear notifications?": "Effacer les notifications ?",
+  "All notifications will be deleted": "Toutes les notifications seront supprimées",
+  "Mark all as read": "Tout marquer comme lu",
   "Reminder": "Rappel",
   "Watchers": "Observateurs",
   "Users": "Utilisateurs",
   "Add": "Ajouter",
+  "Access rights": "Droits d'accès",
+  "Grant admin rights": "Donner les droits d'administration",
+  "Remove admin rights": "Enlever les droits d'administration",
   "history": {
     "tasks": {
       "create": "Création",
@@ -180,6 +187,7 @@
     "1hour": "1 heure avant",
     "2hours": "2 heures avant",
     "1day": "1 jour avant",
-    "2days": "2 jours avant"
+    "2days": "2 jours avant",
+    "1week": "1 semaine avant"
   }
 }

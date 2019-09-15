@@ -5,11 +5,90 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Removed
+
+## [2.2.1] - 2019-09-15
+
+### Added
+- Reminder: 1 week before
+
+### Changed
+- Multiple uploads enabled on single task
+- Email notifications are enabled by default
+- Update occitan translation, by Quenty31
+- Upgrade to vuetify@2.0.9
+
+### Removed
+
+## [2.2.0] - 2019-08-18
+### Added
+- Permissions on organization are propagated to projects
+
+### Changed
+
+### Removed
+
+## [2.1.2] - 2019-08-17
+### Added
+
+### Changed
+- Improve dialog display when height is small
+
+### Removed
+
+## [2.1.1] - 2019-08-17
+### Added
+
+### Changed
+- Synchronization between watchers & assignee
+- Fix list name size
+
+### Removed
+
+## [2.1.0] - 2019-08-16
+### Added
+- Background thumbnails
+- NASA background
+- Notes on task: always display note editor
+- When creating task, user is added as watcher
+- Migrate to Material Design Icons (https://materialdesignicons.com/)
+- Notifications can be mark as read & deleted in bulk
+- Update occitan translation, by Quenty31
+
+### Changed
+- Improve edit task name (textarea in task detail, cancel restore previous name in list view)
+- Improve health cards display when task is selected
+- Send notification only to assigned to & watchers
+- Upgraded vue2-editor to latest version (2.10.0)
+- Upgrade to vuetify@2.0.7
+
+### Removed
+- Google Material Icons
+
+## [2.0.0] - 2019-08-11
+### Added
+
+### Changed
+- Upgrade to vuetify 2.0
+
+### Removed
+
+## [1.8.1] - 2019-08-10
 ### Added
 - Completed tasks are displayed in weather report
+- Settings to restrict user search & invitation to admin only 
 
 ### Changed
 - Fix i18n string with dot 
+- When creating task in completed list, completedAt field is correctly set
+- Fixtures emails are generated using @latelierdesprojets.fr
+- Update README.md
+- Health reports are loaded with meteor method instead of publication
 
 ### Removed
 

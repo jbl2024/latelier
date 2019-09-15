@@ -9,7 +9,7 @@
         
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="cancelDialog">{{ $t('Close')}}</v-btn>
+          <v-btn text @click="cancelDialog">{{ $t('Close')}}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

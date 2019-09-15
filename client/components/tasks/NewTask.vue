@@ -17,7 +17,7 @@
                     class="edit-name"
                     @focus.native="$event.target.select()"
                     :label="$t('Title')"
-                    outline
+                    outlined
                     required
                     :rules="nameRules"
                     v-model="name"
@@ -42,7 +42,7 @@
 
         <v-card-actions class="show-desktop">
           <v-spacer></v-spacer>
-          <v-btn flat @click="close">{{ $t('Cancel')}}</v-btn>
+          <v-btn text @click="close">{{ $t('Cancel')}}</v-btn>
           <v-btn color="primary" @click="newTask(false)" :disabled="!valid || loading">{{ $t('Create') }}</v-btn>
           <v-btn color="primary" @click="newTask(true)" :disabled="!valid || loading">{{ $t('Create and add') }}</v-btn>
         </v-card-actions>
@@ -57,7 +57,7 @@
 
         <v-card-actions class="show-mobile">
           <v-spacer></v-spacer>
-          <v-btn flat @click="close">{{ $t('Cancel')}}</v-btn>
+          <v-btn text @click="close">{{ $t('Cancel')}}</v-btn>
         </v-card-actions>
 
       </v-card>

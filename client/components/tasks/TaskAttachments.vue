@@ -1,26 +1,26 @@
 <template>
 
 <div class="task-attachments">
-  <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
+  <input type="file" multiple v-if="!isUploading" @change="onUpload" :disabled="isUploading"/>
   <v-progress-linear indeterminate v-show="isUploading"></v-progress-linear>
   <v-list>
-    <v-list-tile v-for="attachment in attachments" :key="attachment._id">
-      <v-list-tile-avatar>
-        <v-icon>description</v-icon>
-      </v-list-tile-avatar>            
+    <v-list-item v-for="attachment in attachments" :key="attachment._id">
+      <v-list-item-avatar>
+        <v-icon>mdi-file-document</v-icon>
+      </v-list-item-avatar>            
 
-      <v-list-tile-content class="pointer">
-        <v-list-tile-title>
+      <v-list-item-content class="pointer">
+        <v-list-item-title>
           <a :href="link(attachment)"  target="_blank">{{ attachment.name }}</a>          
-        </v-list-tile-title>
-      </v-list-tile-content>
+        </v-list-item-title>
+      </v-list-item-content>
 
-      <v-list-tile-action>
+      <v-list-item-action>
         <v-btn icon ripple @click.stop="deleteAttachment(attachment)">
-          <v-icon>delete</v-icon>
+          <v-icon>mdi-delete</v-icon>
         </v-btn>
-      </v-list-tile-action>
-    </v-list-tile>
+      </v-list-item-action>
+    </v-list-item>
   </v-list> 
 </div>
 
@@ -50,8 +50,14 @@ export default {
   },
   methods: {
     onUpload(e) {
-      var file = e.target.files[0];
-      var that = this;
+      const files = e.target.files || [];
+      for (var i = 0; i < files.length; i++) {
+        this.uploadFile(files[i]);
+      }      
+    },
+
+    uploadFile(file) {
+      const that = this;
       const transport = Meteor.settings.public.uploadTransport || "ddp";
       const upload = Attachments.insert(
         {

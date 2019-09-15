@@ -116,10 +116,17 @@
   "Notifications": "Notifications",
   "Notification deleted": "Notification deleted",
   "No notification": "No notification",
+  "Clear notifications": "Clear notifications",
+  "Clear notifications?": "Clear notifications?",
+  "All notifications will be deleted": "All notifications will be deleted",
+  "Mark all as read": "Mark all as read",
   "Reminder": "Reminder",
   "Watchers": "Watchers",
   "Users": "Users",
   "Add": "Add",
+  "Access rights": "Access rights",
+  "Grant admin rights": "Grant admin rights",
+  "Remove admin rights": "Remove admin rights",
   "history": {
     "tasks": {
       "create": "Creation",
@@ -181,6 +188,7 @@
     "1hour": "1 hour before",
     "2hours": "2 hours before",
     "1day": "1 day before",
-    "2days": "2 days before"
+    "2days": "2 days before",
+    "1week": "1 week before"
   }
 }

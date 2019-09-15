@@ -3,8 +3,8 @@
     <v-toolbar-title class="align-left" v-show="!editOrganizationName">
       <div>
         <slot></slot>
-        <v-btn icon flat @click="goTo('dashboard-page')">
-          <v-icon>home</v-icon>
+        <v-btn icon text @click="goTo('dashboard-page')">
+          <v-icon>mdi-home</v-icon>
         </v-btn>
         <span
           class="title hidden-xs-only"
@@ -14,10 +14,10 @@
     </v-toolbar-title>
     <v-text-field
       v-show="!editOrganizationName"
-      flat
+      text
       solo-inverted
       hide-details
-      prepend-inner-icon="search"
+      prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
       v-on:input="debouncedFilter"
@@ -27,20 +27,20 @@
       <v-text-field
         @focus="$event.target.select()"
         style="width: 500px"
-        flat
+        text
         solo-inverted
         hide-details
-        prepend-inner-icon="edit"
+        prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
         ref="name"
         v-model="organization.name"
         v-on:keyup.enter="updateOrganizationName"
       ></v-text-field>
       <v-btn icon @click="updateOrganizationName">
-        <v-icon>check_circle</v-icon>
+        <v-icon>mdi-check-circle</v-icon>
       </v-btn>
       <v-btn icon @click="cancelUpdateOrganizationName">
-        <v-icon>cancel</v-icon>
+        <v-icon>mdi-close-circle</v-icon>
       </v-btn>
     </div>
   </div>
@@ -92,9 +92,10 @@ export default {
     updateOrganizationName() {
       this.editOrganizationName = false;
       Meteor.call(
-        "organizations.updateName",
-        this.organization._id,
-        this.organization.name
+        "organizations.updateName", {
+          organizationId: this.organization._id,
+          name: this.organization.name
+        }
       );
     },
 

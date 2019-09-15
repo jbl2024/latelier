@@ -10,7 +10,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
           <v-btn color="info" @click="create" :disabled="!valid">{{ this.$t('Create') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -41,7 +41,7 @@ export default {
       this.$nextTick(() => this.$refs.name.focus());
     },
     create () {
-      Meteor.call('organizations.create', this.name, (error, result) => { 
+      Meteor.call('organizations.create', { name: this.name }, (error, result) => { 
         if (error) {
           console.log(error)
           return;

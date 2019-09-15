@@ -2,11 +2,11 @@
   <div class="dashboard-title">
     <v-text-field
       v-model="savedValue"
-      flat
+      text
       solo-inverted
       hide-details
       clearable
-      prepend-inner-icon="search"
+      prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
       v-on:input="debouncedFilter"

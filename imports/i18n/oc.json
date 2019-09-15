@@ -116,10 +116,17 @@
   "Notifications": "Notificacions",
   "Notification deleted": "Notificacion suprimida",
   "No notification": "Cap de notificacion",
+  "Clear notifications": "Escafar las notificacions",
+  "Clear notifications?": "Escafar las notificacions ?",
+  "All notifications will be deleted": "Totas las notificacions son estadas escafadas",
+  "Mark all as read": "Marcar coma legida",
   "Reminder": "Recòrd",
   "Watchers": "Observators",
   "Users": "Utilizaires",
   "Add": "Ajustar",
+  "Access rights": "Dreches d’accès",
+  "Grant admin rights": "Donar los dreches d’admin",
+  "Remove admin rights": "Tirar los dreches d’admin",
   "history": {
     "tasks": {
       "create": "Creacion",

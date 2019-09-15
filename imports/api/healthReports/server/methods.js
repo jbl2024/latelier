@@ -119,3 +119,44 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     };
   }
 });
+
+
+HealthReports.methods.findHealthReports = new ValidatedMethod({
+  name: "healthReports.findHealthReports",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    page: { type: Number },
+  }).validator(),
+  run({ projectId, page }) {
+    checkLoggedIn();
+    checkCanReadProject(projectId);
+
+    const perPage = 25;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+    let query = {
+      projectId: projectId,
+    };
+
+    const count = HealthReports.find(query).count();
+    const data = HealthReports.find(query, {
+      skip: skip,
+      limit: perPage,
+      sort: {
+        date: -1
+      }
+    }).fetch();
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      data: data
+    };
+  }
+});

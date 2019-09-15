@@ -13,25 +13,25 @@
       :class="{ selected, completed }"
     >
       <task-labels-in-card class="labels" :task="task"></task-labels-in-card>
-      <div class="title">
+      <div class="task-title">
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="edit-button"
           small
           color="grey darken-1"
           @click.stop="startUpdateName"
-        >edit</v-icon>
+        >mdi-pencil</v-icon>
         <v-icon
           icon
-          flat
+          text
           v-show="showEditButton && !editName"
           class="delete-button"
           small
           color="grey darken-1"
           @click.stop="deleteTask"
-        >delete</v-icon>
+        >mdi-delete</v-icon>
 
         <div class="title-wrapper">
           <div class="checkbox" v-if="!editName">
@@ -59,30 +59,32 @@
             small
             color="blue darken-1"
             v-show="hasAttachments(task) && !editName"
-          >attach_file</v-icon>
+          >mdi-paperclip</v-icon>
           <v-icon
             class="has-notes"
             small
             color="blue darken-1"
             v-show="hasNotes(task) && !editName"
-          >chat</v-icon>
+          >mdi-message-text</v-icon>
 
           <span v-show="editName" class="edit">
             <v-textarea
               ref="name"
               class="edit-name"
-              @focus.native="$event.target.select()"
-              label="Titre de la tâche"
-              outline
+              background-color="white"
+              autofocus
+              outlined
+              auto-grow
+              solo
               v-model="task.name"
               @keydown.shift.enter="updateName"
             ></v-textarea>
-            <v-btn icon flat @click.native="updateName">
-              <v-icon>check_circle</v-icon>
+            <v-btn icon text @click.native="updateName">
+              <v-icon>mdi-check-circle</v-icon>
             </v-btn>
 
-            <v-btn icon flat @click.native="cancelUpdateName">
-              <v-icon>cancel</v-icon>
+            <v-btn icon text @click.native="cancelUpdateName">
+              <v-icon>mdi-close-circle</v-icon>
             </v-btn>
           </span>
         </div>
@@ -99,16 +101,16 @@
       <div class="footer" v-if="hasFooterData(task)">
         <div class="footer-left">
           <template v-if="task.dueDate">
-            <v-icon small>alarm_on</v-icon>
+            <v-icon small>mdi-alarm-check</v-icon>
             {{ formatDateTime(task.dueDate) }}
           </template>
           <template v-if="this.isProjectEstimationFeatureEnabled()">
             <template v-if="task.estimation && task.estimation.size">
-              <v-icon small>timer</v-icon>
+              <v-icon small>mdi-timer</v-icon>
               {{ task.estimation.size }}
             </template>
             <template v-if="task.estimation && task.estimation.spent">
-              <v-icon small>timelapse</v-icon>
+              <v-icon small>mdi-timelapse</v-icon>
               {{ task.estimation.spent }}
             </template>
           </template>
@@ -146,7 +148,7 @@ export default {
     });
     this.$events.listen("task-cancel-edit-name", task => {
       if (task._id !== this.task._id) {
-        this.cancelUpdateName();
+        this.editName = false;
       }
     });
   },
@@ -218,6 +220,7 @@ export default {
         (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
+            this.task.name = this.savedName;
             return;
           }
         }
@@ -229,6 +232,7 @@ export default {
         e.stopPropagation();
       }
       this.editName = false;
+      this.task.name = this.savedName;
     },
 
     selectTask(e) {
@@ -420,8 +424,13 @@ export default {
   background-color: white;
 }
 
-.title {
+.task-title {
   position: relative;
+  font-size: 20px !important;
+  font-weight: 500;
+  line-height: 1 !important;
+  letter-spacing: .02em !important;
+  font-family: Roboto,sans-serif !important;
 }
 
 .title-wrapper {
@@ -467,8 +476,7 @@ export default {
 }
 
 .edit-name {
-  /* font-size: 12px;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif; */
+  font-weight: normal;
 }
 
 .checklist {

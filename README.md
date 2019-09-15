@@ -12,6 +12,7 @@ A project management tool.
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
 - Projects grouped by organization
 - Project weather like status
+- Permissions per organization & per project
 
 ## Installation
 
@@ -20,6 +21,10 @@ A project management tool.
 This application is built with [Meteor](https://www.meteor.com/) framework.
 
 See https://www.meteor.com/install for installation instructions.
+
+### Requirements
+
+GraphicsMagick is required to generate thumbnails
 
 ### Configuration
 
@@ -38,6 +43,15 @@ Settings:
 |sso                    | object        | {}                       | See below |
 |uploadTransport        | string        | ddp                      | http or ddp |
 |notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
+|users                  | object        | {}                       | See below |
+
+users:
+
+| Key                   | Type                    | Default value            | Description                    |
+|-----------------------|-------------------------|--------------------------|--------------------------------|
+| search                | string ("admin", "all") | all                      | Who can search existing users  |
+| invite                | string ("admin", "all") | all                      | Who can invite people          |
+
 
 sso:
 
@@ -50,9 +64,14 @@ sso:
 Example:
 ```
 {
-  "generateFixtures": true,
+  "generateFixtures": false,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
+  "notificationsPerUser": 50,
+  "users": {
+    "search": "admin",
+    "invite": "admin"
+  },
   "email": {
     "from": "noreply@localhost"
   },
@@ -71,6 +90,12 @@ Example:
   }
 }
 ```
+
+### Fixtures (dev only feature)
+ 
+If ```generateFixtures``` parameter is set to true, 50 users are created at startup (if user count is <= 2).
+Default password for generated users is ```password```.
+
 
 ### Install dependencies
 

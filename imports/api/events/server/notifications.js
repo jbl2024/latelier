@@ -35,16 +35,6 @@ export const callbacks = {
 
   "*"(event) {
     if (event.type === "tasks.assignTo") return;
-
-    const task = event.properties.task;
-    const user = getUser(task.assignedTo, event);
-    if (!user) return;
-
-    addNotification(user, task, event.type, event.userId);
-  },
-
-  "*"(event) {
-    if (event.type === "tasks.assignTo") return;
     const task = event.properties.task;
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 

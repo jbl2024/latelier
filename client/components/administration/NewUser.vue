@@ -7,8 +7,8 @@
   >
     <v-card class="new-user">
       <v-toolbar dark color="primary">
-        <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
-          <v-icon>close</v-icon>
+        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>
           <span>{{ $t('New user') }}</span>
@@ -50,7 +50,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn flat @click.native="close()">{{ this.$t('Close') }}</v-btn>
+        <v-btn text @click.native="close()">{{ this.$t('Close') }}</v-btn>
         <v-btn color="primary" @click.native="create()" :disabled="!valid">{{ $t('Create') }}</v-btn>
       </v-card-actions>
     </v-card>

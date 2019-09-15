@@ -1,18 +1,11 @@
 <template>
   <div class="task-notes">
-    <empty-state
-      v-show="!hasNotes(task.notes) && !editNewNote"
-      icon="note"
-      :label="$t('No notes')"
-    >
-      <v-btn class="primary" @click="startNewNote">{{ $t('Add note')}}</v-btn>
-    </empty-state>
 
       <template v-for="note in task.notes">
         <div class="note" :key="note._id">
         
           <div class="note-avatar">
-            <author-avatar :user-id="note.createdBy"></author-avatar> 
+            <author-avatar small :user-id="note.createdBy"></author-avatar> 
           </div>
 
           <div class="note-content">
@@ -24,40 +17,40 @@
               <div class="ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
-                <v-btn flat icon @click="updateNote">
-                  <v-icon>check_circle</v-icon>
+                <v-btn text icon @click="updateNote">
+                  <v-icon>mdi-check-circle</v-icon>
                 </v-btn>
-                <v-btn flat icon @click="cancelUpdateNote">
-                  <v-icon>cancel</v-icon>
+                <v-btn text icon @click="cancelUpdateNote">
+                  <v-icon>mdi-close-circle</v-icon>
                 </v-btn>
               </template>
           </div>
 
           <div class="note-actions" v-if="!isNoteEdited(note._id)">
             <v-btn small icon ripple @click="startEditNote(note)">
-              <v-icon small color="grey lighten-1">edit</v-icon>
+              <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
             </v-btn>
             <v-btn small icon ripple @click="deleteNote(note)">
-              <v-icon small color="grey lighten-1">delete</v-icon>
+              <v-icon small color="grey lighten-1">mdi-delete</v-icon>
             </v-btn>
           </div>
         </div>
-        <v-divider inset></v-divider>
+        <v-divider inset :key="`divider-${note._id}`"></v-divider>
       </template>
 
-    <div v-if="editNewNote">
-      <rich-editor v-model="note" ref="newNote" @submit="addNote" autofocus></rich-editor>
-      <v-btn flat icon @click="addNote">
-        <v-icon>check_circle</v-icon>
-      </v-btn>
-      <v-btn flat icon @click="cancelAddNote">
-        <v-icon>cancel</v-icon>
-      </v-btn>
-    </div>
 
-    <div class="center" v-if="!editNewNote">
-      <v-btn v-show="hasNotes(task.notes)" class="primary" @click="startNewNote">{{ $t('Add note') }}</v-btn>
-    </div>
+      <div class="note">
+        <div class="note-avatar">
+          <author-avatar small :user-id="currentUserId"></author-avatar> 
+        </div>
+        <div class="note-content">
+          <author-line class="note-author" :user-id="currentUserId"></author-line>
+          <rich-editor v-model="note" @submit="addNote"></rich-editor>
+          <v-btn color="primary" class="add-note" @click="addNote">
+            {{ $t('Add note') }}
+          </v-btn>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -81,9 +74,13 @@ export default {
       type: Object
     }
   },
+  computed: {
+    currentUserId() {
+      if (Meteor && Meteor.userId) return Meteor.userId();
+    }
+  },
   data() {
     return {
-      editNewNote: false,
       note: "",
       selectedNote: null
     };
@@ -93,23 +90,13 @@ export default {
       return notes && notes.length > 0;
     },
 
-    startNewNote() {
-      this.editNewNote = true;
-      this.note = "";
-      this.$nextTick(() => this.$refs.newNote.focus());
-    },
-
     addNote() {
-      this.editNewNote = false;
       Meteor.call("tasks.addNote", this.task._id, this.note);
+      this.note = "";
     },
 
     deleteNote(note) {
       Meteor.call("tasks.removeNote", this.task._id, note._id);
-    },
-
-    cancelAddNote() {
-      this.editNewNote = false;
     },
 
     formatUser(userId) {
@@ -148,7 +135,9 @@ pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
-
+.task-notes {
+  padding-bottom: 12px;
+}
 .empty-state {
   transition: none;
 }
@@ -171,6 +160,7 @@ pre {
 }
 
 .center {
+  margin-top: 24px;
   text-align: center;
 }
 
@@ -198,5 +188,13 @@ pre {
 
 .note-actions {
   flex: 0;
+}
+
+.empty-state {
+  margin-top: 24px;
+}
+
+.add-note {
+  margin-top: 8px;
 }
 </style>

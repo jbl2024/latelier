@@ -4,44 +4,48 @@
     <div class="elevation-1 users">
       <v-list v-if="$subReady.user && $subReady.usersInOrganization">
         <v-subheader>{{ $t('Members') }}
-          <v-btn flat icon @click="showSelectUserDialog = true">
-            <v-icon>add</v-icon>
+          <v-btn text icon @click="showSelectUserDialog = true">
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
         <template v-for="user in organizationUsers">
-          <v-list-tile :key="user._id" avatar>
-            <v-list-tile-avatar :color="isOnline(user)">
+          <v-list-item :key="user._id">
+            <v-list-item-avatar :color="isOnline(user)">
               <span class="">{{ formatUserLetters(user) }}</span>
-            </v-list-tile-avatar>
+            </v-list-item-avatar>
 
-            <v-list-tile-content>
-              <v-list-tile-title>{{ formatUser(user) }}</v-list-tile-title>
-            </v-list-tile-content>
+            <v-list-item-content>
+              <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+            </v-list-item-content>
 
-            <v-list-tile-action v-if="canManageOrganization(organization) && !isAdmin(user, organization) && userId != user._id">
-              <v-tooltip top slot="activator">
-                <v-btn icon ripple @click.stop="setAdmin(user, organization)" slot="activator">
-                  <v-icon color="grey">security</v-icon>
-                </v-btn>
+            <v-list-item-action v-if="canManageOrganization(organization) && !isAdmin(user, organization) && userId != user._id">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon ripple @click.stop="setAdmin(user, organization)" v-on="on">
+                    <v-icon color="grey">mdi-security</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Grant admin rights') }}</span>
               </v-tooltip>
-            </v-list-tile-action>
+            </v-list-item-action>
 
-            <v-list-tile-action v-if="canManageOrganization(organization) && isAdmin(user, organization) && userId != user._id">
-              <v-tooltip top slot="activator">
-                <v-btn icon ripple @click.stop="removeAdmin(user, organization)" slot="activator">
-                  <v-icon color="red">security</v-icon>
-                </v-btn>
+            <v-list-item-action v-if="canManageOrganization(organization) && isAdmin(user, organization) && userId != user._id">
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn icon ripple @click.stop="removeAdmin(user, organization)" v-on="on">
+                    <v-icon color="red">mdi-security</v-icon>
+                  </v-btn>
+                </template>
                 <span>{{ $t('Remove admin rights') }}</span>
               </v-tooltip>
-            </v-list-tile-action>
+            </v-list-item-action>
 
-            <v-list-tile-action>
+            <v-list-item-action>
               <v-btn icon ripple @click.stop="removeUser(user)">
-                <v-icon>delete</v-icon>
+                <v-icon>mdi-delete</v-icon>
               </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
         </template>
       </v-list>
     </div>
@@ -94,14 +98,15 @@ export default {
   },
   methods: {
     onSelectUser(user) {
-      Meteor.call("organizations.addMember", this.organization._id, user._id);
+      Meteor.call("organizations.addMember", {organizationId: this.organization._id, userId: user._id});
     },
 
     removeUser(user) {
       Meteor.call(
-        "organizations.removeMember",
-        this.organization._id,
-        user._id
+        "organizations.removeMember", {
+          organizationId: this.organization._id,
+          userId: user._id
+        }
       );
     },
 
@@ -117,25 +122,27 @@ export default {
     },
 
     setAdmin(user, organization) {
-      if (this.canManageOrganization(organization)) {
-        Permissions.methods.setAdmin.call({userId: user._id, scope: organization._id}, (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-        });
-      }
+      Meteor.call("organizations.setAdmin", {
+        organizationId: organization._id,
+        userId: user._id
+      }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+      });
     },
 
     removeAdmin(user, organization) {
-      if (this.canManageOrganization(organization)) {
-        Permissions.methods.removeAdmin.call({userId: user._id, scope: organization._id}, (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-        });
-      }
+      Meteor.call("organizations.removeAdmin", {
+        organizationId: organization._id,
+        userId: user._id
+      }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+      });
     }
 
   }

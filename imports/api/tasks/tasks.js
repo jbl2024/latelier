@@ -80,13 +80,15 @@ Meteor.methods({
       }
       return 0;
     };
+    const now = new Date();
 
-    var completed = false;
+    let completed = false;
+    let completedAt;
     var list = Lists.findOne({ _id: listId });
     if (list && list.autoComplete) {
       completed = true;
+      completedAt = now;
     }
-    const now = new Date();
     let number;
     if (Meteor.isServer) {
       number = incNumber();
@@ -97,10 +99,12 @@ Meteor.methods({
       projectId: projectId,
       listId: listId,
       completed: completed,
+      completedAt: completedAt,
       createdAt: now,
       updatedAt: now,
       createdBy: userId,
       updatedBy: userId,
+      watchers: [userId],
       number: number,
       labels: labelIds || []
     });
@@ -591,14 +595,21 @@ Meteor.methods({
     check(taskId, String);
     check(userId, String);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkLoggedIn();
+    checkCanWriteTask(taskId)
+
     const task = Tasks.findOne({ _id: taskId });
-    if (!task) {
-      throw new Meteor.Error("task-not-found");
+    if (!task) throw new Meteor.Error("task-not-found");
+    if (task.assignedTo === userId) return; 
+
+    const previousAssignee = task.assignedTo;
+    if (previousAssignee) {
+      Meteor.call("tasks.addWatcher", taskId, previousAssignee);
     }
+
     Tasks.update({ _id: taskId }, { $set: { assignedTo: userId } });
+
+    Meteor.call("tasks.removeWatcher", taskId, userId);
 
     Meteor.call("tasks.track", {
       type: "tasks.assignTo",
@@ -618,10 +629,15 @@ Meteor.methods({
 
   "tasks.removeAssignedTo"(taskId) {
     check(taskId, String);
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) throw new Meteor.Error("task-not-found");
+    const assignee = task.assignedTo;
+    if (!assignee) return;
+    Meteor.call("tasks.addWatcher", taskId, assignee);
+
     Tasks.update({ _id: taskId }, { $set: { assignedTo: null } });
 
     Meteor.call("tasks.track", {
@@ -636,13 +652,15 @@ Meteor.methods({
     checkLoggedIn();
     checkCanWriteTask(taskId);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("task-not-found");
     }
+
+    const watchers = task.watchers || [];
+    const alreadyWatching = watchers.find(w => { return w === userId});
+    if (alreadyWatching) return;
+
     Tasks.update({ _id: taskId }, { $push: { watchers: userId } });
 
     Meteor.call("tasks.track", {
@@ -879,14 +897,6 @@ Tasks.methods.getHistory = new ValidatedMethod({
 Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
   let userIds = [];
   if (task.assignedTo) userIds.push(task.assignedTo);
-  if (task.createdBy) userIds.push(task.createdBy);
-  if (task.updatedBy) userIds.push(task.updatedBy);
-  if (task.notes && task.notes.length > 0) {
-    task.notes.map(note => {
-      if (note.createdBy) userIds.push(note.createdBy);
-      if (note.editedBy) userIds.push(note.editedBy);
-    });
-  }
   if (task.watchers && task.watchers.length > 0) {
     task.watchers.map(watcher => {
       userIds.push(watcher);

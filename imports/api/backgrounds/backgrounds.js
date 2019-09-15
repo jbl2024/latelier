@@ -3,6 +3,9 @@ import { FilesCollection } from "meteor/ostrio:files";
 import { check } from "meteor/check";
 import { checkLoggedIn } from "/imports/api/permissions/permissions"
 
+if (Meteor.isServer) {
+  import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";  
+}
 
 export const Backgrounds = new FilesCollection({
   collectionName: "backgrounds",
@@ -15,6 +18,14 @@ export const Backgrounds = new FilesCollection({
     if (Meteor.isServer) {
       this.update({ _id: file._id }, { $set: {'meta.createdAt': new Date()}});
     }
+    if (/png|jpe?g/i.test(fileRef.extension || "")) {
+      createThumbnails(this, file, (error, file) => {
+        if (error) {
+          console.error(error);
+        }
+      });
+    }
+  
   } 
 });
 

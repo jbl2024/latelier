@@ -1,5 +1,5 @@
 <template>
-  <v-avatar size="40" :class="isOnline(userId)">
+  <v-avatar :size="size" :class="isOnline(userId)">
     <span>{{ formatUserLetters(userId) }}</span>
   </v-avatar>
 </template>
@@ -15,9 +15,20 @@ export default {
   props: {
     userId: {
       type: String
+    },
+    small: {
+      type: Boolean,
+      default: false
     }
   },
-  methods: {
+  computed: {
+    size () {
+      if (this.small) {
+        return 30;
+      }
+      return 40;
+    }
   }
+
 };
 </script>

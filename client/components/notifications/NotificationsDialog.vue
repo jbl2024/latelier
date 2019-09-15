@@ -2,15 +2,37 @@
   <div class="notifications-dialog">
     <v-dialog :value="active" @input="$emit('update:active')" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="60%">
       <v-toolbar dark color="primary">
-        <v-btn icon flat @click="close()" v-shortkey="['esc']" @shortkey="close()">
-          <v-icon>close</v-icon>
+        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+          <v-icon>mdi-close</v-icon>
         </v-btn>
         <v-toolbar-title>
           {{ $t('Notifications') }}
         </v-toolbar-title>
+        <v-spacer></v-spacer>
+        <v-menu bottom left class="menu">
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
+          </template>
+          <v-list>
+            <v-list-item @click="markAllAsRead()">
+              <v-list-item-action>
+                <v-icon>mdi-check</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('Mark all as read') }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="removeAll()">
+              <v-list-item-action>
+                <v-icon>mdi-delete</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t('Clear notifications') }}</v-list-item-title>
+            </v-list-item>
+          </v-list>
+        </v-menu>
       </v-toolbar>       
-    <v-card>
-      <v-card-text class="content">
+    <v-card class="flex-container">
+      <v-card-text class="flex1">
         <empty-state
           class="empty-state"
           small
@@ -21,13 +43,15 @@
 
         <notification-list :notifications="notifications" @refresh="refresh" @click="close"></notification-list>
       </v-card-text>
-      <div class="text-xs-center">
-        <v-pagination v-if="pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
+      <div class="flex0">
+        <div class="text-xs-center">
+          <v-pagination v-if="active && pagination.totalPages > 1" v-model="page" :length="pagination.totalPages"></v-pagination>
+        </div>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
+        </v-card-actions>
       </div>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn flat @click="close()">{{ this.$t('Close') }}</v-btn>
-      </v-card-actions>
     </v-card>
     </v-dialog>
   </div>
@@ -120,18 +144,59 @@ export default {
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
       );
+    },
+
+    markAllAsRead() {
+      Meteor.call("notifications.markAllAsRead", (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.refresh();
+      });
+    },
+
+    removeAll() {
+      this.$confirm(this.$t("All notifications will be deleted"), {
+        title:  this.$t('Clear notifications?'),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+          Meteor.call("notifications.clear", (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.refresh();
+          });
+        }
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-.content {
-  overflow-y: auto;
-  max-height: 450px;
-  min-height: 450px;
-}
 
+@media (min-width: 601px) {
+  .flex-container {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 200px);
+    min-height: 360px;
+    max-height: 530px;
+  }
+
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1;
+    overflow-y: scroll;
+  }
+}
 
 .empty-state {
   padding-top: 64px;

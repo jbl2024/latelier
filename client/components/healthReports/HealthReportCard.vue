@@ -1,6 +1,6 @@
 <template>
   <v-card @click="show = !show" class="card">
-    <edit-health-report ref="editHealthReport" :report="selectedReport"></edit-health-report>
+    <edit-health-report ref="editHealthReport" :report="selectedReport" @updated="$emit('updated')"></edit-health-report>
     <v-card-title primary-title>
       <div>
         <div class="headline">{{ report.name }}</div>
@@ -13,16 +13,16 @@
     </v-card-text>
     <v-divider light></v-divider>
 
-    <v-card-actions class="pa-3" color="white">
+    <v-card-actions color="white">
       <v-btn icon @click.stop="editReport(report)">
-        <v-icon>edit</v-icon>
+        <v-icon>mdi-pencil</v-icon>
       </v-btn>
       <v-btn icon @click.stop="deleteReport(report)">
-        <v-icon>delete</v-icon>
+        <v-icon>mdi-delete</v-icon>
       </v-btn>
       <v-spacer></v-spacer>
       <v-btn icon @click.stop="show = !show">
-        <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
       </v-btn>
     </v-card-actions>
     <v-slide-y-transition>
@@ -79,6 +79,7 @@ export default {
             "healthReports.remove",
             report._id,
             (error, result) => {
+              this.$emit("updated");
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;

@@ -285,6 +285,17 @@ Meteor.methods({
   "users.findUsers"(page, filter) {
     checkLoggedIn();    
 
+    let restriction = "all";
+    if (Meteor.settings && Meteor.settings.users && Meteor.settings.users.search) {
+      restriction = Meteor.settings.users.search;
+    }
+
+    if (restriction === "admin") {
+      if (!Permissions.isAdmin(Meteor.userId())) {
+        throw new Meteor.Error(401, "not-authorized");
+      }
+    }
+
     const perPage = 5;
     let skip = 0;
     if (page) {
@@ -338,7 +349,18 @@ Meteor.methods({
   }, 
   
   "users.invite"(email) {
-    checkLoggedIn(); 
+    checkLoggedIn();
+
+    let restriction = "all";
+    if (Meteor.settings && Meteor.settings.users && Meteor.settings.users.invite) {
+      restriction = Meteor.settings.users.invite;
+    }
+
+    if (restriction === "admin") {
+      if (!Permissions.isAdmin(Meteor.userId())) {
+        throw new Meteor.Error(401, "not-authorized");
+      }
+    }
 
     const userData = {
       profile: {

@@ -30,49 +30,57 @@
       </v-btn>
       <v-spacer></v-spacer>
 
-      <v-tooltip top slot="activator" v-if="!isFavorite(user, project._id)">
-        <v-btn
-          icon
-          flat
-          color="grey darken-1"
-          @click.stop="addToFavorites(user, project._id)"
-          slot="activator"
-        >
-          <v-icon>star_border</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="!isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+            <v-btn
+            icon
+            text
+            color="grey darken-1"
+            @click.stop="addToFavorites(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>mdi-star-outline</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Add to favorites') }}</span>
       </v-tooltip>
 
-      <v-tooltip top slot="activator" v-if="isFavorite(user, project._id)">
-        <v-btn icon flat color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
-          <v-icon>star</v-icon>
-        </v-btn>
+      <v-tooltip top v-if="isFavorite(user, project._id)">
+        <template v-slot:activator="{ on }">
+          <v-btn icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" v-on="on">
+            <v-icon>mdi-star</v-icon>
+          </v-btn>
+        </template>
         <span>{{ $t('Remove from favorites') }}</span>
       </v-tooltip>
 
       <template v-if="canManageProject(project)">
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="openProjectSettings(project)"
-          >
-            <v-icon>settings</v-icon>
-          </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              text
+              v-on="on"
+              color="grey darken-1"
+              @click.stop="openProjectSettings(project)"
+            >
+              <v-icon>mdi-settings</v-icon>
+            </v-btn>
+          </template>
           <span>{{ $t('Settings') }}</span>
         </v-tooltip>
-        <v-tooltip top slot="activator">
-          <v-btn
-            icon
-            flat
-            slot="activator"
-            color="grey darken-1"
-            @click.stop="deleteProject(project)"
-          >
-            <v-icon>delete</v-icon>
-          </v-btn>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              text
+              v-on="on"
+              color="grey darken-1"
+              @click.stop="deleteProject(project)"
+            >
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </template>
           <span>{{ $t('Move to trash') }}</span>
         </v-tooltip>
       </template>
@@ -84,6 +92,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 export default {
   name: "dashboard-project-card",
@@ -107,14 +116,14 @@ export default {
   },
   methods: {
     getVisibilityIcon(project) {
-      if (project.isPublic) {
-        return "visibility";
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
+        return "mdi-eye";
       }
-      return "visibility_off";
+      return "mdi-eye-off";
     },
 
     getVisibilityIconClass(project) {
-      if (project.isPublic) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "";
       }
       return "";

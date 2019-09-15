@@ -28,7 +28,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn flat @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
           <v-btn color="info" @click="selectDate" :disabled="!date">{{ $t('Select') }}</v-btn>
         </v-card-actions>
       </v-card>
@@ -59,6 +59,7 @@ export default {
         {text: this.$t('reminders.2hours'), value: "120"},
         {text: this.$t('reminders.1day'), value: "1140"},
         {text: this.$t('reminders.2days'), value: "2280"},
+        {text: this.$t('reminders.1week'), value: "7980"},
       ]
     };
   },
@@ -91,7 +92,7 @@ export default {
   display: none;
 }
 
-.flatpickr-confirm {
+.textpickr-confirm {
   cursor: pointer;
   padding: 24px;
   border-top: 1px solid #aaa;

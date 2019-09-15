@@ -7,7 +7,7 @@
           <template v-slot:badge>
             <span>{{ notificationsCount }}</span>
           </template>
-          <v-icon>notifications</v-icon>
+          <v-icon>mdi-bell</v-icon>
         </v-badge>
       </v-btn>
     </v-avatar>

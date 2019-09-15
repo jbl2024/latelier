@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <empty-state :description="$t('Welcome to l\'atelier')" illustration="welcome">
-      <v-btn class="primary" round :to="{ name: 'dashboard-page'}">{{ $t('Go to projects') }}
+      <v-btn class="primary" rounded :to="{ name: 'dashboard-page'}">{{ $t('Go to projects') }}
       </v-btn>
     </empty-state>
   </div>

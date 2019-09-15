@@ -5,22 +5,22 @@
     <v-subheader>{{ $t("Email notifications")}}</v-subheader>
 
     <v-list class="elevation-1">
-      <v-list-tile @click="toggleSettings('emailSettings.tasks.assignTo')">
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t("A task is assigned to me") }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
+      <v-list-item @click="toggleSettings('emailSettings.tasks.assignTo')">
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("A task is assigned to me") }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
           <v-switch v-model="user.emailSettings.tasks.assignTo" @click="toggleSettings('emailSettings.tasks.assignTo')"></v-switch>
-        </v-list-tile-action>
-      </v-list-tile>
-      <v-list-tile @click="toggleSettings('emailSettings.tasks.update')">
-        <v-list-tile-content>
-          <v-list-tile-title>{{ $t("A task is updated") }}</v-list-tile-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
+        </v-list-item-action>
+      </v-list-item>
+      <v-list-item @click="toggleSettings('emailSettings.tasks.update')">
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("A task is updated") }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
           <v-switch v-model="user.emailSettings.tasks.update" @click="toggleSettings('emailSettings.tasks.update')"></v-switch>
-        </v-list-tile-action>
-      </v-list-tile>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
 
 

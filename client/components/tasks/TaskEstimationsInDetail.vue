@@ -6,7 +6,7 @@
           :label="$t('Size')"
           class="text"
           type="number"
-          prepend-icon="timer"
+          prepend-icon="mdi-timer"
           :readonly="loading"
           v-model="size"
         ></v-text-field>
@@ -16,7 +16,7 @@
           :label="$t('Spent')"
           class="text"
           type="number"
-          prepend-icon="timelapse"
+          prepend-icon="mdi-timelapse"
           :readonly="loading"
           v-model="spent"
         ></v-text-field>
