@@ -59,6 +59,7 @@ export default {
         {text: this.$t('reminders.2hours'), value: "120"},
         {text: this.$t('reminders.1day'), value: "1140"},
         {text: this.$t('reminders.2days'), value: "2280"},
+        {text: this.$t('reminders.1week'), value: "7980"},
       ]
     };
   },

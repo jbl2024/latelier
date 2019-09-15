@@ -188,6 +188,7 @@
     "1hour": "1 hour before",
     "2hours": "2 hours before",
     "1day": "1 day before",
-    "2days": "2 days before"
+    "2days": "2 days before",
+    "1week": "1 week before"
   }
 }
