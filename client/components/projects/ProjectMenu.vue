@@ -15,6 +15,16 @@
         </v-list-item-content>
       </v-list-item>
       <v-list-item
+        :to="{ name: 'project-databases', params: { projectId: projectId }}"
+      >
+        <v-list-item-action>
+          <v-icon>mdi-database</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t('Databases') }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item
         :to="{ name: 'project-bpmn', params: { projectId: projectId }}"
       >
         <v-list-item-action>

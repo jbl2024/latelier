@@ -20,30 +20,30 @@
       <v-list two-line subheader v-show="databases.length != 0" class="elevation-1">
         <v-subheader>{{ $t('Databases') }}
           <v-btn fab dark small color="pink" @click="newDatabase">
-            <v-icon>add</v-icon>
+            <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
 
       <template v-for="item in databases">
-        <v-list-tile :key="item._id" @click="openDatabase(item)">
-          <v-list-tile-avatar>
-            <v-icon>library_books</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content class="pointer">
-            <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-            <v-list-tile-sub-title v-html="linkifyHtml(item.description)"></v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action class="show-desktop">
+        <v-list-item :key="item._id" @click="openDatabase(item)">
+          <v-list-item-avatar>
+            <v-icon>mdi-database</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content class="pointer">
+            <v-list-item-title>{{ item.name }}</v-list-item-title>
+            <v-list-item-sub-title v-html="linkifyHtml(item.description)"></v-list-item-sub-title>
+          </v-list-item-content>
+          <v-list-item-action class="show-desktop">
             <v-btn icon flat color="grey darken-1" @click.stop="editDatabase(item)">
-              <v-icon>settings</v-icon>
+              <v-icon>mdi-settings</v-icon>
             </v-btn>
-          </v-list-tile-action>
-          <v-list-tile-action class="show-desktop">
+          </v-list-item-action>
+          <v-list-item-action class="show-desktop">
             <v-btn icon flat color="grey darken-1" @click.stop="deleteDatabase(item)">
-              <v-icon>delete</v-icon>
+              <v-icon>mdi-delete</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
       </template>
 
       </v-list>
