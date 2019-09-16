@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update vue2vis to 0.0.16
+- Update packages (npm audit fix)
 
 ### Removed
 
