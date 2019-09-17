@@ -62,12 +62,14 @@ export default {
   data() {
     return {
       content: "",
+      savedContent: "",
       editContent: false
     };
   },
   methods: {
     startUpdateContent() {
       this.editContent = true;
+      this.savedContent = this.content;
     },
     updateContent() {
       this.$emit("update:item", this.content);
@@ -76,6 +78,7 @@ export default {
     },
     cancelUpdateContent() {
       this.editContent = false;
+      this.content = this.savedContent;
     }
   }
 };

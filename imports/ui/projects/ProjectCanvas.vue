@@ -7,7 +7,7 @@
       <v-container fluid grid-list-md>
         <v-layout row wrap>
           <v-flex xs12>
-            <canvas-item flex-grow-1 title="But" headline="" :item.sync="data.goal" @save="save()">
+            <canvas-item flex-grow-1 title="But" headline="" :item.sync="canvas.data.goal" @save="save()">
               <template slot="headline">
               Quelle est l'intention à l'origine du projet ? (cause et besoin)<br/>
               Pourquoi ce projet est-il porteur de sens et important ? et pour qui ? <br/> 
@@ -17,7 +17,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?" :item.sync="data.budget" @save="save()">
+            <canvas-item title="Budget" headline="Quelles sont les finances disponibles ?" :item.sync="canvas.data.budget" @save="save()">
               <template slot="headline">
                 Quelles sont les finances nécessaires ? disponibles ? <br/>
                 ...pour L‘ÉQUIPE (interne / externe)<br/>
@@ -27,7 +27,7 @@
             </canvas-item>
           </v-flex>
           <v-flex xs12 sm4>
-            <canvas-item title="Equipe" :item.sync="data.team" @save="save()">
+            <canvas-item title="Equipe" :item.sync="canvas.data.team" @save="save()">
               <template slot="headline">
                 Qui est / devrait en faire partie ?<br/>
                 ...du noyau de l‘équipe<br/>
@@ -38,7 +38,7 @@
             </canvas-item>
           </v-flex>
           <v-flex xs12 sm4>
-            <canvas-item title="Conditions" :item.sync="data.requirements" @save="save()">
+            <canvas-item title="Conditions" :item.sync="canvas.data.requirements" @save="save()">
               <template slot="headline">
               Forces, faits, événements et personnes connues qui influencent le projet ?<br/>
               ...Qui ou quoi soutient le projet ?<br/>
@@ -48,7 +48,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Ressources" :item.sync="data.resources" @save="save()">
+            <canvas-item title="Ressources" :item.sync="canvas.data.resources" @save="save()">
               <template slot="headline">
               Quelles sont les ressources nécessaires ? <br/>
               ...un espace projet<br/>
@@ -59,7 +59,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Risques & opportunités" :item.sync="data.risks" @save="save()">
+            <canvas-item title="Risques & opportunités" :item.sync="canvas.data.risks" @save="save()">
               <template slot="headline">
                   Quels sont les évenements futurs et incertains qui menaceraient ou favoriseraient le projet ?<br/>
                   Ils vont probablement se concrétiser,ou si vous pouvez les influencer, considérez-les comme des CONDITIONS
@@ -68,7 +68,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Jalons" :item.sync="data.milestones" @save="save()">
+            <canvas-item title="Jalons" :item.sync="canvas.data.milestones" @save="save()">
               <template slot="headline">
                 Quelles sont les étapes clés de progression ?<br/>
                 Les échéances pour :<br/>
@@ -80,7 +80,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Qualité" :item.sync="data.quality" @save="save()">
+            <canvas-item title="Qualité" :item.sync="canvas.data.quality" @save="save()">
               <template slot="headline">
               Qu‘est ce qui rend le CLIENT vraiment heureux au regard :<br/>
               ...du RÉSULTAT du projet ?<br/>
@@ -91,7 +91,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Résultats" :item.sync="data.outcome" @save="save()">
+            <canvas-item title="Résultats" :item.sync="canvas.data.outcome" @save="save()">
               <template slot="headline">
               Qu‘est-ce que le projet est censé livré au CLIENT ? C‘est plutôt :<br/>
               ...un nouveau produit / service ?<br/>
@@ -102,7 +102,7 @@
           </v-flex>
 
           <v-flex xs12 sm4>
-            <canvas-item title="Clients" :item.sync="data.customers" @save="save()">
+            <canvas-item title="Clients" :item.sync="canvas.data.customers" @save="save()">
               <template slot="headline">
               Qui est vraiment le client ? Des personnes qui :<br/>
               ...payent pour le projet (SPONSOR) <br/>
@@ -114,7 +114,7 @@
           </v-flex>
 
           <v-flex xs12 class="bloc">
-            <canvas-item title="Calendrier" :item.sync="data.planning" @save="save()">
+            <canvas-item title="Calendrier" :item.sync="canvas.data.planning" @save="save()">
               <template slot="headline">
                 Quand le projet démarre-t-il réellement ? <br/>
                 De quoi a-t-on besoin pour cela ? (ex : préparatifs, documents, décisions)<br/>
@@ -148,18 +148,8 @@ export default {
       default: "0"
     }
   },
-  watch: {
-    'canvas'() {
-       if (!this.$subReady.canvas || !this.canvas) {
-         return;
-       }
-       this.data = this.canvas.data;
-    }
-  },
   data() {
     return {
-      canvas: {},
-      data: {},
     };
   },
   meteor: {
@@ -175,7 +165,7 @@ export default {
   },  
   methods: {
     save() {
-      Meteor.call('canvas.update', this.projectId, this.data);
+      Meteor.call('canvas.update', this.projectId, this.canvas.data);
     }
   }
 };
