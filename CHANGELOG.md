@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix canvas save method
 - Update vue2vis to 0.0.16
 - Update packages (npm audit fix)
 
