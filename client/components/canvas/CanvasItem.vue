@@ -71,6 +71,7 @@ export default {
     },
     updateContent() {
       this.$emit("update:item", this.content);
+      this.$emit("save");
       this.editContent = false;
     },
     cancelUpdateContent() {
