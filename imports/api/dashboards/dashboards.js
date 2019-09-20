@@ -25,36 +25,53 @@ Meteor.methods({
     };
 
     if (!Permissions.isAdmin(userId)) {
-      const organizations = Organizations.find(
-        { $or: [{ members: userId }, { isPublic: true }] },
-        { fields: { _id: 1 } }
-      ).fetch();
-      const organizationIds = [];
-      organizations.map(organization => {
-        if (organizationId) {
-          if (organization._id !== organizationId) {
-            return;
-          }
+      if (organizationId) {
+        const organizationCount = Organizations.find(
+          { $or: [{ members: userId }, { isPublic: true }] },
+          { fields: { _id: 1 } }
+        ).count();
+        if (organizationCount > 0) {
+          const projectIds = Projects.find({
+            organizationId: organizationId,
+            members: userId,
+            deleted: { $ne: true }
+          }).map(project => {
+            return project._id;
+          });
+          query.projectId = { $in: projectIds };
         }
-        organizationIds.push(organization._id);
-      });
+      } else {
+        const organizations = Organizations.find(
+          { $or: [{ members: userId }, { isPublic: true }] },
+          { fields: { _id: 1 } }
+        ).fetch();
+        const organizationIds = [];
+        organizations.map(organization => {
+          if (organizationId) {
+            if (organization._id !== organizationId) {
+              return;
+            }
+          }
+          organizationIds.push(organization._id);
+        });
 
-      const projects = Projects.find(
-        {
-          deleted: { $ne: true },
-          $or: [
-            { organizationId: { $in: organizationIds } },
-            { organizationId: { $exists: false } }
-          ],
-          $or: [{ createdBy: userId }, { members: userId }]
-        },
-        { fields: { _id: 1 } }
-      ).fetch();
-      const projectIds = [];
-      projects.map(project => {
-        projectIds.push(project._id);
-      });
-      query.projectId = { $in: projectIds };
+        const projects = Projects.find(
+          {
+            deleted: { $ne: true },
+            $or: [
+              { organizationId: { $in: organizationIds } },
+              { organizationId: { $exists: false } }
+            ],
+            $or: [{ createdBy: userId }, { members: userId }]
+          },
+          { fields: { _id: 1 } }
+        ).fetch();
+        const projectIds = [];
+        projects.map(project => {
+          projectIds.push(project._id);
+        });
+        query.projectId = { $in: projectIds };
+      }
     } else {
       if (organizationId) {
         const projectIds = Projects.find({
