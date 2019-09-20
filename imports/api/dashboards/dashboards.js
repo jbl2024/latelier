@@ -6,7 +6,6 @@ import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 
-
 Meteor.methods({
   "dashboards.findTasks"(user, type, organizationId, page) {
     const userId = Meteor.userId();
@@ -42,8 +41,11 @@ Meteor.methods({
 
       const projects = Projects.find(
         {
-          deleted: {$ne: true},
-          $or: [{organizationId: { $in: organizationIds }}, {organizationId: {$exists: false}}],
+          deleted: { $ne: true },
+          $or: [
+            { organizationId: { $in: organizationIds } },
+            { organizationId: { $exists: false } }
+          ],
           $or: [{ createdBy: userId }, { members: userId }]
         },
         { fields: { _id: 1 } }
@@ -55,10 +57,19 @@ Meteor.methods({
       query.projectId = { $in: projectIds };
     } else {
       if (organizationId) {
-        const projectIds = Projects.find({organizationId: organizationId, deleted: {$ne: true}}).map(project => { return project._id});
-        query.projectId = { $in: projectIds};
+        const projectIds = Projects.find({
+          organizationId: organizationId,
+          deleted: { $ne: true }
+        }).map(project => {
+          return project._id;
+        });
+        query.projectId = { $in: projectIds };
       } else {
-        const deletedProjectIds = Projects.find({deleted: true}).map(project => { return project._id});
+        const deletedProjectIds = Projects.find({ deleted: true }).map(
+          project => {
+            return project._id;
+          }
+        );
         query.projectId = { $nin: deletedProjectIds };
       }
     }
@@ -96,7 +107,7 @@ Meteor.methods({
     const users = {};
     const organizations = {};
 
-    const loadUser = (userId) => {
+    const loadUser = userId => {
       let user = users[userId];
       if (user) {
         return user;
@@ -128,7 +139,9 @@ Meteor.methods({
 
         let organization = organizations[project.organizationId];
         if (!organization) {
-          organizations[project.organizationId] = Organizations.findOne({_id: project.organizationId});
+          organizations[project.organizationId] = Organizations.findOne({
+            _id: project.organizationId
+          });
           organization = organizations[project.organizationId];
         }
         if (organization) {
