@@ -21,7 +21,8 @@ export const store = new Vuex.Store({
     currentProjectId: 0,
     projectFeatures: [],
     windowTitle: "",
-    notifyMessage: ''
+    notifyMessage: '',
+    showLabelText: false
   },
   getters: {
     hasProjectFeature: (state) => (feature) => {
@@ -36,6 +37,9 @@ export const store = new Vuex.Store({
     },
     updateShowCategories(state, showCategories) {
       state.showCategories = showCategories
+    },
+    updateShowLabelText(state, showLabelText) {
+      state.showLabelText = showLabelText
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
       state.showSelectBackgroundDialog = showSelectBackgroundDialog
@@ -88,6 +92,9 @@ export const store = new Vuex.Store({
     },
     setShowCategories (context, showCategories) {
       context.commit('updateShowCategories', showCategories);
+    },
+    setShowLabelText (context, showLabelText) {
+      context.commit('updateShowLabelText', showLabelText);
     },
     setShowDashboardTitle (context, showDashboardTitle) {
       context.commit('updateShowDashboardTitle', showDashboardTitle);
