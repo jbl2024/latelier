@@ -245,7 +245,7 @@ export default {
 
     isDark() {
       if (this.projectColor) {
-        return !colors.isDark(this.projectColor);  
+        return colors.isDark(this.projectColor);  
       } 
       return true;
     },

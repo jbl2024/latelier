@@ -11,6 +11,8 @@
 <script>
 import { Labels } from '/imports/api/labels/labels.js'
 import { Projects } from '/imports/api/projects/projects.js'
+import { colors } from '/imports/colors.js'
+
 import { mapState } from "vuex";
 
 export default {
@@ -45,7 +47,10 @@ export default {
   },
   methods: {
     getColor (label) {
-      return 'background-color: ' + label.color;
+      return `
+        background-color: ${label.color};
+        color: ${colors.getLabelColor(label.color)}
+      `
     },
 
     toggleLabel (e) {
