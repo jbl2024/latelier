@@ -188,6 +188,7 @@
     "1hour": "1 ora abans",
     "2hours": "2 oras abans",
     "1day": "1 jorn abans",
-    "2days": "2 jors abans"
+    "2days": "2 jors abans",
+    "1week": "1 setmana abans"
   }
 }
