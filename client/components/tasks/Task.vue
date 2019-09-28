@@ -101,7 +101,7 @@
       <div class="footer" v-if="hasFooterData(task)">
         <div class="footer-left">
           <template v-if="task.dueDate">
-            <v-icon small>mdi-alarm-check</v-icon>
+            <v-icon small :class="{late: isLate}">{{ isLate ? 'mdi-clock-alert-outline' : 'mdi-alarm-check' }}</v-icon>
             {{ formatDateTime(task.dueDate) }}
           </template>
           <template v-if="this.isProjectEstimationFeatureEnabled()">
@@ -170,6 +170,11 @@ export default {
           this.$store.state.selectedTask._id === this.task._id
         );
       }
+    },
+    isLate: {
+      get() {
+        return this.task && this.task.dueDate && this.task.dueDate <= new Date();
+      }
     }
   },
   data() {
@@ -178,7 +183,7 @@ export default {
       savedName: "",
       showEditButton: false,
       completed: false,
-      showConfirmDeleteDialog: false
+      showConfirmDeleteDialog: false,
     };
   },
   watch: {
@@ -549,5 +554,9 @@ export default {
 .very-small {
   width: 30px;
   height: 30px;
+}
+
+.late {
+  color: red;
 }
 </style>
