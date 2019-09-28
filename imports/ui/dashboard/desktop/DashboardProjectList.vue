@@ -229,7 +229,7 @@ export default {
       this.$confirm(this.$t("Leave project?"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Leave")
+        confirmText: this.$t("Leave project")
       }).then(res => {
         if (res) {
           Meteor.call(
