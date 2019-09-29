@@ -19,11 +19,17 @@ export default {
     small: {
       type: Boolean,
       default: false
+    },
+    big: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
     size () {
-      if (this.small) {
+      if (this.big) {
+        return 128;
+      } else if (this.small) {
         return 30;
       }
       return 40;

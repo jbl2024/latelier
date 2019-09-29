@@ -61,6 +61,14 @@
           </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
+        <v-list-item :to="{ name: 'profile-settings-page'}">
+          <v-list-item-action>
+            <v-icon>mdi-account-circle-outline</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('Profile') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item :to="{ name: 'mail-settings-page'}">
           <v-list-item-action>
             <v-icon>mdi-email</v-icon>

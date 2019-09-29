@@ -28,6 +28,7 @@ import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
+import ProfileSettingsPage from "/imports/ui/settings/ProfileSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
 
 export default [
@@ -184,6 +185,13 @@ export default [
     name: "mail-settings-page",
     beforeEnter: isBasicAuth,
     component: MailSettingsPage,
+    props: true
+  },
+  {
+    path: "/settings/profile",
+    name: "profile-settings-page",
+    beforeEnter: isBasicAuth,
+    component: ProfileSettingsPage,
     props: true
   },
   {
