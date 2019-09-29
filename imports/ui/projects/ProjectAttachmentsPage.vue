@@ -7,8 +7,8 @@
 
       <empty-state
         v-show="attachments.length == 0"
-        rounded
-        icon="mdi-attachment"
+        small
+        illustration="documents"
         label="Aucune pièce jointe"
         description="Vous pouvez ajouter une pièce jointe sur une tâche">
       </empty-state>
