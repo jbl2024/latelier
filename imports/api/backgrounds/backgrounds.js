@@ -3,10 +3,6 @@ import { FilesCollection } from "meteor/ostrio:files";
 import { check } from "meteor/check";
 import { checkLoggedIn } from "/imports/api/permissions/permissions"
 
-if (Meteor.isServer) {
-  import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";  
-}
-
 export const Backgrounds = new FilesCollection({
   collectionName: "backgrounds",
   storagePath: Meteor.settings.backgroundsPath || Meteor.settings.attachmentsPath || 'assets/app/uploads',
@@ -16,16 +12,16 @@ export const Backgrounds = new FilesCollection({
   },
   onAfterUpload(file) {
     if (Meteor.isServer) {
+      import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";  
       this.update({ _id: file._id }, { $set: {'meta.createdAt': new Date()}});
+      if (/png|jpe?g/i.test(file.extension || "")) {
+        createThumbnails(this, file, (error, file) => {
+          if (error) {
+            console.error(error);
+          }
+        });
+      }
     }
-    if (/png|jpe?g/i.test(fileRef.extension || "")) {
-      createThumbnails(this, file, (error, file) => {
-        if (error) {
-          console.error(error);
-        }
-      });
-    }
-  
   } 
 });
 

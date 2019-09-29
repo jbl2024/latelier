@@ -28,7 +28,8 @@
                 icon
                 v-on="on"
               >
-                <v-icon>mdi-account-circle</v-icon>
+                <author-avatar small :user-id="currentUser" v-if="hasAvatar"></author-avatar>
+                <v-icon v-if="!hasAvatar">mdi-account-circle</v-icon>
               </v-btn>
             </template>            
             <login-menu></login-menu>
@@ -138,6 +139,11 @@ export default {
       set(value) {
         this.$store.dispatch("showSelectBackgroundDialog", value);
       }
+    },
+    hasAvatar() {
+      if (Meteor) {
+        return this.currentUser && this.currentUser.profile && this.currentUser.profile.avatar;
+      }
     }
   },
   watch: {
@@ -178,6 +184,12 @@ export default {
         }
       }
     },
+    currentUser() {
+      if (Meteor) {
+        return Meteor.user()
+      }
+    },
+    
     $subscribe: {
       user: function() {
         return [];
@@ -191,6 +203,7 @@ export default {
         this.drawer = true;
       }
     }
+
   }
 };
 </script>

@@ -1,6 +1,11 @@
 <template>
-  <v-avatar :size="size" :class="isOnline(userId)">
-    <span>{{ formatUserLetters(userId) }}</span>
+  <v-avatar :size="size" :class="isOnline(userId)" :title="getEmailForUser(userId)">
+    <template v-if="avatar">
+      <img :src="avatar" :alt="formatUserLetters(userId)">
+    </template>
+    <template v-if="!avatar">
+      <span>{{ formatUserLetters(userId) }}</span>
+    </template>
   </v-avatar>
 </template>
 
@@ -14,9 +19,13 @@ export default {
   mixins: [usersMixin],
   props: {
     userId: {
-      type: String
+      type: String | Object
     },
     small: {
+      type: Boolean,
+      default: false
+    },
+    xsmall: {
       type: Boolean,
       default: false
     },
@@ -31,8 +40,13 @@ export default {
         return 128;
       } else if (this.small) {
         return 30;
+      } else if (this.xsmall) {
+        return 24;
       }
       return 40;
+    },
+    avatar () {
+      return this.getAvatarForUser(this.userId);
     }
   }
 

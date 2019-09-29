@@ -19,7 +19,7 @@
                   <template v-for="user in projectUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
-                        <span class>{{ formatUserLetters(user) }}</span>
+                        <author-avatar :user-id="user"></author-avatar>
                       </v-list-item-avatar>
                       <v-list-item-content class="pointer">
                         <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
@@ -35,7 +35,7 @@
                   <template v-for="user in organizationUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
-                        <span class>{{ formatUserLetters(user) }}</span>
+                        <author-avatar :user-id="user"></author-avatar>
                       </v-list-item-avatar>
                       <v-list-item-content class="pointer">
                         <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
@@ -65,7 +65,7 @@
                       <template v-for="user in users">
                         <v-list-item :key="user._id" @click="selectUser(user)">
                           <v-list-item-avatar :color="isOnline(user)">
-                            <span>{{ formatUserLetters(user) }}</span>
+                            <author-avatar :user-id="user"></author-avatar>
                           </v-list-item-avatar>
                           <v-list-item-content>
                             <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>

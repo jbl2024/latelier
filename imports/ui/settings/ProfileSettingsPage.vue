@@ -3,24 +3,25 @@
     <template v-if="user">
       <v-subheader>{{ $t("Profile")}}</v-subheader>
 
-      <div class="pa-8 elevation-1 card">
+      <div class="elevation-1 card">
         <div class="center pa-8">
-          <author-avatar big :user-id="user._id"></author-avatar>
+          <author-avatar big :user-id="user"></author-avatar>
         </div>
-        <div class="center title">{{ user.emails[0].address }}</div>
-        <div>
-          <v-file-input label="File input"></v-file-input>
+        <div class="pa-4">
+          <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading" />
         </div>
+        <div class="pa-4 center" v-if="user.profile.avatar">
+          <v-btn text @click="remove()">{{ $t('Delete') }}</v-btn>
+        </div>
+        <v-divider></v-divider>
+        <div class="center title pa-8">{{ user.emails[0].address }}</div>
       </div>
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions";
-import get from "lodash/get";
-import has from "lodash/has";
-import set from "lodash/set";
+import { Avatars } from "/imports/api/users/avatars";
 
 export default {
   props: {},
@@ -30,27 +31,80 @@ export default {
 
   data() {
     return {
-      user: null
+      user: null,
+      isUploading: false
     };
   },
   methods: {
-    toggleSettings(property) {
-      if (!has(this.user, property)) {
-        set(this.user, property, false);
-      }
-      set(this.user, property, !get(this.user, property, false));
-      Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
-      this.refreshUser();
-    },
-
     refreshUser() {
-      Meteor.call("users.getEmailPreferences", (error, result) => {
+      Meteor.call("users.getProfile", (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
         this.user = result;
       });
+    },
+
+    onUpload(e) {
+      const file = e.target.files[0];
+      this.uploadFile(file);
+    },
+
+    uploadFile(file) {
+      const that = this;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
+      const upload = Avatars.insert(
+        {
+          file: file,
+          streams: "dynamic",
+          chunkSize: "dynamic",
+          transport: transport,
+          meta: {
+            userId: Meteor.userId(),
+            createdBy: Meteor.userId()
+          }
+        },
+        false
+      );
+
+      upload.on("start", function() {
+        that.isUploading = true;
+      });
+
+      upload.on("end", function(error, fileObj) {
+        that.isUploading = false;
+        if (error) {
+          alert("Error during upload: " + error);
+        } else {
+          Meteor.call(
+            "avatars.setAvatar",
+            { avatarId: fileObj._id },
+            (error, result) => {
+              if (error) {
+                that.$store.dispatch("notifyError", error);
+                return;
+              }
+              that.refreshUser();
+            }
+          );
+          that.file = null;
+        }
+      });
+      upload.start();
+    },
+
+    remove() {
+      Meteor.call(
+        "avatars.clear",
+        (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.refreshUser();
+        }
+      );
     }
   }
 };

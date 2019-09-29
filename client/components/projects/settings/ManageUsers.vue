@@ -10,7 +10,7 @@
       <template v-for="user in projectUsers">
         <v-list-item :key="user._id">
           <v-list-item-avatar :color="isOnline(user)">
-            <span class="">{{ formatUserLetters(user) }}</span>
+            <author-avatar :user-id="user"></author-avatar>
           </v-list-item-avatar>
 
           <v-list-item-content>

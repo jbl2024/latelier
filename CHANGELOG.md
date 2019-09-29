@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Display warning color & icon when task due date is over
+- Avatar support
 
 ### Changed
 - Minor fixes (console.log statements, i18n)

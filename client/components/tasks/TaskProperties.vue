@@ -60,7 +60,7 @@
   <v-list class="elevation-1">
     <v-list-item @click="showChooseAssignedToDialog = true">
       <v-list-item-avatar :color="isOnline(task.assignedTo)">
-        <span class="">{{ formatUserLetters(task.assignedTo) }}</span>
+        <author-avatar :user-id="task.assignedTo"></author-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
       <v-list-item-title>
@@ -84,7 +84,7 @@
   <v-list class="elevation-1">
     <v-list-item v-for="watcher in task.watchers" :key="watcher">
       <v-list-item-avatar :color="isOnline(watcher)">
-        <span class="">{{ formatUserLetters(watcher) }}</span>
+        <author-avatar :user-id="watcher"></author-avatar>
       </v-list-item-avatar>
       <v-list-item-content>
       <v-list-item-title>

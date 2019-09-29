@@ -49,7 +49,7 @@
       <template v-for="user in users">
         <v-list-item :key="user._id" @click="openDetail(user)">
           <v-list-item-avatar :color="isOnline(user)">
-            <span>{{ formatUserLetters(user) }}</span>
+            <author-avatar :user-id="user"></author-avatar>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title :class="getClass(user)">{{ formatUser(user) }}</v-list-item-title>
