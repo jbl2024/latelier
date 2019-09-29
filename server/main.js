@@ -15,6 +15,8 @@ import '../imports/api/users/server/users.js';
 import '../imports/api/users/server/sso.js';
 import '../imports/api/users/server/emailTemplates.js';
 import '../imports/api/users/server/publications.js';
+import '../imports/api/users/avatars.js';
+import '../imports/api/users/server/avatars.js';
 import '../imports/api/projectGroups/projectGroups.js';
 import '../imports/api/projectGroups/server/publications.js';
 import '../imports/api/labels/labels.js';

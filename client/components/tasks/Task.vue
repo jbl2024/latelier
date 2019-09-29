@@ -116,9 +116,7 @@
           </template>
         </div>
         <div class="avatar">
-          <v-avatar size="24" :class="isOnline(task.assignedTo)" v-show="task.assignedTo">
-            <span>{{ formatUserLetters(task.assignedTo) }}</span>
-          </v-avatar>
+          <author-avatar :user-id="task.assignedTo" v-show="task.assignedTo" xsmall></author-avatar>
         </div>
       </div>
     </div>

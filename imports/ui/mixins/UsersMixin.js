@@ -52,6 +52,12 @@ export default {
       if (user.emails && user.emails.length > 0) {
         return user.emails[0].address;
       }
+    },
+
+    getAvatarForUser(user) {
+      user = getUser(user);
+      if (!user) return;
+      return user.profile.avatar;
     }
   }
 };

@@ -11,7 +11,7 @@
       <template v-for="task in tasks">
         <v-list-item :key="task._id" @click.stop="openTask(task)">
           <v-list-item-avatar :color="isOnline(task.assignedTo)">
-            <span class>{{ formatUserLetters(task.assignedTo) }}</span>
+            <author-avatar :user-id="task.assignedTo"></author-avatar>
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>

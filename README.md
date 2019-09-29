@@ -37,6 +37,7 @@ Settings:
 |generateFixtures       | boolean       | false                    | If true, users fixtures are generated at startup |
 |disableAccountCreation | boolean       | false                    | If true account creation is forbidden |
 |attachmentsPath        | string        | /tmp/                    | Attachment storage path on fs |
+|avatarsPath            | string        | attachmentsPath          | Avatar storage path on fs |
 |email.from             | string        | noreply@localhost        | From email when sending mail |
 |roles.admin            | [string]      | []                       | Users matching emails will have the admin role |
 |public.seo.titlePrefix | string        | l'atelier                | window.title prefix |

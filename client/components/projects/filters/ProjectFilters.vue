@@ -15,9 +15,7 @@
     >
       <template v-slot:selection="{ item, index }">
         <div class="avatar" v-if="index <= 2">
-          <v-avatar size="24" :color="isOnline(item)">
-            <span>{{ formatUserLetters(item) }}</span>
-          </v-avatar>
+          <author-avatar xsmall :user-id="item"></author-avatar>
         </div>
         <span
           v-if="index > 2"
@@ -40,9 +38,7 @@
     >
       <template v-slot:selection="{ item, index }">
         <div class="avatar" v-if="index <= 2">
-          <v-avatar size="24" :color="isOnline(item)">
-            <span>{{ formatUserLetters(item) }}</span>
-          </v-avatar>
+          <author-avatar xsmall :user-id="item"></author-avatar>
         </div>
         <span
           v-if="index > 2"

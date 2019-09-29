@@ -432,6 +432,25 @@ Meteor.methods({
     } catch(error) {
       console.error(error);      
     }
+  },
+
+  "users.getProfile"() {
+    if (!Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    const options = {
+      fields: {
+        profile: 1,
+        status: 1,
+        statusDefault: 1,
+        statusConnection: 1,
+        emails: 1,
+        roles: 1
+      },
+    }
+
+    const user = Meteor.users.findOne({_id: Meteor.userId()}, options);
+    return user;
   }
 });
 
