@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Avatar support
 
 ### Changed
+- Fix missing attachment icon
 - Minor fixes (console.log statements, i18n)
 
 ### Removed
