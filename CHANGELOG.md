@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+
+## [2.3.0] - 2019-09-30
+
+### Added
 - Display warning color & icon when task due date is over
 - Avatar support
 
