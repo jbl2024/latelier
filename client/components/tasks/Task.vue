@@ -555,6 +555,6 @@ export default {
 }
 
 .late {
-  color: red;
+  color: red !important;
 }
 </style>
