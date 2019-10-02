@@ -50,7 +50,7 @@
       </div>
     </div>
 
-    <task-labels :task="task"></task-labels>
+    <task-labels :task="task" v-if="!hideLabels"></task-labels>
     <div class="authors">
       <template v-if="showProjectLink(taskObject)">
         <div>
@@ -173,6 +173,12 @@ export default {
       if (this.task && this.task.completed != completed) {
         Meteor.call("tasks.complete", this.taskId, completed);
       }
+    }
+  },
+  computed: {
+     hideLabels() {
+       if (this.taskObject && this.taskObject.project) return true;
+       return false;
     }
   },
   data() {
