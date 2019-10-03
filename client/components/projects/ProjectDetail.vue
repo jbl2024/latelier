@@ -101,9 +101,10 @@ export default {
     updateDescription() {
       this.editDescription = false;
       Meteor.call(
-        "projects.updateDescription",
-        this.project._id,
-        this.project.description
+        "projects.updateDescription", {
+          projectId: this.project._id,
+          description: this.project.description
+        }
       );
     },
 
