@@ -17,20 +17,7 @@
       </div>
       <template v-if="!showProgress">
         <v-toolbar dense class="toolbar">
-          <v-btn icon>
-            <v-icon>mdi-chart-donut</v-icon>
-          </v-btn>
-          <v-spacer></v-spacer>
-          <div>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn icon @click.stop="exportSVG()" v-on="on">
-                  <v-icon>mdi-image</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t('Export image') }}</span>
-            </v-tooltip>
-          </div>
+          <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
         </v-toolbar>
       </template>
 
@@ -46,16 +33,17 @@
         ></timeline>
       </div>
       <v-navigation-drawer
+        :clipped="$vuetify.breakpoint.lgAndUp"
         class="elevation-16 panel"
         v-model="showDrawer"
         absolute
         stateless
         right
         fixed
-        :width="600"
+        :width="400"
       >
         <v-card>
-          {{ showDrawer }}
+          <project-detail v-if="selectedProject" :project="selectedProject" :active.sync="showDrawer"></project-detail>
         </v-card>
       </v-navigation-drawer>
     </template>
@@ -132,7 +120,8 @@ export default {
         ],
         options: {}
       },
-      selectedProjectId: null
+      selectedProjectId: null,
+      selectedProject: null
     };
   },
   methods: {
@@ -173,6 +162,8 @@ export default {
       if (items && items.length > 0) {
         const projectId = items[0];
         this.showDrawer = true;
+        this.selectedProject = Projects.findOne({_id: projectId});
+
         // this.$router.push({
         //   name: "project",
         //   params: { projectId: projectId }
@@ -191,6 +182,10 @@ export default {
 
     onTimelineRangeChanged() {
       this.rangeChanged = true;
+    },
+
+    gotoToday() {
+      this.$refs.timeline.moveTo(new Date());
     }
   },
   meteor: {
