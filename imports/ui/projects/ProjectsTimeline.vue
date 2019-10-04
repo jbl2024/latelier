@@ -12,14 +12,9 @@
         :description="$t('Projects with start and end date are displayed here')"
       ></empty-state>
 
-      <div class="progress" v-if="showProgress && count > 0">
-        <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
-      </div>
-      <template v-if="!showProgress">
-        <v-toolbar dense class="toolbar flex0">
-          <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
-        </v-toolbar>
-      </template>
+      <v-toolbar dense class="toolbar flex0">
+        <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
+      </v-toolbar>
 
       <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
         <timeline
@@ -27,8 +22,6 @@
           :items="getItems()"
           :groups="getGroups()"
           :options="timeline.options"
-          @changed="onTimelineChanged"
-          @rangechanged="onTimelineRangeChanged"
           @select="onSelectProject"
         ></timeline>
       </div>
@@ -43,7 +36,11 @@
         :width="400"
       >
         <v-card>
-          <project-detail v-if="selectedProject" :project="selectedProject" :active.sync="showDrawer"></project-detail>
+          <project-detail
+            v-if="selectedProject"
+            :project="selectedProject"
+            :active.sync="showDrawer"
+          ></project-detail>
         </v-card>
       </v-navigation-drawer>
     </template>
@@ -104,9 +101,7 @@ export default {
     return {
       showConfirmDialog: false,
       showConfirmCloneDialog: false,
-      showProgress: true,
       showDrawer: false,
-      rangeChanged: false,
       filter: "",
       debouncedFilter: "",
       projectId: "",
@@ -122,11 +117,45 @@ export default {
         options: {
           orientation: "top",
           zoomKey: "ctrlKey",
+          editable: {
+            updateTime: true,
+            updateGroup: true,
+            remove: false
+          },
+          onMove: (item, callback) => {
+            this.handleMove(item, callback);
+          }
         }
       },
-      selectedProjectId: null,
       selectedProject: null
     };
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      projectsForTimeline: function() {
+        return [
+          this.organizationId,
+          this.filter,
+          this.$store.state.selectedGroup._id
+        ];
+      },
+      organization: function() {
+        return [this.organizationId];
+      },
+      projectGroups: function() {
+        return [this.organizationId];
+      }
+    },
+    projects() {
+      return Projects.find(
+        { organizationId: this.organizationId },
+        { sort: { name: 1 } }
+      );
+    },
+    count() {
+      return Projects.find({ organizationId: this.organizationId }).count();
+    }
   },
   methods: {
     getGroups() {
@@ -168,7 +197,8 @@ export default {
       if (items && items.length > 0) {
         const projectId = items[0];
         this.showDrawer = true;
-        this.selectedProject = Projects.findOne({_id: projectId});
+        this.selectedProject = Projects.findOne({ _id: projectId });
+        this.$refs.timeline.focus(this.selectedProject._id);
 
         // this.$router.push({
         //   name: "project",
@@ -180,50 +210,38 @@ export default {
       this.$store.dispatch("setSelectedGroup", null);
     },
 
-    onTimelineChanged() {
-      if (this.rangeChanged) {
-        this.showProgress = false;
-      }
-    },
-
-    onTimelineRangeChanged() {
-      this.rangeChanged = true;
-    },
-
     gotoToday() {
       this.$refs.timeline.moveTo(new Date());
     },
 
     onResizeTimelineContainer() {
       const height = this.$refs.timelineContainer.offsetHeight;
-      console.log(height);
       this.$refs.timeline.setOptions({
         height: height
-      })
-    }
-  },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      projectsForTimeline: function() {
-        return [
-          this.organizationId,
-          this.filter,
-          this.$store.state.selectedGroup._id
-        ];
-      },
-      organization: function() {
-        return [this.organizationId];
-      },
-      projectGroups: function() {
-        return [this.organizationId];
+      });
+    },
+
+    handleMove(item, cb) {
+      Meteor.call("projects.setDates", {
+        projectId: item.id,
+        startDate: moment(item.start).format("YYYY-MM-DD HH:mm"),
+        endDate: moment(item.end).format("YYYY-MM-DD HH:mm")
+      }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          cb(null)
+          return;
+        }
+        this.refreshSelectedProject();
+        cb(item);
+      });
+    },
+
+    refreshSelectedProject() {
+      if (this.selectedProject) {
+        this.$refs.timeline.focus(this.selectedProject._id);
+        this.selectedProject = Projects.findOne({_id: this.selectedProject._id});
       }
-    },
-    projects() {
-      return Projects.find({}, { sort: { name: 1 } });
-    },
-    count() {
-      return Projects.find().count();
     }
   }
 };
@@ -232,16 +250,16 @@ export default {
 <style scoped>
 .projects-timeline {
   display: flex;
-  min-height:0;
+  min-height: 0;
   height: 100%;
   flex-direction: column;
   position: relative;
   flex: 1;
-  background-color: white
+  background-color: white;
 }
 
 .flex0 {
-  flex: 0
+  flex: 0;
 }
 
 .flex1 {
@@ -275,7 +293,6 @@ export default {
   background-color: green;
   height: 400px;
 }
-
 
 .panel {
   z-index: 4;
