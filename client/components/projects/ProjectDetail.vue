@@ -34,29 +34,8 @@
       </div>
     </div>
     <v-divider></v-divider>
-    <div class="description">
-      <div
-        v-show="!editDescription && project.description && project.description.length > 0"
-        @click="startEditDescription"
-      >
-        <div class="ql-editor-view" v-html="linkifyHtml(project.description)"></div>
-      </div>
-      <div
-        v-show="!project.description && !editDescription"
-        @click="startEditDescription"
-      >{{ $t('No description') }}</div>
 
-      <div v-show="editDescription">
-        <rich-editor ref="description" v-model="project.description" @submit="updateDescription"></rich-editor>
-        <v-btn icon text @click="updateDescription">
-          <v-icon>mdi-check-circle</v-icon>
-        </v-btn>
-
-        <v-btn icon text @click="cancelUpdateDescription">
-          <v-icon>mdi-close-circle</v-icon>
-        </v-btn>
-      </div>
-    </div>
+    <project-settings-general :project="project"></project-settings-general>
   </div>
 </template>
 
@@ -80,9 +59,7 @@ export default {
   },
   data() {
     return {
-      editDescription: false,
       editProjectName: false,
-      savedDescription: "",
       savedName: "",
     };
   },
@@ -92,27 +69,7 @@ export default {
     requestClose() {
       this.$emit("update:active", false);
     },
-    startEditDescription() {
-      this.savedDescription = this.project.description;
-      this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.focus());
-    },
-
-    updateDescription() {
-      this.editDescription = false;
-      Meteor.call(
-        "projects.updateDescription", {
-          projectId: this.project._id,
-          description: this.project.description
-        }
-      );
-    },
-
-    cancelUpdateDescription() {
-      this.editDescription = false;
-      this.project.description = this.savedDescription;
-    },
-
+    
     startEditProjectName() {
       this.savedName = this.project.name;
       this.editProjectName = true;
