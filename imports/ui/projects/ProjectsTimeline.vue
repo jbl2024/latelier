@@ -16,12 +16,12 @@
         <v-progress-circular :size="50" color="primary" indeterminate></v-progress-circular>
       </div>
       <template v-if="!showProgress">
-        <v-toolbar dense class="toolbar">
+        <v-toolbar dense class="toolbar flex0">
           <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
         </v-toolbar>
       </template>
 
-      <div class="timeline">
+      <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
         <timeline
           ref="timeline"
           :items="getItems()"
@@ -56,6 +56,7 @@ import { ProjectStates } from "/imports/api/projects/projects.js";
 import { Timeline } from "vue2vis";
 import debounce from "lodash/debounce";
 import { mapState } from "vuex";
+import moment from "moment";
 
 export default {
   components: {
@@ -118,7 +119,10 @@ export default {
             content: "En cours"
           }
         ],
-        options: {}
+        options: {
+          orientation: "top",
+          zoomKey: "ctrlKey",
+        }
       },
       selectedProjectId: null,
       selectedProject: null
@@ -136,15 +140,17 @@ export default {
       return states;
     },
     getItems() {
-      var items = [];
+      const defaultBefore = moment().subtract(1, "weeks");
+      const defaultAfter = moment().add(1, "weeks");
+      const items = [];
       this.projects.map(project => {
         var item = {
           id: project._id,
           group: project.state,
           content: this.getProjectContent(project),
           className: "item",
-          start: project.startDate,
-          end: project.endDate
+          start: project.startDate || defaultBefore,
+          end: project.endDate || defaultAfter
         };
         items.push(item);
       });
@@ -186,6 +192,14 @@ export default {
 
     gotoToday() {
       this.$refs.timeline.moveTo(new Date());
+    },
+
+    onResizeTimelineContainer() {
+      const height = this.$refs.timelineContainer.offsetHeight;
+      console.log(height);
+      this.$refs.timeline.setOptions({
+        height: height
+      })
     }
   },
   meteor: {
@@ -217,13 +231,22 @@ export default {
 
 <style scoped>
 .projects-timeline {
-  background-color: white;
+  display: flex;
+  min-height:0;
+  height: 100%;
+  flex-direction: column;
   position: relative;
-  height: 100vh;
+  flex: 1;
+  background-color: white
 }
 
-.timeline {
-  margin-top: 24px;
+.flex0 {
+  flex: 0
+}
+
+.flex1 {
+  flex: 1;
+  overflow-y: auto;
 }
 
 .progress {
@@ -247,6 +270,12 @@ export default {
 .vis-item .vis-item-overflow {
   overflow: visible;
 }
+
+.test {
+  background-color: green;
+  height: 400px;
+}
+
 
 .panel {
   z-index: 4;
