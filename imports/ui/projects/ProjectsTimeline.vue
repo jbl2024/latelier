@@ -38,12 +38,12 @@
         stateless
         right
         fixed
-        :width="400"
       >
           <project-detail
             v-if="selectedProject"
             :project="selectedProject"
             :active.sync="showDrawer"
+            @refresh="refreshSelectedProject()"
           ></project-detail>
       </v-navigation-drawer>
     </template>
@@ -210,11 +210,6 @@ export default {
         const projectId = items[0];
         this.showDrawer = true;
         this.selectedProject = Projects.findOne({ _id: projectId });
-
-        // this.$router.push({
-        //   name: "project",
-        //   params: { projectId: projectId }
-        // });
       }
     },
     deselectGroup(str, index) {

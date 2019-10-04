@@ -1,41 +1,64 @@
 <template>
   <div class="project-detail">
+    <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
+    <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate" :disableTime="true"></select-date>
+    <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
+
     <div class="toolbar">
-      <div class="title edit toolbar-title" v-show="editProjectName">
-
-        <v-text-field
-          ref="name"
-          class="edit-name"
-          autofocus
-          outlined
-          solo
-          auto-grow
-          v-model="project.name"
-          @keydown.enter="updateProjectName"
-        ></v-text-field>
-        <v-btn icon @click="updateProjectName">
-          <v-icon>mdi-check-circle</v-icon>
-        </v-btn>
-        <v-btn icon @click="cancelProjectTaskName">
-          <v-icon>mdi-close-circle</v-icon>
-        </v-btn>
-      </div>
-
-      <div class="toolbar-button" v-if="!editProjectName">
+      <div class="toolbar-button">
         <v-btn icon text @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </div>
-
-      <div class="toolbar-title" @click="startEditProjectName" v-if="!editProjectName">
+      <div class="toolbar-title">
         <span class="project-name" v-html="linkifyHtml(project.name)"></span>
       </div>
-      <div class="toolbar-button" v-if="!editProjectName">
-      </div>
     </div>
-    <v-btn text :to="{name: 'project', params: { projectId: project._id }}">{{ $t('Open') }}</v-btn>
+    <v-divider></v-divider>
+    <div v-if="project.description && project.description.length > 0" class="ql-editor-view description" v-html="linkifyHtml(project.description)"></div>
+    <div v-if="!project.description || project.description.length == 0" class="ql-editor-view description">{{ $t('No description') }}</div>
+    <v-divider></v-divider>
 
-    <project-settings-general :project="project"></project-settings-general>
+    <v-list two-line>
+        <v-list-item @click="showSelectStartDate = true">
+          <v-list-item-action>
+            <v-icon>mdi-calendar-today</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="showSelectEndDate = true">
+          <v-list-item-action>
+            <v-icon>mdi-alarm-check</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
+        <v-list-item @click="showSelectColor = true">
+          <v-list-item-content>
+            <div class="color" ref="color" :style="getColor(project)"></div>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="removeColor()">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+
+    </v-list>
+    <v-divider></v-divider>
+
+    <project-menu :organizationId="project.organizationId" :projectId="project._id"></project-menu>
   </div>
 </template>
 
@@ -52,76 +75,84 @@ export default {
     active: Boolean,
     project: {
       type: Object
-    },
-    showTaskDetail: {
-      type: Boolean
     }
   },
   data() {
     return {
-      editProjectName: false,
-      savedName: "",
+      showSelectStartDate: false,
+      showSelectEndDate: false,
+      showSelectColor: false
     };
   },
-  meteor: {
-  },
+  meteor: {},
   methods: {
     requestClose() {
       this.$emit("update:active", false);
     },
-
-    startEditProjectName() {
-      this.savedName = this.project.name;
-      this.editProjectName = true;
-      this.$nextTick(() => this.$refs.name.focus());
-    },
-
-    updateProjectName() {
-      this.editProjectName = false;
-      Meteor.call(
-        "projects.updateName",{ 
-          projectId: this.project._id,
-          name: this.project.name
-        },
-        (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            this.project.name = this.savedName;
-            return;
-          }
+    onSelectStartDate(date) {
+      Meteor.call("projects.setStartDate", {projectId: this.project._id, startDate: date}, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
         }
-      );
+        this.$emit("refresh");
+      });
     },
 
-    cancelProjectTaskName() {
-      this.editProjectName = false;
-      this.project.name = this.savedName;
-    }
+    onSelectEndDate(date) {
+      Meteor.call("projects.setEndDate", {projectId: this.project._id, endDate: date}, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$emit("refresh");
+      });
+    },
+
+    onSelectColor(color) {
+      var hex = color.hex || "white";
+      this.$refs.color.style.backgroundColor = hex;
+      this.project.color = hex;
+      Meteor.call("projects.updateColor", {projectId: this.project._id, color: hex}, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$emit("refresh");
+      });
+    },
+
+    removeColor() {
+      this.project.color = "";
+      Meteor.call("projects.updateColor", {projectId: this.project._id, color: ""}, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        this.$emit("refresh");
+      });        
+    },
+
+    getColor(project) {
+      if (!project.color) {
+        return "background-color: white";
+      }
+      return "background-color: " + project.color;
+    },
+
 
   }
 };
 </script>
 
 <style scoped>
-
 .toolbar {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
-
-
-.project-name {
-  cursor: text;
-}
-.edit-name {
-  font-weight: normal;
-}
-.number {
-  color: rgba(0, 0, 0, 0.54);
-  font-size: 80%;
-  margin-right: 4px;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 
@@ -143,6 +174,17 @@ export default {
 .description {
   margin: 24px;
 }
+
+.actions {
+  margin: 24px;
+}
+
+.color {
+  height: 32px;
+  width: 100%;
+  border: 1px solid black
+}
+
 
 pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
