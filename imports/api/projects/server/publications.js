@@ -90,11 +90,9 @@ Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(or
   var userId = Meteor.userId();
   let query = {
     deleted: {$ne: true},
-    'startDate':{ $ne: null},
-    'endDate':{ $ne: null},
   }
   if (!Permissions.isAdmin(Meteor.userId())) {
-    query['$or'] = [{createdBy: userId}, {members: userId}, {isPublic: true}];
+    query['$or'] = [{members: userId}];
   }
 
   if (name && name.length > 0) {
