@@ -470,6 +470,21 @@ Projects.methods.setEndDate = new ValidatedMethod({
   }
 });
 
+Projects.methods.setDatesAndState = new ValidatedMethod({
+  name: "projects.setDatesAndState",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    startDate: { type: String, optional: true },
+    endDate: { type: String, optional: true },
+    state: { type: String, optional: true }
+  }).validator(),
+  run({projectId, startDate, endDate, state}) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+    Projects.update({ _id: projectId }, { $set: { startDate: startDate, endDate: endDate, state: state } });
+  }
+});
+
 Projects.methods.updateEstimatedSize = new ValidatedMethod({
   name: "projects.updateEstimatedSize",
   validate: new SimpleSchema({
@@ -663,6 +678,7 @@ if (Meteor.isServer) {
       checkLoggedIn();
       checkCanWriteProject(projectId);
       Projects.update({_id: projectId}, { $addToSet: { features: feature } })
+      return Projects.findOne({_id: projectId});
     }
   });
 
@@ -676,6 +692,7 @@ if (Meteor.isServer) {
       checkLoggedIn();
       checkCanWriteProject(projectId);
       Projects.update({ _id: projectId }, { $pull: { features: feature } });
+      return Projects.findOne({_id: projectId});
     }
   });
 

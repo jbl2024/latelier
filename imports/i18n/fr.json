@@ -128,6 +128,10 @@
   "Grant admin rights": "Donner les droits d'administration",
   "Remove admin rights": "Enlever les droits d'administration",
   "Profile": "Profil",
+  "Today": "Aujourd'hui",
+  "Zoom in": "Zoomer",
+  "Zoom out": "Dézoomer",
+  "Reset zoom": "Réinitialiser le zoom",
   "history": {
     "tasks": {
       "create": "Création",
