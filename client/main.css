@@ -34,13 +34,34 @@ html {
   }
 }
 
-.projects-timeline .timeline .vis-item .vis-item-content {
+.projects-timeline .vis-item {
+  border: none;
+  background-color: transparent;
+}
+
+.projects-timeline .vis-item .vis-item-content {
   padding: 0;
 }
 
-
 .vis-item .vis-item-overflow {
   overflow: visible;
+}
+
+.projects-timeline .timeline-custom-item {
+  border-radius: 4px;
+  min-height: 32px;
+  line-height: 32px;
+  margin:0; 
+  padding:5px;   
+}
+
+.projects-timeline .vis-item.vis-selected .timeline-custom-item {
+  /* filter: drop-shadow(0px 2px 1px #555); */
+  font-weight: bold;
+}
+
+.projects-timeline .timeline-custom-item-default-colors {
+  background-color: #b3d4fc;
 }
 
 p {

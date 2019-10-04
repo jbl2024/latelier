@@ -55,9 +55,11 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectStates } from "/imports/api/projects/projects.js";
+import { colors } from '/imports/colors.js'
+
+import { mapState } from "vuex";
 import { Timeline } from "vue2vis";
 import debounce from "lodash/debounce";
-import { mapState } from "vuex";
 import moment from "moment";
 
 export default {
@@ -170,6 +172,7 @@ export default {
       Object.keys(ProjectStates).map(state => {
         states.push({
           id: ProjectStates[state],
+          subgroupStack: true,
           content: this.$t(`projects.state.${state}`)
         });
       });
@@ -183,6 +186,7 @@ export default {
         var item = {
           id: project._id,
           group: project.state,
+          subgroup: project._id,
           content: this.getProjectContent(project),
           className: "item",
           start: project.startDate || defaultBefore,
@@ -196,7 +200,10 @@ export default {
     getProjectContent(project) {
       var name = project.name;
       var color = project.color || "";
-      return `<div style="margin:0; padding:5px; background-color: ${color}">${name}</div>`;
+      if (color !== "") {
+        return `<div class="timeline-custom-item" style="background-color: ${color}; color: ${colors.getLabelColor(color)}">${name}</div>`;
+      } 
+      return `<div class="timeline-custom-item timeline-custom-item-default-colors" style="background-color: ${color}">${name}</div>`;
     },
 
     onSelectProject(data) {
@@ -205,7 +212,6 @@ export default {
         const projectId = items[0];
         this.showDrawer = true;
         this.selectedProject = Projects.findOne({ _id: projectId });
-        this.$refs.timeline.focus(this.selectedProject._id);
 
         // this.$router.push({
         //   name: "project",
@@ -309,12 +315,8 @@ export default {
   overflow: visible;
 }
 
-.test {
-  background-color: green;
-  height: 400px;
-}
-
 .panel {
   z-index: 4;
 }
+
 </style>
