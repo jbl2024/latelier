@@ -14,6 +14,11 @@
 
       <v-toolbar dense class="toolbar flex0">
         <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
+        <v-divider vertical></v-divider>
+        <tooltip-button bottom icon="mdi-magnify" :tooltip="$t('Reset zoom')" @on="zoomReset()"></tooltip-button>
+        <tooltip-button bottom icon="mdi-magnify-minus" :tooltip="$t('Zoom out')" @on="zoomOut()"></tooltip-button>
+        <tooltip-button bottom icon="mdi-magnify-plus" :tooltip="$t('Zoom in')" @on="zoomIn()"></tooltip-button>
+        <v-divider vertical></v-divider>
       </v-toolbar>
 
       <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
@@ -117,6 +122,8 @@ export default {
         options: {
           orientation: "top",
           zoomKey: "ctrlKey",
+          zoomMax: 31556952000 * 4, // 4 years
+          zoomMin: 24 * 1000 * 60 * 60, // 24 hours
           editable: {
             updateTime: true,
             updateGroup: true,
@@ -214,6 +221,18 @@ export default {
       this.$refs.timeline.moveTo(new Date());
     },
 
+    zoomOut() {
+      this.$refs.timeline.zoomOut(0.4);
+    },
+
+    zoomIn() {
+      this.$refs.timeline.zoomIn(0.4);
+    },
+
+    zoomReset() {
+      this.$refs.timeline.fit();
+    },
+
     onResizeTimelineContainer() {
       const height = this.$refs.timelineContainer.offsetHeight;
       this.$refs.timeline.setOptions({
@@ -222,10 +241,11 @@ export default {
     },
 
     handleMove(item, cb) {
-      Meteor.call("projects.setDates", {
+      Meteor.call("projects.setDatesAndState", {
         projectId: item.id,
         startDate: moment(item.start).format("YYYY-MM-DD HH:mm"),
-        endDate: moment(item.end).format("YYYY-MM-DD HH:mm")
+        endDate: moment(item.end).format("YYYY-MM-DD HH:mm"),
+        state: item.group
       }, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
