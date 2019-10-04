@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Improve projects timeline (move, resize, access to project menu)
 
 ### Changed
 - Update occitan translation, by Quenty31
