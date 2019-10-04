@@ -470,17 +470,18 @@ Projects.methods.setEndDate = new ValidatedMethod({
   }
 });
 
-Projects.methods.setDates = new ValidatedMethod({
-  name: "projects.setDates",
+Projects.methods.setDatesAndState = new ValidatedMethod({
+  name: "projects.setDatesAndState",
   validate: new SimpleSchema({
     projectId: { type: String },
     startDate: { type: String, optional: true },
-    endDate: { type: String, optional: true }
+    endDate: { type: String, optional: true },
+    state: { type: String, optional: true }
   }).validator(),
-  run({projectId, startDate, endDate}) {
+  run({projectId, startDate, endDate, state}) {
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
-    Projects.update({ _id: projectId }, { $set: { startDate: startDate, endDate: endDate } });
+    Projects.update({ _id: projectId }, { $set: { startDate: startDate, endDate: endDate, state: state } });
   }
 });
 

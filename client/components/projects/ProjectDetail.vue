@@ -33,8 +33,6 @@
       <div class="toolbar-button" v-if="!editProjectName">
       </div>
     </div>
-    <v-divider></v-divider>
-
     <project-settings-general :project="project"></project-settings-general>
   </div>
 </template>
@@ -69,7 +67,7 @@ export default {
     requestClose() {
       this.$emit("update:active", false);
     },
-    
+
     startEditProjectName() {
       this.savedName = this.project.name;
       this.editProjectName = true;
