@@ -33,6 +33,8 @@
       <div class="toolbar-button" v-if="!editProjectName">
       </div>
     </div>
+    <v-btn text :to="{name: 'project', params: { projectId: project._id }}">{{ $t('Open') }}</v-btn>
+
     <project-settings-general :project="project"></project-settings-general>
   </div>
 </template>
@@ -101,6 +103,7 @@ export default {
 </script>
 
 <style scoped>
+
 .toolbar {
   display: flex;
   flex-direction: row;
