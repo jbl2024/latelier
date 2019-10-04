@@ -40,13 +40,11 @@
         fixed
         :width="400"
       >
-        <v-card>
           <project-detail
             v-if="selectedProject"
             :project="selectedProject"
             :active.sync="showDrawer"
           ></project-detail>
-        </v-card>
       </v-navigation-drawer>
     </template>
   </div>
@@ -124,7 +122,7 @@ export default {
         options: {
           orientation: "top",
           zoomKey: "ctrlKey",
-          zoomMax: 31556952000 * 4, // 4 years
+          zoomMax: 31556952000 * 3, // 4 years
           zoomMin: 24 * 1000 * 60 * 60, // 24 hours
           editable: {
             updateTime: true,
