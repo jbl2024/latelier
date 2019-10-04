@@ -213,7 +213,6 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
-import { mapState } from "vuex";
 
 export default {
   name: "project-settings-general",
@@ -227,7 +226,9 @@ export default {
     }
   },
   computed: {
-    ...mapState(["projectFeatures"]),
+    projectFeatures() {
+      return (this.project && this.project.features) || [];
+    },
     allowedOrganization: {
       get() {
         return this.project && this.project.accessRights === ProjectAccessRights.ORGANIZATION
@@ -313,13 +314,13 @@ export default {
 
     onSelectFeature(feature) {
       Meteor.call("projects.addFeature", {projectId: this.project._id, feature: feature}, (error, result) => {
-        this.$store.dispatch("reloadProjectFeatures", this.project._id);
+        this.project.features = result.features;
       });
     },
 
     removeFeature(feature) {
       Meteor.call("projects.removeFeature", {projectId: this.project._id, feature: feature}, (error, result) => {
-        this.$store.dispatch("reloadProjectFeatures", this.project._id);
+        this.project.features = result.features;
       });
     },
 

@@ -678,6 +678,7 @@ if (Meteor.isServer) {
       checkLoggedIn();
       checkCanWriteProject(projectId);
       Projects.update({_id: projectId}, { $addToSet: { features: feature } })
+      return Projects.findOne({_id: projectId});
     }
   });
 
@@ -691,6 +692,7 @@ if (Meteor.isServer) {
       checkLoggedIn();
       checkCanWriteProject(projectId);
       Projects.update({ _id: projectId }, { $pull: { features: feature } });
+      return Projects.findOne({_id: projectId});
     }
   });
 
