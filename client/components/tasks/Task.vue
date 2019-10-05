@@ -171,7 +171,7 @@ export default {
     },
     isLate: {
       get() {
-        return this.task && this.task.dueDate && this.task.dueDate <= new Date();
+        return this.task && this.task.dueDate && this.task.dueDate <= new Date() && !this.task.completed;
       }
     }
   },
