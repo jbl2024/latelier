@@ -3,6 +3,12 @@
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
   "notificationsPerUser": 50,
+  "elasticApm": {
+    "enabled": true,
+    "options": {
+      "serviceName": "latelier"
+    }
+  },
   "users": {
     "search": "admin",
     "invite": "admin"
