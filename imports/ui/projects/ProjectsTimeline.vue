@@ -31,8 +31,8 @@
         ></timeline>
       </div>
       <v-navigation-drawer
-        :clipped="$vuetify.breakpoint.lgAndUp"
         class="elevation-16 panel"
+        :width="$vuetify.breakpoint.xsOnly ? '100%' : '256px'"
         v-model="showDrawer"
         absolute
         stateless
