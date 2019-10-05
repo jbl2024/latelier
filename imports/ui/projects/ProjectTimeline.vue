@@ -263,12 +263,12 @@ export default {
     },
 
     getStartContent() {
-      const start = this.$t('Start');
+      const start = this.$t('Start date');
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${start}</div>`;
     },
 
     getEndContent() {
-      const end = this.$t('End');
+      const end = this.$t('End date');
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${end}</div>`;
     }
     
