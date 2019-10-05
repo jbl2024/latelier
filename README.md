@@ -45,6 +45,7 @@ Settings:
 |uploadTransport        | string        | ddp                      | http or ddp |
 |notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
 |users                  | object        | {}                       | See below |
+|elasticApm             | object        | {}                       | See below |
 
 users:
 
@@ -60,6 +61,14 @@ sso:
 |-----------------------|---------------|--------------------------|----------------------------|
 | enabled               | boolean       | false                    | If true, sso is enabled    |
 | email                 | string        | null                     | email header to match user |
+
+
+elasticApm: 
+
+| Key                   | Type          | Default value            | Description                |
+|-----------------------|---------------|--------------------------|----------------------------|
+| enabled               | boolean       | false                    | If true, elastic-apm is enabled    |
+| options               | object        | {}                       | see https://github.com/kschingiz/meteor-elastic-apm |
 
 
 Example:
