@@ -704,7 +704,7 @@ if (Meteor.isServer) {
     run({projectId}) {
       checkLoggedIn();
       checkCanReadProject(projectId);
-      const project = Projects.findOne({_id: projectId});
+      const project = Projects.findOne({_id: projectId}, {fields: {features: 1}});
       return project.features || [];
     }
   });
