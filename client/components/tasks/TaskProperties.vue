@@ -203,6 +203,8 @@ export default {
     },
 
     loadEstimationFeature(task) {
+      if (!task.projectId) return;
+
       const currentProjectId = this.$store.state.currentProjectId;
       if (task.projectId === currentProjectId) {
         this.isEstimationEnabled = this.$store.getters.hasProjectFeature('estimation');

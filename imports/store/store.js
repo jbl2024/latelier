@@ -107,15 +107,19 @@ export const store = new Vuex.Store({
     },
     setCurrentProjectId (context, projectId) {
       context.commit('projectFilters/clearSelectedLabels');
-      Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
-        context.commit("setProjectFeatures", result);
-      })
+      if (projectId != 0) {
+        Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
+          context.commit("setProjectFeatures", result);
+        })
+      }
       context.commit('updateCurrentProjectId', projectId);
     },
     reloadProjectFeatures (context, projectId) {
-      Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
-        context.commit("setProjectFeatures", result);
-      })
+      if (projectId != 0) {
+          Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
+          context.commit("setProjectFeatures", result);
+        })
+      }
     },
     setCurrentOrganizationId (context, organizationId) {
       context.commit('clearSelectedGroup');
