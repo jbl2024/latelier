@@ -120,6 +120,10 @@ export default {
           }
         ],
         options: {
+          moment: (date) => {
+            if (moment.locale() !== this.$i18n.locale) moment.locale(this.$i18n.locale);
+            return moment(date);
+          },
           orientation: "top",
           zoomKey: "ctrlKey",
           zoomMax: 31556952000 * 3, // 4 years
