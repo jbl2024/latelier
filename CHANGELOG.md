@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve projects timeline (move, resize, access to project menu)
 
 ### Changed
+- Update vuetify to 2.1.1
 - Fix i18n on projects timeline
 - Update occitan translation, by Quenty31
 - Fix warning color on date
