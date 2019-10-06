@@ -4,7 +4,7 @@
     <template v-if="!$subReady.project">
       <v-progress-linear indeterminate></v-progress-linear>
     </template>
-    <template v-if="$subReady.project">
+    <template v-if="$subReady.project && project">
       <empty-state v-show="count == 0" icon="mdi-chart-timeline-variant" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
       </empty-state>
 
@@ -160,7 +160,7 @@ export default {
       return groups;
     },
 
-    getItems() {
+    getItems() {      
       var items = [];
       var tasks = this.tasks;
 
@@ -191,6 +191,10 @@ export default {
         const completed = task.completed;
         const completedAt = task.completedAt;
 
+        if (completed && completedAt) {
+          end = completedAt;
+        }
+
         let type = "range";
         if (!start || !end) {
           type = "point";
@@ -200,14 +204,7 @@ export default {
           start = end;
         }
 
-        if (completed && completedAt) {
-          end = completedAt;
-          if (start !== end) {
-            type = "range";
-          }
-        }
-
-        if (!start || !end) {
+        if (!start && !end) {
           return;
         }
 
@@ -222,7 +219,6 @@ export default {
         };
         items.push(item);
       });
-
       setTimeout(() => { 
         if (this.$refs.timeline && this.$refs.timeline.redraw) {
           this.$refs.timeline.redraw();
