@@ -5,16 +5,26 @@
       <v-progress-linear indeterminate></v-progress-linear>
     </template>
     <template v-if="$subReady.project && project">
+      <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
+  
       <empty-state v-show="count == 0" icon="mdi-chart-timeline-variant" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
       </empty-state>
 
-      <v-toolbar dense class="toolbar flex0">
+      <v-toolbar dense class="toolbar flex0" ref="toolbar" v-resize="onResizeToolbar">
+
+
         <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
         <v-divider vertical></v-divider>
         <tooltip-button bottom icon="mdi-magnify" :tooltip="$t('Reset zoom')" @on="zoomReset()"></tooltip-button>
         <tooltip-button bottom icon="mdi-magnify-minus" :tooltip="$t('Zoom out')" @on="zoomOut()"></tooltip-button>
         <tooltip-button bottom icon="mdi-magnify-plus" :tooltip="$t('Zoom in')" @on="zoomIn()"></tooltip-button>
         <v-divider vertical></v-divider>
+
+        <v-btn icon @click="showFiltersDialog = true" v-if="showFilters">
+          <v-icon>mdi-filter-variant</v-icon>
+        </v-btn>
+
+        <project-filters :projectId="project._id" v-if="!showFilters" class="ml-3"></project-filters>
       </v-toolbar>
 
       <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
@@ -31,6 +41,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Timeline } from "vue2vis";
+import { mapState } from "vuex";
 
 import moment from "moment";
 
@@ -62,8 +73,17 @@ export default {
       default: "0"
     }
   },
+  computed: {
+    ...mapState("projectFilters", {
+      selectedLabels: state => state.selectedLabels,
+      selectedAssignedTos: state => state.selectedAssignedTos,
+      selectedUpdatedBy: state => state.selectedUpdatedBy
+    })
+  },
   data() {
     return {
+      showFilters: false,
+      showFiltersDialog: false,
       showTaskDetail: false,
       selectedTask: {},
       filterName: "",
@@ -106,11 +126,14 @@ export default {
       params() {
         return {
           name: this.filterName,
-          projectId: this.projectId
+          projectId: this.projectId,
+          labels: this.selectedLabels,
+          assignedTos: this.selectedAssignedTos,
+          updatedBy: this.selectedUpdatedBy
         };
       },
       deep: false,
-      update({ name, projectId }) {
+      update({ name, projectId, labels, assignedTos, updatedBy }) {
         var query = {
           projectId: this.projectId,
           $or: [{ startDate: { $ne: null } }, { dueDate: { $ne: null } }, { completed: true }]
@@ -119,6 +142,27 @@ export default {
         if (name && name.length > 0) {
           query.name = { $regex: ".*" + name + ".*", $options: "i" };
         }
+
+        if (labels && labels.length > 0) {
+          query.labels = {
+            $in: labels.map(label => {
+              return label._id;
+            })
+          };
+        }
+
+        if (assignedTos && assignedTos.length > 0) {
+          query.assignedTo = {
+            $in: assignedTos
+          };
+        }
+
+        if (updatedBy && updatedBy.length > 0) {
+          query.updatedBy = {
+            $in: updatedBy
+          };
+        }
+
         return Tasks.find(query);
       }
     },
@@ -279,7 +323,18 @@ export default {
     getEndContent() {
       const end = this.$t('End date');
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${end}</div>`;
+    },
+
+    onResizeToolbar() {
+      const toolbar = this.$refs.toolbar.$el;
+      const width = toolbar.offsetWidth;
+      if (width < 780) {
+        this.showFilters = true;
+      } else {
+        this.showFilters = false;
+      }
     }
+
     
   }
 };
