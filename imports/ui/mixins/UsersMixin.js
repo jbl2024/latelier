@@ -56,7 +56,7 @@ export default {
 
     getAvatarForUser(user) {
       user = getUser(user);
-      if (!user) return;
+      if (!user || !user.profile) return;
       return user.profile.avatar;
     }
   }
