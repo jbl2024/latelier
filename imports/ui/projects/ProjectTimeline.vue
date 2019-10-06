@@ -115,7 +115,7 @@ export default {
       update({ name, projectId }) {
         var query = {
           projectId: this.projectId,
-          $or: [{ startDate: { $ne: null } }, { dueDate: { $ne: null } }]
+          $or: [{ startDate: { $ne: null } }, { dueDate: { $ne: null } }, { completed: true }]
         };
 
         if (name && name.length > 0) {
@@ -185,10 +185,13 @@ export default {
       }
 
       tasks.map(task => {
-        var start = task.startDate;
-        var end = task.dueDate;
-        var type = "range";
+        let start = task.startDate;
+        let end = task.dueDate;
+        
+        const completed = task.completed;
+        const completedAt = task.completedAt;
 
+        let type = "range";
         if (!start || !end) {
           type = "point";
         }
@@ -196,7 +199,19 @@ export default {
         if (!start) {
           start = end;
         }
-        var item = {
+
+        if (completed && completedAt) {
+          end = completedAt;
+          if (start !== end) {
+            type = "range";
+          }
+        }
+
+        if (!start || !end) {
+          return;
+        }
+
+        const item = {
           id: task._id,
           group: task.listId,
           subgroup: task._id,
