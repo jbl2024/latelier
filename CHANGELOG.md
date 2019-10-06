@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Support for elastic-apm
+- Support for meteor-elastic-apm (see https://github.com/kschingiz/meteor-elastic-apm)
 - Improve project timeline
 - Improve projects timeline (move, resize, access to project menu)
 
