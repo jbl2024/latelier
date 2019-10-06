@@ -27,7 +27,7 @@
               </template>
             </template>
             <template v-slot:selection="{ item, index }">
-              <v-chip small :style="getStyleForChip(item)" v-if="index === 0">{{ item.name }}</v-chip>
+              <v-chip small :style="getStyleForChip(item)" v-if="index === 0">{{ ellipsis(item.name, 15) }}</v-chip>
               <span
                 v-if="index === 1"
                 class="grey--text caption"
@@ -200,6 +200,10 @@ export default {
         return aLabel._id === item._id;
       });
       return isSelected;
+    },
+
+    ellipsis(item, n) {
+      return (item.length > n) ? item.substr(0, n-1) + '…' : item;
     }
   }
 };
