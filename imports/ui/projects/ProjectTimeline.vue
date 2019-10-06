@@ -32,7 +32,6 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Timeline } from "vue2vis";
 
-import debounce from "lodash/debounce";
 import moment from "moment";
 
 export default {
@@ -45,13 +44,13 @@ export default {
       this.$store.dispatch('selectTask', null);
       this.$store.dispatch('showTaskDetail', false);
     });
-  },
-  created() {
-    this.debouncedFilter = debounce(val => {
-      this.filterName = val;
-    }, 400);
+    this.$events.listen("filter-tasks", name => {
+      this.filterName = name;
+    });
+
   },
   beforeDestroy() {
+    this.$events.off("filter-tasks");
     this.$store.dispatch("setCurrentProjectId", 0);
     this.$store.dispatch('selectTask', null);
     this.$store.dispatch('showTaskDetail', false);
@@ -67,7 +66,6 @@ export default {
     return {
       showTaskDetail: false,
       selectedTask: {},
-      debouncedFilter: "",
       filterName: "",
       timeline: {
         groups: [
