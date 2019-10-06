@@ -4,6 +4,7 @@
       v-model="savedValue"
       text
       solo-inverted
+      color="primary"
       hide-details
       clearable
       prepend-inner-icon="mdi-magnify"

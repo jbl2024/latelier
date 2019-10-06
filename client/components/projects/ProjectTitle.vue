@@ -36,8 +36,8 @@
     <v-text-field
       v-model="savedValue"
       v-show="!editProjectName"
-      text
       solo-inverted
+      color="primary"
       hide-details
       prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
@@ -50,6 +50,7 @@
         style="width: 500px"
         text
         solo-inverted
+        color="primary"
         hide-details
         prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
