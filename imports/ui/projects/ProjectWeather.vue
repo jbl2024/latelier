@@ -154,7 +154,6 @@ export default {
 
     onResize() {
       const width = this.$refs.container.offsetWidth;
-      console.log(width)
       if (width < 780 && !this.$vuetify.breakpoint.xsOnly) {
         this.narrow = true;
       } else {

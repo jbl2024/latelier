@@ -188,7 +188,6 @@ export default {
     },
 
     objectSortOccurred({ oldIndex, newIndex }) {
-      console.log('coucou')
       const moved = this.task.checklist.splice(oldIndex, 1)[0];
       this.task.checklist.splice(newIndex, 0, moved);
       Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
