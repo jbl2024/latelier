@@ -7,9 +7,6 @@
     <template v-if="$subReady.project && project">
       <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
   
-      <empty-state v-show="count == 0" icon="mdi-chart-timeline-variant" label="Aucune tache" description="Seules les taches avec une date de début ou de fin sont affichées ici.">
-      </empty-state>
-
       <v-toolbar dense class="toolbar flex0" ref="toolbar" v-resize="onResizeToolbar">
 
 
@@ -165,21 +162,7 @@ export default {
 
         return Tasks.find(query);
       }
-    },
-    count: {
-      params() {
-        return {
-          projectId: this.projectId
-        };
-      },
-      update({ projectId }) {
-        var query = {
-          projectId: this.projectId,
-          $or: [{ startDate: { $ne: null } }, { dueDate: { $ne: null } }]
-        };
-        return Tasks.find(query);
-      }
-    },
+    }
   },
   methods: {
     getGroups() {
