@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Do not display empty state on project timeline
 
 ### Removed
+- Useless changelog statements
 
 ## [Unreleased]
 
