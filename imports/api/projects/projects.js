@@ -310,6 +310,7 @@ Projects.methods.clone = new ValidatedMethod({
   }).validator(),
   run({projectId}) {
     checkLoggedIn();
+    checkCanReadProject(projectId);
     var project = Projects.findOne(projectId);
     if (!project) {
       throw new Meteor.Error("invalid-project");
@@ -359,6 +360,11 @@ Projects.methods.clone = new ValidatedMethod({
         Meteor.call("tasks.clone", task._id, task.name, newProjectId, newListId, true /* keepDates */);
       });
     });
+
+    Meteor.call("permissions.initializeProjectPermissions", {
+      projectId: newProjectId,
+    });
+
     return newProjectId;
   }
 });

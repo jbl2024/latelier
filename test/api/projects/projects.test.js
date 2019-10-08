@@ -40,6 +40,43 @@ if (Meteor.isServer) {
       expect(projectB.members).to.be.an('array').that.include(userId);
     });
 
+    it("clone project keep admins", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = {userId: userId};
+      const projectA_id = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      })
+      expect(projectA_id).to.not.be.null;
+      Permissions.setAdmin(userId, projectA_id);
+
+      const projectB_id = Projects.methods.clone._execute(context, {
+        projectId: projectA_id
+      })
+      expect(projectB_id).to.not.be.null;
+      expect(Permissions.isAdmin(userId, projectA_id)).to.be.true;
+      expect(Permissions.isAdmin(userId, projectB_id)).to.be.true;
+    });
+
+    it("clone project give admins rights", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = {userId: userId};
+      const projectA_id = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      })
+      expect(projectA_id).to.not.be.null;
+
+      const projectB_id = Projects.methods.clone._execute(context, {
+        projectId: projectA_id
+      })
+      expect(projectB_id).to.not.be.null;
+      expect(Permissions.isAdmin(userId, projectA_id)).to.be.true;
+      expect(Permissions.isAdmin(userId, projectB_id)).to.be.true;
+    });
+
     it("clone project keep features", async function() {
       const userId = Meteor.users.findOne()._id;
       const context = {userId: userId};
