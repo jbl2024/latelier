@@ -17,7 +17,7 @@
             </v-btn>
 
             <template v-if="!organizationId">{{ $t('Organizations & Projects')}}</template>
-            <template v-if="organizationId">{{ organization.name }}</template>
+            <template v-if="organizationId && organization">{{ organization.name }}</template>
           </v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
