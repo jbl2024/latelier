@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.4.1] - 2019-10-08
+
+### Added
+
+### Changed
 - Fix navigation from project to organization when user is not member of organization
 - Fix i18n for "clone project" dialog
 - Give admin rights to user when cloning a project
