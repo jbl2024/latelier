@@ -132,6 +132,7 @@
   "Zoom in": "Zoomer",
   "Zoom out": "Dézoomer",
   "Reset zoom": "Réinitialiser le zoom",
+  "Do you really want to clone this project?": "Voulez-vous dupliquer ce projet ?",
   "history": {
     "tasks": {
       "create": "Création",

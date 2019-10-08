@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix i18n for "clone project" dialog
 - Give admin rights to user when cloning a project
 - Do not display empty state on project timeline
 
