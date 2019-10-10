@@ -35,7 +35,6 @@
             </v-btn>
           </div>
         </div>
-        <v-divider inset :key="`divider-${note._id}`"></v-divider>
       </template>
 
 
@@ -143,7 +142,7 @@ pre {
 }
 
 .note {
-  margin: 8px;
+  margin: 30px;
 }
 
 .metadata {
