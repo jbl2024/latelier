@@ -1,8 +1,8 @@
 <template>
   <div class="task-notes">
 
-      <template v-for="note in task.notes">
-        <div class="note" :key="note._id">
+      <template v-for="(note, index) in task.notes">
+        <div :class="{note: true, 'note-odd': index %2 === 0, 'note-even': index % 2 !== 0}" :key="note._id">
         
           <div class="note-avatar">
             <author-avatar small :user-id="note.createdBy"></author-avatar> 
@@ -14,7 +14,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div class="ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
+              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn text icon @click="updateNote">
@@ -197,4 +197,31 @@ pre {
 .add-note {
   margin-top: 8px;
 }
+
+.note-odd .bubble {
+  background-color: #e6e9f1;
+  padding: 18px;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;  
+}
+
+
+.note-even {
+  flex-direction: row-reverse;
+}
+
+.note-even .bubble {
+  background-color: #4b93fe;
+  color: white;
+  padding: 18px;
+  border-top-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.note-even .note-author {
+  text-align: right;
+}
+
 </style>
