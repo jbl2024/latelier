@@ -242,5 +242,20 @@ pre {
   margin-left: 12px;
 }
 
+@media (max-width: 600px) {
+  .note {
+    margin: 12px;
+  }
+
+  .note-left .bubble {
+    margin-right: 12px;
+  }
+
+  .note-right .bubble {
+    margin-left: 12px;
+  }
+}
+
+
 
 </style>
