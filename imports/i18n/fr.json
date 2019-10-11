@@ -133,6 +133,9 @@
   "Zoom out": "Dézoomer",
   "Reset zoom": "Réinitialiser le zoom",
   "Do you really want to clone this project?": "Voulez-vous dupliquer ce projet ?",
+  "Send": "Envoyer",
+  "Delete note?": "Supprimer la note?",
+  "Note deleted": "Note supprimée",
   "history": {
     "tasks": {
       "create": "Création",

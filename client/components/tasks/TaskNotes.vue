@@ -2,10 +2,18 @@
   <div class="task-notes">
 
       <template v-for="note in task.notes">
-        <div class="note" :key="note._id">
+        <div :class="{note: true, 'note-left': !isMe(note.createdBy), 'note-right': isMe(note.createdBy)}" :key="note._id">
         
           <div class="note-avatar">
             <author-avatar small :user-id="note.createdBy"></author-avatar> 
+            <div class="note-actions" v-if="!isNoteEdited(note._id) && canEditNote(note)">
+              <v-btn small icon ripple @click="startEditNote(note)">
+                <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn small icon ripple @click="deleteNote(note)">
+                <v-icon small color="grey lighten-1">mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </div>
 
           <div class="note-content">
@@ -14,7 +22,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div class="ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
+              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)" @click.stop="startEditNote(note)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn text icon @click="updateNote">
@@ -26,30 +34,20 @@
               </template>
           </div>
 
-          <div class="note-actions" v-if="!isNoteEdited(note._id)">
-            <v-btn small icon ripple @click="startEditNote(note)">
-              <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn small icon ripple @click="deleteNote(note)">
-              <v-icon small color="grey lighten-1">mdi-delete</v-icon>
-            </v-btn>
-          </div>
         </div>
-        <v-divider inset :key="`divider-${note._id}`"></v-divider>
       </template>
 
-
-      <div class="note">
-        <div class="note-avatar">
-          <author-avatar small :user-id="currentUserId"></author-avatar> 
-        </div>
-        <div class="note-content">
-          <author-line class="note-author" :user-id="currentUserId"></author-line>
-          <rich-editor v-model="note" @submit="addNote"></rich-editor>
-          <v-btn color="primary" class="add-note" @click="addNote">
-            {{ $t('Add note') }}
-          </v-btn>
-        </div>
+      <v-divider v-if="task.notes && task.notes.length > 0"></v-divider>
+      <div class="add-note">
+          <div class="input">
+            <rich-editor no-border autofocus v-model="note" @submit="addNote" class="input"></rich-editor>
+          </div>
+          <div class="action">
+            <v-btn @click="addNote" color="primary" :disabled="!note">
+              {{ $t('Send') }} (⇧ + ⏎)
+              <v-icon small right>mdi-send</v-icon>
+            </v-btn>
+          </div>
       </div>
   </div>
 </template>
@@ -96,7 +94,21 @@ export default {
     },
 
     deleteNote(note) {
-      Meteor.call("tasks.removeNote", this.task._id, note._id);
+      this.$confirm(this.$t("Delete note?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+            Meteor.call("tasks.removeNote", this.task._id, note._id, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('Note deleted'));
+          });
+        }
+      });
     },
 
     formatUser(userId) {
@@ -105,6 +117,7 @@ export default {
     },
 
     startEditNote(note) {
+      if (!this.canEditNote(note)) return;
       this.selectedNote = note;
     },
 
@@ -125,6 +138,14 @@ export default {
     cancelUpdateNote() {
       this.selectedNote = null;
     },
+
+    isMe(userId) {
+      return userId && Meteor.userId() && userId === Meteor.userId();
+    },
+
+    canEditNote(note) {
+      return  Meteor.userId() && note.createdBy === Meteor.userId();
+    }
   }
 };
 </script>
@@ -143,7 +164,7 @@ pre {
 }
 
 .note {
-  margin: 8px;
+  margin: 30px;
 }
 
 .metadata {
@@ -178,7 +199,7 @@ pre {
 
 .note-avatar {
   flex: 0;
-  margin-right: 24px;
+  margin-right: 12px;
 }
 
 .note-content {
@@ -197,4 +218,85 @@ pre {
 .add-note {
   margin-top: 8px;
 }
+
+
+.note-left .bubble {
+  background-color: #e6e9f1;
+  padding: 18px;
+  margin-right: 80px;
+
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;  
+}
+
+
+.note-right {
+  flex-direction: row-reverse;
+}
+
+.note-right .bubble {
+  background-color: #4b93fe;
+  color: white;
+  padding: 18px;
+  margin-left: 80px;
+  border-top-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  border-bottom-left-radius: 12px;
+}
+
+.note-right .note-author {
+  text-align: right;
+}
+
+.note-right .note-avatar {
+  margin-right: auto;
+  margin-left: 12px;
+}
+
+
+.add-note {
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+}
+
+.add-note .input { 
+  flex: 1;
+}
+
+.add-note .action {
+  flex: 1;
+  text-align: right;
+  margin-top: 4px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.add-note .action .v-btn {
+  background-color: #4b93fe !important;
+}
+
+@media (max-width: 600px) {
+  .note {
+    margin: 12px;
+  }
+
+  .note-left .bubble {
+    margin-right: 12px;
+  }
+
+  .note-right .bubble {
+    margin-left: 12px;
+  }
+  .add-note {
+    margin: 12px;
+  }
+}
+
+
+
+
 </style>
