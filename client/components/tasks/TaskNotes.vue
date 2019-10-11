@@ -22,7 +22,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)" @click.stop="startEditNote(note)"></div>
+              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)" @click.self="startEditNote(note)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn text icon @click="updateNote">
@@ -245,6 +245,7 @@ pre {
   border-bottom-left-radius: 12px;
 }
 
+
 .note-right .note-author {
   text-align: right;
 }
@@ -295,8 +296,13 @@ pre {
     margin: 12px;
   }
 }
+</style>
 
-
-
-
+<style>
+.note-right .linkified {
+  color: white !important;
+}
+.note-right .task-number {
+  color: white !important;
+}
 </style>
