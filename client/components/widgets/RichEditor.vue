@@ -1,6 +1,6 @@
 <template>
   <vue-editor
-    class="editor"
+    :class="{editor: true, 'no-border': noBorder}"
     v-model="content"
     ref="editor"
     :editorOptions="editorSettings"
@@ -22,6 +22,10 @@ export default {
       default: ""
     },
     autofocus: {
+      type: Boolean,
+      default: false
+    },
+    noBorder: {
       type: Boolean,
       default: false
     }
@@ -84,8 +88,19 @@ export default {
   height: 16px !important;
 }
 
+
 .ql-editor {
   min-height:120px !important;
+}
+
+.no-border .ql-toolbar.ql-snow {
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+
+.no-border .ql-container.ql-snow {
+  border: none;
 }
 
 </style>

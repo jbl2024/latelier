@@ -16,7 +16,6 @@
             </div>
           </div>
 
-
           <div class="note-content">
               <author-line class="note-author" :user-id="note.createdBy" :date="note.createdAt">
                 <span v-if="note.edited">
@@ -38,18 +37,17 @@
         </div>
       </template>
 
-
-      <div class="note">
-        <div class="note-avatar">
-          <author-avatar small :user-id="currentUserId"></author-avatar> 
-        </div>
-        <div class="note-content">
-          <author-line class="note-author" :user-id="currentUserId"></author-line>
-          <rich-editor v-model="note" @submit="addNote"></rich-editor>
-          <v-btn color="primary" class="add-note" @click="addNote">
-            {{ $t('Add note') }}
-          </v-btn>
-        </div>
+      <v-divider v-if="task.notes && task.notes.length > 0"></v-divider>
+      <div class="add-note">
+          <div class="input">
+            <rich-editor no-border autofocus v-model="note" @submit="addNote" class="input"></rich-editor>
+          </div>
+          <div class="action">
+            <v-btn @click="addNote" color="primary" :disabled="!note">
+              {{ $t('Send') }} (⇧ + ⏎)
+              <v-icon small right>mdi-send</v-icon>
+            </v-btn>
+          </div>
       </div>
   </div>
 </template>
@@ -96,7 +94,21 @@ export default {
     },
 
     deleteNote(note) {
-      Meteor.call("tasks.removeNote", this.task._id, note._id);
+      this.$confirm(this.$t("Delete note?"), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then(res => {
+        if (res) {
+            Meteor.call("tasks.removeNote", this.task._id, note._id, (error, result) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.$store.dispatch("notify", this.$t('Note deleted'));
+          });
+        }
+      });
     },
 
     formatUser(userId) {
@@ -242,6 +254,31 @@ pre {
   margin-left: 12px;
 }
 
+
+.add-note {
+  margin: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+}
+
+.add-note .input { 
+  flex: 1;
+}
+
+.add-note .action {
+  flex: 1;
+  text-align: right;
+  margin-top: 4px;
+  margin-right: 4px;
+  margin-bottom: 4px;
+}
+
+.add-note .action .v-btn {
+  background-color: #4b93fe !important;
+}
+
 @media (max-width: 600px) {
   .note {
     margin: 12px;
@@ -254,7 +291,11 @@ pre {
   .note-right .bubble {
     margin-left: 12px;
   }
+  .add-note {
+    margin: 12px;
+  }
 }
+
 
 
 
