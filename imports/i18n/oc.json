@@ -128,6 +128,11 @@
   "Grant admin rights": "Donar los dreches d’admin",
   "Remove admin rights": "Tirar los dreches d’admin",
   "Profile": "Perfil",
+  "Today": "Uèi",
+  "Zoom in": "Agrandir",
+  "Zoom out": "Reduire",
+  "Reset zoom": "Restablir zoom",
+  "Do you really want to clone this project?": "Volètz vertadièrament clonar aqueste projècte ?",
   "history": {
     "tasks": {
       "create": "Creacion",
