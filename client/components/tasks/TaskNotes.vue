@@ -40,7 +40,7 @@
       <v-divider v-if="task.notes && task.notes.length > 0"></v-divider>
       <div class="add-note">
           <div class="input">
-            <rich-editor no-border autofocus v-model="note" @submit="addNote" class="input"></rich-editor>
+            <rich-editor no-border v-model="note" @submit="addNote" class="input"></rich-editor>
           </div>
           <div class="action">
             <v-btn @click="addNote" color="primary" :disabled="!note">
