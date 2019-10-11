@@ -1,12 +1,21 @@
 <template>
   <div class="task-notes">
 
-      <template v-for="(note, index) in task.notes">
-        <div :class="{note: true, 'note-odd': index %2 === 0, 'note-even': index % 2 !== 0}" :key="note._id">
+      <template v-for="note in task.notes">
+        <div :class="{note: true, 'note-left': !isMe(note.createdBy), 'note-right': isMe(note.createdBy)}" :key="note._id">
         
           <div class="note-avatar">
             <author-avatar small :user-id="note.createdBy"></author-avatar> 
+            <div class="note-actions" v-if="!isNoteEdited(note._id) && canEditNote(note)">
+              <v-btn small icon ripple @click="startEditNote(note)">
+                <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
+              </v-btn>
+              <v-btn small icon ripple @click="deleteNote(note)">
+                <v-icon small color="grey lighten-1">mdi-delete</v-icon>
+              </v-btn>
+            </div>
           </div>
+
 
           <div class="note-content">
               <author-line class="note-author" :user-id="note.createdBy" :date="note.createdAt">
@@ -14,7 +23,7 @@
                   ({{ $t('edited')}})
                 </span>
               </author-line>
-              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)"></div>
+              <div class="bubble ql-editor-view" v-html="linkifyHtml(note.content)" v-if="!isNoteEdited(note._id)" @click.stop="startEditNote(note)"></div>
               <template v-if="isNoteEdited(note._id)">
                 <rich-editor v-model="selectedNote.content" autofocus @submit="updateNote"></rich-editor>
                 <v-btn text icon @click="updateNote">
@@ -26,14 +35,6 @@
               </template>
           </div>
 
-          <div class="note-actions" v-if="!isNoteEdited(note._id)">
-            <v-btn small icon ripple @click="startEditNote(note)">
-              <v-icon small color="grey lighten-1">mdi-pencil</v-icon>
-            </v-btn>
-            <v-btn small icon ripple @click="deleteNote(note)">
-              <v-icon small color="grey lighten-1">mdi-delete</v-icon>
-            </v-btn>
-          </div>
         </div>
       </template>
 
@@ -104,6 +105,7 @@ export default {
     },
 
     startEditNote(note) {
+      if (!this.canEditNote(note)) return;
       this.selectedNote = note;
     },
 
@@ -124,6 +126,14 @@ export default {
     cancelUpdateNote() {
       this.selectedNote = null;
     },
+
+    isMe(userId) {
+      return userId && Meteor.userId() && userId === Meteor.userId();
+    },
+
+    canEditNote(note) {
+      return  Meteor.userId() && note.createdBy === Meteor.userId();
+    }
   }
 };
 </script>
@@ -177,7 +187,7 @@ pre {
 
 .note-avatar {
   flex: 0;
-  margin-right: 24px;
+  margin-right: 12px;
 }
 
 .note-content {
@@ -197,30 +207,40 @@ pre {
   margin-top: 8px;
 }
 
-.note-odd .bubble {
+
+.note-left .bubble {
   background-color: #e6e9f1;
   padding: 18px;
+  margin-right: 80px;
+
   border-top-right-radius: 12px;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;  
 }
 
 
-.note-even {
+.note-right {
   flex-direction: row-reverse;
 }
 
-.note-even .bubble {
+.note-right .bubble {
   background-color: #4b93fe;
   color: white;
   padding: 18px;
+  margin-left: 80px;
   border-top-left-radius: 12px;
   border-bottom-right-radius: 12px;
   border-bottom-left-radius: 12px;
 }
 
-.note-even .note-author {
+.note-right .note-author {
   text-align: right;
 }
+
+.note-right .note-avatar {
+  margin-right: auto;
+  margin-left: 12px;
+}
+
 
 </style>
