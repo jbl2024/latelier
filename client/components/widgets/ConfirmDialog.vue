@@ -16,7 +16,6 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { Swatches } from "vue-color";
 
 export default {
   props: {

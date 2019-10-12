@@ -42,7 +42,7 @@ export default {
       color: '#000',
       nameRules: [
         v => !!v || this.$t('Name is mandatory'),
-        v => v.length > 1 || this.$t('Name is too short')
+        v => v.length >= 1 || this.$t('Name is too short')
       ]
     }
   },
@@ -65,9 +65,8 @@ export default {
     },
 
     onSelectColor (color) {
-      var hex = color.hex || 'white';
-      this.$refs.color.style.backgroundColor = hex;
-      this.color = hex;
+      this.$refs.color.style.backgroundColor = color;
+      this.color = color;
     },
 
   }

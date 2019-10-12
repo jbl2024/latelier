@@ -1,12 +1,19 @@
 <template>
   <div class="select-color">
-    <v-dialog :value="active" @input="$emit('update:active')" persistent max-width="320" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog :value="active" @input="$emit('update:active')" persistent max-width="390" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card>
         <v-card-title class="headline">Choisir une couleur</v-card-title>
-        <swatches-picker :value="color" @input="selectColor" />
+        <v-card-text>
+          <v-color-picker v-model="color" show-swatches :hide-inputs="!advanced" :hide-canvas="!advanced" :width="390"></v-color-picker>
+        </v-card-text>
         <v-card-actions>
+          <v-btn text color="secondary" @click="advanced = !advanced">
+            <v-icon v-if="!advanced">mdi-plus</v-icon>
+            <v-icon v-if="advanced">mdi-minus</v-icon>
+          </v-btn>
           <v-spacer></v-spacer>
           <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-btn color="primary" @click="selectColor">{{ this.$t('Select') }}</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -15,18 +22,15 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { Swatches } from "vue-color";
 
 export default {
-  components: {
-    "swatches-picker": Swatches
-  },
   props: {
     active: Boolean
   },
   data() {
     return {
-      color: ""
+      color: "",
+      advanced: false
     };
   },
   methods: {
@@ -34,26 +38,13 @@ export default {
       this.$emit("update:active", false);
     },
 
-    selectColor(color) {
+    selectColor() {
       this.$emit("update:active", false);
-      this.$emit("select", color);
+      this.$emit("select", this.color);
     }
   }
 };
 </script>
 
 <style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-  overflow-y: scroll;
-}
-
-.cursor {
-  cursor: pointer;
-}
-
-.cursor:hover {
-  background-color: #aaa;
-}
 </style>

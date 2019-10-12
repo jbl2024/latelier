@@ -41,7 +41,7 @@ export default {
       name: "",
       nameRules: [
         v => !!v || this.$t('Name is mandatory'),
-        v => (v && v.length > 1) || this.$t('Name is too short')
+        v => (v && v.length >= 1) || this.$t('Name is too short')
       ]
     };
   },
@@ -98,7 +98,7 @@ export default {
     },
 
     onSelectColor(color) {
-      var hex = color.hex || "white";
+      var hex = color || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.label.color = hex;
     }

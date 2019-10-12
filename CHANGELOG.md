@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 - Project estimated size
+- vue-color dependency (use vuetify color picker)
 
 ## [2.4.1] - 2019-10-08
 

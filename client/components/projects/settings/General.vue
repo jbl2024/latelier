@@ -362,7 +362,7 @@ export default {
     },
 
     onSelectColor(color) {
-      var hex = color.hex || "white";
+      var hex = color || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.project.color = hex;
       Meteor.call("projects.updateColor", {projectId: this.project._id, color: hex});

@@ -29,7 +29,6 @@
     "simpl-schema": "^1.5.6",
     "sortablejs": "^1.9.0",
     "vue": "^2.6.0",
-    "vue-color": "^2.7.0",
     "vue-dragscroll": "^1.10.0",
     "vue-event-handler": "^1.1.8",
     "vue-hot-reload-api": "^2.3.3",
