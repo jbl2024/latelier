@@ -76,8 +76,9 @@ export default {
       }).then(res => {
         if (res) {
           Meteor.call(
-            "healthReports.remove",
-            report._id,
+            "healthReports.remove", {
+              id: report._id,
+            },
             (error, result) => {
               this.$emit("updated");
               if (error) {

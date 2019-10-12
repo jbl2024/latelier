@@ -136,7 +136,7 @@ export default {
   width: 100%;
 }
 
-.description, .estimatedSize {
+.description {
   margin-left: 24px;
   margin-right: 24px;
   margin-bottom: 12px;

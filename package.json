@@ -4,6 +4,7 @@
   "scripts": {
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
     "test": "MOCHA_TIMEOUT=5000 meteor test --once --driver-package meteortesting:mocha",
+    "test-run": "MOCHA_TIMEOUT=5000 meteor test --driver-package meteortesting:mocha",
     "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer"
   },
@@ -25,6 +26,7 @@
     "path": "^0.12.7",
     "pretty-checkbox": "^3.0.3",
     "showdown": "^1.9.0",
+    "simpl-schema": "^1.5.6",
     "sortablejs": "^1.9.0",
     "vue": "^2.6.0",
     "vue-color": "^2.7.0",

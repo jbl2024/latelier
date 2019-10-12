@@ -39,3 +39,4 @@ xolvio:cleaner
 practicalmeteor:sinon
 msavin:sjobs
 kschingiz:meteor-elastic-apm
+aldeed:collection2-core

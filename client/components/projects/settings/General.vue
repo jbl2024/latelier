@@ -78,30 +78,6 @@
       </v-list-item>
     </v-list>
 
-    <v-subheader>{{ $t("Size")}}</v-subheader>
-    <div class="elevation-1 settings" @click="startEditEstimatedSize">
-      <div class="estimatedSize">
-        <div v-show="!editEstimatedSize && project.estimatedSize && project.estimatedSize != 0">
-          {{ project.estimatedSize }}
-        </div>
-        <div v-show="!project.estimatedSize && !editEstimatedSize">
-          {{ $t('EstimationNone') }}
-        </div>
-
-        <div v-show="editEstimatedSize">
-          <v-text-field v-focus v-model="project.estimatedSize" @keyup.enter="updateEstimatedSize" label="Estimation de la taille du projet"></v-text-field>
-          <v-btn text icon @click.stop="updateEstimatedSize">
-            <v-icon>mdi-check-circle</v-icon>
-          </v-btn>
-
-          <v-btn text icon @click.stop="cancelUpdateEstimatedSize">
-            <v-icon>mdi-close-circle</v-icon>
-          </v-btn>
-
-        </div>
-      </div>
-    </div>
-
     <v-subheader>{{ $t("Dates") }}</v-subheader>
     <v-list two-line class="elevation-1">
         <v-list-item @click="showSelectStartDate = true">
@@ -251,8 +227,7 @@ export default {
       showSelectProject: false,
       showSelectColor: false,
       showSelectFeature: false,
-      editDescription: false,
-      editEstimatedSize: false,
+      editDescription: false
     };
   },
   meteor: {
@@ -386,26 +361,6 @@ export default {
       this.project.description = this.savedDescription;
     },
 
-    startEditEstimatedSize() {
-      this.savedEstimatedSize = this.project.estimatedSize;
-      this.editEstimatedSize = true;
-      this.$nextTick(() => this.$refs.estimatedSize.$el.focus());
-    },
-
-    updateEstimatedSize() {
-      this.editEstimatedSize = false;
-      Meteor.call(
-        "projects.updateEstimatedSize",
-        this.project._id,
-        parseFloat(this.project.estimatedSize)
-      );
-    },
-
-    cancelUpdateEstimatedSize() {
-      this.editEstimatedSize = false;
-      this.project.estimatedSize = this.savedEstimatedSize;
-    },
-
     onSelectColor(color) {
       var hex = color.hex || "white";
       this.$refs.color.style.backgroundColor = hex;
@@ -473,8 +428,7 @@ export default {
   width: 100%;
 }
 
-.description,
-.estimatedSize {
+.description {
   margin-left: 24px;
   margin-right: 24px;
   margin-bottom: 12px;

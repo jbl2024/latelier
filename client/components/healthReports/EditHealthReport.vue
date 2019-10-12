@@ -143,12 +143,13 @@ export default {
     create() {
       this.showDialog = false;
       Meteor.call(
-        "healthReports.update",
-        this.report._id,
-        this.name,
-        this.description,
-        this.date,
-        this.weather,
+        "healthReports.update", {
+          id: this.report._id,
+          name: this.name,
+          description: this.description,
+          date: this.date,
+          weather: this.weather,
+        },
         (error, result) => {
           this.$emit("updated");
           if (error) {

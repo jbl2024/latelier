@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Schemas for collections
 
 ### Changed
 - Update occitan translation, by Quenty31
@@ -14,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update vuetify to 2.1.3
 
 ### Removed
+- Project estimated size
 
 ## [2.4.1] - 2019-10-08
 

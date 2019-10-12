@@ -5,13 +5,16 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Events } from "/imports/api/events/events.js";
+import TaskSchema from './schema';
 
 import { Random } from "meteor/random";
 import { incrementCounter } from "./counter";
 import moment from "moment";
 import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask } from "/imports/api/permissions/permissions";
+import SimpleSchema from 'simpl-schema';
 
 export const Tasks = new Mongo.Collection("tasks");
+Tasks.attachSchema(TaskSchema);
 Tasks.methods = {};
 Tasks.helpers = {};
 
