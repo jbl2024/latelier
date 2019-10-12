@@ -16,7 +16,7 @@ export default new SimpleSchema({
     optional: true
   },
 
-  autoComplet: {
+  autoComplete: {
     type: Boolean,
     defaultValue: false
   },
