@@ -69,13 +69,5 @@ export default new SimpleSchema({
   },
   "features.$": {
     type: String
-  },
-
-  /* estimations */
-  estimatedSize: {
-    type: String,
-    optional: true,
   }
-
-
 });

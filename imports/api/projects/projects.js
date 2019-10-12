@@ -328,7 +328,6 @@ Projects.methods.clone = new ValidatedMethod({
       startDate: project.startDate,
       members: project.members,
       endDate: project.endDate,
-      estimatedSize: project.estimatedSize,
       color: project.color,
       features: project.features
     });
@@ -491,22 +490,6 @@ Projects.methods.setDatesAndState = new ValidatedMethod({
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
     Projects.update({ _id: projectId }, { $set: { startDate: startDate, endDate: endDate, state: state } });
-  }
-});
-
-Projects.methods.updateEstimatedSize = new ValidatedMethod({
-  name: "projects.updateEstimatedSize",
-  validate: new SimpleSchema({
-    projectId: { type: String },
-    estimatedSize: { type: Number }
-  }).validator(),
-  run({projectId, estimatedSize}) {
-    checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
-    Projects.update(
-      { _id: projectId },
-      { $set: { estimatedSize: estimatedSize } }
-    );
   }
 });
 
