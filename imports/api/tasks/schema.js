@@ -115,4 +115,20 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
+
+  /* estimations */
+  estimation: {
+    type: Object,
+    optional: true
+  },
+
+  "estimation.size": {
+    type: String,
+    optional: true
+  },
+
+  "estimation.spent": {
+    type: String,
+    optional: true
+  }
 });
