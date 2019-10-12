@@ -2,10 +2,11 @@ import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
-import { Attachments } from "/imports/api/attachments/attachments";
-import { relativeTimeRounding } from "moment";
+import ListSchema from "./schema";
 
 export const Lists = new Mongo.Collection("lists");
+Lists.attachSchema(ListSchema);
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Lists.rawCollection().createIndex({ projectId: 1 });
