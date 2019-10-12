@@ -1,7 +1,9 @@
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
+import EventSchema from "./schema";
 
 export const Events = new Mongo.Collection("events");
+Events.attachSchema(EventSchema);
 
 if (Meteor.isServer) {
   import { callbacks as mailsCB} from "./server/mails";
