@@ -12,6 +12,10 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
+  deleted: {
+    type: Boolean,
+    defaultValue: false
+  },
 
   /* modification dates */
   createdAt: Date,
