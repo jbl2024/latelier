@@ -13,16 +13,17 @@ export default new SimpleSchema({
 
   order: {
     type: Number,
+    optional: true
   },
 
-  autoCompleted: {
+  autoComplet: {
     type: Boolean,
-    optional: true
+    defaultValue: false
   },
 
   catchCompleted: {
     type: Boolean,
-    optional: true
+    defaultValue: false
   },
 
   /* creation dates */
