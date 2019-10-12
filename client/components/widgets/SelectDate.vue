@@ -20,6 +20,7 @@
             </v-tab-item>
           </v-tabs>
           <v-select v-if="reminder"
+            class="reminder"
             v-model="selectedReminder"
             dense
             :items="reminders"
@@ -90,6 +91,10 @@ export default {
 <style>
 .invisible {
   display: none;
+}
+
+.reminder {
+  margin-top: 24px;
 }
 
 .textpickr-confirm {

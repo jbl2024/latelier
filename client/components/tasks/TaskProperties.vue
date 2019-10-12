@@ -19,7 +19,7 @@
             <span v-show="task.startDate">{{ formatDate(task.startDate) }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action v-if="task.reminderStartDate">
+        <v-list-item-action v-if="task.reminderStartDate !== 'never' && task.reminderStartDate != null">
           <v-icon>mdi-alarm-check</v-icon>
         </v-list-item-action>
         <v-list-item-action>
@@ -41,7 +41,7 @@
             <span v-show="task.dueDate">{{ formatDate(task.dueDate) }}</span>
           </v-list-item-subtitle>
         </v-list-item-content>
-        <v-list-item-action v-if="task.reminderDueDate">
+        <v-list-item-action v-if="task.reminderDueDate !== 'never' && task.reminderDueDate != null">
           <v-icon>mdi-alarm-check</v-icon>
         </v-list-item-action>
         <v-list-item-action>

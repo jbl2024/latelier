@@ -69,7 +69,7 @@ export const callbacks = {
 
     if (
       task.completed ||
-      !task.reminderDueDate ||
+      (task.reminderDueDate == null) ||
       task.reminderDueDate === "never" ||
       !task.dueDate
     ) {
@@ -90,7 +90,7 @@ export const callbacks = {
     clearJobs("sendReminderStartDate", taskId);
     if (
       task.completed ||
-      !task.reminderStartDate ||
+      (task.reminderStartDate == null) ||
       task.reminderStartDate === "never" ||
       !task.startDate
     ) {
