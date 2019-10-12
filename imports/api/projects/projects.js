@@ -11,8 +11,12 @@ import { Canvas } from "/imports/api/canvas/canvas.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
 import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
+import ProjectSchema from './schema';
 
 export const Projects = new Mongo.Collection("projects");
+Projects.attachSchema(ProjectSchema);
+Projects.methods = {};
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Projects.rawCollection().createIndex({ organizationId: 1 });
@@ -32,7 +36,6 @@ export const ProjectAccessRights = Object.freeze({
   PRIVATE: "private",
 });
 
-Projects.methods = {};
 
 const checkIfAdminOrCreator = (projectId) => {
   if (Permissions.isAdmin(Meteor.userId())) {
