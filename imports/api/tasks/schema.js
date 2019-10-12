@@ -9,7 +9,10 @@ export default new SimpleSchema({
   },
   /* main attributes */
   name: String,
-  number: Number,
+  number: { 
+    type: Number,
+    optional: true
+  },
   order: Number,
   description: {
     type: String,
