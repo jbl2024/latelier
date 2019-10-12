@@ -20,12 +20,12 @@ export default new SimpleSchema({
   updatedBy: String,
 
   /* labels */
-  labelIds: {
+  labels: {
     type: Array,
     optional: true
   },
 
-  "labelIds.$": {
+  "labels.$": {
     type: String
   },
 
@@ -107,5 +107,8 @@ export default new SimpleSchema({
     type: Boolean,
     defaultValue: false
   },
-  "notes.$.editedBy": String,
+  "notes.$.editedBy": {
+    type: String,
+    optional: true
+  },
 });
