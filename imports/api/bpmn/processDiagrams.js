@@ -1,18 +1,22 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
+
+import ProcessDiagramsSchema from "./schema";
+
 import {
   checkLoggedIn,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
 
 export const ProcessDiagrams = new Mongo.Collection("processDiagrams");
+ProcessDiagrams.attachSchema(ProcessDiagramsSchema);
+ProcessDiagrams.methods = {};
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     ProcessDiagrams.rawCollection().createIndex({ projectId: 1 });
   });
 }
-
-ProcessDiagrams.methods = {};
 
 ProcessDiagrams.methods.create = new ValidatedMethod({
   name: "processDiagrams.create",
