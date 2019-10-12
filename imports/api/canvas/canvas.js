@@ -1,8 +1,11 @@
 import { Meteor } from 'meteor/meteor';
 import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
+import CanvasSchema from './schema';
 
 export const Canvas = new Mongo.Collection('canvas');
+Canvas.attachSchema(CanvasSchema);
+
 if (Meteor.isServer) {
   Meteor.startup(() => {
     Canvas.rawCollection().createIndex({projectId: 1});

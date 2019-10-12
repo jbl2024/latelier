@@ -23,7 +23,7 @@ function createProject (name) {
 
 if (Meteor.isServer) {
   
-  describe("projects", function() {
+  describe("tasks", function() {
     beforeEach(function() {
       initData();
       createStubs();
