@@ -3,10 +3,10 @@ import { Mongo } from 'meteor/mongo';
 import { check } from 'meteor/check';
 import { Tasks } from "/imports/api/tasks/tasks";
 import { checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
-import LabelsSchema from './schema';
+import LabelSchema from './schema';
 
 export const Labels = new Mongo.Collection('labels');
-Labels.attachSchema(LabelsSchema);
+Labels.attachSchema(LabelSchema);
 Labels.methods = {}
 
 if (Meteor.isServer) {

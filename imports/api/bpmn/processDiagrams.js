@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
-import ProcessDiagramsSchema from "./schema";
+import ProcessDiagramSchema from "./schema";
 
 import {
   checkLoggedIn,
@@ -9,7 +9,7 @@ import {
 } from "/imports/api/permissions/permissions";
 
 export const ProcessDiagrams = new Mongo.Collection("processDiagrams");
-ProcessDiagrams.attachSchema(ProcessDiagramsSchema);
+ProcessDiagrams.attachSchema(ProcessDiagramSchema);
 ProcessDiagrams.methods = {};
 
 if (Meteor.isServer) {
