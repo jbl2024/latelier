@@ -8,6 +8,7 @@ import "/test/api/organizations/organizations.test"
 import "/test/api/labels/labels.test"
 import "/test/api/notifications/notifications.test"
 import "/test/api/canvas/canvas.test"
+import "/test/api/healthReports/healthReports.test"
 
 describe("latelier", function () {
   it("package.json has correct name", async function () {

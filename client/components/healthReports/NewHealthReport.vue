@@ -148,12 +148,13 @@ export default {
     create() {
       this.showDialog = false;
       Meteor.call(
-        "healthReports.create",
-        this.projectId,
-        this.name,
-        this.description,
-        this.date,
-        this.weather,
+        "healthReports.create", {
+          projectId: this.projectId,
+          name: this.name,
+          description: this.description,
+          date: this.date,
+          weather: this.weather
+        },
         (error, result) => {
           this.$emit("created");
           if (error) {

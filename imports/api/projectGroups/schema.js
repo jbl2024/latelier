@@ -18,7 +18,8 @@ export default new SimpleSchema({
   },
   
   projects: {
-    type: Array
+    type: Array,
+    optional: true
   },
 
   "projects.$": {

@@ -3,7 +3,10 @@ import SimpleSchema from 'simpl-schema';
 export default new SimpleSchema({
   /* relations */
   projectId: String,
-  listId: String,
+  listId: {
+    type: String,
+    optional: true
+  },
   /* main attributes */
   name: String,
   number: Number,
