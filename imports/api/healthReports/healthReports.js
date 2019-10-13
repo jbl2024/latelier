@@ -53,7 +53,7 @@ HealthReports.methods.update = new ValidatedMethod({
   validate: new SimpleSchema({
     id: { type: String },
     name: { type: String },
-    description: { type: String },
+    description: { type: String, optional: true },
     date: { type: String },
     weather: { type: String },
   }).validator(),
@@ -65,6 +65,10 @@ HealthReports.methods.update = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(report.projectId);
+
+    if (description == null) {
+      description = report.description;
+    }
     
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
     const reportId = HealthReports.update(
