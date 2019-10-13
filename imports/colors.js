@@ -17,11 +17,26 @@ export const colors = {
     }
     return `#${str[1]}${str[1]}${str[2]}${str[2]}${str[3]}${str[3]}`;
   },
-  
+
   getBrightness (color) {
     color = "" + color;
-    const isHEX = color.indexOf("#") == 0;
+    const isHEXA = color.indexOf("#") == 0 && color.length > 7;
+    const isHEX = color.indexOf("#") == 0 && !isHEXA;
     const isRGB = color.indexOf("rgb") == 0;
+
+    if (isHEXA) {
+      let m = color.substr(1).match(/(\S{2})/g);
+      if (m) var r = parseInt(m[0], 16), g = parseInt(m[1], 16), b = parseInt(m[2], 16), alpha = parseInt(m[3], 16);
+
+      // convert alpha from [0, 255] to [0..1] range
+      alpha = (alpha * 100 / 255) / 100.0;
+
+      // apply alpha to individual components
+      r = (1 - alpha) * r + alpha * r;
+      g = (1 - alpha) * g + alpha * g;
+      b = (1 - alpha) * b + alpha * b;
+    }
+
     if (isHEX) {
       color = this.fixHex(color);
       let m = color.substr(1).match(color.length == 7 ? /(\S{2})/g : /(\S{1})/g);
@@ -31,11 +46,13 @@ export const colors = {
       let m = color.match(/(\d+){3}/g);
       if (m) var r = m[0], g = m[1], b = m[2];
     }
+
     if (typeof r != "undefined") return ((r*299)+(g*587)+(b*114))/1000;
   },  
 
   isDark(color) {
     // see https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
+
     return this.getBrightness(color) < 128;
   }
 }
