@@ -1,7 +1,8 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <select-background :active.sync="showSelectBackgroundDialog"></select-background>
+      <!-- <select-background :active.sync="showSelectBackgroundDialog"></select-background> -->
+      <select-photo :active.sync="showSelectBackgroundDialog"></select-photo>
       <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
 
       <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
