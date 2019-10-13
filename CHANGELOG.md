@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update occitan translation, by Quenty31
+- Fix health report update when description is empty
 - Fix reminder detection
 - Notes are displayed like in chat messaging apps (bubbles)
 - Update vuetify to 2.1.3
