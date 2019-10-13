@@ -3,6 +3,10 @@
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
   "notificationsPerUser": 50,
+  "unsplash": {
+    "enabled": false,
+    "accessKey": "xxx"
+  },
   "elasticApm": {
     "enabled": true,
     "options": {
