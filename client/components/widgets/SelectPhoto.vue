@@ -17,7 +17,9 @@
             clearable
             v-on:input="debouncedFilter"
           ></v-text-field>
-          <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+          <div class="progress">
+            <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+          </div>
         </div>
 
         <v-card-text class="flex1">
@@ -222,5 +224,9 @@ export default {
 
 .photo-button {
   text-align: center;
+}
+
+.progress {
+  height: 4px;  
 }
 </style>
