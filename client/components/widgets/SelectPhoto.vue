@@ -24,22 +24,27 @@
           <v-container fluid>
             <v-row>
               <v-col v-for="photo in photos" :key="photo.id" class="d-flex child-flex" cols="3">
-                <v-card flat tile class="d-flex">
-                  <v-img :src="photo.urls.thumb" aspect-ratio="1" class="grey lighten-2">
-                    <v-row align="end" class="lightbox white--text pa-2 fill-height">
-                      <v-col>
-                        <div class="subheading">Jonathan Lee</div>
-                        <div class="body-1">heyfromjonathan@gmail.com</div>
-                      </v-col>
-                    </v-row>
+                <v-hover>
+                  <template v-slot:default="{ hover }">
+                    <v-card flat tile class="d-flex">
+                      <v-img :src="photo.urls.thumb" aspect-ratio="1" class="grey lighten-2">
 
-                    <template v-slot:placeholder>
-                      <v-row class="fill-height ma-0" align="center" justify="center">
-                        <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
-                      </v-row>
-                    </template>
-                  </v-img>
-                </v-card>
+                        <template v-slot:placeholder>
+                          <v-row class="fill-height ma-0" align="center" justify="center">
+                            <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+                          </v-row>
+                        </template>
+                      </v-img>
+
+                      <v-fade-transition>
+                        <v-overlay v-if="hover" absolute color="#036358">
+                          <div>By john doe</div>
+                          <v-btn>{{ $t('Choose') }}</v-btn>
+                        </v-overlay>
+                      </v-fade-transition>
+                    </v-card>
+                  </template>
+                </v-hover>
               </v-col>
             </v-row>
           </v-container>
