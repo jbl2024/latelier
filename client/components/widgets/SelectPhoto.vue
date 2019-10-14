@@ -7,7 +7,7 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card class="flex-container">
-        <v-card-title class="headline">{{ $t('Select a a photo') }}</v-card-title>
+        <v-card-title class="headline">{{ $t('Select a photo') }}</v-card-title>
 
         <div class="flex0 search">
           <v-text-field
@@ -23,7 +23,7 @@
         <v-card-text class="flex1">
           <v-container fluid>
             <v-row>
-              <v-col v-for="photo in photos" :key="photo.id" class="d-flex child-flex" cols="3">
+              <v-col v-for="photo in photos" :key="photo.id" class="d-flex child-flex" :cols="$vuetify.breakpoint.xsOnly ? 6 : 3">
                 <v-hover>
                   <template v-slot:default="{ hover }">
                     <v-card flat tile class="d-flex">
@@ -37,9 +37,12 @@
                       </v-img>
 
                       <v-fade-transition>
-                        <v-overlay v-if="hover" absolute color="#036358">
-                          <div>By john doe</div>
-                          <v-btn>{{ $t('Choose') }}</v-btn>
+                        <v-overlay v-if="hover" absolute color="#000">
+                          <div class="photo-attribution">
+                            Photo by <a target="_blank" :href="getUnsplashProfileLink(photo)">{{ photo.user.name }}</a> on <a target="_blank" :href="getUnsplashLink()">Unsplash</a> 
+                          </div>
+                          <div class="photo-button"><v-btn>{{ $t('Select') }}</v-btn></div>
+                          <div class="photo-button"><v-btn text target="_blank" :href="getUnsplashPhotoLink(photo)">{{ $t('Informations') }}</v-btn></div>
                         </v-overlay>
                       </v-fade-transition>
                     </v-card>
@@ -85,6 +88,7 @@ export default {
       search: "",
       debouncedFilter: null,
       photos: [],
+      appName: "",
       loading: false,
       page: 1,
       pagination: {
@@ -134,6 +138,7 @@ export default {
           this.pagination.rowsPerPage = result.rowsPerPage;
           this.pagination.totalPages = this.calculateTotalPages();
           this.photos = result.data;
+          this.appName = result.appName;
         }
       );
     },
@@ -153,7 +158,20 @@ export default {
     selectProject(photo) {
       this.$emit("update:active", false);
       this.$emit("select", photo);
+    },
+
+    getUnsplashProfileLink(photo) {
+      return `${photo.user.links.html}??utm_source=${this.appName}&utm_medium=referral`;
+    },
+    
+    getUnsplashLink() {
+      return `https://unsplash.com?utm_source=${this.appName}&utm_medium=referral`;
+    },
+
+    getUnsplashPhotoLink(photo) {
+      return `${photo.links.html}??utm_source=${this.appName}&utm_medium=referral`;
     }
+
   }
 };
 </script>
@@ -181,6 +199,7 @@ export default {
     flex-direction: column;
     height: calc(100vh - 100px);
     min-height: 360px;
+    max-height: 850px;
   }
 
   .flex0 {
@@ -191,5 +210,17 @@ export default {
     flex: 1;
     overflow-y: scroll;
   }
+}
+
+.photo-attribution {
+  text-align: center;
+  margin-bottom: 42px;
+}
+.photo-attribution a {
+  color: white;
+}
+
+.photo-button {
+  text-align: center;
 }
 </style>

@@ -17,6 +17,9 @@ Backgrounds.methods.findUnsplash = new ValidatedMethod({
       throw new Meteor.Error("unsplash-not-enabled");
     }
 
+    const appName = Meteor.settings.unsplash ? Meteor.settings.unsplash.appName : null;
+    if (!appName) throw new Meteor.Error("unsplash-missing-appname");
+
     const accessKey =  Meteor.settings.unsplash ? Meteor.settings.unsplash.accessKey : null;
     if (!accessKey) throw new Meteor.Error("unsplash-missing-access-key");
 
@@ -29,6 +32,7 @@ Backgrounds.methods.findUnsplash = new ValidatedMethod({
     }
     const data = result.data;
     return {
+      appName: appName,
       rowsPerPage: data.results.length,
       totalItems: data.total,
       data: data.results

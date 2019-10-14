@@ -5,6 +5,7 @@
   "notificationsPerUser": 50,
   "unsplash": {
     "enabled": false,
+    "appName": "appName",
     "accessKey": "xxx"
   },
   "elasticApm": {
