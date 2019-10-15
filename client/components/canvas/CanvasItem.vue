@@ -90,9 +90,13 @@ export default {
 }
 
 .canvas-headline {
-  font-size: 12px;
-  color: #546E7A;
+  font-size: 13px;
   min-height: 90px;
+  line-height: 16px;
+  border: 1px solid #eee;
+  padding: 24px;
+  background-color: #eee;
+  border-radius: 4px;
 }
 
 .content {
@@ -100,6 +104,7 @@ export default {
   width: 100%;
   min-height: 220px;
   cursor: text;
+  padding: 24px;
 }
 .edit-content {
   min-height: 220px;
