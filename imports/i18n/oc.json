@@ -133,6 +133,10 @@
   "Zoom out": "Reduire",
   "Reset zoom": "Restablir zoom",
   "Do you really want to clone this project?": "Volètz vertadièrament clonar aqueste projècte ?",
+  "Send": "Enviar",
+  "Delete note?": "Suprimir la nòta ?",
+  "Note deleted": "Nòta suprimida",
+  "Conversation": "Discutida",
   "history": {
     "tasks": {
       "create": "Creacion",
