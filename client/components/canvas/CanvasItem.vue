@@ -1,6 +1,6 @@
 <template>
   <div class="canvas-item">
-    <v-card>
+    <v-card class="canvas-container">
       <v-card-title primary-title>
         <div>
             <div class="canvas-title" slot="activator">
@@ -85,28 +85,32 @@ export default {
 </script>
 
 <style scoped>
+
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  border: 4px solid black;
+}
 .canvas-title {
   font-size: 18px;
 }
 
 .canvas-headline {
   font-size: 13px;
-  min-height: 90px;
   line-height: 16px;
-  border: 1px solid #eee;
-  padding: 24px;
-  background-color: #eee;
+  padding-top: 12px;
   border-radius: 4px;
+  flex: 0;
 }
 
 .content {
-  border: 1px solid #eee;
   width: 100%;
-  min-height: 220px;
   cursor: text;
-  padding: 24px;
+  flex: 1;
+  min-height: 64px;
+  border: 1px solid #eee;
 }
 .edit-content {
-  min-height: 220px;
+  min-height: 180px;
 }
 </style>
