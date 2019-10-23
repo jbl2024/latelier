@@ -22,7 +22,7 @@
         <v-list-item-action>
           <v-icon>mdi-content-duplicate</v-icon>
         </v-list-item-action>
-        <v-list-item-title>{{ $t('Clone to another project') }}</v-list-item-title>
+        <v-list-item-title>{{ $t('cloneToProject.menu') }}</v-list-item-title>
       </v-list-item>
       <v-list-item @click="deleteTask(task._id)">
         <v-list-item-action>
