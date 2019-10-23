@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
@@ -104,6 +105,15 @@ Meteor.methods({
       }
     };
     _reorder(clonedTask.listId);
+
+    const attachments = Attachments.find({ "meta.taskId": taskId }).fetch();
+    attachments.map(attachment => {
+      Meteor.call("attachments.clone", {
+        attachmentId: attachment._id,
+        taskId: clonedTaskId,
+        projectId: projectId
+      })
+    });
 
     Meteor.call("tasks.track", {
       type: "tasks.create",
