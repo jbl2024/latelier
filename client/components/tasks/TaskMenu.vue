@@ -18,6 +18,12 @@
         </v-list-item-action>
         <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
       </v-list-item>
+      <v-list-item @click="$emit('startCloneToProject')">
+        <v-list-item-action>
+          <v-icon>mdi-content-duplicate</v-icon>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t('cloneToProject.menu') }}</v-list-item-title>
+      </v-list-item>
       <v-list-item @click="deleteTask(task._id)">
         <v-list-item-action>
           <v-icon>mdi-delete</v-icon>
@@ -33,6 +39,11 @@ export default {
   props: {
     task: {
       type: Object
+    }
+  },
+  data() {
+    return {
+      showMoveTask: false
     }
   },
   i18n: {
@@ -75,6 +86,11 @@ export default {
         }
       });
     },
+
+    moveTask(project) {
+
+    },
+
     deleteTask(id) {
       this.$confirm(this.$t("Do you really want to delete this task?"), {
         title: this.$t("Confirm"),

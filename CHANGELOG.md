@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Clone task to another project
 
 ### Changed
 - Update occitan translation, by Quenty31

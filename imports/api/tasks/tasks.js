@@ -245,94 +245,6 @@ Meteor.methods({
     });
   },
 
-  "tasks.clone"(taskId, name, projectId, listId, keepDates) {
-    check(taskId, String);
-    check(name, Match.Maybe(String));
-    check(projectId, Match.Maybe(String))
-    check(listId, Match.Maybe(String))
-    check(keepDates, Match.Maybe(Boolean))
-
-    checkLoggedIn();
-
-    const userId = Meteor.userId();
-    const now = new Date();
-
-    const task = Tasks.findOne({ _id: taskId });
-    if (!task) {
-      throw new Meteor.Error("not-found");
-    }
-
-    if (!name) name = task.name;
-    if (!projectId) projectId = task.projectId;
-    if (!listId) listId = task.listId;
-
-    const notes = (task.notes || []).map(note => {
-      return {
-        _id: Random.id(),
-        createdAt: note.createdAt,
-        createdBy: note.createdBy,
-        edited: note.edited,
-        editedBy: note.editedBy,
-        content: note.content,
-      };
-    });
-
-    const checklist = (task.checklist || []).map(checklist => {
-      return {
-        _id: Random.id(),
-        createdAt: now,
-        createdBy: checklist.createdBy,
-        name: checklist.name,
-        checked: checklist.checked
-      }
-    })
-
-    const clonedTask = {
-      projectId: projectId,
-      listId: listId,
-      name: task.name,
-      description: task.description,
-      order: task.order - 1,
-      completed: task.completed,
-      assignedTo: task.assignedTo,
-      createdAt: !keepDates ? now : task.createdAt,
-      updatedAt: !keepDates ? now : task.updatedAt,
-      createdBy: !keepDates ? userId : task.createdBy,
-      updatedBy: !keepDates ? userId : task.updatedBy,
-      labels: task.labels,
-      watchers: task.watchers,
-      notes: notes,
-      checklist: checklist,
-      startDate: task.startDate,
-      dueDate: task.dueDate,
-    };
-
-    const clonedTaskId = Tasks.insert(clonedTask);
-    if (Meteor.isServer) {
-      Meteor.call("tasks.setNumber", clonedTaskId);
-    }
-
-    var _reorder = function(listId) {
-      var tasks = Tasks.find(
-        { listId: listId },
-        { sort: { order: 1 } }
-      ).fetch();
-      for (var i = 0; i < tasks.length; i++) {
-        var task = tasks[i];
-        task.order = i * 10;
-
-        Tasks.direct.update({ _id: task._id }, { $set: { order: task.order } });
-      }
-    };
-    _reorder(clonedTask.listId);
-
-    Meteor.call("tasks.track", {
-      type: "tasks.create",
-      taskId: clonedTaskId
-    });
-    return Tasks.findOne({ _id: clonedTaskId });
-  },
-
   "tasks.complete"(taskId, completed) {
     check(taskId, String);
     check(completed, Boolean);
@@ -813,38 +725,8 @@ Meteor.methods({
       type: 'tasks.removeAttachment',
       taskId: taskId,
     });
-  },
-
-  "tasks.track"(event) {
-    if (!Meteor.isServer) {
-      return;
-    }
-    this.unblock();
-
-    check(event, {
-      taskId: String,
-      type: String,
-      properties: Match.Optional(Object)
-    });
-
-    const task = Tasks.findOne({ _id: event.taskId });
-    const properties = event.properties || {};
-
-    const project = Projects.findOne({ _id: task.projectId });
-    const list = Lists.findOne({ _id: task.listId });
-
-    properties.task = task;
-    properties.task.project = project;
-    properties.task.list = list;
-    properties.task.url = Meteor.absoluteUrl(
-      `/projects/${project._id}/${task._id}`
-    );
-
-    Meteor.call("events.track", {
-      type: event.type,
-      properties: properties
-    });
   }
+
 });
 
 Tasks.methods.getHistory = new ValidatedMethod({
@@ -907,28 +789,4 @@ Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
   }
   userIds = [...new Set(userIds)]; // remove duplicates
   return userIds;
-}
-
-if (Meteor.isServer) {
-  Meteor.methods({
-    "tasks.getUrl"(taskNumber) {
-      check(taskNumber, Number);
-      checkLoggedIn();
-
-      const task = Tasks.findOne({ number: taskNumber });
-      if (!task) {
-        throw new Meteor.Error("not-found");
-      }
-      const canAccess = Meteor.call("permissions.canReadProject", {
-        projectId: task.projectId
-      });
-      if (!canAccess) {
-        throw new Meteor.Error("not-authorized");
-      }
-      return {
-        projectId: task.projectId,
-        taskId: task._id
-      };
-    }
-  });
 }

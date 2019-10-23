@@ -137,6 +137,11 @@
   "Delete note?": "Supprimer la note?",
   "Note deleted": "Note supprimée",
   "Conversation": "Conversation",
+  "cloneToProject": {
+    "menu": "Dupliquer vers un projet",
+    "confirmation": "Voulez-vous dupliquer cette tâche vers {project}?",
+    "done": "Tâche dupliquée vers {project}"
+  },
   "history": {
     "tasks": {
       "create": "Création",
