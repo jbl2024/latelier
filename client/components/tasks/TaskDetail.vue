@@ -1,5 +1,6 @@
 <template>
   <div class="task-detail">
+    <select-project :active.sync="showSelectProjectToClone" @select="cloneToProject"></select-project>
     <div class="toolbar">
       <div class="title edit toolbar-title" v-show="editTaskName">
 
@@ -46,7 +47,7 @@
         <span class="task-name" v-html="linkifyHtml(task.name)"></span>
       </div>
       <div class="toolbar-button" v-if="!editTaskName">
-        <task-menu :task="task"></task-menu>
+        <task-menu :task="task" @startCloneToProject="showSelectProjectToClone = true"></task-menu>
       </div>
     </div>
 
@@ -187,7 +188,8 @@ export default {
       editTaskName: false,
       savedDescription: "",
       savedName: "",
-      completed: false
+      completed: false,
+      showSelectProjectToClone: false
     };
   },
   meteor: {
@@ -329,6 +331,29 @@ export default {
 
     showUpdatedBy(task) {
       return task.updatedAt && task.updatedBy;
+    },
+
+    cloneToProject(project) {
+      if (!project) return;
+
+      this.$confirm(this.$t("cloneToProject.confirmation", {project: project.name}), {
+        title: this.$t("Confirm"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Clone")
+      }).then(res => {
+        if (res) {
+          Meteor.call(
+            "tasks.clone", this.taskId, this.task.name, project._id,
+            (error, result) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("cloneToProject.done", {project: project.name}));
+            }
+          );
+        }
+      });
     }
   }
 };
