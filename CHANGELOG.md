@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Clone task to another project
+- Attachments are cloned when cloning a task or project
 
 ### Changed
 - Update occitan translation, by Quenty31
