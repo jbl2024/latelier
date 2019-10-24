@@ -1,6 +1,7 @@
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 import fs from "fs";
+import { checkCanWriteTask } from "/imports/api/permissions/permissions";
 
 const bound = Meteor.bindEnvironment(callback => {
   return callback();
@@ -79,6 +80,7 @@ Attachments.methods.clone = new ValidatedMethod({
   }).validator(),
   run({ attachmentId, projectId, taskId }) {
     checkLoggedIn();
+    checkCanWriteTask(taskId);
 
     const attachment = Attachments.findOne({ _id: attachmentId });
     const userId = Meteor.userId()
