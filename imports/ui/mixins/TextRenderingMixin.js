@@ -1,15 +1,18 @@
-import linkifyHtml from 'linkifyjs/html';
+import linkifyHtml from "linkifyjs/html";
 
 export default {
   methods: {
-    linkifyHtml (text) {
+    linkifyHtml(text) {
       if (!text) {
-        return;
+        return null;
       }
-      const taskUrl = Meteor.absoluteUrl('/tasks/');
-      
-      text = text.replace(/#(\d*)/g,`<a class="task-number" href="${taskUrl}$1">#$1</a>`);
+      const taskUrl = Meteor.absoluteUrl("/tasks/");
+
+      text = text.replace(
+        /#(\d*)/g,
+        `<a class="task-number" href="${taskUrl}$1">#$1</a>`
+      );
       return linkifyHtml(text);
     }
   }
-}
+};

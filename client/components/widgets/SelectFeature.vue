@@ -1,14 +1,20 @@
 <template>
   <div class="select-feature">
-
-    <v-dialog :value="active" @input="$emit('update:active')" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      :value="active"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      @input="$emit('update:active')"
+    >
       <v-card>
-        <v-card-title class="headline">{{ $t('Choose feature') }}</v-card-title>
+        <v-card-title class="headline">
+          {{ $t("Choose feature") }}
+        </v-card-title>
         <v-card-text>
           <v-list class="content">
             <template v-for="feature in features">
-              <v-list-item :key='feature' @click="selectFeature(feature)">
-                <v-list-item-avatar >
+              <v-list-item :key="feature" @click="selectFeature(feature)">
+                <v-list-item-avatar>
                   <v-icon>mdi-folder</v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="cursor">
@@ -19,17 +25,17 @@
           </v-list>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="closeDialog">{{ $t('Cancel') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="closeDialog">
+            {{ $t("Cancel") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>    
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-
 export default {
   i18n: {
     messages: {
@@ -42,26 +48,28 @@ export default {
     }
   },
   props: {
-    projectId: String,
-    active: Boolean,
+    projectId: {
+      type: String,
+      default: ""
+    },
+    active: Boolean
   },
-  data () {
+  data() {
     return {
-      features: ['estimation']
-    }
+      features: ["estimation"]
+    };
   },
   methods: {
-    closeDialog () {
-      this.$emit('update:active', false);
+    closeDialog() {
+      this.$emit("update:active", false);
     },
 
-    selectFeature (feature) {
-      this.$emit('update:active', false);
-      this.$emit('select', feature);
+    selectFeature(feature) {
+      this.$emit("update:active", false);
+      this.$emit("select", feature);
     }
-
   }
-}
+};
 </script>
 
 <style scoped>
@@ -74,5 +82,4 @@ export default {
 .cursor {
   cursor: pointer;
 }
-
 </style>

@@ -1,77 +1,73 @@
 <template>
-  <div class="project-settings"> 
-
+  <div class="project-settings">
     <div v-if="!$subReady.project">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.project" class="project-wrapper"> 
-
+    <div v-if="$subReady.project" class="project-wrapper">
       <v-tabs>
         <v-tab id="tab-general">
-          {{ $t('Settings') }}
+          {{ $t("Settings") }}
         </v-tab>
         <v-tab id="tab-users">
-          {{ $t('Users') }}
+          {{ $t("Users") }}
         </v-tab>
         <v-tab-item>
-          <project-settings-general :project="project"></project-settings-general>
+          <project-settings-general
+            :project="project"
+          />
         </v-tab-item>
         <v-tab-item>
-          <project-settings-manage-users :project="project" class="users"></project-settings-manage-users>
+          <project-settings-manage-users
+            :project="project"
+            class="users"
+          />
         </v-tab-item>
-      </v-tabs> 
-
+      </v-tabs>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import debounce from 'lodash/debounce';
+import { Projects } from "/imports/api/projects/projects.js";
 
 export default {
-  mounted(){
-    this.$store.dispatch('setCurrentProjectId', this.projectId);    
-  },
-  beforeDestroy() {
-    this.$store.dispatch('setCurrentProjectId', 0);    
-  },
   props: {
     projectId: {
       type: String,
-      default: '0'
+      default: "0"
     }
   },
-  data () {
+  data() {
     return {
-      savedProjectName: '',
+      savedProjectName: "",
       editProjectName: false,
       title() {
-        return this.$t("Settings")
+        return this.$t("Settings");
       }
-    }
+    };
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentProjectId", 0);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      'project': function() {
-        return [this.projectId] 
+      project: function() {
+        return [this.projectId];
       }
     },
-    project () {
+    project() {
       return Projects.findOne();
     }
   },
-  methods: {
-  }
-}
+  methods: {}
+};
 </script>
 
 <style scoped>
-
-
 .toolbar {
   background-color: white;
 }
@@ -93,10 +89,10 @@ export default {
 .edit-project-name input {
   font-size: 20px;
   font-weight: 400;
-  letter-spacing: .02em;
+  letter-spacing: 0.02em;
   margin-top: 6px;
   padding: 0;
-  font-family: Roboto,Noto Sans,-apple-system,BlinkMacSystemFont,sans-serif;
+  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @media (max-width: 600px) {
@@ -132,5 +128,4 @@ export default {
   bottom: 24px;
   z-index: 1000;
 }
-
 </style>

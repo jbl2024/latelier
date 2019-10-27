@@ -1,5 +1,5 @@
 <template>
-  <div id="canvas" ref="canvas"></div>
+  <div id="canvas" ref="canvas" />
 </template>
 
 <script>
@@ -9,11 +9,14 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Viewer from "bpmn-js/dist/bpmn-viewer.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
 import "./minimap-custom.css";
-import minimapModule from 'diagram-js-minimap';
+import minimapModule from "diagram-js-minimap";
 
 export default {
   props: {
-    processDiagram: Object
+    processDiagram: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -23,7 +26,7 @@ export default {
   watch: {
     processDiagram: {
       immediate: true,
-      handler(processDiagram) {
+      handler() {
         this.refresh();
       }
     }
@@ -38,7 +41,7 @@ export default {
           });
         }
         if (this.processDiagram.xml) {
-          this.viewer.importXML(this.processDiagram.xml, err => {
+          this.viewer.importXML(this.processDiagram.xml, () => {
             const canvas = this.viewer.get("canvas");
             canvas.zoom("fit-viewport");
           });
@@ -53,5 +56,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

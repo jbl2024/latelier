@@ -1,32 +1,52 @@
 <template>
   <div class="new-process-diagram">
-    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      v-model="showDialog"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+          <v-btn
+            v-shortkey="['esc']"
+            icon
+            text
+            @click="close()"
+            @shortkey="close()"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
-            <span>{{ $t('New process diagram') }}</span>
+            <span>{{ $t("New process diagram") }}</span>
           </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form v-model="valid" v-on:submit.prevent>
+          <v-form v-model="valid" @submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" ref="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
+                <v-text-field
+                  ref="name"
+                  v-model="name"
+                  :rules="nameRules"
+                  :label="$t('Name')"
+                  required
+                />
               </v-flex>
               <v-flex xs12>
-                <label>{{ $t('Description') }}</label>
-                <rich-editor v-model="description" ref="description"></rich-editor>
+                <label>{{ $t("Description") }}</label>
+                <rich-editor ref="description" v-model="description" />
               </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="showDialog = false">{{ $t('Cancel') }}</v-btn>
-          <v-btn color="primary" @click="create" :disabled="!valid">{{ $t('Create') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="showDialog = false">
+            {{ $t("Cancel") }}
+          </v-btn>
+          <v-btn color="primary" :disabled="!valid" @click="create">
+            {{ $t("Create") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -35,13 +55,12 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams.js";
 
 export default {
   props: {
     projectId: {
       type: String,
-      defaultValue: "0"
+      default: "0"
     }
   },
   i18n: {
@@ -63,8 +82,8 @@ export default {
       valid: false,
       name: "",
       nameRules: [
-        v => !!v || this.$t('Name is mandatory'),
-        v => v.length > 1 || this.$t('Name is too short')
+        (v) => !!v || this.$t("Name is mandatory"),
+        (v) => v.length > 1 || this.$t("Name is too short")
       ],
       description: ""
     };
@@ -108,5 +127,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

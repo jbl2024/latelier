@@ -1,19 +1,41 @@
 <template>
   <div class="select-color">
-    <v-dialog :value="active" @input="$emit('update:active')" persistent max-width="390" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      :value="active"
+      persistent
+      max-width="390"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      @input="$emit('update:active')"
+    >
       <v-card>
-        <v-card-title class="headline">Choisir une couleur</v-card-title>
+        <v-card-title class="headline">
+          Choisir une couleur
+        </v-card-title>
         <v-card-text>
-          <v-color-picker v-model="color" show-swatches :hide-inputs="!advanced" :hide-canvas="!advanced" :width="390"></v-color-picker>
+          <v-color-picker
+            v-model="color"
+            show-swatches
+            :hide-inputs="!advanced"
+            :hide-canvas="!advanced"
+            :width="390"
+          />
         </v-card-text>
         <v-card-actions>
           <v-btn text color="secondary" @click="advanced = !advanced">
-            <v-icon v-if="!advanced">mdi-plus</v-icon>
-            <v-icon v-if="advanced">mdi-minus</v-icon>
+            <v-icon v-if="!advanced">
+              mdi-plus
+            </v-icon>
+            <v-icon v-if="advanced">
+              mdi-minus
+            </v-icon>
           </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
-          <v-btn color="primary" @click="selectColor">{{ this.$t('Select') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="closeDialog">
+            {{ this.$t("Cancel") }}
+          </v-btn>
+          <v-btn color="primary" @click="selectColor">
+            {{ this.$t("Select") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -21,8 +43,6 @@
 </template>
 
 <script>
-import { Meteor } from "meteor/meteor";
-
 export default {
   props: {
     active: Boolean
@@ -46,5 +66,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

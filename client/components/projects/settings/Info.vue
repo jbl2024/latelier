@@ -1,44 +1,48 @@
 <template>
-  <div class="project-info"> 
+  <div class="project-info">
     <v-subheader>Description</v-subheader>
     <div class="elevation-1">
-        <div class="description">
-          <div v-show="project.description && project.description.length > 0">
-            <div class="ql-editor-view" v-html="markDown(project.description)"></div>
-          </div>
-          <div v-show="!project.description">
-            {{ $t('No description') }}
-          </div>
+      <div class="description">
+        <div v-show="project.description && project.description.length > 0">
+          <div class="ql-editor-view" v-html="markDown(project.description)" />
         </div>
+        <div v-show="!project.description">
+          {{ $t("No description") }}
+        </div>
+      </div>
     </div>
 
     <v-subheader>Dates</v-subheader>
     <v-list two-line class="elevation-1">
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-icon>mdi-calendar-today</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
-            <v-list-item-subtitle>
-              <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-icon>mdi-calendar-today</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("Start date") }}</v-list-item-title>
+          <v-list-item-subtitle>
+            <span v-show="project.startDate">{{
+              formatDate(project.startDate)
+            }}</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-        <v-divider></v-divider>
+      <v-divider />
 
-        <v-list-item>
-          <v-list-item-avatar>
-            <v-icon>mdi-alarm-check</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
-            <v-list-item-subtitle>
-              <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list-item>
+        <v-list-item-avatar>
+          <v-icon>mdi-alarm-check</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("End date") }}</v-list-item-title>
+          <v-list-item-subtitle>
+            <span v-show="project.endDate">{{
+              formatDate(project.endDate)
+            }}</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
 
     <v-subheader>Couleur</v-subheader>
@@ -46,92 +50,91 @@
     <v-list class="elevation-1">
       <v-list-item>
         <v-list-item-content>
-          <div class="color" ref="color" :style="getColor(project)"></div>
+          <div ref="color" class="color" :style="getColor(project)" />
         </v-list-item-content>
       </v-list-item>
     </v-list>
 
-    <v-subheader>{{ $t('Categories') }}
+    <v-subheader>
+      {{ $t("Categories") }}
     </v-subheader>
     <v-list class="elevation-1">
-      <template v-for="group in assignedGroups" >
+      <template v-for="group in assignedGroups">
         <v-list-item :key="group._id">
           <v-list-item-avatar>
             <v-icon>mdi-folder</v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>{{group.name}}</v-list-item-title>
+            <v-list-item-title>{{ group.name }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </template>
     </v-list>
 
     <v-subheader>Organisation</v-subheader>
-    <v-list class="elevation-1" v-if="$subReady.organizations">
+    <v-list v-if="$subReady.organizations" class="elevation-1">
       <v-list-item>
         <v-avatar>
           <v-icon>mdi-folder</v-icon>
         </v-avatar>
         <v-list-item-content>
-        <v-list-item-title>{{ organization.name}}</v-list-item-title>
+          <v-list-item-title>{{ organization.name }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>
-
   </div>
 </template>
 
 <script>
-import { ProjectGroups } from '/imports/api/projectGroups/projectGroups.js'
-import { Projects } from '/imports/api/projects/projects.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
+import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 
-import DatesMixin from '/imports/ui/mixins/DatesMixin.js'
-import MarkdownMixin from '/imports/ui/mixins/MarkdownMixin.js'
-
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
-  name: 'project-info',
+  name: "ProjectInfo",
   mixins: [DatesMixin, MarkdownMixin],
   props: {
-    project: Object
-  },
-  data () {
-    return {
+    project: {
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {};
   },
   meteor: {
     $subscribe: {
-      'projectGroups': function() {
-        return [];
-      }
+      projectGroups: () => []
     },
-  
+
     assignedGroups: {
-      params () {
+      params() {
         return {
           project: this.project
         };
       },
       deep: false,
-      update ({project}) {
+      update({ project }) {
         if (project) {
-          return ProjectGroups.find({projects: project._id}, {sort: {name: 1}});
+          return ProjectGroups.find(
+            { projects: project._id },
+            { sort: { name: 1 } }
+          );
         }
+        return null;
       }
-    },
+    }
   },
   methods: {
-    getColor (project) {
-      return 'background-color: ' + project.color;
+    getColor(project) {
+      return `background-color: ${project.color}`;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-
 .groups {
   width: 100%;
 }

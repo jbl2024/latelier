@@ -1,14 +1,11 @@
-import assert from "assert";
-import { expect } from 'chai';
+import { expect } from "chai";
 
 import { initData } from "/test/fixtures/fixtures";
 import { Projects } from "/imports/api/projects/projects";
 import { Canvas } from "/imports/api/canvas/canvas";
-import { createStubs, restoreStubs } from "/test/stubs"
-
+import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
-  
   describe("canvas", function() {
     beforeEach(function() {
       initData();
@@ -43,14 +40,20 @@ if (Meteor.isServer) {
         goal: "goal"
       });
 
-      expect(Canvas.findOne({projectId: projectId}).data.goal).to.be.equal("goal");
+      expect(Canvas.findOne({ projectId }).data.goal).to.be.equal(
+        "goal"
+      );
 
       Meteor.call("canvas.update", projectId, {
         budget: "budget"
       });
 
-      expect(Canvas.findOne({projectId: projectId}).data.goal).to.be.equal("goal");
-      expect(Canvas.findOne({projectId: projectId}).data.budget).to.be.equal("budget");
+      expect(Canvas.findOne({ projectId }).data.goal).to.be.equal(
+        "goal"
+      );
+      expect(Canvas.findOne({ projectId }).data.budget).to.be.equal(
+        "budget"
+      );
     });
   });
 }

@@ -1,20 +1,29 @@
 <template>
   <div>
     <template v-if="user">
-      <v-subheader>{{ $t("Profile")}}</v-subheader>
+      <v-subheader>{{ $t("Profile") }}</v-subheader>
 
       <div class="elevation-1 card">
         <div class="center pa-8">
-          <author-avatar big :user-id="user"></author-avatar>
+          <author-avatar big :user-id="user" />
         </div>
         <div class="pa-4">
-          <input type="file" v-if="!isUploading" @change="onUpload" :disabled="isUploading" />
+          <input
+            v-if="!isUploading"
+            type="file"
+            :disabled="isUploading"
+            @change="onUpload"
+          >
         </div>
-        <div class="pa-4 center" v-if="user.profile.avatar">
-          <v-btn text @click="remove()">{{ $t('Delete') }}</v-btn>
+        <div v-if="user.profile.avatar" class="pa-4 center">
+          <v-btn text @click="remove()">
+            {{ $t("Delete") }}
+          </v-btn>
         </div>
-        <v-divider></v-divider>
-        <div class="center title pa-8">{{ user.emails[0].address }}</div>
+        <v-divider />
+        <div class="center title pa-8">
+          {{ user.emails[0].address }}
+        </div>
       </div>
     </template>
   </div>
@@ -25,15 +34,15 @@ import { Avatars } from "/imports/api/users/avatars";
 
 export default {
   props: {},
-  mounted() {
-    this.refreshUser();
-  },
 
   data() {
     return {
       user: null,
       isUploading: false
     };
+  },
+  mounted() {
+    this.refreshUser();
   },
   methods: {
     refreshUser() {
@@ -72,15 +81,15 @@ export default {
         that.isUploading = true;
       });
 
-      upload.on("end", function(error, fileObj) {
+      upload.on("end", function(uploadError, fileObj) {
         that.isUploading = false;
-        if (error) {
-          alert("Error during upload: " + error);
+        if (uploadError) {
+          this.$store.dispatch("notifyError", uploadError);
         } else {
           Meteor.call(
             "avatars.setAvatar",
             { avatarId: fileObj._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 that.$store.dispatch("notifyError", error);
                 return;
@@ -95,16 +104,13 @@ export default {
     },
 
     remove() {
-      Meteor.call(
-        "avatars.clear",
-        (error, result) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-          this.refreshUser();
+      Meteor.call("avatars.clear", (error) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
         }
-      );
+        this.refreshUser();
+      });
     }
   }
 };

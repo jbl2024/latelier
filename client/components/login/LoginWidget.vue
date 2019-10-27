@@ -1,44 +1,54 @@
 <template>
   <div class="login-widget">
     <div class="centered-container">
-      <v-form v-model="valid" v-on:submit.prevent>
+      <v-form v-model="valid" @submit.prevent>
         <v-card>
-          <v-card-title class="title">Authentification</v-card-title>
+          <v-card-title class="title">
+            Authentification
+          </v-card-title>
           <v-card-text>
             <v-text-field
+              id="email"
+              v-model="form.email"
               label="Email"
               name="email"
-              id="email"
               autocomplete="email"
               type="email"
-              v-model="form.email"
               :rules="emailRules"
               :disabled="sending"
-            ></v-text-field>
+            />
             <v-text-field
+              id="password"
+              v-model="form.password"
               label="Mot de passe"
               type="password"
               name="password"
-              id="password"
               autocomplete="password"
               :rules="passwordRules"
-              v-model="form.password"
-              v-on:keyup.enter="login()"
               :disabled="sending"
-            ></v-text-field>
-            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+              @keyup.enter="login()"
+            />
+            <v-progress-linear v-if="sending" indeterminate />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="login" :disabled="sending || !valid">Se connecter</v-btn>
+            <v-spacer />
+            <v-btn color="primary" :disabled="sending || !valid" @click="login">
+              Se connecter
+            </v-btn>
           </v-card-actions>
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'register'}">Créer un compte</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn text :to="{ name: 'forgot-password'}">Mot de passe oublié ?</v-btn>
+            <v-btn text :to="{ name: 'register' }">
+              Créer un compte
+            </v-btn>
+            <v-spacer />
+            <v-btn text :to="{ name: 'forgot-password' }">
+              Mot de passe oublié ?
+            </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+          <v-snackbar v-model="notify">
+            {{ notifyText }}
+          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -47,26 +57,27 @@
 
 <script>
 export default {
-  name: "login-widget",
-  data: () => ({
-    valid: false,
-    form: {
-      email: '',
-      password: ''
-    },
-    notify: false,
-    notifyText: "",
-    sending: false,
-    emailRules: [
-      v => !!v || this.$t('Email is mandatory'),
-      v => v.length > 1 || this.$t('Invalid email')
-    ],
-    passwordRules: [
-      v => !!v || this.$t('Password is mandatory'),
-      v => v.length > 1 || this.$t('Password is too short')
-    ]
-
-  }),
+  name: "LoginWidget",
+  data() {
+    return {
+      valid: false,
+      form: {
+        email: "",
+        password: ""
+      },
+      notify: false,
+      notifyText: "",
+      sending: false,
+      emailRules: [
+        (v) => !!v || this.$t("Email is mandatory"),
+        (v) => v.length > 1 || this.$t("Invalid email")
+      ],
+      passwordRules: [
+        (v) => !!v || this.$t("Password is mandatory"),
+        (v) => v.length > 1 || this.$t("Password is too short")
+      ]
+    };
+  },
   methods: {
     clearForm() {
       this.form.email = null;
@@ -76,11 +87,11 @@ export default {
     login() {
       this.sending = true;
 
-      Meteor.loginWithPassword(this.form.email, this.form.password, err => {
+      Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
         this.sending = false;
         this.notify = false;
         if (err) {
-          this.notifyText = "Erreur " + err.reason;
+          this.notifyText = `Erreur ${err.reason}`;
           this.notify = true;
         } else {
           this.clearForm();

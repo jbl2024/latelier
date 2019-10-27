@@ -1,8 +1,8 @@
 <template>
   <div class="organization-title">
-    <v-toolbar-title class="align-left" v-show="!editOrganizationName">
+    <v-toolbar-title v-show="!editOrganizationName" class="align-left">
       <div>
-        <slot></slot>
+        <slot />
         <v-btn icon text @click="goTo('dashboard-page')">
           <v-icon>mdi-home</v-icon>
         </v-btn>
@@ -21,12 +21,13 @@
       prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
-      v-on:input="debouncedFilter"
-    ></v-text-field>
+      @input="debouncedFilter"
+    />
 
-    <div class="title edit align-left" v-show="editOrganizationName">
+    <div v-show="editOrganizationName" class="title edit align-left">
       <v-text-field
-        @focus="$event.target.select()"
+        ref="name"
+        v-model="organization.name"
         style="width: 500px"
         text
         solo-inverted
@@ -34,10 +35,9 @@
         hide-details
         prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
-        ref="name"
-        v-model="organization.name"
-        v-on:keyup.enter="updateOrganizationName"
-      ></v-text-field>
+        @focus="$event.target.select()"
+        @keyup.enter="updateOrganizationName"
+      />
       <v-btn icon @click="updateOrganizationName">
         <v-icon>mdi-check-circle</v-icon>
       </v-btn>
@@ -56,11 +56,18 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: 0
+      default: ""
     }
   },
+  data() {
+    return {
+      savedOrganizationName: "",
+      editOrganizationName: false,
+      debouncedFilter: ""
+    };
+  },
   created() {
-    this.debouncedFilter = debounce(val => {
+    this.debouncedFilter = debounce((val) => {
       this.$events.fire("filter-projects", val);
     }, 400);
   },
@@ -77,13 +84,6 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      savedOrganizationName: "",
-      editOrganizationName: false,
-      debouncedFilter: ""
-    };
-  },
   methods: {
     startUpdateOrganizationName() {
       this.savedOrganizationName = this.organization.name;
@@ -93,12 +93,10 @@ export default {
 
     updateOrganizationName() {
       this.editOrganizationName = false;
-      Meteor.call(
-        "organizations.updateName", {
-          organizationId: this.organization._id,
-          name: this.organization.name
-        }
-      );
+      Meteor.call("organizations.updateName", {
+        organizationId: this.organization._id,
+        name: this.organization.name
+      });
     },
 
     cancelUpdateOrganizationName() {

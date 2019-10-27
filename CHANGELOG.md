@@ -7,10 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- eslint support
 - Clone task to another project
 - Attachments are cloned when cloning a task or project
 
 ### Changed
+- All code is updated to repect the eslint custom rules
 - Update occitan translation, by Quenty31
 
 ### Removed

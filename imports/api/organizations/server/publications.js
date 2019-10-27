@@ -1,25 +1,28 @@
 import { Meteor } from "meteor/meteor";
-import { publishComposite } from "meteor/reywood:publish-composite";
-import { Permissions } from "/imports/api/permissions/permissions"
-
+import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions";
+import { check, Match } from "meteor/check";
 
 import { Organizations } from "../organizations";
 
 Meteor.publish("organizations", function organizations(name, organizationId) {
-  var userId = Meteor.userId();
-  let query = {};
+  check(name, Match.Maybe(String));
+  check(organizationId, Match.Maybe(String));
+  checkLoggedIn();
+
+  const userId = Meteor.userId();
+  const query = {};
   if (!Permissions.isAdmin(Meteor.userId())) {
-    query['$or'] = [{members: userId}, {isPublic: true}];
+    query.$or = [{ members: userId }, { isPublic: true }];
   }
   if (organizationId) {
-    query['_id'] = organizationId;
+    query._id = organizationId;
   }
   return Organizations.find(query);
 });
 
-
 Meteor.publish("organization", function organization(organizationId) {
-  var userId = Meteor.userId();
-  var query = {_id: organizationId};
+  check(organizationId, String);
+  checkLoggedIn();
+  const query = { _id: organizationId };
   return Organizations.find(query);
 });

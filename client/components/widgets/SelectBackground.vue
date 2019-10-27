@@ -1,21 +1,30 @@
 <template>
   <div class="select-background">
-
-    <v-dialog :value="active" @input="$emit('update:active')" max-width="620" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      :value="active"
+      max-width="620"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      @input="$emit('update:active')"
+    >
       <v-card>
-        <v-card-title class="headline">{{ $t('Select background') }}</v-card-title>
+        <v-card-title class="headline">
+          {{ $t("Select background") }}
+        </v-card-title>
         <v-card-text class="backgrounds-wrapper">
           <div class="backgrounds">
             <v-card
-              @click="selectBackground(image)"
               v-for="image in backgrounds"
               :key="image._id"
               max-width="344"
-              tile class="mx-auto background-card"
+              tile
+              class="mx-auto background-card"
+              @click="selectBackground(image)"
             >
               <v-list-item>
                 <v-list-item-content>
-                  <v-list-item-title class="headline">{{ image.meta.name }} </v-list-item-title>
+                  <v-list-item-title class="headline">
+                    {{ image.meta.name }}
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
 
@@ -23,23 +32,23 @@
                 :src="thumbnail(image)"
                 :alt="image.meta.name"
                 height="194"
-              ></v-img>
+              />
 
-              <v-card-text v-html="image.meta.credits">
-              </v-card-text>
+              <v-card-text v-html="image.meta.credits" />
             </v-card>
           </div>
-
-
         </v-card-text>
         <v-card-actions>
-          <v-btn color="error" text @click="clearBackground">{{ $t('BackgroundNone') }} </v-btn>
-          <v-spacer></v-spacer>
-          <v-btn text @click="closeDialog">{{ $t('Cancel') }} </v-btn>
+          <v-btn color="error" text @click="clearBackground">
+            {{ $t("BackgroundNone") }}
+          </v-btn>
+          <v-spacer />
+          <v-btn text @click="closeDialog">
+            {{ $t("Cancel") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-
   </div>
 </template>
 
@@ -49,19 +58,19 @@ import { Backgrounds } from "/imports/api/backgrounds/backgrounds";
 
 export default {
   props: {
-    active: Boolean,
-  },
-  mounted() {
-    Meteor.call('backgrounds.find', (error, result) => {
-      if (result) {
-        this.backgrounds = result;
-      }
-    })
+    active: Boolean
   },
   data() {
     return {
-      backgrounds: undefined,
+      backgrounds: undefined
     };
+  },
+  mounted() {
+    Meteor.call("backgrounds.find", (error, result) => {
+      if (result) {
+        this.backgrounds = result;
+      }
+    });
   },
   methods: {
     closeDialog() {
@@ -69,18 +78,22 @@ export default {
     },
 
     selectBackground(image) {
-      Meteor.call("backgrounds.choose", {backgroundId: image._id}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "backgrounds.choose",
+        { backgroundId: image._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch("notify", this.$t("Background updated"));
+          this.$emit("update:active", false);
         }
-        this.$store.dispatch("notify", this.$t("Background updated"));
-        this.$emit("update:active", false);
-      });
+      );
     },
 
     clearBackground() {
-      Meteor.call("backgrounds.clear", (error, result) => {
+      Meteor.call("backgrounds.clear", (error) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -141,7 +154,6 @@ export default {
   }
 }
 
-
 .backgrounds {
   display: flex;
   flex-wrap: wrap;
@@ -152,5 +164,4 @@ export default {
 .background-card {
   margin: 12px;
 }
-
 </style>

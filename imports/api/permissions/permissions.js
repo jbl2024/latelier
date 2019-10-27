@@ -1,4 +1,4 @@
-import { Meteor } from 'meteor/meteor';
+import { Meteor } from "meteor/meteor";
 import { Roles } from "meteor/alanning:roles";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
@@ -9,14 +9,14 @@ const ApplicationRoles = Object.freeze({
 });
 
 export const Permissions = {
-  isAdmin (userId, scope=Roles.GLOBAL_GROUP) {
+  isAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     if (!userId) {
       return false;
     }
-    return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, scope)
+    return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, scope);
   },
 
-  setAdmin(userId, scope=Roles.GLOBAL_GROUP) {
+  setAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     let accessGranted = false;
     if (this.isAdmin(Meteor.userId())) {
       accessGranted = true;
@@ -26,18 +26,26 @@ export const Permissions = {
     if (!accessGranted) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope)
+    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope);
   },
 
   initializeProjectPermissions(project) {
-    Roles.addUsersToRoles(project.createdBy, ApplicationRoles.ADMIN, project._id)
+    Roles.addUsersToRoles(
+      project.createdBy,
+      ApplicationRoles.ADMIN,
+      project._id
+    );
   },
 
   initializeOrganizationPermissions(organization) {
-    Roles.addUsersToRoles(organization.createdBy, ApplicationRoles.ADMIN, organization._id)
+    Roles.addUsersToRoles(
+      organization.createdBy,
+      ApplicationRoles.ADMIN,
+      organization._id
+    );
   },
 
-  removeAdmin(userId, scope=Roles.GLOBAL_GROUP) {
+  removeAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     let accessGranted = false;
     if (this.isAdmin(Meteor.userId())) {
       accessGranted = true;
@@ -52,38 +60,50 @@ export const Permissions = {
         throw new Meteor.Error(401, "cannot-remove-self");
       }
     }
-    Roles.removeUsersFromRoles(userId, ApplicationRoles.ADMIN, scope)
+    Roles.removeUsersFromRoles(userId, ApplicationRoles.ADMIN, scope);
   },
 
-  isActive (userId) {
+  isActive(userId) {
     if (!userId) {
       return false;
     }
-    return !Roles.userIsInRole(userId, ApplicationRoles.INACTIVE, Roles.GLOBAL_GROUP)
+    return !Roles.userIsInRole(
+      userId,
+      ApplicationRoles.INACTIVE,
+      Roles.GLOBAL_GROUP
+    );
   },
 
-  setInactive (userId) {
+  setInactive(userId) {
     if (!this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Roles.addUsersToRoles(userId, ApplicationRoles.INACTIVE, Roles.GLOBAL_GROUP)
+    Roles.addUsersToRoles(
+      userId,
+      ApplicationRoles.INACTIVE,
+      Roles.GLOBAL_GROUP
+    );
     Meteor.users.update(userId, {
       $set: {
-          "services.resume.loginTokens": []
+        "services.resume.loginTokens": []
       }
     });
   },
 
-  setActive (userId) {
+  setActive(userId) {
     if (!this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     if (this.isActive(userId)) {
       return;
     }
-    Roles.removeUsersFromRoles(userId, ApplicationRoles.INACTIVE, Roles.GLOBAL_GROUP)
+    Roles.removeUsersFromRoles(
+      userId,
+      ApplicationRoles.INACTIVE,
+      Roles.GLOBAL_GROUP
+    );
   }
-}
+};
 
 if (Meteor.isServer) {
   Accounts.validateLoginAttempt(function(attemptObj) {
@@ -99,71 +119,70 @@ if (Meteor.isServer) {
 
     if (attemptObj.user.emails[0].verified === true) {
       return true;
-    } else {
-      throw new Meteor.Error('email-not-verified', 'You must verify your email address before you can log in');
     }
-    
-    return true;
+    throw new Meteor.Error(
+      "email-not-verified",
+      "You must verify your email address before you can log in"
+    );
   });
 }
-
 
 export const checkLoggedIn = () => {
   if (!Meteor.userId()) {
     throw new Meteor.Error("not-authorized");
   }
-}
+};
 
 export const checkCanReadProject = (projectId) => {
-  Meteor.call("permissions.canReadProject", {projectId: projectId});
-}
+  Meteor.call("permissions.canReadProject", { projectId });
+};
 
 export const checkCanWriteProject = (projectId) => {
-  Meteor.call("permissions.canWriteProject", {projectId: projectId});
-}
+  Meteor.call("permissions.canWriteProject", { projectId });
+};
 
 export const checkCanDeleteProject = (projectId) => {
-  Meteor.call("permissions.canDeleteProject", {projectId: projectId});
-}
+  Meteor.call("permissions.canDeleteProject", { projectId });
+};
 
 export const checkCanReadTask = (taskId) => {
-  Meteor.call("permissions.canReadTask", {taskId: taskId});
-}
+  Meteor.call("permissions.canReadTask", { taskId });
+};
 
 export const checkCanWriteTask = (taskId) => {
-  Meteor.call("permissions.canWriteTask", {taskId: taskId});
-}
+  Meteor.call("permissions.canWriteTask", { taskId });
+};
 
 export const checkCanDeleteTask = (taskId) => {
-  Meteor.call("permissions.canDeleteTask", {taskId: taskId});
-}
+  Meteor.call("permissions.canDeleteTask", { taskId });
+};
 Permissions.methods = {};
 
 Permissions.methods.setAdmin = new ValidatedMethod({
   name: "permissions.setAdmin",
   validate: new SimpleSchema({
     userId: { type: String },
-    scope: { type: String, optional: true },
+    scope: { type: String, optional: true }
   }).validator(),
   run({ userId, scope }) {
     checkLoggedIn();
-   
+
     if (!scope) {
       scope = Roles.GLOBAL_GROUP;
     }
-    Permissions.setAdmin(userId, scope)
+    Permissions.setAdmin(userId, scope);
   }
 });
 
 Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
   name: "permissions.initializeProjectPermissions",
   validate: new SimpleSchema({
-    projectId: { type: String },
+    projectId: { type: String }
   }).validator(),
   run({ projectId }) {
     checkLoggedIn();
-    
-    const project = Projects.findOne({_id: projectId});
+
+    const project = Projects.findOne({ _id: projectId });
     const userId = project.createdBy;
     if (!userId) return;
     Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
@@ -173,12 +192,12 @@ Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
 Permissions.methods.initializeOrganizationPermissions = new ValidatedMethod({
   name: "permissions.initializeOrganizationPermissions",
   validate: new SimpleSchema({
-    organizationId: { type: String },
+    organizationId: { type: String }
   }).validator(),
   run({ organizationId }) {
     checkLoggedIn();
-    
-    const organization = Organizations.findOne({_id: organizationId});
+
+    const organization = Organizations.findOne({ _id: organizationId });
     const userId = organization.createdBy;
     if (!userId) return;
     Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, organizationId);
@@ -189,15 +208,14 @@ Permissions.methods.removeAdmin = new ValidatedMethod({
   name: "permissions.removeAdmin",
   validate: new SimpleSchema({
     userId: { type: String },
-    scope: { type: String, optional: true },
+    scope: { type: String, optional: true }
   }).validator(),
   run({ userId, scope }) {
     checkLoggedIn();
-   
+
     if (!scope) {
       scope = Roles.GLOBAL_GROUP;
     }
-    Permissions.removeAdmin(userId, scope)
+    Permissions.removeAdmin(userId, scope);
   }
 });
-

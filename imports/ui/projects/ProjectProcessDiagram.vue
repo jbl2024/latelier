@@ -1,18 +1,15 @@
 <template>
   <div class="project-process-diagram">
     <div v-if="!$subReady.processDiagram">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
     <div v-if="$subReady.processDiagram" class="wrapper">
       <v-toolbar dense class="toolbar">
-        <v-btn
-          icon
-          @click="gotoBpmn()"
-        >
+        <v-btn icon @click="gotoBpmn()">
           <v-icon>mdi-chart-donut</v-icon>
         </v-btn>
         <span class="title">{{ processDiagram.name }}</span>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <div>
           <v-tooltip top>
             <template v-slot:activator="{ on }">
@@ -20,7 +17,7 @@
                 <v-icon>mdi-image</v-icon>
               </v-btn>
             </template>
-            <span>{{ $t('Export image') }}</span>
+            <span>{{ $t("Export image") }}</span>
           </v-tooltip>
         </div>
 
@@ -32,7 +29,7 @@
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Edit') }}</span>
+              <span>{{ $t("Edit") }}</span>
             </v-tooltip>
           </div>
         </template>
@@ -44,7 +41,7 @@
                   <v-icon>mdi-undo</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Undo') }}</span>
+              <span>{{ $t("Undo") }}</span>
             </v-tooltip>
           </div>
           <div>
@@ -54,7 +51,7 @@
                   <v-icon>mdi-redo</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Redo') }}</span>
+              <span>{{ $t("Redo") }}</span>
             </v-tooltip>
           </div>
           <div>
@@ -64,44 +61,44 @@
                   <v-icon>mdi-check</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Close') }}</span>
+              <span>{{ $t("Close") }}</span>
             </v-tooltip>
           </div>
         </template>
       </v-toolbar>
       <bpmn-viewer
+        v-if="mode === 'view' && processDiagram.xml"
+        ref="viewer"
         :process-diagram="processDiagram"
         class="bpmn"
-        ref="viewer"
-        v-on:dblclick.native="edit()"
-        v-if="mode === 'view' && processDiagram.xml"
-      ></bpmn-viewer>
+        @dblclick.native="edit()"
+      />
       <empty-state
-        class="empty"
         v-show="mode === 'view' && !processDiagram.xml"
+        class="empty"
         illustration="empty"
         :label="$t('Empty diagram')"
       >
-        <v-btn class="primary" @click="edit()">{{ $t('Start edition') }}</v-btn>
+        <v-btn class="primary" @click="edit()">
+          {{ $t("Start edition") }}
+        </v-btn>
       </empty-state>
 
       <bpmn-modeler
+        v-if="mode === 'edit'"
+        ref="modeler"
         :process-diagram="processDiagram"
         class="bpmn"
-        ref="modeler"
-        v-if="mode === 'edit'"
-      ></bpmn-modeler>
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import { saveAs } from 'file-saver';
+import { saveAs } from "file-saver";
 
 export default {
   mixins: [TextRenderingMixin],
@@ -110,28 +107,22 @@ export default {
       en: {
         "Empty diagram": "Empty diagram",
         "Start edition": "Start edition",
-        "Undo": "Undo",
-        "Redo": "Redo",
-        "Edit": "Edit",
-        "Close": "Close",
-        "Export image": "Export image",
+        Undo: "Undo",
+        Redo: "Redo",
+        Edit: "Edit",
+        Close: "Close",
+        "Export image": "Export image"
       },
       fr: {
         "Empty diagram": "Diagramme vide",
         "Start edition": "Démarrer l'édition",
-        "Undo": "Annuler",
-        "Redo": "Refaire",
-        "Edit": "Editer",
-        "Close": "Fermer",
-        "Export image": "Exporter l'image",
+        Undo: "Annuler",
+        Redo: "Refaire",
+        Edit: "Editer",
+        Close: "Fermer",
+        "Export image": "Exporter l'image"
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", 0);
   },
   props: {
     projectId: {
@@ -148,6 +139,12 @@ export default {
       modeler: null,
       mode: "view"
     };
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentProjectId", 0);
   },
   meteor: {
     $subscribe: {
@@ -179,11 +176,11 @@ export default {
 
     exportSVG() {
       const cb = (err, svg) => {
-        const blob = new Blob([svg], {type: "image/svg+xml;charset=utf-8"})
-        saveAs(blob, this.processDiagram.name + ".svg");
+        const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
+        saveAs(blob, `${this.processDiagram.name}.svg`);
       };
 
-      if (this.mode === 'edit') {
+      if (this.mode === "edit") {
         this.$refs.modeler.saveSVG(cb);
       } else {
         this.$refs.viewer.saveSVG(cb);
@@ -191,9 +188,11 @@ export default {
     },
 
     gotoBpmn() {
-      this.$router.push({ name: 'project-bpmn', params: {projectId: this.projectId} });
+      this.$router.push({
+        name: "project-bpmn",
+        params: { projectId: this.projectId }
+      });
     }
-
   }
 };
 </script>

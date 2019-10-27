@@ -1,6 +1,6 @@
 <template>
   <div class="projects">
-    <new-project ref="newProject" :organizationId="organizationId"></new-project>
+    <new-project ref="newProject" :organization-id="organizationId" />
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
@@ -20,90 +20,124 @@
       @confirm="onConfirmCloneProject"
     />
     <div v-if="!$subReady.projects">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
     <div v-if="$subReady.projects">
-      <empty-state v-if="projects.length == 0" :description="`Aucun projet disponible`" illustration="project">
-        <v-btn class="primary" @click="newProject">{{ $t('Create new project')}}</v-btn>
+      <empty-state
+        v-if="projects.length == 0"
+        :description="`Aucun projet disponible`"
+        illustration="project"
+      >
+        <v-btn class="primary" @click="newProject">
+          {{ $t("Create new project") }}
+        </v-btn>
       </empty-state>
-      <v-list two-line subheader v-show="projects.length != 0" class="elevation-1">
+      <v-list
+        v-show="projects.length != 0"
+        two-line
+        subheader
+        class="elevation-1"
+      >
         <v-subheader>
-          <router-link class="link" :to="{ name: 'dashboard-page' }">{{ organization.name }}</router-link>&nbsp;> Projets
+          <router-link class="link" :to="{ name: 'dashboard-page' }">
+            {{ organization.name }}
+          </router-link>
+          &nbsp;> Projets
           <v-btn fab dark small color="pink" @click="newProject">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
 
-        <template v-for="item in projectStates()">
-          <v-subheader :key="item.value">{{ item.label }}</v-subheader>
-          <template v-for="item in filterProjectsByState(projects, item.value)">
+        <template v-for="state in projectStates()">
+          <v-subheader :key="state.value">
+            {{ state.label }}
+          </v-subheader>
+          <template v-for="item in filterProjectsByState(projects, state.value)">
             <v-list-item :key="item._id" @click="openProject(item._id)">
               <v-list-item-avatar :color="getColor(item)">
-                <v-icon :class="getVisibilityIconClass(item)">{{ getVisibilityIcon(item) }}</v-icon>
+                <v-icon :class="getVisibilityIconClass(item)">
+                  {{ getVisibilityIcon(item) }}
+                </v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="pointer">
                 <v-list-item-title>{{ item.name }}</v-list-item-title>
-                <v-list-item-subtitle>{{ formatProjectDates(item) }}</v-list-item-subtitle>
+                <v-list-item-subtitle>
+                  {{ formatProjectDates(item) }}
+                </v-list-item-subtitle>
               </v-list-item-content>
-              <v-list-item-action v-for="group in getProjectGroups(item)" class="show-desktop" :key="group._id" @click.stop="selectGroup(group)">
-                <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+              <v-list-item-action
+                v-for="group in getProjectGroups(item)"
+                :key="group._id"
+                class="show-desktop"
+                @click.stop="selectGroup(group)"
+              >
+                <v-chip small color="primary" text-color="white">
+                  {{ group.name }}
+                </v-chip>
               </v-list-item-action>
-              <v-list-item-action class="show-desktop" v-if="canManageProject(item)">
-                <v-btn icon text color="grey darken-1" @click.stop="openProjectSettings(item._id)">
+              <v-list-item-action
+                v-if="canManageProject(item)"
+                class="show-desktop"
+              >
+                <v-btn
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="openProjectSettings(item._id)"
+                >
                   <v-icon>mdi-settings</v-icon>
                 </v-btn>
               </v-list-item-action>
               <v-list-item-action class="show-desktop">
-                <v-btn icon text color="grey darken-1" @click.stop="cloneProject(item._id)">
+                <v-btn
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="cloneProject(item._id)"
+                >
                   <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </v-list-item-action>
-              <v-list-item-action class="show-desktop" v-if="canDeleteProject(item)">
-                <v-btn icon text color="grey darken-1" @click.stop="deleteProject(item._id)">
+              <v-list-item-action
+                v-if="canDeleteProject(item)"
+                class="show-desktop"
+              >
+                <v-btn
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="deleteProject(item._id)"
+                >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </v-list-item-action>
             </v-list-item>
           </template>
         </template>
-
-
-
       </v-list>
     </div>
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
+import {
+  Projects,
+  ProjectStates,
+  ProjectAccessRights
+} from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
-import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
-import { Permissions } from "/imports/api/permissions/permissions"
 
-
+import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   mixins: [DatesMixin],
-  mounted() {
-    this.$events.listen('filter-projects', name => {
-      this.filter = name;
-    });
-    this.$store.dispatch("setShowCategories", true);
-  },
-  beforeDestroy() {
-    this.$events.off('filter-projects');
-    this.$store.dispatch("setShowCategories", false);
-  },
-  computed: {
-    ...mapState(["selectedGroup"])
-  },
   props: {
     organizationId: {
       type: String,
-      defaultValue: "0"
+      default: "0"
     }
   },
   data() {
@@ -118,11 +152,24 @@ export default {
       projectId: ""
     };
   },
+  computed: {
+    ...mapState(["selectedGroup"])
+  },
+  mounted() {
+    this.$events.listen("filter-projects", (name) => {
+      this.filter = name;
+    });
+    this.$store.dispatch("setShowCategories", true);
+  },
+  beforeDestroy() {
+    this.$events.off("filter-projects");
+    this.$store.dispatch("setShowCategories", false);
+  },
   meteor: {
     // Subscriptions
     $subscribe: {
       // Subscribes to the 'threads' publication with no parameters
-      projects: function() {
+      projects() {
         // Here you can use Vue reactive properties
         return [
           this.organizationId,
@@ -130,11 +177,11 @@ export default {
           this.$store.state.selectedGroup._id
         ]; // Subscription params
       },
-      organization: function() {
+      organization() {
         // Here you can use Vue reactive properties
         return [this.organizationId]; // Subscription params
       },
-      projectGroups: function() {
+      projectGroups() {
         return [this.organizationId];
       }
     },
@@ -162,7 +209,7 @@ export default {
 
     onConfirmDeleteProject() {
       this.showConfirmDialog = false;
-      Meteor.call("projects.remove", {projectId: this.projectId});
+      Meteor.call("projects.remove", { projectId: this.projectId });
     },
 
     onCancelDeleteProject() {
@@ -176,13 +223,20 @@ export default {
 
     onConfirmCloneProject() {
       this.showConfirmCloneDialog = false;
-      Meteor.call("projects.clone", {projectId: this.projectId}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-        } else {
-          this.$store.dispatch("notify", this.$t('Project cloned successfully'));
+      Meteor.call(
+        "projects.clone",
+        { projectId: this.projectId },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+          } else {
+            this.$store.dispatch(
+              "notify",
+              this.$t("Project cloned successfully")
+            );
+          }
         }
-      });
+      );
     },
 
     onCancelCloneProject() {
@@ -218,15 +272,12 @@ export default {
       });
     },
     getDescription() {
-      if (this.filter.length == 0) {
+      if (this.filter.length === 0) {
         return "";
-      } else {
-        return `Aucun projet trouvé pour '${
-          this.filter
-        }'. Essayer avec un autre terme ou créer un projet`;
       }
+      return `Aucun projet trouvé pour '${this.filter}'. Essayer avec un autre terme ou créer un projet`;
     },
-    deselectGroup(str, index) {
+    deselectGroup() {
       this.$store.dispatch("setSelectedGroup", null);
     },
 
@@ -250,57 +301,61 @@ export default {
 
     formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return (
-          "Du  " +
-          this.formatDate(project.startDate) +
-          " au " +
-          this.formatDate(project.endDate)
-        );
-      } else if (project.startDate) {
-        return "A partir du " + this.formatDate(project.startDate);
-      } else if (project.endtDate) {
-        return "Jusqu'au " + this.formatDate(project.endDate);
+        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
+      }
+      if (project.startDate) {
+        return `A partir du ${this.formatDate(project.startDate)}`;
+      }
+      if (project.endtDate) {
+        return `Jusqu'au ${this.formatDate(project.endDate)}`;
       }
       return "";
     },
 
-    getProjectGroups (project) {
-      return ProjectGroups.find({projects: project._id}, {sort: {name: 1}}).fetch();
+    getProjectGroups(project) {
+      return ProjectGroups.find(
+        { projects: project._id },
+        { sort: { name: 1 } }
+      ).fetch();
     },
-    selectGroup (group) {
-      var selectedGroup = this.$store.state.selectedGroup;
+    selectGroup(group) {
+      const { selectedGroup } = this.$store.state;
       if (selectedGroup && selectedGroup._id === group._id) {
-        this.$store.dispatch('setSelectedGroup', null);
+        this.$store.dispatch("setSelectedGroup", null);
       } else {
-        this.$store.dispatch('setSelectedGroup', group);
+        this.$store.dispatch("setSelectedGroup", group);
       }
     },
-    projectStates () {
-      const states = []
-      Object.keys(ProjectStates).map(state => {
+    projectStates() {
+      const states = [];
+      Object.keys(ProjectStates).forEach((state) => {
         states.push({
           value: ProjectStates[state],
           label: this.$t(`projects.state.${state}`)
-        })
+        });
       });
       return states;
     },
 
-    filterProjectsByState (projects, state) {
-      return projects.filter(project => {
-        return project.state === state;
-      });
+    filterProjectsByState(projects, state) {
+      return projects.filter((project) => project.state === state);
     },
 
     canDeleteProject(project) {
-      if (Permissions.isAdmin(Meteor.userId()) || project.createdBy === Meteor.userId()) {
+      if (
+        Permissions.isAdmin(Meteor.userId())
+        || project.createdBy === Meteor.userId()
+      ) {
         return true;
       }
       return false;
     },
 
     canManageProject(project) {
-      return Permissions.isAdmin(Meteor.userId(), project._id) || Permissions.isAdmin(Meteor.userId());
+      return (
+        Permissions.isAdmin(Meteor.userId(), project._id)
+        || Permissions.isAdmin(Meteor.userId())
+      );
     }
   }
 };

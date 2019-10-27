@@ -2,46 +2,41 @@
   <div class="administration-page">
     <template v-if="$subReady.user">
       <template v-if="isAdmin()">
-        
         <v-tabs>
           <v-tab id="tab-users">
             Utilisateurs
           </v-tab>
           <v-tab-item>
-            <administration-users></administration-users>
+            <administration-users />
           </v-tab-item>
-        </v-tabs> 
-
+        </v-tabs>
       </template>
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions"
-
+import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
-  props: {
-  },
+  props: {},
 
-  data () {
-    return {}
+  data() {
+    return {};
   },
   meteor: {
     $subscribe: {
       user: function() {
         return [];
       }
-    },
-  },
-  methods: {
-    isAdmin () {
-      return Permissions.isAdmin(Meteor.userId())
     }
   },
-}
+  methods: {
+    isAdmin() {
+      return Permissions.isAdmin(Meteor.userId());
+    }
+  }
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

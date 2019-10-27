@@ -1,69 +1,64 @@
 <template>
-  <div class="organization-settings"> 
-
+  <div class="organization-settings">
     <div v-if="!$subReady.organization">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.organization" class="project-wrapper"> 
-
+    <div v-if="$subReady.organization" class="project-wrapper">
       <v-tabs>
         <v-tab id="tab-general">
-          {{ $t('Settings' )}}
+          {{ $t('Settings' ) }}
         </v-tab>
         <v-tab id="tab-users">
           {{ $t('Users') }}
         </v-tab>
         <v-tab-item>
-          <organization-settings-general :organization="organization"></organization-settings-general>
+          <organization-settings-general :organization="organization" />
         </v-tab-item>
         <v-tab-item>
-          <organization-settings-manage-users :organization="organization" class="users"></organization-settings-manage-users>
+          <organization-settings-manage-users :organization="organization" class="users" />
         </v-tab-item>
-      </v-tabs> 
-
-
+      </v-tabs>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import { Organizations } from '/imports/api/organizations/organizations.js'
+import { Organizations } from "/imports/api/organizations/organizations.js";
 
 export default {
-  mounted(){
-    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
-  },
-  beforeDestroy() {
-    this.$store.dispatch('setCurrentOrganizationId', 0);    
-  },
   props: {
     organizationId: {
       type: String,
-      default: '0'
+      default: "0"
     }
   },
-  data () {
+  data() {
     return {
       windowWidth: window.innerWidth,
       title() {
-        return this.$t("Settings")
+        return this.$t("Settings");
       }
-    }
+    };
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentOrganizationId", 0);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      'organization': function() {
-        return [this.organizationId] 
+      organization() {
+        return [this.organizationId];
       }
     },
-    organization () {
+    organization() {
       return Organizations.findOne();
     }
   },
-  methods: {
-  }
-}
+  methods: {}
+};
 </script>
 
 <style scoped>

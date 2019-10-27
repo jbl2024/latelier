@@ -1,15 +1,24 @@
 <template>
   <div class="project-filters-dialog">
-    <v-dialog :value="active" @input="$emit('update:active')" max-width="340" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      :value="active"
+      max-width="340"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      @input="$emit('update:active')"
+    >
       <v-card>
-        <v-card-title class="headline">{{ $t('Filters') }}</v-card-title>
+        <v-card-title class="headline">
+          {{ $t("Filters") }}
+        </v-card-title>
         <v-card-text>
-          <project-filters :projectId="projectId"></project-filters>
+          <project-filters :project-id="projectId" />
         </v-card-text>
-        
+
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="cancelDialog">{{ $t('Close')}}</v-btn>
+          <v-spacer />
+          <v-btn text @click="cancelDialog">
+            {{ $t("Close") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -17,30 +26,28 @@
 </template>
 
 <script>
-import { Meteor } from "meteor/meteor";
-
 export default {
   i18n: {
     messages: {
       en: {
-        "Filters": "Filters",
-        "Close": "Close",
+        Filters: "Filters",
+        Close: "Close"
       },
       fr: {
-        "Filters": "Filtres",
-        "Close": "Fermer",
+        Filters: "Filtres",
+        Close: "Fermer"
       }
     }
-  },    
+  },
   props: {
     active: Boolean,
     projectId: {
-      type: String
+      type: String,
+      default: ""
     }
   },
   data() {
-    return {
-    };
+    return {};
   },
   methods: {
     cancelDialog() {
@@ -57,17 +64,4 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-  overflow-y: scroll;
-}
-
-.cursor {
-  cursor: pointer;
-}
-
-.cursor:hover {
-  background-color: #aaa;
-}
 </style>

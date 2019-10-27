@@ -1,4 +1,4 @@
-const basePath = Meteor.absoluteUrl('/favicon/');
+const basePath = Meteor.absoluteUrl("/favicon/");
 
 const data = `
 <link rel="apple-touch-icon" sizes="57x57" href="${basePath}apple-icon-57x57.png">
@@ -18,6 +18,6 @@ const data = `
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="${basePath}ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
-`
+`;
 
 document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend", data);

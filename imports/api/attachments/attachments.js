@@ -5,7 +5,7 @@ export const Attachments = new FilesCollection({
   collectionName: "Attachments",
   storagePath: Meteor.settings.attachmentsPath || "assets/app/uploads",
   allowClientCode: true, // Disallow remove files from Client
-  onBeforeUpload(file) {
+  onBeforeUpload() {
     return true;
   },
   onAfterUpload(file) {

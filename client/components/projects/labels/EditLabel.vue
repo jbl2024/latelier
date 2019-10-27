@@ -1,23 +1,51 @@
 <template>
   <div class="edit-label">
-    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
-      <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
+    <v-dialog
+      v-model="showDialog"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
+      <select-color :active.sync="showSelectColor" @select="onSelectColor" />
       <v-card>
-        <v-card-title class="headline">Editer le label</v-card-title>
+        <v-card-title class="headline">
+          Editer le label
+        </v-card-title>
         <v-card-text>
-          <v-form v-model="valid" v-on:submit.prevent>
-            <v-text-field v-model="label.name" v-focus :rules="nameRules" :label="$t('Name')" required v-on:keyup.enter="updateNameAndColor()"></v-text-field>
-            <v-btn color="primary" @click="showSelectColor = true" class="btn-color">
+          <v-form v-model="valid" @submit.prevent>
+            <v-text-field
+              v-model="label.name"
+              v-focus
+              :rules="nameRules"
+              :label="$t('Name')"
+              required
+              @keyup.enter="updateNameAndColor()"
+            />
+            <v-btn
+              color="primary"
+              class="btn-color"
+              @click="showSelectColor = true"
+            >
               Choisir une couleur
             </v-btn>
-            <div class="color" ref="color" :style="getColor(label)" @click="showSelectColor = true"></div>
+            <div
+              ref="color"
+              class="color"
+              :style="getColor(label)"
+              @click="showSelectColor = true"
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
-          <v-btn color="error" @click="remove">{{ this.$t('Delete') }}</v-btn>
-          <v-btn color="primary" @click="updateNameAndColor" :disabled="!valid">Modifier</v-btn>
+          <v-spacer />
+          <v-btn text @click="showDialog = false">
+            {{ this.$t("Cancel") }}
+          </v-btn>
+          <v-btn color="error" @click="remove">
+            {{ this.$t("Delete") }}
+          </v-btn>
+          <v-btn color="primary" :disabled="!valid" @click="updateNameAndColor">
+            Modifier
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -30,7 +58,10 @@ import { Labels } from "/imports/api/labels/labels.js";
 
 export default {
   props: {
-    labelId: String
+    labelId: {
+      type: String,
+      default: ""
+    }
   },
   data() {
     return {
@@ -40,8 +71,8 @@ export default {
       label: {},
       name: "",
       nameRules: [
-        v => !!v || this.$t('Name is mandatory'),
-        v => (v && v.length >= 1) || this.$t('Name is too short')
+        (v) => !!v || this.$t("Name is mandatory"),
+        (v) => (v && v.length >= 1) || this.$t("Name is too short")
       ]
     };
   },
@@ -71,9 +102,9 @@ export default {
           name: this.label.name,
           color: this.label.color
         },
-        (error, result) => {
+        (error) => {
           if (error) {
-            console.log(error);
+            this.$store.dispatch("notifyError", error);
             return;
           }
           this.showDialog = false;
@@ -82,23 +113,29 @@ export default {
     },
 
     remove() {
+      /* eslint no-alert: off */
+      /* eslint no-restricted-globals: off */
       if (confirm("Voulez-vous supprimer définitivement ce label ?")) {
-        Meteor.call("labels.remove", {labelId: this.label._id}, (error, result) => {
-          if (error) {
-            console.log(error);
-            return;
+        Meteor.call(
+          "labels.remove",
+          { labelId: this.label._id },
+          (error) => {
+            if (error) {
+              this.$store.dispatch("notifyError", error);
+              return;
+            }
+            this.showDialog = false;
           }
-          this.showDialog = false;
-        });
+        );
       }
     },
 
     getColor(label) {
-      return "background-color: " + label.color;
+      return `background-color: ${label.color}`;
     },
 
     onSelectColor(color) {
-      var hex = color || "white";
+      const hex = color || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.label.color = hex;
     }
@@ -124,5 +161,4 @@ export default {
   margin-bottom: 6px;
   width: 100%;
 }
-
 </style>

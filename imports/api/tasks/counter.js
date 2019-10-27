@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import bind from "lodash/bind";
 var __slice = [].slice;
 

@@ -1,7 +1,7 @@
 <template>
   <div class="projects-timeline">
     <template v-if="!$subReady.projectsForTimeline">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </template>
 
     <template v-if="$subReady.projectsForTimeline">
@@ -10,50 +10,74 @@
         icon="mdi-chart-timeline-variant"
         :label="$t('No project')"
         :description="$t('Projects with start and end date are displayed here')"
-      ></empty-state>
+      />
 
       <v-toolbar dense class="toolbar flex0">
-        <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
-        <v-divider vertical></v-divider>
-        <tooltip-button bottom icon="mdi-magnify" :tooltip="$t('Reset zoom')" @on="zoomReset()"></tooltip-button>
-        <tooltip-button bottom icon="mdi-magnify-minus" :tooltip="$t('Zoom out')" @on="zoomOut()"></tooltip-button>
-        <tooltip-button bottom icon="mdi-magnify-plus" :tooltip="$t('Zoom in')" @on="zoomIn()"></tooltip-button>
-        <v-divider vertical></v-divider>
+        <tooltip-button
+          bottom
+          icon="mdi-calendar-today"
+          :tooltip="$t('Today')"
+          @on="gotoToday()"
+        />
+        <v-divider vertical />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify"
+          :tooltip="$t('Reset zoom')"
+          @on="zoomReset()"
+        />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify-minus"
+          :tooltip="$t('Zoom out')"
+          @on="zoomOut()"
+        />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify-plus"
+          :tooltip="$t('Zoom in')"
+          @on="zoomIn()"
+        />
+        <v-divider vertical />
       </v-toolbar>
 
-      <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
+      <div
+        ref="timelineContainer"
+        v-resize="onResizeTimelineContainer"
+        class="flex1"
+      >
         <timeline
           ref="timeline"
           :items="getItems()"
           :groups="getGroups()"
           :options="timeline.options"
           @select="onSelectProject"
-        ></timeline>
+        />
       </div>
       <v-navigation-drawer
+        v-model="showDrawer"
         class="elevation-16 panel"
         :width="$vuetify.breakpoint.xsOnly ? '100%' : '256px'"
-        v-model="showDrawer"
         absolute
         stateless
         right
         fixed
       >
-          <project-detail
-            v-if="selectedProject"
-            :project="selectedProject"
-            :active.sync="showDrawer"
-            @refresh="refreshSelectedProject()"
-          ></project-detail>
+        <project-detail
+          v-if="selectedProject"
+          :project="selectedProject"
+          :active.sync="showDrawer"
+          @refresh="refreshSelectedProject()"
+        />
       </v-navigation-drawer>
     </template>
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { ProjectStates } from "/imports/api/projects/projects.js";
-import { colors } from '/imports/colors.js'
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
+
+import { colors } from "/imports/colors.js";
 
 import { mapState } from "vuex";
 import { Timeline } from "vue2vis";
@@ -64,42 +88,10 @@ export default {
   components: {
     Timeline
   },
-  created() {
-    this.debouncedFilter = debounce(val => {
-      this.filter = val;
-    }, 400);
-  },
-  mounted() {
-    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
-    this.$store.dispatch("setShowCategories", true);
-    this.$events.listen("close-project-detail", task => {
-      this.showProjectDetail = false;
-    });
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentOrganizationId", 0);
-    this.$store.dispatch("setShowCategories", false);
-    this.$events.off("close-project-detail");
-  },
-  computed: {
-    ...mapState(["selectedGroup"])
-  },
   props: {
     organizationId: {
       type: String,
       default: "0"
-    }
-  },
-  i18n: {
-    messages: {
-      en: {
-        "Projects with start and end date are displayed here":
-          "Projects with start and end date are displayed here"
-      },
-      fr: {
-        "Projects with start and end date are displayed here":
-          "Seuls les projets avec une date de début et une date de fin sont affichés ici"
-      }
     }
   },
   data() {
@@ -121,7 +113,7 @@ export default {
         ],
         options: {
           moment: (date) => {
-            if (moment.locale() !== this.$i18n.locale) moment.locale(this.$i18n.locale);
+            if (moment.locale() !== this.$i18n.locale) { moment.locale(this.$i18n.locale); }
             return moment(date);
           },
           orientation: "top",
@@ -140,6 +132,38 @@ export default {
       },
       selectedProject: null
     };
+  },
+  computed: {
+    ...mapState(["selectedGroup"])
+  },
+  created() {
+    this.debouncedFilter = debounce((val) => {
+      this.filter = val;
+    }, 400);
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
+    this.$store.dispatch("setShowCategories", true);
+    this.$events.listen("close-project-detail", () => {
+      this.showProjectDetail = false;
+    });
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentOrganizationId", 0);
+    this.$store.dispatch("setShowCategories", false);
+    this.$events.off("close-project-detail");
+  },
+  i18n: {
+    messages: {
+      en: {
+        "Projects with start and end date are displayed here":
+          "Projects with start and end date are displayed here"
+      },
+      fr: {
+        "Projects with start and end date are displayed here":
+          "Seuls les projets avec une date de début et une date de fin sont affichés ici"
+      }
+    }
   },
   meteor: {
     // Subscriptions
@@ -171,7 +195,7 @@ export default {
   methods: {
     getGroups() {
       const states = [];
-      Object.keys(ProjectStates).map(state => {
+      Object.keys(ProjectStates).forEach((state) => {
         states.push({
           id: ProjectStates[state],
           subgroupStack: true,
@@ -184,8 +208,8 @@ export default {
       const defaultBefore = moment().subtract(1, "weeks");
       const defaultAfter = moment().add(1, "weeks");
       const items = [];
-      this.projects.map(project => {
-        var item = {
+      this.projects.forEach((project) => {
+        const item = {
           id: project._id,
           group: project.state,
           subgroup: project._id,
@@ -200,23 +224,25 @@ export default {
     },
 
     getProjectContent(project) {
-      var name = project.name;
-      var color = project.color || "";
+      const { name } = project;
+      const color = project.color || "";
       if (color !== "") {
-        return `<div class="timeline-custom-item" style="background-color: ${color}; color: ${colors.getLabelColor(color)}">${name}</div>`;
-      } 
+        return `<div class="timeline-custom-item" style="background-color: ${color}; color: ${colors.getLabelColor(
+          color
+        )}">${name}</div>`;
+      }
       return `<div class="timeline-custom-item timeline-custom-item-default-colors" style="background-color: ${color}">${name}</div>`;
     },
 
     onSelectProject(data) {
-      var items = data.items;
+      const { items } = data;
       if (items && items.length > 0) {
         const projectId = items[0];
         this.showDrawer = true;
         this.selectedProject = Projects.findOne({ _id: projectId });
       }
     },
-    deselectGroup(str, index) {
+    deselectGroup() {
       this.$store.dispatch("setSelectedGroup", null);
     },
 
@@ -244,26 +270,32 @@ export default {
     },
 
     handleMove(item, cb) {
-      Meteor.call("projects.setDatesAndState", {
-        projectId: item.id,
-        startDate: moment(item.start).format("YYYY-MM-DD HH:mm"),
-        endDate: moment(item.end).format("YYYY-MM-DD HH:mm"),
-        state: item.group
-      }, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          cb(null)
-          return;
+      Meteor.call(
+        "projects.setDatesAndState",
+        {
+          projectId: item.id,
+          startDate: moment(item.start).format("YYYY-MM-DD HH:mm"),
+          endDate: moment(item.end).format("YYYY-MM-DD HH:mm"),
+          state: item.group
+        },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            cb(null);
+            return;
+          }
+          this.refreshSelectedProject();
+          cb(item);
         }
-        this.refreshSelectedProject();
-        cb(item);
-      });
+      );
     },
 
     refreshSelectedProject() {
       if (this.selectedProject) {
         this.$refs.timeline.focus(this.selectedProject._id);
-        this.selectedProject = Projects.findOne({_id: this.selectedProject._id});
+        this.selectedProject = Projects.findOne({
+          _id: this.selectedProject._id
+        });
       }
     }
   }
@@ -315,5 +347,4 @@ export default {
 .panel {
   z-index: 4;
 }
-
 </style>

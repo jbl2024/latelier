@@ -1,6 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
-import { check } from "meteor/check";
+import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Projects } from "/imports/api/projects/projects.js";
@@ -8,6 +7,11 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
   "dashboards.findTasks"(user, type, organizationId, page) {
+    check(user, Object);
+    check(type, String);
+    check(organizationId, Match.Maybe(String));
+    check(page, Match.Maybe(Number));
+
     const userId = Meteor.userId();
 
     const perPage = 25;
@@ -19,7 +23,7 @@ Meteor.methods({
     if (!skip) {
       skip = 0;
     }
-    let query = {
+    const query = {
       completed: false,
       deleted: { $ne: true }
     };
@@ -32,12 +36,10 @@ Meteor.methods({
         ).count();
         if (organizationCount > 0) {
           const projectIds = Projects.find({
-            organizationId: organizationId,
+            organizationId,
             members: userId,
             deleted: { $ne: true }
-          }).map(project => {
-            return project._id;
-          });
+          }).map((project) => project._id);
           query.projectId = { $in: projectIds };
         }
       } else {
@@ -46,7 +48,7 @@ Meteor.methods({
           { fields: { _id: 1 } }
         ).fetch();
         const organizationIds = [];
-        organizations.map(organization => {
+        organizations.forEach((organization) => {
           if (organizationId) {
             if (organization._id !== organizationId) {
               return;
@@ -60,35 +62,29 @@ Meteor.methods({
             deleted: { $ne: true },
             $or: [
               { organizationId: { $in: organizationIds } },
-              { organizationId: { $exists: false } }
-            ],
-            $or: [{ createdBy: userId }, { members: userId }]
+              { organizationId: { $exists: false } },
+              { members: userId }
+            ]
           },
           { fields: { _id: 1 } }
         ).fetch();
         const projectIds = [];
-        projects.map(project => {
+        projects.forEach((project) => {
           projectIds.push(project._id);
         });
         query.projectId = { $in: projectIds };
       }
+    } else if (organizationId) {
+      const projectIds = Projects.find({
+        organizationId,
+        deleted: { $ne: true }
+      }).map((project) => project._id);
+      query.projectId = { $in: projectIds };
     } else {
-      if (organizationId) {
-        const projectIds = Projects.find({
-          organizationId: organizationId,
-          deleted: { $ne: true }
-        }).map(project => {
-          return project._id;
-        });
-        query.projectId = { $in: projectIds };
-      } else {
-        const deletedProjectIds = Projects.find({ deleted: true }).map(
-          project => {
-            return project._id;
-          }
-        );
-        query.projectId = { $nin: deletedProjectIds };
-      }
+      const deletedProjectIds = Projects.find({ deleted: true }).map(
+        (project) => project._id
+      );
+      query.projectId = { $nin: deletedProjectIds };
     }
 
     let sort = {};
@@ -114,9 +110,9 @@ Meteor.methods({
     }
 
     const data = Tasks.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
-      sort: sort
+      sort
     }).fetch();
 
     // load associated objects and assign them to tasks
@@ -124,13 +120,13 @@ Meteor.methods({
     const users = {};
     const organizations = {};
 
-    const loadUser = userId => {
-      let user = users[userId];
-      if (user) {
-        return user;
+    const loadUser = (aUserId) => {
+      const aUser = users[aUserId];
+      if (aUser) {
+        return aUser;
       }
-      users[userId] = Meteor.users.findOne(
-        { _id: userId },
+      users[aUserId] = Meteor.users.findOne(
+        { _id: aUserId },
         {
           fields: {
             profile: 1,
@@ -142,10 +138,10 @@ Meteor.methods({
           }
         }
       );
-      return users[userId];
+      return users[aUserId];
     };
 
-    data.map(task => {
+    data.forEach((task) => {
       let project = projects[task.projectId];
       if (!project) {
         projects[task.projectId] = Projects.findOne({ _id: task.projectId });
@@ -177,7 +173,7 @@ Meteor.methods({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   }
 });

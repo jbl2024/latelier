@@ -1,34 +1,71 @@
 <template>
   <div class="project-timeline">
-
     <template v-if="!$subReady.project">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </template>
     <template v-if="$subReady.project && project">
-      <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
-  
-      <v-toolbar dense class="toolbar flex0" ref="toolbar" v-resize="onResizeToolbar">
+      <project-filters-dialog
+        :active.sync="showFiltersDialog"
+        :project-id="project._id"
+      />
 
+      <v-toolbar
+        ref="toolbar"
+        v-resize="onResizeToolbar"
+        dense
+        class="toolbar flex0"
+      >
+        <tooltip-button
+          bottom
+          icon="mdi-calendar-today"
+          :tooltip="$t('Today')"
+          @on="gotoToday()"
+        />
+        <v-divider vertical />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify"
+          :tooltip="$t('Reset zoom')"
+          @on="zoomReset()"
+        />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify-minus"
+          :tooltip="$t('Zoom out')"
+          @on="zoomOut()"
+        />
+        <tooltip-button
+          bottom
+          icon="mdi-magnify-plus"
+          :tooltip="$t('Zoom in')"
+          @on="zoomIn()"
+        />
+        <v-divider vertical />
 
-        <tooltip-button bottom icon="mdi-calendar-today" :tooltip="$t('Today')" @on="gotoToday()"></tooltip-button>
-        <v-divider vertical></v-divider>
-        <tooltip-button bottom icon="mdi-magnify" :tooltip="$t('Reset zoom')" @on="zoomReset()"></tooltip-button>
-        <tooltip-button bottom icon="mdi-magnify-minus" :tooltip="$t('Zoom out')" @on="zoomOut()"></tooltip-button>
-        <tooltip-button bottom icon="mdi-magnify-plus" :tooltip="$t('Zoom in')" @on="zoomIn()"></tooltip-button>
-        <v-divider vertical></v-divider>
-
-        <v-btn icon @click="showFiltersDialog = true" v-if="showFilters">
+        <v-btn v-if="showFilters" icon @click="showFiltersDialog = true">
           <v-icon>mdi-filter-variant</v-icon>
         </v-btn>
 
-        <project-filters :projectId="project._id" v-if="!showFilters" class="ml-3"></project-filters>
+        <project-filters
+          v-if="!showFilters"
+          :project-id="project._id"
+          class="ml-3"
+        />
       </v-toolbar>
 
-      <div class="flex1" v-resize="onResizeTimelineContainer" ref="timelineContainer">
-        <timeline ref="timeline" :items="getItems()" :groups="getGroups()" :options="timeline.options" @select="onSelectTask">
-        </timeline>
+      <div
+        ref="timelineContainer"
+        v-resize="onResizeTimelineContainer"
+        class="flex1"
+      >
+        <timeline
+          ref="timeline"
+          :items="getItems()"
+          :groups="getGroups()"
+          :options="timeline.options"
+          @select="onSelectTask"
+        />
       </div>
-
     </template>
   </div>
 </template>
@@ -46,36 +83,11 @@ export default {
   components: {
     Timeline
   },
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$events.listen("close-task-detail", task => {
-      this.$store.dispatch('selectTask', null);
-      this.$store.dispatch('showTaskDetail', false);
-    });
-    this.$events.listen("filter-tasks", name => {
-      this.filterName = name;
-    });
-
-  },
-  beforeDestroy() {
-    this.$events.off("filter-tasks");
-    this.$store.dispatch("setCurrentProjectId", 0);
-    this.$store.dispatch('selectTask', null);
-    this.$store.dispatch('showTaskDetail', false);
-    this.$events.off("close-task-detail");
-  },
   props: {
     projectId: {
       type: String,
       default: "0"
     }
-  },
-  computed: {
-    ...mapState("projectFilters", {
-      selectedLabels: state => state.selectedLabels,
-      selectedAssignedTos: state => state.selectedAssignedTos,
-      selectedUpdatedBy: state => state.selectedUpdatedBy
-    })
   },
   data() {
     return {
@@ -93,21 +105,45 @@ export default {
         ],
         options: {
           moment: (date) => {
-            if (moment.locale() !== this.$i18n.locale) moment.locale(this.$i18n.locale);
+            if (moment.locale() !== this.$i18n.locale) { moment.locale(this.$i18n.locale); }
             return moment(date);
           },
           orientation: "top",
           zoomKey: "ctrlKey",
           zoomMax: 31556952000 * 3, // 4 years
-          zoomMin: 1 * 1000 * 60 * 60, // 1 hour,
+          zoomMin: 1 * 1000 * 60 * 60 // 1 hour,
           // editable: {
           //   updateTime: true,
           //   updateGroup: true,
           //   remove: false
           // }
         }
-      },
+      }
     };
+  },
+  computed: {
+    ...mapState("projectFilters", {
+      selectedLabels: (state) => state.selectedLabels,
+      selectedAssignedTos: (state) => state.selectedAssignedTos,
+      selectedUpdatedBy: (state) => state.selectedUpdatedBy
+    })
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$events.listen("close-task-detail", () => {
+      this.$store.dispatch("selectTask", null);
+      this.$store.dispatch("showTaskDetail", false);
+    });
+    this.$events.listen("filter-tasks", (name) => {
+      this.filterName = name;
+    });
+  },
+  beforeDestroy() {
+    this.$events.off("filter-tasks");
+    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("selectTask", null);
+    this.$store.dispatch("showTaskDetail", false);
+    this.$events.off("close-task-detail");
   },
   meteor: {
     // Subscriptions
@@ -131,20 +167,22 @@ export default {
       },
       deep: false,
       update({ name, projectId, labels, assignedTos, updatedBy }) {
-        var query = {
-          projectId: this.projectId,
-          $or: [{ startDate: { $ne: null } }, { dueDate: { $ne: null } }, { completed: true }]
+        const query = {
+          projectId: projectId,
+          $or: [
+            { startDate: { $ne: null } },
+            { dueDate: { $ne: null } },
+            { completed: true }
+          ]
         };
 
         if (name && name.length > 0) {
-          query.name = { $regex: ".*" + name + ".*", $options: "i" };
+          query.name = { $regex: `.*${name}.*`, $options: "i" };
         }
 
         if (labels && labels.length > 0) {
           query.labels = {
-            $in: labels.map(label => {
-              return label._id;
-            })
+            $in: labels.map((label) => label._id)
           };
         }
 
@@ -174,7 +212,7 @@ export default {
         content: "Projet"
       });
 
-      lists.map(list => {
+      lists.forEach((list) => {
         const group = {
           id: list._id,
           content: list.name,
@@ -185,9 +223,9 @@ export default {
       return groups;
     },
 
-    getItems() {      
-      var items = [];
-      var tasks = this.tasks;
+    getItems() {
+      const items = [];
+      const { tasks } = this;
 
       if (this.project.startDate) {
         items.push({
@@ -209,12 +247,12 @@ export default {
         });
       }
 
-      tasks.map(task => {
+      tasks.forEach((task) => {
         let start = task.startDate;
         let end = task.dueDate;
-        
-        const completed = task.completed;
-        const completedAt = task.completedAt;
+
+        const { completed } = task;
+        const { completedAt } = task;
 
         if (completed && completedAt) {
           end = completedAt;
@@ -244,7 +282,7 @@ export default {
         };
         items.push(item);
       });
-      setTimeout(() => { 
+      setTimeout(() => {
         if (this.$refs.timeline && this.$refs.timeline.redraw) {
           this.$refs.timeline.redraw();
         }
@@ -254,20 +292,19 @@ export default {
     },
 
     onSelectTask(data) {
-      var items = data.items;
+      const { items } = data;
       if (items && items.length > 0) {
         if (items[0] === "start" || items[0] === "end") {
           this.$events.fire("close-task-detail");
           return;
         }
-        var task = Tasks.findOne({ _id: items[0] });
-        this.$store.dispatch('selectTask', task);
-        this.$store.dispatch('showTaskDetail', true);
+        const task = Tasks.findOne({ _id: items[0] });
+        this.$store.dispatch("selectTask", task);
+        this.$store.dispatch("showTaskDetail", true);
       } else {
-        this.$store.dispatch('selectTask', null);
-        this.$store.dispatch('showTaskDetail', false);
+        this.$store.dispatch("selectTask", null);
+        this.$store.dispatch("showTaskDetail", false);
       }
-      return;
     },
 
     gotoToday() {
@@ -291,20 +328,20 @@ export default {
       this.$refs.timeline.setOptions({
         height: height
       });
-    },  
-    
+    },
+
     getTaskContent(task) {
-      const name = task.name;
+      const { name } = task;
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${name}</div>`;
     },
 
     getStartContent() {
-      const start = this.$t('Start date');
+      const start = this.$t("Start date");
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${start}</div>`;
     },
 
     getEndContent() {
-      const end = this.$t('End date');
+      const end = this.$t("End date");
       return `<div class="timeline-custom-item timeline-custom-item-default-colors">${end}</div>`;
     },
 
@@ -317,8 +354,6 @@ export default {
         this.showFilters = false;
       }
     }
-
-    
   }
 };
 </script>
@@ -343,8 +378,6 @@ export default {
   overflow-y: auto;
 }
 
-
-
 .project-timeline {
   background-color: white;
 }
@@ -356,6 +389,7 @@ export default {
   border-radius: 4px;
   background-color: rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
 
 .drawer-task-detail {

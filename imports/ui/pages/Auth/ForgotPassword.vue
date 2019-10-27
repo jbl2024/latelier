@@ -1,32 +1,42 @@
 <template>
   <div class="new-password">
     <div class="centered-container">
-      <v-form v-model="valid" v-on:submit.prevent="validateRecover">
+      <v-form v-model="valid" @submit.prevent="validateRecover">
         <v-card>
-          <v-card-title class="title">{{ $t('Recover password') }}</v-card-title>
+          <v-card-title class="title">
+            {{ $t("Recover password") }}
+          </v-card-title>
           <v-card-text>
             <v-text-field
+              id="email"
+              v-model="form.email"
               label="Email"
               name="email"
-              id="email"
               autocomplete="email"
               :rules="emailRules"
-              v-model="form.email"
               :disabled="sending"
-            ></v-text-field>
-            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+            />
+            <v-progress-linear v-if="sending" indeterminate />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" :disabled="sending || !valid">{{ $t('Recover') }}</v-btn>
+            <v-spacer />
+            <v-btn color="primary" type="submit" :disabled="sending || !valid">
+              {{ $t("Recover") }}
+            </v-btn>
           </v-card-actions>
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'login'}">{{ $t('Already have an account?')}}</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn text :to="{ name: 'register'}">{{ $t('Register') }}</v-btn>
+            <v-btn text :to="{ name: 'login' }">
+              {{ $t("Already have an account?") }}
+            </v-btn>
+            <v-spacer />
+            <v-btn text :to="{ name: 'register' }">
+              {{ $t("Register") }}
+            </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+          <v-snackbar v-model="notify">
+            {{ notifyText }}
+          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -34,7 +44,7 @@
 </template>
 <script>
 export default {
-  name: "new-password",
+  name: "NewPassword",
   data: () => ({
     form: {
       email: null,
@@ -45,8 +55,8 @@ export default {
     sending: false,
     valid: false,
     emailRules: [
-      v => !!v || "L'email est obligatoire",
-      v => v && v.length > 1 || "L'email est invalide"
+      (v) => !!v || "L'email est obligatoire",
+      (v) => (v && v.length > 1) || "L'email est invalide"
     ]
   }),
   methods: {
@@ -56,16 +66,19 @@ export default {
     },
     recover() {
       this.sending = true;
-      const email = this.form.email;
+      const { email } = this.form;
       Accounts.forgotPassword({ email }, (err) => {
         this.sending = false;
         if (err) {
           this.$store.dispatch("notify", err.reason);
         } else {
-          this.$store.dispatch("notify", this.$t("A link has been sent to your email!"));
-          this.$router.push({name: 'login'})
+          this.$store.dispatch(
+            "notify",
+            this.$t("A link has been sent to your email!")
+          );
+          this.$router.push({ name: "login" });
         }
-      })
+      });
     },
     validateRecover() {
       this.recover();
@@ -83,4 +96,3 @@ export default {
   height: calc(100vh - 64px);
 }
 </style>
-
