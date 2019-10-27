@@ -8,13 +8,13 @@ const clearJobs = function(jobName, taskId) {
     name: jobName,
     arguments: taskId
   });
-  existingJobs.map(job => {
+  existingJobs.forEach((job) => {
     Jobs.remove(job._id);
   });
 };
 
 Jobs.register({
-  sendReminderDueDate: function(taskId) {
+  sendReminderDueDate(taskId) {
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       this.remove();
@@ -23,13 +23,13 @@ Jobs.register({
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
-    userIds.map(userId => {
+    userIds.forEach((userId) => {
       if (!userId) return;
       Meteor.call("notifications.create", {
-        userId: userId,
+        userId,
         type: NotificationTypes.TASK_REMINDER_DUE_DATE,
         properties: {
-          task: task
+          task
         }
       });
     });
@@ -37,7 +37,7 @@ Jobs.register({
     this.remove();
   },
 
-  sendReminderStartDate: function(taskId) {
+  sendReminderStartDate(taskId) {
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       this.remove();
@@ -46,13 +46,13 @@ Jobs.register({
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
-    userIds.map(userId => {
+    userIds.forEach((userId) => {
       if (!userId) return;
       Meteor.call("notifications.create", {
-        userId: userId,
+        userId,
         type: NotificationTypes.TASK_REMINDER_START_DATE,
         properties: {
-          task: task
+          task
         }
       });
     });
@@ -63,15 +63,15 @@ Jobs.register({
 
 export const callbacks = {
   "tasks.setDueDate"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     const taskId = task._id;
     clearJobs("sendReminderDueDate", taskId);
 
     if (
-      task.completed ||
-      (task.reminderDueDate == null) ||
-      task.reminderDueDate === "never" ||
-      !task.dueDate
+      task.completed
+      || task.reminderDueDate == null
+      || task.reminderDueDate === "never"
+      || !task.dueDate
     ) {
       return;
     }
@@ -85,14 +85,14 @@ export const callbacks = {
   },
 
   "tasks.setStartDate"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     const taskId = task._id;
     clearJobs("sendReminderStartDate", taskId);
     if (
-      task.completed ||
-      (task.reminderStartDate == null) ||
-      task.reminderStartDate === "never" ||
-      !task.startDate
+      task.completed
+      || task.reminderStartDate == null
+      || task.reminderStartDate === "never"
+      || !task.startDate
     ) {
       return;
     }
@@ -106,21 +106,21 @@ export const callbacks = {
   },
 
   "tasks.remove"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     const taskId = task._id;
     clearJobs("sendReminderDueDate", taskId);
     clearJobs("sendReminderStartDate", taskId);
   },
 
   "tasks.complete"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     const taskId = task._id;
     clearJobs("sendReminderDueDate", taskId);
     clearJobs("sendReminderStartDate", taskId);
   },
 
   "tasks.uncomplete"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     if (task.dueDate) {
       callbacks["tasks.setDueDate"](event);
     }
@@ -130,7 +130,7 @@ export const callbacks = {
   },
 
   "tasks.restore"(event) {
-    const task = event.properties.task;
+    const { task } = event.properties;
     if (task.dueDate) {
       callbacks["tasks.setDueDate"](event);
     }

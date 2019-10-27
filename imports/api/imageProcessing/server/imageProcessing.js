@@ -1,20 +1,16 @@
-import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
 
 import fs from "fs-extra";
 import gm from "gm";
 
-const bound = Meteor.bindEnvironment(callback => {
-  return callback();
-});
+const bound = Meteor.bindEnvironment((callback) => callback());
 
 export const createThumbnails = (collection, fileRef, cb) => {
-
-  fs.exists(fileRef.path, exists => {
+  fs.exists(fileRef.path, (exists) => {
     bound(() => {
       if (!exists) {
         throw Meteor.log.error(
-          "File " + fileRef.path + " not found in [createThumbnails] Method"
+          `File ${fileRef.path} not found in [createThumbnails] Method`
         );
       }
 
@@ -23,9 +19,10 @@ export const createThumbnails = (collection, fileRef, cb) => {
       image.size((error, features) => {
         bound(() => {
           if (error) {
+            /* eslint no-unused-expressions:off */
+            /* eslint no-console:off */
             console.error("[_app.createThumbnails] [_.each sizes]", error);
-            cb &&
-              cb(Meteor.Error("[_app.createThumbnails] [image.size]", error));
+            cb && cb(Meteor.Error("[_app.createThumbnails] [image.size]", error));
             return;
           }
 
@@ -39,12 +36,9 @@ export const createThumbnails = (collection, fileRef, cb) => {
             }
           });
 
-          const path =
-            collection.storagePath(fileRef) +
-            "/thumbnail-" +
-            fileRef._id +
-            "." +
-            fileRef.extension;
+          const path = `${collection.storagePath(fileRef)}/thumbnail-${
+            fileRef._id
+          }.${fileRef.extension}`;
           const img = gm(fileRef.path)
             .quality(70)
             .define("filter:support=2")
@@ -65,7 +59,7 @@ export const createThumbnails = (collection, fileRef, cb) => {
           img
             .resize(250)
             .interlace("Line")
-            .write(path, resizeError => {
+            .write(path, (resizeError) => {
               bound(() => {
                 if (resizeError) {
                   console.error("[createThumbnails] [img.resize]", resizeError);
@@ -96,7 +90,7 @@ export const createThumbnails = (collection, fileRef, cb) => {
                         }
 
                         fileRef.versions.thumbnail = {
-                          path: path,
+                          path,
                           size: stat.size,
                           type: fileRef.type,
                           extension: fileRef.extension,
@@ -107,18 +101,17 @@ export const createThumbnails = (collection, fileRef, cb) => {
                         };
 
                         const upd = { $set: {} };
-                        upd["$set"]["versions.thumbnail"] =
-                          fileRef.versions.thumbnail;
+                        upd.$set["versions.thumbnail"] = fileRef.versions.thumbnail;
 
                         collection.collection.update(
                           fileRef._id,
                           upd,
-                          colUpdError => {
+                          (colUpdError) => {
                             if (cb) {
                               if (colUpdError) {
                                 cb(colUpdError);
                               } else {
-                                cb(void 0, fileRef);
+                                cb(0, fileRef);
                               }
                             }
                           }

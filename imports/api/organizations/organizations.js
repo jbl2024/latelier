@@ -1,9 +1,12 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
-import { Projects } from "/imports/api/projects/projects.js";
+import {
+  Projects,
+  ProjectAccessRights
+} from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+
 import OrganizationSchema from "./schema";
 
 import {
@@ -17,12 +20,14 @@ Organizations.attachSchema(OrganizationSchema);
 Organizations.methods = {};
 
 const checkCanManage = (id) => {
-  if (Permissions.isAdmin(Meteor.userId(), id) || Permissions.isAdmin(Meteor.userId())) {
+  if (
+    Permissions.isAdmin(Meteor.userId(), id)
+    || Permissions.isAdmin(Meteor.userId())
+  ) {
     return true;
   }
   throw new Meteor.Error("not-authorized");
-}
-
+};
 
 Organizations.methods.create = new ValidatedMethod({
   name: "organizations.create",
@@ -39,10 +44,10 @@ Organizations.methods.create = new ValidatedMethod({
       createdBy: currentUser
     });
     Meteor.call("permissions.initializeOrganizationPermissions", {
-      organizationId: organizationId
+      organizationId
     });
     Meteor.call("organizations.addMember", {
-      organizationId: organizationId,
+      organizationId,
       userId: currentUser
     });
     return organizationId;
@@ -69,8 +74,8 @@ Organizations.methods.remove = new ValidatedMethod({
 
     let canDelete = false;
     if (
-      Permissions.isAdmin(Meteor.userId()) ||
-      organization.createdBy === Meteor.userId()
+      Permissions.isAdmin(Meteor.userId())
+      || organization.createdBy === Meteor.userId()
     ) {
       canDelete = true;
     }
@@ -80,7 +85,7 @@ Organizations.methods.remove = new ValidatedMethod({
     }
 
     Projects.update(
-      { organizationId: organizationId },
+      { organizationId },
       { $unset: { organizationId: 1 } },
       { multi: true }
     );
@@ -99,11 +104,11 @@ Organizations.methods.updateName = new ValidatedMethod({
   run({ organizationId, name }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    if (name.length == 0) {
+    if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
 
-    Organizations.update({ _id: organizationId }, { $set: { name: name } });
+    Organizations.update({ _id: organizationId }, { $set: { name } });
   }
 });
 
@@ -116,10 +121,7 @@ Organizations.methods.updateDescription = new ValidatedMethod({
   run({ organizationId, description }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    Organizations.update(
-      { _id: organizationId },
-      { $set: { description: description } }
-    );
+    Organizations.update({ _id: organizationId }, { $set: { description } });
   }
 });
 
@@ -136,10 +138,7 @@ Organizations.methods.moveProject = new ValidatedMethod({
       { projects: projectId },
       { $pull: { projects: projectId } }
     );
-    Projects.update(
-      { _id: projectId },
-      { $set: { organizationId: organizationId } }
-    );
+    Projects.update({ _id: projectId }, { $set: { organizationId } });
   }
 });
 
@@ -163,17 +162,17 @@ Organizations.methods.addMember = new ValidatedMethod({
     );
 
     const projects = Projects.find({
-      organizationId: organizationId,
+      organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.map(project => {
+    projects.forEach((project) => {
       try {
         Meteor.call("projects.addMember", {
           projectId: project._id,
-          userId: userId
-       });
+          userId
+        });
       } catch (error) {
-
+        //
       }
     });
   }
@@ -199,28 +198,28 @@ Organizations.methods.removeMember = new ValidatedMethod({
     }
 
     if (
-      Organizations.find({ _id: organizationId, members: userId }).count() == 0
+      Organizations.find({ _id: organizationId, members: userId }).count() === 0
     ) {
       return;
     }
 
     const projects = Projects.find({
-      organizationId: organizationId,
+      organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.map(project => {
+    projects.forEach((project) => {
       try {
         Meteor.call("projects.removeMember", {
           projectId: project._id,
-          userId: userId
+          userId
         });
       } catch (error) {
-
+        //
       }
     });
 
     if (Permissions.isAdmin(userId, organizationId)) {
-      Permissions.removeAdmin(userId, organizationId);  
+      Permissions.removeAdmin(userId, organizationId);
     }
 
     Organizations.update(
@@ -244,9 +243,9 @@ Organizations.methods.propagateMembership = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
     const members = organization.members || [];
-    members.map(member => {
+    members.forEach((member) => {
       Meteor.call("projects.addMember", {
-        projectId: projectId,
+        projectId,
         userId: member
       });
 
@@ -266,18 +265,24 @@ Organizations.methods.setAdmin = new ValidatedMethod({
   run({ organizationId, userId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    Permissions.methods.setAdmin.call({userId: userId, scope: organizationId});
+    Permissions.methods.setAdmin.call({
+      userId,
+      scope: organizationId
+    });
     const projects = Projects.find({
-      organizationId: organizationId,
+      organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.map(project => {
+    projects.forEach((project) => {
       try {
-        Permissions.methods.setAdmin.call({userId: userId, scope: project._id});
+        Permissions.methods.setAdmin.call({
+          userId,
+          scope: project._id
+        });
       } catch (error) {
-
+        //
       }
-    })
+    });
   }
 });
 
@@ -290,15 +295,22 @@ Organizations.methods.removeAdmin = new ValidatedMethod({
   run({ organizationId, userId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    Permissions.methods.removeAdmin.call({userId: userId, scope: organizationId});
+    Permissions.methods.removeAdmin.call({
+      userId,
+      scope: organizationId
+    });
     const projects = Projects.find({
-      organizationId: organizationId,
+      organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.map(project => {
+    projects.forEach((project) => {
       try {
-        Permissions.methods.removeAdmin.call({userId: userId, scope: project._id});
+        Permissions.methods.removeAdmin.call({
+          userId,
+          scope: project._id
+        });
       } catch (error) {
+        //
       }
     });
   }

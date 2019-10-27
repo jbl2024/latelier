@@ -17,12 +17,12 @@ export default new SimpleSchema({
     defaultValue: false
   },
 
-  properties: { 
-    type: Object, 
-    optional: true, 
-    blackbox: true 
+  properties: {
+    type: Object,
+    optional: true,
+    blackbox: true
   },
-  
+
   /* creation dates */
   createdAt: Date
 });

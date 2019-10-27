@@ -8,10 +8,8 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 import {
   checkLoggedIn,
   checkCanReadTask,
-  checkCanWriteTask,
-  checkCanDeleteTask
+  checkCanWriteProject
 } from "/imports/api/permissions/permissions";
-import { checkCanWriteProject } from "../../permissions/permissions";
 
 Meteor.methods({
   "tasks.clone"(taskId, name, projectId, listId, keepDates) {
@@ -40,7 +38,7 @@ Meteor.methods({
 
     const cloneToAnotherProject = task.projectId !== projectId;
     if (cloneToAnotherProject) {
-      const list = Lists.findOne({projectId: projectId});
+      const list = Lists.findOne({ projectId });
       if (list) {
         listId = list._id;
       } else {
@@ -48,30 +46,26 @@ Meteor.methods({
       }
     }
 
-    const notes = (task.notes || []).map(note => {
-      return {
-        _id: Random.id(),
-        createdAt: note.createdAt,
-        createdBy: note.createdBy,
-        edited: note.edited,
-        editedBy: note.editedBy,
-        content: note.content
-      };
-    });
+    const notes = (task.notes || []).forEach((note) => ({
+      _id: Random.id(),
+      createdAt: note.createdAt,
+      createdBy: note.createdBy,
+      edited: note.edited,
+      editedBy: note.editedBy,
+      content: note.content
+    }));
 
-    const checklist = (task.checklist || []).map(checklist => {
-      return {
-        _id: Random.id(),
-        createdAt: now,
-        createdBy: checklist.createdBy,
-        name: checklist.name,
-        checked: checklist.checked
-      };
-    });
+    const checklist = (task.checklist || []).forEach((aChecklist) => ({
+      _id: Random.id(),
+      createdAt: now,
+      createdBy: aChecklist.createdBy,
+      name: aChecklist.name,
+      checked: aChecklist.checked
+    }));
 
     const clonedTask = {
-      projectId: projectId,
-      listId: listId,
+      projectId,
+      listId,
       name: task.name,
       description: task.description,
       order: task.order - 1,
@@ -83,8 +77,8 @@ Meteor.methods({
       updatedBy: !keepDates ? userId : task.updatedBy,
       labels: !cloneToAnotherProject ? task.labels : undefined,
       watchers: !cloneToAnotherProject ? task.watchers : undefined,
-      notes: notes,
-      checklist: checklist,
+      notes,
+      checklist,
       startDate: task.startDate,
       dueDate: task.dueDate
     };
@@ -92,27 +86,24 @@ Meteor.methods({
     const clonedTaskId = Tasks.insert(clonedTask);
     Meteor.call("tasks.setNumber", clonedTaskId);
 
-    var _reorder = function(listId) {
-      var tasks = Tasks.find(
-        { listId: listId },
-        { sort: { order: 1 } }
-      ).fetch();
-      for (var i = 0; i < tasks.length; i++) {
-        var task = tasks[i];
-        task.order = i * 10;
+    const _reorder = function(aListId) {
+      const tasks = Tasks.find({ aListId }, { sort: { order: 1 } }).fetch();
+      for (let i = 0; i < tasks.length; i++) {
+        const aTask = tasks[i];
+        aTask.order = i * 10;
 
-        Tasks.direct.update({ _id: task._id }, { $set: { order: task.order } });
+        Tasks.direct.update({ _id: aTask._id }, { $set: { order: aTask.order } });
       }
     };
     _reorder(clonedTask.listId);
 
     const attachments = Attachments.find({ "meta.taskId": taskId }).fetch();
-    attachments.map(attachment => {
+    attachments.forEach((attachment) => {
       Meteor.call("attachments.clone", {
         attachmentId: attachment._id,
         taskId: clonedTaskId,
-        projectId: projectId
-      })
+        projectId
+      });
     });
 
     Meteor.call("tasks.track", {
@@ -146,7 +137,7 @@ Meteor.methods({
 
     Meteor.call("events.track", {
       type: event.type,
-      properties: properties
+      properties
     });
   },
 

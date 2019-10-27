@@ -1,9 +1,9 @@
-import SimpleSchema from 'simpl-schema';
+import SimpleSchema from "simpl-schema";
 
 export default new SimpleSchema({
   /* main attributes */
   name: {
-    type: String,
+    type: String
   },
 
   description: {
@@ -22,6 +22,5 @@ export default new SimpleSchema({
   },
   "members.$": {
     type: String
-  },
-
+  }
 });

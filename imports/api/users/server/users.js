@@ -1,10 +1,11 @@
 import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
-import { check } from "meteor/check";
-import { Roles } from "meteor/alanning:roles";
-import { Permissions, checkLoggedIn } from '/imports/api/permissions/permissions'
+import { check, Match } from "meteor/check";
+import {
+  Permissions,
+  checkLoggedIn
+} from "/imports/api/permissions/permissions";
 import { Email } from "meteor/email";
-import * as htmlToText from 'html-to-text';
+import * as htmlToText from "html-to-text";
 
 // Disable client insert/remove/update
 Meteor.users.deny({
@@ -21,7 +22,11 @@ Meteor.users.deny({
 
 Meteor.methods({
   "admin.findUsers"(page, filter, isOnline, isAway) {
-    
+    check(page, Number);
+    check(filter, Match.Maybe(String));
+    check(isOnline, Match.Maybe(Boolean));
+    check(isAway, Match.Maybe(Boolean));
+
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
@@ -35,55 +40,56 @@ Meteor.methods({
     if (!skip) {
       skip = 0;
     }
-    let query = {}
+    let query = {};
     if (filter && filter.length > 0) {
       const emails = {
         $elemMatch: {
-          address: { $regex: ".*" + filter + ".*", $options: "i" }
+          address: { $regex: `.*${filter}.*`, $options: "i" }
         }
-      }     
+      };
 
       query = {
         $or: [
-          {emails: emails},
-          {"profile.firstName": { $regex: ".*" + filter + ".*", $options: "i" }},
-          {"profile.lastName": { $regex: ".*" + filter + ".*", $options: "i" }}
+          { emails },
+          {
+            "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
+          },
+          {
+            "profile.lastName": { $regex: `.*${filter}.*`, $options: "i" }
+          }
         ]
-      }
+      };
     }
     if (isOnline) {
-      if (!query['$or']) query = { $or: []};
-      query['$or'].push({statusConnection: 'online'});
+      if (!query.$or) query = { $or: [] };
+      query.$or.push({ statusConnection: "online" });
     }
     if (isAway) {
-      if (!query['$or']) query = { $or: []};
-      query['$or'].push({statusConnection: 'away'});
+      if (!query.$or) query = { $or: [] };
+      query.$or.push({ statusConnection: "away" });
     }
 
     const count = Meteor.users.find(query).count();
 
     const data = Meteor.users
-      .find(
-        query,
-        {
-          fields: {
-            profile: 1,
-            status: 1,
-            statusDefault: 1,
-            statusConnection: 1,
-            emails: 1,
-            roles: 1
-          },
-          skip: skip,
-          limit: perPage,
-          sort: {
-            _id: 1
-          }
+      .find(query, {
+        fields: {
+          profile: 1,
+          status: 1,
+          statusDefault: 1,
+          statusConnection: 1,
+          emails: 1,
+          roles: 1
+        },
+        skip,
+        limit: perPage,
+        sort: {
+          _id: 1
         }
-      )
+      })
       .fetch();
-    
-    data.map(user => {
+
+    data.forEach((user) => {
       user.features = {
         emailVerified: user.emails[0].verified,
         isActive: Permissions.isActive(user),
@@ -94,7 +100,7 @@ Meteor.methods({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   },
 
@@ -105,10 +111,10 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    const _id = user._id;
+    const { _id } = user;
     Meteor.users.update(
       {
-        _id: _id
+        _id
       },
       {
         $set: {
@@ -136,12 +142,11 @@ Meteor.methods({
         Permissions.removeAdmin(user._id);
         Meteor.users.update(user._id, {
           $set: {
-              "services.resume.loginTokens": []
+            "services.resume.loginTokens": []
           }
-        });    
+        });
       }
     }
-    
   },
 
   "admin.deactivateUser"(userId) {
@@ -149,7 +154,7 @@ Meteor.methods({
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Permissions.setInactive(userId)
+    Permissions.setInactive(userId);
   },
 
   "admin.activateUser"(userId) {
@@ -157,12 +162,12 @@ Meteor.methods({
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Permissions.setActive(userId)
+    Permissions.setActive(userId);
   },
 
-  "admin.removeUser" (userId) {
+  "admin.removeUser"(userId) {
     check(userId, String);
-    if (userId == Meteor.userId()) {
+    if (userId === Meteor.userId()) {
       throw new Meteor.Error(401, "not-authorized");
     }
     if (!Permissions.isAdmin(Meteor.userId())) {
@@ -170,7 +175,7 @@ Meteor.methods({
     }
     Meteor.users.update(userId, {
       $set: {
-          "services.resume.loginTokens": []
+        "services.resume.loginTokens": []
       }
     });
     Meteor.users.remove(userId);
@@ -184,10 +189,12 @@ Meteor.methods({
 
     Meteor.users.update(
       { _id: userId },
-      { $set: {
-        'services.email.verificationTokens': [],
-        'emails.0.verified': true
-      } }
+      {
+        $set: {
+          "services.email.verificationTokens": [],
+          "emails.0.verified": true
+        }
+      }
     );
   },
 
@@ -199,9 +206,11 @@ Meteor.methods({
 
     Meteor.users.update(
       { _id: userId },
-      { $set: {
-        'emails.0.verified': false
-      } }
+      {
+        $set: {
+          "emails.0.verified": false
+        }
+      }
     );
   },
 
@@ -219,13 +228,13 @@ Meteor.methods({
       }
     });
     if (existingUser) {
-      throw new Meteor.Error(401, "email-exists");  
+      throw new Meteor.Error(401, "email-exists");
     }
 
     const userData = {
       createdAt: new Date(),
       email: user.email,
-      profile: user.profile,
+      profile: user.profile
     };
     const userId = Accounts.createUser(userData);
     if (user.isConfirmed) {
@@ -241,7 +250,8 @@ Meteor.methods({
     return userId;
   },
 
-  "users.create" (userData) {
+  "users.create"(userData) {
+    check(userData, Object);
     if (Meteor.settings.disableAccountCreation) {
       throw new Meteor.Error("not-authorized");
     }
@@ -253,20 +263,20 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    const user = Meteor.users.findOne({_id: Meteor.userId()});
+    const user = Meteor.users.findOne({ _id: Meteor.userId() });
     if (!user.emailSettings) {
       user.emailSettings = {
         tasks: {
           assignTo: true,
-          update: true,
-        }        
-      }
+          update: true
+        }
+      };
     }
     return user;
   },
 
   "users.updateEmailPreferences"(settings) {
-    check(settings, Object);    
+    check(settings, Object);
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
@@ -279,14 +289,20 @@ Meteor.methods({
           emailSettings: settings
         }
       }
-    );    
+    );
   },
 
   "users.findUsers"(page, filter) {
-    checkLoggedIn();    
+    check(page, Number);
+    check(filter, Match.Maybe(String));
+    checkLoggedIn();
 
     let restriction = "all";
-    if (Meteor.settings && Meteor.settings.users && Meteor.settings.users.search) {
+    if (
+      Meteor.settings
+      && Meteor.settings.users
+      && Meteor.settings.users.search
+    ) {
       restriction = Meteor.settings.users.search;
     }
 
@@ -305,54 +321,60 @@ Meteor.methods({
     if (!skip) {
       skip = 0;
     }
-    let query = {}
+    let query = {};
     if (filter && filter.length > 0) {
       const emails = {
         $elemMatch: {
-          address: { $regex: ".*" + filter + ".*", $options: "i" }
+          address: { $regex: `.*${filter}.*`, $options: "i" }
         }
-      }     
+      };
 
       query = {
         $or: [
-          {emails: emails},
-          {"profile.firstName": { $regex: ".*" + filter + ".*", $options: "i" }},
-          {"profile.lastName": { $regex: ".*" + filter + ".*", $options: "i" }}
+          { emails },
+          {
+            "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
+          },
+          {
+            "profile.lastName": { $regex: `.*${filter}.*`, $options: "i" }
+          }
         ]
-      }
+      };
     }
 
     const count = Meteor.users.find(query).count();
 
     const data = Meteor.users
-      .find(
-        query,
-        {
-          fields: {
-            profile: 1,
-            emails: 1,
-          },
-          skip: skip,
-          limit: perPage,
-          sort: {
-            _id: 1
-          }
+      .find(query, {
+        fields: {
+          profile: 1,
+          emails: 1
+        },
+        skip,
+        limit: perPage,
+        sort: {
+          _id: 1
         }
-      )
+      })
       .fetch();
 
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
-  }, 
-  
+  },
+
   "users.invite"(email) {
+    check(email, String);
     checkLoggedIn();
 
     let restriction = "all";
-    if (Meteor.settings && Meteor.settings.users && Meteor.settings.users.invite) {
+    if (
+      Meteor.settings
+      && Meteor.settings.users
+      && Meteor.settings.users.invite
+    ) {
       restriction = Meteor.settings.users.invite;
     }
 
@@ -364,12 +386,12 @@ Meteor.methods({
 
     const userData = {
       profile: {
-        firstName: '',
-        lastName: '',
+        firstName: "",
+        lastName: ""
       },
-      email: email
+      email
     };
-    
+
     const existingUser = Meteor.users.findOne({
       emails: {
         $elemMatch: {
@@ -378,28 +400,31 @@ Meteor.methods({
       }
     });
     if (existingUser) {
-      throw new Meteor.Error(401, "email-exists");  
+      throw new Meteor.Error(401, "email-exists");
     }
 
     const userId = Accounts.createUser({
       createdAt: new Date(),
       email: userData.email,
-      profile: userData.profile,
+      profile: userData.profile
     });
     Meteor.users.update(
       { _id: userId },
-      { $set: {
-        'services.email.verificationTokens': [],
-        'emails.0.verified': true
-      } }
+      {
+        $set: {
+          "services.email.verificationTokens": [],
+          "emails.0.verified": true
+        }
+      }
     );
-    
-    const user = Meteor.users.findOne({_id: userId});
+
+    const user = Meteor.users.findOne({ _id: userId });
     Meteor.call("users.sendInvitation", user);
     return user;
   },
 
   "users.sendInvitation"(user) {
+    check(user, Object);
     this.unblock();
 
     const emailData = {
@@ -407,16 +432,14 @@ Meteor.methods({
         return "Invitation à collaborer sur L'atelier";
       },
       html() {
-        var email = new MJML(
-          Assets.absoluteFilePath(`mjml/invitation.mjml`)
-        );
+        const email = new MJML(Assets.absoluteFilePath("mjml/invitation.mjml"));
         email.helpers({
           url: Meteor.absoluteUrl(),
-          emailSettingsUrl: Meteor.absoluteUrl('/settings/mail')
+          emailSettingsUrl: Meteor.absoluteUrl("/settings/mail")
         });
         return email.compile();
-      }  
-    }
+      }
+    };
     const html = emailData.html();
     const text = htmlToText.fromString(html, {
       tables: true
@@ -426,11 +449,12 @@ Meteor.methods({
         from: Meteor.settings.email.from,
         to: user.emails[0].address,
         subject: emailData.subject(),
-        text: text,
-        html: html
+        text,
+        html
       });
-    } catch(error) {
-      console.error(error);      
+    } catch (error) {
+      /* eslint no-console:off */
+      console.error(error);
     }
   },
 
@@ -446,11 +470,10 @@ Meteor.methods({
         statusConnection: 1,
         emails: 1,
         roles: 1
-      },
-    }
+      }
+    };
 
-    const user = Meteor.users.findOne({_id: Meteor.userId()}, options);
+    const user = Meteor.users.findOne({ _id: Meteor.userId() }, options);
     return user;
   }
 });
-

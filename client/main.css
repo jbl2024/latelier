@@ -66,11 +66,11 @@ html {
 }
 
 /* project (tasks) timeline */
-.project-timeline .vis-item {
+/* .project-timeline .vis-item {
 }
 
 .project-timeline .vis-item .vis-item-content {
-}
+} */
 
 .project-timeline .timeline-custom-item {
   border-radius: 4px;
@@ -84,8 +84,8 @@ html {
   font-weight: bold;
 }
 
-.project-timeline .timeline-custom-item-default-colors {
-}
+/* .project-timeline .timeline-custom-item-default-colors {
+} */
 
 
 p {

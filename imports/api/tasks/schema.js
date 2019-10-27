@@ -1,4 +1,4 @@
-import SimpleSchema from 'simpl-schema';
+import SimpleSchema from "simpl-schema";
 
 export default new SimpleSchema({
   /* relations */
@@ -9,7 +9,7 @@ export default new SimpleSchema({
   },
   /* main attributes */
   name: String,
-  number: { 
+  number: {
     type: Number,
     optional: true
   },

@@ -1,5 +1,5 @@
-var getUser = function(user) {
-  if (!user) return;
+const getUser = function(user) {
+  if (!user) return null;
   if (typeof user === "string" || user instanceof String) {
     user = Meteor.users.findOne(
       { _id: user },
@@ -21,9 +21,9 @@ export default {
   methods: {
     formatUserLetters(user) {
       user = getUser(user);
-      if (!user) return;
+      if (!user) return null;
 
-      var emailComponents = user.emails[0].address.split("@")[0].split(".");
+      const emailComponents = user.emails[0].address.split("@")[0].split(".");
       if (emailComponents.length <= 1) {
         return emailComponents[0][0];
       }
@@ -32,15 +32,13 @@ export default {
 
     formatUser(user) {
       user = getUser(user);
-      if (!user) return;
-      if (user) {
-        return user.emails[0].address;
-      }
+      if (!user) return null;
+      return user.emails[0].address;
     },
 
     isOnline(user) {
       user = getUser(user);
-      if (user && user.statusConnection == "online") {
+      if (user && user.statusConnection === "online") {
         return "blue";
       }
       return "grey lighten-1";
@@ -48,15 +46,16 @@ export default {
 
     getEmailForUser(user) {
       user = getUser(user);
-      if (!user) return;
+      if (!user) return null;
       if (user.emails && user.emails.length > 0) {
         return user.emails[0].address;
       }
+      return null;
     },
 
     getAvatarForUser(user) {
       user = getUser(user);
-      if (!user || !user.profile) return;
+      if (!user || !user.profile) return null;
       return user.profile.avatar;
     }
   }

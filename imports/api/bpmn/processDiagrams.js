@@ -30,9 +30,9 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
     checkCanWriteProject(projectId);
 
     const id = ProcessDiagrams.insert({
-      projectId: projectId,
-      name: name,
-      description: description,
+      projectId,
+      name,
+      description,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -61,8 +61,8 @@ ProcessDiagrams.methods.update = new ValidatedMethod({
       },
       {
         $set: {
-          name: name,
-          description: description
+          name,
+          description
         }
       }
     );
@@ -89,7 +89,7 @@ ProcessDiagrams.methods.saveXML = new ValidatedMethod({
       },
       {
         $set: {
-          xml: xml
+          xml
         }
       }
     );
@@ -125,10 +125,10 @@ ProcessDiagrams.methods.clone = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(processDiagram.projectId);
-    
+
     const id = ProcessDiagrams.insert({
       projectId: processDiagram.projectId,
-      name: "Copie de " + processDiagram.name,
+      name: `Copie de ${processDiagram.name}`,
       description: processDiagram.description,
       createdAt: new Date(),
       createdBy: Meteor.userId(),

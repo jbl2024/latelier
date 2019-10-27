@@ -1,6 +1,6 @@
-import Agent from 'meteor/kschingiz:meteor-elastic-apm';
+import Agent from "meteor/kschingiz:meteor-elastic-apm";
 
-const elasticApm = Meteor.settings.elasticApm;
+const { elasticApm } = Meteor.settings;
 if (elasticApm && elasticApm.enabled) {
   Agent.start(elasticApm.options || {});
 }

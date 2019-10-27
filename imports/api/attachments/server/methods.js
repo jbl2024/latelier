@@ -1,11 +1,9 @@
-import { Attachments } from "/imports/api/attachments/attachments.js";
-import { checkLoggedIn } from "/imports/api/permissions/permissions";
+import { Meteor } from "meteor/meteor";
+import { Attachments } from "/imports/api/attachments/attachments";
+import { checkLoggedIn, checkCanWriteTask } from "/imports/api/permissions/permissions";
 import fs from "fs";
-import { checkCanWriteTask } from "/imports/api/permissions/permissions";
 
-const bound = Meteor.bindEnvironment(callback => {
-  return callback();
-});
+const bound = Meteor.bindEnvironment((callback) => callback());
 
 Attachments.methods.remove = new ValidatedMethod({
   name: "attachments.remove",
@@ -19,7 +17,7 @@ Attachments.methods.remove = new ValidatedMethod({
 
     if (attachmentId) {
       const canRemove = Meteor.call("permissions.canDeleteAttachment", {
-        attachmentId: attachmentId
+        attachmentId
       });
       if (!canRemove) {
         throw new Meteor.Error("not-authorized");
@@ -31,7 +29,7 @@ Attachments.methods.remove = new ValidatedMethod({
       const attachments = Attachments.find({
         "meta.projectId": projectId
       }).fetch();
-      attachments.map(attachment => {
+      attachments.forEach((attachment) => {
         const canRemove = Meteor.call("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
@@ -44,7 +42,7 @@ Attachments.methods.remove = new ValidatedMethod({
 
     if (taskId) {
       const attachments = Attachments.find({ "meta.taskId": taskId }).fetch();
-      attachments.map(attachment => {
+      attachments.forEach((attachment) => {
         const canRemove = Meteor.call("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
@@ -64,7 +62,7 @@ Attachments.methods.restore = new ValidatedMethod({
     projectId: { type: String, optional: true },
     taskId: { type: String, optional: true }
   }).validator(),
-  run({ attachmentId, projectId, taskId }) {
+  run() {
     checkLoggedIn();
 
     // TODO : Implement method
@@ -83,8 +81,8 @@ Attachments.methods.clone = new ValidatedMethod({
     checkCanWriteTask(taskId);
 
     const attachment = Attachments.findOne({ _id: attachmentId });
-    const userId = Meteor.userId()
-    fs.readFile(attachment.path, function(error, data) {
+    const userId = Meteor.userId();
+    fs.readFile(attachment.path, (error, data) => {
       bound(() => {
         if (error) {
           throw error;
@@ -95,12 +93,12 @@ Attachments.methods.clone = new ValidatedMethod({
               fileName: attachment.name,
               type: attachment.type,
               meta: {
-                projectId: projectId,
-                taskId: taskId,
+                projectId,
+                taskId,
                 createdBy: userId
               }
             },
-            function(writeError, fileRef) {
+            (writeError) => {
               if (writeError) {
                 throw writeError;
               }

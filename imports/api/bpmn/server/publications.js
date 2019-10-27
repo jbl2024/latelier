@@ -1,9 +1,10 @@
 import { publishComposite } from "meteor/reywood:publish-composite";
-
 import { Projects } from "/imports/api/projects/projects";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
-import { Permissions } from "/imports/api/permissions/permissions";
-import { checkCanReadProject } from "../../permissions/permissions";
+import {
+  Permissions,
+  checkCanReadProject
+} from "/imports/api/permissions/permissions";
 
 publishComposite("processDiagrams", function(projectId) {
   return {
@@ -14,7 +15,7 @@ publishComposite("processDiagrams", function(projectId) {
         deleted: { $ne: true }
       };
       if (!Permissions.isAdmin(userId)) {
-        query["$or"] = [
+        query.$or = [
           { createdBy: userId },
           { members: userId },
           { isPublic: true }

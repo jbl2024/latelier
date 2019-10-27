@@ -1,61 +1,65 @@
-import { Meteor } from 'meteor/meteor';
-import { Mongo } from 'meteor/mongo';
-import { check } from 'meteor/check';
+import { Meteor } from "meteor/meteor";
+import { Mongo } from "meteor/mongo";
 import { Tasks } from "/imports/api/tasks/tasks";
-import { checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
-import LabelSchema from './schema';
+import {
+  checkLoggedIn,
+  checkCanReadProject,
+  checkCanWriteProject
+} from "/imports/api/permissions/permissions";
+import LabelSchema from "./schema";
 
-export const Labels = new Mongo.Collection('labels');
+export const Labels = new Mongo.Collection("labels");
 Labels.attachSchema(LabelSchema);
-Labels.methods = {}
+Labels.methods = {};
 
 if (Meteor.isServer) {
   Meteor.startup(() => {
-    Tasks.rawCollection().createIndex({projectId: 1});
+    Tasks.rawCollection().createIndex({ projectId: 1 });
   });
 }
-
 
 Labels.methods.create = new ValidatedMethod({
   name: "labels.create",
   validate: new SimpleSchema({
     projectId: { type: String },
     name: { type: String },
-    color: { type: String },
+    color: { type: String }
   }).validator(),
-  run({ projectId, name, color}) {
+  run({ projectId, name, color }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
 
     const labelId = Labels.insert({
-      projectId: projectId,
-      name: name,
-      color: color,
+      projectId,
+      name,
+      color,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
-    return labelId;   
+    return labelId;
   }
 });
-
 
 Labels.methods.remove = new ValidatedMethod({
   name: "labels.remove",
   validate: new SimpleSchema({
     labelId: { type: String }
   }).validator(),
-  run({ labelId}) {
+  run({ labelId }) {
     checkLoggedIn();
-    const label = Labels.findOne({_id: labelId});
+    const label = Labels.findOne({ _id: labelId });
     if (!label) {
-      throw new Meteor.Error("not-found");      
+      throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Tasks.direct.update({labels: labelId}, { $pull: { labels: labelId } }, {multi: true});
+    Tasks.direct.update(
+      { labels: labelId },
+      { $pull: { labels: labelId } },
+      { multi: true }
+    );
     Labels.remove(labelId);
   }
 });
-
 
 Labels.methods.updateColor = new ValidatedMethod({
   name: "labels.updateColor",
@@ -63,14 +67,14 @@ Labels.methods.updateColor = new ValidatedMethod({
     labelId: { type: String },
     color: { type: String }
   }).validator(),
-  run({ labelId, color}) {
+  run({ labelId, color }) {
     checkLoggedIn();
-    const label = Labels.findOne({_id: labelId});
+    const label = Labels.findOne({ _id: labelId });
     if (!label) {
-      throw new Meteor.Error("not-found");      
+      throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Labels.update({_id: labelId}, {$set: {color: color}});
+    Labels.update({ _id: labelId }, { $set: { color } });
   }
 });
 
@@ -81,14 +85,14 @@ Labels.methods.updateNameAndColor = new ValidatedMethod({
     name: { type: String },
     color: { type: String }
   }).validator(),
-  run({ labelId, name, color}) {
+  run({ labelId, name, color }) {
     checkLoggedIn();
-    const label = Labels.findOne({_id: labelId});
+    const label = Labels.findOne({ _id: labelId });
     if (!label) {
-      throw new Meteor.Error("not-found");      
+      throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Labels.update({_id: labelId}, {$set: {color: color, name: name}});
+    Labels.update({ _id: labelId }, { $set: { color, name } });
   }
 });
 
@@ -96,18 +100,22 @@ Labels.methods.import = new ValidatedMethod({
   name: "labels.import",
   validate: new SimpleSchema({
     from: { type: String },
-    to: { type: String },
+    to: { type: String }
   }).validator(),
-  run({ from, to}) {
+  run({ from, to }) {
     checkLoggedIn();
     checkCanReadProject(from);
     checkCanWriteProject(to);
 
-    const labels = Labels.find({projectId: from}) || [];
-    labels.map(label => {
-      if (!Labels.findOne({projectId: to, name: label.name})) {
-        Meteor.call("labels.create", {projectId: to, name: label.name, color: label.color});
+    const labels = Labels.find({ projectId: from }) || [];
+    labels.forEach((label) => {
+      if (!Labels.findOne({ projectId: to, name: label.name })) {
+        Meteor.call("labels.create", {
+          projectId: to,
+          name: label.name,
+          color: label.color
+        });
       }
-    })
+    });
   }
 });

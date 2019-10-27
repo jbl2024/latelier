@@ -1,26 +1,21 @@
 <template>
   <div class="organization-page">
-    <organizations></organizations>
+    <organizations />
   </div>
 </template>
 
 <script>
-
 export default {
+  data() {
+    return {};
+  },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Organizations"));
   },
-  data () {
-    return {
-    }
-  },
-  methods: {
-  },
-  meteor: {
-  },
-}
+  methods: {},
+  meteor: {}
+};
 </script>
 
 <style scoped>
-
 </style>

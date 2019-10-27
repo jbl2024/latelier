@@ -1,14 +1,14 @@
-import SimpleSchema from 'simpl-schema';
+import SimpleSchema from "simpl-schema";
 
 export default new SimpleSchema({
   /* relations */
   projectId: {
-    type: String,
+    type: String
   },
 
   /* main attributes */
   name: {
-    type: String,
+    type: String
   },
 
   order: {
@@ -28,6 +28,5 @@ export default new SimpleSchema({
 
   /* creation dates */
   createdAt: Date,
-  createdBy: String,
-
+  createdBy: String
 });

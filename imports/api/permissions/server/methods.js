@@ -1,4 +1,7 @@
-import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions";
+import {
+  Permissions,
+  checkLoggedIn
+} from "/imports/api/permissions/permissions";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
@@ -24,9 +27,8 @@ Permissions.methods.canReadProject = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -47,9 +49,8 @@ Permissions.methods.canWriteProject = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -70,9 +71,8 @@ Permissions.methods.canDeleteProject = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -90,9 +90,9 @@ Permissions.methods.canReadTask = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({_id: taskId});
+    const task = Tasks.findOne({ _id: taskId });
     if (!task) {
-      throw new Meteor.Error("not-found");  
+      throw new Meteor.Error("not-found");
     }
 
     const project = Projects.findOne({
@@ -101,9 +101,8 @@ Permissions.methods.canReadTask = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -118,9 +117,9 @@ Permissions.methods.canWriteTask = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({_id: taskId});
+    const task = Tasks.findOne({ _id: taskId });
     if (!task) {
-      throw new Meteor.Error("not-found");  
+      throw new Meteor.Error("not-found");
     }
 
     const project = Projects.findOne({
@@ -129,9 +128,8 @@ Permissions.methods.canWriteTask = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -146,9 +144,9 @@ Permissions.methods.canDeleteTask = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({_id: taskId});
+    const task = Tasks.findOne({ _id: taskId });
     if (!task) {
-      throw new Meteor.Error("not-found");  
+      throw new Meteor.Error("not-found");
     }
 
     const project = Projects.findOne({
@@ -157,9 +155,8 @@ Permissions.methods.canDeleteTask = new ValidatedMethod({
     });
     if (project) {
       return true;
-    } else {
-      throw new Meteor.Error("not-authorized");
     }
+    throw new Meteor.Error("not-authorized");
   }
 });
 
@@ -182,8 +179,8 @@ Permissions.methods.canReadAttachment = new ValidatedMethod({
     if (!attachment) {
       return false;
     }
-    const projectId = attachment.meta.projectId;
-    return Meteor.call("permissions.canReadProject", { projectId: projectId });
+    const { projectId } = attachment.meta;
+    return Meteor.call("permissions.canReadProject", { projectId });
   }
 });
 
@@ -202,8 +199,8 @@ Permissions.methods.canWriteAttachment = new ValidatedMethod({
     if (!attachment) {
       return false;
     }
-    const projectId = attachment.meta.projectId;
-    return Meteor.call("permissions.canWriteProject", { projectId: projectId });
+    const { projectId } = attachment.meta;
+    return Meteor.call("permissions.canWriteProject", { projectId });
   }
 });
 
@@ -222,7 +219,7 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
     if (!attachment) {
       return false;
     }
-    const projectId = attachment.meta.projectId;
-    return Meteor.call("permissions.canWriteProject", { projectId: projectId });
+    const { projectId } = attachment.meta;
+    return Meteor.call("permissions.canWriteProject", { projectId });
   }
 });
