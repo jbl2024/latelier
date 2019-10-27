@@ -6,7 +6,7 @@ import { Organizations } from "../organizations";
 
 Meteor.publish("organizations", function organizations(name, organizationId) {
   check(name, Match.Maybe(String));
-  check(organizationId, String);
+  check(organizationId, Match.Maybe(String));
   checkLoggedIn();
   const query = {};
   if (!Permissions.isAdmin(Meteor.userId())) {
