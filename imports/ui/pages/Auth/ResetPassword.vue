@@ -1,34 +1,44 @@
 <template>
   <div class="reset-password">
     <div class="centered-container">
-      <v-form v-model="valid" v-on:submit.prevent>
+      <v-form v-model="valid" @submit.prevent>
         <v-card>
-          <v-card-title class="title">{{ $t('Reset password') }}</v-card-title>
+          <v-card-title class="title">
+            {{ $t("Reset password") }}
+          </v-card-title>
           <v-card-text>
             <v-text-field
+              id="password"
+              v-model="form.password"
               label="Mot de passe"
               type="password"
               name="password"
-              id="password"
               autocomplete="password"
               :rules="passwordRules"
-              v-model="form.password"
-              v-on:keyup.enter="login()"
               :disabled="sending"
-            ></v-text-field>
-            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+              @keyup.enter="login()"
+            />
+            <v-progress-linear v-if="sending" indeterminate />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" @click="reset" :disabled="sending || !valid">{{ $t('Reset') }}</v-btn>
+            <v-spacer />
+            <v-btn color="primary" :disabled="sending || !valid" @click="reset">
+              {{ $t("Reset") }}
+            </v-btn>
           </v-card-actions>
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'register'}">{{ $t('Register')}}</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn text :to="{ name: 'login'}">{{ $t('Already have an account?') }}</v-btn>
+            <v-btn text :to="{ name: 'register' }">
+              {{ $t("Register") }}
+            </v-btn>
+            <v-spacer />
+            <v-btn text :to="{ name: 'login' }">
+              {{ $t("Already have an account?") }}
+            </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+          <v-snackbar v-model="notify">
+            {{ notifyText }}
+          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -37,29 +47,28 @@
 
 <script>
 export default {
-  name: "reset-password",
+  name: "ResetPassword",
   data: () => ({
     valid: false,
     form: {
-      password: ''
+      password: ""
     },
     notify: false,
     sending: false,
     passwordRules: [
-      v => !!v || "Le mot de passe est obligatoire",
-      v => v.length > 1 || "Le mot de passe est trop cours"
+      (v) => !!v || "Le mot de passe est obligatoire",
+      (v) => v.length > 1 || "Le mot de passe est trop cours"
     ]
-
   }),
   i18n: {
     messages: {
-      en: { 
-        "Welcome back!": "Welcome back!",
+      en: {
+        "Welcome back!": "Welcome back!"
       },
       fr: {
-        "Welcome back!": "Ravi de vous revoir!",
+        "Welcome back!": "Ravi de vous revoir!"
       }
-    }  
+    }
   },
   methods: {
     clearForm() {
@@ -68,19 +77,20 @@ export default {
     },
     reset() {
       this.sending = true;
-      const dataForm = this.resetPasswordForm;
-      const new_password = this.form.password;
-      const token = this.$route.params.token
-      Accounts.resetPassword(token, new_password, (err) => {
+      const newPassword = this.form.password;
+      const { token } = this.$route.params;
+      Accounts.resetPassword(token, newPassword, (err) => {
         if (err) {
           this.$store.dispatch("notify", err.reason);
-          this.isLoading = false
+          this.isLoading = false;
         } else {
-          this.$store.dispatch("notify", this.$t('Password reset with success!'));
-          this.$router.push({name: 'login'})
+          this.$store.dispatch(
+            "notify",
+            this.$t("Password reset with success!")
+          );
+          this.$router.push({ name: "login" });
         }
-      })
-
+      });
     }
   }
 };

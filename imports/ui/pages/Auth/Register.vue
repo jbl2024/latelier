@@ -1,42 +1,52 @@
 <template>
   <div class="register">
     <div class="centered-container">
-      <v-form v-model="valid" v-on:submit.prevent="validateRegister">
+      <v-form v-model="valid" @submit.prevent="validateRegister">
         <v-card>
-          <v-card-title class="title">Créer un compte</v-card-title>
+          <v-card-title class="title">
+            Créer un compte
+          </v-card-title>
           <v-card-text>
             <v-text-field
+              id="email"
+              v-model="form.email"
               label="Email"
               name="email"
-              id="email"
               autocomplete="email"
               :rules="emailRules"
-              v-model="form.email"
               :disabled="sending"
-            ></v-text-field>
+            />
             <v-text-field
+              id="password"
+              v-model="form.password"
               label="Mot de passe"
               type="password"
               name="password"
               :rules="passwordRules"
-              id="password"
               autocomplete="password"
-              v-model="form.password"
               :disabled="sending"
-            ></v-text-field>
-            <v-progress-linear indeterminate v-if="sending"></v-progress-linear>
+            />
+            <v-progress-linear v-if="sending" indeterminate />
           </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" type="submit" :disabled="sending || !valid">Créer un compte</v-btn>
+            <v-spacer />
+            <v-btn color="primary" type="submit" :disabled="sending || !valid">
+              Créer un compte
+            </v-btn>
           </v-card-actions>
-          <v-divider></v-divider>
+          <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'login'}">Déjà un compte ?</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn text :to="{ name: 'forgot-password'}">Mot de passe oublié ?</v-btn>
+            <v-btn text :to="{ name: 'login' }">
+              Déjà un compte ?
+            </v-btn>
+            <v-spacer />
+            <v-btn text :to="{ name: 'forgot-password' }">
+              Mot de passe oublié ?
+            </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">{{ notifyText }}</v-snackbar>
+          <v-snackbar v-model="notify">
+            {{ notifyText }}
+          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -44,7 +54,7 @@
 </template>
 <script>
 export default {
-  name: "login-widget",
+  name: "LoginWidget",
   data: () => ({
     form: {
       email: null,
@@ -55,12 +65,12 @@ export default {
     sending: false,
     valid: false,
     emailRules: [
-      v => !!v || "L'email est obligatoire",
-      v => v && v.length > 1 || "L'email est invalide"
+      (v) => !!v || "L'email est obligatoire",
+      (v) => (v && v.length > 1) || "L'email est invalide"
     ],
     passwordRules: [
-      v => !!v || "Le mot de passe est obligatoire",
-      v => v && v.length > 2 || "Le mot de passe est trop court"
+      (v) => !!v || "Le mot de passe est obligatoire",
+      (v) => (v && v.length > 2) || "Le mot de passe est trop court"
     ]
   }),
   methods: {
@@ -77,7 +87,7 @@ export default {
         password: this.form.password,
         email: this.form.email
       };
-      Meteor.call('users.create', userData, (error, result) => {
+      Meteor.call("users.create", userData, (error) => {
         this.sending = false;
         this.notify = false;
         if (error) {
@@ -103,4 +113,3 @@ export default {
   height: calc(100vh - 64px);
 }
 </style>
-

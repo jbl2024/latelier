@@ -1,51 +1,53 @@
 <template>
   <div class="administration-page">
     <template v-if="user">
+      <v-subheader>{{ $t("Email notifications") }}</v-subheader>
 
-    <v-subheader>{{ $t("Email notifications")}}</v-subheader>
-
-    <v-list class="elevation-1">
-      <v-list-item @click="toggleSettings('emailSettings.tasks.assignTo')">
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("A task is assigned to me") }}</v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-switch v-model="user.emailSettings.tasks.assignTo" @click="toggleSettings('emailSettings.tasks.assignTo')"></v-switch>
-        </v-list-item-action>
-      </v-list-item>
-      <v-list-item @click="toggleSettings('emailSettings.tasks.update')">
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("A task is updated") }}</v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-switch v-model="user.emailSettings.tasks.update" @click="toggleSettings('emailSettings.tasks.update')"></v-switch>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-
-
+      <v-list class="elevation-1">
+        <v-list-item @click="toggleSettings('emailSettings.tasks.assignTo')">
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ $t("A task is assigned to me") }}
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-switch
+              v-model="user.emailSettings.tasks.assignTo"
+              @click="toggleSettings('emailSettings.tasks.assignTo')"
+            />
+          </v-list-item-action>
+        </v-list-item>
+        <v-list-item @click="toggleSettings('emailSettings.tasks.update')">
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("A task is updated") }}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-switch
+              v-model="user.emailSettings.tasks.update"
+              @click="toggleSettings('emailSettings.tasks.update')"
+            />
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions"
 import get from "lodash/get";
 import has from "lodash/has";
 import set from "lodash/set";
 
-
 export default {
-  props: {
+  props: {},
+
+  data() {
+    return {
+      user: null
+    };
   },
   mounted() {
     this.refreshUser();
-  },
-
-  data () {
-    return {
-      user: null
-    }
   },
   methods: {
     toggleSettings(property) {
@@ -53,7 +55,7 @@ export default {
         set(this.user, property, false);
       }
       set(this.user, property, !get(this.user, property, false));
-      Meteor.call('users.updateEmailPreferences', this.user.emailSettings);
+      Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
       this.refreshUser();
     },
 
@@ -64,11 +66,10 @@ export default {
           return;
         }
         this.user = result;
-      })
+      });
     }
-  },
-}
+  }
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

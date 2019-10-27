@@ -1,25 +1,30 @@
 <template>
   <div class="project-bpmn">
-    <new-process-diagram ref="newProcessDiagram" :projectId="projectId"></new-process-diagram>
-    <edit-process-diagram ref="editProcessDiagram"></edit-process-diagram>
+    <new-process-diagram
+      ref="newProcessDiagram"
+      :project-id="projectId"
+    />
+    <edit-process-diagram ref="editProcessDiagram" />
     <div v-if="!$subReady.processDiagrams">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
     <div v-if="$subReady.processDiagrams">
       <empty-state
-        class="empty"
         v-show="processDiagrams.length == 0"
+        class="empty"
         rounded
         illustration="empty"
         :label="$t('No diagram')"
         :description="$t('You can add a new diagram')"
       >
-        <v-btn class="primary" @click="newDiagram()">{{ $t('Add diagram') }}</v-btn>
+        <v-btn class="primary" @click="newDiagram()">
+          {{ $t("Add diagram") }}
+        </v-btn>
       </empty-state>
 
-      <v-list two-line subheader v-show="processDiagrams.length > 0">
+      <v-list v-show="processDiagrams.length > 0" two-line subheader>
         <v-subheader>
-          {{ $t('Process diagrams')}}
+          {{ $t("Process diagrams") }}
           <v-btn icon dark small color="primary" @click="newDiagram()">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -36,7 +41,7 @@
           <v-list-item-content class="pointer">
             <v-list-item-title>{{ processDiagram.name }}</v-list-item-title>
             <v-list-item-subtitle>
-              {{ htmlToText(processDiagram.description)}}
+              {{ htmlToText(processDiagram.description) }}
             </v-list-item-subtitle>
           </v-list-item-content>
 
@@ -44,48 +49,48 @@
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-on="on"
                   icon
                   text
                   color="grey darken-1"
+                  v-on="on"
                   @click.stop="editProcessDiagram(processDiagram)"
                 >
                   <v-icon>mdi-pencil</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Edit') }}</span>
+              <span>{{ $t("Edit") }}</span>
             </v-tooltip>
           </v-list-item-action>
           <v-list-item-action>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-on="on"
                   icon
                   text
                   color="grey darken-1"
+                  v-on="on"
                   @click.stop="cloneProcessDiagram(processDiagram)"
                 >
                   <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Clone') }}</span>
+              <span>{{ $t("Clone") }}</span>
             </v-tooltip>
           </v-list-item-action>
           <v-list-item-action>
             <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
-                  v-on="on"
                   icon
                   text
                   color="grey darken-1"
+                  v-on="on"
                   @click.stop="deleteProcessDiagram(processDiagram)"
                 >
                   <v-icon>mdi-delete</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t('Delete') }}</span>
+              <span>{{ $t("Delete") }}</span>
             </v-tooltip>
           </v-list-item-action>
         </v-list-item>
@@ -96,12 +101,9 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import * as htmlToText from 'html-to-text';
-
+import * as htmlToText from "html-to-text";
 
 export default {
   mixins: [TextRenderingMixin],
@@ -115,7 +117,7 @@ export default {
         "You can add a new diagram": "You can add a new diagram",
         "Add diagram": "Add diagram",
         "Clone diagram?": "Clone diagram?",
-        "Diagram cloned": "Diagram cloned",
+        "Diagram cloned": "Diagram cloned"
       },
       fr: {
         "Process diagrams": "Diagrammes de processus",
@@ -125,16 +127,9 @@ export default {
         "You can add a new diagram": "Vous pouvez ajouter un diagramme",
         "Add diagram": "Ajouter un diagramme",
         "Clone diagram?": "Dupliquer le diagramme ?",
-        "Diagram cloned": "Diagramme dupliqué",
-
+        "Diagram cloned": "Diagramme dupliqué"
       }
     }
-  },
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", 0);
   },
   props: {
     projectId: {
@@ -144,8 +139,14 @@ export default {
   },
   data() {
     return {
-      modeler: null,
+      modeler: null
     };
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentProjectId", 0);
   },
   meteor: {
     // Subscriptions
@@ -186,12 +187,12 @@ export default {
         title: processDiagram.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "processDiagrams.remove",
             { processDiagramId: processDiagram._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;
@@ -212,12 +213,12 @@ export default {
         title: processDiagram.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Clone")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "processDiagrams.clone",
             { processDiagramId: processDiagram._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;

@@ -1,7 +1,11 @@
 <template>
   <div class="home">
-    <empty-state :description="$t('Welcome to l\'atelier')" illustration="welcome">
-      <v-btn class="primary" rounded :to="{ name: 'dashboard-page'}">{{ $t('Go to projects') }}
+    <empty-state
+      :description="$t('Welcome to l\'atelier')"
+      illustration="welcome"
+    >
+      <v-btn class="primary" rounded :to="{ name: 'dashboard-page' }">
+        {{ $t("Go to projects") }}
       </v-btn>
     </empty-state>
   </div>
@@ -13,11 +17,11 @@ export default {
     messages: {
       en: {
         "Welcome to l'atelier": "Welcome to l'atelier",
-        "Go to projects": "Go to projects",
+        "Go to projects": "Go to projects"
       },
       fr: {
         "Welcome to l'atelier": "Bienvenue dans l'atelier",
-        "Go to projects": "Accéder aux projets",
+        "Go to projects": "Accéder aux projets"
       }
     }
   },

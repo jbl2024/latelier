@@ -1,38 +1,64 @@
 <template>
   <div class="project-weather">
-    <new-health-report ref="newHealthReport" :projectId="projectId" @created="refresh"></new-health-report>
+    <new-health-report
+      ref="newHealthReport"
+      :project-id="projectId"
+      @created="refresh"
+    />
     <empty-state
-      class="empty"
       v-if="healthReports.length == 0 && !loading"
+      class="empty"
       illustration="weather"
       :description="$t('No report defined')"
     >
-      <v-btn class="info" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+      <v-btn class="info" @click="newHealthReport">
+        {{ $t("Add report") }}
+      </v-btn>
     </empty-state>
 
     <template v-if="healthReports.length > 0">
-      <div v-resize="onResize" ref="container" class="container-wrapper" :style="getBackgroundUrl(user)">
+      <div
+        ref="container"
+        v-resize="onResize"
+        class="container-wrapper"
+        :style="getBackgroundUrl(user)"
+      >
         <div v-if="loading">
-          <v-progress-linear indeterminate></v-progress-linear>
+          <v-progress-linear indeterminate />
         </div>
         <v-container fluid grid-list-lg>
-          <v-layout row wrap >
+          <v-layout row wrap>
             <v-flex xs12 :md6="!narrow" :offset-md3="!narrow">
-              <v-btn color="primary" :class="{'cards-narrow': narrow }" @click="newHealthReport">{{ $t('Add report') }}</v-btn>
+              <v-btn
+                color="primary"
+                :class="{ 'cards-narrow': narrow }"
+                @click="newHealthReport"
+              >
+                {{ $t("Add report") }}
+              </v-btn>
             </v-flex>
             <template v-for="report in healthReports">
-              <v-flex :key="report._id" xs12 :md6="!narrow" :offset-md3="!narrow" >
-                <health-report-card :class="{'cards-narrow': narrow }" :report="report" @updated="refresh"></health-report-card>
+              <v-flex
+                :key="report._id"
+                xs12
+                :md6="!narrow"
+                :offset-md3="!narrow"
+              >
+                <health-report-card
+                  :class="{ 'cards-narrow': narrow }"
+                  :report="report"
+                  @updated="refresh"
+                />
               </v-flex>
             </template>
           </v-layout>
         </v-container>
-        <div class="text-xs-center" v-if="pagination.totalPages > 1">
+        <div v-if="pagination.totalPages > 1" class="text-xs-center">
           <v-pagination
             v-if="pagination.totalPages > 0"
             v-model="page"
             :length="pagination.totalPages"
-          ></v-pagination>
+          />
         </div>
       </div>
     </template>
@@ -41,40 +67,14 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { HealthReports } from "/imports/api/healthReports/healthReports.js";
-import { Backgrounds } from "/imports/api/backgrounds/backgrounds.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
   mixins: [DatesMixin],
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.refresh();
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", 0);
-  },
   props: {
     projectId: {
       type: String,
       default: "0"
-    }
-  },
-  i18n: {
-    messages: {
-      en: {
-        "No report defined": "No report defined",
-        "Add report": "Add report"
-      },
-      fr: {
-        "No report defined": "Aucun bulletin disponible",
-        "Add report": "Ajouter un bulletin"
-      }
-    }
-  },
-  watch: {
-    page(page) {
-      this.refresh();
     }
   },
   data() {
@@ -89,6 +89,30 @@ export default {
         totalPages: 0
       }
     };
+  },
+  watch: {
+    page() {
+      this.refresh();
+    }
+  },
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.refresh();
+  },
+  beforeDestroy() {
+    this.$store.dispatch("setCurrentProjectId", 0);
+  },
+  i18n: {
+    messages: {
+      en: {
+        "No report defined": "No report defined",
+        "Add report": "Add report"
+      },
+      fr: {
+        "No report defined": "Aucun bulletin disponible",
+        "Add report": "Ajouter un bulletin"
+      }
+    }
   },
   meteor: {
     // Subscriptions
@@ -130,10 +154,9 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      )
-        return 0;
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
+      ) { return 0; }
 
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
@@ -145,11 +168,12 @@ export default {
     },
     getBackgroundUrl(user) {
       if (user && user.profile) {
-        const background = user.profile.background;
+        const { background } = user.profile;
         if (background) {
           return `background-image: url('${background}');`;
         }
       }
+      return "";
     },
 
     onResize() {
@@ -159,7 +183,6 @@ export default {
       } else {
         this.narrow = false;
       }
-
     }
   }
 };
@@ -188,11 +211,6 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
-}
-
-.cards-wide {
-  /* margin-left: 256px;
-  margin-right: 256px; */
 }
 
 .cards-narrow {
