@@ -8,9 +8,7 @@
     <projects-trashcan ref="projectsTrashcan" />
 
     <div
-      v-if="
-        !$subReady.allProjects || !$subReady.organizations || !$subReady.user
-      "
+      v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user"
       class="left"
     >
       <v-progress-linear indeterminate />
