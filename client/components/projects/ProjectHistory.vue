@@ -25,7 +25,7 @@
 
           <v-timeline
             v-if="!loading"
-            :dense="$vuetify.breakpoint.xsOnly"
+            dense
             clipped
           >
             <v-timeline-item
