@@ -1,61 +1,74 @@
 <template>
   <div class="dashboard-mobile">
-    <new-organization ref="newOrganization"></new-organization>
+    <new-organization ref="newOrganization" />
     <template v-if="user">
-      <div class="mobile" v-if="$vuetify.breakpoint.xsOnly">
-        <v-bottom-navigation v-model="bottomNav" :value="true" dark color="primary">
+      <div v-if="$vuetify.breakpoint.xsOnly" class="mobile">
+        <v-bottom-navigation
+          v-model="bottomNav"
+          :value="true"
+          dark
+          color="primary"
+        >
           <v-btn text value="organizations">
-            <span>{{ $t('Projects') }}</span>
+            <span>{{ $t("Projects") }}</span>
             <v-icon>mdi-domain</v-icon>
           </v-btn>
 
           <v-btn text value="tasks">
-            <span>{{ $t('Tasks') }}</span>
+            <span>{{ $t("Tasks") }}</span>
             <v-icon>mdi-format-list-bulleted</v-icon>
           </v-btn>
         </v-bottom-navigation>
-        <div class="mobile-organizations" v-if="bottomNav === 'organizations'">
+        <div v-if="bottomNav === 'organizations'" class="mobile-organizations">
           <v-card class="flex-container">
-            <dashboard-projects></dashboard-projects>
+            <dashboard-projects />
           </v-card>
         </div>
-        <div class="mobile-tasks" v-if="bottomNav === 'tasks'">
+        <div v-if="bottomNav === 'tasks'" class="mobile-tasks">
           <v-card class="flex-container">
             <div class="tabs-wrapper">
               <v-tabs v-model="tab" icons-and-text centered>
-                <v-tab>{{ $t('Recents') }}</v-tab>
-                <v-tab>{{ $t('Assigned to me') }}</v-tab>
-                <v-tab>{{ $t('Late') }}</v-tab>
+                <v-tab>{{ $t("Recents") }}</v-tab>
+                <v-tab>{{ $t("Assigned to me") }}</v-tab>
+                <v-tab>{{ $t("Late") }}</v-tab>
                 <v-tab-item>
-                  <dashboard-task-list :user="user" type="recent"></dashboard-task-list>
+                  <dashboard-task-list :user="user" type="recent" />
                 </v-tab-item>
                 <v-tab-item>
-                  <dashboard-task-list :user="user" type="assignedToMe"></dashboard-task-list>
+                  <dashboard-task-list :user="user" type="assignedToMe" />
                 </v-tab-item>
                 <v-tab-item>
-                  <dashboard-task-list :user="user" type="late" empty-illustration="celebration"></dashboard-task-list>
+                  <dashboard-task-list
+                    :user="user"
+                    type="late"
+                    empty-illustration="celebration"
+                  />
                 </v-tab-item>
               </v-tabs>
             </div>
           </v-card>
         </div>
       </div>
-
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions";
-
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import DashboardProjects from "/imports/ui/dashboard/mobile/DashboardProjects";
 
 export default {
-  props: {},
   components: {
     DashboardTaskList,
     DashboardProjects
+  },
+  props: {},
+  data() {
+    return {
+      user: null,
+      tab: null,
+      bottomNav: "organizations"
+    };
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
@@ -66,13 +79,6 @@ export default {
       }
       this.user = result;
     });
-  },
-  data() {
-    return {
-      user: null,
-      tab: null,
-      bottomNav: "organizations"
-    };
   },
   methods: {
     newOrganization() {
@@ -123,7 +129,6 @@ export default {
   overflow-y: scroll;
 }
 
-
 .tabs-wrapper {
   position: absolute;
   left: 0;
@@ -140,7 +145,6 @@ export default {
 .mobile-tasks .tabs-wrapper {
   top: 0;
 }
-
 
 @media (max-width: 601px) {
   .main-container {
@@ -165,5 +169,4 @@ export default {
 }
 </style>
 
-<style>
-</style>
+<style></style>

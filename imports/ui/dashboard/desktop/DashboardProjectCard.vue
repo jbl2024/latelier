@@ -1,12 +1,20 @@
 <template>
-  <v-card class="card" @click="openProject(project)" :style="getColorCardStyle(project)">
+  <v-card
+    class="card"
+    :style="getColorCardStyle(project)"
+    @click="openProject(project)"
+  >
     <v-card-title>
       <div>
-        <div class="name">{{ project.name }}</div>
-        <div class="subtitle grey--text">{{ formatProjectDates(project) }}</div>
+        <div class="name">
+          {{ project.name }}
+        </div>
+        <div class="subtitle grey--text">
+          {{ formatProjectDates(project) }}
+        </div>
       </div>
     </v-card-title>
-    <v-divider></v-divider>
+    <v-divider />
     <!-- <v-card-text>
       <v-layout>
         <v-flex xs6>
@@ -26,13 +34,18 @@
     <v-divider></v-divider> -->
     <v-card-actions>
       <v-btn icon>
-      <v-icon :class="getVisibilityIconClass(project)" :color="getColor(project)">{{ getVisibilityIcon(project) }}</v-icon>
+        <v-icon
+          :class="getVisibilityIconClass(project)"
+          :color="getColor(project)"
+        >
+          {{ getVisibilityIcon(project) }}
+        </v-icon>
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-spacer />
 
-      <v-tooltip top v-if="!isFavorite(user, project._id)">
+      <v-tooltip v-if="!isFavorite(user, project._id)" top>
         <template v-slot:activator="{ on }">
-            <v-btn
+          <v-btn
             icon
             text
             color="grey darken-1"
@@ -42,16 +55,22 @@
             <v-icon>mdi-star-outline</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t('Add to favorites') }}</span>
+        <span>{{ $t("Add to favorites") }}</span>
       </v-tooltip>
 
-      <v-tooltip top v-if="isFavorite(user, project._id)">
+      <v-tooltip v-if="isFavorite(user, project._id)" top>
         <template v-slot:activator="{ on }">
-          <v-btn icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" v-on="on">
+          <v-btn
+            icon
+            text
+            color="primary"
+            @click.stop="removeFromFavorites(user, project._id)"
+            v-on="on"
+          >
             <v-icon>mdi-star</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t('Remove from favorites') }}</span>
+        <span>{{ $t("Remove from favorites") }}</span>
       </v-tooltip>
 
       <template v-if="canManageProject(project)">
@@ -60,28 +79,28 @@
             <v-btn
               icon
               text
-              v-on="on"
               color="grey darken-1"
+              v-on="on"
               @click.stop="openProjectSettings(project)"
             >
               <v-icon>mdi-settings</v-icon>
             </v-btn>
           </template>
-          <span>{{ $t('Settings') }}</span>
+          <span>{{ $t("Settings") }}</span>
         </v-tooltip>
         <v-tooltip top>
           <template v-slot:activator="{ on }">
             <v-btn
               icon
               text
-              v-on="on"
               color="grey darken-1"
+              v-on="on"
               @click.stop="deleteProject(project)"
             >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </template>
-          <span>{{ $t('Move to trash') }}</span>
+          <span>{{ $t("Move to trash") }}</span>
         </v-tooltip>
       </template>
     </v-card-actions>
@@ -89,18 +108,23 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+
 
 export default {
-  name: "dashboard-project-card",
+  name: "DashboardProjectCard",
   mixins: [DatesMixin],
   props: {
-    project: Object,
-    user: Object
-
+    project: {
+      type: Object,
+      default: () => {}
+    },
+    user: {
+      type: Object,
+      default: () => {}
+    }
   },
   i18n: {
     messages: {
@@ -135,24 +159,23 @@ export default {
 
     getColorCardStyle(project) {
       if (project.color) {
-        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`
+        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`;
         // return `background: linear-gradient(90deg, ${project.color} 3%, #fff 3%);`
       }
+      return "";
     },
 
     formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return (
-          "Du  " +
-          this.formatDate(project.startDate) +
-          " au " +
-          this.formatDate(project.endDate)
-        );
-      } else if (project.startDate) {
-        return "A partir du " + this.formatDate(project.startDate);
-      } else if (project.endtDate) {
-        return "Jusqu'au " + this.formatDate(project.endDate);
+        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
       }
+      if (project.startDate) {
+        return `A partir du ${this.formatDate(project.startDate)}`;
+      }
+      if (project.endtDate) {
+        return `Jusqu'au ${this.formatDate(project.endDate)}`;
+      }
+      return "";
     },
 
     taskCount(project) {
@@ -166,8 +189,8 @@ export default {
 
     canDeleteProject(project) {
       if (
-        Permissions.isAdmin(Meteor.userId()) ||
-        project.createdBy === Meteor.userId()
+        Permissions.isAdmin(Meteor.userId())
+        || project.createdBy === Meteor.userId()
       ) {
         return true;
       }
@@ -176,8 +199,8 @@ export default {
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id) ||
-        Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdmin(Meteor.userId(), project._id)
+        || Permissions.isAdmin(Meteor.userId())
       );
     },
 
@@ -205,12 +228,12 @@ export default {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Move to trash")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "projects.remove",
             { projectId: project._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;
@@ -235,36 +258,34 @@ export default {
         Meteor.call(
           "projects.addToUserFavorites",
           { projectId: projectId, userId: user._id },
-          (error, result) => {
+          (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("Project added to favorites"));
+            this.$store.dispatch(
+              "notify",
+              this.$t("Project added to favorites")
+            );
           }
         );
       });
     },
 
     removeFromFavorites(user, projectId) {
-      this.$store.dispatch(
-        "notify",
-        this.$t("Project removed from favorites")
-      );
+      this.$store.dispatch("notify", this.$t("Project removed from favorites"));
       this.$nextTick(() => {
         Meteor.call(
           "projects.removeFromUserFavorites",
           { projectId: projectId, userId: user._id },
-          (error, result) => {
+          (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
-              return;
             }
           }
         );
-      })
+      });
     }
-
   }
 };
 </script>
