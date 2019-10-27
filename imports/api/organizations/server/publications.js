@@ -8,6 +8,8 @@ Meteor.publish("organizations", function organizations(name, organizationId) {
   check(name, Match.Maybe(String));
   check(organizationId, Match.Maybe(String));
   checkLoggedIn();
+
+  const userId = Meteor.userId();
   const query = {};
   if (!Permissions.isAdmin(Meteor.userId())) {
     query.$or = [{ members: userId }, { isPublic: true }];
