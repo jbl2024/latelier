@@ -137,6 +137,11 @@
   "Delete note?": "Suprimir la nòta ?",
   "Note deleted": "Nòta suprimida",
   "Conversation": "Discutida",
+  "cloneToProject": {
+    "menu": "Clonar a un autre projècte",
+    "confirmation": "Volètz vertadièrament clonar aqueste trabalh cap a {project} ?",
+    "done": "Trabalh clonat cap a {project}"
+  },
   "history": {
     "tasks": {
       "create": "Creacion",
