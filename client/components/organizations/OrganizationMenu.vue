@@ -1,8 +1,13 @@
 <template>
-
-<div class="organization-menu">
+  <div class="organization-menu">
     <v-list dense class="pt-0">
-      <v-list-item :to="{ name: 'projects-page', params: {organizationId: organizationId}}" @click="showNavigation = false">
+      <v-list-item
+        :to="{
+          name: 'projects-page',
+          params: { organizationId: organizationId }
+        }"
+        @click="showNavigation = false"
+      >
         <v-list-item-action>
           <v-icon>mdi-google-pages</v-icon>
         </v-list-item-action>
@@ -11,7 +16,13 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item :to="{ name: 'projects-timeline', params: {organizationId: organizationId}}" @click="showNavigation = false">
+      <v-list-item
+        :to="{
+          name: 'projects-timeline',
+          params: { organizationId: organizationId }
+        }"
+        @click="showNavigation = false"
+      >
         <v-list-item-action>
           <v-icon>mdi-chart-timeline-variant</v-icon>
         </v-list-item-action>
@@ -20,7 +31,13 @@
         </v-list-item-content>
       </v-list-item>
 
-      <v-list-item :to="{ name: 'organization-settings', params: {organizationId: organizationId}}" @click="showNavigation = false">
+      <v-list-item
+        :to="{
+          name: 'organization-settings',
+          params: { organizationId: organizationId }
+        }"
+        @click="showNavigation = false"
+      >
         <v-list-item-action>
           <v-icon>mdi-settings</v-icon>
         </v-list-item-action>
@@ -29,9 +46,8 @@
         </v-list-item-content>
       </v-list-item>
     </v-list>
-    <v-divider></v-divider>
-</div>
-
+    <v-divider />
+  </div>
 </template>
 
 <script>
@@ -39,17 +55,14 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: ''
+      default: ""
     }
   },
   data() {
-    return {
-    };
+    return {};
   },
-  methods: {
-  }
+  methods: {}
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
