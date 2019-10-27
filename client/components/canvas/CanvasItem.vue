@@ -3,23 +3,23 @@
     <v-card>
       <v-card-title primary-title>
         <div>
-            <div class="canvas-title" slot="activator">
-              {{ title }}
-            </div>
-            <div class="canvas-headline">
-              <slot name="headline"></slot>
-            </div>
+          <div slot="activator" class="canvas-title">
+            {{ title }}
+          </div>
+          <div class="canvas-headline">
+            <slot name="headline" />
+          </div>
         </div>
       </v-card-title>
       <v-card-text>
         <div
           v-if="!editContent"
-          @click="startUpdateContent"
           class="content ql-editor-view"
+          @click="startUpdateContent"
           v-html="linkifyHtml(content)"
-        ></div>
+        />
         <div v-if="editContent" class="edit-content">
-          <rich-editor autofocus v-model="content" @submit="updateContent"></rich-editor>
+          <rich-editor v-model="content" autofocus @submit="updateContent" />
           <v-btn icon text @click.native="updateContent">
             <v-icon>mdi-check-circle</v-icon>
           </v-btn>
@@ -37,14 +37,6 @@ import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
   mixins: [TextRenderingMixin],
-  watch: {
-    item: {
-      immediate: true,
-      handler(item) {
-        this.content = item;
-      }
-    }
-  },
   props: {
     title: {
       type: String,
@@ -65,6 +57,14 @@ export default {
       savedContent: "",
       editContent: false
     };
+  },
+  watch: {
+    item: {
+      immediate: true,
+      handler(item) {
+        this.content = item;
+      }
+    }
   },
   methods: {
     startUpdateContent() {

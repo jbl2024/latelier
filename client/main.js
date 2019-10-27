@@ -1,62 +1,74 @@
+import { Meteor } from "meteor/meteor";
+
+// Libs
+import Vue from "vue";
+import VueRouter from "vue-router";
+
+import VueI18n from "vue-i18n";
+
+import VueMeteorTracker from "vue-meteor-tracker";
+
+import VueEvents from "vue-event-handler";
+
+import colors from "vuetify/es5/util/colors";
+
+// Vuetify
+import Vuetify from "vuetify";
+
+import "vuetify/dist/vuetify.min.css";
+
+import "pretty-checkbox/dist/pretty-checkbox.min.css";
+
+// Main app
+import App from "/imports/ui/App.vue";
+import store from "/imports/store/store";
+import routes from "/imports/routes";
+import "/imports/favicon";
+import messages from "/imports/i18n/i18n";
+
+import confirm from "/imports/confirm/confirm";
+
 if (Meteor.settings.public.devServerURL) {
   // HMR url for iOS
+  /* eslint no-undef: "off" */
   __meteor_runtime_config__.VUE_DEV_SERVER_URL = Meteor.settings.public.devServerURL;
 }
 
-Meteor.startup(function() {
-    setTimeout(function() {
-      var elem = document.getElementById("inject-loader-wrapper");
-      elem.remove();      
-    }, 500);
+Meteor.startup(() => {
+  setTimeout(() => {
+    const elem = document.getElementById("inject-loader-wrapper");
+    elem.remove();
+  }, 500);
 });
 
 Accounts.config({
-  forbidClientAccountCreation : false,
+  forbidClientAccountCreation: false,
   sendVerificationEmail: true
 });
 
-delete Accounts._accountsCallbacks['verify-email'];
-Accounts.onEmailVerificationLink(function(token,done) { 
-  Accounts.verifyEmail(token, (err) => {
-    if (err) {
-        console.log("Error: ", err);
-    } else {
-        console.log("Success");
-        // Do whatever you want to on completion, the
-        // done() call is the default one.
-        done();
-    }
+/* eslint no-underscore-dangle: "off" */
+delete Accounts._accountsCallbacks["verify-email"];
+Accounts.onEmailVerificationLink((token, done) => {
+  /* eslint no-unused-vars: off */
+  /* eslint no-shadow: off */
+  Accounts.verifyEmail((token, err) => {
+    done();
   });
 });
 
-// Libs
-import { Meteor } from 'meteor/meteor';
-import Vue from 'vue';
-import VueRouter from 'vue-router'
-Vue.use(VueRouter)
-
-import VueI18n from 'vue-i18n';
-Vue.use(VueI18n)
-
-import VueMeteorTracker from "vue-meteor-tracker";
+Vue.use(VueRouter);
+Vue.use(VueI18n);
 Vue.use(VueMeteorTracker);
-
-import VueEvents from 'vue-event-handler'
 Vue.use(VueEvents);
-
-import colors from 'vuetify/es5/util/colors'
-
-// Vuetify
-import Vuetify from 'vuetify'
 Vue.use(Vuetify);
 
 const vuetify = new Vuetify({
   icons: {
-    iconfont: 'mdi',
+    iconfont: "mdi"
   },
   theme: {
     themes: {
-      light: {    
+      light: {
         primary: "#455A64",
         accent: "#F9A825"
       }
@@ -64,21 +76,10 @@ const vuetify = new Vuetify({
   }
 });
 
+Vue.use(require("vue-shortkey"), {
+  prevent: ["input", "textarea", ".ql-editor"]
+});
 
-import 'vuetify/dist/vuetify.min.css' // Ensure you are using css-loader
-
-import 'pretty-checkbox/dist/pretty-checkbox.min.css'
-
-Vue.use(require('vue-shortkey'), { prevent: ['input', 'textarea', '.ql-editor'] })
-
-// Main app
-import App from '/imports/ui/App.vue';
-import { store } from '/imports/store/store';
-import routes from '/imports/routes.js'
-import '/imports/favicon.js'
-import messages from '/imports/i18n/i18n.js'
-
-import confirm from '/imports/confirm/confirm.js'
 Vue.use(confirm, { vuetify });
 
 Meteor.startup(() => {
@@ -89,44 +90,44 @@ Meteor.startup(() => {
   // Start monitor for user activity
   UserPresence.start();
 
-  Vue.directive('focus', {
+  Vue.directive("focus", {
     inserted: (el) => {
-      setTimeout(() => { el.focus(); }, 500);
+      setTimeout(() => {
+        el.focus();
+      }, 500);
     }
-  })
+  });
   const router = new VueRouter({
-    mode: 'history',
+    mode: "history",
     base: new URL(Meteor.absoluteUrl()).pathname,
-    routes,
-  })
+    routes
+  });
 
-  let language = navigator.language;
-  if (language.startsWith('en-')) {
-    language = 'en';
+  let { language } = navigator;
+  if (language.startsWith("en-")) {
+    language = "en";
   }
-  
+
   const i18n = new VueI18n({
     locale: language,
-    fallbackLocale: 'fr',
-    silentTranslationWarn: true, 
-    messages,
-  })
-  
+    fallbackLocale: "fr",
+    silentTranslationWarn: true,
+    messages
+  });
+
   new Vue({
     i18n,
     router,
     store,
     vuetify,
-    render: h => h(App),
-  }).$mount('app');
+    render: (h) => h(App)
+  }).$mount("app");
 
-
-  Tracker.autorun(function(c) {
-    var userId = Meteor.userId();
-    if (c.firstRun)
-      return;
+  Tracker.autorun((c) => {
+    const userId = Meteor.userId();
+    if (c.firstRun) return;
     if (!userId) {
-      router.push({ name: 'login' });
+      router.push({ name: "login" });
     }
-  });  
+  });
 });

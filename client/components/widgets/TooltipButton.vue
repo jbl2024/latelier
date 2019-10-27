@@ -13,10 +13,12 @@
 export default {
   props: {
     icon: {
-      type: String
+      type: String,
+      default: ""
     },
     tooltip: {
-      type: String
+      type: String,
+      default: ""
     },
     top: {
       type: Boolean,
@@ -43,5 +45,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

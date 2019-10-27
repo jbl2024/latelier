@@ -16,18 +16,18 @@ function generateUsers() {
     }
   });
 
-  for (var i = 0; i < 9; i++) {
-    var firstName = faker.name.firstName();
-    var lastName = faker.name.lastName();
-    var email = firstName + "." + lastName + "@gmail.com";
+  for (let i = 0; i < 9; i++) {
+    const firstName = faker.name.firstName();
+    const lastName = faker.name.lastName();
+    const email = `${firstName}.${lastName}@gmail.com`;
 
-    let userData = {
+    const userData = {
       createdAt: new Date(),
       password: "password",
-      email: email,
+      email,
       profile: {
-        firstName: firstName,
-        lastName: lastName
+        firstName,
+        lastName
       }
     };
     Accounts.createUser(userData);
@@ -50,7 +50,7 @@ function generateProjects() {
     createdAt: new Date(),
     createdBy: Meteor.users.findOne()._id,
     members: [Meteor.users.findOne()._id]
-  })
+  });
 }
 
 export const initData = function() {

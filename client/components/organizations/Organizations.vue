@@ -1,6 +1,6 @@
 <template>
   <div class="organizations">
-    <new-organization ref="newOrganization"></new-organization>
+    <new-organization ref="newOrganization" />
     <confirm-dialog
       :active.sync="showConfirmDialog"
       title="Confirmer la suppression ?"
@@ -11,16 +11,28 @@
       @confirm="onConfirmDeleteOrganization"
     />
     <div v-if="!$subReady.organizations">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
     <div v-if="$subReady.organizations">
-      <empty-state v-if="organizations.length == 0" :description="`Aucune organisation disponible`" illustration="empty">
-        <v-btn class="primary" @click="newOrganization">{{ $t('Create new organization') }}</v-btn>
+      <empty-state
+        v-if="organizations.length == 0"
+        :description="`Aucune organisation disponible`"
+        illustration="empty"
+      >
+        <v-btn class="primary" @click="newOrganization">
+          {{ $t("Create new organization") }}
+        </v-btn>
       </empty-state>
-      <v-list two-line subheader v-show="organizations.length != 0" class="elevation-1">
-
+      <v-list
+        v-show="organizations.length != 0"
+        two-line
+        subheader
+        class="elevation-1"
+      >
         <v-subheader>
-          <router-link class="link" :to="{ name: 'dashboard-page' }">{{ $t('Dashboard') }}</router-link>&nbsp;> {{ $t('Organizations') }}
+          <router-link class="link" :to="{ name: 'dashboard-page' }">
+            {{ $t("Dashboard") }}
+          </router-link>&nbsp;> {{ $t("Organizations") }}
           <v-btn fab dark small color="pink" @click="newOrganization">
             <v-icon>mdi-plus</v-icon>
           </v-btn>
@@ -33,15 +45,33 @@
             </v-list-item-avatar>
             <v-list-item-content class="pointer">
               <v-list-item-title>{{ item.name }}</v-list-item-title>
-              <v-list-item-subtitle>{{ item.description }}</v-list-item-subtitle>
+              <v-list-item-subtitle>
+                {{ item.description }}
+              </v-list-item-subtitle>
             </v-list-item-content>
-            <v-list-item-action class="show-desktop" v-if="canManageOrganization(item)">
-              <v-btn icon text color="grey darken-1" @click.stop="openOrganizationSettings(item._id)">
+            <v-list-item-action
+              v-if="canManageOrganization(item)"
+              class="show-desktop"
+            >
+              <v-btn
+                icon
+                text
+                color="grey darken-1"
+                @click.stop="openOrganizationSettings(item._id)"
+              >
                 <v-icon>mdi-settings</v-icon>
               </v-btn>
             </v-list-item-action>
-            <v-list-item-action class="show-desktop" v-if="canDeleteOrganization(item)">
-              <v-btn icon text color="grey darken-1" @click.stop="deleteOrganization(item._id)">
+            <v-list-item-action
+              v-if="canDeleteOrganization(item)"
+              class="show-desktop"
+            >
+              <v-btn
+                icon
+                text
+                color="grey darken-1"
+                @click.stop="deleteOrganization(item._id)"
+              >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
             </v-list-item-action>
@@ -49,14 +79,12 @@
         </template>
       </v-list>
     </div>
-
   </div>
 </template>
 
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import { Permissions } from "/imports/api/permissions/permissions"
-
+import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   data() {
@@ -68,7 +96,7 @@ export default {
   meteor: {
     // Subscriptions
     $subscribe: {
-      organizations: function() {
+      organizations() {
         return [];
       }
     },
@@ -92,7 +120,9 @@ export default {
 
     onConfirmDeleteOrganization() {
       this.showConfirmDialog = false;
-      Meteor.call("organizations.remove", {organizationId: this.organizationId});
+      Meteor.call("organizations.remove", {
+        organizationId: this.organizationId
+      });
     },
 
     onCancelDeleteOrganization() {
@@ -114,14 +144,20 @@ export default {
     },
 
     canDeleteOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
+      if (
+        Permissions.isAdmin(Meteor.userId(), organization._id)
+        || Permissions.isAdmin(Meteor.userId())
+      ) {
         return true;
       }
       return false;
     },
 
     canManageOrganization(organization) {
-      if (Permissions.isAdmin(Meteor.userId(), organization._id) || Permissions.isAdmin(Meteor.userId())) {
+      if (
+        Permissions.isAdmin(Meteor.userId(), organization._id)
+        || Permissions.isAdmin(Meteor.userId())
+      ) {
         return true;
       }
       return false;
@@ -166,5 +202,4 @@ export default {
 .link {
   text-decoration: none;
 }
-
 </style>

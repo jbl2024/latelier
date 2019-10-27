@@ -1,19 +1,21 @@
 <template>
   <div class="task-detail">
-    <select-project :active.sync="showSelectProjectToClone" @select="cloneToProject"></select-project>
+    <select-project
+      :active.sync="showSelectProjectToClone"
+      @select="cloneToProject"
+    />
     <div class="toolbar">
-      <div class="title edit toolbar-title" v-show="editTaskName">
-
+      <div v-show="editTaskName" class="title edit toolbar-title">
         <v-textarea
           ref="name"
+          v-model="task.name"
           class="edit-name"
           autofocus
           outlined
           solo
           auto-grow
-          v-model="task.name"
           @keydown.shift.enter="updateTaskName"
-        ></v-textarea>
+        />
         <v-btn icon @click="updateTaskName">
           <v-icon>mdi-check-circle</v-icon>
         </v-btn>
@@ -22,52 +24,77 @@
         </v-btn>
       </div>
 
-      <div class="toolbar-button" v-if="!editTaskName">
-        <v-btn icon text @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
+      <div v-if="!editTaskName" class="toolbar-button">
+        <v-btn
+          v-shortkey="['esc']"
+          icon
+          text
+          @click="requestClose()"
+          @shortkey="requestClose()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </div>
 
-      <div class="checkbox" v-if="!editTaskName">
+      <div v-if="!editTaskName" class="checkbox">
         <div class="pretty p-svg p-curve">
-          <input type="checkbox" v-show="!editTaskName" v-model="completed">
+          <input v-show="!editTaskName" v-model="completed" type="checkbox">
           <div class="state p-primary">
             <svg class="svg svg-icon" viewBox="0 0 20 20">
+              <!-- eslint-disable -->
               <path
                 d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
                 style="stroke: white;fill:white;"
               ></path>
+              <!-- eslint-enable -->
             </svg>
-            <label></label>
+            <label />
           </div>
         </div>
       </div>
 
-      <div class="toolbar-title" @click="startEditTaskName" v-if="!editTaskName">
-        <span class="task-name" v-html="linkifyHtml(task.name)"></span>
+      <div
+        v-if="!editTaskName"
+        class="toolbar-title"
+        @click="startEditTaskName"
+      >
+        <span class="task-name" v-html="linkifyHtml(task.name)" />
       </div>
-      <div class="toolbar-button" v-if="!editTaskName">
-        <task-menu :task="task" @startCloneToProject="showSelectProjectToClone = true"></task-menu>
+      <div v-if="!editTaskName" class="toolbar-button">
+        <task-menu
+          :task="task"
+          @startCloneToProject="showSelectProjectToClone = true"
+        />
       </div>
     </div>
 
-    <task-labels :task="task" v-if="!hideLabels"></task-labels>
+    <task-labels v-if="!hideLabels" :task="task" />
     <div class="authors">
       <template v-if="showProjectLink(taskObject)">
         <div>
-          <router-link :to="{ name: 'project-task', params: { projectId: taskObject.project._id, taskId: taskObject._id } }">
-          [{{ taskObject.project.name}}]
+          <router-link
+            :to="{
+              name: 'project-task',
+              params: {
+                projectId: taskObject.project._id,
+                taskId: taskObject._id
+              }
+            }"
+          >
+            [{{ taskObject.project.name }}]
           </router-link>
         </div>
       </template>
-      <div class="completed-date" v-if="task.completedAt">
-        {{ $t('Completed on') }}
+      <div v-if="task.completedAt" class="completed-date">
+        {{ $t("Completed on") }}
         {{ formatDate(task.completedAt) }}
       </div>
 
       <v-layout row>
         <v-flex shrink>
-          <div class="number">#{{ task.number }}</div>
+          <div class="number">
+            #{{ task.number }}
+          </div>
         </v-flex>
         <v-flex>
           <author-line
@@ -76,34 +103,41 @@
             :date="task.createdAt"
             class="author"
             :prefix="$t('Created by')"
-          ></author-line>
+          />
           <author-line
             v-if="showUpdatedBy(task)"
             :user-id="task.updatedBy"
             :date="task.updatedAt"
             class="author"
             :prefix="$t('Last update by')"
-          ></author-line>
+          />
         </v-flex>
       </v-layout>
-
     </div>
 
-    <v-divider></v-divider>
+    <v-divider />
     <div class="description">
       <div
-        v-show="!editDescription && task.description && task.description.length > 0"
+        v-show="
+          !editDescription && task.description && task.description.length > 0
+        "
         @click="startEditDescription"
       >
-        <div class="ql-editor-view" v-html="linkifyHtml(task.description)"></div>
+        <div class="ql-editor-view" v-html="linkifyHtml(task.description)" />
       </div>
       <div
         v-show="!task.description && !editDescription"
         @click="startEditDescription"
-      >{{ $t('No description') }}</div>
+      >
+        {{ $t("No description") }}
+      </div>
 
       <div v-show="editDescription">
-        <rich-editor ref="description" v-model="task.description" @submit="updateDescription"></rich-editor>
+        <rich-editor
+          ref="description"
+          v-model="task.description"
+          @submit="updateDescription"
+        />
         <v-btn icon text @click="updateDescription">
           <v-icon>mdi-check-circle</v-icon>
         </v-btn>
@@ -113,34 +147,40 @@
         </v-btn>
       </div>
     </div>
-    <v-divider></v-divider>
+    <v-divider />
 
     <v-tabs grow show-arrows>
-      <v-tabs-slider color="accent"></v-tabs-slider>
-      <v-tab id="tab-properties">{{ $t('Properties') }}</v-tab>
-      <v-tab id="tab-notes">{{ getLabel($t('Conversation'), notesCount) }}</v-tab>
-      <v-tab id="tab-checklist">{{ getLabel($t('List'), checklistCount) }}</v-tab>
-      <v-tab id="tab-attachments">{{ getLabel($t('Attachments'), attachmentsCount) }}</v-tab>
+      <v-tabs-slider color="accent" />
+      <v-tab id="tab-properties">
+        {{ $t("Properties") }}
+      </v-tab>
+      <v-tab id="tab-notes">
+        {{ getLabel($t("Conversation"), notesCount) }}
+      </v-tab>
+      <v-tab id="tab-checklist">
+        {{ getLabel($t("List"), checklistCount) }}
+      </v-tab>
+      <v-tab id="tab-attachments">
+        {{ getLabel($t("Attachments"), attachmentsCount) }}
+      </v-tab>
 
       <v-tab-item>
-        <task-properties :task="task"></task-properties>
+        <task-properties :task="task" />
       </v-tab-item>
       <v-tab-item>
-        <task-notes :task="task"></task-notes>
+        <task-notes :task="task" />
       </v-tab-item>
       <v-tab-item>
-        <task-checklist-in-detail :task="task"></task-checklist-in-detail>
+        <task-checklist-in-detail :task="task" />
       </v-tab-item>
       <v-tab-item>
-        <task-attachments :task="task"></task-attachments>
+        <task-attachments :task="task" />
       </v-tab-item>
     </v-tabs>
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
@@ -160,26 +200,16 @@ export default {
   },
   props: {
     taskId: {
-      type: String
+      type: String,
+      default: ""
     },
     taskObject: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
     showTaskDetail: {
-      type: Boolean
-    }
-  },
-  watch: {
-    completed(completed) {
-      if (this.task && this.task.completed != completed) {
-        Meteor.call("tasks.complete", this.taskId, completed);
-      }
-    }
-  },
-  computed: {
-     hideLabels() {
-       if (this.taskObject && this.taskObject.project) return true;
-       return false;
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -191,6 +221,19 @@ export default {
       completed: false,
       showSelectProjectToClone: false
     };
+  },
+  computed: {
+    hideLabels() {
+      if (this.taskObject && this.taskObject.project) return true;
+      return false;
+    }
+  },
+  watch: {
+    completed(completed) {
+      if (this.task && this.task.completed !== completed) {
+        Meteor.call("tasks.complete", this.taskId, completed);
+      }
+    }
   },
   meteor: {
     $subscribe: {
@@ -246,10 +289,9 @@ export default {
       },
       update({ id }) {
         const task = Tasks.findOne({ _id: id }) || {};
-        return Attachments.find({'meta.taskId': task._id}).count();
+        return Attachments.find({ "meta.taskId": task._id }).count();
       }
-    },
-
+    }
   },
   methods: {
     requestClose() {
@@ -276,10 +318,10 @@ export default {
     },
 
     getLabel(label, count) {
-      if (!count || count == 0) {
+      if (!count || count === 0) {
         return label;
       }
-      return label + " (" + count + ")";
+      return `${label} (${count})`;
     },
 
     startEditTaskName() {
@@ -294,11 +336,10 @@ export default {
         "tasks.updateName",
         this.task._id,
         this.task.name,
-        (error, result) => {
+        (error) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
             this.task.name = this.savedName;
-            return;
           }
         }
       );
@@ -324,9 +365,8 @@ export default {
           return true;
         }
         return false;
-      } else {
-        return true;
       }
+      return true;
     },
 
     showUpdatedBy(task) {
@@ -336,20 +376,29 @@ export default {
     cloneToProject(project) {
       if (!project) return;
 
-      this.$confirm(this.$t("cloneToProject.confirmation", {project: project.name}), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Clone")
-      }).then(res => {
+      this.$confirm(
+        this.$t("cloneToProject.confirmation", { project: project.name }),
+        {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Clone")
+        }
+      ).then((res) => {
         if (res) {
           Meteor.call(
-            "tasks.clone", this.taskId, this.task.name, project._id,
-            (error, result) => {
+            "tasks.clone",
+            this.taskId,
+            this.task.name,
+            project._id,
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("cloneToProject.done", {project: project.name}));
+              this.$store.dispatch(
+                "notify",
+                this.$t("cloneToProject.done", { project: project.name })
+              );
             }
           );
         }
@@ -383,7 +432,6 @@ export default {
   font-size: 80%;
   margin-right: 4px;
 }
-
 
 .toolbar-button {
   flex: 1;

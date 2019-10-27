@@ -1,5 +1,5 @@
 <template>
-  <div id="canvas" ref="canvas"></div>
+  <div id="canvas" ref="canvas" />
 </template>
 
 <script>
@@ -9,16 +9,16 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Modeler from "bpmn-js/dist/bpmn-modeler.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
 import "./minimap-custom.css";
-import minimapModule from 'diagram-js-minimap';
+import minimapModule from "diagram-js-minimap";
 
 import debounce from "lodash/debounce";
 
 export default {
   props: {
-    processDiagram: Object
-  },
-  mounted() {
-    this.saveDebounce = debounce(this.save, 2000);
+    processDiagram: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -30,10 +30,13 @@ export default {
   watch: {
     processDiagram: {
       immediate: true,
-      handler(processDiagram) {
+      handler() {
         this.refresh();
       }
     }
+  },
+  mounted() {
+    this.saveDebounce = debounce(this.save, 2000);
   },
   methods: {
     refresh() {
@@ -44,13 +47,13 @@ export default {
             keyboard: { bindTo: document },
             additionalModules: [minimapModule]
           });
-          this.modeler.on("element.changed", event => {
+          this.modeler.on("element.changed", () => {
             this.saveDebounce();
           });
         }
         if (
-          this.processDiagram.xml &&
-          this.processDiagram.xml !== this.xmlCache
+          this.processDiagram.xml
+          && this.processDiagram.xml !== this.xmlCache
         ) {
           this.modeler.importXML(this.processDiagram.xml);
           this.xmlCache = this.processDiagram.xml;
@@ -69,11 +72,10 @@ export default {
         this.xmlCache = xml;
         Meteor.call(
           "processDiagrams.saveXML",
-          { processDiagramId: this.processDiagram._id, xml: xml },
-          (error, result) => {
-            if (err) {
+          { processDiagramId: this.processDiagram._id, xml },
+          (error) => {
+            if (error) {
               this.$store.dispatch("notifyError", error);
-              return;
             }
           }
         );
@@ -95,5 +97,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,52 +1,58 @@
 <template>
-  <div class="project-title" v-if="project">
-    <v-toolbar-title class="align-left" v-show="!editProjectName">
+  <div v-if="project" class="project-title">
+    <v-toolbar-title v-show="!editProjectName" class="align-left">
       <div>
-        <slot></slot>
+        <slot />
         <v-btn
+          v-if="showKanbanLink"
           text
           icon
           color="white"
-          v-if="showKanbanLink"
           :to="{ name: 'project', params: { projectId: project._id } }"
         >
           <v-icon>mdi-arrow-left</v-icon>
         </v-btn>
         <v-btn
+          v-if="!showKanbanLink"
           text
           icon
           color="white"
-          v-if="!showKanbanLink"
           :to="{ name: 'dashboard-page' }"
         >
           <v-icon>mdi-home</v-icon>
         </v-btn>
         <v-btn
+          v-if="!showKanbanLink && project.organizationId"
           text
           icon
           color="white"
-          v-if="!showKanbanLink && project.organizationId"
-          :to="{ name: 'dashboard-organization-page', params: {organizationId: project.organizationId} }"
+          :to="{
+            name: 'dashboard-organization-page',
+            params: { organizationId: project.organizationId }
+          }"
         >
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>
-        <span class="title" @click="startUpdateProjectName">{{ project.name }}</span>
+        <span class="title" @click="startUpdateProjectName">{{
+          project.name
+        }}</span>
       </div>
     </v-toolbar-title>
     <v-text-field
-      v-model="savedValue"
       v-show="!editProjectName"
+      v-model="savedValue"
       solo-inverted
       color="primary"
       hide-details
       prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
-      v-on:input="debouncedFilter"
-    ></v-text-field>
-    <div class="title edit align-left" v-show="editProjectName">
+      @input="debouncedFilter"
+    />
+    <div v-show="editProjectName" class="title edit align-left">
       <v-text-field
-        @focus="$event.target.select()"
+        ref="name"
+        v-model="project.name"
         style="width: 500px"
         text
         solo-inverted
@@ -54,10 +60,9 @@
         hide-details
         prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
-        ref="name"
-        v-model="project.name"
-        v-on:keyup.enter="updateProjectName"
-      ></v-text-field>
+        @focus="$event.target.select()"
+        @keyup.enter="updateProjectName"
+      />
       <v-btn icon @click="updateProjectName">
         <v-icon>mdi-check-circle</v-icon>
       </v-btn>
@@ -73,8 +78,37 @@ import { Projects } from "/imports/api/projects/projects.js";
 import debounce from "lodash/debounce";
 
 export default {
+  props: {
+    projectId: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      savedProjectName: "",
+      editProjectName: false,
+      savedValue: "",
+      debouncedFilter: "",
+      showKanbanLink: false
+    };
+  },
+  watch: {
+    $route: {
+      deep: true,
+      immediate: true,
+      handler: function () {
+        const page = this.$router.currentRoute.name;
+        if (page !== "project" && page !== "project-task") {
+          this.showKanbanLink = true;
+        } else {
+          this.showKanbanLink = false;
+        }
+      }
+    }
+  },
   created() {
-    this.debouncedFilter = debounce(val => {
+    this.debouncedFilter = debounce((val) => {
       this.$events.fire("filter-tasks", val);
     }, 400);
   },
@@ -85,36 +119,7 @@ export default {
     });
   },
   beforeDestroy() {
-    this.$events.off('reset-filter-tasks');
-  },
-  watch: {
-    '$route': {
-      deep: true,
-      immediate: true,
-      handler: function (refreshPage) {
-        const page = this.$router.currentRoute.name;
-        if (page !== 'project' && page !== 'project-task') {
-          this.showKanbanLink = true;
-        } else {
-          this.showKanbanLink = false;
-        }
-      }
-    }
-  },
-  props: {
-    projectId: {
-      type: String,
-      default: 0
-    }
-  },
-  data() {
-    return {
-      savedProjectName: "",
-      editProjectName: false,
-      savedValue: "",
-      debouncedFilter: "",
-      showKanbanLink: false
-    }
+    this.$events.off("reset-filter-tasks");
   },
   meteor: {
     project: {
@@ -140,7 +145,10 @@ export default {
 
     updateProjectName() {
       this.editProjectName = false;
-      Meteor.call("projects.updateName", {projectId: this.project._id, name: this.project.name});
+      Meteor.call("projects.updateName", {
+        projectId: this.project._id,
+        name: this.project.name
+      });
     },
 
     cancelUpdateProjectName() {

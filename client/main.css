@@ -66,11 +66,11 @@ html {
 }
 
 /* project (tasks) timeline */
-.project-timeline .vis-item {
+/* .project-timeline .vis-item {
 }
 
 .project-timeline .vis-item .vis-item-content {
-}
+} */
 
 .project-timeline .timeline-custom-item {
   border-radius: 4px;
@@ -84,10 +84,20 @@ html {
   font-weight: bold;
 }
 
-.project-timeline .timeline-custom-item-default-colors {
-}
+/* .project-timeline .timeline-custom-item-default-colors {
+} */
 
 
 p {
   margin-bottom: 0px !important;
+}
+
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Opera and Firefox */
 }

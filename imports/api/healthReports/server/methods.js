@@ -1,39 +1,45 @@
 import { Meteor } from "meteor/meteor";
-import { Mongo } from "meteor/mongo";
-import { check } from "meteor/check";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
-import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
+import {
+  checkLoggedIn,
+  checkCanReadProject
+} from "/imports/api/permissions/permissions";
 
 HealthReports.methods.findTasks = new ValidatedMethod({
   name: "healthReports.findTasks",
   validate: new SimpleSchema({
     id: { type: String },
-    page: { type: Number },
+    page: { type: Number }
   }).validator(),
   run({ id, page }) {
     checkLoggedIn();
 
     const report = HealthReports.findOne({ _id: id });
     const project = Projects.findOne({ _id: report.projectId });
-    const projectId = project._id
+    const projectId = project._id;
 
     checkCanReadProject(projectId);
 
     let organization;
-    if (project.organizationId) organization = Organizations.findOne({ _id: project.organizationId });
+    if (project.organizationId) {
+      organization = Organizations.findOne({ _id: project.organizationId });
+    }
     const currentDate = report.date;
     let previousDate = null;
-    const previous = HealthReports.findOne({
-      projectId: projectId,
-      date: { $lt: report.date },
-    }, {
-      sort: {
-        date: -1
+    const previous = HealthReports.findOne(
+      {
+        projectId,
+        date: { $lt: report.date }
+      },
+      {
+        sort: {
+          date: -1
+        }
       }
-    });
+    );
 
     if (previous) previousDate = previous.date;
 
@@ -46,9 +52,9 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     if (!skip) {
       skip = 0;
     }
-    let query = {
+    const query = {
       completed: true,
-      projectId: projectId,
+      projectId,
       completedAt: {
         $lte: currentDate
       },
@@ -67,7 +73,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
 
     const count = Tasks.find(query).count();
     const data = Tasks.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
       sort: {
         updatedAt: -1
@@ -77,8 +83,8 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     // load associated objects and assign them to tasks
     const users = {};
 
-    const loadUser = userId => {
-      let user = users[userId];
+    const loadUser = (userId) => {
+      const user = users[userId];
       if (user) {
         return user;
       }
@@ -98,7 +104,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       return users[userId];
     };
 
-    data.map(task => {
+    data.forEach((task) => {
       if (project) {
         task.project = project;
         task.organization = organization;
@@ -115,17 +121,16 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   }
 });
-
 
 HealthReports.methods.findHealthReports = new ValidatedMethod({
   name: "healthReports.findHealthReports",
   validate: new SimpleSchema({
     projectId: { type: String },
-    page: { type: Number },
+    page: { type: Number }
   }).validator(),
   run({ projectId, page }) {
     checkLoggedIn();
@@ -140,13 +145,13 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
     if (!skip) {
       skip = 0;
     }
-    let query = {
-      projectId: projectId,
+    const query = {
+      projectId
     };
 
     const count = HealthReports.find(query).count();
     const data = HealthReports.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
       sort: {
         date: -1
@@ -156,7 +161,7 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   }
 });

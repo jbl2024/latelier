@@ -1,17 +1,17 @@
 <template>
   <div class="task-list">
-    <v-list two-line v-if="tasks">
+    <v-list v-if="tasks" two-line>
       <empty-state
         v-if="tasks.length == 0"
         :illustration="emptyIllustration"
         small
         :label="$t('No task')"
-      ></empty-state>
+      />
 
       <template v-for="task in tasks">
         <v-list-item :key="task._id" @click.stop="openTask(task)">
           <v-list-item-avatar :color="isOnline(task.assignedTo)">
-            <author-avatar :user-id="task.assignedTo"></author-avatar>
+            <author-avatar :user-id="task.assignedTo" />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
@@ -19,24 +19,29 @@
             </v-list-item-title>
             <v-list-item-subtitle>
               <span class="grey--text text--darken-1 show-desktop">
-                <template v-if="task.organization">{{ task.organization.name }} / </template>
-                {{ task.project.name}}
+                <template v-if="task.organization">
+                  {{ task.organization.name }} /
+                </template>
+                {{ task.project.name }}
               </span>
             </v-list-item-subtitle>
-            <v-list-item-subtitle>{{ $t('Last update') }} {{ formatDateDuration(task.updatedAt) }}</v-list-item-subtitle>
+            <v-list-item-subtitle>
+              {{ $t("Last update") }}
+              {{ formatDateDuration(task.updatedAt) }}
+            </v-list-item-subtitle>
             <v-list-item-subtitle>
               <template v-if="task.dueDate && isLate(task)">
-                {{ $t('Expired') }}
+                {{ $t("Expired") }}
                 <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
               <template v-if="task.dueDate && !isLate(task)">
-                {{ $t('Expires') }}
+                {{ $t("Expires") }}
                 <b>{{ formatDateDuration(task.dueDate) }}</b>
               </template>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
-        <v-divider inset :key="`divider-${task._id}`"></v-divider>
+        <v-divider :key="`divider-${task._id}`" inset />
       </template>
     </v-list>
   </div>
@@ -47,7 +52,7 @@ import UsersMixin from "/imports/ui/mixins/UsersMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
-  name: "task-list",
+  name: "TaskList",
   mixins: [UsersMixin, DatesMixin],
   i18n: {
     messages: {
@@ -62,9 +67,19 @@ export default {
         Expires: "Arrive à échéance"
       }
     }
-  },  
+  },
+  props: {
+    tasks: {
+      type: Array,
+      default: () => []
+    },
+    emptyIllustration: {
+      type: String,
+      default: "empty"
+    }
+  },
   mounted() {
-    this.$events.listen("close-task-detail", task => {
+    this.$events.listen("close-task-detail", () => {
       this.$store.dispatch("selectTask", null);
       this.$store.dispatch("showTaskDetail", false);
     });
@@ -74,19 +89,6 @@ export default {
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
-  props: {
-    tasks: {
-      type: Array
-    },
-    emptyIllustration: {
-      type: String,
-      default: "empty"
-    }
-  },
-  data() {
-    return {
-    };
-  },
   methods: {
     openTask(task) {
       this.$store.dispatch("selectTask", task);
@@ -94,7 +96,7 @@ export default {
     },
     isLate(task) {
       return task.dueDate && task.dueDate <= new Date();
-    },
+    }
   }
 };
 </script>

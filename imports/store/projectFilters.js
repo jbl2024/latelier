@@ -1,28 +1,29 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-Vue.use(Vuex)
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
 
 export const projectFilters = {
   namespaced: true,
   state: {
     selectedLabels: [],
     selectedAssignedTos: [],
-    selectedUpdatedBy: [],
+    selectedUpdatedBy: []
   },
   getters: {
     // Compute derived state based on the current state. More like computed property.
   },
   mutations: {
     selectLabel(state, label) {
-      var alreadySelected = state.selectedLabels.some( aLabel => {
-        return aLabel._id == label._id;
-      });
+      const alreadySelected = state.selectedLabels.some(
+        (aLabel) => aLabel._id === label._id
+      );
       if (!alreadySelected) {
         state.selectedLabels.push(label);
       } else {
-        state.selectedLabels = state.selectedLabels.filter( aLabel => {
-          return aLabel._id != label._id
-        });
+        state.selectedLabels = state.selectedLabels.filter(
+          (aLabel) => aLabel._id !== label._id
+        );
       }
     },
     selectLabels(state, labels) {
@@ -40,24 +41,24 @@ export const projectFilters = {
   },
   actions: {
     selectLabel(context, label) {
-      context.commit('selectLabel', label);
+      context.commit("selectLabel", label);
     },
     selectLabels(context, labels) {
-      context.commit('selectLabels', labels);
+      context.commit("selectLabels", labels);
     },
     selectAssignedTos(context, users) {
-      context.commit('selectAssignedTos', users);
+      context.commit("selectAssignedTos", users);
     },
     selectUpdatedBy(context, selectedUpdatedBy) {
-      context.commit('selectUpdatedBy', selectedUpdatedBy);
+      context.commit("selectUpdatedBy", selectedUpdatedBy);
     },
-    
+
     reset(context, { vm }) {
-      context.commit('selectAssignedTos', []);
-      context.commit('selectUpdatedBy', []);
-      context.commit('selectLabels', []);
+      context.commit("selectAssignedTos", []);
+      context.commit("selectUpdatedBy", []);
+      context.commit("selectLabels", []);
       // TODO replace event with store management
       vm.$events.fire("reset-filter-tasks");
     }
   }
-}
+};

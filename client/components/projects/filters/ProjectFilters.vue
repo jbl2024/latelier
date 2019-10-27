@@ -2,9 +2,9 @@
   <div>
     <v-autocomplete
       v-if="assignedUsers.length > 0"
+      v-model="selectedAssignedTos"
       dense
       class="compact-form auto-complete"
-      v-model="selectedAssignedTos"
       :items="assignedUsers"
       :label="$t('Assigned to')"
       multiple
@@ -14,8 +14,8 @@
       menu-props="closeOnContentClick"
     >
       <template v-slot:selection="{ item, index }">
-        <div class="avatar" v-if="index <= 2">
-          <author-avatar xsmall :user-id="item"></author-avatar>
+        <div v-if="index <= 2" class="avatar">
+          <author-avatar xsmall :user-id="item" />
         </div>
         <span
           v-if="index > 2"
@@ -25,9 +25,9 @@
     </v-autocomplete>
     <v-autocomplete
       v-if="updatedByUsers.length > 0"
+      v-model="selectedUpdatedBy"
       dense
       class="compact-form auto-complete"
-      v-model="selectedUpdatedBy"
       :items="updatedByUsers"
       :label="$t('Updated by')"
       multiple
@@ -37,8 +37,8 @@
       menu-props="closeOnContentClick"
     >
       <template v-slot:selection="{ item, index }">
-        <div class="avatar" v-if="index <= 2">
-          <author-avatar xsmall :user-id="item"></author-avatar>
+        <div v-if="index <= 2" class="avatar">
+          <author-avatar xsmall :user-id="item" />
         </div>
         <span
           v-if="index > 2"
@@ -46,14 +46,13 @@
         >(+{{ selectedUpdatedBy.length - 3 }} {{ $t('others') }})</span>
       </template>
     </v-autocomplete>
-    <labels :projectId="projectId" mode="select" class="compact-form"></labels>
+    <labels :project-id="projectId" mode="select" class="compact-form" />
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
 import { Tasks } from "/imports/api/tasks/tasks";
-import { mapState } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 const usersCache = {};
@@ -63,9 +62,13 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: 0
+      default: ""
     }
   },
+  data: () => ({
+    assignedUsers: [],
+    updatedByUsers: []
+  }),
   computed: {
     selectedAssignedTos: {
       get() {
@@ -84,10 +87,6 @@ export default {
       }
     }
   },
-  data: () => ({
-    assignedUsers: [],
-    updatedByUsers: []
-  }),
   meteor: {
     tasks() {
       this.refreshUsers();
@@ -104,16 +103,17 @@ export default {
           usersCache[id] = Meteor.users.findOne({ _id: id });
           return usersCache[id];
         }
-      }
+        return id;
+      };
 
       this.assignedUsers = [];
       this.updatedByUsers = [];
-      
+
       const assignedUserIds = [];
       const updatedByUserIds = [];
 
       const tasks = Tasks.find({ projectId: this.projectId });
-      tasks.map(task => {
+      tasks.forEach((task) => {
         if (task.assignedTo) {
           assignedUserIds.push(task.assignedTo);
           this.assignedUsers.push(loadUser(task.assignedTo));
@@ -125,9 +125,8 @@ export default {
       });
 
       // clear previously assigned to not available now
-      this.selectedAssignedTos = this.selectedAssignedTos.filter(selectedId => {
-        return assignedUserIds.indexOf(selectedId) >= 0;
-      })
+      this.selectedAssignedTos = this.selectedAssignedTos
+        .filter((selectedId) => assignedUserIds.indexOf(selectedId) >= 0);
     },
 
     getObjectForUser(item) {

@@ -1,12 +1,15 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import { projectFilters } from "./projectFilters";
-import get from "lodash/get";
-Vue.use(Vuex)
+import Vue from "vue";
+import Vuex from "vuex";
+import { Meteor } from "meteor/meteor";
 
-export const store = new Vuex.Store({
+import get from "lodash/get";
+import { projectFilters } from "./projectFilters";
+
+Vue.use(Vuex);
+
+const store = new Vuex.Store({
   modules: {
-    projectFilters: projectFilters
+    projectFilters
   },
   state: {
     selectedGroup: {},
@@ -21,28 +24,27 @@ export const store = new Vuex.Store({
     currentProjectId: 0,
     projectFeatures: [],
     windowTitle: "",
-    notifyMessage: '',
+    notifyMessage: "",
     showLabelText: false
   },
   getters: {
     hasProjectFeature: (state) => (feature) => {
-      return state.projectFeatures && state.projectFeatures.find(feat => {
-        return feat == feature
-      }) ? true: false;
-    }  
+      if (!state.projectFeatures) return false;
+      return state.projectFeatures.find((feat) => feat === feature);
+    }
   },
   mutations: {
     updateSelectedGroup(state, selectedGroup) {
-      state.selectedGroup = selectedGroup
+      state.selectedGroup = selectedGroup;
     },
     updateShowCategories(state, showCategories) {
-      state.showCategories = showCategories
+      state.showCategories = showCategories;
     },
     updateShowLabelText(state, showLabelText) {
-      state.showLabelText = showLabelText
+      state.showLabelText = showLabelText;
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
-      state.showSelectBackgroundDialog = showSelectBackgroundDialog
+      state.showSelectBackgroundDialog = showSelectBackgroundDialog;
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -75,77 +77,85 @@ export const store = new Vuex.Store({
       state.notifyMessage = message;
     },
     updateWindowTitle(state, windowTitle) {
-      let fullTitle = get(Meteor.settings, "public.seo.titlePrefix", "l'atelier");
+      let fullTitle = get(
+        Meteor.settings,
+        "public.seo.titlePrefix",
+        "l'atelier"
+      );
       if (windowTitle) {
-        let titleValue = typeof windowTitle === "function" ? windowTitle.call(this) : windowTitle;
-        fullTitle = fullTitle + " - " + titleValue;
+        const titleValue = typeof windowTitle === "function" ? windowTitle.call(this) : windowTitle;
+        fullTitle = `${fullTitle} - ${titleValue}`;
       }
       state.windowTitle = fullTitle;
     }
   },
   actions: {
-    setSelectedGroup (context, selectedGroup) {
+    setSelectedGroup(context, selectedGroup) {
       if (!selectedGroup) {
         selectedGroup = {};
       }
-      context.commit('updateSelectedGroup', selectedGroup);
+      context.commit("updateSelectedGroup", selectedGroup);
     },
-    setShowCategories (context, showCategories) {
-      context.commit('updateShowCategories', showCategories);
+    setShowCategories(context, showCategories) {
+      context.commit("updateShowCategories", showCategories);
     },
-    setShowLabelText (context, showLabelText) {
-      context.commit('updateShowLabelText', showLabelText);
+    setShowLabelText(context, showLabelText) {
+      context.commit("updateShowLabelText", showLabelText);
     },
-    setShowDashboardTitle (context, showDashboardTitle) {
-      context.commit('updateShowDashboardTitle', showDashboardTitle);
+    setShowDashboardTitle(context, showDashboardTitle) {
+      context.commit("updateShowDashboardTitle", showDashboardTitle);
     },
-    setDashboardFilter (context, dashboardFilter) {
-      context.commit('updateDashboardFilter', dashboardFilter);
+    setDashboardFilter(context, dashboardFilter) {
+      context.commit("updateDashboardFilter", dashboardFilter);
     },
-    showSelectBackgroundDialog (context, showSelectBackgroundDialog) {
-      context.commit('updateShowSelectBackgroundDialog', showSelectBackgroundDialog);
+    showSelectBackgroundDialog(context, showSelectBackgroundDialog) {
+      context.commit(
+        "updateShowSelectBackgroundDialog",
+        showSelectBackgroundDialog
+      );
     },
-    setCurrentProjectId (context, projectId) {
-      context.commit('projectFilters/clearSelectedLabels');
-      if (projectId != 0) {
-        Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
+    setCurrentProjectId(context, projectId) {
+      context.commit("projectFilters/clearSelectedLabels");
+      if (projectId !== 0) {
+        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("setProjectFeatures", result);
-        })
+        });
       }
-      context.commit('updateCurrentProjectId', projectId);
+      context.commit("updateCurrentProjectId", projectId);
     },
-    reloadProjectFeatures (context, projectId) {
-      if (projectId != 0) {
-          Meteor.call("projects.loadFeatures", {projectId: projectId}, (error, result) => {
+    reloadProjectFeatures(context, projectId) {
+      if (projectId !== 0) {
+        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("setProjectFeatures", result);
-        })
+        });
       }
     },
-    setCurrentOrganizationId (context, organizationId) {
-      context.commit('clearSelectedGroup');
-      context.commit('updateCurrentOrganizationId', organizationId);
+    setCurrentOrganizationId(context, organizationId) {
+      context.commit("clearSelectedGroup");
+      context.commit("updateCurrentOrganizationId", organizationId);
     },
     selectTask(context, task) {
-      context.commit('selectTask', task);
+      context.commit("selectTask", task);
     },
     showTaskDetail(context, showTaskDetail) {
-      context.commit('updateShowTaskDetail', showTaskDetail);
+      context.commit("updateShowTaskDetail", showTaskDetail);
     },
-    setWindowTitle (context, windowTitle) {
-      context.commit('updateWindowTitle', windowTitle);
+    setWindowTitle(context, windowTitle) {
+      context.commit("updateWindowTitle", windowTitle);
     },
     notify(context, message) {
-      context.commit('notify', message);
+      context.commit("notify", message);
     },
     notifyError(context, error) {
       if (error && error.reason) {
-        context.commit('notify', error.reason);
+        context.commit("notify", error.reason);
       } else {
-        context.commit('notify', error.error);
+        context.commit("notify", error.error);
       }
     },
     showTaskHistory(context, showTaskHistory) {
-      context.commit('updateShowTaskHistory', showTaskHistory);
+      context.commit("updateShowTaskHistory", showTaskHistory);
     }
   }
 });
+export default store;

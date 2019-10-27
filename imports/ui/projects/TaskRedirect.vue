@@ -1,13 +1,14 @@
 <template>
-  <div></div>
+  <div />
 </template>
 
 <script>
 export default {
-  name: "task-redirect",
+  name: "TaskRedirect",
   props: {
     taskNumber: {
-      type: String
+      type: String,
+      default: ""
     }
   },
   mounted() {
@@ -28,5 +29,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

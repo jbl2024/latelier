@@ -1,9 +1,8 @@
 import { isBasicAuth, projectAuth } from "./router/check-auth";
-import multiguard from 'vue-router-multiguard';
+import multiguard from "vue-router-multiguard";
 
 import NotFound from "/imports/ui/pages/NotFound/NotFound.vue";
 
-import Home from "/imports/ui/Home.vue";
 import Auth from "/imports//ui/layout/Auth.vue";
 import Login from "/imports/ui/pages/Auth/Login.vue";
 import Forbidden from "/imports/ui/pages/Forbidden/Forbidden.vue";

@@ -1,23 +1,32 @@
 <template>
   <div class="list" @drop="onDrop" @dragover="onDragOver">
-    <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog"></new-task>
+    <new-task
+      :project-id="list.projectId"
+      :list-id="list._id"
+      :active.sync="showNewTaskDialog"
+    />
     <div class="list-header">
       <div class="swimlane dragscroll">
         <div v-show="!isListEdited(list, selectedList)" :style="getColor()">
           <div :style="getColor()" class="flex-container-row list-name-wrapper">
             <div
+              v-if="hiddenTaskCount == 0"
               class="list-name flex1"
               @click="editList(list)"
-              v-if="hiddenTaskCount  == 0"
-            >{{list.name}} ({{ taskCount }}) {{ getEstimations(tasksForEstimation) }}</div>
+            >
+              {{ list.name }} ({{ taskCount }})
+              {{ getEstimations(tasksForEstimation) }}
+            </div>
             <div
+              v-if="hiddenTaskCount > 0"
               class="list-name flex1"
               @click="editList(list)"
-              v-if="hiddenTaskCount > 0"
-            >{{list.name}} ({{ hiddenTaskCount}}/{{ taskCount }})</div>
+            >
+              {{ list.name }} ({{ hiddenTaskCount }}/{{ taskCount }})
+            </div>
             <v-menu bottom left class="flex0">
               <template v-slot:activator="{ on }">
-                <v-btn :dark="isDark()" small v-on="on" icon>
+                <v-btn :dark="isDark()" small icon v-on="on">
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
@@ -26,38 +35,49 @@
                   <v-list-item-action>
                     <v-icon>mdi-plus</v-icon>
                   </v-list-item-action>
-                  <v-list-item-title>{{ $t('Add new task') }}</v-list-item-title>
+                  <v-list-item-title>
+                    {{ $t("Add new task") }}
+                  </v-list-item-title>
                 </v-list-item>
                 <v-list-item @click="deleteList(list._id)">
                   <v-list-item-action>
                     <v-icon>mdi-delete</v-icon>
                   </v-list-item-action>
-                  <v-list-item-title>{{ this.$t('Delete') }}</v-list-item-title>
+                  <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
                 </v-list-item>
-                <v-divider></v-divider>
+                <v-divider />
                 <v-list-item @click="list.autoComplete = !list.autoComplete">
                   <v-list-item-action>
-                    <v-checkbox :input-value="list.autoComplete"></v-checkbox>
+                    <v-checkbox :input-value="list.autoComplete" />
                   </v-list-item-action>
-                  <v-list-item-title>{{ $t('Automatically mark as completed')}}</v-list-item-title>
+                  <v-list-item-title>
+                    {{ $t("Automatically mark as completed") }}
+                  </v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="list.catchCompleted = !list.catchCompleted">
+                <v-list-item
+                  @click="list.catchCompleted = !list.catchCompleted"
+                >
                   <v-list-item-action>
-                    <v-checkbox :input-value="list.catchCompleted"></v-checkbox>
+                    <v-checkbox :input-value="list.catchCompleted" />
                   </v-list-item-action>
-                  <v-list-item-title>{{ $t('Catch completed tasks') }}</v-list-item-title>
+                  <v-list-item-title>
+                    {{ $t("Catch completed tasks") }}
+                  </v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>
           </div>
         </div>
-        <div class="list-edit flex-container-row" v-show="isListEdited(list, selectedList)">
+        <div
+          v-show="isListEdited(list, selectedList)"
+          class="list-edit flex-container-row"
+        >
           <input
-            type="text"
             ref="name"
             v-model="list.name"
+            type="text"
             class="flex1"
-            v-on:keyup.enter="updateName(list)"
+            @keyup.enter="updateName(list)"
           >
           <div class="flex0">
             <div class="flex-container-row">
@@ -73,39 +93,52 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
-      <v-btn small block @click="newTaskInline(list._id)" class="dragscroll">{{ $t('Add new task')}}</v-btn>
+      <v-btn small block class="dragscroll" @click="newTaskInline(list._id)">
+        {{ $t("Add new task") }}
+      </v-btn>
       <div
+        v-if="hiddenTaskCount > 0 && !forceShowHiddenTask"
         class="task show-hidden"
         @click="showHiddenTasks = !showHiddenTasks"
-        v-if="hiddenTaskCount > 0 && !forceShowHiddenTask"
       >
-        <div
-          class="list-title"
-          v-if="showHiddenTasks"
-        >Masquer les {{ hiddenTaskCount }} tâches terminées</div>
-        <div
-          class="list-title"
-          v-if="!showHiddenTasks"
-        >Afficher les {{ hiddenTaskCount }} tâches terminées</div>
+        <div v-if="showHiddenTasks" class="list-title">
+          Masquer les {{ hiddenTaskCount }} tâches terminées
+        </div>
+        <div v-if="!showHiddenTasks" class="list-title">
+          Afficher les {{ hiddenTaskCount }} tâches terminées
+        </div>
       </div>
-      <tasks :project-id="list.projectId" :list-id="list._id" :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"></tasks>
+      <tasks
+        :project-id="list.projectId"
+        :list-id="list._id"
+        :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"
+      />
     </div>
   </div>
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
-import { colors } from '/imports/colors'
+import { colors } from "/imports/colors";
 import { mapState } from "vuex";
 
 export default {
   props: {
     list: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {
+      selectedList: {},
+      savedName: "",
+      forceShowHiddenTask: false,
+      showHiddenTasks: false,
+      showNewTaskDialog: false
+    };
   },
   computed: {
     ...mapState(["currentProjectId"]),
@@ -119,51 +152,45 @@ export default {
       }
     }
   },
+  watch: {
+    "list.autoComplete"(autoComplete, prevValue) {
+      if (prevValue !== autoComplete) {
+        Meteor.call("lists.autoComplete", this.list._id, autoComplete);
+      }
+    },
+    "list.catchCompleted"(catchCompleted, prevValue) {
+      if (prevValue !== catchCompleted) {
+        Meteor.call("lists.catchCompleted", this.list._id, catchCompleted);
+      }
+    }
+  },
   mounted() {
-    this.$events.listen("edit-list", listId => {
+    this.$events.listen("edit-list", (listId) => {
       if (listId === this.list._id) {
         this.editList(this.list);
       }
-    }),
-    this.$events.listen("filter-tasks", name => {
+    });
+    this.$events.listen("filter-tasks", (name) => {
       if (name && name.length > 0) {
         this.forceShowHiddenTask = true;
       } else {
         this.forceShowHiddenTask = false;
       }
     });
-  }, 
+  },
   beforeDestroy() {
     this.$events.off("filter-tasks");
     this.$events.off("edit-list");
-  },
-  data() {
-    return {
-      selectedList: {},
-      savedName: "",
-      forceShowHiddenTask: false,
-      showHiddenTasks: false,
-      showNewTaskDialog: false
-    };
-  },
-  watch: {
-    "list.autoComplete"(autoComplete, prevValue) {
-      if (prevValue != autoComplete) {
-        Meteor.call("lists.autoComplete", this.list._id, autoComplete);
-      }
-    },
-    "list.catchCompleted"(catchCompleted, prevValue) {
-      if (prevValue != catchCompleted) {
-        Meteor.call("lists.catchCompleted", this.list._id, catchCompleted);
-      }
-    }
   },
   meteor: {
     taskCount() {
       return Tasks.find({ listId: this.list._id }).count();
     },
     tasksForEstimation() {
-      return Tasks.find({listId: this.list._id, estimation: {$exists: true}});
+      return Tasks.find({
+        listId: this.list._id,
+        estimation: { $exists: true }
+      });
     },
     hiddenTaskCount() {
       return Tasks.find({ listId: this.list._id, completed: true }).count();
@@ -180,18 +207,18 @@ export default {
       if (!list || !selectedList) {
         return false;
       }
-      var edited = list._id === selectedList._id;
+      const edited = list._id === selectedList._id;
       return edited;
     },
 
     updateName(list) {
-      if (list.name.length == 0) {
+      if (list.name.length === 0) {
         list.name = this.savedName;
       }
       this.selectedList = null;
-      Meteor.call("lists.updateName", list._id, list.name, (error, result) => {
+      Meteor.call("lists.updateName", list._id, list.name, (error) => {
         if (error) {
-          return;
+          this.$store.dispatch("notifyError", error);
         }
       });
     },
@@ -206,20 +233,18 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
-          Meteor.call("lists.remove", listId, (error, result) => {
+          Meteor.call("lists.remove", listId, (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
-              return;
             }
           });
         }
       });
     },
-    newTaskInline(listId) {
+    newTaskInline() {
       this.showNewTaskDialog = true;
-      return;
     },
 
     getTransferData(list) {
@@ -234,41 +259,40 @@ export default {
         return `
           background-color: ${this.projectColor};
           color: ${colors.getLabelColor(this.projectColor)}
-        `
-      } else {
-        return `
+        `;
+      }
+      return `
           background-color: #2D6293;
           color: white;
-        `
-      }
+        `;
     },
 
     isDark() {
       if (this.projectColor) {
-        return colors.isDark(this.projectColor);  
-      } 
+        return colors.isDark(this.projectColor);
+      }
       return true;
     },
 
     getEstimations(tasks) {
-      if (!this.$store.getters.hasProjectFeature('estimation')) {
-        return;
+      if (!this.$store.getters.hasProjectFeature("estimation")) {
+        return null;
       }
 
-      if (!tasks || tasks.length == 0) {
-        return;
+      if (!tasks || tasks.length === 0) {
+        return null;
       }
       let size = 0;
       let spent = 0;
-      tasks.map(task => {
+      tasks.forEach((task) => {
         if (task.estimation.size) {
-          size = size + task.estimation.size 
+          size += task.estimation.size;
         }
         if (task.estimation.spent) {
-          spent = spent + task.estimation.spent;
+          spent += task.estimation.spent;
         }
-      })
-      return `(${size}/${spent})`
+      });
+      return `(${size}/${spent})`;
     },
 
     onDrop(event) {
@@ -287,7 +311,7 @@ export default {
           files.push(event.dataTransfer.files[i]);
         }
       }
-      if (files.length == 0) {
+      if (files.length === 0) {
         return;
       }
       event.stopPropagation();
@@ -303,7 +327,7 @@ export default {
           if (error) {
             return;
           }
-          files.map(file => {
+          files.forEach((file) => {
             const upload = Attachments.insert(
               {
                 file: file,
@@ -319,11 +343,11 @@ export default {
               false
             );
             upload.on("start", function() {});
-            upload.on("end", function(error, fileObj) {
+            upload.on("end", function(uploadError) {
               if (error) {
-                alert("Error during upload: " + error);
+                this.$store.dispatch("notifyError", uploadError);
               } else {
-                Meteor.call('tasks.addAttachment', task._id);          
+                Meteor.call("tasks.addAttachment", task._id);
               }
             });
             upload.start();
@@ -334,7 +358,7 @@ export default {
 
     onDragOver(e) {
       e.preventDefault();
-    }    
+    }
   }
 };
 </script>

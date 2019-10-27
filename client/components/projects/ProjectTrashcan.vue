@@ -1,21 +1,31 @@
 <template>
   <div class="project-trashcan">
-    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="640px">
+    <v-dialog
+      v-model="showDialog"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      max-width="640px"
+    >
       <v-toolbar dark color="primary">
-        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+        <v-btn
+          v-shortkey="['esc']"
+          icon
+          text
+          @click="close()"
+          @shortkey="close()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ $t('Trashcan')}}</v-toolbar-title>
+        <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
       </v-toolbar>
       <v-card>
         <v-card-text class="content">
-          <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+          <v-progress-linear v-if="loading" indeterminate />
           <empty-state
             v-if="tasks && tasks.length === 0 && !loading"
             :description="$t('No task')"
             small
             illustration="empty"
-          ></empty-state>
+          />
           <v-list v-if="tasks && !loading">
             <template v-for="task in tasks">
               <v-list-item :key="task._id" @click="restoreTask(task)">
@@ -25,35 +35,57 @@
                 <v-list-item-action>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon ripple @click.stop="deleteForever(task)" v-on="on">
-                        <v-icon color="red">mdi-delete-forever</v-icon>
+                      <v-btn
+                        icon
+                        ripple
+                        @click.stop="deleteForever(task)"
+                        v-on="on"
+                      >
+                        <v-icon color="red">
+                          mdi-delete-forever
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <span>{{ $t('Delete forever') }}</span>
+                    <span>{{ $t("Delete forever") }}</span>
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon ripple @click.stop="restoreTask(task)" v-on="on">
-                        <v-icon color="primary">mdi-delete-restore</v-icon>
+                      <v-btn
+                        icon
+                        ripple
+                        @click.stop="restoreTask(task)"
+                        v-on="on"
+                      >
+                        <v-icon color="primary">
+                          mdi-delete-restore
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <span>{{ $t('Restore from trash') }}</span>
+                    <span>{{ $t("Restore from trash") }}</span>
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
-              <v-divider :key="`divider-${task._id}`"></v-divider>
+              <v-divider :key="`divider-${task._id}`" />
             </template>
           </v-list>
         </v-card-text>
-          <div class="text-xs-center">
-            <v-pagination v-if="pagination.totalPages > 0" v-model="page" :length="pagination.totalPages"></v-pagination>
-          </div>
+        <div class="text-xs-center">
+          <v-pagination
+            v-if="pagination.totalPages > 0"
+            v-model="page"
+            :length="pagination.totalPages"
+          />
+        </div>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="error" @click="flush()">{{ $t('Flush') }}</v-btn>
-          <v-btn text @click="close()">{{ $t('Close')}}</v-btn>
+          <v-spacer />
+          <v-btn color="error" @click="flush()">
+            {{ $t("Flush") }}
+          </v-btn>
+          <v-btn text @click="close()">
+            {{ $t("Close") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -76,7 +108,7 @@ export default {
         "Tasks deleted": "Tasks deleted",
         "Delete forever": "Delete forever",
         "Restore from trash": "Restore from trash",
-        "Flush": "Flush",
+        Flush: "Flush"
       },
       fr: {
         "Delete task?": "Supprimer la tâche ?",
@@ -85,17 +117,15 @@ export default {
         "Tasks deleted": "Tâches supprimées",
         "Delete forever": "Supprimer définitivement",
         "Restore from trash": "Restaurer de la corbeille",
-        "Flush": "Vider",
+        Flush: "Vider"
       }
     }
   },
-  watch: {
-    page(page) {
-      this.refresh();
-    },
-  },
   props: {
-    projectId: String
+    projectId: {
+      type: String,
+      default: ""
+    }
   },
   data() {
     return {
@@ -109,6 +139,11 @@ export default {
         totalPages: 0
       }
     };
+  },
+  watch: {
+    page() {
+      this.refresh();
+    }
   },
   methods: {
     open() {
@@ -141,19 +176,19 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      )
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
+      ) {
         return 0;
+      }
 
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
       );
     },
 
-
     restoreTask(task) {
-      Meteor.call("tasks.restore", task._id, (error, result) => {
+      Meteor.call("tasks.restore", task._id, (error) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -167,38 +202,41 @@ export default {
         title: task.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
-          Meteor.call("tasks.deleteForever", task._id, (error, result) => {
+          Meteor.call("tasks.deleteForever", task._id, (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
               return;
             }
-            this.$store.dispatch("notify", this.$t('Task deleted'));
+            this.$store.dispatch("notify", this.$t("Task deleted"));
             this.refresh();
           });
         }
       });
-
     },
 
     flush() {
       this.$confirm(this.$t("Delete all tasks?"), {
-        title: this.$t('Confirm'),
+        title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           this.loading = true;
-          Meteor.call("projects.flushTrashcan", { projectId: this.projectId }, (error, result) => {
-            this.loading = false;
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-              return;
+          Meteor.call(
+            "projects.flushTrashcan",
+            { projectId: this.projectId },
+            (error) => {
+              this.loading = false;
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Tasks deleted"));
+              this.refresh();
             }
-            this.$store.dispatch("notify", this.$t('Tasks deleted'));
-            this.refresh();
-          });
+          );
         }
       });
     }

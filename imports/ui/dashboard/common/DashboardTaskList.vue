@@ -1,22 +1,25 @@
 <template>
   <div class="dashboard-task-list">
-    <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-    <task-list :tasks="tasks" :empty-illustration="emptyIllustration" v-if="tasks && !loading"></task-list>
+    <v-progress-linear v-if="loading" indeterminate />
+    <task-list
+      v-if="tasks && !loading"
+      :tasks="tasks"
+      :empty-illustration="emptyIllustration"
+    />
   </div>
 </template>
 
 <script>
 export default {
-  name: "dashboard-task-list",
-  mounted() {
-    this.refresh();
-  },
+  name: "DashboardTaskList",
   props: {
     organizationId: {
-      type: String
+      type: String,
+      default: ""
     },
     user: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
     type: {
       type: String,
@@ -27,16 +30,19 @@ export default {
       default: "empty"
     }
   },
-  watch: {
-    organizationId(organizationId) {
-      this.refresh();
-    }
-  },
   data() {
     return {
       loading: true,
       tasks: null
     };
+  },
+  watch: {
+    organizationId() {
+      this.refresh();
+    }
+  },
+  mounted() {
+    this.refresh();
   },
   methods: {
     refresh() {

@@ -1,14 +1,13 @@
 import { Meteor } from "meteor/meteor";
-import { store } from "/imports/store/store";
-import { Projects } from "/imports/api/projects/projects.js";
+import store from "/imports/store/store";
 
 // Basic User
 export const isBasicAuth = (to, from, next) => {
   if (
-    Meteor.settings.public &&
-    Meteor.settings.public.sso &&
-    Meteor.settings.public.sso.enabled &&
-    !Meteor.userId()
+    Meteor.settings.public
+    && Meteor.settings.public.sso
+    && Meteor.settings.public.sso.enabled
+    && !Meteor.userId()
   ) {
     const email = headers.get(Meteor.settings.public.sso.email);
     if (!email) {
@@ -18,7 +17,7 @@ export const isBasicAuth = (to, from, next) => {
     } else {
       Meteor.call("users.ssoAuthenticate", (error, result) => {
         if (!error) {
-          Meteor.loginWithToken(result.token, (err, res) => {
+          Meteor.loginWithToken(result.token, (err) => {
             if (!err) {
               next();
             } else {
@@ -43,18 +42,14 @@ export const isBasicAuth = (to, from, next) => {
 };
 
 export const projectAuth = (to, from, next) => {
-  const projectId = to.params.projectId;
-  Meteor.call(
-    "permissions.canReadProject",
-    { projectId: projectId },
-    (error, result) => {
-      if (error || !result) {
-        next({
-          name: "forbidden"
-        });
-      } else {
-        next();
-      }
+  const { projectId } = to.params;
+  Meteor.call("permissions.canReadProject", { projectId }, (error, result) => {
+    if (error || !result) {
+      next({
+        name: "forbidden"
+      });
+    } else {
+      next();
     }
-  );
+  });
 };

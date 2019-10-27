@@ -7,9 +7,10 @@ function fixTaskNumber() {
     }
   });
   const count = tasks.count();
-  console.log(`${count} tasks without number`)
-  tasks.map(task => {
-    Meteor.call("tasks.setNumber", task._id);  
+  /* eslint no-console: off */
+  console.log(`${count} tasks without number`);
+  tasks.forEach((task) => {
+    Meteor.call("tasks.setNumber", task._id);
   });
 }
 

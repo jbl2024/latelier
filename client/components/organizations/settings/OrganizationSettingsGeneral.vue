@@ -4,18 +4,24 @@
     <v-card>
       <div class="description">
         <div
-          v-show="!editName && organization.name && organization.name.length > 0"
+          v-show="
+            !editName && organization.name && organization.name.length > 0
+          "
           @click="startEditName"
-        >{{ organization.name }}</div>
-        <div v-show="!organization.name && !editName" @click="startEditName">Aucun nom</div>
+        >
+          {{ organization.name }}
+        </div>
+        <div v-show="!organization.name && !editName" @click="startEditName">
+          Aucun nom
+        </div>
         <div v-show="editName">
           <v-text-field
-            :label="$t('Name')"
             ref="name"
-            v-focus
             v-model="organization.name"
+            v-focus
+            :label="$t('Name')"
             @keyup.enter="updateName"
-          ></v-text-field>
+          />
           <v-btn icon @click="updateName">
             <v-icon>mdi-check-circle</v-icon>
           </v-btn>
@@ -29,23 +35,32 @@
     <v-card>
       <div class="description">
         <div
-          v-show="!editDescription && organization.description && organization.description.length > 0"
+          v-show="
+            !editDescription &&
+              organization.description &&
+              organization.description.length > 0
+          "
           @click="startEditDescription"
         >
-          <div class="ql-editor-view" v-html="markDown(organization.description)"></div>
+          <div
+            class="ql-editor-view"
+            v-html="markDown(organization.description)"
+          />
         </div>
         <div
           v-show="!organization.description && !editDescription"
           @click="startEditDescription"
-        >{{ $t('No description') }}</div>
+        >
+          {{ $t("No description") }}
+        </div>
         <div v-show="editDescription">
           <v-textarea
             ref="description"
+            v-model="organization.description"
             solo
             label="Description"
-            v-model="organization.description"
             @keydown.shift.enter="updateDescription"
-          ></v-textarea>
+          />
           <v-btn icon @click="updateDescription">
             <v-icon>mdi-check-circle</v-icon>
           </v-btn>
@@ -59,17 +74,15 @@
 </template>
 
 <script>
-import { Organizations } from "/imports/api/organizations/organizations.js";
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 
 export default {
-  name: "organization-settings-general",
+  name: "OrganizationSettingsGeneral",
   mixins: [MarkdownMixin],
-  created() {},
   props: {
     organization: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   data() {
@@ -89,12 +102,10 @@ export default {
 
     updateDescription() {
       this.editDescription = false;
-      Meteor.call(
-        "organizations.updateDescription", {
-          organizationId: this.organization._id,
-          description: this.organization.description
-        }
-      );
+      Meteor.call("organizations.updateDescription", {
+        organizationId: this.organization._id,
+        description: this.organization.description
+      });
     },
 
     cancelUpdateDescription() {
@@ -110,12 +121,10 @@ export default {
 
     updateName() {
       this.editName = false;
-      Meteor.call(
-        "organizations.updateName", {
-          organizationId: this.organization._id,
-          name: this.organization.name
-        }
-      );
+      Meteor.call("organizations.updateName", {
+        organizationId: this.organization._id,
+        name: this.organization.name
+      });
     },
 
     cancelUpdateName() {

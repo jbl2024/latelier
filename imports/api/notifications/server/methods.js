@@ -1,5 +1,4 @@
 import { Notifications } from "/imports/api/notifications/notifications.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 
 Notifications.methods.create = new ValidatedMethod({
@@ -11,14 +10,14 @@ Notifications.methods.create = new ValidatedMethod({
   }).validator(),
   run({ userId, type, properties }) {
     const notificationId = Notifications.insert({
-      userId: userId,
-      type: type,
-      properties: properties,
+      userId,
+      type,
+      properties,
       read: false,
       createdAt: new Date()
     });
-    Meteor.call("notifications.updateProfile", { userId: userId });
-    Meteor.call("notifications.purge", { userId: userId });
+    Meteor.call("notifications.updateProfile", { userId });
+    Meteor.call("notifications.purge", { userId });
     return notificationId;
   }
 });
@@ -30,13 +29,13 @@ Notifications.methods.markAsRead = new ValidatedMethod({
   }).validator(),
   run({ notificationIds }) {
     const userId = Meteor.userId();
-    notificationIds.map(id => {
+    notificationIds.forEach((id) => {
       Notifications.update(
-        { _id: id, userId: userId },
+        { _id: id, userId },
         { $set: { read: true } }
       );
     });
-    Meteor.call("notifications.updateProfile", { userId: userId });
+    Meteor.call("notifications.updateProfile", { userId });
   }
 });
 
@@ -46,11 +45,11 @@ Notifications.methods.markAllAsRead = new ValidatedMethod({
   run() {
     const userId = Meteor.userId();
     Notifications.update(
-      { userId: userId, read: false },
+      { userId, read: false },
       { $set: { read: true } },
       { multi: true }
     );
-    Meteor.call("notifications.updateProfile", { userId: userId });
+    Meteor.call("notifications.updateProfile", { userId });
   }
 });
 
@@ -59,10 +58,8 @@ Notifications.methods.clear = new ValidatedMethod({
   validate: null,
   run() {
     const userId = Meteor.userId();
-    Notifications.remove(
-      { userId: userId }
-    );
-    Meteor.call("notifications.updateProfile", { userId: userId });
+    Notifications.remove({ userId });
+    Meteor.call("notifications.updateProfile", { userId });
   }
 });
 
@@ -89,7 +86,7 @@ Notifications.methods.load = new ValidatedMethod({
 
     const count = Notifications.find(query).count();
     const data = Notifications.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
       sort: {
         createdAt: -1
@@ -99,7 +96,7 @@ Notifications.methods.load = new ValidatedMethod({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   }
 });
@@ -128,7 +125,7 @@ Notifications.methods.updateProfile = new ValidatedMethod({
   run({ userId }) {
     this.unblock();
 
-    const count = Notifications.find({ userId: userId, read: false }).count();
+    const count = Notifications.find({ userId, read: false }).count();
     Meteor.users.update(userId, { $set: { "notifications.count": count } });
   }
 });
@@ -141,11 +138,11 @@ Notifications.methods.purge = new ValidatedMethod({
   run({ userId }) {
     this.unblock();
 
-    const count = Notifications.find({ userId: userId }).count();
+    const count = Notifications.find({ userId }).count();
     const keep = Meteor.settings.notificationsPerUser || 50;
     if (count > keep) {
       const notifications = Notifications.find(
-        { userId: userId },
+        { userId },
         { sort: { createdAt: 1 } }
       ).fetch();
       const toDelete = count - keep;

@@ -1,5 +1,8 @@
 import { Projects } from "../projects";
-import { Permissions, checkLoggedIn, checkCanReadProject, checkCanWriteProject } from "/imports/api/permissions/permissions"
+import {
+  Permissions,
+  checkLoggedIn
+} from "/imports/api/permissions/permissions";
 
 Projects.methods.load = new ValidatedMethod({
   name: "projects.load",
@@ -10,19 +13,19 @@ Projects.methods.load = new ValidatedMethod({
   }).validator(),
   run({ name, organizationId, page }) {
     checkLoggedIn();
-    
+
     const userId = Meteor.userId();
-    let query = { deleted: {$ne: true} };
-  
+    const query = { deleted: { $ne: true } };
+
     if (!Permissions.isAdmin(userId)) {
-      query['$or'] = [{createdBy: userId}, {members: userId}];
+      query.$or = [{ createdBy: userId }, { members: userId }];
     }
-  
+
     if (name && name.length > 0) {
-      query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
-    } 
+      query.name = { $regex: `.*${name}.*`, $options: "i" };
+    }
     if (organizationId) {
-      query['organizationId'] = organizationId;
+      query.organizationId = organizationId;
     }
 
     const perPage = 5;
@@ -37,7 +40,7 @@ Projects.methods.load = new ValidatedMethod({
 
     const count = Projects.find(query).count();
     const data = Projects.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
       sort: {
         name: 1
@@ -47,7 +50,7 @@ Projects.methods.load = new ValidatedMethod({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: data
+      data
     };
   }
 });

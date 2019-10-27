@@ -1,40 +1,35 @@
 <template>
   <div class="projects-page">
-    <projects :organizationId="organizationId"></projects>
+    <projects :organization-id="organizationId" />
   </div>
 </template>
 
 <script>
-
 export default {
-  mounted () {
-    this.$store.dispatch("setWindowTitle", this.$t("Projects"));
-    this.$store.dispatch('setCurrentOrganizationId', this.organizationId);    
-  },
-  beforeDestroy() {
-    this.$events.off('projects-loaded');
-    this.$store.dispatch('setCurrentOrganizationId', 0);    
-  },
   props: {
     organizationId: {
       type: String,
-      default: '0'
+      default: "0"
     }
   },
-
-  data () {
+  data() {
     return {
       title() {
-        return this.$t("Projects")
+        return this.$t("Projects");
       }
-    }
+    };
   },
-  methods: {
+  mounted() {
+    this.$store.dispatch("setWindowTitle", this.$t("Projects"));
+    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
   },
-  meteor: {
+  beforeDestroy() {
+    this.$events.off("projects-loaded");
+    this.$store.dispatch("setCurrentOrganizationId", 0);
   },
-}
+  methods: {},
+  meteor: {}
+};
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

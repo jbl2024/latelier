@@ -3,15 +3,19 @@ import { Mongo } from "meteor/mongo";
 import { check, Match } from "meteor/check";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
-import { Attachments } from "/imports/api/attachments/attachments";
 import { Events } from "/imports/api/events/events.js";
-import TaskSchema from './schema';
 
 import { Random } from "meteor/random";
-import { incrementCounter } from "./counter";
 import moment from "moment";
-import { checkLoggedIn, checkCanReadTask, checkCanWriteTask, checkCanDeleteTask } from "/imports/api/permissions/permissions";
-import SimpleSchema from 'simpl-schema';
+import {
+  checkLoggedIn,
+  checkCanReadTask,
+  checkCanWriteTask,
+  checkCanDeleteTask
+} from "/imports/api/permissions/permissions";
+import SimpleSchema from "simpl-schema";
+import { incrementCounter } from "./counter";
+import TaskSchema from "./schema";
 
 export const Tasks = new Mongo.Collection("tasks");
 Tasks.attachSchema(TaskSchema);
@@ -33,24 +37,25 @@ if (Meteor.isServer) {
   });
 }
 
-var _checkForCompletion = function(listId, taskId) {
-  var list = Lists.findOne({ _id: listId });
+const _checkForCompletion = function(listId, taskId) {
+  const list = Lists.findOne({ _id: listId });
   if (list && list.autoComplete) {
     Tasks.update({ _id: taskId }, { $set: { completed: true } });
   }
 };
 
-Tasks.before.update(function(userId, doc, fieldNames, modifier, options) {
-  const hasCompletedModification = modifier => {
-    if (modifier.$set && modifier.$set.completed != undefined) {
+Tasks.before.update(function(userId, doc, fieldNames, modifier) {
+  const hasCompletedModification = () => {
+    if (modifier.$set && modifier.$set.completed !== undefined) {
       return true;
     }
+    return false;
   };
 
   modifier.$set = modifier.$set || {};
   modifier.$set.updatedAt = new Date();
   modifier.$set.updatedBy = userId;
-  if (hasCompletedModification(modifier)) {
+  if (hasCompletedModification()) {
     // if completed flag is set, set the "completedAt" attribute
     if (modifier.$set.completed) {
       modifier.$set.completedAt = modifier.$set.updatedAt;
@@ -73,9 +78,9 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var _findFirstOrder = function() {
-      var task = Tasks.findOne(
-        { projectId: projectId, listId: listId },
+    const _findFirstOrder = function() {
+      const task = Tasks.findOne(
+        { projectId, listId },
         { sort: { order: 1 } }
       );
       if (task) {
@@ -87,7 +92,7 @@ Meteor.methods({
 
     let completed = false;
     let completedAt;
-    var list = Lists.findOne({ _id: listId });
+    const list = Lists.findOne({ _id: listId });
     if (list && list.autoComplete) {
       completed = true;
       completedAt = now;
@@ -96,32 +101,33 @@ Meteor.methods({
     if (Meteor.isServer) {
       number = incNumber();
     }
-    var taskId = Tasks.insert({
-      name: name,
+    const taskId = Tasks.insert({
+      name,
       order: _findFirstOrder() - 10,
-      projectId: projectId,
-      listId: listId,
-      completed: completed,
-      completedAt: completedAt,
+      projectId,
+      listId,
+      completed,
+      completedAt,
       createdAt: now,
       updatedAt: now,
       createdBy: userId,
       updatedBy: userId,
       watchers: [userId],
-      number: number,
+      number,
       labels: labelIds || []
     });
-    
+
     Meteor.call("tasks.track", {
       type: "tasks.create",
-      taskId: taskId
+      taskId
     });
     return Tasks.findOne({ _id: taskId });
   },
 
   "tasks.setNumber"(taskId) {
+    check(taskId, String);
     const number = incNumber();
-    Tasks.direct.update({ _id: taskId }, { $set: { number: number } });
+    Tasks.direct.update({ _id: taskId }, { $set: { number } });
   },
 
   "tasks.remove"(taskId) {
@@ -132,28 +138,33 @@ Meteor.methods({
       Tasks.remove(taskId);
       return;
     }
-    
-    Tasks.update({_id: taskId}, {$set: {
-      deleted: true,
-      deletedBy: Meteor.userId(),
-      deletedAt: new Date()
-    }});
+
+    Tasks.update(
+      { _id: taskId },
+      {
+        $set: {
+          deleted: true,
+          deletedBy: Meteor.userId(),
+          deletedAt: new Date()
+        }
+      }
+    );
 
     Meteor.call("tasks.track", {
       type: "tasks.remove",
-      taskId: taskId
+      taskId
     });
   },
 
   "tasks.deleteForever"(taskId) {
     check(taskId, String);
     checkCanDeleteTask(taskId);
-    
-    Meteor.call("attachments.remove", {taskId: taskId});
+
+    Meteor.call("attachments.remove", { taskId });
 
     Meteor.call("tasks.track", {
       type: "tasks.deleteForever",
-      taskId: taskId
+      taskId
     });
 
     Tasks.remove(taskId);
@@ -165,61 +176,66 @@ Meteor.methods({
 
     if (Meteor.isClient) {
       return;
-    } 
-
-    const task = Tasks.findOne({_id: taskId});
-    if (!task) {
-      throw new Meteor.Error("not-found");  
     }
-    let listId = task.listId;
+
+    const task = Tasks.findOne({ _id: taskId });
+    if (!task) {
+      throw new Meteor.Error("not-found");
+    }
+    let { listId } = task;
     if (!listId) {
-      const list = Lists.findOne({projectId: task.projectId});
+      const list = Lists.findOne({ projectId: task.projectId });
       if (list) {
         listId = list._id;
       } else {
         listId = Meteor.call("lists.insert", task.projectId, "Sans nom")._id;
       }
     }
-    Tasks.update({_id: taskId}, {$set: {
-      deleted: false,
-      listId: listId
-    }});
+    Tasks.update(
+      { _id: taskId },
+      {
+        $set: {
+          deleted: false,
+          listId
+        }
+      }
+    );
 
-    Meteor.call("attachments.restore", {taskId: taskId});
+    Meteor.call("attachments.restore", { taskId });
 
     Meteor.call("tasks.track", {
       type: "tasks.restore",
-      taskId: taskId
+      taskId
     });
-  },  
+  },
 
   "tasks.updateName"(taskId, name) {
     check(taskId, String);
     check(name, String);
-    if (name.length == 0) {
+    if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
 
-    Tasks.update({ _id: taskId }, { $set: { name: name } });
+    Tasks.update({ _id: taskId }, { $set: { name } });
 
     Meteor.call("tasks.track", {
       type: "tasks.updateName",
-      taskId: taskId
+      taskId
     });
   },
 
   "tasks.updateDescription"(taskId, description) {
     check(taskId, String);
     check(description, String);
-    if (description.length == 0) {
+    if (description.length === 0) {
       throw new Meteor.Error("invalid-description");
     }
 
-    Tasks.update({ _id: taskId }, { $set: { description: description } });
+    Tasks.update({ _id: taskId }, { $set: { description } });
 
     Meteor.call("tasks.track", {
       type: "tasks.updateDescription",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -230,7 +246,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.updateEstimation.size",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -241,7 +257,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.updateEstimation.spent",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -249,30 +265,31 @@ Meteor.methods({
     check(taskId, String);
     check(completed, Boolean);
 
-    Tasks.update({ _id: taskId }, { $set: { completed: completed } });
+    Tasks.update({ _id: taskId }, { $set: { completed } });
     const task = Tasks.findOne({ _id: taskId });
     Meteor.call("lists.findTasksToCatch", task.projectId);
 
-    const type = 
     Meteor.call("tasks.track", {
       type: completed ? "tasks.complete" : "tasks.uncomplete",
-      taskId: taskId
+      taskId
     });
   },
 
   "tasks.move"(projectId, listId, taskId, order) {
+    check(projectId, String);
     check(listId, String);
     check(taskId, String);
+    check(order, Match.Maybe(Number));
 
     _checkForCompletion(listId, taskId);
 
-    var _reorder = function(listId) {
-      var tasks = Tasks.find(
-        { listId: listId },
+    const _reorder = function() {
+      const tasks = Tasks.find(
+        { listId },
         { sort: { order: 1 } }
       ).fetch();
-      for (var i = 0; i < tasks.length; i++) {
-        var task = tasks[i];
+      for (let i = 0; i < tasks.length; i++) {
+        const task = tasks[i];
         task.order = i * 10;
 
         Tasks.direct.update({ _id: task._id }, { $set: { order: task.order } });
@@ -281,15 +298,15 @@ Meteor.methods({
     if (order) {
       Tasks.direct.update(
         { _id: taskId },
-        { $set: { listId: listId, order: order } },
+        { $set: { listId, order } },
         {},
-        (error, result) => {
-          _reorder(listId);
+        () => {
+          _reorder();
         }
       );
     } else {
-      var lastTask = Tasks.findOne(
-        { projectId: projectId, listId: listId },
+      const lastTask = Tasks.findOne(
+        { projectId, listId },
         { sort: { order: -1 } }
       );
       if (lastTask) {
@@ -299,14 +316,14 @@ Meteor.methods({
       }
       Tasks.direct.update(
         { _id: taskId },
-        { $set: { listId: listId, order: order } },
+        { $set: { listId, order } },
         {}
       );
     }
 
     Meteor.call("tasks.track", {
       type: "tasks.move",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -319,23 +336,24 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var note = {
+    const note = {
       _id: Random.id(),
       createdAt: new Date(),
       createdBy: Meteor.userId(),
-      content: content
+      content
     };
 
     Tasks.update({ _id: taskId }, { $push: { notes: note } });
 
     Meteor.call("tasks.track", {
       type: "tasks.addNote",
-      taskId: taskId
+      taskId
     });
   },
 
   "tasks.removeNote"(taskId, noteId) {
     check(taskId, String);
+    check(noteId, Match.Maybe(String));
 
     // Make sure the user is logged in before inserting a task
     if (!Meteor.userId()) {
@@ -350,7 +368,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.removeNote",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -378,7 +396,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.updateNote",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -391,11 +409,11 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var item = {
+    const item = {
       _id: Random.id(),
       createdAt: new Date(),
       createdBy: Meteor.userId(),
-      name: name,
+      name,
       checked: false
     };
 
@@ -403,7 +421,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.addChecklistItem",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -419,7 +437,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.removeChecklistItem",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -437,7 +455,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.toggleCheckItem",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -449,20 +467,18 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var task = Tasks.findOne({ _id: taskId, "checklist._id": itemId });
+    const task = Tasks.findOne({ _id: taskId, "checklist._id": itemId });
     if (!task) {
       throw new Meteor.Error("task-not-found");
     }
 
-    var item = task.checklist.find(item => {
-      return item._id === itemId;
-    });
+    const item = task.checklist.find((aItem) => aItem._id === itemId);
 
     Meteor.call("tasks.track", {
       type: "tasks.convertItemToTask",
-      taskId: taskId,
+      taskId,
       properties: {
-        item: item
+        item
       }
     });
 
@@ -478,14 +494,12 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var task = Tasks.findOne({ _id: taskId });
+    const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("task-not-found");
     }
 
-    const itemIndex = task.checklist.findIndex(aItem => {
-      return aItem._id === item._id;
-    });
+    const itemIndex = task.checklist.findIndex((aItem) => aItem._id === item._id);
     task.checklist[itemIndex] = item;
     Tasks.update({ _id: taskId }, { $set: { checklist: task.checklist } });
   },
@@ -498,12 +512,12 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    var task = Tasks.findOne({ _id: taskId });
+    const task = Tasks.findOne({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("task-not-found");
     }
 
-    Tasks.update({ _id: taskId }, { $set: { checklist: checklist } });
+    Tasks.update({ _id: taskId }, { $set: { checklist } });
   },
 
   "tasks.assignTo"(taskId, userId) {
@@ -511,11 +525,11 @@ Meteor.methods({
     check(userId, String);
 
     checkLoggedIn();
-    checkCanWriteTask(taskId)
+    checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
     if (!task) throw new Meteor.Error("task-not-found");
-    if (task.assignedTo === userId) return; 
+    if (task.assignedTo === userId) return;
 
     const previousAssignee = task.assignedTo;
     if (previousAssignee) {
@@ -528,7 +542,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.assignTo",
-      taskId: taskId
+      taskId
     });
 
     if (Meteor.isServer) {
@@ -537,7 +551,7 @@ Meteor.methods({
       }
       Meteor.call("projects.addMember", {
         projectId: task.projectId,
-        userId: userId
+        userId
       });
     }
   },
@@ -557,7 +571,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.removeAssignedTo",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -573,14 +587,14 @@ Meteor.methods({
     }
 
     const watchers = task.watchers || [];
-    const alreadyWatching = watchers.find(w => { return w === userId});
+    const alreadyWatching = watchers.find((w) => w === userId);
     if (alreadyWatching) return;
 
     Tasks.update({ _id: taskId }, { $push: { watchers: userId } });
 
     Meteor.call("tasks.track", {
       type: "tasks.addWatcher",
-      taskId: taskId
+      taskId
     });
 
     if (Meteor.isServer) {
@@ -589,7 +603,7 @@ Meteor.methods({
       }
       Meteor.call("projects.addMember", {
         projectId: task.projectId,
-        userId: userId
+        userId
       });
     }
   },
@@ -600,14 +614,14 @@ Meteor.methods({
     checkLoggedIn();
     checkCanWriteTask(taskId);
 
-    if (Tasks.find({ _id: taskId, watchers: userId }).count() == 0) {
+    if (Tasks.find({ _id: taskId, watchers: userId }).count() === 0) {
       return;
     }
     Tasks.update({ _id: taskId }, { $pull: { watchers: userId } });
 
     Meteor.call("tasks.track", {
       type: "tasks.removeWatcher",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -615,7 +629,7 @@ Meteor.methods({
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
-    if (reminder === 'never') reminder = null;
+    if (reminder === "never") reminder = null;
 
     let convertedDate = null;
     if (dueDate) {
@@ -626,11 +640,14 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    Tasks.update({ _id: taskId }, { $set: { dueDate: convertedDate, reminderDueDate: reminder } });
+    Tasks.update(
+      { _id: taskId },
+      { $set: { dueDate: convertedDate, reminderDueDate: reminder } }
+    );
 
     Meteor.call("tasks.track", {
       type: "tasks.setDueDate",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -638,7 +655,7 @@ Meteor.methods({
     check(taskId, String);
     check(startDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
-    if (reminder === 'never') reminder = null;
+    if (reminder === "never") reminder = null;
 
     let convertedDate = null;
     if (startDate) {
@@ -648,11 +665,14 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Tasks.update({ _id: taskId }, { $set: { startDate: convertedDate, reminderStartDate: reminder } });
+    Tasks.update(
+      { _id: taskId },
+      { $set: { startDate: convertedDate, reminderStartDate: reminder } }
+    );
 
     Meteor.call("tasks.track", {
       type: "tasks.setStartDate",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -671,7 +691,7 @@ Meteor.methods({
 
     Meteor.call("tasks.track", {
       type: "tasks.addLabel",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -684,14 +704,14 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    if (Tasks.find({ _id: taskId, labels: labelId }).count() == 0) {
+    if (Tasks.find({ _id: taskId, labels: labelId }).count() === 0) {
       return;
     }
     Tasks.update({ _id: taskId }, { $pull: { labels: labelId } });
 
     Meteor.call("tasks.track", {
       type: "tasks.removeLabel",
-      taskId: taskId
+      taskId
     });
   },
 
@@ -701,12 +721,15 @@ Meteor.methods({
 
     if (Meteor.isClient) {
       return;
-    } 
-    Tasks.update({ _id: taskId }, { $set: { updatedAt: new Date(), updatedBy: Meteor.userId()}});
-    
-    Meteor.call('tasks.track', {
-      type: 'tasks.addAttachment',
-      taskId: taskId,
+    }
+    Tasks.update(
+      { _id: taskId },
+      { $set: { updatedAt: new Date(), updatedBy: Meteor.userId() } }
+    );
+
+    Meteor.call("tasks.track", {
+      type: "tasks.addAttachment",
+      taskId
     });
   },
 
@@ -717,25 +740,27 @@ Meteor.methods({
 
     if (Meteor.isClient) {
       return;
-    } 
-    Tasks.update({ _id: taskId }, { $set: { updatedAt: new Date(), updatedBy: Meteor.userId()}});
+    }
+    Tasks.update(
+      { _id: taskId },
+      { $set: { updatedAt: new Date(), updatedBy: Meteor.userId() } }
+    );
 
-    Meteor.call('attachments.remove', {attachmentId: attachmentId});
-    Meteor.call('tasks.track', {
-      type: 'tasks.removeAttachment',
-      taskId: taskId,
+    Meteor.call("attachments.remove", { attachmentId });
+    Meteor.call("tasks.track", {
+      type: "tasks.removeAttachment",
+      taskId
     });
   }
-
 });
 
 Tasks.methods.getHistory = new ValidatedMethod({
   name: "tasks.getHistory",
   validate: new SimpleSchema({
     taskId: { type: String },
-    page: { type: Number },
+    page: { type: Number }
   }).validator(),
-  run({taskId, page}) {
+  run({ taskId, page }) {
     checkLoggedIn();
     checkCanReadTask(taskId);
     const query = {
@@ -754,7 +779,7 @@ Tasks.methods.getHistory = new ValidatedMethod({
 
     const count = Events.find(query).count();
     const data = Events.find(query, {
-      skip: skip,
+      skip,
       limit: perPage,
       sort: {
         createdAt: -1
@@ -762,7 +787,7 @@ Tasks.methods.getHistory = new ValidatedMethod({
     }).fetch();
 
     const dataWithUsers = [];
-    data.map(item => {
+    data.forEach((item) => {
       item.user = item.userId;
       const user = Meteor.users.findOne({ _id: item.userId });
       if (user) {
@@ -774,19 +799,19 @@ Tasks.methods.getHistory = new ValidatedMethod({
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data: dataWithUsers,
+      data: dataWithUsers
     };
   }
 });
 
-Tasks.helpers.findUserIdsInvolvedInTask = function (task) {
+Tasks.helpers.findUserIdsInvolvedInTask = function(task) {
   let userIds = [];
   if (task.assignedTo) userIds.push(task.assignedTo);
   if (task.watchers && task.watchers.length > 0) {
-    task.watchers.map(watcher => {
+    task.watchers.forEach((watcher) => {
       userIds.push(watcher);
     });
   }
   userIds = [...new Set(userIds)]; // remove duplicates
   return userIds;
-}
+};

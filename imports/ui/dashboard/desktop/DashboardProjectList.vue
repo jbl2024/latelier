@@ -1,24 +1,30 @@
 <template>
   <v-list-item @click="openProject(project)">
     <v-list-item-avatar :color="getColor(project)">
-      <v-icon :class="getVisibilityIconClass(project)">{{ getVisibilityIcon(project) }}</v-icon>
+      <v-icon :class="getVisibilityIconClass(project)">
+        {{ getVisibilityIcon(project) }}
+      </v-icon>
     </v-list-item-avatar>
     <v-list-item-content class="pointer">
       <v-list-item-title>{{ project.name }}</v-list-item-title>
-      <v-list-item-subtitle>{{ formatProjectDates(project) }}</v-list-item-subtitle>
+      <v-list-item-subtitle>
+        {{ formatProjectDates(project) }}
+      </v-list-item-subtitle>
     </v-list-item-content>
 
     <v-list-item-action
       v-for="group in getProjectGroups(project)"
-      class="show-desktop"
       :key="group._id"
+      class="show-desktop"
       @click.stop="selectGroup(group)"
     >
-      <v-chip small color="primary" text-color="white">{{ group.name }}</v-chip>
+      <v-chip small color="primary" text-color="white">
+        {{ group.name }}
+      </v-chip>
     </v-list-item-action>
 
     <v-list-item-action>
-      <v-tooltip top v-if="!isFavorite(user, project._id)">
+      <v-tooltip v-if="!isFavorite(user, project._id)" top>
         <template v-slot:activator="{ on }">
           <v-btn
             icon
@@ -30,10 +36,17 @@
             <v-icon>mdi-star-outline</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t('Add to favorites') }}</span>
+        <span>{{ $t("Add to favorites") }}</span>
       </v-tooltip>
 
-      <v-btn v-if="isFavorite(user, project._id)" icon text color="primary" @click.stop="removeFromFavorites(user, project._id)" slot="activator">
+      <v-btn
+        v-if="isFavorite(user, project._id)"
+        slot="activator"
+        icon
+        text
+        color="primary"
+        @click.stop="removeFromFavorites(user, project._id)"
+      >
         <v-icon>mdi-star</v-icon>
       </v-btn>
     </v-list-item-action>
@@ -41,34 +54,43 @@
     <v-list-item-action>
       <v-menu bottom left class="menu">
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" icon text color="grey darken-1" @click.native.stop>
+          <v-btn icon text color="grey darken-1" v-on="on" @click.native.stop>
             <v-icon>mdi-dots-vertical</v-icon>
           </v-btn>
         </template>
         <v-list dense>
-          <v-list-item @click="openProjectSettings(project)" v-if="canManageProject(project)">
+          <v-list-item
+            v-if="canManageProject(project)"
+            @click="openProjectSettings(project)"
+          >
             <v-list-item-action>
               <v-icon>mdi-settings</v-icon>
             </v-list-item-action>
-            <v-list-item-title>{{ $t('Settings') }}</v-list-item-title>
+            <v-list-item-title>{{ $t("Settings") }}</v-list-item-title>
           </v-list-item>
           <v-list-item @click="cloneProject(project)">
             <v-list-item-action>
               <v-icon>mdi-content-copy</v-icon>
             </v-list-item-action>
-            <v-list-item-title>{{ $t('Clone') }}</v-list-item-title>
+            <v-list-item-title>{{ $t("Clone") }}</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="deleteProject(project)" v-if="canManageProject(project)">
+          <v-list-item
+            v-if="canManageProject(project)"
+            @click="deleteProject(project)"
+          >
             <v-list-item-action>
               <v-icon>mdi-delete</v-icon>
             </v-list-item-action>
-            <v-list-item-title>{{ $t('Move to trash') }}</v-list-item-title>
+            <v-list-item-title>{{ $t("Move to trash") }}</v-list-item-title>
           </v-list-item>
-          <v-list-item @click="leaveProject(project)" v-if="canLeaveProject(project)">
+          <v-list-item
+            v-if="canLeaveProject(project)"
+            @click="leaveProject(project)"
+          >
             <v-list-item-action>
               <v-icon>mdi-exit-to-app</v-icon>
             </v-list-item-action>
-            <v-list-item-title>{{ $t('Leave project') }}</v-list-item-title>
+            <v-list-item-title>{{ $t("Leave project") }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -77,27 +99,23 @@
 </template>
 
 <script>
-export default {};
-</script>
-
-<style>
-</style>
-
-</template>
-
-<script>
-import { Projects } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 export default {
-  name: "dashboard-project-list",
+  name: "DashboardProjectList",
   mixins: [DatesMixin],
   props: {
-    project: Object,
-    user: Object
+    project: {
+      type: Object,
+      default: () => {}
+    },
+    user: {
+      type: Object,
+      default: () => {}
+    }
   },
   i18n: {
     messages: {
@@ -132,26 +150,25 @@ export default {
 
     getColorCardStyle(project) {
       if (project.color) {
-        return `background: linear-gradient(0deg, #fff 95%, ${
-          project.color
-        } 95%);`;
+        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`;
         // return `background: linear-gradient(90deg, ${project.color} 3%, #fff 3%);`
       }
+      return "";
     },
 
     formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return (
-          "Du  " +
-          this.formatDate(project.startDate) +
-          " au " +
-          this.formatDate(project.endDate)
-        );
-      } else if (project.startDate) {
-        return "A partir du " + this.formatDate(project.startDate);
-      } else if (project.endtDate) {
-        return "Jusqu'au " + this.formatDate(project.endDate);
+        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
+          project.endDate
+        )}`;
       }
+      if (project.startDate) {
+        return `A partir du ${this.formatDate(project.startDate)}`;
+      }
+      if (project.endtDate) {
+        return `Jusqu'au ${this.formatDate(project.endDate)}`;
+      }
+      return "";
     },
 
     taskCount(project) {
@@ -165,8 +182,8 @@ export default {
 
     canDeleteProject(project) {
       if (
-        Permissions.isAdmin(Meteor.userId()) ||
-        project.createdBy === Meteor.userId()
+        Permissions.isAdmin(Meteor.userId())
+        || project.createdBy === Meteor.userId()
       ) {
         return true;
       }
@@ -175,8 +192,8 @@ export default {
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id) ||
-        Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdmin(Meteor.userId(), project._id)
+        || Permissions.isAdmin(Meteor.userId())
       );
     },
 
@@ -208,12 +225,12 @@ export default {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Move to trash")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "projects.remove",
             { projectId: project._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;
@@ -230,15 +247,14 @@ export default {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Leave project")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "projects.leave",
             { projectId: project._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
-                return;
               }
             }
           );
@@ -259,7 +275,7 @@ export default {
         Meteor.call(
           "projects.addToUserFavorites",
           { projectId: projectId, userId: user._id },
-          (error, result) => {
+          (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
               return;
@@ -279,10 +295,9 @@ export default {
         Meteor.call(
           "projects.removeFromUserFavorites",
           { projectId: projectId, userId: user._id },
-          (error, result) => {
+          (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
-              return;
             }
           }
         );
@@ -296,7 +311,7 @@ export default {
       ).fetch();
     },
     selectGroup(group) {
-      var selectedGroup = this.$store.state.selectedGroup;
+      const { selectedGroup } = this.$store.state;
       if (selectedGroup && selectedGroup._id === group._id) {
         this.$store.dispatch("setSelectedGroup", null);
       } else {
@@ -309,17 +324,16 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Clone")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "projects.clone",
             { projectId: project._id },
-            (error, result) => {
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
-                return;
               } else {
-                this.$store.dispatch("notify", this.$t('Project cloned successfully'));
+                this.$store.dispatch("notify", this.$t("Project cloned successfully"));
               }
             }
           );
@@ -330,6 +344,4 @@ export default {
 };
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

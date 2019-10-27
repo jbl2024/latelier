@@ -11,12 +11,12 @@ export default new SimpleSchema({
     type: String
   },
 
-  properties: { 
-    type: Object, 
-    optional: true, 
-    blackbox: true 
+  properties: {
+    type: Object,
+    optional: true,
+    blackbox: true
   },
-  
+
   read: {
     type: Boolean,
     defaultValue: false

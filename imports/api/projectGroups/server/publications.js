@@ -1,14 +1,16 @@
 import { Meteor } from "meteor/meteor";
-import { publishComposite } from "meteor/reywood:publish-composite";
+import { check, Match } from "meteor/check";
 
 import { ProjectGroups } from "../projectGroups";
 
 Meteor.publish("projectGroups", function projectGroups(organizationId, name) {
-  var userId = Meteor.userId();
-  var query = {};
+  check(organizationId, String);
+  check(name, Match.Maybe(String));
+
+  const query = {};
   if (name && name.length > 0) {
-    query['name'] = { $regex: ".*" + name + ".*", $options: "i" };
-  } 
+    query.name = { $regex: `.*${name}.*`, $options: "i" };
+  }
   if (organizationId) {
     query.organizationId = organizationId;
   }

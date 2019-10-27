@@ -1,5 +1,5 @@
-import { Projects } from "../../api/projects/projects.js";
-import { ProjectStates } from "../../api/projects/projects.js";
+import { Projects, ProjectStates } from "../../api/projects/projects.js";
+
 import { Lists } from "../../api/lists/lists.js";
 
 function fixEmptyProjectAttributes() {

@@ -1,16 +1,15 @@
 <template>
   <vue-editor
-    :class="{editor: true, 'no-border': noBorder}"
-    v-model="content"
     ref="editor"
-    :editorOptions="editorSettings"
-    :editorToolbar="customToolbar"
-  ></vue-editor>
+    v-model="content"
+    :class="{ editor: true, 'no-border': noBorder }"
+    :editor-options="editorSettings"
+    :editor-toolbar="customToolbar"
+  />
 </template>
 
 <script>
 import { VueEditor } from "vue2-editor";
-import _Quill from "quill";
 
 export default {
   components: {
@@ -28,23 +27,6 @@ export default {
     noBorder: {
       type: Boolean,
       default: false
-    }
-  },
-  watch: {
-    content(content) {
-      this.$emit("input", content);
-    },
-    value(value) {
-      if (this.$refs.editor.quill.root.innerHTML !== this.value) {
-        this.$refs.editor.quill.root.innerHTML = this.value;
-      }
-    }
-  },
-  mounted() {
-    if (this.autofocus) {
-      this.$nextTick(() => {
-        this.focus();
-      })
     }
   },
   data() {
@@ -72,6 +54,23 @@ export default {
       }
     };
   },
+  watch: {
+    content(content) {
+      this.$emit("input", content);
+    },
+    value() {
+      if (this.$refs.editor.quill.root.innerHTML !== this.value) {
+        this.$refs.editor.quill.root.innerHTML = this.value;
+      }
+    }
+  },
+  mounted() {
+    if (this.autofocus) {
+      this.$nextTick(() => {
+        this.focus();
+      });
+    }
+  },
   methods: {
     focus() {
       this.$refs.editor.quill.focus();
@@ -80,17 +79,15 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>
 <style>
 .ql-toolbar svg {
   width: 16px !important;
   height: 16px !important;
 }
 
-
 .ql-editor {
-  min-height:120px !important;
+  min-height: 120px !important;
 }
 
 .no-border .ql-toolbar.ql-snow {
@@ -102,5 +99,4 @@ export default {
 .no-border .ql-container.ql-snow {
   border: none;
 }
-
 </style>

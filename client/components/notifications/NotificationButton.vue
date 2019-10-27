@@ -1,7 +1,7 @@
 <template>
   <div class="notification-button">
-    <notifications-dialog :active.sync="showDialog"></notifications-dialog>
-    <v-avatar dark v-if="isConnected">
+    <notifications-dialog :active.sync="showDialog" />
+    <v-avatar v-if="isConnected" dark>
       <v-btn icon @click="showDialog = true">
         <v-badge color="red" :value="notificationsCount > 0">
           <template v-slot:badge>
@@ -15,12 +15,11 @@
 </template>
 
 <script>
-
 export default {
   data() {
     return {
       showDialog: false
-    }
+    };
   },
   meteor: {
     isConnected() {
@@ -36,7 +35,8 @@ export default {
           return user.notifications.count;
         }
       }
-    },  
-  },
+      return 0;
+    }
+  }
 };
 </script>

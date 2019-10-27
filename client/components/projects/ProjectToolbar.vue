@@ -1,38 +1,45 @@
 <template>
-  <v-toolbar dense class="flex0" ref="toolbar" v-resize="onResizeToolbar">
-    <project-filters-dialog :active.sync="showFiltersDialog" :project-id="project._id"></project-filters-dialog>
+  <v-toolbar ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
+    <project-filters-dialog
+      :active.sync="showFiltersDialog"
+      :project-id="project._id"
+    />
 
-    <v-btn icon @click="showFiltersDialog = true" v-if="showFilters">
+    <v-btn v-if="showFilters" icon @click="showFiltersDialog = true">
       <v-icon>mdi-filter-variant</v-icon>
     </v-btn>
 
-    <project-filters :projectId="project._id" v-if="!showFilters"></project-filters>
+    <project-filters v-if="!showFilters" :project-id="project._id" />
 
-    <v-spacer></v-spacer>
+    <v-spacer />
     <div>
-      <v-tooltip top v-if="!isFavorite(user, project._id)">
-          <template v-slot:activator="{ on }">
-            <v-btn icon @click.stop="addToFavorites(user, project._id)" v-on="on">
-              <v-icon>mdi-star-outline</v-icon>
-            </v-btn>
-          </template>
-        <span>{{ $t('Add to favorites') }}</span>
+      <v-tooltip v-if="!isFavorite(user, project._id)" top>
+        <template v-slot:activator="{ on }">
+          <v-btn icon @click.stop="addToFavorites(user, project._id)" v-on="on">
+            <v-icon>mdi-star-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("Add to favorites") }}</span>
       </v-tooltip>
     </div>
     <div>
-      <v-tooltip top v-if="isFavorite(user, project._id)">
+      <v-tooltip v-if="isFavorite(user, project._id)" top>
         <template v-slot:activator="{ on }">
-          <v-btn icon @click.stop="removeFromFavorites(user, project._id)" v-on="on">
+          <v-btn
+            icon
+            @click.stop="removeFromFavorites(user, project._id)"
+            v-on="on"
+          >
             <v-icon>mdi-star</v-icon>
           </v-btn>
         </template>
-        <span>{{ $t('Remove from favorites') }}</span>
+        <span>{{ $t("Remove from favorites") }}</span>
       </v-tooltip>
     </div>
     <v-btn
       v-if="canManageProject(project)"
       icon
-      :to="{ name: 'project-settings', params: { projectId: project._id }}"
+      :to="{ name: 'project-settings', params: { projectId: project._id } }"
     >
       <v-icon>mdi-settings</v-icon>
     </v-btn>
@@ -40,14 +47,19 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
-  name: "project-toolbar",
+  name: "ProjectToolbar",
   props: {
-    project: Object,
-    user: Object
+    project: {
+      type: Object,
+      default: () => {}
+    },
+    user: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -67,8 +79,8 @@ export default {
     addToFavorites(user, projectId) {
       Meteor.call(
         "projects.addToUserFavorites",
-        { projectId: projectId, userId: user._id },
-        (error, result) => {
+        { projectId, userId: user._id },
+        (error) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;
@@ -81,8 +93,8 @@ export default {
     removeFromFavorites(user, projectId) {
       Meteor.call(
         "projects.removeFromUserFavorites",
-        { projectId: projectId, userId: user._id },
-        (error, result) => {
+        { projectId, userId: user._id },
+        (error) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;
@@ -97,8 +109,8 @@ export default {
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id) ||
-        Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdmin(Meteor.userId(), project._id)
+        || Permissions.isAdmin(Meteor.userId())
       );
     },
 
@@ -111,11 +123,8 @@ export default {
         this.showFilters = false;
       }
     }
-
-    
   }
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

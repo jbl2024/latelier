@@ -1,101 +1,113 @@
 <template>
-  <div class="project"> 
+  <div class="project">
     <div v-if="!$subReady.project">
-      <v-progress-linear indeterminate></v-progress-linear>
+      <v-progress-linear indeterminate />
     </div>
 
-    <div v-if="$subReady.project" class="project-wrapper"> 
-      <div class="container-wrapper" :style="getBackgroundUrl(user)"> 
-        <project-toolbar :user="user" :project="project" class="flex0"></project-toolbar>
-        <kanban ref="container" class="kanban-container flex1" :projectId="projectId" :add-margin="showTaskDetail"></kanban>
+    <div v-if="$subReady.project" class="project-wrapper">
+      <div class="container-wrapper" :style="getBackgroundUrl(user)">
+        <project-toolbar
+          :user="user"
+          :project="project"
+          class="flex0"
+        />
+        <kanban
+          ref="container"
+          class="kanban-container flex1"
+          :project-id="projectId"
+          :add-margin="showTaskDetail"
+        />
       </div>
     </div>
-</div>
+  </div>
 </template>
 
 <script>
-import { Projects } from '/imports/api/projects/projects.js'
-import { Backgrounds } from '/imports/api/backgrounds/backgrounds.js'
-import { Lists } from '/imports/api/lists/lists.js'
-import { Tasks } from '/imports/api/tasks/tasks.js'
-import { Permissions } from "/imports/api/permissions/permissions"
+import { Projects } from "/imports/api/projects/projects.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 
-import debounce from 'lodash/debounce';
+import debounce from "lodash/debounce";
 import { mapState } from "vuex";
 
 export default {
-  mounted () {
-    this.$store.dispatch('setCurrentProjectId', this.projectId);    
-    this.$events.listen('close-task-detail', task => {
-      this.$store.dispatch('selectTask', null);
-      this.$store.dispatch('showTaskDetail', false);
-      this.$router.push({ name: 'project', params: { organizationId: this.organizationId, projectId: this.projectId }}) 
-    });
-    this.$events.listen('delete-task', task => {
-      this.deleteTask(task)      
-    });
-  },
-  created () {
-    this.debouncedFilter = debounce((val) => { this.$events.fire('filter-tasks', val)}, 400);
-  },
-  beforeDestroy() {
-    this.$events.off('delete-task');
-    this.$events.off('close-task-detail');
-    this.$store.dispatch('setCurrentProjectId', 0);    
-    this.$store.dispatch('selectTask', null);
-    this.$store.dispatch('showTaskDetail', false);
-  },
   props: {
     projectId: {
       type: String,
-      default: '0'
+      default: "0"
     },
     taskId: {
       type: String,
-      default: '0'
+      default: "0"
     }
   },
+  data() {
+    return {
+      savedProjectName: "",
+      editProjectName: false,
+      debouncedFilter: "",
+      showDeleteTaskDialog: false
+    };
+  },
   computed: {
-    ...mapState([
-      "showTaskDetail",
-    ])
-  },  
+    ...mapState(["showTaskDetail"])
+  },
   watch: {
     taskId: {
       immediate: true,
-      handler (taskId) {
-        if (taskId != 0) {
+      handler(taskId) {
+        if (taskId !== 0) {
           this.selectTask(taskId);
         }
       }
     },
     projectId: {
-      handler (projectId) {
-        this.$store.dispatch('setCurrentProjectId', this.projectId);    
+      handler() {
+        this.$store.dispatch("setCurrentProjectId", this.projectId);
       }
     }
   },
-
-  data () {
-    return {
-      savedProjectName: '',
-      editProjectName: false,
-      debouncedFilter: '',
-      showDeleteTaskDialog: false,
-    }
+  mounted() {
+    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$events.listen("close-task-detail", () => {
+      this.$store.dispatch("selectTask", null);
+      this.$store.dispatch("showTaskDetail", false);
+      this.$router.push({
+        name: "project",
+        params: {
+          organizationId: this.organizationId,
+          projectId: this.projectId
+        }
+      });
+    });
+    this.$events.listen("delete-task", (task) => {
+      this.deleteTask(task);
+    });
   },
+  created() {
+    this.debouncedFilter = debounce((val) => {
+      this.$events.fire("filter-tasks", val);
+    }, 400);
+  },
+  beforeDestroy() {
+    this.$events.off("delete-task");
+    this.$events.off("close-task-detail");
+    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("selectTask", null);
+    this.$store.dispatch("showTaskDetail", false);
+  },
+
   meteor: {
     // Subscriptions
     $subscribe: {
-      'project': function() {
-        return [this.projectId] 
+      project() {
+        return [this.projectId];
       },
-      'user': function() {
+      user() {
         return [];
       }
     },
-    project () {
-      if (this.taskId != 0) {
+    project() {
+      if (this.taskId !== 0) {
         this.selectTask(this.taskId);
       }
       const project = Projects.findOne();
@@ -104,16 +116,16 @@ export default {
       }
       return project;
     },
-    user () {
+    user() {
       return Meteor.user();
     }
   },
   methods: {
-    selectTask (taskId) {
-      var selectedTask = Tasks.findOne({_id: taskId});
+    selectTask(taskId) {
+      const selectedTask = Tasks.findOne({ _id: taskId });
       if (selectedTask) {
-        this.$store.dispatch('selectTask', selectedTask);
-        this.$store.dispatch('showTaskDetail', true);
+        this.$store.dispatch("selectTask", selectedTask);
+        this.$store.dispatch("showTaskDetail", true);
       }
     },
 
@@ -123,20 +135,20 @@ export default {
 
     getBackgroundUrl(user) {
       if (user && user.profile) {
-        const background = user.profile.background;
+        const { background } = user.profile;
         if (background) {
           return `background-image: url('${background}');`;
         }
       }
+      return null;
     },
 
-
-    deleteTask (task) {
+    deleteTask(task) {
       this.$confirm(this.$t("Do you really want to delete this task?"), {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Move to trash")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call("tasks.remove", task._id);
           this.$events.fire("close-task-detail");
@@ -144,24 +156,24 @@ export default {
       });
     }
   }
-}
+};
 </script>
 
 <style scoped>
 ::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 7px;
+  -webkit-appearance: none;
+  width: 7px;
 }
 ::-webkit-scrollbar-thumb {
-    border-radius: 4px;
-    background-color: rgba(0,0,0,.5);
-    -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
+  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
 }
-
 
 .project {
   display: flex;
-  min-height:0;
+  min-height: 0;
   height: 100%;
   flex-direction: column;
   position: relative;
@@ -170,9 +182,9 @@ export default {
 
 .project-wrapper {
   display: flex;
-  min-height:0;
+  min-height: 0;
   flex-direction: column;
-  flex:1;
+  flex: 1;
   position: relative;
 }
 
@@ -198,7 +210,6 @@ export default {
   }
 }
 
-
 .container-wrapper {
   overflow-y: hidden;
   height: 100%;
@@ -215,7 +226,7 @@ export default {
   flex-direction: column;
 }
 
-@media (max-width: 600px) { 
+@media (max-width: 600px) {
   .container-wrapper {
     min-height: 100vh;
   }
@@ -228,5 +239,4 @@ export default {
 .flex1 {
   flex: 1;
 }
-
 </style>

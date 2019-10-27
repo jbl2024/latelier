@@ -3,60 +3,69 @@
     <v-layout row class="durations">
       <v-flex xs6>
         <v-text-field
+          v-model="size"
           :label="$t('Size')"
           class="text"
           type="number"
           prepend-icon="mdi-timer"
           :readonly="loading"
-          v-model="size"
-        ></v-text-field>
+        />
       </v-flex>
       <v-flex xs6>
         <v-text-field
+          v-model="spent"
           :label="$t('Spent')"
           class="text"
           type="number"
           prepend-icon="mdi-timelapse"
           :readonly="loading"
-          v-model="spent"
-        ></v-text-field>
+        />
       </v-flex>
     </v-layout>
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import debounce from "lodash/debounce";
 
 export default {
-  name: "task-estimations-in-detail",
+  name: "TaskEstimationsInDetail",
   i18n: {
     messages: {
       en: {
-        "Size": "Size",
-        "Spent": "Spent"
+        Size: "Size",
+        Spent: "Spent"
       },
       fr: {
-        "Size": "Durée",
-        "Spent": "Réalisé"
+        Size: "Durée",
+        Spent: "Réalisé"
       }
     }
   },
   props: {
     task: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {
+      size: null,
+      spent: null,
+      loading: false
+    };
   },
   watch: {
     task: {
       immediate: true,
       handler(task) {
         if (task && task.estimation) {
-          if (this.size !== task.estimation.size) this.size = task.estimation.size;
-          if (this.spent !== task.estimation.spent) this.spent = task.estimation.spent;
+          if (this.size !== task.estimation.size) {
+            this.size = task.estimation.size;
+          }
+          if (this.spent !== task.estimation.spent) {
+            this.spent = task.estimation.spent;
+          }
         } else {
           this.size = null;
           this.spent = null;
@@ -72,32 +81,46 @@ export default {
       this.debounceSpent();
     }
   },
-  data() {
-    return {
-      size: null,
-      spent: null,
-      loading: false
-    };
-  },
   methods: {
-    debounceSize: debounce(function () {
+    debounceSize: debounce(function() {
       if (!this.task._id) return;
-      if (this.task.estimation && this.task.estimation.size && this.task.estimation.size === parseInt(this.size, 10)) return;
-      
+      if (this.task.estimation
+        && this.task.estimation.size
+        && this.task.estimation.size === parseInt(this.size, 10)
+      ) {
+        return;
+      }
+
       this.loading = true;
-      Meteor.call("tasks.updateSize", this.task._id, parseInt(this.size, 10), (error, result) => {
-        this.loading = false;
-      });
+      Meteor.call(
+        "tasks.updateSize",
+        this.task._id,
+        parseInt(this.size, 10),
+        () => {
+          this.loading = false;
+        }
+      );
     }, 500),
 
-    debounceSpent: debounce(function () {
+    debounceSpent: debounce(function() {
       if (!this.task._id) return;
-      if (this.task.estimation && this.task.estimation.spent && this.task.estimation.spent === parseInt(this.spent, 10)) return;
+      if (
+        this.task.estimation
+        && this.task.estimation.spent
+        && this.task.estimation.spent === parseInt(this.spent, 10)
+      ) {
+        return;
+      }
 
       this.loading = true;
-      Meteor.call("tasks.updateSpent", this.task._id, parseInt(this.spent, 10), (error, result) => {
-        this.loading = false;
-      });
+      Meteor.call(
+        "tasks.updateSpent",
+        this.task._id,
+        parseInt(this.spent, 10),
+        () => {
+          this.loading = false;
+        }
+      );
     }, 500)
   }
 };
