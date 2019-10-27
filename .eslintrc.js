@@ -1,6 +1,7 @@
 module.exports = {
   extends: ["@meteorjs/eslint-config-meteor", "plugin:vue/recommended"],
   rules: {
+    "object-shorthand": "off",
     "vue/no-unused-vars": "off",
     "import/no-unresolved": "off",
     "no-confusing-arrow": "off",
