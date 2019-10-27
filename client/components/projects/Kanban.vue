@@ -2,7 +2,7 @@
   <div
     ref="kanban"
     v-dragscroll="scrollEnabled"
-    class="kanban"
+    class="kanban noselect"
     @click="(e) => hideProperties(e)"
     @mousemove="onMouseMove"
   >
