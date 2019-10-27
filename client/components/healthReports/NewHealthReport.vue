@@ -1,41 +1,60 @@
 <template>
   <div class="new-health-report">
-    <select-date @select="onSelectDate" :active.sync="showSelectDate" :disableTime="true"></select-date>
+    <select-date
+      :active.sync="showSelectDate"
+      :disable-time="true"
+      @select="onSelectDate"
+    />
 
-    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
+    <v-dialog
+      v-model="showDialog"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
       <v-card>
         <v-toolbar dark color="primary">
-          <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+          <v-btn
+            v-shortkey="['esc']"
+            icon
+            text
+            @click="close()"
+            @shortkey="close()"
+          >
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
-            <span>{{ $t('New report') }} </span>
+            <span>{{ $t("New report") }} </span>
           </v-toolbar-title>
         </v-toolbar>
         <v-card-text>
-          <v-form v-model="valid" v-on:submit.prevent>
+          <v-form v-model="valid" @submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required></v-text-field>
+                <v-text-field
+                  v-model="name"
+                  :rules="nameRules"
+                  :label="$t('Name')"
+                  required
+                />
               </v-flex>
               <v-flex xs12>
                 <v-list two-line class="elevation-1 date">
-                    <v-list-item @click="showSelectDate = true">
-                      <v-list-item-avatar>
-                        <v-icon>mdi-calendar-today</v-icon>
-                      </v-list-item-avatar>
-                      <v-list-item-content>
-                        <v-list-item-title>{{ $t('Date') }}</v-list-item-title>
-                        <v-list-item-subtitle>
-                          <span v-show="date">{{ formatDate(date) }}</span>
-                        </v-list-item-subtitle>
-                      </v-list-item-content>
-                      <v-list-item-action>
-                        <v-btn text icon @click.stop="onSelectDate(null)">
-                          <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                      </v-list-item-action>
-                    </v-list-item>
+                  <v-list-item @click="showSelectDate = true">
+                    <v-list-item-avatar>
+                      <v-icon>mdi-calendar-today</v-icon>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>{{ $t("Date") }}</v-list-item-title>
+                      <v-list-item-subtitle>
+                        <span v-show="date">{{ formatDate(date) }}</span>
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn text icon @click.stop="onSelectDate(null)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
                 </v-list>
               </v-flex>
               <v-flex xs12>
@@ -45,27 +64,37 @@
                   :label="$t('Project health')"
                 >
                   <template slot="selection" slot-scope="data">
-                      <img :src="getIcon(data.item)">
+                    <img :src="getIcon(data.item)">
                   </template>
                   <template slot="item" slot-scope="data">
                     <img :src="getIcon(data.item)">
                   </template>
-
                 </v-combobox>
-              </v-flex>              
-
-              <v-flex xs12>
-                <label>{{ $t('Description') }}</label>
-                <rich-editor v-model="description" ref="description" class="editor"></rich-editor>
               </v-flex>
 
+              <v-flex xs12>
+                <label>{{ $t("Description") }}</label>
+                <rich-editor
+                  ref="description"
+                  v-model="description"
+                  class="editor"
+                />
+              </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="showDialog = false">{{ $t('Cancel') }}</v-btn>
-          <v-btn color="primary" @click="create" :disabled="!valid || !coherent">{{ $t('Create') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="showDialog = false">
+            {{ $t("Cancel") }}
+          </v-btn>
+          <v-btn
+            color="primary"
+            :disabled="!valid || !coherent"
+            @click="create"
+          >
+            {{ $t("Create") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -74,7 +103,6 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { HealthReports } from "/imports/api/healthReports/healthReports.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import moment from "moment";
 
@@ -83,27 +111,27 @@ export default {
   props: {
     projectId: {
       type: String,
-      defaultValue: "0"
+      default: "0"
     }
   },
   i18n: {
     messages: {
-      en: { 
+      en: {
         "New report": "New report",
-        "Date": "Date",
-        "None": "None",
+        Date: "Date",
+        None: "None",
         "Weekly point": "Weekly point",
-        "Project health": "Project health",
+        "Project health": "Project health"
       },
       fr: {
         "New report": "Nouveau bulletin",
-        "Date": "Date",
-        "None": "Aucune",
+        Date: "Date",
+        None: "Aucune",
         "Weekly point": "Point hebdomadaire",
-        "Project health": "Santé du projet",
+        "Project health": "Santé du projet"
       }
-    }  
-  },    
+    }
+  },
   data() {
     return {
       showDialog: false,
@@ -114,11 +142,11 @@ export default {
       name: "",
       weather: "sunny",
       nameRules: [
-        v => !!v || this.$t('Name is mandatory'),
-        v => v.length > 1 || this.$t('Name is too short')
+        (v) => !!v || this.$t("Name is mandatory"),
+        (v) => v.length > 1 || this.$t("Name is too short")
       ],
       description: "",
-      items: ['sunny', 'cloudy', 'storm']
+      items: ["sunny", "cloudy", "storm"]
     };
   },
   methods: {
@@ -131,10 +159,10 @@ export default {
 
       this.$nextTick(() => this.$refs.description.focus());
     },
-    close () {
+    close() {
       this.showDialog = false;
     },
-    onSelectDate (date) {
+    onSelectDate(date) {
       this.date = date;
       this.checkConsistency();
     },
@@ -148,18 +176,18 @@ export default {
     create() {
       this.showDialog = false;
       Meteor.call(
-        "healthReports.create", {
+        "healthReports.create",
+        {
           projectId: this.projectId,
           name: this.name,
           description: this.description,
           date: this.date,
           weather: this.weather
         },
-        (error, result) => {
+        (error) => {
           this.$emit("created");
           if (error) {
             this.$store.dispatch("notifyError", error);
-            return;
           }
         }
       );
@@ -176,5 +204,4 @@ export default {
 .date {
   margin-bottom: 24px;
 }
-
 </style>

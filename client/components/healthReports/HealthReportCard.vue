@@ -1,17 +1,27 @@
 <template>
-  <v-card @click="show = !show" class="card">
-    <edit-health-report ref="editHealthReport" :report="selectedReport" @updated="$emit('updated')"></edit-health-report>
+  <v-card class="card" @click="show = !show">
+    <edit-health-report
+      ref="editHealthReport"
+      :report="selectedReport"
+      @updated="$emit('updated')"
+    />
     <v-card-title primary-title>
       <div>
-        <div class="headline">{{ report.name }}</div>
+        <div class="headline">
+          {{ report.name }}
+        </div>
         <div>{{ formatDate(report.date) }}</div>
       </div>
     </v-card-title>
-    <v-img :src="getIcon(report.weather)" height="125px" contain></v-img>
+    <v-img :src="getIcon(report.weather)" height="125px" contain />
     <v-card-text>
-      <div v-if="report.description" class="ql-editor-view" v-html="report.description"></div>
+      <div
+        v-if="report.description"
+        class="ql-editor-view"
+        v-html="report.description"
+      />
     </v-card-text>
-    <v-divider light></v-divider>
+    <v-divider light />
 
     <v-card-actions color="white">
       <v-btn icon @click.stop="editReport(report)">
@@ -20,15 +30,15 @@
       <v-btn icon @click.stop="deleteReport(report)">
         <v-icon>mdi-delete</v-icon>
       </v-btn>
-      <v-spacer></v-spacer>
+      <v-spacer />
       <v-btn icon @click.stop="show = !show">
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+        <v-icon>{{ show ? "mdi-chevron-up" : "mdi-chevron-down" }}</v-icon>
       </v-btn>
     </v-card-actions>
     <v-slide-y-transition>
       <v-card-text v-show="show">
-        <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-        <task-list :tasks="tasks"></task-list>
+        <v-progress-linear v-if="loading" indeterminate />
+        <task-list :tasks="tasks" />
       </v-card-text>
     </v-slide-y-transition>
   </v-card>
@@ -40,7 +50,10 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 export default {
   mixins: [DatesMixin],
   props: {
-    report: Object
+    report: {
+      type: Object,
+      default: () => {}
+    }
   },
   data() {
     return {
@@ -49,7 +62,7 @@ export default {
       showConfirmDelete: false,
       selectedReport: null,
       tasks: null,
-      taskCount: 0,
+      taskCount: 0
     };
   },
   watch: {
@@ -73,13 +86,14 @@ export default {
         title: this.$t("Deletion is permanent"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
-            "healthReports.remove", {
-              id: report._id,
+            "healthReports.remove",
+            {
+              id: report._id
             },
-            (error, result) => {
+            (error) => {
               this.$emit("updated");
               if (error) {
                 this.$store.dispatch("notifyError", error);
