@@ -75,7 +75,7 @@ export default {
       upload.on("end", function(error, fileObj) {
         that.isUploading = false;
         if (error) {
-          alert("Error during upload: " + error);
+          this.$store.dispatch("notifyError", error);
         } else {
           Meteor.call(
             "avatars.setAvatar",

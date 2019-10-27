@@ -1,51 +1,76 @@
 <template>
-
-  <div class="task-checklist" v-show="showList(task.checklist)">
-
+  <div v-show="showList(task.checklist)" class="task-checklist">
     <div class="progress">
-      <v-progress-linear v-model="completion"></v-progress-linear>
+      <v-progress-linear v-model="completion" />
     </div>
-    <div v-for="item in task.checklist" :key="item._id" class="item" @mouseover="showButtons = item._id" @mouseleave="showButtons = null">
+    <div
+      v-for="item in task.checklist"
+      :key="item._id"
+      class="item"
+      @mouseover="showButtons = item._id"
+      @mouseleave="showButtons = null"
+    >
       <div class="parent">
         <div class="check">
-
           <div class="pretty p-default">
-                <input type="checkbox" v-model="item.checked" :id="item._id" @change="toggleCheckItem(item)" @click.stop=""/>
-                <div class="state p-primary">
-                    <label>{{ item.name }}</label>
-                </div>
+            <input
+              :id="item._id"
+              v-model="item.checked"
+              type="checkbox"
+              @change="toggleCheckItem(item)"
+              @click.stop=""
+            >
+            <div class="state p-primary">
+              <label>{{ item.name }}</label>
+            </div>
           </div>
-          
         </div>
-        <div class="right" v-show="showButtons === item._id">
-          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onConvert();}">mdi-format-list-bulleted</v-icon>
-          <v-icon small @click="event => { event.stopPropagation(); selectedItem = item; onDelete();}">mdi-delete</v-icon>
+        <div v-show="showButtons === item._id" class="right">
+          <v-icon
+            small
+            @click="
+              (event) => {
+                event.stopPropagation();
+                selectedItem = item;
+                onConvert();
+              }
+            "
+          >
+            mdi-format-list-bulleted
+          </v-icon>
+          <v-icon
+            small
+            @click="
+              (event) => {
+                event.stopPropagation();
+                selectedItem = item;
+                onDelete();
+              }
+            "
+          >
+            mdi-delete
+          </v-icon>
         </div>
-        <div class="clear"></div>
+        <div class="clear" />
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
-
 export default {
-  name: "task-checklist",
+  name: "TaskChecklist",
   i18n: {
     messages: {
       en: {
         "Convert element to task?": "Convert element to task?",
         "Delete element?": "Delete element?",
-        "Convert": "Convert",
+        Convert: "Convert"
       },
       fr: {
         "Convert element to task?": "Transformer en tâche ?",
         "Delete element?": "Supprimer l'élément ?",
-        "Convert": "Convertir",
+        Convert: "Convertir"
       }
     }
   },
@@ -55,8 +80,17 @@ export default {
       value: false
     },
     task: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {
+      editNewItem: false,
+      selectedItem: {},
+      showButtons: null,
+      completion: 75
+    };
   },
   watch: {
     task: {
@@ -68,22 +102,14 @@ export default {
         }
         const totalItems = task.checklist.length;
         let completedItems = 0;
-        task.checklist.map(item => {
+        task.checklist.forEach((item) => {
           if (item.checked) {
-            completedItems = completedItems + 1; 
+            completedItems += 1;
           }
-        })
+        });
         this.completion = 100 * (completedItems / totalItems);
       }
     }
-  },
-  data() {
-    return {
-      editNewItem: false,
-      selectedItem: {},
-      showButtons: null,
-      completion: 75,
-    };
   },
   methods: {
     showList(checklist) {
@@ -118,9 +144,13 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Convert")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
-          Meteor.call("tasks.convertItemToTask", this.task._id, this.selectedItem._id);
+          Meteor.call(
+            "tasks.convertItemToTask",
+            this.task._id,
+            this.selectedItem._id
+          );
         }
       });
     },
@@ -130,9 +160,13 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
-          Meteor.call("tasks.removeChecklistItem", this.task._id, this.selectedItem._id);
+          Meteor.call(
+            "tasks.removeChecklistItem",
+            this.task._id,
+            this.selectedItem._id
+          );
         }
       });
     }
@@ -196,9 +230,6 @@ pre {
   white-space: pre-wrap;
 }
 
-.delete-button {
-}
-
 .empty-state {
   transition: none;
 }
@@ -240,8 +271,8 @@ pre {
   background-color: white;
 }
 .pretty {
-    white-space: normal !important;
-    max-width: 200px;
+  white-space: normal !important;
+  max-width: 200px;
 }
 
 @media (max-width: 600px) {
@@ -250,17 +281,13 @@ pre {
   }
 }
 
-
-.pretty .state label{
-      text-indent: 0;
-      padding-left: 2rem;
+.pretty .state label {
+  text-indent: 0;
+  padding-left: 2rem;
 }
 
-.pretty .state label:after, 
-.pretty .state label:before{
-     top: 0;
+.pretty .state label:after,
+.pretty .state label:before {
+  top: 0;
 }
-
-
-
 </style>

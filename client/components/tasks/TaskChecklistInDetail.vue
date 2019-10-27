@@ -1,42 +1,64 @@
 <template>
-  <div class="task-checklist-in-detail" v-show="showList(task.checklist)" @click.stop>
+  <div
+    v-show="showList(task.checklist)"
+    class="task-checklist-in-detail"
+    @click.stop
+  >
     <div class="progress">
-      <v-progress-linear v-model="completion"></v-progress-linear>
+      <v-progress-linear v-model="completion" />
     </div>
 
     <v-simple-table
-      class="tasks-wrapper elevation-1"
       v-if="task.checklist && task.checklist.length > 0"
+      class="tasks-wrapper elevation-1"
     >
       <tbody v-sortable-list="objectSortOccurred">
-        <tr v-for="item in task.checklist" :key="item._id">
+        <tr v-for="checkItem in task.checklist" :key="checkItem._id">
           <td class="check">
             <div class="checkbox">
               <div class="pretty p-svg p-curve">
                 <input
+                  v-model="checkItem.checked"
                   type="checkbox"
-                  v-model="item.checked"
-                  @change="toggleCheckItem(item)"
-                  @click="e => e.stopPropagation()"
+                  @change="toggleCheckItem(checkItem)"
+                  @click="(e) => e.stopPropagation()"
                 >
                 <div class="state p-primary">
                   <svg class="svg svg-icon" viewBox="0 0 20 20">
+                    <!-- eslint-disable -->
                     <path
                       d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
                       style="stroke: white;fill:white;"
                     ></path>
+                    <!-- eslint-enable -->
                   </svg>
-                  <label></label>
+                  <label />
                 </div>
               </div>
             </div>
           </td>
           <td>
-            <input type="text" v-model.lazy="item.name" class="edit" v-on:change="updateItem(item)" />
+            <input
+              v-model.lazy="checkItem.name"
+              type="text"
+              class="edit"
+              @change="updateItem(checkItem)"
+            >
           </td>
           <td class="sortHandle text-right">
-            <v-icon style="cursor: row-resize">mdi-drag-vertical</v-icon>
-            <v-btn small icon ripple @click="event => { deleteItem(event, item)}">
+            <v-icon style="cursor: row-resize">
+              mdi-drag-vertical
+            </v-icon>
+            <v-btn
+              small
+              icon
+              ripple
+              @click="
+                (event) => {
+                  deleteItem(event, checkItem);
+                }
+              "
+            >
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </td>
@@ -45,29 +67,25 @@
     </v-simple-table>
 
     <v-text-field
+      ref="newItem"
+      v-model="item"
       class="add-item"
       preprend-icon="mdi-checkbox-blank-outline"
       :label="$t('New item')"
-      v-model="item"
-      ref="newItem"
       @keyup.enter="addItem"
-    ></v-text-field>
+    />
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
-import moment from "moment";
 import "moment/locale/fr";
 import * as Sortable from "sortablejs";
 
 export default {
-  name: "task-checklist-in-detail",
+  name: "TaskChecklistInDetail",
   directives: {
     sortableList: {
-      bind(el, binding, vnode) {
+      bind(el, binding) {
         const options = {
           handle: ".sortHandle",
           animation: 150,
@@ -85,8 +103,16 @@ export default {
       value: false
     },
     task: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
+  },
+  data() {
+    return {
+      editNewItem: false,
+      item: "",
+      completion: 0
+    };
   },
   watch: {
     task: {
@@ -98,21 +124,14 @@ export default {
         }
         const totalItems = task.checklist.length;
         let completedItems = 0;
-        task.checklist.map(item => {
+        task.checklist.forEach((item) => {
           if (item.checked) {
-            completedItems = completedItems + 1;
+            completedItems += 1;
           }
         });
         this.completion = 100 * (completedItems / totalItems);
       }
     }
-  },
-  data() {
-    return {
-      editNewItem: false,
-      item: "",
-      completion: 0
-    };
   },
   methods: {
     showList(checklist) {
@@ -132,7 +151,7 @@ export default {
         "tasks.addChecklistItem",
         this.task._id,
         this.item,
-        (error, result) => {
+        (error) => {
           if (!error) {
             this.item = "";
           }
@@ -148,7 +167,7 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
         }
@@ -176,7 +195,7 @@ export default {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Convert")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
         }
@@ -229,5 +248,4 @@ export default {
   width: 48px;
   padding-right: 0;
 }
-
 </style>

@@ -1,5 +1,9 @@
 <template>
-  <v-avatar :size="size" :class="isOnline(userId)" :title="getEmailForUser(userId)">
+  <v-avatar
+    :size="size"
+    :class="isOnline(userId)"
+    :title="getEmailForUser(userId)"
+  >
     <template v-if="avatar">
       <img :src="avatar" :alt="formatUserLetters(userId)">
     </template>
@@ -12,14 +16,14 @@
 <script>
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
-import moment from "moment";
 import "moment/locale/fr";
 
 export default {
   mixins: [usersMixin],
   props: {
     userId: {
-      type: String | Object
+      type: [String, Object],
+      default: null
     },
     small: {
       type: Boolean,
@@ -35,20 +39,21 @@ export default {
     }
   },
   computed: {
-    size () {
+    size() {
       if (this.big) {
         return 128;
-      } else if (this.small) {
+      }
+      if (this.small) {
         return 30;
-      } else if (this.xsmall) {
+      }
+      if (this.xsmall) {
         return 24;
       }
       return 40;
     },
-    avatar () {
+    avatar() {
       return this.getAvatarForUser(this.userId);
     }
   }
-
 };
 </script>

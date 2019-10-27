@@ -1,28 +1,39 @@
 <template>
+  <!-- eslint-disable -->
   <div class="select-user">
     <v-dialog
       :value="active"
-      @input="$emit('update:active')"
       max-width="620"
       :fullscreen="$vuetify.breakpoint.xsOnly"
+      @input="$emit('update:active')"
     >
       <v-card>
-        <v-card-title class="headline grey lighten-2">{{ $t('Select user')}}</v-card-title>
+        <v-card-title class="headline grey lighten-2">
+          {{ $t("Select user") }}
+        </v-card-title>
         <v-card-text>
-          <v-tabs ref="tabs" v-if="active">
-            <v-tab v-if="!hideProject && project">{{ $t('Project') }}</v-tab>
-            <v-tab v-if="project && project.organizationId">{{ $t('Organization') }}</v-tab>
-            <v-tab v-if="isAdmin">{{ $t('Find')}}</v-tab>
+          <v-tabs v-if="active" ref="tabs">
+            <v-tab v-if="!hideProject && project">
+              {{ $t("Project") }}
+            </v-tab>
+            <v-tab v-if="project && project.organizationId">
+              {{ $t("Organization") }}
+            </v-tab>
+            <v-tab v-if="isAdmin">
+              {{ $t("Find") }}
+            </v-tab>
             <v-tab-item v-if="!hideProject && project">
               <div class="flex-container">
                 <v-list class="flex1" subheader>
                   <template v-for="user in projectUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
-                        <author-avatar :user-id="user"></author-avatar>
+                        <author-avatar :user-id="user" />
                       </v-list-item-avatar>
                       <v-list-item-content class="pointer">
-                        <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                        <v-list-item-title>
+                          {{ formatUser(user) }}
+                        </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </template>
@@ -35,10 +46,12 @@
                   <template v-for="user in organizationUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
                       <v-list-item-avatar :color="isOnline(user)">
-                        <author-avatar :user-id="user"></author-avatar>
+                        <author-avatar :user-id="user" />
                       </v-list-item-avatar>
                       <v-list-item-content class="pointer">
-                        <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                        <v-list-item-title>
+                          {{ formatUser(user) }}
+                        </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </template>
@@ -50,14 +63,14 @@
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
+                    v-model="search"
                     :label="$t('Search') + '...'"
                     single-line
-                    v-model="search"
                     append-icon="mdi-magnify"
                     clearable
                     autofocus
-                    v-on:input="debouncedFilter"
-                  ></v-text-field>
+                    @input="debouncedFilter"
+                  />
                 </div>
                 <template v-if="users.length > 0 && search.length > 0">
                   <div class="flex1">
@@ -65,10 +78,12 @@
                       <template v-for="user in users">
                         <v-list-item :key="user._id" @click="selectUser(user)">
                           <v-list-item-avatar :color="isOnline(user)">
-                            <author-avatar :user-id="user"></author-avatar>
+                            <author-avatar :user-id="user" />
                           </v-list-item-avatar>
                           <v-list-item-content>
-                            <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+                            <v-list-item-title>
+                              {{ formatUser(user) }}
+                            </v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
                       </template>
@@ -80,18 +95,26 @@
                         v-if="pagination.totalPages > 0"
                         v-model="page"
                         :length="pagination.totalPages"
-                      ></v-pagination>
+                      />
                     </div>
                   </div>
                 </template>
-                <template v-if="users.length === 0 && search.length > 0 && isEmail(search)">
+                <template
+                  v-if="
+                    users.length === 0 && search.length > 0 && isEmail(search)
+                  "
+                >
                   <div class="flex1 invite">
                     <empty-state
-                      :description="$t('No user found, do you want to send an invitation?')"
+                      :description="
+                        $t('No user found, do you want to send an invitation?')
+                      "
                       xs
                       illustration="empty"
                     >
-                      <v-btn primary @click="sendInvitation(search)">{{ $t('Send invitation') }}</v-btn>
+                      <v-btn primary @click="sendInvitation(search)">
+                        {{ $t("Send invitation") }}
+                      </v-btn>
                     </empty-state>
                   </div>
                 </template>
@@ -99,19 +122,21 @@
             </v-tab-item>
           </v-tabs>
         </v-card-text>
-        <v-divider></v-divider>
+        <v-divider />
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="closeDialog">{{ this.$t('Cancel') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="closeDialog">
+            {{ this.$t("Cancel") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
   </div>
+  <!-- eslint-enable -->
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
@@ -123,47 +148,35 @@ export default {
       en: {
         "Select user": "Select user",
         "Available users": "Available users",
-        "Find": "Find",
+        Find: "Find",
         "Send invitation": "Send invitation",
         "Invite user?": "Invite user?",
         "Invitation sent": "Invitation sent",
-        "No user found, do you want to send an invitation?": "No user found, do you want to send an invitation?"
+        "No user found, do you want to send an invitation?":
+          "No user found, do you want to send an invitation?"
       },
       fr: {
         "Select user": "Selectionner un utilisateur",
         "Available users": "Utilisateurs disponibles",
-        "Find": "Rechercher",
+        Find: "Rechercher",
         "Send invitation": "Envoyer une invitation",
         "Invite user?": "Inviter l'utilisateur ?",
         "Invitation sent": "Invitation envoyée",
-        "No user found, do you want to send an invitation?": "Aucun utilisateur trouvé, voulez-vous envoyer une invitation ?"
-      }
-    }
-  },
-  created() {
-    this.debouncedFilter = debounce(val => {
-      this.search = val;
-    }, 400);
-  },
-  watch: {
-    page(page) {
-      this.findUsers();
-    },
-    search() {
-      if (this.page > 1) {
-        this.page = 1;
-      } else {
-        this.findUsers();
+        "No user found, do you want to send an invitation?":
+          "Aucun utilisateur trouvé, voulez-vous envoyer une invitation ?"
       }
     }
   },
   props: {
     active: Boolean,
-    hideProject: { 
-      type :Boolean,
+    hideProject: {
+      type: Boolean,
       default: false
     },
-    project: Object,
+    project: {
+      type: Object,
+      default: () => {}
+    },
     isAdmin: {
       type: Boolean,
       default: false
@@ -186,10 +199,11 @@ export default {
     };
   },
   computed: {
-     projectUsers() {
+    projectUsers() {
       if (this.project) {
         return Meteor.users.find({ _id: { $in: this.project.members } });
       }
+      return null;
     },
     organizationUsers() {
       if (this.project && this.project.organizationId) {
@@ -199,11 +213,29 @@ export default {
           return Meteor.users.find({ _id: { $in: members } });
         }
       }
+      return null;
     }
+  },
+  watch: {
+    page() {
+      this.findUsers();
+    },
+    search() {
+      if (this.page > 1) {
+        this.page = 1;
+      } else {
+        this.findUsers();
+      }
+    }
+  },
+  created() {
+    this.debouncedFilter = debounce((val) => {
+      this.search = val;
+    }, 400);
   },
   methods: {
     findUsers() {
-      const users = Meteor.call(
+      Meteor.call(
         "users.findUsers",
         this.page,
         this.search,
@@ -217,7 +249,7 @@ export default {
           this.pagination.totalPages = this.calculateTotalPages();
 
           this.users = result.data;
-          this.users.map(user => {
+          this.users.forEach((user) => {
             if (!user.profile) {
               user.profile = {
                 firstName: "",
@@ -231,10 +263,11 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      )
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
+      ) {
         return 0;
+      }
 
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
@@ -251,7 +284,7 @@ export default {
     },
 
     isEmail(email) {
-      var re = /\S+@\S+\.\S+/;
+      const re = /\S+@\S+\.\S+/;
       return re.test(email);
     },
 
@@ -260,7 +293,7 @@ export default {
         title: email,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Send invitation")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call("users.invite", email, (error, result) => {
             if (error) {

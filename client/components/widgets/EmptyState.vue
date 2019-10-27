@@ -2,29 +2,49 @@
   <div class="empty-state">
     <div class="empty-state-container">
       <div>
-        <v-img :src="getIllustrationUrl()" v-if="illustration" :class="getIllustrationClass()"></v-img>
-        <v-icon class="icon" color="grey" v-if="icon">{{icon}}</v-icon>
+        <v-img
+          v-if="illustration"
+          :src="getIllustrationUrl()"
+          :class="getIllustrationClass()"
+        />
+        <v-icon v-if="icon" class="icon" color="grey">
+          {{ icon }}
+        </v-icon>
       </div>
       <div class="label">
-        {{ label}}
+        {{ label }}
       </div>
       <div class="description">
-          {{ description}}
+        {{ description }}
       </div>
-      <slot></slot>
+      <slot />
     </div>
-  </div>    
+  </div>
 </template>
 
 <script>
-
 export default {
   props: {
-    label: String,
-    description: String,
-    rounded: Boolean,
-    icon: String,
-    illustration: String,
+    label: {
+      type: String,
+      default: ""
+    },
+    description: {
+      type: String,
+      default: ""
+    },
+    rounded: {
+      type: Boolean,
+      default: false
+    },
+    icon: {
+      type: String,
+      default: ""
+    },
+    illustration: {
+      type: String,
+      default: ""
+    },
     small: {
       type: Boolean,
       default: false
@@ -34,23 +54,21 @@ export default {
       default: false
     }
   },
-  data () {
-    return {
-    }
+  data() {
+    return {};
   },
   methods: {
-    getIllustrationUrl () {
+    getIllustrationUrl() {
       return Meteor.absoluteUrl(`/illustrations/${this.illustration}.svg`);
     },
     getIllustrationClass() {
-      return `illustration ${this.small ? "small": ""} ${this.xs ? "xs": ""}`;
+      return `illustration ${this.small ? "small" : ""} ${this.xs ? "xs" : ""}`;
     }
   }
-}
+};
 </script>
 
 <style scoped>
-
 .empty-state {
   text-align: center;
 }
@@ -90,5 +108,4 @@ export default {
   font-size: 16px;
   line-height: 24px;
 }
-
 </style>

@@ -1,21 +1,52 @@
 <template>
-  <div class="tasks dragscroll" ref="tasks">
+  <div ref="tasks" class="tasks dragscroll">
     <template v-for="task in tasks">
-      <task :task="task" :key="task._id" class="task" v-if="showCompleted(task, showHiddenTasks)" :data-id="task._id"></task>
+      <task
+        v-if="showCompleted(task, showHiddenTasks)"
+        :key="task._id"
+        :task="task"
+        class="task"
+        :data-id="task._id"
+      />
     </template>
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
 import * as Sortable from "sortablejs";
 
 export default {
+  props: {
+    projectId: {
+      type: String,
+      default: "0"
+    },
+    listId: {
+      type: String,
+      default: "0"
+    },
+    showHiddenTasks: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      filterName: "",
+      sortable: null
+    };
+  },
+  computed: {
+    ...mapState("projectFilters", {
+      selectedLabels: (state) => state.selectedLabels,
+      selectedAssignedTos: (state) => state.selectedAssignedTos,
+      selectedUpdatedBy: (state) => state.selectedUpdatedBy
+    })
+  },
   mounted() {
-    this.$events.listen("filter-tasks", name => {
+    this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
 
@@ -37,33 +68,6 @@ export default {
     this.$events.off("filter-tasks");
     this.sortable.destroy();
   },
-  props: {
-    projectId: {
-      type: String,
-      default: "0"
-    },
-    listId: {
-      type: String,
-      default: "0"
-    },
-    showHiddenTasks: {
-      type: Boolean,
-      default: false
-    }
-  },
-  computed: {
-    ...mapState("projectFilters", {
-      selectedLabels: state => state.selectedLabels,
-      selectedAssignedTos: state => state.selectedAssignedTos,
-      selectedUpdatedBy: state => state.selectedUpdatedBy
-    })
-  },
-  data() {
-    return {
-      filterName: "",
-      sortable: null,
-    };
-  },
   meteor: {
     $subscribe: {},
     tasks: {
@@ -77,22 +81,20 @@ export default {
       },
       deep: false,
       update({ name, labels, assignedTos, updatedBy }) {
-        var query = {
+        const query = {
           listId: this.listId
         };
 
         if (name && name.length > 0) {
           query.name = {
-            $regex: ".*" + name + ".*",
+            $regex: `.*${name}.*`,
             $options: "i"
           };
         }
 
         if (labels && labels.length > 0) {
           query.labels = {
-            $in: labels.map(label => {
-              return label._id;
-            })
+            $in: labels.map((label) => label._id)
           };
         }
 
@@ -121,7 +123,6 @@ export default {
     },
 
     newTaskInline() {
-      var that = this;
       Meteor.call(
         "tasks.insert",
         this.projectId,
@@ -152,16 +153,10 @@ export default {
           nextTask.order - 1
         );
       } else {
-        Meteor.call(
-          "tasks.move",
-          this.projectId,
-          this.listId,
-          taskId
-        );
+        Meteor.call("tasks.move", this.projectId, this.listId, taskId);
       }
-    },
+    }
   }
-
 };
 </script>
 

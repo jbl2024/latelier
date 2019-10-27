@@ -1,17 +1,23 @@
 <template>
-
-<div class="task-labels">
-  <div :title="label.name" :class="{ label: true, show: showLabelText }" v-for="label in labels" :key="label._id" :style="getColor(label)" @click.stop="toggleLabel">
-    <template v-if="showLabelText">{{ label.name }}</template>
+  <div class="task-labels">
+    <div
+      v-for="label in labels"
+      :key="label._id"
+      :title="label.name"
+      :class="{ label: true, show: showLabelText }"
+      :style="getColor(label)"
+      @click.stop="toggleLabel"
+    >
+      <template v-if="showLabelText">
+        {{ label.name }}
+      </template>
+    </div>
   </div>
-</div>
-
 </template>
 
 <script>
-import { Labels } from '/imports/api/labels/labels.js'
-import { Projects } from '/imports/api/projects/projects.js'
-import { colors } from '/imports/colors.js'
+import { Labels } from "/imports/api/labels/labels.js";
+import { colors } from "/imports/colors.js";
 
 import { mapState } from "vuex";
 
@@ -19,51 +25,44 @@ export default {
   props: {
     task: {
       type: Object,
-      default: {}
+      default: () => {}
     }
   },
   computed: {
-    ...mapState([
-      "showLabelText",
-    ]),
-  },
-  data() {
-    return {
-    };
+    ...mapState(["showLabelText"])
   },
   meteor: {
     labels: {
-      params () {
+      params() {
         return {
           id: this.task
         };
       },
       deep: true,
-      update ({task}) {
-        var labelIds = this.task.labels || [];
-        return Labels.find({_id: {$in: labelIds}}, {sort: {name: 1}});
+      update() {
+        const labelIds = this.task.labels || [];
+        return Labels.find({ _id: { $in: labelIds } }, { sort: { name: 1 } });
       }
     }
   },
   methods: {
-    getColor (label) {
+    getColor(label) {
       return `
         background-color: ${label.color};
         color: ${colors.getLabelColor(label.color)}
-      `
+      `;
     },
 
-    toggleLabel (e) {
-      this.$store.dispatch("setShowLabelText", !this.showLabelText)
+    toggleLabel() {
+      this.$store.dispatch("setShowLabelText", !this.showLabelText);
     }
   }
 };
 </script>
 
 <style scoped>
-
 .task-labels {
-  display: flex;  
+  display: flex;
   flex-direction: row;
 }
 
