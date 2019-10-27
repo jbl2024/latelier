@@ -50,7 +50,7 @@
 
         <template v-for="state in projectStates()">
           <v-subheader :key="state.value">
-            {{ item.label }}
+            {{ state.label }}
           </v-subheader>
           <template v-for="item in filterProjectsByState(projects, state.value)">
             <v-list-item :key="item._id" @click="openProject(item._id)">

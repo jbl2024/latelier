@@ -97,7 +97,7 @@ export default {
     $route: {
       deep: true,
       immediate: true,
-      handler: () => {
+      handler: function () {
         const page = this.$router.currentRoute.name;
         if (page !== "project" && page !== "project-task") {
           this.showKanbanLink = true;
