@@ -20,7 +20,8 @@ module.exports = {
         "max": 8,
         "allowFirstLine": true
       }
-    }]    
+    }],
+    "vue/no-v-html": "off" 
   },
   overrides: [
     {
