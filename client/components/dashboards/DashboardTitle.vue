@@ -10,8 +10,8 @@
       prepend-inner-icon="mdi-magnify"
       :label="$t('Search') + '...'"
       class="hidden-sm-and-down align-remaining"
-      v-on:input="debouncedFilter"
-    ></v-text-field>
+      @input="debouncedFilter"
+    />
   </div>
 </template>
 
@@ -19,20 +19,20 @@
 import debounce from "lodash/debounce";
 
 export default {
+  data() {
+    return {
+      savedValue: "",
+      debouncedFilter: ""
+    };
+  },
   created() {
-    this.debouncedFilter = debounce(val => {
+    this.debouncedFilter = debounce((val) => {
       this.$store.dispatch("setDashboardFilter", val);
     }, 400);
   },
   beforeDestroy() {
     this.$store.dispatch("setDashboardFilter", "");
-  },
-  data() {
-    return {
-      savedValue: "",
-      debouncedFilter: "",
-    }
-  },
+  }
 };
 </script>
 
@@ -43,5 +43,4 @@ export default {
   justify-content: space-around;
   flex: 1;
 }
-
 </style>
