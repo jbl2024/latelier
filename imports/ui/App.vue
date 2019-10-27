@@ -1,69 +1,93 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <select-background :active.sync="showSelectBackgroundDialog"></select-background>
-      <task-history :taskId="selectedTask ? selectedTask._id : '0'" :active.sync="showTaskHistory"></task-history>
+      <select-background :active.sync="showSelectBackgroundDialog" />
+      <task-history
+        :task-id="selectedTask ? selectedTask._id : '0'"
+        :active.sync="showTaskHistory"
+      />
 
-      <v-app-bar :clipped-left="$vuetify.breakpoint.lgAndUp" color="primary" dark app fixed clipped-right>
-        <v-app-bar-nav-icon @click.stop="drawer = !drawer" v-show="$vuetify.breakpoint.mdAndDown"></v-app-bar-nav-icon>
+      <v-app-bar
+        :clipped-left="$vuetify.breakpoint.lgAndUp"
+        color="primary"
+        dark
+        app
+        fixed
+        clipped-right
+      >
+        <v-app-bar-nav-icon
+          v-show="$vuetify.breakpoint.mdAndDown"
+          @click.stop="drawer = !drawer"
+        />
         <v-toolbar-title
-          style="width: 300px"
           v-show="currentProjectId == 0 && currentOrganizationId == 0"
+          style="width: 300px"
         >
           <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
 
         <organization-title
           v-if="currentProjectId == 0 && currentOrganizationId != 0"
-          :organizationId="currentOrganizationId"
-        ></organization-title>
-        <dashboard-title v-if="showDashboardTitle"></dashboard-title>
-        <project-title v-if="currentProjectId != 0" :projectId="currentProjectId"></project-title>
-        <v-spacer></v-spacer>
-        <template v-if="$vuetify.breakpoint.lgAndUp">{{ email }}</template>
+          :organization-id="currentOrganizationId"
+        />
+        <dashboard-title v-if="showDashboardTitle" />
+        <project-title
+          v-if="currentProjectId != 0"
+          :project-id="currentProjectId"
+        />
+        <v-spacer />
+        <template v-if="$vuetify.breakpoint.lgAndUp">
+          {{ email }}
+        </template>
         <v-avatar dark>
           <v-menu offset-y eager>
             <template v-slot:activator="{ on }">
-              <v-btn
-                icon
-                v-on="on"
-              >
-                <author-avatar small :user-id="currentUser" v-if="hasAvatar"></author-avatar>
-                <v-icon v-if="!hasAvatar">mdi-account-circle</v-icon>
+              <v-btn icon v-on="on">
+                <author-avatar v-if="hasAvatar" small :user-id="currentUser" />
+                <v-icon v-if="!hasAvatar">
+                  mdi-account-circle
+                </v-icon>
               </v-btn>
-            </template>            
-            <login-menu></login-menu>
+            </template>
+            <login-menu />
           </v-menu>
         </v-avatar>
-        <notification-button></notification-button>
+        <notification-button />
       </v-app-bar>
 
-      <v-hover open-delay="300" v-slot:default="{ hover }">
-      <v-navigation-drawer
-        :clipped="$vuetify.breakpoint.lgAndUp"
-        v-model="drawer"
-        fixed
-        dark
-        left
-        width="270px"
-        class="drawer"
-        :mini-variant="!hover && !$vuetify.breakpoint.xs"
-      >
-        <div class="drawer-wrapper">
-          <organization-menu
-            v-if="currentOrganizationId != 0 && currentProjectId == 0"
-            :organizationId="currentOrganizationId"
-          ></organization-menu>
-          <project-menu v-if="currentProjectId != 0" :organizationId="currentOrganizationId" :projectId="currentProjectId"></project-menu>
-          <project-groups v-if="showCategories" :organizationId="currentOrganizationId"></project-groups>
-          <login-menu></login-menu>
-        </div>
-      </v-navigation-drawer>
+      <v-hover v-slot:default="{ hover }" open-delay="300">
+        <v-navigation-drawer
+          v-model="drawer"
+          :clipped="$vuetify.breakpoint.lgAndUp"
+          fixed
+          dark
+          left
+          width="270px"
+          class="drawer"
+          :mini-variant="!hover && !$vuetify.breakpoint.xs"
+        >
+          <div class="drawer-wrapper">
+            <organization-menu
+              v-if="currentOrganizationId != 0 && currentProjectId == 0"
+              :organization-id="currentOrganizationId"
+            />
+            <project-menu
+              v-if="currentProjectId != 0"
+              :organization-id="currentOrganizationId"
+              :project-id="currentProjectId"
+            />
+            <project-groups
+              v-if="showCategories"
+              :organization-id="currentOrganizationId"
+            />
+            <login-menu />
+          </div>
+        </v-navigation-drawer>
       </v-hover>
 
       <v-navigation-drawer
-        :clipped="$vuetify.breakpoint.lgAndUp"
         v-model="showTaskDetail"
+        :clipped="$vuetify.breakpoint.lgAndUp"
         class="elevation-16"
         fixed
         app
@@ -72,15 +96,16 @@
         stateless
       >
         <v-card>
-          <task-detail :taskId="selectedTask ? selectedTask._id : '0'" :taskObject="selectedTask"></task-detail>
+          <task-detail
+            :task-id="selectedTask ? selectedTask._id : '0'"
+            :task-object="selectedTask"
+          />
         </v-card>
       </v-navigation-drawer>
 
-
-
       <v-content class="main-content">
         <v-container class="page-container" fluid>
-          <router-view></router-view>
+          <router-view />
         </v-container>
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
@@ -94,8 +119,6 @@
 </template>
 
 <script>
-import { Session } from "meteor/session";
-import { Projects } from "/imports/api/projects/projects.js";
 import { mapState } from "vuex";
 
 export default {
@@ -142,8 +165,13 @@ export default {
     },
     hasAvatar() {
       if (Meteor) {
-        return this.currentUser && this.currentUser.profile && this.currentUser.profile.avatar;
+        return (
+          this.currentUser
+          && this.currentUser.profile
+          && this.currentUser.profile.avatar
+        );
       }
+      return false;
     }
   },
   watch: {
@@ -158,7 +186,7 @@ export default {
       }
     },
     windowTitle(title) {
-      document.title = title
+      document.title = title;
     }
   },
   meteor: {
@@ -175,23 +203,17 @@ export default {
           return user.emails[0].address;
         }
       }
-    },
-    notificationsCount() {
-      if (Meteor) {
-        const user = Meteor.user();
-        if (user && user.notifications) {
-          return user.notifications.count;
-        }
-      }
+      return null;
     },
     currentUser() {
       if (Meteor) {
-        return Meteor.user()
+        return Meteor.user();
       }
+      return null;
     },
-    
+
     $subscribe: {
-      user: function() {
+      user() {
         return [];
       }
     }
@@ -203,7 +225,6 @@ export default {
         this.drawer = true;
       }
     }
-
   }
 };
 </script>
@@ -224,7 +245,6 @@ html {
 .list-item--active .list-item__action .icon {
   color: white;
 }
-
 
 /* app theme */
 #app {
@@ -276,20 +296,18 @@ html {
   color: white !important;
 }
 
-.drawer .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
+.drawer
+  .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
   color: #aaa !important;
 }
-
 
 .drawer .v-list-item--active .v-icon {
   color: white !important;
 }
 
-
 @media (min-width: 961px) {
   .drawer {
     top: 64px !important;
-
   }
   .drawer-wrapper {
     position: relative;
@@ -306,12 +324,10 @@ html {
 @media (max-width: 960px) {
   .drawer {
     top: 48px;
-
   }
   .drawer-wrapper {
     position: relative;
     height: calc(100% + 42px);
   }
 }
-
 </style>
