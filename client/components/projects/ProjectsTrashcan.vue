@@ -1,21 +1,31 @@
 <template>
   <div class="projects-trashcan">
-    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly" max-width="640px">
+    <v-dialog
+      v-model="showDialog"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+      max-width="640px"
+    >
       <v-toolbar dark color="primary">
-        <v-btn icon text @click="close()" v-shortkey="['esc']" @shortkey="close()">
+        <v-btn
+          v-shortkey="['esc']"
+          icon
+          text
+          @click="close()"
+          @shortkey="close()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ $t('Trashcan')}}</v-toolbar-title>
+        <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
       </v-toolbar>
       <v-card>
         <v-card-text class="content">
-          <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+          <v-progress-linear v-if="loading" indeterminate />
           <empty-state
             v-if="projects && projects.length === 0 && !loading"
             :description="$t('No project')"
             small
             illustration="empty"
-          ></empty-state>
+          />
           <v-list v-if="projects && !loading">
             <template v-for="project in projects">
               <v-list-item :key="project._id" @click="restoreProject(project)">
@@ -25,31 +35,47 @@
                 <v-list-item-action>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon ripple @click.stop="deleteForever(project)" v-on="on">
-                        <v-icon color="red">mdi-delete-forever</v-icon>
+                      <v-btn
+                        icon
+                        ripple
+                        @click.stop="deleteForever(project)"
+                        v-on="on"
+                      >
+                        <v-icon color="red">
+                          mdi-delete-forever
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <span>{{ $t('Delete forever') }}</span>
+                    <span>{{ $t("Delete forever") }}</span>
                   </v-tooltip>
                 </v-list-item-action>
                 <v-list-item-action>
                   <v-tooltip top>
                     <template v-slot:activator="{ on }">
-                      <v-btn icon ripple @click.stop="restoreProject(project)" v-on="on">
-                        <v-icon color="primary">mdi-delete-restore</v-icon>
+                      <v-btn
+                        icon
+                        ripple
+                        @click.stop="restoreProject(project)"
+                        v-on="on"
+                      >
+                        <v-icon color="primary">
+                          mdi-delete-restore
+                        </v-icon>
                       </v-btn>
                     </template>
-                    <span>{{ $t('Restore from trash') }}</span>
+                    <span>{{ $t("Restore from trash") }}</span>
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
-              <v-divider :key="`divider-${project._id}`"></v-divider>
+              <v-divider :key="`divider-${project._id}`" />
             </template>
           </v-list>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="close()">{{ this.$t('Close') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="close()">
+            {{ this.$t("Close") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -105,13 +131,17 @@ export default {
     },
 
     restoreProject(project) {
-      Meteor.call("projects.restore", { projectId: project._id }, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "projects.restore",
+        { projectId: project._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.refresh();
         }
-        this.refresh();
-      });
+      );
     },
 
     deleteForever(project) {
@@ -119,12 +149,12 @@ export default {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then(res => {
+      }).then((res) => {
         if (res) {
           Meteor.call(
             "projects.deleteForever",
-            {projectId: project._id},
-            (error, result) => {
+            { projectId: project._id },
+            (error) => {
               if (error) {
                 this.$store.dispatch("notifyError", error);
                 return;

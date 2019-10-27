@@ -1,71 +1,97 @@
 <template>
   <div class="project-detail">
-    <select-date @select="onSelectStartDate" :active.sync="showSelectStartDate" :disableTime="true"></select-date>
-    <select-date @select="onSelectEndDate" :active.sync="showSelectEndDate" :disableTime="true"></select-date>
-    <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
+    <select-date
+      :active.sync="showSelectStartDate"
+      :disable-time="true"
+      @select="onSelectStartDate"
+    />
+    <select-date
+      :active.sync="showSelectEndDate"
+      :disable-time="true"
+      @select="onSelectEndDate"
+    />
+    <select-color :active.sync="showSelectColor" @select="onSelectColor" />
 
     <div class="toolbar">
       <div class="toolbar-button">
-        <v-btn icon text @click="requestClose()" v-shortkey="['esc']" @shortkey="requestClose()">
+        <v-btn
+          v-shortkey="['esc']"
+          icon
+          text
+          @click="requestClose()"
+          @shortkey="requestClose()"
+        >
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </div>
       <div class="toolbar-title">
-        <span class="project-name" v-html="linkifyHtml(project.name)"></span>
+        <span class="project-name" v-html="linkifyHtml(project.name)" />
       </div>
     </div>
-    <v-divider></v-divider>
-    <div v-if="project.description && project.description.length > 0" class="ql-editor-view description" v-html="linkifyHtml(project.description)"></div>
-    <div v-if="!project.description || project.description.length == 0" class="ql-editor-view description">{{ $t('No description') }}</div>
-    <v-divider></v-divider>
+    <v-divider />
+    <div
+      v-if="project.description && project.description.length > 0"
+      class="ql-editor-view description"
+      v-html="linkifyHtml(project.description)"
+    />
+    <div
+      v-if="!project.description || project.description.length == 0"
+      class="ql-editor-view description"
+    >
+      {{ $t("No description") }}
+    </div>
+    <v-divider />
 
     <v-list two-line>
-        <v-list-item @click="showSelectStartDate = true">
-          <v-list-item-action>
-            <v-icon>mdi-calendar-today</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('Start date') }}</v-list-item-title>
-            <v-list-item-subtitle>
-              <span v-show="project.startDate">{{ formatDate(project.startDate) }}</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list-item @click="showSelectStartDate = true">
+        <v-list-item-action>
+          <v-icon>mdi-calendar-today</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("Start date") }}</v-list-item-title>
+          <v-list-item-subtitle>
+            <span v-show="project.startDate">{{
+              formatDate(project.startDate)
+            }}</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-        <v-list-item @click="showSelectEndDate = true">
-          <v-list-item-action>
-            <v-icon>mdi-alarm-check</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>{{ $t('End date') }}</v-list-item-title>
-            <v-list-item-subtitle>
-              <span v-show="project.endDate">{{ formatDate(project.endDate) }}</span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list-item @click="showSelectEndDate = true">
+        <v-list-item-action>
+          <v-icon>mdi-alarm-check</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("End date") }}</v-list-item-title>
+          <v-list-item-subtitle>
+            <span v-show="project.endDate">{{
+              formatDate(project.endDate)
+            }}</span>
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
 
-        <v-list-item @click="showSelectColor = true">
-          <v-list-item-content>
-            <div class="color" ref="color" :style="getColor(project)"></div>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn text icon @click.stop="removeColor()">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-
+      <v-list-item @click="showSelectColor = true">
+        <v-list-item-content>
+          <div ref="color" class="color" :style="getColor(project)" />
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn text icon @click.stop="removeColor()">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
-    <v-divider></v-divider>
+    <v-divider />
 
-    <project-menu :organizationId="project.organizationId" :projectId="project._id"></project-menu>
+    <project-menu
+      :organization-id="project.organizationId"
+      :project-id="project._id"
+    />
   </div>
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Attachments } from "/imports/api/attachments/attachments";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
@@ -74,7 +100,8 @@ export default {
   props: {
     active: Boolean,
     project: {
-      type: Object
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -90,57 +117,71 @@ export default {
       this.$emit("update:active", false);
     },
     onSelectStartDate(date) {
-      Meteor.call("projects.setStartDate", {projectId: this.project._id, startDate: date}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "projects.setStartDate",
+        { projectId: this.project._id, startDate: date },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$emit("refresh");
         }
-        this.$emit("refresh");
-      });
+      );
     },
 
     onSelectEndDate(date) {
-      Meteor.call("projects.setEndDate", {projectId: this.project._id, endDate: date}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "projects.setEndDate",
+        { projectId: this.project._id, endDate: date },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$emit("refresh");
         }
-        this.$emit("refresh");
-      });
+      );
     },
 
     onSelectColor(color) {
-      var hex = color || "white";
+      const hex = color || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.project.color = hex;
-      Meteor.call("projects.updateColor", {projectId: this.project._id, color: hex}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "projects.updateColor",
+        { projectId: this.project._id, color: hex },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$emit("refresh");
         }
-        this.$emit("refresh");
-      });
+      );
     },
 
     removeColor() {
       this.project.color = "";
-      Meteor.call("projects.updateColor", {projectId: this.project._id, color: ""}, (error, result) => {
-        if (error) {
-          this.$store.dispatch("notifyError", error);
-          return;
+      Meteor.call(
+        "projects.updateColor",
+        { projectId: this.project._id, color: "" },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$emit("refresh");
         }
-        this.$emit("refresh");
-      });        
+      );
     },
 
     getColor(project) {
       if (!project.color) {
         return "background-color: white";
       }
-      return "background-color: " + project.color;
-    },
-
-
+      return `background-color: ${project.color}`;
+    }
   }
 };
 </script>
@@ -154,7 +195,6 @@ export default {
   margin-top: 12px;
   margin-bottom: 12px;
 }
-
 
 .toolbar-button {
   flex: 1;
@@ -182,9 +222,8 @@ export default {
 .color {
   height: 32px;
   width: 100%;
-  border: 1px solid black
+  border: 1px solid black;
 }
-
 
 pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
