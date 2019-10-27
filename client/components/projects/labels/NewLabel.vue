@@ -1,76 +1,105 @@
 <template>
   <div class="new-label">
-    <v-dialog v-model="showDialog" max-width="420" :fullscreen="$vuetify.breakpoint.xsOnly">
-      <select-color @select="onSelectColor" :active.sync="showSelectColor"></select-color>
+    <v-dialog
+      v-model="showDialog"
+      max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
+    >
+      <select-color :active.sync="showSelectColor" @select="onSelectColor" />
       <v-card>
-        <v-card-title class="headline">Créer un label</v-card-title>
+        <v-card-title class="headline">
+          Créer un label
+        </v-card-title>
         <v-card-text>
-          <v-form v-model="valid" class="form" v-on:submit.prevent>
-            <v-text-field v-model="name" v-focus :rules="nameRules" :label="$t('Name')" required v-on:keyup.enter="create()"></v-text-field>
+          <v-form v-model="valid" class="form" @submit.prevent>
+            <v-text-field
+              v-model="name"
+              v-focus
+              :rules="nameRules"
+              :label="$t('Name')"
+              required
+              @keyup.enter="create()"
+            />
 
-            <v-btn color="primary" @click="showSelectColor = true" class="btn-color">
+            <v-btn
+              color="primary"
+              class="btn-color"
+              @click="showSelectColor = true"
+            >
               Choisir une couleur
             </v-btn>
-            <div class="color" ref="color" :style="getColor(color)" @click="showSelectColor = true">
-            </div>
+            <div
+              ref="color"
+              class="color"
+              :style="getColor(color)"
+              @click="showSelectColor = true"
+            />
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="showDialog = false">{{ this.$t('Cancel') }}</v-btn>
-          <v-btn color="primary" @click="create" :disabled="!valid">{{ this.$t('Create') }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="showDialog = false">
+            {{ this.$t("Cancel") }}
+          </v-btn>
+          <v-btn color="primary" :disabled="!valid" @click="create">
+            {{ this.$t("Create") }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>    
+  </div>
 </template>
 
 <script>
-import { Meteor } from 'meteor/meteor'
-import { Labels } from '/imports/api/labels/labels.js'
+import { Meteor } from "meteor/meteor";
 
 export default {
   props: {
-    projectId: String
+    projectId: {
+      type: String,
+      default: ""
+    }
   },
-  data () {
+  data() {
     return {
       valid: false,
       showDialog: false,
       showSelectColor: false,
-      name: '',
-      color: '#000',
+      name: "",
+      color: "#000",
       nameRules: [
-        v => !!v || this.$t('Name is mandatory'),
-        v => v.length >= 1 || this.$t('Name is too short')
+        (v) => !!v || this.$t("Name is mandatory"),
+        (v) => v.length >= 1 || this.$t("Name is too short")
       ]
-    }
+    };
   },
   methods: {
-    open () {
+    open() {
       this.showDialog = true;
     },
-    create () {
-      Meteor.call('labels.create', {projectId: this.projectId, name: this.name, color: this.color}, (error, result) => { 
-        if (error) {
-          console.log(error)
-          return;
+    create() {
+      Meteor.call(
+        "labels.create",
+        { projectId: this.projectId, name: this.name, color: this.color },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+          }
         }
-      });
+      );
       this.showDialog = false;
     },
 
-    getColor (label) {
-      return 'background-color: ' + label.color;
+    getColor(label) {
+      return `background-color: ${label.color}`;
     },
 
-    onSelectColor (color) {
+    onSelectColor(color) {
       this.$refs.color.style.backgroundColor = color;
       this.color = color;
-    },
-
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -92,5 +121,4 @@ export default {
   margin-bottom: 6px;
   width: 100%;
 }
-
 </style>
