@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update SortableJS to 1.10.1
-- All code is updated to repect the eslint custom rules
+- All code is updated to respect the eslint custom rules
 - Update occitan translation, by Quenty31
 
 ### Removed
