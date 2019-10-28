@@ -142,6 +142,8 @@
     "confirmation": "Voulez-vous dupliquer cette tâche vers {project}?",
     "done": "Tâche dupliquée vers {project}"
   },
+  "Move": "Déplacer",
+  "Task moved": "Tâche déplacée",
   "history": {
     "tasks": {
       "create": "Création",

@@ -804,6 +804,53 @@ Tasks.methods.getHistory = new ValidatedMethod({
   }
 });
 
+Tasks.methods.moveToAdjacentList = new ValidatedMethod({
+  name: "tasks.moveToAdjacentList",
+  validate: new SimpleSchema({
+    taskId: { type: String },
+    direction: { type: String }
+  }).validator(),
+  run({ taskId, direction }) {
+    checkLoggedIn();
+    checkCanWriteTask(taskId);
+    const task = Tasks.findOne({ _id: taskId });
+    const list = Lists.findOne({ _id: task.listId });
+    let newList;
+    let { order } = list;
+    if (direction === "left") {
+      order -= 1;
+      newList = Lists.findOne({
+        projectId: task.projectId,
+        order: {
+          $lte: order
+        }
+      }, {
+        sort: {
+          order: -1
+        }
+      });
+    } else if (direction === "right") {
+      order += 1;
+      newList = Lists.findOne({
+        projectId: task.projectId,
+        order: {
+          $gte: order
+        }
+      }, {
+        sort: {
+          order: 1
+        }
+      });
+    }
+
+    if (!newList || newList._id === list._id) {
+      return;
+    }
+    Meteor.call("tasks.move", task.projectId, newList._id, taskId);
+  }
+});
+
+
 Tasks.helpers.findUserIdsInvolvedInTask = function(task) {
   let userIds = [];
   if (task.assignedTo) userIds.push(task.assignedTo);

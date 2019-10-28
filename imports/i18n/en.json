@@ -142,6 +142,8 @@
     "confirmation": "Do you really want to clone this task to {project}?",
     "done": "Task cloned to {project}"
   },
+  "Move": "Move",
+  "Task moved": "Task moved",
   "history": {
     "tasks": {
       "create": "Creation",

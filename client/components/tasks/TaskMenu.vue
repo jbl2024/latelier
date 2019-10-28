@@ -1,11 +1,28 @@
 <template>
-  <v-menu bottom left class="menu">
+  <v-menu bottom left class="menu" :close-on-content-click="$vuetify.breakpoint.xsOnly">
     <template v-slot:activator="{ on }">
       <v-btn icon v-on="on">
         <v-icon>mdi-dots-vertical</v-icon>
       </v-btn>
     </template>
     <v-list>
+      <v-list-item>
+        <v-list-item-action>
+          <v-icon>mdi-swap-horizontal</v-icon>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t("Move") }}</v-list-item-title>
+        <v-list-item-action>
+          <v-btn icon small @click="moveToLeft(task._id)">
+            <v-icon>mdi-arrow-left</v-icon>
+          </v-btn>
+        </v-list-item-action>
+        <v-list-item-action>
+          <v-btn icon small @click="moveToRight(task._id)">
+            <v-icon>mdi-arrow-right</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
+      <v-divider />
       <v-list-item @click="openHistory()">
         <v-list-item-action>
           <v-icon>mdi-history</v-icon>
@@ -104,6 +121,27 @@ export default {
     },
     openHistory() {
       this.$store.dispatch("showTaskHistory", true);
+    },
+
+    moveToLeft(id) {
+      Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "left" }, (error) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+        } else {
+          this.$store.dispatch("notify", this.$t("Task moved"));
+        }
+      });
+    },
+
+    moveToRight(id) {
+      Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "right" }, (error) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+        } else {
+          this.$store.dispatch("notify", this.$t("Task moved"));
+        }
+      });
+
     }
   }
 };
