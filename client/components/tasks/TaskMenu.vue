@@ -127,6 +127,8 @@ export default {
       Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "left" }, (error) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
+        } else {
+          this.$store.dispatch("notify", this.$t("Task moved"));
         }
       });
     },

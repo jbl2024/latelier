@@ -143,6 +143,7 @@
     "done": "Task cloned to {project}"
   },
   "Move": "Move",
+  "Task moved": "Task moved",
   "history": {
     "tasks": {
       "create": "Creation",
