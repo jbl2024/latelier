@@ -10,60 +10,34 @@
         </v-btn>
         <span class="title">{{ processDiagram.name }}</span>
         <v-spacer />
-        <div>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-btn icon @click.stop="exportSVG()" v-on="on">
-                <v-icon>mdi-image</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ $t("Export image") }}</span>
-          </v-tooltip>
-        </div>
-
+        <tooltip-button
+          icon="mdi-image"
+          :tooltip="$t('Export image')"
+          @on="exportSVG()"
+        />
         <template v-if="mode === 'view'">
-          <div>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn icon @click.stop="edit()" v-on="on">
-                  <v-icon>mdi-pencil</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Edit") }}</span>
-            </v-tooltip>
-          </div>
+          <tooltip-button
+            icon="mdi-pencil"
+            :tooltip="$t('Edit')"
+            @on="edit()"
+          />
         </template>
         <template v-if="mode === 'edit'">
-          <div>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn icon @click.stop="undo()" v-on="on">
-                  <v-icon>mdi-undo</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Undo") }}</span>
-            </v-tooltip>
-          </div>
-          <div>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn icon @click.stop="redo()" v-on="on">
-                  <v-icon>mdi-redo</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Redo") }}</span>
-            </v-tooltip>
-          </div>
-          <div>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn icon @click.stop="view()" v-on="on">
-                  <v-icon>mdi-check</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Close") }}</span>
-            </v-tooltip>
-          </div>
+          <tooltip-button
+            icon="mdi-undo"
+            :tooltip="$t('Undo')"
+            @on="undo()"
+          />
+          <tooltip-button
+            icon="mdi-redo"
+            :tooltip="$t('Redo')"
+            @on="redo()"
+          />
+          <tooltip-button
+            icon="mdi-check"
+            :tooltip="$t('Close')"
+            @on="view()"
+          />
         </template>
       </v-toolbar>
       <bpmn-viewer
