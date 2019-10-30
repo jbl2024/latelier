@@ -67,9 +67,12 @@ export default {
       }
     };
     this.sortable = Sortable.create(this.$refs.kanban, options);
+    document.addEventListener("keyup", this.onKeyup);
   },
   beforeDestroy() {
     this.sortable.destroy();
+
+    document.removeEventListener("keyup", this.onKeyup);
   },
   meteor: {
     lists() {
@@ -119,6 +122,14 @@ export default {
         Meteor.call("lists.move", this.projectId, listId, nextList.order + inc);
       } else {
         Meteor.call("lists.move", this.projectId, listId);
+      }
+    },
+
+    onKeyup(event) {
+      if (event.keyCode === 38) {
+        // up
+      } else if (event.keyCode === 40) {
+        // down
       }
     }
   }
