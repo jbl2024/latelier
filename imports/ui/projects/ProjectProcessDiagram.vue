@@ -98,9 +98,15 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+import BpmnViewer from "/imports/ui/bpmn/BpmnViewer.vue";
+import BpmnModeler from "/imports/ui/bpmn/BpmnModeler.vue";
 import { saveAs } from "file-saver";
 
 export default {
+  components: {
+    BpmnViewer: BpmnViewer,
+    BpmnModeler: BpmnModeler
+  },
   mixins: [TextRenderingMixin],
   i18n: {
     messages: {
