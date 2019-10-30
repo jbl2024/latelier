@@ -144,6 +144,8 @@
   },
   "Move": "Déplacer",
   "Task moved": "Tâche déplacée",
+  "Export image": "Exporter l'image",
+  "Export XML": "Exporter en XML",
   "history": {
     "tasks": {
       "create": "Création",

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - eslint support
 - Clone task to another project
 - Attachments are cloned when cloning a task or project
+- BPMN: export to xml
 
 ### Changed
 - Lazy load big components (bpmn & visjs)

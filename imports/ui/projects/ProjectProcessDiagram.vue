@@ -11,6 +11,11 @@
         <span class="title">{{ processDiagram.name }}</span>
         <v-spacer />
         <tooltip-button
+          icon="mdi-file-export"
+          :tooltip="$t('Export XML')"
+          @on="exportXML()"
+        />
+        <tooltip-button
           icon="mdi-image"
           :tooltip="$t('Export image')"
           @on="exportSVG()"
@@ -90,8 +95,7 @@ export default {
         Undo: "Undo",
         Redo: "Redo",
         Edit: "Edit",
-        Close: "Close",
-        "Export image": "Export image"
+        Close: "Close"
       },
       fr: {
         "Empty diagram": "Diagramme vide",
@@ -99,8 +103,7 @@ export default {
         Undo: "Annuler",
         Redo: "Refaire",
         Edit: "Editer",
-        Close: "Fermer",
-        "Export image": "Exporter l'image"
+        Close: "Fermer"
       }
     }
   },
@@ -165,6 +168,12 @@ export default {
       } else {
         this.$refs.viewer.saveSVG(cb);
       }
+    },
+
+    exportXML() {
+      const { xml } = this.processDiagram;
+      const blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
+      saveAs(blob, `${this.processDiagram.name}.xml`);
     },
 
     gotoBpmn() {

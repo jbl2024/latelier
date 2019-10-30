@@ -144,6 +144,8 @@
   },
   "Move": "Move",
   "Task moved": "Task moved",
+  "Export image": "Export image",
+  "Export XML": "Export XML",
   "history": {
     "tasks": {
       "create": "Creation",
