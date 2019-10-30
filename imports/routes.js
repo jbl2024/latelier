@@ -17,13 +17,10 @@ import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
 import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
-import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
-import ProjectProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
-import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
@@ -99,7 +96,7 @@ export default [
     path: "/timeline/:organizationId",
     name: "projects-timeline",
     beforeEnter: isBasicAuth,
-    component: ProjectsTimeline,
+    component: async () => (await import("/imports/ui/projects/ProjectsTimeline.vue")).default,
     props: true
   },
   {
@@ -120,7 +117,7 @@ export default [
     path: "/projects-timeline/:projectId",
     name: "project-timeline",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectTimeline,
+    component: async () => (await import("/imports/ui/projects/ProjectTimeline.vue")).default,
     props: true
   },
   {
@@ -134,7 +131,7 @@ export default [
     path: "/projects-bpmn/:projectId/:processDiagramId",
     name: "project-bpmn-process-diagram",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectProcessDiagram,
+    component: async () => (await import("/imports/ui/projects/ProjectProcessDiagram.vue")).default,
     props: true
   },
   {

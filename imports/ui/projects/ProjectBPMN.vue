@@ -102,10 +102,17 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
+import EditProcessDiagram from "/imports/ui/bpmn/EditProcessDiagram.vue";
+import NewProcessDiagram from "/imports/ui/bpmn/NewProcessDiagram.vue";
+
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import * as htmlToText from "html-to-text";
 
 export default {
+  components: {
+    EditProcessDiagram,
+    NewProcessDiagram
+  },
   mixins: [TextRenderingMixin],
   i18n: {
     messages: {
