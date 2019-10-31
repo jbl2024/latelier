@@ -18,6 +18,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update SortableJS to 1.10.1
 - All code is updated to respect the eslint custom rules
 - Update occitan translation, by Quenty31
+- Update packages :
+  - akryum:vue-component             upgraded from 0.15.0 to 0.15.1
+  - akryum:vue-component-dev-client  upgraded from 0.4.6 to 0.4.7
+  - alanning:roles                   upgraded from 1.2.16 to 1.2.19
+  - base64                           upgraded from 1.0.11 to 1.0.12
+  - konecty:user-presence            upgraded from 2.4.0 to 2.6.0
+  - matb33:collection-hooks          upgraded from 0.8.4 to 0.9.1
+  - meteortesting:browser-tests      upgraded from 1.2.0 to 1.3.1
+  - meteortesting:mocha              upgraded from 1.1.2 to 1.1.3
+  - meteortesting:mocha-core         upgraded from 6.1.2 to 6.2.2
+  - mongo                            upgraded from 1.6.2 to 1.6.3
+  - ostrio:cookies                   upgraded from 2.3.0 to 2.4.1
+  - ostrio:files                     upgraded from 1.10.2 to 1.12.2
+  - peerlibrary:computed-field       upgraded from 0.9.0 to 0.10.0
+  - reywood:publish-composite        upgraded from 1.7.0 to 1.7.2
 
 ### Removed
 
