@@ -14,7 +14,12 @@
     >
       {{ label.name }}
     </v-chip>
-    <v-chip v-show="labels.length == 0" @click="$refs.selectLabel.open()">
+    <v-chip
+      v-show="labels.length == 0"
+      tabindex="0"
+      @keyup.enter.native="$refs.selectLabel.open()"
+      @click="$refs.selectLabel.open()"
+    >
       {{ $t("Add label") }}
     </v-chip>
     <v-btn
