@@ -1,7 +1,9 @@
 <template>
   <v-card
     class="card"
+    tabindex="0"
     :style="getColorCardStyle(project)"
+    @keyup.enter.native="openProject(project)"
     @click="openProject(project)"
   >
     <v-card-title>

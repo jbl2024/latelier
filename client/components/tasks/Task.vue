@@ -2,8 +2,10 @@
 <template>
   <div
     class="task"
+    tabindex="0"
     @drop="onDrop"
     @dragover="onDragOver"
+    @keyup.enter="selectTask"
     @click="selectTask"
     @mouseenter="showEditButton = true"
     @mouseleave="showEditButton = false"
@@ -390,6 +392,10 @@ export default {
 </script>
 
 <style scoped>
+
+.task:focus .card {
+  background-color: #c5cae9;
+}
 .card {
   background-color: white;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
