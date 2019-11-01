@@ -104,8 +104,8 @@
             }}
           </v-btn>
         </empty-state>
+        <!-- eslint-enable -->
       </template>
-      <!-- eslint-enable -->
 
       <div class="projects-wrapper">
         <template v-if="favorites.length > 0">
