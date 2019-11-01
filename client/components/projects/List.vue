@@ -77,6 +77,7 @@
             v-model="list.name"
             type="text"
             class="flex1"
+            @keyup.esc="cancelUpdate(list)"
             @keyup.enter="updateName(list)"
           >
           <div class="flex0">

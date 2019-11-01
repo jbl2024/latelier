@@ -90,6 +90,7 @@
               outlined
               auto-grow
               solo
+              @keyup.esc="cancelUpdateName"
               @keydown.shift.enter="updateName"
             />
             <v-btn icon text @click.native="updateName">
