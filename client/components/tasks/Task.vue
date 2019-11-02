@@ -394,6 +394,10 @@ export default {
 
 <style scoped>
 
+.task:focus {
+  outline: none;
+}
+
 .task:focus .card {
   background-color: #c5cae9;
 }
