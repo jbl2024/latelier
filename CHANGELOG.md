@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.6.0] - 2019-11-02
+
+### Added
 - Move task without drag & drop
 - eslint support
 - Clone task to another project
