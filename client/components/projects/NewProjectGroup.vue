@@ -42,7 +42,7 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: "0"
+      default: ""
     }
   },
   data() {
