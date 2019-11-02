@@ -38,5 +38,60 @@ if (Meteor.isServer) {
       expect(task).to.not.be.null;
       expect(task.number).to.be.a("number");
     });
+
+    it("only members can create tasks", async function() {
+      let errorCode;
+
+      createProject();
+
+      const task = Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+      expect(task).to.not.be.null;
+      expect(task.number).to.be.a("number");
+
+      const userData = {
+        createdAt: new Date(),
+        email: "anotheruser@bar.com"
+      };
+
+      const otherUserId = Accounts.createUser(userData);
+
+      restoreStubs();
+      createStubs(otherUserId);
+      try {
+        Meteor.call(
+          "tasks.insert",
+          Projects.findOne()._id,
+          Lists.findOne()._id,
+          "a name"
+        );
+      } catch (error) {
+        errorCode = error.error;
+      }
+      expect(errorCode, "should throw not logged in").to.be.equal(
+        "not-authorized"
+      );
+      restoreStubs();
+      createStubs(task.createdBy);
+
+      Meteor.call("projects.addMember", {
+        projectId: Projects.findOne()._id,
+        userId: otherUserId
+      });
+
+      restoreStubs();
+      createStubs(otherUserId);
+      const newTask = Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+      expect(newTask.createdBy).to.be.equal(otherUserId);
+    });
   });
 }

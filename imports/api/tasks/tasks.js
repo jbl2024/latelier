@@ -8,10 +8,10 @@ import { Events } from "/imports/api/events/events.js";
 import { Random } from "meteor/random";
 import moment from "moment";
 import {
-  checkLoggedIn,
   checkCanReadTask,
   checkCanWriteTask,
-  checkCanDeleteTask
+  checkCanDeleteTask,
+  checkCanWriteProject
 } from "/imports/api/permissions/permissions";
 import SimpleSchema from "simpl-schema";
 import { incrementCounter } from "./counter";
@@ -71,6 +71,7 @@ Meteor.methods({
     check(listId, String);
     check(name, String);
     check(labelIds, Match.Maybe([String]));
+    checkCanWriteProject(projectId);
 
     const userId = Meteor.userId();
 
@@ -212,6 +213,7 @@ Meteor.methods({
   "tasks.updateName"(taskId, name) {
     check(taskId, String);
     check(name, String);
+    checkCanWriteTask(taskId);
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
@@ -227,6 +229,7 @@ Meteor.methods({
   "tasks.updateDescription"(taskId, description) {
     check(taskId, String);
     check(description, String);
+    checkCanWriteTask(taskId);
     if (description.length === 0) {
       throw new Meteor.Error("invalid-description");
     }
@@ -242,6 +245,7 @@ Meteor.methods({
   "tasks.updateSize"(taskId, size) {
     check(taskId, String);
     check(size, Match.Maybe(Number));
+    checkCanWriteTask(taskId);
     Tasks.update({ _id: taskId }, { $set: { "estimation.size": size } });
 
     Meteor.call("tasks.track", {
@@ -253,6 +257,7 @@ Meteor.methods({
   "tasks.updateSpent"(taskId, spent) {
     check(taskId, String);
     check(spent, Match.Maybe(Number));
+    checkCanWriteTask(taskId);
     Tasks.update({ _id: taskId }, { $set: { "estimation.spent": spent } });
 
     Meteor.call("tasks.track", {
@@ -264,6 +269,7 @@ Meteor.methods({
   "tasks.complete"(taskId, completed) {
     check(taskId, String);
     check(completed, Boolean);
+    checkCanWriteTask(taskId);
 
     Tasks.update({ _id: taskId }, { $set: { completed } });
     const task = Tasks.findOne({ _id: taskId });
@@ -280,6 +286,7 @@ Meteor.methods({
     check(listId, String);
     check(taskId, String);
     check(order, Match.Maybe(Number));
+    checkCanWriteTask(taskId);
 
     _checkForCompletion(listId, taskId);
 
@@ -330,11 +337,7 @@ Meteor.methods({
   "tasks.addNote"(taskId, content) {
     check(taskId, String);
     check(content, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     const note = {
       _id: Random.id(),
@@ -354,11 +357,7 @@ Meteor.methods({
   "tasks.removeNote"(taskId, noteId) {
     check(taskId, String);
     check(noteId, Match.Maybe(String));
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     if (noteId) {
       Tasks.update({ _id: taskId }, { $pull: { notes: { _id: noteId } } });
@@ -375,10 +374,7 @@ Meteor.methods({
   "tasks.updateNote"(taskId, note) {
     check(taskId, String);
     check(note, Object);
-
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     Tasks.update(
       {
@@ -403,11 +399,7 @@ Meteor.methods({
   "tasks.addChecklistItem"(taskId, name) {
     check(taskId, String);
     check(name, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     const item = {
       _id: Random.id(),
@@ -428,11 +420,8 @@ Meteor.methods({
   "tasks.removeChecklistItem"(taskId, itemId) {
     check(taskId, String);
     check(itemId, String);
+    checkCanWriteTask(taskId);
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
     Tasks.update({ _id: taskId }, { $pull: { checklist: { _id: itemId } } });
 
     Meteor.call("tasks.track", {
@@ -445,9 +434,8 @@ Meteor.methods({
     check(taskId, String);
     check(itemId, String);
     check(checked, Boolean);
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
+
     Tasks.update(
       { _id: taskId, "checklist._id": itemId },
       { $set: { "checklist.$.checked": checked } }
@@ -462,10 +450,7 @@ Meteor.methods({
   "tasks.convertItemToTask"(taskId, itemId) {
     check(taskId, String);
     check(itemId, String);
-
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId, "checklist._id": itemId });
     if (!task) {
@@ -489,10 +474,7 @@ Meteor.methods({
   "tasks.updateCheckListItem"(taskId, item) {
     check(taskId, String);
     check(item, Object);
-
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
@@ -507,10 +489,7 @@ Meteor.methods({
   "tasks.updateCheckList"(taskId, checklist) {
     check(taskId, String);
     check(checklist, Array);
-
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
     if (!task) {
@@ -523,8 +502,6 @@ Meteor.methods({
   "tasks.assignTo"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-
-    checkLoggedIn();
     checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
@@ -558,7 +535,6 @@ Meteor.methods({
 
   "tasks.removeAssignedTo"(taskId) {
     check(taskId, String);
-    checkLoggedIn();
     checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
@@ -578,7 +554,6 @@ Meteor.methods({
   "tasks.addWatcher"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-    checkLoggedIn();
     checkCanWriteTask(taskId);
 
     const task = Tasks.findOne({ _id: taskId });
@@ -611,7 +586,6 @@ Meteor.methods({
   "tasks.removeWatcher"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-    checkLoggedIn();
     checkCanWriteTask(taskId);
 
     if (Tasks.find({ _id: taskId, watchers: userId }).count() === 0) {
@@ -629,6 +603,8 @@ Meteor.methods({
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    checkCanWriteTask(taskId);
+
     if (reminder === "never") reminder = null;
 
     let convertedDate = null;
@@ -655,6 +631,8 @@ Meteor.methods({
     check(taskId, String);
     check(startDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
+    checkCanWriteTask(taskId);
+
     if (reminder === "never") reminder = null;
 
     let convertedDate = null;
@@ -679,11 +657,8 @@ Meteor.methods({
   "tasks.addLabel"(taskId, labelId) {
     check(taskId, String);
     check(labelId, String);
+    checkCanWriteTask(taskId);
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
     if (Tasks.find({ _id: taskId, labels: labelId }).count() > 0) {
       return;
     }
@@ -698,11 +673,7 @@ Meteor.methods({
   "tasks.removeLabel"(taskId, labelId) {
     check(taskId, String);
     check(labelId, String);
-
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteTask(taskId);
 
     if (Tasks.find({ _id: taskId, labels: labelId }).count() === 0) {
       return;
@@ -761,7 +732,6 @@ Tasks.methods.getHistory = new ValidatedMethod({
     page: { type: Number }
   }).validator(),
   run({ taskId, page }) {
-    checkLoggedIn();
     checkCanReadTask(taskId);
     const query = {
       "properties.task._id": taskId
@@ -811,7 +781,6 @@ Tasks.methods.moveToAdjacentList = new ValidatedMethod({
     direction: { type: String }
   }).validator(),
   run({ taskId, direction }) {
-    checkLoggedIn();
     checkCanWriteTask(taskId);
     const task = Tasks.findOne({ _id: taskId });
     const list = Lists.findOne({ _id: task.listId });

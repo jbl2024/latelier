@@ -6,7 +6,6 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import {
-  checkLoggedIn,
   checkCanReadTask,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
@@ -18,8 +17,6 @@ Meteor.methods({
     check(projectId, Match.Maybe(String));
     check(listId, Match.Maybe(String));
     check(keepDates, Match.Maybe(Boolean));
-
-    checkLoggedIn();
     checkCanReadTask(taskId);
 
     const userId = Meteor.userId();
@@ -143,7 +140,6 @@ Meteor.methods({
 
   "tasks.getUrl"(taskNumber) {
     check(taskNumber, Number);
-    checkLoggedIn();
     const task = Tasks.findOne({ number: taskNumber });
     if (!task) {
       throw new Meteor.Error("not-found");

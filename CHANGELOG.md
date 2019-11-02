@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BPMN: export to xml
 
 ### Changed
-- Better focus visualization
+- Improve keyboard navigation
+- Improve task permission checking
 - Lazy load big components (bpmn & visjs)
 - Update SortableJS to 1.10.1
 - All code is updated to respect the eslint custom rules
