@@ -69,6 +69,8 @@ export default {
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
     this.$events.listen("close-task-detail", () => {
+      if (!this.$store.state.showTaskDetail) return;
+
       this.$store.dispatch("selectTask", null);
       this.$store.dispatch("showTaskDetail", false);
       this.$router.push({
