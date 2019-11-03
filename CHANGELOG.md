@@ -10,6 +10,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Improve keyboard navigation
+- Updated packages:
+  - mobile-drag-drop@2.3.0-rc.2
+  - vue-router@3.1.3
+  - vue-dragscroll@1.10.2
+  - @babel/runtime@7.6.3
+  - showdown@1.9.1
+  - vue-i18n@8.15.0
+  - vue-hot-reload-api@2.3.4
+  - vue2-editor@2.10.2
+  - vuetify@2.1.9
 
 ### Removed
 
