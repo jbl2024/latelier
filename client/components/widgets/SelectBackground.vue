@@ -6,10 +6,21 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
-      <v-card>
-        <v-card-title class="headline">
+      <v-toolbar dark color="primary">
+        <v-btn
+          v-shortkey="['esc']"
+          icon
+          text
+          @click="closeDialog()"
+          @shortkey="closeDialog()"
+        >
+          <v-icon>mdi-close</v-icon>
+        </v-btn>
+        <v-toolbar-title>
           {{ $t("Select background") }}
-        </v-card-title>
+        </v-toolbar-title>
+      </v-toolbar>
+      <v-card>
         <v-card-text class="backgrounds-wrapper">
           <div class="backgrounds">
             <v-card
@@ -18,6 +29,7 @@
               max-width="344"
               tile
               class="mx-auto background-card"
+              @keyup.enter.native="selectBackground(image)"
               @click="selectBackground(image)"
             >
               <v-list-item>
