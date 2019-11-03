@@ -55,7 +55,7 @@
         <notification-button />
       </v-app-bar>
 
-      <v-hover v-slot:default="{ hover }" open-delay="300">
+      <v-hover v-slot:default="{ hover }" open-delay="300" :value="openMenu">
         <v-navigation-drawer
           v-model="drawer"
           :clipped="$vuetify.breakpoint.lgAndUp"
@@ -125,6 +125,7 @@ export default {
   data() {
     return {
       drawer: null,
+      openMenu: false,
       showSnackbar: false,
       timeout: 6000
     };
@@ -218,11 +219,38 @@ export default {
       }
     }
   },
+  mounted () {
+    const that = this;
+    window.addEventListener("keyup", (event) => {
+      that.onKeyup(event);
+    });
+  },
   methods: {
     onResizeApp() {
       const width = window.innerWidth;
       if (width >= 1264 && !this.drawer) {
         this.drawer = true;
+      }
+    },
+
+    onKeyup(event) {
+      const targetIsEditable = (target) => {
+        if (!target) {
+          return false;
+        }
+        const name = target.tagName.toLowerCase();
+        if (name === "textarea") return true;
+        if (name === "input") return target.type.toLowerCase() === "text";
+        if (target.contentEditable === "true") return true;
+        return false;
+      };
+
+      if (targetIsEditable(event.target)) {
+        return;
+      }
+
+      if (event.key === "m") {
+        this.openMenu = !this.openMenu;
       }
     }
   }
