@@ -66,7 +66,7 @@
           class="drawer"
           :mini-variant="!hover && !$vuetify.breakpoint.xs"
         >
-          <div class="drawer-wrapper">
+          <div ref="menu" class="drawer-wrapper">
             <organization-menu
               v-if="currentOrganizationId != 0 && currentProjectId == 0"
               :organization-id="currentOrganizationId"
@@ -251,6 +251,11 @@ export default {
 
       if (event.key === "m") {
         this.openMenu = !this.openMenu;
+        if (this.openMenu) {
+          this.$nextTick(() => {
+            this.$refs.menu.getElementsByTagName("a")[0].focus();
+          });
+        }
       }
     }
   }
