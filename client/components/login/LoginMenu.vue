@@ -39,9 +39,7 @@
             <v-list-item-title>{{ $t("Dashboard") }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list>
-      <v-list v-if="isAdmin()" class="pt-0">
-        <v-list-item :to="{ name: 'administration-page' }">
+        <v-list-item v-if="isAdmin()" :to="{ name: 'administration-page' }">
           <v-list-item-action>
             <v-icon>mdi-shield-check</v-icon>
           </v-list-item-action>
@@ -49,8 +47,6 @@
             <v-list-item-title>Administration</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </v-list>
-      <v-list class="pt-0">
         <v-list-item
           @click="$store.dispatch('showSelectBackgroundDialog', true)"
         >
