@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Disable client creation
 - Improve keyboard navigation
 - Updated packages:
   - mobile-drag-drop@2.3.0-rc.2
