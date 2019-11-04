@@ -219,7 +219,7 @@ export default {
       }
     }
   },
-  mounted () {
+  mounted() {
     const that = this;
     window.addEventListener("keyup", (event) => {
       that.onKeyup(event);
@@ -240,7 +240,18 @@ export default {
         }
         const name = target.tagName.toLowerCase();
         if (name === "textarea") return true;
-        if (name === "input") return target.type.toLowerCase() === "text";
+        if (name === "input") {
+          const notTextual = [
+            "button",
+            "checkbox",
+            "hidden",
+            "image",
+            "radio",
+            "reset",
+            "submit"
+          ];
+          return !notTextual.includes(target.type.toLowerCase());
+        }
         if (target.contentEditable === "true") return true;
         return false;
       };
@@ -253,7 +264,9 @@ export default {
         this.openMenu = !this.openMenu;
         if (this.openMenu) {
           this.$nextTick(() => {
-            this.$refs.menu.getElementsByTagName("a")[0].focus();
+            if (this.$refs.menu) {
+              this.$refs.menu.getElementsByTagName("a")[0].focus();
+            }
           });
         }
       }
