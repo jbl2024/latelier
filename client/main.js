@@ -10,8 +10,6 @@ import VueMeteorTracker from "vue-meteor-tracker";
 
 import VueEvents from "vue-event-handler";
 
-import colors from "vuetify/es5/util/colors";
-
 // Vuetify
 import Vuetify from "vuetify";
 
@@ -42,17 +40,24 @@ Meteor.startup(() => {
 });
 
 Accounts.config({
-  forbidClientAccountCreation: false,
+  forbidClientAccountCreation: true,
   sendVerificationEmail: true
 });
 
 /* eslint no-underscore-dangle: "off" */
 delete Accounts._accountsCallbacks["verify-email"];
-Accounts.onEmailVerificationLink((token, done) => {
-  /* eslint no-unused-vars: off */
-  /* eslint no-shadow: off */
-  Accounts.verifyEmail((token, err) => {
-    done();
+Accounts.onEmailVerificationLink(function(token, done) {
+  Accounts.verifyEmail(token, (err) => {
+    if (err) {
+      /* eslint no-console:off */
+      console.log("Error: ", err);
+    } else {
+      /* eslint no-console:off */
+      console.log("Success");
+      // Do whatever you want to on completion, the
+      // done() call is the default one.
+      done();
+    }
   });
 });
 

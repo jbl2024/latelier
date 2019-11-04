@@ -52,7 +52,7 @@ if (Meteor.isDevelopment) {
 }
 
 Accounts.config({
-  forbidClientAccountCreation: false,
+  forbidClientAccountCreation: true,
   sendVerificationEmail: true
 });
 
