@@ -1,5 +1,6 @@
 <template>
   <vue-editor
+    :id="id"
     ref="editor"
     v-model="content"
     :class="{ editor: true, 'no-border': noBorder }"
@@ -10,6 +11,15 @@
 
 <script>
 import { VueEditor } from "vue2-editor";
+
+/* eslint-disable */
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+/* eslint-enable */
 
 export default {
   components: {
@@ -31,6 +41,7 @@ export default {
   },
   data() {
     return {
+      id: null,
       content: this.value,
       customToolbar: [
         ["bold", "italic", "underline", "strike"],
@@ -65,6 +76,7 @@ export default {
     }
   },
   mounted() {
+    this.id = uuidv4();
     if (this.autofocus) {
       this.$nextTick(() => {
         this.focus();
