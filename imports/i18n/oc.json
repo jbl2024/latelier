@@ -142,6 +142,10 @@
     "confirmation": "Volètz vertadièrament clonar aqueste trabalh cap a {project} ?",
     "done": "Trabalh clonat cap a {project}"
   },
+  "Move": "Mudar",
+  "Task moved": "Trabalh mudat",
+  "Export image": "Exportar los imatges",
+  "Export XML": "Exportar lo XML",
   "history": {
     "tasks": {
       "create": "Creacion",
