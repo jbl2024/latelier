@@ -244,7 +244,7 @@ Meteor.methods({
 
   "tasks.updateSize"(taskId, size) {
     check(taskId, String);
-    check(size, Match.Maybe(Number));
+    check(size, Match.Maybe(String));
     checkCanWriteTask(taskId);
     Tasks.update({ _id: taskId }, { $set: { "estimation.size": size } });
 
@@ -256,7 +256,7 @@ Meteor.methods({
 
   "tasks.updateSpent"(taskId, spent) {
     check(taskId, String);
-    check(spent, Match.Maybe(Number));
+    check(spent, Match.Maybe(String));
     checkCanWriteTask(taskId);
     Tasks.update({ _id: taskId }, { $set: { "estimation.spent": spent } });
 

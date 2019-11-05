@@ -86,7 +86,7 @@ export default {
       if (!this.task._id) return;
       if (this.task.estimation
         && this.task.estimation.size
-        && this.task.estimation.size === parseInt(this.size, 10)
+        && this.task.estimation.size === this.size
       ) {
         return;
       }
@@ -95,7 +95,7 @@ export default {
       Meteor.call(
         "tasks.updateSize",
         this.task._id,
-        parseInt(this.size, 10),
+        this.size,
         () => {
           this.loading = false;
         }
@@ -107,7 +107,7 @@ export default {
       if (
         this.task.estimation
         && this.task.estimation.spent
-        && this.task.estimation.spent === parseInt(this.spent, 10)
+        && this.task.estimation.spent === this.spent
       ) {
         return;
       }
@@ -116,7 +116,7 @@ export default {
       Meteor.call(
         "tasks.updateSpent",
         this.task._id,
-        parseInt(this.spent, 10),
+        this.spent,
         () => {
           this.loading = false;
         }

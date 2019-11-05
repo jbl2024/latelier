@@ -287,10 +287,10 @@ export default {
       let spent = 0;
       tasks.forEach((task) => {
         if (task.estimation.size) {
-          size += task.estimation.size;
+          size += parseInt(task.estimation.size, 10);
         }
         if (task.estimation.spent) {
-          spent += task.estimation.spent;
+          spent += parseInt(task.estimation.spent, 10);
         }
       });
       return `(${size}/${spent})`;
