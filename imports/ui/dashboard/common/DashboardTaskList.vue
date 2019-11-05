@@ -48,7 +48,6 @@ export default {
     refresh() {
       Meteor.call(
         "dashboards.findTasks",
-        this.user,
         this.type,
         this.organizationId,
         1,

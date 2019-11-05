@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix wrong tasks display on dashboard
 - Fix errors thrown in console in health report page
 - Update occitan translation, by Quenty31
 - Disable client creation

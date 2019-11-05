@@ -3,14 +3,14 @@ import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Projects } from "/imports/api/projects/projects.js";
-import { Permissions } from "/imports/api/permissions/permissions";
+import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
-  "dashboards.findTasks"(user, type, organizationId, page) {
-    check(user, Object);
+  "dashboards.findTasks"(type, organizationId, page) {
     check(type, String);
     check(organizationId, Match.Maybe(String));
     check(page, Match.Maybe(Number));
+    checkLoggedIn();
 
     const userId = Meteor.userId();
 
@@ -60,10 +60,10 @@ Meteor.methods({
         const projects = Projects.find(
           {
             deleted: { $ne: true },
+            members: userId,
             $or: [
               { organizationId: { $in: organizationIds } },
-              { organizationId: { $exists: false } },
-              { members: userId }
+              { organizationId: { $exists: false } }
             ]
           },
           { fields: { _id: 1 } }
@@ -95,7 +95,7 @@ Meteor.methods({
         updatedAt: -1
       };
     } else if (type === "assignedToMe") {
-      query.assignedTo = user._id;
+      query.assignedTo = userId;
 
       sort = {
         updatedAt: -1
