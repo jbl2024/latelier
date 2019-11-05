@@ -3,7 +3,10 @@ import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Projects } from "/imports/api/projects/projects.js";
-import { Permissions, checkLoggedIn } from "/imports/api/permissions/permissions";
+import {
+  Permissions,
+  checkLoggedIn
+} from "/imports/api/permissions/permissions";
 
 Meteor.methods({
   "dashboards.findTasks"(type, organizationId, page) {
@@ -11,8 +14,6 @@ Meteor.methods({
     check(organizationId, Match.Maybe(String));
     check(page, Match.Maybe(Number));
     checkLoggedIn();
-
-    const userId = Meteor.userId();
 
     const perPage = 25;
     let skip = 0;
@@ -23,85 +24,47 @@ Meteor.methods({
     if (!skip) {
       skip = 0;
     }
-    const query = {
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
+
+    const taskQuery = {
       completed: false,
       deleted: { $ne: true }
     };
-
-    if (!Permissions.isAdmin(userId)) {
-      if (organizationId) {
-        const organizationCount = Organizations.find(
-          { $or: [{ members: userId }, { isPublic: true }] },
-          { fields: { _id: 1 } }
-        ).count();
-        if (organizationCount > 0) {
-          const projectIds = Projects.find({
-            organizationId,
-            members: userId,
-            deleted: { $ne: true }
-          }).map((project) => project._id);
-          query.projectId = { $in: projectIds };
-        }
-      } else {
-        const organizations = Organizations.find(
-          { $or: [{ members: userId }, { isPublic: true }] },
-          { fields: { _id: 1 } }
-        ).fetch();
-        const organizationIds = [];
-        organizations.forEach((organization) => {
-          if (organizationId) {
-            if (organization._id !== organizationId) {
-              return;
-            }
-          }
-          organizationIds.push(organization._id);
-        });
-
-        const projects = Projects.find(
-          {
-            deleted: { $ne: true },
-            members: userId,
-            $or: [
-              { organizationId: { $in: organizationIds } },
-              { organizationId: { $exists: false } }
-            ]
-          },
-          { fields: { _id: 1 } }
-        ).fetch();
-        const projectIds = [];
-        projects.forEach((project) => {
-          projectIds.push(project._id);
-        });
-        query.projectId = { $in: projectIds };
-      }
-    } else if (organizationId) {
-      const projectIds = Projects.find({
-        organizationId,
-        deleted: { $ne: true }
-      }).map((project) => project._id);
-      query.projectId = { $in: projectIds };
-    } else {
-      const deletedProjectIds = Projects.find({ deleted: true }).map(
-        (project) => project._id
-      );
-      query.projectId = { $nin: deletedProjectIds };
-    }
-
     let sort = {};
 
-    const count = Tasks.find(query).count();
+    const projectQuery = {
+      deleted: { $ne: true }
+    };
+
+    if (organizationId) {
+      projectQuery.organizationId = organizationId;
+    }
+
+    if (isRegularUser) {
+      projectQuery.members = userId;
+    }
+
+    const projectIds = Projects.find(projectQuery, {
+      fields: {
+        _id: 1
+      }
+    }).map((project) => project._id);
+
+    taskQuery.projectId = { $in: projectIds };
+
     if (type === "recent") {
       sort = {
         updatedAt: -1
       };
     } else if (type === "assignedToMe") {
-      query.assignedTo = userId;
-
+      taskQuery.assignedTo = userId;
       sort = {
         updatedAt: -1
       };
     } else if (type === "late") {
-      query.dueDate = {
+      taskQuery.dueDate = {
         $lte: new Date()
       };
       sort = {
@@ -109,7 +72,8 @@ Meteor.methods({
       };
     }
 
-    const data = Tasks.find(query, {
+    const count = Tasks.find(taskQuery).count();
+    const data = Tasks.find(taskQuery, {
       skip,
       limit: perPage,
       sort
