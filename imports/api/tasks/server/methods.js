@@ -43,7 +43,7 @@ Meteor.methods({
       }
     }
 
-    const notes = (task.notes || []).forEach((note) => ({
+    const notes = (task.notes || []).map((note) => ({
       _id: Random.id(),
       createdAt: note.createdAt,
       createdBy: note.createdBy,
@@ -52,7 +52,7 @@ Meteor.methods({
       content: note.content
     }));
 
-    const checklist = (task.checklist || []).forEach((aChecklist) => ({
+    const checklist = (task.checklist || []).map((aChecklist) => ({
       _id: Random.id(),
       createdAt: now,
       createdBy: aChecklist.createdBy,

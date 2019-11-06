@@ -39,6 +39,29 @@ if (Meteor.isServer) {
       expect(task.number).to.be.a("number");
     });
 
+    it("cloned task has notes & checklist", async function() {
+      createProject();
+
+      const task = Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+
+      Meteor.call("tasks.addNote", task._id, "note1");
+      Meteor.call("tasks.addNote", task._id, "note2");
+
+      Meteor.call("tasks.addChecklistItem", task._id, "check1");
+      Meteor.call("tasks.addChecklistItem", task._id, "check2");
+      Meteor.call("tasks.addChecklistItem", task._id, "check3");
+
+      const clonedTask = Meteor.call("tasks.clone", task._id, task.name, task.projectId);
+
+      expect(clonedTask.notes).to.have.lengthOf(2);
+      expect(clonedTask.checklist).to.have.lengthOf(3);
+    });
+
     it("only members can create tasks", async function() {
       let errorCode;
 
