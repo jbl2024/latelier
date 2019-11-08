@@ -38,17 +38,28 @@
         }}</span>
       </div>
     </v-toolbar-title>
-    <v-text-field
-      v-show="!editProjectName"
-      v-model="savedValue"
-      solo-inverted
-      color="primary"
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      :label="$t('Search') + '...'"
-      class="hidden-sm-and-down align-remaining"
-      @input="debouncedFilter"
-    />
+    <v-menu v-model="showMenu" offset-y>
+      <template v-slot:activator>
+        <v-text-field
+          v-show="!editProjectName"
+          v-model="savedValue"
+          solo-inverted
+          color="primary"
+          hide-details
+          prepend-inner-icon="mdi-magnify"
+          :label="$t('Search') + '...'"
+          class="hidden-sm-and-down align-remaining"
+          @input="debouncedFilter"
+        />
+      </template>
+      <div class="menu-item">Menu item</div>
+      <v-list>
+        <v-list-item>
+          <v-list-item-title>Coucou</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+
     <div v-show="editProjectName" class="title edit align-left">
       <v-text-field
         ref="name"
@@ -90,7 +101,8 @@ export default {
       editProjectName: false,
       savedValue: "",
       debouncedFilter: "",
-      showKanbanLink: false
+      showKanbanLink: false,
+      showMenu: false
     };
   },
   watch: {
@@ -109,6 +121,7 @@ export default {
   },
   created() {
     this.debouncedFilter = debounce((val) => {
+      this.showMenu = true;
       this.$events.fire("filter-tasks", val);
     }, 400);
   },
@@ -182,5 +195,11 @@ export default {
 .title {
   position: relative;
   top: 3px;
+}
+
+.menu-item {
+  background-color: white;
+  min-height: 400px;
+  min-width: 800px;
 }
 </style>
