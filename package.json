@@ -48,6 +48,7 @@
   "meteor": {
     "mainModule": {
       "client": "client/main.js",
+      "legacy": "client/legacy.js",
       "server": "server/main.js"
     },
     "testModule": "test/main.js"

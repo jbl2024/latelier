@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Disable dynamic import on firefox <= 60 
 - Fix duplicate task missing notes & checklist
 
 ### Removed
