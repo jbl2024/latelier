@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.6.4] - 2019-11-08
+
+### Added
+
+### Changed
 - Disable dynamic import on firefox <= 60 
 
 ### Removed
