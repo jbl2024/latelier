@@ -38,7 +38,7 @@
         }}</span>
       </div>
     </v-toolbar-title>
-    <v-menu v-model="showMenu" offset-y>
+    <v-menu v-model="showMenu" offset-y :close-on-content-click="false">
       <template v-slot:activator>
         <v-text-field
           v-show="!editProjectName"
@@ -52,12 +52,7 @@
           @input="debouncedFilter"
         />
       </template>
-      <div class="menu-item">Menu item</div>
-      <v-list>
-        <v-list-item>
-          <v-list-item-title>Coucou</v-list-item-title>
-        </v-list-item>
-      </v-list>
+      <search-results />
     </v-menu>
 
     <div v-show="editProjectName" class="title edit align-left">
@@ -102,7 +97,7 @@ export default {
       savedValue: "",
       debouncedFilter: "",
       showKanbanLink: false,
-      showMenu: false
+      showMenu: true
     };
   },
   watch: {
@@ -197,9 +192,8 @@ export default {
   top: 3px;
 }
 
-.menu-item {
-  background-color: white;
-  min-height: 400px;
-  min-width: 800px;
+
+.v-menu__content {
+  margin-top: 4px;
 }
 </style>
