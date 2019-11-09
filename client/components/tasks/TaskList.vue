@@ -91,6 +91,11 @@ export default {
   },
   methods: {
     openTask(task) {
+      if (this.$listeners && this.$listeners.select) {
+        this.$emit("select", task);
+        return;
+      }
+
       this.$store.dispatch("selectTask", task);
       this.$store.dispatch("showTaskDetail", true);
     },

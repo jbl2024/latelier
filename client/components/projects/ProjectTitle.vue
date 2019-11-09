@@ -38,23 +38,7 @@
         }}</span>
       </div>
     </v-toolbar-title>
-    <v-menu v-model="showMenu" offset-y :close-on-content-click="false">
-      <template v-slot:activator>
-        <v-text-field
-          v-show="!editProjectName"
-          v-model="savedValue"
-          solo-inverted
-          color="primary"
-          hide-details
-          prepend-inner-icon="mdi-magnify"
-          :label="$t('Search') + '...'"
-          class="hidden-sm-and-down align-remaining"
-          @input="debouncedFilter"
-        />
-      </template>
-      <search-results />
-    </v-menu>
-
+    <search-input />
     <div v-show="editProjectName" class="title edit align-left">
       <v-text-field
         ref="name"
@@ -193,7 +177,4 @@ export default {
 }
 
 
-.v-menu__content {
-  margin-top: 4px;
-}
 </style>
