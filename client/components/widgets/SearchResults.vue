@@ -80,12 +80,6 @@ export default {
   },
   methods: {
     find() {
-      /* eslint no-console: off */
-      console.log({
-        method: "find",
-        tab: this.tab,
-        filter: this.filter
-      });
       const methods = [
         this.findTasks,
         this.findProjects,
@@ -95,8 +89,7 @@ export default {
       methods[this.tab || 0].apply(this);
     },
     findTasks() {
-      /* eslint no-console: off */
-      console.log("findTasks");
+      if (!this.filter || !this.filter.length === 0) return;
       this.loading = true;
       Meteor.call(
         "search.findTasks",

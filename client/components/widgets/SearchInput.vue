@@ -1,9 +1,16 @@
 <template>
-  <v-menu v-model="showMenu" offset-y :close-on-content-click="false">
+  <v-menu
+    v-model="showMenu"
+    offset-y
+    :close-on-content-click="false"
+    :close-on-click="false"
+    max-width="527px"
+  >
     <template v-slot:activator="{ showMenu }">
       <v-text-field
         solo-inverted
         color="primary"
+        clearable
         hide-details
         prepend-inner-icon="mdi-magnify"
         :label="$t('Search') + '...'"
@@ -27,27 +34,23 @@ export default {
       showMenu: false
     };
   },
+  watch: {
+    filter() {
+      this.showMenu = this.filter && this.filter.length > 0;
+    }
+  },
   created() {
     this.debouncedFilter = debounce((val) => {
       this.filter = val;
-      if (this.filter.length > 0) {
-        this.showMenu = true;
-      } else {
-        this.showMenu = false;
-      }
     }, 400);
   },
   methods: {
-    onFocus(e) {
-      if (this.filter.length > 0) {
-        this.showMenu = true;
+    onFocus() {
+      if (this.filter && this.filter.length > 0) {
+        setTimeout(() => {
+          this.showMenu = true;
+        }, 500);
       }
-      /* eslint no-console: off */
-      console.log({
-        event: "onFocus",
-        e: e,
-        showMenu: this.showMenu
-      });
     }
   }
 };
