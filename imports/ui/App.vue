@@ -21,17 +21,13 @@
         />
         <v-toolbar-title
           v-show="!currentProjectId"
-          style="width: 200px"
+          style="width: 242px"
         >
           <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
 
         <organization-title
           v-if="currentOrganizationId"
-          :organization-id="currentOrganizationId"
-        />
-        <dashboard-title
-          v-if="!currentProjectId"
           :organization-id="currentOrganizationId"
         />
         <project-title
