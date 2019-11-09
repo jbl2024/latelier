@@ -6,7 +6,7 @@
     :close-on-click="false"
     max-width="527px"
   >
-    <template v-slot:activator="{ showMenu }">
+    <template v-slot:activator="{ on }">
       <v-text-field
         solo-inverted
         color="primary"
@@ -19,7 +19,7 @@
         @input="debouncedFilter"
       />
     </template>
-    <search-results :filter="filter" :active.sync="showMenu" />
+    <search-results v-show="filter && filter.length > 0" :filter="filter" :active.sync="showMenu" />
   </v-menu>
 </template>
 

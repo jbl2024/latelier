@@ -20,8 +20,6 @@ methods.findTasks = new ValidatedMethod({
   run({ organizationId, projectId, name, page }) {
     checkLoggedIn();
 
-    /* eslint no-console: off */
-    console.log("search.findTasks");
     const userId = Meteor.userId();
     const isRegularUser = !Permissions.isAdmin(userId);
 
@@ -130,12 +128,75 @@ methods.findTasks = new ValidatedMethod({
       }
     });
 
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
     return {
       rowsPerPage: perPage,
       totalItems: count,
+      totalPages: totalPages,
       data
     };
   }
 });
+
+
+methods.findProjects = new ValidatedMethod({
+  name: "search.findProjects",
+  validate: new SimpleSchema({
+    organizationId: { type: String, optional: true },
+    name: { type: String },
+    page: { type: Number, optional: true }
+  }).validator(),
+  run({ organizationId, name, page }) {
+    checkLoggedIn();
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
+    const sort = { updatedAt: -1 };
+
+    const perPage = 5;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const projectQuery = {
+      deleted: { $ne: true }
+    };
+    if (organizationId) {
+      projectQuery.organizationId = organizationId;
+    }
+
+    if (isRegularUser) {
+      projectQuery.members = userId;
+    }
+
+    // filter by name
+    if (name && name.length > 0) {
+      projectQuery.name = { $regex: `.*${name}.*`, $options: "i" };
+    }
+    // get tasks
+    const count = Projects.find(projectQuery).count();
+    const data = Projects.find(projectQuery, {
+      skip,
+      limit: perPage,
+      sort
+    }).fetch();
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
+  }
+});
+
 
 export default methods;

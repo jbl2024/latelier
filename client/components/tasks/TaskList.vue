@@ -86,6 +86,8 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("close-task-detail");
+
+    if (this.$listeners && this.$listeners.select) return;
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
