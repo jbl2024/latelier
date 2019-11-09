@@ -21,7 +21,7 @@
         />
         <v-toolbar-title
           v-show="!currentProjectId"
-          style="width: 300px"
+          style="width: 200px"
         >
           <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
@@ -38,6 +38,8 @@
           v-if="currentProjectId"
           :project-id="currentProjectId"
         />
+        <search-input />
+
         <v-spacer />
         <template v-if="$vuetify.breakpoint.lgAndUp">
           {{ email }}

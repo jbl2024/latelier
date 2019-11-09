@@ -38,27 +38,22 @@
         }}</span>
       </div>
     </v-toolbar-title>
-    <search-input v-if="!editProjectName" />
     <div v-show="editProjectName" class="title edit align-left">
       <v-text-field
         ref="name"
         v-model="project.name"
         style="width: 500px"
         text
-        solo-inverted
-        color="primary"
         hide-details
         prepend-inner-icon="mdi-pencil"
         label="Saisir un nom..."
+        append-icon="mdi-check-circle"
+        append-outer-icon="mdi-close-circle"
         @focus="$event.target.select()"
         @keyup.enter="updateProjectName"
+        @click:append="updateProjectName"
+        @click:append-outer="cancelUpdateProjectName"
       />
-      <v-btn icon @click="updateProjectName">
-        <v-icon>mdi-check-circle</v-icon>
-      </v-btn>
-      <v-btn icon @click="cancelUpdateProjectName">
-        <v-icon>mdi-close-circle</v-icon>
-      </v-btn>
     </div>
   </div>
 </template>

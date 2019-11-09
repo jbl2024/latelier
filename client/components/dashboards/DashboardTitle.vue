@@ -1,7 +1,5 @@
 <template>
-  <div class="dashboard-title">
-    <search-input />
-  </div>
+  <div class="dashboard-title" />
 </template>
 
 <script>
