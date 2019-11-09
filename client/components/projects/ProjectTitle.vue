@@ -38,7 +38,7 @@
         }}</span>
       </div>
     </v-toolbar-title>
-    <search-input />
+    <search-input v-if="!editProjectName" />
     <div v-show="editProjectName" class="title edit align-left">
       <v-text-field
         ref="name"
