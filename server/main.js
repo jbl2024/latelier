@@ -1,4 +1,8 @@
 import { Meteor } from "meteor/meteor";
+import {
+  setMinimumBrowserVersions
+} from "meteor/modern-browsers";
+
 import "../imports/startup/server/fixtures.js";
 import "../imports/startup/server/fixEmptyAttributes.js";
 import "../imports/startup/server/fixTaskNumber.js";
@@ -46,6 +50,10 @@ import "./apm.js";
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText("loader.html"));
 }
+
+setMinimumBrowserVersions({
+  firefox: 61
+}, "async import");
 
 if (Meteor.isDevelopment) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
