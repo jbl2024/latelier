@@ -1,6 +1,6 @@
 <template>
-  <v-card class="mx-auto search-results" outlined>
-    <v-tabs v-if="filter" v-model="tab" grow show-arrows>
+  <v-card class="search-results">
+    <v-tabs v-if="filter" v-model="tab" grow show-arrows light background-color="white" class="tabs">
       <v-tabs-slider color="accent" />
       <v-tab>
         {{ $t("Tasks") }}
@@ -103,4 +103,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.tabs  {
+  border-radius: 0px !important;
+}
+</style>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-progress-linear v-if="loading" indeterminate />
+    <v-progress-linear v-if="loading" indeterminate absolute top />
     <project-list :projects="projects" @select="onSelectProject" />
     <div class="text-xs-center">
       <v-pagination

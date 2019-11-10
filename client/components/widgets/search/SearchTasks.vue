@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-progress-linear :indeterminate="loading" />
+    <v-progress-linear v-if="loading" indeterminate absolute top />
     <task-list :tasks="tasks" @select="onSelectTask" />
     <div class="text-xs-center">
       <v-pagination
@@ -14,7 +14,6 @@
 </template>
 
 <script>
-
 export default {
   props: {
     filter: {

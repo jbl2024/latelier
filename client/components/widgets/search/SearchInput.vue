@@ -1,38 +1,34 @@
 <template>
-  <v-menu
-    v-model="showMenu"
-    offset-y
-    :close-on-content-click="false"
-    :close-on-click="false"
-    max-width="500px"
-  >
-    <template v-slot:activator="{ on }">
-      <v-text-field
-        solo-inverted
-        color="primary"
-        clearable
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        :label="$t('Search') + '...'"
-        class="hidden-sm-and-down align-remaining"
-        @focus="onFocus"
-        @input="debouncedFilter"
-        @keyup.esc="showMenu = false"
-        @keyup.enter="showMenu = true"
-      />
-    </template>
+  <div v-click-outside="onClickOutside" class="search-input">
+    <v-text-field
+      solo-inverted
+      color="primary"
+      clearable
+      hide-details
+      prepend-inner-icon="mdi-magnify"
+      :label="$t('Search') + '...'"
+      class="hidden-sm-and-down align-remaining"
+      @focus="onFocus"
+      @input="debouncedFilter"
+      @keyup.esc="showMenu = false"
+      @keyup.enter="showMenu = true"
+    />
     <search-results
-      v-if="filter && filter.length > 0"
+      v-if="showMenu"
       :filter="filter"
       :active.sync="showMenu"
     />
-  </v-menu>
+  </div>
 </template>
 
 <script>
 import debounce from "lodash/debounce";
+import vClickOutside from "v-click-outside";
 
 export default {
+  directives: {
+    clickOutside: vClickOutside.directive
+  },
   data() {
     return {
       debouncedFilter: "",
@@ -57,14 +53,28 @@ export default {
           this.showMenu = true;
         }, 500);
       }
+    },
+    onClickOutside() {
+      this.showMenu = false;
     }
   }
 };
 </script>
 
 <style scoped>
-.v-menu__content {
-  margin-top: 4px;
+.search-input {
+  align-items: flex-start;
+  display: flex;
+  flex: 1 1 auto;
+  font-size: 16px;
+  letter-spacing: normal;
+  max-width: 100%;
+  text-align: left;
+}
+.search-results {
+  position: absolute;
+  top: 58px;
+  width: 500px;
 }
 
 </style>
