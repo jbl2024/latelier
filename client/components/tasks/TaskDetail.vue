@@ -295,7 +295,7 @@ export default {
   },
   methods: {
     requestClose() {
-      this.$events.fire("close-task-detail");
+      this.$store.dispatch("showTaskDetail", false);
     },
     startEditDescription() {
       this.savedDescription = this.task.description;

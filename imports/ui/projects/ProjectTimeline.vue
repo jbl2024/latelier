@@ -130,10 +130,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$events.listen("close-task-detail", () => {
-      this.$store.dispatch("selectTask", null);
-      this.$store.dispatch("showTaskDetail", false);
-    });
     this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
@@ -141,8 +137,6 @@ export default {
   beforeDestroy() {
     this.$events.off("filter-tasks");
     this.$store.dispatch("setCurrentProjectId", null);
-    this.$store.dispatch("selectTask", null);
-    this.$store.dispatch("showTaskDetail", false);
     this.$events.off("close-task-detail");
   },
   meteor: {
