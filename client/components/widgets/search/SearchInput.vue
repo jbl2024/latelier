@@ -22,7 +22,7 @@
       />
     </template>
     <search-results
-      v-show="filter && filter.length > 0"
+      v-if="filter && filter.length > 0"
       :filter="filter"
       :active.sync="showMenu"
     />

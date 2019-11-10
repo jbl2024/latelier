@@ -19,25 +19,12 @@
           v-show="$vuetify.breakpoint.mdAndDown"
           @click.stop="drawer = !drawer"
         />
-        <v-btn
-          v-if="!currentProjectId"
-          icon
-          @click="$router.push({ name: 'dashboard-page' })"
-        >
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-        <v-toolbar-title
-          v-show="!currentProjectId"
-          style="flex: 2"
-        >
-          <span class="title ml-12 mr-12">L'atelier</span>
-        </v-toolbar-title>
+        <home-title v-if="!currentProjectId" />
         <project-title
           v-if="currentProjectId"
           :project-id="currentProjectId"
         />
         <search-input />
-
         <v-spacer />
         <template v-if="$vuetify.breakpoint.lgAndUp">
           {{ email }}
@@ -277,6 +264,20 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.global-toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex: 2;
+}
+
+.align-left {
+  flex: 1;
+}
+
+</style>
 
 <style>
 /* override vuetify default theme */
