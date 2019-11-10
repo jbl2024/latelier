@@ -55,7 +55,7 @@ export default {
     taskId: {
       immediate: true,
       handler(taskId) {
-        if (taskId !== 0) {
+        if (taskId) {
           this.selectTask(taskId);
         }
       }
@@ -109,7 +109,7 @@ export default {
       }
     },
     project() {
-      if (this.taskId !== 0) {
+      if (this.taskId) {
         this.selectTask(this.taskId);
       }
       const project = Projects.findOne();
