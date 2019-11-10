@@ -19,13 +19,19 @@
           v-show="$vuetify.breakpoint.mdAndDown"
           @click.stop="drawer = !drawer"
         />
+        <v-btn
+          v-if="!currentProjectId"
+          icon
+          @click="$router.push({ name: 'dashboard-page' })"
+        >
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
         <v-toolbar-title
           v-show="!currentProjectId"
-          style="width: 242px"
+          style="flex: 2"
         >
           <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
-
         <organization-title
           v-if="currentOrganizationId"
           :organization-id="currentOrganizationId"
@@ -377,4 +383,5 @@ html {
     height: calc(100% + 42px);
   }
 }
+
 </style>

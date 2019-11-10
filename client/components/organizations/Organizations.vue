@@ -90,7 +90,7 @@ export default {
   data() {
     return {
       showConfirmDialog: false,
-      organizationId: 0
+      organizationId: null
     };
   },
   meteor: {

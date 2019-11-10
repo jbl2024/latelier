@@ -86,7 +86,7 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -140,7 +140,7 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
-    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
     this.$events.off("close-task-detail");

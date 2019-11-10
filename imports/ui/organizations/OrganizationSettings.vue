@@ -29,7 +29,7 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -44,7 +44,7 @@ export default {
     this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentOrganizationId", 0);
+    this.$store.dispatch("setCurrentOrganizationId", null);
   },
   meteor: {
     // Subscriptions

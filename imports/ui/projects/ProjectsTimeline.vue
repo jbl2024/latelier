@@ -91,7 +91,7 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -149,7 +149,7 @@ export default {
     });
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentOrganizationId", 0);
+    this.$store.dispatch("setCurrentOrganizationId", null);
     this.$store.dispatch("setShowCategories", false);
     this.$events.off("close-project-detail");
   },
