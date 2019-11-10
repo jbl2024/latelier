@@ -265,20 +265,6 @@ export default {
 };
 </script>
 
-<style scoped>
-.global-toolbar {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex: 2;
-}
-
-.align-left {
-  flex: 1;
-}
-
-</style>
-
 <style>
 /* override vuetify default theme */
 html {
