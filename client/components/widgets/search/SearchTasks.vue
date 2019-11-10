@@ -1,11 +1,12 @@
 <template>
   <div>
-    <v-progress-linear v-if="loading" indeterminate />
+    <v-progress-linear :indeterminate="loading" />
     <task-list :tasks="tasks" @select="onSelectTask" />
     <div class="text-xs-center">
       <v-pagination
         v-if="pagination.totalPages > 0"
         v-model="page"
+        :total-visible="5"
         :length="pagination.totalPages"
       />
     </div>
