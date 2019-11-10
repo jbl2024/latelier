@@ -11,6 +11,7 @@
       <v-tab-item>
         <search-tasks
           :project-id="currentProjectId"
+          :organization-id="currentOrganizationId"
           :filter="filterTasks"
           @select="onSelectTask"
         />

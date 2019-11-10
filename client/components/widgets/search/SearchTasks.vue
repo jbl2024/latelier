@@ -23,6 +23,10 @@ export default {
     projectId: {
       type: String,
       default: null
+    },
+    organizationId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -62,6 +66,7 @@ export default {
         {
           name: this.filter,
           projectId: this.projectId,
+          organizationId: this.organizationId,
           page: this.page
         },
         (error, result) => {

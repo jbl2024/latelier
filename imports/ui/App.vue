@@ -32,10 +32,6 @@
         >
           <span class="title ml-12 mr-12">L'atelier</span>
         </v-toolbar-title>
-        <organization-title
-          v-if="currentOrganizationId"
-          :organization-id="currentOrganizationId"
-        />
         <project-title
           v-if="currentProjectId"
           :project-id="currentProjectId"
