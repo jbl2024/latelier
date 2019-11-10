@@ -17,9 +17,15 @@
         class="hidden-sm-and-down align-remaining"
         @focus="onFocus"
         @input="debouncedFilter"
+        @keyup.esc="showMenu = false"
+        @keyup.enter="showMenu = true"
       />
     </template>
-    <search-results v-show="filter && filter.length > 0" :filter="filter" :active.sync="showMenu" />
+    <search-results
+      v-show="filter && filter.length > 0"
+      :filter="filter"
+      :active.sync="showMenu"
+    />
   </v-menu>
 </template>
 
@@ -60,4 +66,5 @@ export default {
 .v-menu__content {
   margin-top: 4px;
 }
+
 </style>
