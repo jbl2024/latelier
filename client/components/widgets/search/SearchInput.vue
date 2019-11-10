@@ -4,7 +4,7 @@
     offset-y
     :close-on-content-click="false"
     :close-on-click="false"
-    max-width="527px"
+    max-width="500px"
   >
     <template v-slot:activator="{ on }">
       <v-text-field
