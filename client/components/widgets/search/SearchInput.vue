@@ -33,7 +33,7 @@ export default {
     return {
       debouncedFilter: "",
       filter: "",
-      showMenu: false
+      showMenu: false,
     };
   },
   watch: {
@@ -75,6 +75,9 @@ export default {
   position: absolute;
   top: 58px;
   width: 500px;
+  overflow-y: auto;
+  max-height: calc(100vh - 58px);
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
 }
 
 </style>
