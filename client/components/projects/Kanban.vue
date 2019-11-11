@@ -39,7 +39,7 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     },
     addMargin: {
       type: Boolean,

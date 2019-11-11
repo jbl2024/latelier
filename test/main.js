@@ -10,6 +10,7 @@ import "/test/api/notifications/notifications.test";
 import "/test/api/canvas/canvas.test";
 import "/test/api/healthReports/healthReports.test";
 import "/test/api/dashboards/dashboards.test";
+import "/test/api/search/search.test";
 
 describe("latelier", function() {
   it("package.json has correct name", async function() {

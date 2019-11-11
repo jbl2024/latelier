@@ -23,7 +23,15 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: ""
+      default: null
+    }
+  },
+  watch: {
+    organizationId: {
+      immediate: true,
+      handler (id) {
+        this.$store.dispatch("setCurrentOrganizationId", id);
+      }
     }
   },
   mounted() {
@@ -32,6 +40,7 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch("setShowDashboardTitle", false);
+    this.$store.dispatch("setCurrentOrganizationId", null);
   }
 };
 </script>

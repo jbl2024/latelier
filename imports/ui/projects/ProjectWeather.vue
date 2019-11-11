@@ -74,7 +74,7 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -100,7 +100,7 @@ export default {
     this.refresh();
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("setCurrentProjectId", null);
   },
   i18n: {
     messages: {

@@ -30,6 +30,7 @@
     "showdown": "^1.9.1",
     "simpl-schema": "^1.5.6",
     "sortablejs": "^1.10.1",
+    "v-click-outside": "^2.1.5",
     "vue": "^2.6.0",
     "vue-dragscroll": "^1.10.2",
     "vue-event-handler": "^1.1.8",

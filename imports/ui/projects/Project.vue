@@ -33,11 +33,11 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     },
     taskId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -55,7 +55,7 @@ export default {
     taskId: {
       immediate: true,
       handler(taskId) {
-        if (taskId !== 0) {
+        if (taskId) {
           this.selectTask(taskId);
         }
       }
@@ -93,7 +93,7 @@ export default {
   beforeDestroy() {
     this.$events.off("delete-task");
     this.$events.off("close-task-detail");
-    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
@@ -109,7 +109,7 @@ export default {
       }
     },
     project() {
-      if (this.taskId !== 0) {
+      if (this.taskId) {
         this.selectTask(this.taskId);
       }
       const project = Projects.findOne();

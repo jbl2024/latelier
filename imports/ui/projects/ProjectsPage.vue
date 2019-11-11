@@ -9,7 +9,7 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -25,7 +25,7 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("projects-loaded");
-    this.$store.dispatch("setCurrentOrganizationId", 0);
+    this.$store.dispatch("setCurrentOrganizationId", null);
   },
   methods: {},
   meteor: {}

@@ -19,22 +19,12 @@
           v-show="$vuetify.breakpoint.mdAndDown"
           @click.stop="drawer = !drawer"
         />
-        <v-toolbar-title
-          v-show="currentProjectId == 0 && currentOrganizationId == 0"
-          style="width: 300px"
-        >
-          <span class="title ml-12 mr-12">L'atelier</span>
-        </v-toolbar-title>
-
-        <organization-title
-          v-if="currentProjectId == 0 && currentOrganizationId != 0"
-          :organization-id="currentOrganizationId"
-        />
-        <dashboard-title v-if="showDashboardTitle" />
+        <home-title v-if="!currentProjectId" />
         <project-title
-          v-if="currentProjectId != 0"
+          v-if="currentProjectId"
           :project-id="currentProjectId"
         />
+        <search-input />
         <v-spacer />
         <template v-if="$vuetify.breakpoint.lgAndUp">
           {{ email }}
@@ -68,11 +58,11 @@
         >
           <div ref="menu" class="drawer-wrapper">
             <organization-menu
-              v-if="currentOrganizationId != 0 && currentProjectId == 0"
+              v-if="currentOrganizationId && !currentProjectId"
               :organization-id="currentOrganizationId"
             />
             <project-menu
-              v-if="currentProjectId != 0"
+              v-if="currentProjectId"
               :organization-id="currentOrganizationId"
               :project-id="currentProjectId"
             />
@@ -376,4 +366,5 @@ html {
     height: calc(100% + 42px);
   }
 }
+
 </style>

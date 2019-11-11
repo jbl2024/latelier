@@ -12,18 +12,6 @@
         >{{ organization.name }}</span>
       </div>
     </v-toolbar-title>
-    <v-text-field
-      v-show="!editOrganizationName"
-      text
-      solo-inverted
-      color="primary"
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      :label="$t('Search') + '...'"
-      class="hidden-sm-and-down align-remaining"
-      @input="debouncedFilter"
-    />
-
     <div v-show="editOrganizationName" class="title edit align-left">
       <v-text-field
         ref="name"
@@ -50,7 +38,6 @@
 
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import debounce from "lodash/debounce";
 
 export default {
   props: {
@@ -62,14 +49,8 @@ export default {
   data() {
     return {
       savedOrganizationName: "",
-      editOrganizationName: false,
-      debouncedFilter: ""
+      editOrganizationName: false
     };
-  },
-  created() {
-    this.debouncedFilter = debounce((val) => {
-      this.$events.fire("filter-projects", val);
-    }, 400);
   },
   meteor: {
     organization: {

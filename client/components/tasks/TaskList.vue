@@ -78,19 +78,13 @@ export default {
       default: "empty"
     }
   },
-  mounted() {
-    this.$events.listen("close-task-detail", () => {
-      this.$store.dispatch("selectTask", null);
-      this.$store.dispatch("showTaskDetail", false);
-    });
-  },
-  beforeDestroy() {
-    this.$events.off("close-task-detail");
-    this.$store.dispatch("selectTask", null);
-    this.$store.dispatch("showTaskDetail", false);
-  },
   methods: {
     openTask(task) {
+      if (this.$listeners && this.$listeners.select) {
+        this.$emit("select", task);
+        return;
+      }
+
       this.$store.dispatch("selectTask", task);
       this.$store.dispatch("showTaskDetail", true);
     },

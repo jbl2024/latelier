@@ -66,7 +66,7 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -76,7 +76,7 @@ export default {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", 0);
+    this.$store.dispatch("setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions

@@ -86,7 +86,7 @@ export default {
   props: {
     projectId: {
       type: String,
-      default: "0"
+      default: null
     }
   },
   data() {
@@ -130,19 +130,13 @@ export default {
   },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$events.listen("close-task-detail", () => {
-      this.$store.dispatch("selectTask", null);
-      this.$store.dispatch("showTaskDetail", false);
-    });
     this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
-    this.$store.dispatch("setCurrentProjectId", 0);
-    this.$store.dispatch("selectTask", null);
-    this.$store.dispatch("showTaskDetail", false);
+    this.$store.dispatch("setCurrentProjectId", null);
     this.$events.off("close-task-detail");
   },
   meteor: {

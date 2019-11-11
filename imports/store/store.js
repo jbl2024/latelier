@@ -20,8 +20,8 @@ const store = new Vuex.Store({
     showTaskHistory: false,
     showDashboardTitle: false,
     dashboardFilter: "",
-    currentOrganizationId: 0,
-    currentProjectId: 0,
+    currentOrganizationId: null,
+    currentProjectId: null,
     projectFeatures: [],
     windowTitle: "",
     notifyMessage: "",
@@ -116,7 +116,7 @@ const store = new Vuex.Store({
     },
     setCurrentProjectId(context, projectId) {
       context.commit("projectFilters/clearSelectedLabels");
-      if (projectId !== 0) {
+      if (projectId) {
         Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("setProjectFeatures", result);
         });
@@ -124,7 +124,7 @@ const store = new Vuex.Store({
       context.commit("updateCurrentProjectId", projectId);
     },
     reloadProjectFeatures(context, projectId) {
-      if (projectId !== 0) {
+      if (projectId) {
         Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("setProjectFeatures", result);
         });
