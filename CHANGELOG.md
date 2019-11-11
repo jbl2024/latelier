@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Search box
 
 ### Changed
+- Improve date parsing in timeline (fix error on safari)
 
 ### Removed
 

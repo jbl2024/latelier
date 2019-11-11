@@ -225,7 +225,7 @@ export default {
         items.push({
           id: "start",
           content: this.getStartContent(),
-          start: this.project.startDate,
+          start: moment(this.project.startDate).toDate(),
           type: "box",
           group: 0
         });
@@ -235,15 +235,15 @@ export default {
         items.push({
           id: "end",
           content: this.getEndContent(),
-          start: this.project.endDate,
+          start: moment(this.project.endDate).toDate(),
           type: "box",
           group: 0
         });
       }
 
       tasks.forEach((task) => {
-        let start = task.startDate;
-        let end = task.dueDate;
+        let start = moment(task.startDate).toDate();
+        let end = moment(task.dueDate).toDate();
 
         const { completed } = task;
         const { completedAt } = task;

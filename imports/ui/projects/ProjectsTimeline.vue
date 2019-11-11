@@ -215,8 +215,8 @@ export default {
           subgroup: project._id,
           content: this.getProjectContent(project),
           className: "item",
-          start: project.startDate || defaultBefore,
-          end: project.endDate || defaultAfter
+          start: moment(project.startDate).toDate() || defaultBefore,
+          end: moment(project.endDate).toDate() || defaultAfter
         };
         items.push(item);
       });
