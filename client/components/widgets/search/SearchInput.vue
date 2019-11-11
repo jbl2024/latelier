@@ -42,7 +42,9 @@ export default {
   watch: {
     filter() {
       this.showMenu = this.filter && this.filter.length > 0;
-      if (this.showMenu) {
+    },
+    showMenu(showMenu) {
+      if (showMenu) {
         this.width = this.$refs.input.$el.offsetWidth;
       }
     }
