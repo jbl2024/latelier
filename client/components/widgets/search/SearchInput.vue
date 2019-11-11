@@ -1,6 +1,7 @@
 <template>
   <div v-click-outside="onClickOutside" class="search-input">
     <v-text-field
+      ref="input"
       solo-inverted
       color="primary"
       clearable
@@ -17,6 +18,7 @@
       v-if="showMenu"
       :filter="filter"
       :active.sync="showMenu"
+      :width="width"
     />
   </div>
 </template>
@@ -34,11 +36,15 @@ export default {
       debouncedFilter: "",
       filter: "",
       showMenu: false,
+      width: 0
     };
   },
   watch: {
     filter() {
       this.showMenu = this.filter && this.filter.length > 0;
+      if (this.showMenu) {
+        this.width = this.$refs.input.$el.offsetWidth;
+      }
     }
   },
   created() {

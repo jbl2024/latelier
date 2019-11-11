@@ -80,7 +80,8 @@ export default {
           this.pagination.totalPages = result.totalPages;
 
           this.tasks = result.data;
-          this.taskCount = result.data.totalItems;
+          this.taskCount = result.totalItems;
+          this.$emit("update:taskCount", this.taskCount);
         }
       );
     },

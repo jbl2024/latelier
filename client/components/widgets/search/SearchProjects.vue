@@ -76,7 +76,8 @@ export default {
           this.pagination.totalPages = result.totalPages;
 
           this.projects = result.data;
-          this.projectCount = result.data.totalItems;
+          this.projectCount = result.totalItems;
+          this.$emit("update:projectCount", this.projectCount);
         }
       );
     },

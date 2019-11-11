@@ -1,5 +1,5 @@
 <template>
-  <v-card class="search-results">
+  <v-card class="search-results" :width="width">
     <v-tabs
       v-if="filter"
       v-model="tab"
@@ -11,23 +11,25 @@
     >
       <v-tabs-slider color="accent" />
       <v-tab>
-        {{ $t("Tasks") }}
+        {{ $t("Tasks") }} ({{ taskCount }})
       </v-tab>
       <v-tab>
-        {{ $t("Projects") }}
+        {{ $t("Projects") }} ({{ projectCount }})
       </v-tab>
-      <v-tab-item>
+      <v-tab-item eager>
         <search-tasks
           :project-id="currentProjectId"
           :organization-id="currentOrganizationId"
           :filter="filterTasks"
+          :task-count.sync="taskCount"
           @select="onSelectTask"
         />
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item eager>
         <search-projects
           :organization-id="currentOrganizationId"
           :filter="filterProjects"
+          :project-count.sync="projectCount"
           @select="onSelectProject"
         />
       </v-tab-item>
@@ -43,6 +45,10 @@ export default {
     filter: {
       type: String,
       default: ""
+    },
+    width: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -51,7 +57,9 @@ export default {
       filterTasks: "",
       filterProjects: "",
       filterOrganizations: "",
-      filterUsers: ""
+      filterUsers: "",
+      taskCount: 0,
+      projectCount: 0
     };
   },
   computed: {
@@ -73,16 +81,8 @@ export default {
   },
   methods: {
     find() {
-      switch (this.tab) {
-        case 0:
-          this.filterTasks = this.filter;
-          break;
-        case 1:
-          this.filterProjects = this.filter;
-          break;
-        default:
-          this.filterTasks = this.filter;
-      }
+      this.filterTasks = this.filter;
+      this.filterProjects = this.filter;
     },
 
     onSelectTask(task) {
