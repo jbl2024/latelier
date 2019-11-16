@@ -80,7 +80,6 @@ const vuetify = new Vuetify({
     }
   }
 });
-
 Vue.use(require("vue-shortkey"), {
   prevent: ["input", "textarea", ".ql-editor"]
 });
