@@ -13,8 +13,8 @@
         <v-card-text>
           <v-form v-model="valid" class="form" @submit.prevent>
             <v-text-field
+              ref="name"
               v-model="name"
-              v-focus
               :rules="nameRules"
               :label="$t('Name')"
               required
@@ -52,6 +52,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   props: {
@@ -76,6 +77,7 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
+      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     create() {
       Meteor.call(
