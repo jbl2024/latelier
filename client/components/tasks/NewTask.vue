@@ -173,7 +173,7 @@ export default {
       this.multiline = false;
       this.labels = [];
       this.$nextTick(() => {
-        this.$refs.name.focus();
+        autofocus.focus(this.$refs.name);
       });
     },
     newTask(keep) {
