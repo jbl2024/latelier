@@ -55,6 +55,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   i18n: {
@@ -86,7 +87,7 @@ export default {
       this.name = this.processDiagram.name;
       this.description = this.processDiagram.description;
       this.showDialog = true;
-      this.$nextTick(() => this.$refs.name.focus());
+      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     close() {
       this.showDialog = false;

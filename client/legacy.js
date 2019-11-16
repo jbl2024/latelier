@@ -95,13 +95,6 @@ Meteor.startup(() => {
   // Start monitor for user activity
   UserPresence.start();
 
-  Vue.directive("focus", {
-    inserted: (el) => {
-      setTimeout(() => {
-        el.focus();
-      }, 500);
-    }
-  });
   const router = new VueRouter({
     mode: "history",
     base: new URL(Meteor.absoluteUrl()).pathname,

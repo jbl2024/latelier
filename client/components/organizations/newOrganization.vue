@@ -37,6 +37,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   data() {
@@ -54,7 +55,7 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => this.$refs.name.focus());
+      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     create() {
       Meteor.call(
