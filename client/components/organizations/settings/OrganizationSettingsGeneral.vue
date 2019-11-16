@@ -18,7 +18,6 @@
           <v-text-field
             ref="name"
             v-model="organization.name"
-            v-focus
             :label="$t('Name')"
             @keyup.enter="updateName"
           />

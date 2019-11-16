@@ -97,7 +97,7 @@
 
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
-import { autofocus } from "/imports/ui/autofocus.js";
+import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   i18n: {
@@ -173,7 +173,7 @@ export default {
       this.multiline = false;
       this.labels = [];
       this.$nextTick(() => {
-        this.$refs.name.focus();
+        autofocus.focus(this.$refs.name);
       });
     },
     newTask(keep) {

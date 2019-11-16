@@ -94,6 +94,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import { autofocus } from "/imports/ui/autofocus";
 import {
   ProjectStates,
   ProjectAccessRights
@@ -124,7 +125,7 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => this.$refs.name.focus());
+      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     close() {
       this.showDialog = false;
