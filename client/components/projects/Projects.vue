@@ -31,6 +31,9 @@
         <v-btn class="primary" @click="newProject">
           {{ $t("Create new project") }}
         </v-btn>
+        <v-btn text @click="openOrganizationSettings">
+          {{ $t("Settings") }}
+        </v-btn>
       </empty-state>
       <v-list
         v-show="projects.length != 0"
@@ -199,6 +202,10 @@ export default {
     }
   },
   methods: {
+    openOrganizationSettings() {
+      this.$router.push({ name: "organization-settings", params: { organizationId: this.organizationId } });
+    },
+
     newProject() {
       this.$refs.newProject.open();
     },
