@@ -5,6 +5,7 @@ import CanvasSchema from "./schema";
 
 export const Canvas = new Mongo.Collection("canvas");
 Canvas.attachSchema(CanvasSchema);
+Canvas.methods = {};
 
 if (Meteor.isServer) {
   Meteor.startup(() => {
