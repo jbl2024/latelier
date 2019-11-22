@@ -237,8 +237,8 @@ export default {
           this.$store.dispatch("notifyError", error);
           return;
         }
-        const blob = new Blob([result.data], { type: "text/html" });
-        saveAs(blob, "export.html");
+        const blob = new Blob([result.data], { type: "application/pdf" });
+        saveAs(blob, "export.pdf");
       });
     }
   }

@@ -2,6 +2,9 @@
   "generateFixtures": true,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
+  "weasyprint": {
+    "path": "weasyprint"
+  },
   "notificationsPerUser": 50,
   "elasticApm": {
     "enabled": true,

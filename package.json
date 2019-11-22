@@ -19,7 +19,7 @@
     "file-saver": "^2.0.2",
     "fs-extra": "^7.0.1",
     "gm": "^1.23.1",
-    "handlebars": "^4.5.2",
+    "handlebars": "^4.5.3",
     "html-to-text": "^5.1.1",
     "linkifyjs": "^2.1.8",
     "lodash": ">=4.17.13",
@@ -45,7 +45,8 @@
     "vue2vis": "0.0.16",
     "vuelidate": "^0.7.4",
     "vuetify": "^2.1.9",
-    "vuex": "^3.1.1"
+    "vuex": "^3.1.1",
+    "weasyprint-wrapper": "^0.1.2"
   },
   "meteor": {
     "mainModule": {
