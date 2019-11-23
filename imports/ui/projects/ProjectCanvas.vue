@@ -5,15 +5,11 @@
     </div>
     <div v-if="$subReady.canvas && canvas && canvas.data" class="wrapper">
       <v-toolbar dense class="toolbar">
-        <v-btn icon @click="gotoBpmn()">
-          <v-icon>mdi-chart-donut</v-icon>
-        </v-btn>
-        <span class="title">Canvas</span>
-        <v-spacer />
+        <span class="title">{{ $t('Canvas') }}</span>
         <tooltip-button
-          icon="mdi-image"
+          icon="mdi-file-export"
           :tooltip="$t('Export')"
-          @on="exportPDF()"
+          @on="exportODT()"
         />
       </v-toolbar>
       <v-container fluid grid-list-md class="canvas">
@@ -231,14 +227,14 @@ export default {
       Meteor.call("canvas.update", this.projectId, this.canvas.data);
     },
 
-    exportPDF() {
-      Meteor.call("canvas.exportPDF", { projectId: this.projectId }, (error, result) => {
+    exportODT() {
+      Meteor.call("canvas.exportODT", { projectId: this.projectId }, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
-        const blob = new Blob([result.data], { type: "application/pdf" });
-        saveAs(blob, "export.pdf");
+        const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });
+        saveAs(blob, "canvas.odt");
       });
     }
   }

@@ -1,28 +1,31 @@
 import { Meteor } from "meteor/meteor";
 import { Canvas } from "/imports/api/canvas/canvas";
-import { checkLoggedIn } from "/imports/api/permissions/permissions";
-import { print } from "/imports/print";
-import * as Handlebars from "handlebars";
+import { checkCanReadProject } from "/imports/api/permissions/permissions";
+import * as htmlToText from "html-to-text";
+import carbone from "carbone";
 
 const bound = Meteor.bindEnvironment((callback) => callback());
 
 Canvas.methods.exportPDF = new ValidatedMethod({
-  name: "canvas.exportPDF",
+  name: "canvas.exportODT",
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
   run({ projectId }) {
-    checkLoggedIn();
+    checkCanReadProject(projectId);
 
-    const source = Assets.getText("canvas/canvas.html");
-    const template = Handlebars.compile(source);
-    const context = {};
-    const html = template(context);
-
-    const future = new (Npm.require(Npm.require("path").join("fibers", "future")))();
+    const source = Assets.absoluteFilePath("canvas/canvas.odt");
+    const canvas = Canvas.findOne({ projectId });
+    const context = canvas.data || {};
+    Object.keys(context).forEach((key) => {
+      context[key] = htmlToText.fromString(context[key]);
+    });
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
 
     bound(() => {
-      print.htmlToPdf(html, (err, res) => {
+      carbone.render(source, context, (err, res) => {
         if (err) {
           throw new Meteor.Error("error", err);
         }
