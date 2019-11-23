@@ -7,6 +7,7 @@
       <v-toolbar dense class="toolbar">
         <span class="title">{{ $t('Canvas') }}</span>
         <tooltip-button
+          bottom
           icon="mdi-file-export"
           :tooltip="$t('Export')"
           @on="exportODT()"
