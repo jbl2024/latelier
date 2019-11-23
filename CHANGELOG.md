@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fix autofocus
 - Improve date parsing in timeline (fix error on safari)
+- Scroll to selected task if outside viewport
 
 ### Removed
 
