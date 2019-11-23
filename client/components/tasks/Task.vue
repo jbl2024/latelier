@@ -1,6 +1,7 @@
 /* eslint max-len: 285 */
 <template>
   <div
+    v-observe-visibility="visibilityChanged"
     class="task"
     tabindex="0"
     @drop="onDrop"
@@ -169,7 +170,8 @@ export default {
       savedName: "",
       showEditButton: false,
       completed: false,
-      showConfirmDeleteDialog: false
+      showConfirmDeleteDialog: false,
+      isVisible: false
     };
   },
   computed: {
@@ -204,6 +206,13 @@ export default {
     },
     completed(completed) {
       Meteor.call("tasks.complete", this.task._id, completed);
+    },
+    selected(selected) {
+      if (selected && !this.isVisible) {
+        this.$el.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
     }
   },
   mounted() {
@@ -387,6 +396,10 @@ export default {
 
     onDragOver(e) {
       e.preventDefault();
+    },
+
+    visibilityChanged(isVisible) {
+      this.isVisible = isVisible;
     }
   }
 };
