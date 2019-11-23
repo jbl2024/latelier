@@ -14,6 +14,7 @@
     "@babel/runtime": "^7.6.3",
     "bcrypt": "^3.0.6",
     "bpmn-js": "^3.5.0",
+    "carbone": "^1.2.1",
     "diagram-js-minimap": "^1.3.0",
     "faker": "^4.1.0",
     "file-saver": "^2.0.2",

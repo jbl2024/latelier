@@ -3,8 +3,17 @@
     <div v-if="!canvas">
       <v-progress-linear indeterminate />
     </div>
-    <template v-if="$subReady.canvas && canvas && canvas.data">
-      <v-container fluid grid-list-md>
+    <div v-if="$subReady.canvas && canvas && canvas.data" class="wrapper">
+      <v-toolbar dense class="toolbar">
+        <span class="title">{{ $t('Canvas') }}</span>
+        <tooltip-button
+          bottom
+          icon="mdi-file-export"
+          :tooltip="$t('Export')"
+          @on="exportODT()"
+        />
+      </v-toolbar>
+      <v-container fluid grid-list-md class="canvas">
         <v-layout row wrap>
           <v-flex xs12>
             <canvas-item
@@ -17,8 +26,8 @@
               <template slot="headline">
                 Quelle est l'intention à l'origine du projet ? (cause et
                 besoin)<br>
-                Pourquoi ce projet est-il porteur de sens et important ? et pour
-                qui ? <br>
+                Pourquoi ce projet est-il porteur de sens et important ? et
+                pour qui ? <br>
                 Comment ce projet va-t-il changer l'avenir ? et pour qui ?
               </template>
             </canvas-item>
@@ -90,8 +99,8 @@
               @save="save()"
             >
               <template slot="headline">
-                Quels sont les évenements futurs et incertains qui menaceraient
-                ou favoriseraient le projet ?<br>
+                Quels sont les évenements futurs et incertains qui
+                menaceraient ou favoriseraient le projet ?<br>
                 Ils vont probablement se concrétiser,ou si vous pouvez les
                 influencer, considérez-les comme des CONDITIONS
               </template>
@@ -136,8 +145,8 @@
               @save="save()"
             >
               <template slot="headline">
-                Qu‘est-ce que le projet est censé livré au CLIENT ? C‘est plutôt
-                :<br>
+                Qu‘est-ce que le projet est censé livré au CLIENT ? C‘est
+                plutôt :<br>
                 ...un nouveau produit / service ?<br>
                 ...une prise de conscience ? <br>
                 ...de nouvelles connaissances ?
@@ -169,10 +178,11 @@
             >
               <template slot="headline">
                 Quand le projet démarre-t-il réellement ? <br>
-                De quoi a-t-on besoin pour cela ? (ex : préparatifs, documents,
-                décisions)<br>
+                De quoi a-t-on besoin pour cela ? (ex : préparatifs,
+                documents, décisions)<br>
                 Quand le projet sera-t-il réellemment terminé ? <br>
-                De quoi a-t-on besoin pour cela ? (ex : documents, décisions)<br>
+                De quoi a-t-on besoin pour cela ? (ex : documents,
+                décisions)<br>
                 Quelle souplesse a-t-on sur le déroulement au regard des dates
                 de début et de fin du projet ? <br>
                 échéances et JALONS compris ?
@@ -181,12 +191,13 @@
           </v-flex>
         </v-layout>
       </v-container>
-    </template>
+    </div>
   </div>
 </template>
 
 <script>
 import { Canvas } from "/imports/api/canvas/canvas.js";
+import { saveAs } from "file-saver";
 
 export default {
   props: {
@@ -215,9 +226,40 @@ export default {
   methods: {
     save() {
       Meteor.call("canvas.update", this.projectId, this.canvas.data);
+    },
+
+    exportODT() {
+      Meteor.call("canvas.exportODT", { projectId: this.projectId }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });
+        saveAs(blob, "canvas.odt");
+      });
     }
   }
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.toolbar {
+  flex: 0;
+}
+
+.canvas {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 4px;
+}
+</style>
