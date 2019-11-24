@@ -8,11 +8,10 @@
 
     <v-dialog
       v-model="showDialog"
-      max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      fullscreen
     >
-      <v-card>
-        <v-toolbar dark color="primary">
+      <v-card class="flex-container">
+        <v-toolbar dark color="primary" class="flex0">
           <v-btn
             v-shortkey="['esc']"
             icon
@@ -26,7 +25,7 @@
             <span>{{ $t("New report") }} </span>
           </v-toolbar-title>
         </v-toolbar>
-        <v-card-text>
+        <v-card-text class="flex1">
           <v-form v-model="valid" @submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
@@ -83,7 +82,7 @@
             </v-layout>
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="flex0 actions">
           <v-spacer />
           <v-btn text @click="showDialog = false">
             {{ $t("Cancel") }}
@@ -204,4 +203,25 @@ export default {
 .date {
   margin-bottom: 24px;
 }
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.flex0 {
+  flex: 0;
+  height: 100%;
+}
+
+.flex1 {
+  flex: 1; /* takes the remaining height of the "container" div */
+  overflow: auto; /* to scroll just the "main" div */
+}
+
+.actions {
+  min-height: 48px;
+}
+
 </style>
