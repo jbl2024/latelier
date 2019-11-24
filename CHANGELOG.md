@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export canvas to open document format (ods)
 
 ### Changed
+- Fix icons when editing health report
 - Fix autofocus
 - Improve date parsing in timeline (fix error on safari)
 - Scroll to selected task if outside viewport

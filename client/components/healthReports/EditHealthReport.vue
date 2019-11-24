@@ -192,7 +192,7 @@ export default {
       this.showDialog = false;
     },
     getIcon(weather) {
-      return `/weather/${weather}.svg`;
+      return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     }
   }
 };
