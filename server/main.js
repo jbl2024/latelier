@@ -11,6 +11,7 @@ import "../imports/startup/server/userPresence.js";
 import "../imports/api/organizations/organizations.js";
 import "../imports/api/organizations/server/publications.js";
 import "../imports/api/projects/projects.js";
+import "../imports/api/tasks/server/helpers.js";
 import "../imports/api/tasks/server/methods.js";
 import "../imports/api/tasks/server/publications.js";
 import "../imports/api/projects/server/publications.js";

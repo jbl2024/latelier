@@ -167,10 +167,7 @@ Tasks.methods.exportODT = new ValidatedMethod({
 
     const source = Assets.absoluteFilePath("exports/tasks/task.odt");
     const task = Tasks.findOne({ _id: taskId });
-    const context = task;
-
-    /* eslint no-console: off */
-    console.log(context)
+    const context = Tasks.helpers.loadAssociations(task);
 
     context.description = htmlToText.fromString(context.description);
     if (context.notes) {
@@ -178,6 +175,9 @@ Tasks.methods.exportODT = new ValidatedMethod({
         note.content = htmlToText.fromString(note.content);
       });
     }
+
+    /* eslint no-console: off */
+    console.log(context.watchers);
 
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
