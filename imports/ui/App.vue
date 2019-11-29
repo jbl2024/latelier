@@ -7,6 +7,11 @@
         :active.sync="showTaskHistory"
       />
 
+      <task-export
+        :task-id="selectedTask ? selectedTask._id : '0'"
+        :active.sync="showTaskExport"
+      />
+
       <v-app-bar
         :clipped-left="$vuetify.breakpoint.lgAndUp"
         color="primary"
@@ -144,6 +149,14 @@ export default {
       },
       set(value) {
         this.$store.dispatch("showTaskHistory", value);
+      }
+    },
+    showTaskExport: {
+      get() {
+        return this.$store.state.showTaskExport;
+      },
+      set(value) {
+        this.$store.dispatch("showTaskExport", value);
       }
     },
     showSelectBackgroundDialog: {

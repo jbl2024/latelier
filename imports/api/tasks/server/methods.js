@@ -4,11 +4,15 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import * as htmlToText from "html-to-text";
+import carbone from "carbone";
 
 import {
   checkCanReadTask,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
+
+const bound = Meteor.bindEnvironment((callback) => callback());
 
 Meteor.methods({
   "tasks.clone"(taskId, name, projectId, listId, keepDates) {
@@ -150,5 +154,45 @@ Meteor.methods({
       projectId: task.projectId,
       taskId: task._id
     };
+  }
+});
+
+Tasks.methods.exportODT = new ValidatedMethod({
+  name: "tasks.exportODT",
+  validate: new SimpleSchema({
+    taskId: { type: String }
+  }).validator(),
+  run({ taskId }) {
+    checkCanReadTask(taskId);
+
+    const source = Assets.absoluteFilePath("exports/tasks/task.odt");
+    const task = Tasks.findOne({ _id: taskId });
+    const context = task;
+
+    /* eslint no-console: off */
+    console.log(context)
+
+    context.description = htmlToText.fromString(context.description);
+    if (context.notes) {
+      context.notes.forEach((note) => {
+        note.content = htmlToText.fromString(note.content);
+      });
+    }
+
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
+
+    bound(() => {
+      carbone.render(source, context, (err, res) => {
+        if (err) {
+          throw new Meteor.Error("error", err);
+        }
+        future.return({
+          data: res
+        });
+      });
+    });
+    return future.wait();
   }
 });

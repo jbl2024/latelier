@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     showCategories: false,
     showTaskDetail: false,
     showTaskHistory: false,
+    showTaskExport: false,
     showDashboardTitle: false,
     dashboardFilter: "",
     currentOrganizationId: null,
@@ -51,6 +52,9 @@ const store = new Vuex.Store({
     },
     updateShowTaskHistory(state, showTaskHistory) {
       state.showTaskHistory = showTaskHistory;
+    },
+    updateShowTaskExport(state, showTaskExport) {
+      state.showTaskExport = showTaskExport;
     },
     updateShowDashboardTitle(state, showDashboardTitle) {
       state.showDashboardTitle = showDashboardTitle;
@@ -155,6 +159,9 @@ const store = new Vuex.Store({
     },
     showTaskHistory(context, showTaskHistory) {
       context.commit("updateShowTaskHistory", showTaskHistory);
+    },
+    showTaskExport(context, showTaskExport) {
+      context.commit("updateShowTaskExport", showTaskExport);
     }
   }
 });
