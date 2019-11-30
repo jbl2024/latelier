@@ -818,16 +818,3 @@ Tasks.methods.moveToAdjacentList = new ValidatedMethod({
     Meteor.call("tasks.move", task.projectId, newList._id, taskId);
   }
 });
-
-
-Tasks.helpers.findUserIdsInvolvedInTask = function(task) {
-  let userIds = [];
-  if (task.assignedTo) userIds.push(task.assignedTo);
-  if (task.watchers && task.watchers.length > 0) {
-    task.watchers.forEach((watcher) => {
-      userIds.push(watcher);
-    });
-  }
-  userIds = [...new Set(userIds)]; // remove duplicates
-  return userIds;
-};

@@ -23,6 +23,12 @@
         </v-list-item-action>
       </v-list-item>
       <v-divider />
+      <v-list-item @click="openExport()">
+        <v-list-item-action>
+          <v-icon>mdi-file-export</v-icon>
+        </v-list-item-action>
+        <v-list-item-title>{{ $t("Export") }}</v-list-item-title>
+      </v-list-item>
       <v-list-item @click="openHistory()">
         <v-list-item-action>
           <v-icon>mdi-history</v-icon>
@@ -123,6 +129,10 @@ export default {
       this.$store.dispatch("showTaskHistory", true);
     },
 
+    openExport() {
+      this.$store.dispatch("showTaskExport", true);
+    },
+
     moveToLeft(id) {
       Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "left" }, (error) => {
         if (error) {
@@ -141,7 +151,6 @@ export default {
           this.$store.dispatch("notify", this.$t("Task moved"));
         }
       });
-
     }
   }
 };
