@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Export canvas to open document format (ods)
 
 ### Changed
+- Fix task selection behavior
 - Edit health reports in full screen page
 - Fix icons when editing health report
 - Fix autofocus

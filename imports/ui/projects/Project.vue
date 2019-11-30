@@ -64,23 +64,22 @@ export default {
       handler() {
         this.$store.dispatch("setCurrentProjectId", this.projectId);
       }
+    },
+    showTaskDetail(now, prev) {
+      if (!now && prev) {
+        this.$store.dispatch("selectTask", null);
+        this.$router.push({
+          name: "project",
+          params: {
+            organizationId: this.organizationId,
+            projectId: this.projectId
+          }
+        });
+      }
     }
   },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
-    this.$events.listen("close-task-detail", () => {
-      if (!this.$store.state.showTaskDetail) return;
-
-      this.$store.dispatch("selectTask", null);
-      this.$store.dispatch("showTaskDetail", false);
-      this.$router.push({
-        name: "project",
-        params: {
-          organizationId: this.organizationId,
-          projectId: this.projectId
-        }
-      });
-    });
     this.$events.listen("delete-task", (task) => {
       this.deleteTask(task);
     });
@@ -92,7 +91,6 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("delete-task");
-    this.$events.off("close-task-detail");
     this.$store.dispatch("setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
@@ -153,7 +151,7 @@ export default {
       }).then((res) => {
         if (res) {
           Meteor.call("tasks.remove", task._id);
-          this.$events.fire("close-task-detail");
+          this.$store.dispatch("showTaskDetail", false);
         }
       });
     }

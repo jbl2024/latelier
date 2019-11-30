@@ -137,7 +137,6 @@ export default {
   beforeDestroy() {
     this.$events.off("filter-tasks");
     this.$store.dispatch("setCurrentProjectId", null);
-    this.$events.off("close-task-detail");
   },
   meteor: {
     // Subscriptions
@@ -289,7 +288,7 @@ export default {
       const { items } = data;
       if (items && items.length > 0) {
         if (items[0] === "start" || items[0] === "end") {
-          this.$events.fire("close-task-detail");
+          this.$store.dispatch("showTaskDetail", false);
           return;
         }
         const task = Tasks.findOne({ _id: items[0] });

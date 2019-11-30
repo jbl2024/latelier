@@ -78,7 +78,7 @@ export default {
   },
   methods: {
     hideProperties() {
-      this.$events.fire("close-task-detail");
+      this.$store.dispatch("showTaskDetail", false);
     },
 
     newListInline() {

@@ -121,7 +121,7 @@ export default {
       }).then((res) => {
         if (res) {
           Meteor.call("tasks.remove", id);
-          this.$events.fire("close-task-detail");
+          this.$store.dispatch("showTaskDetail", false);
         }
       });
     },
