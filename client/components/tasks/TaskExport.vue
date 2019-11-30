@@ -46,6 +46,40 @@
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
+
+            <v-list-item @click="exportDOCX()">
+              <v-list-item-avatar>
+                <v-icon class="green white--text">
+                  mdi-file-document-box-outline
+                </v-icon>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>
+                  DOCX
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  Word
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+
+            <v-list-item @click="exportXLSX()">
+              <v-list-item-avatar>
+                <v-icon class="green white--text">
+                  mdi-google-spreadsheet
+                </v-icon>
+              </v-list-item-avatar>
+
+              <v-list-item-content>
+                <v-list-item-title>
+                  XLSX
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  Excel
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
           </v-list>
         </v-card-text>
         <v-divider />
@@ -99,6 +133,28 @@ export default {
         }
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.spreadsheet" });
         saveAs(blob, "task.ods");
+      });
+    },
+
+    exportXLSX() {
+      Meteor.call("tasks.export", { taskId: this.taskId, format: "xlsx" }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+        saveAs(blob, "task.xlsx");
+      });
+    },
+
+    exportDOCX() {
+      Meteor.call("tasks.export", { taskId: this.taskId, format: "docx" }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+        saveAs(blob, "task.docx");
       });
     }
   }
