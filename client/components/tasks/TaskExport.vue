@@ -25,12 +25,12 @@
                   ODT
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  OpenDocument Format - LibreOffice
+                  OpenDocument Format - LibreOffice Writer
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
 
-            <v-list-item>
+            <v-list-item @click="exportODS()">
               <v-list-item-avatar>
                 <v-icon class="blue white--text">
                   mdi-google-spreadsheet
@@ -42,7 +42,7 @@
                   ODS
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  OpenDocument Format - LibreOffice
+                  OpenDocument Format - LibreOffice Calc
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -81,13 +81,24 @@ export default {
     },
 
     exportODT() {
-      Meteor.call("tasks.exportODT", { taskId: this.taskId }, (error, result) => {
+      Meteor.call("tasks.export", { taskId: this.taskId, format: "odt" }, (error, result) => {
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });
         saveAs(blob, "task.odt");
+      });
+    },
+
+    exportODS() {
+      Meteor.call("tasks.export", { taskId: this.taskId, format: "ods" }, (error, result) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+          return;
+        }
+        const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.spreadsheet" });
+        saveAs(blob, "task.ods");
       });
     }
   }

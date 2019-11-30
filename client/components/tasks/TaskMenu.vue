@@ -151,7 +151,6 @@ export default {
           this.$store.dispatch("notify", this.$t("Task moved"));
         }
       });
-
     }
   }
 };

@@ -20,3 +20,5 @@ node_modules/
 settings-temp.json
 settings-development.json
 .vscode
+
+.~lock*

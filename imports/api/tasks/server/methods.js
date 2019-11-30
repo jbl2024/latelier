@@ -6,6 +6,7 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import * as htmlToText from "html-to-text";
 import carbone from "carbone";
+import moment from "moment";
 
 import {
   checkCanReadTask,
@@ -158,14 +159,15 @@ Meteor.methods({
 });
 
 Tasks.methods.exportODT = new ValidatedMethod({
-  name: "tasks.exportODT",
+  name: "tasks.export",
   validate: new SimpleSchema({
-    taskId: { type: String }
+    taskId: { type: String },
+    format: { type: String }
   }).validator(),
-  run({ taskId }) {
+  run({ taskId, format }) {
     checkCanReadTask(taskId);
 
-    const source = Assets.absoluteFilePath("exports/tasks/task.odt");
+    const source = Assets.absoluteFilePath(`exports/tasks/task.${format}`);
     const task = Tasks.findOne({ _id: taskId });
     const context = Tasks.helpers.loadAssociations(task);
 
@@ -176,8 +178,9 @@ Tasks.methods.exportODT = new ValidatedMethod({
       });
     }
 
-    /* eslint no-console: off */
-    console.log(context.watchers);
+    context.startDate = context.startDate ? moment(context.startDate).format("DD/MM/YYYY HH:mm") : "";
+    context.dueDate = context.dueDate ? moment(context.dueDate).format("DD/MM/YYYY HH:mm") : "";
+    context.completedAt = context.completedAt ? moment(context.completedAt).format("DD/MM/YYYY HH:mm") : "";
 
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")

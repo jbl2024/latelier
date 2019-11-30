@@ -35,8 +35,20 @@ Tasks.helpers.loadAssociations = function (task) {
   task.assignedTo = loadUser(task.assignedTo);
   task.completedBy = loadUser(task.completedBy);
   if (task.watchers) {
-    task.watchers = task.watchers.map((watcher) => {
-      return loadUser(watcher);
+    task.watchers = task.watchers.map((watcher) => loadUser(watcher));
+  }
+
+  if (task.checklist) {
+    task.checklist = task.checklist.map((checklistItem) => {
+      checklistItem.createdBy = loadUser(checklistItem.createdBy);
+      return checklistItem;
+    });
+  }
+
+  if (task.notes) {
+    task.notes = task.notes.map((note) => {
+      note.createdBy = loadUser(note.createdBy);
+      return note;
     });
   }
   return task;
