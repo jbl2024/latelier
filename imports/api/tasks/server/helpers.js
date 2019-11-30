@@ -1,4 +1,5 @@
 import { Projects } from "/imports/api/projects/projects";
+import { Labels } from "/imports/api/labels/labels";
 import { Tasks } from "/imports/api/tasks/tasks";
 
 Tasks.helpers.findUserIdsInvolvedInTask = function(task) {
@@ -51,5 +52,10 @@ Tasks.helpers.loadAssociations = function (task) {
       return note;
     });
   }
+
+  if (task.labels) {
+    task.labels = task.labels.map((label) => Labels.findOne({ _id: label }));
+  }
+
   return task;
 };
