@@ -175,6 +175,7 @@ Tasks.methods.exportODT = new ValidatedMethod({
     if (context.notes) {
       context.notes.forEach((note) => {
         note.content = htmlToText.fromString(note.content);
+        note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
       });
     }
 
