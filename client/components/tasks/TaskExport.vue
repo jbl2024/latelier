@@ -12,6 +12,7 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
+          <v-progress-linear v-if="loading" indeterminate absolute top />
           <v-list>
             <v-list-item @click="exportODT()">
               <v-list-item-avatar>
@@ -107,6 +108,7 @@ export default {
   },
   data() {
     return {
+      loading: false
     };
   },
   methods: {
@@ -115,7 +117,10 @@ export default {
     },
 
     exportODT() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.export", { taskId: this.taskId, format: "odt" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -126,7 +131,10 @@ export default {
     },
 
     exportODS() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.export", { taskId: this.taskId, format: "ods" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -137,7 +145,10 @@ export default {
     },
 
     exportXLSX() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.export", { taskId: this.taskId, format: "xlsx" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -148,7 +159,10 @@ export default {
     },
 
     exportDOCX() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.export", { taskId: this.taskId, format: "docx" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;

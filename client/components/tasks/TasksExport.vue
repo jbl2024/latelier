@@ -12,6 +12,7 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
+          <v-progress-linear v-if="loading" indeterminate absolute top />
           <v-list>
             <v-list-item @click="exportODS()">
               <v-list-item-avatar>
@@ -73,6 +74,7 @@ export default {
   },
   data() {
     return {
+      loading: false
     };
   },
   methods: {
@@ -81,7 +83,10 @@ export default {
     },
 
     exportODS() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.exportProject", { projectId: this.projectId, format: "ods" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
@@ -92,7 +97,10 @@ export default {
     },
 
     exportXLSX() {
+      if (this.loading) return;
+      this.loading = true;
       Meteor.call("tasks.exportProject", { projectId: this.projectId, format: "xlsx" }, (error, result) => {
+        this.loading = false;
         if (error) {
           this.$store.dispatch("notifyError", error);
           return;
