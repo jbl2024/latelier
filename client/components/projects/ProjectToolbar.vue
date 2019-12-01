@@ -17,30 +17,20 @@
     <project-filters v-if="!showFilters" :project-id="project._id" />
 
     <v-spacer />
-    <div>
-      <v-tooltip v-if="!isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
-          <v-btn icon @click.stop="addToFavorites(user, project._id)" v-on="on">
-            <v-icon>mdi-star-outline</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t("Add to favorites") }}</span>
-      </v-tooltip>
-    </div>
-    <div>
-      <v-tooltip v-if="isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
-          <v-btn
-            icon
-            @click.stop="removeFromFavorites(user, project._id)"
-            v-on="on"
-          >
-            <v-icon>mdi-star</v-icon>
-          </v-btn>
-        </template>
-        <span>{{ $t("Remove from favorites") }}</span>
-      </v-tooltip>
-    </div>
+    <tooltip-button
+      v-if="!isFavorite(user, project._id)"
+      bottom
+      icon="mdi-star-outline"
+      :tooltip="$t('Add to favorites')"
+      @on="addToFavorites(user, project._id)"
+    />
+    <tooltip-button
+      v-if="isFavorite(user, project._id)"
+      bottom
+      icon="mdi-star"
+      :tooltip="$t('Remove from favorites')"
+      @on="removeFromFavorites(user, project._id)"
+    />
     <tooltip-button
       bottom
       icon="mdi-file-export"
