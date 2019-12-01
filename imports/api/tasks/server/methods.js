@@ -10,6 +10,7 @@ import moment from "moment";
 
 import {
   checkCanReadTask,
+  checkCanReadProject,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
 
@@ -182,6 +183,84 @@ Tasks.methods.exportODT = new ValidatedMethod({
     context.startDate = context.startDate ? moment(context.startDate).format("DD/MM/YYYY HH:mm") : "";
     context.dueDate = context.dueDate ? moment(context.dueDate).format("DD/MM/YYYY HH:mm") : "";
     context.completedAt = context.completedAt ? moment(context.completedAt).format("DD/MM/YYYY HH:mm") : "";
+
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
+
+    bound(() => {
+      carbone.render(source, context, (err, res) => {
+        if (err) {
+          throw new Meteor.Error("error", err);
+        }
+        future.return({
+          data: res
+        });
+      });
+    });
+    return future.wait();
+  }
+});
+
+
+Tasks.methods.exportProject = new ValidatedMethod({
+  name: "tasks.exportProject",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    format: { type: String }
+  }).validator(),
+  run({ projectId, format }) {
+    checkCanReadProject(projectId);
+
+    const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
+    const project = Projects.findOne({ _id: projectId });
+    const context = project;
+    context.lists = [];
+
+    const lists = Lists.find({ projectId: projectId }, { sort: { order: 1 } });
+    lists.forEach((list) => {
+      context.lists.push(list);
+      list.tasks = [];
+      const tasks = Tasks.find({
+        listId: list._id,
+        deleted: { $ne: true }
+      }, { sort: { order: 1 } });
+
+      tasks.forEach((task) => {
+        task = Tasks.helpers.loadAssociations(task);
+        task.description = htmlToText.fromString(task.description);
+        if (task.notes) {
+          task.notes.forEach((note) => {
+            note.content = htmlToText.fromString(note.content);
+            note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
+          });
+        }
+
+        if (task.labels) {
+          let labels = "";
+          task.labels.forEach((label) => {
+            if (labels === "") {
+              labels = `${label.name}`;
+            } else {
+              labels = `${labels} / ${label.name}`;
+            }
+          });
+          task.labels = labels;
+        }
+
+        if (task.assignedTo && task.assignedTo.emails) {
+          task.assignedTo = task.assignedTo.emails[0].address;
+        } else {
+          task.assignedTo = "";
+        }
+
+        task.startDate = task.startDate ? moment(task.startDate).format("DD/MM/YYYY HH:mm") : "";
+        task.dueDate = task.dueDate ? moment(task.dueDate).format("DD/MM/YYYY HH:mm") : "";
+        task.completedAt = task.completedAt ? moment(task.completedAt).format("DD/MM/YYYY HH:mm") : "";
+
+        list.tasks.push(task);
+      });
+    });
 
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
