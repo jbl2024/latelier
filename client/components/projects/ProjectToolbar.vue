@@ -1,5 +1,10 @@
 <template>
   <v-toolbar ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
+    <tasks-export
+      :project-id="project._id"
+      :active.sync="showTasksExport"
+    />
+
     <project-filters-dialog
       :active.sync="showFiltersDialog"
       :project-id="project._id"
@@ -36,6 +41,12 @@
         <span>{{ $t("Remove from favorites") }}</span>
       </v-tooltip>
     </div>
+    <tooltip-button
+      bottom
+      icon="mdi-file-export"
+      :tooltip="$t('Export')"
+      @on="exportODS()"
+    />
     <v-btn
       v-if="canManageProject(project)"
       icon
@@ -64,7 +75,8 @@ export default {
   data() {
     return {
       showFilters: false,
-      showFiltersDialog: false
+      showFiltersDialog: false,
+      showTasksExport: false
     };
   },
   methods: {
@@ -105,6 +117,10 @@ export default {
           );
         }
       );
+    },
+
+    exportODS() {
+      this.showTasksExport = true;
     },
 
     canManageProject(project) {
