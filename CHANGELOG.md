@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Export project tasks list to office (calc & excel) format
 - Export single task to office formats
 - Search box
 - Link to settings in organization page without any projects
