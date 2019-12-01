@@ -236,6 +236,24 @@ Tasks.methods.exportProject = new ValidatedMethod({
           });
         }
 
+        if (task.labels) {
+          let labels = "";
+          task.labels.forEach((label) => {
+            if (labels === "") {
+              labels = `${label.name}`;
+            } else {
+              labels = `${labels} / ${label.name}`;
+            }
+          });
+          task.labels = labels;
+        }
+
+        if (task.assignedTo && task.assignedTo.emails) {
+          task.assignedTo = task.assignedTo.emails[0].address;
+        } else {
+          task.assignedTo = "";
+        }
+
         task.startDate = task.startDate ? moment(task.startDate).format("DD/MM/YYYY HH:mm") : "";
         task.dueDate = task.dueDate ? moment(task.dueDate).format("DD/MM/YYYY HH:mm") : "";
         task.completedAt = task.completedAt ? moment(task.completedAt).format("DD/MM/YYYY HH:mm") : "";
