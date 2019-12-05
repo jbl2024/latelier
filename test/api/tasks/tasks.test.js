@@ -39,7 +39,7 @@ if (Meteor.isServer) {
       expect(task.number).to.be.a("number");
     });
 
-    it("cloned task has notes & checklist", async function() {
+    it("cloned task has notes & checklist & labels", async function() {
       createProject();
 
       const task = Meteor.call(
@@ -49,8 +49,16 @@ if (Meteor.isServer) {
         "a name"
       );
 
+      const labelId = Meteor.call("labels.create", {
+        projectId: Projects.findOne()._id,
+        name: "label",
+        color: "black"
+      });
+
       Meteor.call("tasks.addNote", task._id, "note1");
       Meteor.call("tasks.addNote", task._id, "note2");
+
+      Meteor.call("tasks.addLabel", task._id, labelId);
 
       Meteor.call("tasks.addChecklistItem", task._id, "check1");
       Meteor.call("tasks.addChecklistItem", task._id, "check2");
@@ -60,7 +68,53 @@ if (Meteor.isServer) {
 
       expect(clonedTask.notes).to.have.lengthOf(2);
       expect(clonedTask.checklist).to.have.lengthOf(3);
+      expect(clonedTask.labels).to.have.lengthOf(1);
     });
+
+    it("checklist converted from task has labels", async function() {
+      createProject();
+
+      const task = Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+
+      const labelId = Meteor.call("labels.create", {
+        projectId: Projects.findOne()._id,
+        name: "label",
+        color: "black"
+      });
+
+      Meteor.call("tasks.addLabel", task._id, labelId);
+
+      Meteor.call("tasks.addChecklistItem", task._id, "check1");
+      Meteor.call("tasks.addChecklistItem", task._id, "check2");
+      const checkItemId = Meteor.call("tasks.addChecklistItem", task._id, "check3");
+
+      const convertedTask = Meteor.call("tasks.convertItemToTask", task._id, checkItemId);
+      expect(convertedTask.labels).to.have.lengthOf(1);
+    });
+
+    it("checklist converted from task has name of check item", async function() {
+      createProject();
+
+      const task = Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+
+      Meteor.call("tasks.addChecklistItem", task._id, "check1");
+      Meteor.call("tasks.addChecklistItem", task._id, "check2");
+      const checkItemId = Meteor.call("tasks.addChecklistItem", task._id, "check3");
+
+      const convertedTask = Meteor.call("tasks.convertItemToTask", task._id, checkItemId);
+      expect(convertedTask.name).to.be.equal("check3");
+    });
+
 
     it("only members can create tasks", async function() {
       let errorCode;

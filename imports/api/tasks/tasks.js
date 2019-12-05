@@ -415,6 +415,8 @@ Meteor.methods({
       type: "tasks.addChecklistItem",
       taskId
     });
+
+    return item._id;
   },
 
   "tasks.removeChecklistItem"(taskId, itemId) {
@@ -467,8 +469,10 @@ Meteor.methods({
       }
     });
 
-    Meteor.call("tasks.insert", task.projectId, task.listId, item.name);
+    const convertedTask = Meteor.call("tasks.insert", task.projectId, task.listId, item.name, task.labels);
     Meteor.call("tasks.removeChecklistItem", taskId, itemId);
+
+    return convertedTask;
   },
 
   "tasks.updateCheckListItem"(taskId, item) {

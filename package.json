@@ -5,7 +5,7 @@
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
     "test": "MOCHA_TIMEOUT=5000 meteor test --once --driver-package meteortesting:mocha",
     "test-run": "MOCHA_TIMEOUT=5000 meteor test --driver-package meteortesting:mocha",
-    "test-app": "TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "test-app": "MOCHA_TIMEOUT=5000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "lint": "eslint .",
     "pretest": "npm run lint --silent"
