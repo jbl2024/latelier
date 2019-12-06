@@ -49,6 +49,8 @@ import "../imports/api/notifications/server/methods.js";
 
 import "../imports/api/search/server/methods.js";
 
+import "../imports/api/digest/server/methods.js";
+
 import "./apm.js";
 
 if (Meteor.isServer) {

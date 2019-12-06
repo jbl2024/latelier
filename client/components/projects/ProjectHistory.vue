@@ -19,57 +19,79 @@
           Historique
         </v-toolbar-title>
       </v-toolbar>
-      <v-card class="flex-container">
-        <v-card-text class="flex1">
-          <v-progress-linear v-if="loading" indeterminate />
 
-          <v-timeline
-            v-if="!loading"
-            dense
-            clipped
-          >
-            <v-timeline-item
-              v-for="item in history"
-              :key="item._id"
-              color="indigo"
-              :small="$vuetify.breakpoint.xsOnly"
-            >
-              <span slot="opposite" />
-              <v-card class="elevation-2">
-                <v-card-text>
-                  <div class="task-name">
-                    {{ item.properties.task.name }}
-                  </div>
-                  <div>
-                    {{ $t(`history.${item.type}`) }}
-                    <span class="grey--text">{{
-                      $t("dates.duration.by", {
-                        duration: formatDateDuration(item.createdAt),
-                        user: item.user
-                      })
-                    }}</span>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-timeline-item>
-          </v-timeline>
-        </v-card-text>
-        <div class="flex0">
-          <div class="text-xs-center">
-            <v-pagination
-              v-if="showDialog && pagination.totalPages > 0"
-              v-model="page"
-              :length="pagination.totalPages"
-            />
-          </div>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="close()">
-              {{ this.$t("Close") }}
-            </v-btn>
-          </v-card-actions>
-        </div>
-      </v-card>
+      <v-tabs v-if="showDialog" grow>
+        <v-tab>
+          {{ $t("Activity") }}
+        </v-tab>
+        <v-tab>
+          {{ $t("History") }}
+        </v-tab>
+        <v-tab-item>
+          <v-card class="flex-container">
+            <v-card-text class="flex1">
+              <project-digest :project-id="projectId" />
+            </v-card-text>
+            <div class="flex0">
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="close()">
+                  {{ this.$t("Close") }}
+                </v-btn>
+              </v-card-actions>
+            </div>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card class="flex-container">
+            <v-card-text class="flex1">
+              <v-progress-linear v-if="loading" indeterminate />
+
+              <v-timeline v-if="!loading" dense clipped>
+                <v-timeline-item
+                  v-for="item in history"
+                  :key="item._id"
+                  color="indigo"
+                  :small="$vuetify.breakpoint.xsOnly"
+                >
+                  <span slot="opposite" />
+                  <v-card class="elevation-2">
+                    <v-card-text>
+                      <div class="task-name">
+                        {{ item.properties.task.name }}
+                      </div>
+                      <div>
+                        {{ $t(`history.${item.type}`) }}
+                        <span class="grey--text">{{
+                          $t("dates.duration.by", {
+                            duration: formatDateDuration(item.createdAt),
+                            user: item.user
+                          })
+                        }}</span>
+                      </div>
+                    </v-card-text>
+                  </v-card>
+                </v-timeline-item>
+              </v-timeline>
+            </v-card-text>
+            <div class="flex0">
+              <div class="text-xs-center">
+                <v-pagination
+                  v-if="showDialog && pagination.totalPages > 0"
+                  v-model="page"
+                  :length="pagination.totalPages"
+                />
+              </div>
+              <v-card-actions>
+                <v-spacer />
+                <v-btn text @click="close()">
+                  {{ this.$t("Close") }}
+                </v-btn>
+              </v-card-actions>
+            </div>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
     </v-dialog>
   </div>
 </template>
@@ -135,8 +157,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
       ) {
         return 0;
       }
