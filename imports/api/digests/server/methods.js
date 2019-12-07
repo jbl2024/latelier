@@ -16,11 +16,12 @@ methods.addDigest = new ValidatedMethod({
       .startOf("day")
       .toDate();
 
+
     let digestType = type;
     const notUpdateTypes = [
       "tasks.create",
       "tasks.remove",
-      "tasks.tasks.deleteForever",
+      "tasks.deleteForever",
       "tasks.complete",
       "tasks.uncomplete"
     ];

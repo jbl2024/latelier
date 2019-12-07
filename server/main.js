@@ -51,6 +51,7 @@ import "../imports/api/search/server/methods.js";
 
 import "../imports/api/digests/digests.js";
 import "../imports/api/digests/server/methods.js";
+import "../imports/api/digests/server/jobs.js";
 
 import "./apm.js";
 
