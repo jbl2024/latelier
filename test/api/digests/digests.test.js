@@ -6,6 +6,8 @@ import { Digests } from "/imports/api/digests/digests";
 import { Lists } from "/imports/api/lists/lists";
 import { createStubs, restoreStubs } from "/test/stubs";
 
+import moment from "moment";
+
 function createProject(name) {
   name = name || "project";
   const projectId = Meteor.call("projects.create", {
@@ -97,6 +99,43 @@ if (Meteor.isServer) {
 
       Meteor.call("tasks.complete", task._id, false);
       expect(Digests.find().fetch()[1].type).to.be.equal("tasks.uncomplete");
+    });
+
+    it("purge remove only obsolete digests", async function() {
+      for (let i = 0; i < 100; i++) {
+        const when = moment().startOf("day").subtract(i, "days").toDate();
+        Digests.insert({
+          type: "foo",
+          when: when,
+          projectId: "projectId"
+        });
+
+        Digests.insert({
+          type: "bar",
+          when: when,
+          projectId: "projectId"
+        });
+
+        Digests.insert({
+          type: "foo",
+          when: when,
+          projectId: "anotherProjectId"
+        });
+
+        Digests.insert({
+          type: "bar",
+          when: when,
+          projectId: "anotherProjectId"
+        });
+      }
+
+      const keep = 60;
+
+      expect(Digests.find().count()).to.be.equal(200 + 200);
+
+      Meteor.call("digests.purge", { projectId: "projectId" });
+      expect(Digests.find({ projectId: "anotherProjectId" }).count()).to.be.equal(200);
+      expect(Digests.find({ projectId: "projectId" }).count()).to.be.equal(keep * 2);
     });
   });
 }

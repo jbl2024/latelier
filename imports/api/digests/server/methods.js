@@ -68,6 +68,9 @@ methods.addDigest = new ValidatedMethod({
   }
 });
 
+/**
+ * Cap the number of days available in digest
+ */
 methods.purge = new ValidatedMethod({
   name: "digests.purge",
   validate: new SimpleSchema({
@@ -76,15 +79,38 @@ methods.purge = new ValidatedMethod({
   run({ projectId }) {
     this.unblock();
 
-    const dayToKeep = moment()
-      .startOf("day")
-      .subtract(Meteor.settings.digestsToKeep || 60, "days");
-    Digests.remove({
-      projectId: projectId,
-      when: {
-        $lt: dayToKeep
+    const keep = Meteor.settings.digestsToKeep || 60;
+    const digests = Digests.find(
+      {
+        projectId: projectId
+      },
+      {
+        sort: {
+          when: -1
+        }
       }
-    });
+    ).fetch();
+
+    let when;
+    let differentDays = 0;
+    const count = digests.length;
+    const toDelete = [];
+    for (let i = 0; i < count; i++) {
+      const digest = digests[i];
+      if (digest.when.getTime() !== when) {
+        when = digest.when.getTime();
+        differentDays += 1;
+      }
+      if (differentDays > keep) {
+        toDelete.push(digest._id);
+      }
+    }
+
+    if (toDelete.length > 0) {
+      Digests.remove({
+        _id: { $in: toDelete }
+      });
+    }
   }
 });
 
