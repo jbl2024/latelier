@@ -79,7 +79,7 @@ methods.purge = new ValidatedMethod({
   run({ projectId }) {
     this.unblock();
 
-    const keep = Meteor.settings.digestsToKeep || 60;
+    const keep = Meteor.settings.digestsRetention || 60;
     const digests = Digests.find(
       {
         projectId: projectId
