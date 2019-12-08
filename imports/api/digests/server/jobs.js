@@ -57,12 +57,14 @@ const sendEmail = function(user, digests, date, emailData) {
   }
 };
 
-const digestIsEmpty = function (digest) {
+const digestIsEmpty = function(digest) {
   if (!digest) return true;
-  if (digest.completed.length === 0
-      && digest.created.length === 0
-      && digest.updated.length === 0
-      && digest.removed.length === 0) {
+  if (
+    digest.completed.length === 0 &&
+    digest.created.length === 0 &&
+    digest.updated.length === 0 &&
+    digest.removed.length === 0
+  ) {
     return true;
   }
   return false;
@@ -75,7 +77,22 @@ Jobs.register({
       .startOf("day")
       .add(-1, "days")
       .toDate();
-    const users = Meteor.users.find({"profile.favoriteProjects": { $exists: true, $ne: [] } });
+
+    // get projects involved in digest
+    const projectIds = Digests.aggregate([
+      {
+        $match: {
+          when: when
+        }
+      },
+      { $group: { _id: "$projectId" } }
+    ]).map((res) => res._id);
+
+    // get only users involved in projects
+    const users = Meteor.users.find({
+      "profile.favoriteProjects": { $in: projectIds }
+    });
+
     users.forEach((user) => {
       if (!user.profile) return;
       const favorites = user.profile.favoriteProjects || [];
