@@ -60,10 +60,10 @@ const sendEmail = function(user, digests, date, emailData) {
 const digestIsEmpty = function(digest) {
   if (!digest) return true;
   if (
-    digest.completed.length === 0 &&
-    digest.created.length === 0 &&
-    digest.updated.length === 0 &&
-    digest.removed.length === 0
+    digest.completed.length === 0 
+    && digest.created.length === 0
+    && digest.updated.length === 0
+    && digest.removed.length === 0
   ) {
     return true;
   }
