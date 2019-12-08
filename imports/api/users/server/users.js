@@ -264,14 +264,14 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
     const user = Meteor.users.findOne({ _id: Meteor.userId() });
-    if (!user.emailSettings) {
-      user.emailSettings = {
-        tasks: {
-          assignTo: true,
-          update: true
-        }
-      };
-    }
+    user.emailSettings = user.emailSettings || {};
+    user.emailSettings.tasks = user.emailSettings.tasks || {
+      assignTo: true,
+      update: true
+    };
+    user.emailSettings.digest = user.emailSettings.digest || {
+      favorites: false
+    };
     return user;
   },
 

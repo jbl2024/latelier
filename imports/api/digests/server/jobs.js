@@ -90,7 +90,8 @@ Jobs.register({
 
     // get only users involved in projects
     const users = Meteor.users.find({
-      "profile.favoriteProjects": { $in: projectIds }
+      "profile.favoriteProjects": { $in: projectIds },
+      "emailSettings.digest.favorites": true
     });
 
     users.forEach((user) => {
