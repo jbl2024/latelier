@@ -75,7 +75,7 @@ Jobs.register({
       .startOf("day")
       .add(-1, "days")
       .toDate();
-    const users = Meteor.users.find({});
+    const users = Meteor.users.find({"profile.favoriteProjects": { $exists: true, $ne: [] } });
     users.forEach((user) => {
       if (!user.profile) return;
       const favorites = user.profile.favoriteProjects || [];
@@ -125,9 +125,11 @@ Jobs.register({
       sendEmail(user, digests, moment(when).format("DD/MM/YYYY"), emailData);
     });
     instance.replicate({
-      in: {
-        hours: 24
-      }
+      date: moment()
+        .add(1, "days")
+        .startOf("day")
+        .add(7, "hours")
+        .toDate()
     });
     instance.success();
   }
