@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Tasks Digest per project (for favorites only), sent to user if allowed in preferences
 
 ### Changed
 - Labels are kept when converting item to task

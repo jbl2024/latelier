@@ -28,6 +28,17 @@
             />
           </v-list-item-action>
         </v-list-item>
+        <v-list-item @click="toggleSettings('emailSettings.digest.favorites')">
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("Receive daily digest from favorites projects") }}</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-switch
+              v-model="user.emailSettings.digest.favorites"
+              @click="toggleSettings('emailSettings.digest.favorites')"
+            />
+          </v-list-item-action>
+        </v-list-item>
       </v-list>
     </template>
   </div>

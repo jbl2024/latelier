@@ -142,6 +142,11 @@ Meteor.methods({
       type: event.type,
       properties
     });
+
+    Meteor.call("digests.add", {
+      type: event.type,
+      properties: properties
+    });
   },
 
   "tasks.getUrl"(taskNumber) {

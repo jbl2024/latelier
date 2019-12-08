@@ -46,6 +46,7 @@ Settings:
 |notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
 |users                  | object        | {}                       | See below |
 |elasticApm             | object        | {}                       | See below |
+|digestsRetention       | number        | 60                       | Number of days to keep in digest |
 
 users:
 

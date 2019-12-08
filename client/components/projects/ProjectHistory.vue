@@ -19,15 +19,12 @@
           Historique
         </v-toolbar-title>
       </v-toolbar>
+
       <v-card class="flex-container">
         <v-card-text class="flex1">
           <v-progress-linear v-if="loading" indeterminate />
 
-          <v-timeline
-            v-if="!loading"
-            dense
-            clipped
-          >
+          <v-timeline v-if="!loading" dense clipped>
             <v-timeline-item
               v-for="item in history"
               :key="item._id"
@@ -135,8 +132,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
       ) {
         return 0;
       }

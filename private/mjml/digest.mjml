@@ -1,0 +1,87 @@
+<mjml>
+  <mj-head>
+    <mj-style inline="inline">
+      .link-nostyle { color: inherit; text-decoration: none }
+      .link-task { color: #1c2e3e; text-decoration: none }
+
+    </mj-style>
+    <mj-attributes>
+      <mj-class name="blue" color="blue" />
+      <mj-class name="big" font-size="20px" />
+      <mj-class name="project" font-size="16px" font-weight="bold" />
+      <mj-class name="status" font-size="14px" />
+      <mj-class name="tasks" border="1px solid #eee" border-radius="4px" padding-left="12px"/>
+      <mj-all font-family="Helvetica" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body>
+    <mj-section background-color="#455a64">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#fff" mj-class="big">
+          L'atelier // Rapport d'activité du {{ date }}
+        </mj-text>
+      </mj-column>
+    </mj-section>
+
+    {{#each digests}}
+
+    <mj-section background-color="#fff" padding="0" border-left="1px solid #ecedee" border-right="1px solid #ecedee">
+      <mj-column>
+        <mj-text mj-class="project">{{ project.name }} </b></mj-text>
+        <mj-table>
+          {{#if completed.length }}
+            <tr style="border-bottom:1px solid #ecedee;text-align:left;padding:15px 0;">
+              <th style="padding: 0 15px 0 0;">Tâches terminées</th>
+            </tr>
+            {{#each completed}}
+            <tr>
+              <td style="padding: 0 15px 0 0;">- <a class="link-task" href="{{ properties.task.url }}">{{ properties.task.name }}</a></td>
+            </tr>
+            {{/each}}
+          {{/if}}
+          {{#if created.length }}
+            <tr style="border-bottom:1px solid #ecedee;text-align:left;padding:15px 0;">
+              <th style="padding: 0 15px 0 0;">Nouvelles tâches</th>
+            </tr>
+            {{#each created}}
+            <tr>
+              <td style="padding: 0 15px 0 0;">- <a class="link-task" href="{{ properties.task.url }}">{{ properties.task.name }}</a></td>
+            </tr>
+            {{/each}}
+          {{/if}}
+          {{#if updated.length }}
+            <tr style="border-bottom:1px solid #ecedee;text-align:left;padding:15px 0;">
+              <th style="padding: 0 15px 0 0;">Mises à jour récemment</th>
+            </tr>
+            {{#each updated}}
+            <tr>
+              <td style="padding: 0 15px 0 0;">- <a class="link-task" href="{{ properties.task.url }}">{{ properties.task.name }}</a></td>
+            </tr>
+            {{/each}}
+          {{/if}}
+          {{#if removed.length }}
+            <tr style="border-bottom:1px solid #ecedee;text-align:left;padding:15px 0;">
+              <th style="padding: 0 15px 0 0;">Supprimées</th>
+            </tr>
+            {{#each removed}}
+            <tr>
+              <td style="padding: 0 15px 0 0;">- {{ properties.task.name }}</td>
+            </tr>
+            {{/each}}
+          {{/if}}
+        </mj-table>
+      </mj-column>
+    </mj-section>
+
+
+    {{/each}}
+
+    <mj-section background-color="#eee" border-left="1px solid #ecedee" border-right="1px solid #ecedee">
+      <mj-column>
+        <mj-text align="center" padding="4px" color="#888">
+        <a class="link-nostyle" href="{{ emailSettingsUrl }}">Gérer mes notifications</a>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
