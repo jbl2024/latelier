@@ -155,8 +155,18 @@ if (Meteor.isServer) {
         userId: Meteor.userId()
       });
 
+      Projects.methods.addToUserDigests._execute(context, {
+        projectId: projectIds[0],
+        userId: Meteor.userId()
+      });
+
       expect(
         Meteor.users.findOne({ _id: Meteor.userId() }).profile.favoriteProjects
+      )
+        .to.be.an("array")
+        .that.include(projectIds[0]);
+      expect(
+        Meteor.users.findOne({ _id: Meteor.userId() }).profile.digests
       )
         .to.be.an("array")
         .that.include(projectIds[0]);
@@ -177,6 +187,11 @@ if (Meteor.isServer) {
       )
         .to.be.an("array")
         .that.not.include(projectIds[0]);
+      expect(
+        Meteor.users.findOne({ _id: Meteor.userId() }).profile.digests
+      )
+        .to.be.an("array")
+        .that.not.include(projectIds[0]);
       expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
       expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
       expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
@@ -184,6 +199,67 @@ if (Meteor.isServer) {
       expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
 
       expect(Labels.findOne({ projectId: projectIds[0] })).to.be.undefined;
+    });
+
+    it("leave project should remove associated objects", async function() {
+      const user = Meteor.users.findOne();
+      const userId = user._id;
+
+      const context = { userId };
+      const projectIds = [];
+      for (let i = 0; i < 10; i++) {
+        const projectId = Projects.methods.create._execute(context, {
+          name: "project",
+          projectType: "kanban",
+          state: ProjectStates.PRODUCTION
+        });
+        projectIds.push(projectId);
+      }
+
+      expect(projectIds).to.have.lengthOf(10);
+
+      Permissions.methods.setAdmin._execute(context, {
+        userId: userId,
+        scope: projectIds[0]
+      });
+
+      Projects.methods.addToUserFavorites._execute(context, {
+        projectId: projectIds[0],
+        userId: userId
+      });
+
+      Projects.methods.addToUserDigests._execute(context, {
+        projectId: projectIds[0],
+        userId: userId
+      });
+
+      expect(
+        Meteor.users.findOne({ _id: userId }).profile.favoriteProjects
+      )
+        .to.be.an("array")
+        .that.include(projectIds[0]);
+      expect(
+        Meteor.users.findOne({ _id: userId }).profile.digests
+      )
+        .to.be.an("array")
+        .that.include(projectIds[0]);
+      expect(Permissions.isAdmin(user._id, projectIds[0])).to.be.true;
+
+      Projects.methods.leave._execute(context, {
+        projectId: projectIds[0]
+      });
+
+      expect(
+        Meteor.users.findOne({ _id: userId }).profile.favoriteProjects
+      )
+        .to.be.an("array")
+        .that.not.include(projectIds[0]);
+      expect(
+        Meteor.users.findOne({ _id: userId }).profile.digests
+      )
+        .to.be.an("array")
+        .that.not.include(projectIds[0]);
+      expect(Permissions.isAdmin(user, projectIds[0])).to.be.false;
     });
   });
 }

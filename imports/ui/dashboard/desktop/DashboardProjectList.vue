@@ -60,6 +60,24 @@
         </template>
         <v-list dense>
           <v-list-item
+            v-if="!isSubscribedToDigests(user, project._id)"
+            @click="addToDigests(user, project._id)"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-email-outline</v-icon>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t("Add to daily digest") }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item
+            v-if="isSubscribedToDigests(user, project._id)"
+            @click="removeFromDigests(user, project._id)"
+          >
+            <v-list-item-action>
+              <v-icon>mdi-email</v-icon>
+            </v-list-item-action>
+            <v-list-item-title>{{ $t("Remove from daily digest") }}</v-list-item-title>
+          </v-list-item>
+          <v-list-item
             v-if="canManageProject(project)"
             @click="openProjectSettings(project)"
           >
@@ -339,6 +357,45 @@ export default {
           );
         }
       });
+    },
+
+    isSubscribedToDigests(user, projectId) {
+      let digests = [];
+      if (user && user.profile) {
+        digests = user.profile.digests || [];
+      }
+      return digests.indexOf(projectId) >= 0;
+    },
+
+    addToDigests(user, projectId) {
+      Meteor.call(
+        "projects.addToUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch("notify", this.$t("Project added to daily digest"));
+        }
+      );
+    },
+
+    removeFromDigests(user, projectId) {
+      Meteor.call(
+        "projects.removeFromUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch(
+            "notify",
+            this.$t("Project removed from daily digest")
+          );
+        }
+      );
     }
   }
 };

@@ -32,6 +32,20 @@
       @on="removeFromFavorites(user, project._id)"
     />
     <tooltip-button
+      v-if="!isSubscribedToDigests(user, project._id)"
+      bottom
+      icon="mdi-email-outline"
+      :tooltip="$t('Add to daily digest')"
+      @on="addToDigests(user, project._id)"
+    />
+    <tooltip-button
+      v-if="isSubscribedToDigests(user, project._id)"
+      bottom
+      icon="mdi-email"
+      :tooltip="$t('Remove from daily digest')"
+      @on="removeFromDigests(user, project._id)"
+    />
+    <tooltip-button
       bottom
       icon="mdi-file-export"
       :tooltip="$t('Export')"
@@ -104,6 +118,45 @@ export default {
           this.$store.dispatch(
             "notify",
             this.$t("Project removed from favorites")
+          );
+        }
+      );
+    },
+
+    isSubscribedToDigests(user, projectId) {
+      let digests = [];
+      if (user && user.profile) {
+        digests = user.profile.digests || [];
+      }
+      return digests.indexOf(projectId) >= 0;
+    },
+
+    addToDigests(user, projectId) {
+      Meteor.call(
+        "projects.addToUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch("notify", this.$t("Project added to daily digest"));
+        }
+      );
+    },
+
+    removeFromDigests(user, projectId) {
+      Meteor.call(
+        "projects.removeFromUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch(
+            "notify",
+            this.$t("Project removed from daily digest")
           );
         }
       );
