@@ -2,6 +2,7 @@ import { Jobs } from "meteor/msavin:sjobs";
 import { Email } from "meteor/email";
 import { Projects } from "/imports/api/projects/projects";
 import { Digests } from "/imports/api/digests/digests";
+import { Permissions } from "/imports/api/permissions/permissions";
 import * as htmlToText from "html-to-text";
 
 import moment from "moment";
@@ -13,7 +14,7 @@ import moment from "moment";
  */
 const buildEmailData = function(options) {
   return {
-    subject(user, digests, date) {
+    subject(/* user, digests, date */) {
       return `${options.subject}`;
     },
     html(user, digests, date) {
@@ -60,7 +61,7 @@ const sendEmail = function(user, digests, date, emailData) {
 const digestIsEmpty = function(digest) {
   if (!digest) return true;
   if (
-    digest.completed.length === 0 
+    digest.completed.length === 0
     && digest.created.length === 0
     && digest.updated.length === 0
     && digest.removed.length === 0
@@ -90,17 +91,23 @@ Jobs.register({
 
     // get only users involved in projects
     const users = Meteor.users.find({
-      "profile.favoriteProjects": { $in: projectIds },
-      "emailSettings.digest.favorites": true
+      "profile.digests": { $in: projectIds },
+      "emailSettings.digests.daily": { $ne: false }
     });
 
     users.forEach((user) => {
       if (!user.profile) return;
-      const favorites = user.profile.favoriteProjects || [];
+      const projects = user.profile.digests || [];
 
       const digests = [];
-      favorites.forEach((projectId) => {
-        const project = Projects.findOne({ _id: projectId, members: user._id });
+      projects.forEach((projectId) => {
+        const projectQuery = {
+          _id: projectId
+        };
+        if (!Permissions.isAdmin(user._id)) {
+          projectQuery.members = user._id;
+        }
+        const project = Projects.findOne(projectQuery);
         if (!project) return;
         const completed = Digests.find({
           projectId: project._id,

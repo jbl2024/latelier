@@ -75,6 +75,36 @@
         <span>{{ $t("Remove from favorites") }}</span>
       </v-tooltip>
 
+      <v-tooltip v-if="!isSubscribedToDigests(user, project._id)" top>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            text
+            color="grey darken-1"
+            @click.stop="addToDigests(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>mdi-email-outline</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("Add to daily digest") }}</span>
+      </v-tooltip>
+
+      <v-tooltip v-if="isSubscribedToDigests(user, project._id)" top>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            icon
+            text
+            color="primary"
+            @click.stop="removeFromDigests(user, project._id)"
+            v-on="on"
+          >
+            <v-icon>mdi-email</v-icon>
+          </v-btn>
+        </template>
+        <span>{{ $t("Remove from daily digest") }}</span>
+      </v-tooltip>
+
       <template v-if="canManageProject(project)">
         <v-tooltip top>
           <template v-slot:activator="{ on }">
@@ -287,7 +317,46 @@ export default {
           }
         );
       });
-    }
+    },
+
+    isSubscribedToDigests(user, projectId) {
+      let digests = [];
+      if (user && user.profile) {
+        digests = user.profile.digests || [];
+      }
+      return digests.indexOf(projectId) >= 0;
+    },
+
+    addToDigests(user, projectId) {
+      Meteor.call(
+        "projects.addToUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch("notify", this.$t("Project added to daily digest"));
+        }
+      );
+    },
+
+    removeFromDigests(user, projectId) {
+      Meteor.call(
+        "projects.removeFromUserDigests",
+        { projectId, userId: user._id },
+        (error) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          this.$store.dispatch(
+            "notify",
+            this.$t("Project removed from daily digest")
+          );
+        }
+      );
+    },    
   }
 };
 </script>

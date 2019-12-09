@@ -171,7 +171,7 @@ Projects.methods.remove = new ValidatedMethod({
 
     Meteor.users.update(
       {},
-      { $pull: { "profile.favoriteProjects": projectId } },
+      { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } },
       { multi: true }
     );
   }
@@ -196,7 +196,7 @@ Projects.methods.deleteForever = new ValidatedMethod({
     Meteor.call("events.removeProject", projectId);
     Meteor.users.update(
       {},
-      { $pull: { "profile.favoriteProjects": projectId } },
+      { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } },
       { multi: true }
     );
     const projectGroups = ProjectGroups.find({ projects: projectId });
@@ -489,6 +489,17 @@ Projects.methods.leave = new ValidatedMethod({
       { $pull: { watchers: userId } },
       { multi: true }
     );
+
+    Meteor.users.update(
+      { _id: userId },
+      { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } }
+    );
+
+    const query = { _id: userId };
+    query[`roles.${projectId}`] = { $exists: true };
+    const update = { $unset: {} };
+    update.$unset[`roles.${projectId}`] = 1;
+    Meteor.users.update(query, update);
   }
 });
 
@@ -698,6 +709,42 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
     }
     Meteor.users.update(userId, {
       $pull: { "profile.favoriteProjects": projectId }
+    });
+  }
+});
+
+Projects.methods.addToUserDigests = new ValidatedMethod({
+  name: "projects.addToUserDigests",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({ projectId, userId }) {
+    checkLoggedIn();
+    if (!Meteor.userId() || Meteor.userId() !== userId) {
+      throw new Meteor.Error("not-authorized");
+    }
+    Meteor.users.update(userId, {
+      $push: { "profile.digests": projectId }
+    });
+  }
+});
+
+Projects.methods.removeFromUserDigests = new ValidatedMethod({
+  name: "projects.removeFromUserDigests",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    userId: { type: String }
+  }).validator(),
+  run({ projectId, userId }) {
+    checkLoggedIn();
+    check(projectId, String);
+    check(userId, String);
+    if (!Meteor.userId() || Meteor.userId() !== userId) {
+      throw new Meteor.Error("not-authorized");
+    }
+    Meteor.users.update(userId, {
+      $pull: { "profile.digests": projectId }
     });
   }
 });

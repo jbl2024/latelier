@@ -269,8 +269,8 @@ Meteor.methods({
       assignTo: true,
       update: true
     };
-    user.emailSettings.digest = user.emailSettings.digest || {
-      favorites: false
+    user.emailSettings.digests = user.emailSettings.digests || {
+      daily: true
     };
     return user;
   },

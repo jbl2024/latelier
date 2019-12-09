@@ -147,7 +147,11 @@
   "Export": "Export",
   "Export image": "Export image",
   "Export XML": "Export XML",
-  "Receive daily digest from favorites projects": "Receive daily digest from favorites projects",
+  "Daily digest from subscribed projects": "Daily digest from subscribed projects",
+  "Add to daily digest": "Add to daily digest",
+  "Remove from daily digest": "Remove from daily digest",
+  "Project added to daily digest": "Project added to daily digest",
+  "Project removed from daily digest": "Project removed from daily digest",
   "history": {
     "tasks": {
       "create": "Creation",
