@@ -76,7 +76,7 @@ Jobs.register({
     const instance = this;
     const when = moment()
       .startOf("day")
-      //.add(-1, "days")
+      .add(-1, "days")
       .toDate();
 
     // get projects involved in digest
