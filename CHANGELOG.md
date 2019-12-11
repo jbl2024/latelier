@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.7.1] - 2019-12-11
+
+### Added
 - Tasks Digest per project, sent to user if subscribed
 
 ### Changed
