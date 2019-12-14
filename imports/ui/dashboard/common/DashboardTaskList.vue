@@ -17,6 +17,10 @@ export default {
       type: String,
       default: ""
     },
+    projectId: {
+      type: String,
+      default: ""
+    },
     user: {
       type: Object,
       default: () => {}
@@ -50,6 +54,7 @@ export default {
         "dashboards.findTasks",
         this.type,
         this.organizationId,
+        this.projectId,
         1,
         (error, result) => {
           this.loading = false;

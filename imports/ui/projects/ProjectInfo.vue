@@ -25,9 +25,48 @@
         </v-row>
       </v-container>
 
-      <div class="right">
-        coucou
-      </div>
+      <template v-if="!$vuetify.breakpoint.xsOnly">
+        <div class="right">
+          <div v-if="$subReady.user" class="tasks">
+            <div class="tasks-title">
+              {{ $t("Tasks") }}
+            </div>
+            <v-divider />
+
+            <div class="tabs-wrapper">
+              <v-tabs>
+                <v-tabs-slider color="accent" />
+                <v-tab>{{ $t("Recents") }}</v-tab>
+                <v-tab>{{ $t("Assigned to me") }}</v-tab>
+                <v-tab>{{ $t("Late") }}</v-tab>
+
+                <v-tab-item>
+                  <dashboard-task-list
+                    :user="user"
+                    type="recent"
+                    :project-id="project._id"
+                  />
+                </v-tab-item>
+                <v-tab-item>
+                  <dashboard-task-list
+                    :user="user"
+                    type="assignedToMe"
+                    :project-id="project._id"
+                  />
+                </v-tab-item>
+                <v-tab-item>
+                  <dashboard-task-list
+                    :user="user"
+                    type="late"
+                    empty-illustration="celebration"
+                    :project-id="project._id"
+                  />
+                </v-tab-item>
+              </v-tabs>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </template>
@@ -37,12 +76,14 @@ import { Projects } from "/imports/api/projects/projects.js";
 import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
+import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 
 export default {
   components: {
     ProjectCard,
     ProcessCard,
-    CanvasCard
+    CanvasCard,
+    DashboardTaskList
   },
   props: {
     projectId: {
@@ -64,6 +105,9 @@ export default {
     $subscribe: {
       project: function() {
         return [this.projectId];
+      },
+      user: function() {
+        return [];
       }
     },
     project() {
@@ -91,7 +135,6 @@ export default {
 .container-wrapper {
   overflow-y: scroll;
   height: 100%;
-  position: relative;
   width: 100%;
   position: absolute;
   left: 0;
@@ -122,7 +165,6 @@ export default {
   height: 100%;
 } */
 
-
 @media (max-width: 600px) {
   .container-wrapper {
     min-height: 100vh;
@@ -131,11 +173,6 @@ export default {
 
 .left {
   flex: 1;
-  flex-direction: column;
-  overflow-y: auto;
-  margin-right: 24px;
-  margin-top: 12px;
-  display: flex;
 }
 
 .right {
@@ -146,6 +183,14 @@ export default {
   border-left: 1px solid #ddd;
   display: flex;
   position: relative;
+}
+
+.tasks-title {
+  margin: 22px;
+  text-transform: uppercase;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  flex: 0;
 }
 
 </style>
