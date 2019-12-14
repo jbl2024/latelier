@@ -8,19 +8,19 @@
       class="container-wrapper"
       :style="getBackgroundUrl(user)"
     >
-      <v-container fluid class="left">
-        <v-row dense>
-          <v-col :cols="12">
+      <v-container ref="cards" v-resize="onResize" fluid class="left">
+        <v-row>
+          <v-col cols="12">
             <project-card :project="project" :user="user" :info="info" />
           </v-col>
-          <v-col :cols="4">
-            <canvas-card :project="project" />
+          <v-col :cols="cardColumns">
+            <canvas-card :project="project" :info="info" />
           </v-col>
-          <v-col :cols="4">
+          <v-col :cols="cardColumns">
             <process-card :project="project" :info="info" />
           </v-col>
-          <v-col :cols="4">
-            <weather-card :project="project" />
+          <v-col :cols="cardColumns">
+            <weather-card :project="project" :info="info" />
           </v-col>
         </v-row>
       </v-container>
@@ -34,7 +34,7 @@
             <v-divider />
 
             <div class="tabs-wrapper">
-              <v-tabs>
+              <v-tabs grow>
                 <v-tabs-slider color="accent" />
                 <v-tab>{{ $t("Recents") }}</v-tab>
                 <v-tab>{{ $t("Assigned to me") }}</v-tab>
@@ -95,7 +95,8 @@ export default {
   },
   data() {
     return {
-      info: null
+      info: null,
+      cardColumns: 4
     };
   },
   mounted() {
@@ -142,11 +143,19 @@ export default {
             this.$store.dispatch("notifyError", error);
             return;
           }
-          /* eslint no-console: off */
-          console.log(result);
           this.info = result;
         }
       );
+    },
+
+    onResize() {
+      const { cards } = this.$refs;
+      const width = cards.offsetWidth;
+      if (width > 600) {
+        this.cardColumns = 4;
+      } else {
+        this.cardColumns = 12;
+      }
     }
   }
 };
@@ -174,17 +183,6 @@ export default {
   flex-direction: row;
 }
 
-/* .dashboard-desktop {
-  display: flex;
-  flex-direction: row;
-  padding-left: 24px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
-} */
 
 @media (max-width: 600px) {
   .container-wrapper {
@@ -199,7 +197,7 @@ export default {
 .right {
   flex-direction: column;
   overflow-y: auto;
-  width: 340px;
+  width: 360px;
   background-color: white;
   border-left: 1px solid #ddd;
   display: flex;

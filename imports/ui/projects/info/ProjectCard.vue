@@ -17,42 +17,82 @@
       </div>
     </v-card-title>
     <v-divider />
+    <template v-if="project.description && project.description.length > 0">
+      <v-card-text>
+        <v-row>
+          <v-col :cols="12">
+            <div
+              class="ql-editor-view description"
+              v-html="linkifyHtml(project.description)"
+            />
+          </v-col>
+        </v-row>
+      </v-card-text>
+      <v-divider />
+    </template>
     <v-card-text>
-      <v-layout>
-        <v-flex xs6>
+      <v-row>
+        <v-col :cols="3">
           <div class="indicator sep">
             <div class="legend grey--text">
-              <v-icon small left>
+              <v-icon small>
                 mdi-format-list-bulleted
               </v-icon>
-              {{ $t('Tasks') }}
+              <template v-if="!$vuetify.breakpoint.xsOnly">
+                {{ $t('Pending tasks') }}
+              </template>
             </div>
-            <div class="number">{{ taskCount(info) }}</div>
+            <div class="number">
+              {{ taskCount(info) }}
+            </div>
           </div>
-        </v-flex>
-        <v-flex xs6>
+        </v-col>
+        <v-col :cols="3">
           <div class="indicator sep">
             <div class="legend grey--text">
-              <v-icon small left>
+              <v-icon small>
+                mdi-check
+              </v-icon>
+              <template v-if="!$vuetify.breakpoint.xsOnly">
+                {{ $t('Completed tasks') }}
+              </template>
+            </div>
+            <div class="number">
+              {{ completedTaskCount(info) }}
+            </div>
+          </div>
+        </v-col>
+        <v-col :cols="3">
+          <div class="indicator sep">
+            <div class="legend grey--text">
+              <v-icon small>
                 mdi-account-group
               </v-icon>
-              {{ $t('Users') }}
+              <template v-if="!$vuetify.breakpoint.xsOnly">
+                {{ $t('Users') }}
+              </template>
             </div>
-            <div class="number">{{ userCount(project) }}</div>
+            <div class="number">
+              {{ userCount(project) }}
+            </div>
           </div>
-        </v-flex>
-        <v-flex xs6>
+        </v-col>
+        <v-col :cols="3">
           <div class="indicator">
             <div class="legend grey--text">
-              <v-icon small left>
+              <v-icon small>
                 mdi-attachment
               </v-icon>
-              {{ $t('Attachments') }}
+              <template v-if="!$vuetify.breakpoint.xsOnly">
+                {{ $t('Attachments') }}
+              </template>            
             </div>
-            <div class="number">12</div>
+            <div class="number">
+              12
+            </div>
           </div>
-        </v-flex>
-      </v-layout>
+        </v-col>
+      </v-row>
     </v-card-text>
     <v-divider />
     <v-card-actions>
@@ -163,12 +203,13 @@
 <script>
 import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 
 export default {
   name: "ProjectCard",
-  mixins: [DatesMixin],
+  mixins: [TextRenderingMixin, DatesMixin],
   props: {
     project: {
       type: Object,
@@ -239,6 +280,12 @@ export default {
       if (!info) return 0;
 
       return info.taskCount;
+    },
+
+    completedTaskCount(info) {
+      if (!info) return 0;
+
+      return info.completedTaskCount;
     },
 
     userCount(project) {

@@ -1,48 +1,35 @@
 <template>
-  <v-card
-    class="card"
-    tabindex="0"
-    @click="openProject(project)"
-  >
+  <v-card class="card" tabindex="0" @click="openProject(project)">
     <v-card-title>
-      <v-icon large left color="blue">mdi-file-document-box-check</v-icon>
+      <v-icon large left color="blue">
+        mdi-file-document-box-check
+      </v-icon>
       <span class="title font-weight-light">{{ $t("Canvas") }}</span>
     </v-card-title>
     <v-divider />
     <v-card-text>
-      <v-layout>
-        <v-flex xs12>
-          <div class="indicator">
-            <div class="legend grey--text">{{ $t("Percentage completed") }}</div>
-            <div class="number">80%</div>
-          </div>
-        </v-flex>
-      </v-layout>
+      <div class="indicator">
+        <div class="legend grey--text">
+          {{ $t("Canvas completion") }}
+        </div>
+        <div class="number">
+          {{ info.canvasProgression }}%
+        </div>
+      </div>
     </v-card-text>
-    <v-divider />
-    <v-card-actions>
-      <v-spacer />
-      <v-btn text>
-        {{ $t("Open") }}
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
-import { Permissions } from "/imports/api/permissions/permissions";
-import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
   name: "CanvasCard",
-  mixins: [DatesMixin],
   props: {
     project: {
       type: Object,
       default: () => {}
     },
-    user: {
+    info: {
       type: Object,
       default: () => {}
     }
@@ -60,196 +47,13 @@ export default {
     }
   },
   methods: {
-    getVisibilityIcon(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return "mdi-eye";
-      }
-      return "mdi-eye-off";
-    },
-
-    getVisibilityIconClass(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return "";
-      }
-      return "";
-    },
-
-    getColor(item) {
-      return item.color;
-    },
-
-    getColorCardStyle(project) {
-      if (project.color) {
-        return `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`;
-        // return `background: linear-gradient(90deg, ${project.color} 3%, #fff 3%);`
-      }
-      return "";
-    },
-
-    formatProjectDates(project) {
-      if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
-          project.endDate
-        )}`;
-      }
-      if (project.startDate) {
-        return `A partir du ${this.formatDate(project.startDate)}`;
-      }
-      if (project.endtDate) {
-        return `Jusqu'au ${this.formatDate(project.endDate)}`;
-      }
-      return "";
-    },
-
-    taskCount(project) {
-      return project.taskCount;
-    },
-
-    userCount(project) {
-      const members = project.members || [];
-      return members.length;
-    },
-
-    canDeleteProject(project) {
-      if (
-        Permissions.isAdmin(Meteor.userId()) ||
-        project.createdBy === Meteor.userId()
-      ) {
-        return true;
-      }
-      return false;
-    },
-
-    canManageProject(project) {
-      return (
-        Permissions.isAdmin(Meteor.userId(), project._id) ||
-        Permissions.isAdmin(Meteor.userId())
-      );
-    },
-
     openProject(project) {
       this.$router.push({
-        name: "project",
+        name: "project-canvas",
         params: {
           projectId: project._id
         }
       });
-    },
-
-    openProjectSettings(project) {
-      this.$router.push({
-        name: "project-settings",
-        params: {
-          organizationId: project.organizationId,
-          projectId: project._id
-        }
-      });
-    },
-
-    deleteProject(project) {
-      this.$confirm(this.$t("Delete project?"), {
-        title: project.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Move to trash")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "projects.remove",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$store.dispatch("notifyError", error);
-                return;
-              }
-              this.$store.dispatch("notify", this.$t("Project deleted"));
-            }
-          );
-        }
-      });
-    },
-
-    isFavorite(user, projectId) {
-      let favorites = [];
-      if (user && user.profile) {
-        favorites = user.profile.favoriteProjects || [];
-      }
-      return favorites.indexOf(projectId) >= 0;
-    },
-
-    addToFavorites(user, projectId) {
-      this.$nextTick(() => {
-        Meteor.call(
-          "projects.addToUserFavorites",
-          { projectId: projectId, userId: user._id },
-          (error) => {
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-              return;
-            }
-            this.$store.dispatch(
-              "notify",
-              this.$t("Project added to favorites")
-            );
-          }
-        );
-      });
-    },
-
-    removeFromFavorites(user, projectId) {
-      this.$store.dispatch("notify", this.$t("Project removed from favorites"));
-      this.$nextTick(() => {
-        Meteor.call(
-          "projects.removeFromUserFavorites",
-          { projectId: projectId, userId: user._id },
-          (error) => {
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-            }
-          }
-        );
-      });
-    },
-
-    isSubscribedToDigests(user, projectId) {
-      let digests = [];
-      if (user && user.profile) {
-        digests = user.profile.digests || [];
-      }
-      return digests.indexOf(projectId) >= 0;
-    },
-
-    addToDigests(user, projectId) {
-      Meteor.call(
-        "projects.addToUserDigests",
-        { projectId, userId: user._id },
-        (error) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-          this.$store.dispatch(
-            "notify",
-            this.$t("Project added to daily digest")
-          );
-        }
-      );
-    },
-
-    removeFromDigests(user, projectId) {
-      Meteor.call(
-        "projects.removeFromUserDigests",
-        { projectId, userId: user._id },
-        (error) => {
-          if (error) {
-            this.$store.dispatch("notifyError", error);
-            return;
-          }
-          this.$store.dispatch(
-            "notify",
-            this.$t("Project removed from daily digest")
-          );
-        }
-      );
     }
   }
 };

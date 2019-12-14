@@ -1,6 +1,9 @@
 import { Projects } from "../projects";
-import { Tasks } from "/imports/api/tasks/tasks.js";
-import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams.js";
+import { Tasks } from "/imports/api/tasks/tasks";
+import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
+import { Canvas } from "/imports/api/canvas/canvas";
+import { HealthReports } from "/imports/api/healthReports/healthReports";
+
 import {
   Permissions,
   checkLoggedIn,
@@ -71,13 +74,46 @@ Projects.methods.info = new ValidatedMethod({
       deleted: { $ne: true }
     }).count();
 
+    const completedTaskCount = Tasks.find({
+      projectId: projectId,
+      completed: true,
+      deleted: { $ne: true }
+    }).count();
+
     const userCount = (project.members || []).length;
     const diagramCount = ProcessDiagrams.find({ projectId: projectId }).count();
+    const canvas = Canvas.findOne({ projectId: projectId });
+    let canvasProgression = 0;
+    if (canvas.data) {
+      let itemCount = 0;
+      let itemCompleted = 0;
+      Object.keys(canvas.data).forEach((item) => {
+        itemCount += 1;
+        if (canvas.data[item].length > 0) {
+          itemCompleted += 1;
+        }
+      });
+      if (itemCount > 0) {
+        canvasProgression = Math.trunc(100 * (itemCompleted / itemCount));
+      }
+    }
+
+    const healthReport = HealthReports.findOne(
+      { projectId: projectId },
+      {
+        sort: {
+          date: -1
+        }
+      }
+    );
 
     return {
       taskCount: taskCount,
+      completedTaskCount: completedTaskCount,
       userCount: userCount,
-      diagramCount: diagramCount
+      diagramCount: diagramCount,
+      canvasProgression: canvasProgression,
+      healthReport: healthReport
     };
   }
 });
