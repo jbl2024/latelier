@@ -1,7 +1,10 @@
 import { Projects } from "../projects";
+import { Tasks } from "/imports/api/tasks/tasks.js";
+import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams.js";
 import {
   Permissions,
-  checkLoggedIn
+  checkLoggedIn,
+  checkCanReadProject
 } from "/imports/api/permissions/permissions";
 
 Projects.methods.load = new ValidatedMethod({
@@ -51,6 +54,30 @@ Projects.methods.load = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       data
+    };
+  }
+});
+
+Projects.methods.info = new ValidatedMethod({
+  name: "projects.info",
+  validate: new SimpleSchema({
+    projectId: { type: String }
+  }).validator(),
+  run({ projectId }) {
+    checkCanReadProject(projectId);
+    const project = Projects.findOne({ _id: projectId });
+    const taskCount = Tasks.find({
+      projectId: projectId,
+      deleted: { $ne: true }
+    }).count();
+
+    const userCount = (project.members || []).length;
+    const diagramCount = ProcessDiagrams.find({ projectId: projectId }).count();
+
+    return {
+      taskCount: taskCount,
+      userCount: userCount,
+      diagramCount: diagramCount
     };
   }
 });

@@ -5,16 +5,16 @@
     @click="openProject(project)"
   >
     <v-card-title>
-      <v-icon large left color="blue">mdi-file-document-box-check</v-icon>
-      <span class="title font-weight-light">{{ $t("Canvas") }}</span>
+      <v-icon large left color="teal">mdi-white-balance-sunny</v-icon>
+      <span class="title font-weight-light">{{ $t("Weather") }}</span>
     </v-card-title>
     <v-divider />
     <v-card-text>
       <v-layout>
         <v-flex xs12>
           <div class="indicator">
-            <div class="legend grey--text">{{ $t("Percentage completed") }}</div>
-            <div class="number">80%</div>
+            <div class="legend grey--text">{{ $t("Last report") }}</div>
+            <div class="number">2</div>
           </div>
         </v-flex>
       </v-layout>
@@ -23,7 +23,7 @@
     <v-card-actions>
       <v-spacer />
       <v-btn text>
-        {{ $t("Open") }}
+        {{ $t("Add") }}
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -35,7 +35,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
 export default {
-  name: "CanvasCard",
+  name: "WeatherCard",
   mixins: [DatesMixin],
   props: {
     project: {

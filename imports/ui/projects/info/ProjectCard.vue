@@ -21,14 +21,35 @@
       <v-layout>
         <v-flex xs6>
           <div class="indicator sep">
-            <div class="legend grey--text">{{ $t('Tasks') }}</div>
-            <div class="number">{{ taskCount(project) }}</div>
+            <div class="legend grey--text">
+              <v-icon small left>
+                mdi-format-list-bulleted
+              </v-icon>
+              {{ $t('Tasks') }}
+            </div>
+            <div class="number">{{ taskCount(info) }}</div>
+          </div>
+        </v-flex>
+        <v-flex xs6>
+          <div class="indicator sep">
+            <div class="legend grey--text">
+              <v-icon small left>
+                mdi-account-group
+              </v-icon>
+              {{ $t('Users') }}
+            </div>
+            <div class="number">{{ userCount(project) }}</div>
           </div>
         </v-flex>
         <v-flex xs6>
           <div class="indicator">
-            <div class="legend grey--text">{{ $t('Users') }}</div>
-            <div class="number">{{ userCount(project) }}</div>
+            <div class="legend grey--text">
+              <v-icon small left>
+                mdi-attachment
+              </v-icon>
+              {{ $t('Attachments') }}
+            </div>
+            <div class="number">12</div>
           </div>
         </v-flex>
       </v-layout>
@@ -156,6 +177,10 @@ export default {
     user: {
       type: Object,
       default: () => {}
+    },
+    info: {
+      type: Object,
+      default: () => {}
     }
   },
   i18n: {
@@ -210,8 +235,10 @@ export default {
       return "";
     },
 
-    taskCount(project) {
-      return project.taskCount;
+    taskCount(info) {
+      if (!info) return 0;
+
+      return info.taskCount;
     },
 
     userCount(project) {

@@ -4,23 +4,23 @@
       <v-progress-linear indeterminate />
     </div>
     <div
-      v-if="$subReady.project"
+      v-if="$subReady.project && info"
       class="container-wrapper"
       :style="getBackgroundUrl(user)"
     >
       <v-container fluid class="left">
         <v-row dense>
           <v-col :cols="12">
-            <project-card :project="project" :user="user" />
+            <project-card :project="project" :user="user" :info="info" />
           </v-col>
-          <v-col :cols="3">
+          <v-col :cols="4">
             <canvas-card :project="project" />
           </v-col>
-          <v-col :cols="3">
-            <process-card :project="project" />
+          <v-col :cols="4">
+            <process-card :project="project" :info="info" />
           </v-col>
-          <v-col :cols="3">
-            <process-card :project="project" />
+          <v-col :cols="4">
+            <weather-card :project="project" />
           </v-col>
         </v-row>
       </v-container>
@@ -76,6 +76,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
+import WeatherCard from "/imports/ui/projects/info/WeatherCard";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 
 export default {
@@ -83,6 +84,7 @@ export default {
     ProjectCard,
     ProcessCard,
     CanvasCard,
+    WeatherCard,
     DashboardTaskList
   },
   props: {
@@ -92,7 +94,9 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      info: null
+    };
   },
   mounted() {
     this.$store.dispatch("setCurrentProjectId", this.projectId);
@@ -111,6 +115,7 @@ export default {
       }
     },
     project() {
+      this.refresh();
       return Projects.findOne();
     },
     user() {
@@ -126,6 +131,22 @@ export default {
         }
       }
       return "";
+    },
+
+    refresh() {
+      Meteor.call(
+        "projects.info",
+        { projectId: this.projectId },
+        (error, result) => {
+          if (error) {
+            this.$store.dispatch("notifyError", error);
+            return;
+          }
+          /* eslint no-console: off */
+          console.log(result);
+          this.info = result;
+        }
+      );
     }
   }
 };
@@ -192,5 +213,4 @@ export default {
   letter-spacing: 0.08em;
   flex: 0;
 }
-
 </style>

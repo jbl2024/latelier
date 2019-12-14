@@ -11,16 +11,10 @@
     <v-divider />
     <v-card-text>
       <v-layout>
-        <v-flex xs6>
-          <div class="indicator sep">
-            <div class="legend grey--text">{{ $t("Current") }}</div>
-            <div class="number">2</div>
-          </div>
-        </v-flex>
-        <v-flex xs6>
+        <v-flex xs12>
           <div class="indicator">
-            <div class="legend grey--text">{{ $t("Target") }}</div>
-            <div class="number">1</div>
+            <div class="legend grey--text">{{ $t("Diagrams") }}</div>
+            <div class="number">{{ info.diagramCount }} </div>
           </div>
         </v-flex>
       </v-layout>
@@ -48,22 +42,10 @@ export default {
       type: Object,
       default: () => {}
     },
-    user: {
+    info: {
       type: Object,
       default: () => {}
-    }
-  },
-  i18n: {
-    messages: {
-      en: {
-        Users: "Users",
-        Tasks: "Tasks"
-      },
-      fr: {
-        Users: "Utilisateurs",
-        Tasks: "Tâches"
-      }
-    }
+    },
   },
   methods: {
     getVisibilityIcon(project) {
