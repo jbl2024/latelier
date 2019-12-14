@@ -84,7 +84,7 @@ Projects.methods.info = new ValidatedMethod({
     const diagramCount = ProcessDiagrams.find({ projectId: projectId }).count();
     const canvas = Canvas.findOne({ projectId: projectId });
     let canvasProgression = 0;
-    if (canvas.data) {
+    if (canvas && canvas.data) {
       let itemCount = 0;
       let itemCompleted = 0;
       Object.keys(canvas.data).forEach((item) => {
