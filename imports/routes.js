@@ -26,6 +26,7 @@ import AdministrationPage from "/imports/ui/administration/AdministrationPage.vu
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
 import ProfileSettingsPage from "/imports/ui/settings/ProfileSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
+import ProjectInfo from "/imports/ui/projects/ProjectInfo.vue";
 
 export default [
   {
@@ -111,6 +112,13 @@ export default [
     name: "project-settings",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectSettings,
+    props: true
+  },
+  {
+    path: "/projects-dashboard/:projectId",
+    name: "project-dashboard",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectInfo,
     props: true
   },
   {

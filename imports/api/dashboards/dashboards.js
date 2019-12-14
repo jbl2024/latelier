@@ -9,9 +9,10 @@ import {
 } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
-  "dashboards.findTasks"(type, organizationId, page) {
+  "dashboards.findTasks"(type, organizationId, projectId, page) {
     check(type, String);
     check(organizationId, Match.Maybe(String));
+    check(projectId, Match.Maybe(String));
     check(page, Match.Maybe(Number));
     checkLoggedIn();
 
@@ -40,6 +41,10 @@ Meteor.methods({
 
     if (organizationId) {
       projectQuery.organizationId = organizationId;
+    }
+
+    if (projectId) {
+      projectQuery._id = projectId;
     }
 
     if (isRegularUser) {

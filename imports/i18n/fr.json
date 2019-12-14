@@ -152,6 +152,13 @@
   "Remove from daily digest": "Supprimer du résumé quotidien",
   "Project added to daily digest": "Projet ajouté au résumé quotidien",
   "Project removed from daily digest": "Projet supprimé du résumé quotidien",
+  "No report defined": "Aucun bulletin disponible",
+  "Add report": "Ajouter un bulletin",
+  "Last report": "Dernier bulletin",
+  "Diagrams": "Diagrammes",
+  "Canvas completion": "Remplissage du canevas",
+  "Pending tasks": "Tâches en cours",
+  "Completed tasks": "Tâches terminées",
   "history": {
     "tasks": {
       "create": "Création",

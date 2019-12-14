@@ -152,6 +152,13 @@
   "Remove from daily digest": "Remove from daily digest",
   "Project added to daily digest": "Project added to daily digest",
   "Project removed from daily digest": "Project removed from daily digest",
+  "No report defined": "No report defined",
+  "Add report": "Add report",
+  "Last report": "Last report",
+  "Diagrams": "Diagrams",
+  "Canvas completion": "Canvas completion",
+  "Pending tasks": "Pending tasks",
+  "Completed tasks": "Completed tasks",
   "history": {
     "tasks": {
       "create": "Creation",

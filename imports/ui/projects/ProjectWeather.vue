@@ -102,18 +102,6 @@ export default {
   beforeDestroy() {
     this.$store.dispatch("setCurrentProjectId", null);
   },
-  i18n: {
-    messages: {
-      en: {
-        "No report defined": "No report defined",
-        "Add report": "Add report"
-      },
-      fr: {
-        "No report defined": "Aucun bulletin disponible",
-        "Add report": "Ajouter un bulletin"
-      }
-    }
-  },
   meteor: {
     // Subscriptions
     $subscribe: {

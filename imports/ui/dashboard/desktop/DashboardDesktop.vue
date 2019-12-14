@@ -601,7 +601,7 @@ export default {
 .right {
   flex-direction: column;
   overflow-y: auto;
-  width: 340px;
+  width: 360px;
   background-color: white;
   border-left: 1px solid #ddd;
   display: flex;

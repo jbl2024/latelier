@@ -4,6 +4,14 @@
     <project-trashcan ref="projectTrashcan" :project-id="projectId" />
 
     <v-list v-if="projectId" class="pt-0">
+      <v-list-item :to="{ name: 'project-dashboard', params: { projectId: projectId } }">
+        <v-list-item-action>
+          <v-icon>mdi-information-outline</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("Dashboard") }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-list-item :to="{ name: 'project', params: { projectId: projectId } }">
         <v-list-item-action>
           <v-icon>mdi-format-list-bulleted</v-icon>

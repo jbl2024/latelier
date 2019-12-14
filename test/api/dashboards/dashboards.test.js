@@ -26,7 +26,7 @@ if (Meteor.isServer) {
       let errorCode;
 
       try {
-        Meteor.call("dashboards.findTasks", "recent", null, 1);
+        Meteor.call("dashboards.findTasks", "recent", null, null, 1);
       } catch (error) {
         errorCode = error.error;
       }
@@ -55,7 +55,7 @@ if (Meteor.isServer) {
         "a name"
       );
 
-      const result = Meteor.call("dashboards.findTasks", "recent", null, 1);
+      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(1);
     });
 
@@ -77,7 +77,7 @@ if (Meteor.isServer) {
 
       restoreStubs();
       createStubs(otherUserId);
-      const result = Meteor.call("dashboards.findTasks", "recent", null, 1);
+      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(0);
     });
   });
