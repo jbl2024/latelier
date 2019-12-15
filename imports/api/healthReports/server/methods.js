@@ -117,7 +117,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     if (project.organizationId) {
       organization = Organizations.findOne({ _id: project.organizationId });
     }
-    const currentDate = moment(report.date).add(1, "days").startOf("day");
+    const currentDate = moment(report.date).add(1, "days").startOf("day").toDate();
 
     let previousDate = null;
     const previous = HealthReports.findOne(
