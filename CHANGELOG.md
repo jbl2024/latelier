@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Labels are kept when converting item to task
+- Health report: date + 1 day is used to find tasks
 
 ### Removed
 
