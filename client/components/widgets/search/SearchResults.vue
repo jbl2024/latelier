@@ -100,7 +100,7 @@ export default {
     onSelectProject(project) {
       if (!project) return;
       this.$router.push({
-        name: "project",
+        name: "project-dashboard",
         params: {
           projectId: project._id
         }
