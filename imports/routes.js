@@ -21,6 +21,8 @@ import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
+import ProjectWorkshops from "/imports/ui/projects/ProjectWorkshops.vue";
+
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
@@ -134,6 +136,13 @@ export default [
     name: "project-bpmn",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectBPMN,
+    props: true
+  },
+  {
+    path: "/projects-workshops/:projectId",
+    name: "project-workshops",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectWorkshops,
     props: true
   },
   {
