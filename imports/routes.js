@@ -27,6 +27,7 @@ import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
 import ProfileSettingsPage from "/imports/ui/settings/ProfileSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
 import ProjectInfo from "/imports/ui/projects/ProjectInfo.vue";
+import WorkshopsRepositoryPage from "/imports/ui/workshops/administration/WorkshopsRepositoryPage.vue";
 
 export default [
   {
@@ -210,6 +211,13 @@ export default [
     name: "dashboard-organization-page",
     beforeEnter: isBasicAuth,
     component: DashboardPage,
+    props: true
+  },
+  {
+    path: "/workshops/repository",
+    name: "workshops-repository",
+    beforeEnter: isBasicAuth,
+    component: WorkshopsRepositoryPage,
     props: true
   },
   { path: "*", name: "not-found", component: NotFound }
