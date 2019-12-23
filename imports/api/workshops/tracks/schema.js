@@ -2,23 +2,30 @@ import SimpleSchema from "simpl-schema";
 
 export default new SimpleSchema({
   /* relations */
-  projectId: {
+  workshopId: String,
+  sessionId: {
+    type: String,
+    optional: true
+  },
+  activityId: {
     type: String
   },
-
   /* main attributes */
   name: String,
   description: {
     type: String,
     optional: true
   },
+  order: Number,
 
   deleted: {
     type: Boolean,
     defaultValue: false
   },
 
-  /* creation dates */
+  /* modification dates */
   createdAt: Date,
-  createdBy: String
+  updatedAt: Date,
+  createdBy: String,
+  updatedBy: String
 });

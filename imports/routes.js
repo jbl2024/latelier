@@ -146,6 +146,13 @@ export default [
     props: true
   },
   {
+    path: "/projects-workshop/:projectId/:workshopId",
+    name: "project-workshop",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: async () => (await import("/imports/ui/projects/ProjectWorkshop.vue")).default,
+    props: true
+  },
+  {
     path: "/projects-bpmn/:projectId/:processDiagramId",
     name: "project-bpmn-process-diagram",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),

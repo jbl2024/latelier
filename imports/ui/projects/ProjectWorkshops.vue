@@ -157,7 +157,7 @@ export default {
 
     openWorkshop(workshop) {
       this.$router.push({
-        name: "project-bpmn-process-diagram",
+        name: "project-workshop",
         params: {
           projectId: this.projectId,
           workshopId: workshop._id
