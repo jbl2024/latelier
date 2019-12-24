@@ -46,6 +46,8 @@ import "../imports/api/bpmn/server/publications";
 
 import "../imports/api/workshops/workshops";
 import "../imports/api/workshops/server/publications";
+import "../imports/api/workshops/sessions/sessions";
+import "../imports/api/workshops/tracks/tracks";
 
 import "../imports/api/notifications/notifications.js";
 import "../imports/api/notifications/server/methods.js";

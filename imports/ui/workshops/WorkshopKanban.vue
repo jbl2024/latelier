@@ -14,8 +14,8 @@
     >
       <workshop-session
         :ref="session._id"
-        :list="list"
-        class="kanban-list-item dragscroll"
+        :session="session"
+        class="kanban-session-item dragscroll"
         :data-id="session._id"
       />
     </div>
@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { Lists } from "/imports/api/lists/lists.js";
+import { Sessions } from "/imports/api/workshops/sessions/sessions";
 import { dragscroll } from "vue-dragscroll";
 import * as Sortable from "sortablejs";
 
@@ -38,7 +38,7 @@ export default {
     dragscroll: dragscroll
   },
   props: {
-    projectId: {
+    workshopId: {
       type: String,
       default: null
     },
@@ -73,8 +73,8 @@ export default {
     this.sortable.destroy();
   },
   meteor: {
-    lists() {
-      return Lists.find({ projectId: this.projectId }, { sort: { order: 1 } });
+    sessions() {
+      return Sessions.find({ projectId: this.projectId }, { sort: { order: 1 } });
     }
   },
   methods: {
@@ -82,16 +82,16 @@ export default {
       this.$store.dispatch("showTaskDetail", false);
     },
 
-    newListInline() {
+    newSessionInline() {
       Meteor.call(
-        "lists.insert",
-        this.projectId,
-        this.$t("New list"),
-        (error, createdList) => {
+        "workshops.sessions.create", {
+          workshopId: this.workshopId,
+          name: this.$t("New session")
+        }, (error, id) => {
           if (error) {
             return;
           }
-          this.$events.fire("edit-list", createdList._id);
+          this.$events.fire("edit-session", id);
         }
       );
     },

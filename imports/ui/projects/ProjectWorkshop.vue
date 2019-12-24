@@ -13,8 +13,7 @@
         <workshop-kanban
           ref="container"
           class="kanban-container flex1"
-          :project-id="projectId"
-          :workshop="workshop"
+          :workshop-id="workshopId"
         />
       </div>
     </div>

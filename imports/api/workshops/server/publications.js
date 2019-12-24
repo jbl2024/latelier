@@ -1,6 +1,8 @@
 import { publishComposite } from "meteor/reywood:publish-composite";
 import { Projects } from "/imports/api/projects/projects";
 import { Workshops } from "/imports/api/workshops/workshops";
+import { Sessions } from "/imports/api/workshops/sessions/sessions";
+import { Tracks } from "/imports/api/workshops/tracks/tracks";
 import {
   Permissions,
   checkCanReadProject
@@ -48,8 +50,27 @@ publishComposite("workshop", function(workshopId) {
     },
     children: [
       {
+        /* project */
         find(workshop) {
           return Projects.find({ _id: workshop.projectId });
+        }
+      },
+      {
+        /* sessions */
+        find(workshop) {
+          return Sessions.find(
+            { workshopId: workshop._id },
+            { sort: { order: 1 } }
+          );
+        }
+      },
+      {
+        /* tracks */
+        find(workshop) {
+          return Tracks.find(
+            { workshopId: workshop._id, deleted: { $ne: true } },
+            { sort: { order: 1 } }
+          );
         }
       }
     ]

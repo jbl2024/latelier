@@ -1,13 +1,13 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
-import SessionSchema from "./schema";
+import WorkshopSchema from "./schema";
 import {
   checkLoggedIn,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
 
 export const Workshops = new Mongo.Collection("workshops_workshops");
-Workshops.attachSchema(SessionSchema);
+Workshops.attachSchema(WorkshopSchema);
 Workshops.methods = {};
 
 if (Meteor.isServer) {
