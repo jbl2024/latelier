@@ -29,11 +29,15 @@
 
 <script>
 import { Sessions } from "/imports/api/workshops/sessions/sessions";
+import WorkshopSession from "./WorkshopSession";
 import { dragscroll } from "vue-dragscroll";
 import * as Sortable from "sortablejs";
 
 export default {
   name: "WorkshopKanban",
+  components: {
+    WorkshopSession
+  },
   directives: {
     dragscroll: dragscroll
   },
@@ -59,7 +63,7 @@ export default {
       delay: 250,
       animation: 150,
       handle: ".list-header",
-      group: "lists",
+      group: "sessions",
       onUpdate: (event) => {
         this.handleMove(event);
       },
@@ -74,7 +78,7 @@ export default {
   },
   meteor: {
     sessions() {
-      return Sessions.find({ projectId: this.projectId }, { sort: { order: 1 } });
+      return Sessions.find({ workshopId: this.workshopId }, { sort: { order: 1 } });
     }
   },
   methods: {
@@ -105,11 +109,11 @@ export default {
     },
 
     handleMove(event) {
-      const listId = event.item.dataset.id;
+      const sessionId = event.item.dataset.id;
       const index = event.newIndex;
       const { oldIndex } = event;
-      if (index < this.lists.length) {
-        const nextList = this.lists[index];
+      if (index < this.sessions.length) {
+        const nextSession = this.sessions[index];
         let inc;
         if (oldIndex < index) {
           inc = 1;
@@ -117,9 +121,17 @@ export default {
           inc = -1;
         }
 
-        Meteor.call("lists.move", this.projectId, listId, nextList.order + inc);
+        Meteor.call("workshops.sessions.move", {
+          workshopId: this.workshopId,
+          sessionId,
+          order: nextSession.order + inc
+        });
       } else {
-        Meteor.call("lists.move", this.projectId, listId);
+        Meteor.call("workshops.sessions.move", {
+          workshopId: this.projectId,
+          sessionId,
+          order: 1
+        });
       }
     }
   }

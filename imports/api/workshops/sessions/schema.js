@@ -5,6 +5,9 @@ export default new SimpleSchema({
   workshopId: {
     type: String
   },
+  projectId: {
+    type: String
+  },
 
   /* main attributes */
   name: String,
