@@ -31,7 +31,7 @@
             </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn icon ripple @click.stop="removeUser(activity)">
+            <v-btn icon ripple @click.stop="removeActivity(activity)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -125,19 +125,19 @@ export default {
       );
     },
 
-    removeUser(user) {
-      this.$confirm(this.$t("Delete user?"), {
-        title: user.emails[0].address,
+    removeActivity(activity) {
+      this.$confirm(this.$t("Delete activity?"), {
+        title: activity.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       }).then((res) => {
         if (res) {
-          Meteor.call("admin.removeUser", user._id, (error) => {
+          Meteor.call("workshops.activities.remove", { activityId: activity._id }, (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("User deleted"));
+            this.$store.dispatch("notify", this.$t("Activity deleted"));
             this.findActivities();
           });
         }

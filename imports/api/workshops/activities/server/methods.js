@@ -104,3 +104,22 @@ Activities.methods.update = new ValidatedMethod({
     return id;
   }
 });
+
+Activities.methods.remove = new ValidatedMethod({
+  name: "workshops.activities.remove",
+  validate: new SimpleSchema({
+    activityId: { type: String }
+  }).validator(),
+  run({ activityId }) {
+    checkLoggedIn();
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+    const activity = Activities.findOne({ _id: activityId });
+    if (!activity) {
+      throw new Meteor.Error("not-found");
+    }
+
+    Activities.remove({ _id: activityId });
+  }
+});
