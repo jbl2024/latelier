@@ -78,7 +78,7 @@ export default {
   methods: {
     open(activity) {
       this.showDialog = true;
-      this.activity = activity;
+      this.activity = { ...activity };
     },
     close() {
       this.showDialog = false;
