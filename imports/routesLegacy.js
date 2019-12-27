@@ -3,6 +3,7 @@ import { isBasicAuth, projectAuth } from "./router/check-auth";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
+import ProjectsWorkshop from "/imports/ui/projects/ProjectWorkshop.vue";
 
 import modern from "./routes";
 
@@ -27,7 +28,14 @@ const legacy = [
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProcessDiagram,
     props: true
-  }
+  },
+  {
+    path: "/projects-workshop/:projectId/:workshopId",
+    name: "project-workshop",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectsWorkshop,
+    props: true
+  },
 ];
 
 const routes = modern.filter((route) => {

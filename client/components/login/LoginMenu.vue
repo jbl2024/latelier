@@ -47,6 +47,14 @@
             <v-list-item-title>Administration</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item v-if="isAdmin()" :to="{ name: 'workshops-repository' }">
+          <v-list-item-action>
+            <v-icon>mdi-shield-check</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t('Workshops') }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
         <v-list-item
           @click="$store.dispatch('showSelectBackgroundDialog', true)"
         >

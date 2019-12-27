@@ -3,35 +3,26 @@
     <div v-if="!$subReady.user">
       <v-progress-linear indeterminate />
     </div>
-    <div
-      v-if="$subReady.user"
-      class="container-wrapper"
-      :style="getBackgroundUrl(user)"
-    >
-      <v-container ref="cards" v-resize="onResize" fluid class="left">
-        <v-row>
-          <v-col :cols="cardColumns">
-            <repository-card :info="activities()" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <repository-card :info="icebreakers()" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <repository-card :info="jolts()" />
-          </v-col>
-        </v-row>
-      </v-container>
-    </div>
+    <template v-if="isAdmin()">
+      <v-tabs>
+        <v-tab id="tab-users">
+          {{ $t('Activities') }}
+        </v-tab>
+        <v-tab-item>
+          <administration-activities />
+        </v-tab-item>
+      </v-tabs>
+    </template>
   </div>
 </template>
 
 <script>
-import RepositoryCard from "./RepositoryCard.vue";
-
+import { Permissions } from "/imports/api/permissions/permissions";
+import AdministrationActivities from "./AdministrationActivities";
 
 export default {
   components: {
-    RepositoryCard
+    AdministrationActivities
   },
   props: {},
   data() {
@@ -50,6 +41,9 @@ export default {
     }
   },
   methods: {
+    isAdmin() {
+      return Permissions.isAdmin(Meteor.userId());
+    },
     getBackgroundUrl(user) {
       if (user && user.profile) {
         const { background } = user.profile;
