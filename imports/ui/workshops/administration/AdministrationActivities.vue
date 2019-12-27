@@ -1,18 +1,10 @@
 <template>
   <div class="elevation-1">
-    <v-dialog
-      v-model="showUserDetail"
-      eager
-      class="detail"
-      max-width="640"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-    >
-      <user-detail ref="userDetail" @close="closeDetail()" @saved="findActivities()" />
-    </v-dialog>
+    <edit-activity ref="editActivity" @updated="findActivities()" />
     <new-activity ref="newActivity" @created="findActivities()" />
     <v-container fluid class="filters">
       <v-row>
-        <v-col  sm="12" md="6" xs="12">
+        <v-col sm="12" md="6" xs="12">
           <v-text-field
             v-model="search"
             :label="$t('Search') + '...'"
@@ -32,7 +24,7 @@
         </v-btn>
       </v-subheader>
       <template v-for="activity in activities">
-        <v-list-item :key="activity._id" @click="openDetail(activity)">
+        <v-list-item :key="activity._id" @click="editActivity(activity)">
           <v-list-item-content>
             <v-list-item-title>
               {{ activity.name }}
@@ -64,11 +56,13 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
 
 import NewActivity from "../NewActivity.vue";
+import EditActivity from "../EditActivity.vue";
 
 export default {
   name: "AdministrationActivities",
   components: {
-    NewActivity
+    NewActivity,
+    EditActivity
   },
   mixins: [usersMixin],
   data() {
@@ -83,8 +77,7 @@ export default {
         rowsPerPage: 0,
         totalPages: 0
       },
-      filterOnline: false,
-      filterAway: false
+      selectedActivity: {}
     };
   },
   watch: {
@@ -151,9 +144,8 @@ export default {
       });
     },
 
-    openDetail(user) {
-      this.$refs.userDetail.open(user);
-      this.showUserDetail = true;
+    editActivity(activity) {
+      this.$refs.editActivity.open(activity);
     },
 
     closeDetail() {

@@ -71,3 +71,36 @@ Activities.methods.create = new ValidatedMethod({
     return id;
   }
 });
+
+
+Activities.methods.update = new ValidatedMethod({
+  name: "workshops.activities.update",
+  validate: new SimpleSchema({
+    activityId: { type: String },
+    name: { type: String },
+    description: { type: String, optional: true },
+    goals: { type: String, optional: true }
+  }).validator(),
+  run({ activityId, name, description, goals }) {
+    checkLoggedIn();
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+    const activity = Activities.findOne({ _id: activityId });
+    if (!activity) {
+      throw new Meteor.Error("not-found");
+    }
+
+    const id = Activities.update({
+      _id: activityId
+    }, {
+      $set: {
+        name,
+        description,
+        goals
+      }
+    });
+
+    return id;
+  }
+});
