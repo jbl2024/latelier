@@ -1,5 +1,5 @@
 <template>
-  <div class="list" @drop="onDrop" @dragover="onDragOver">
+  <div class="list" @dragover="onDragOver">
     <select-activity
       :active.sync="showSelectActivityDialog"
       @select="onSelectActivity"
@@ -76,23 +76,16 @@
       <v-btn small block class="dragscroll" @click="addActivity(session._id)">
         {{ $t("Add new activity") }}
       </v-btn>
-      <div
-        v-if="hiddenTaskCount > 0 && !forceShowHiddenTask"
-        class="task show-hidden"
-        @click="showHiddenTasks = !showHiddenTasks"
-      >
-        <div v-if="showHiddenTasks" class="list-title">
-          Masquer les {{ hiddenTaskCount }} tâches terminées
-        </div>
-        <div v-if="!showHiddenTasks" class="list-title">
-          Afficher les {{ hiddenTaskCount }} tâches terminées
-        </div>
+      <div ref="tracks" class="tracks dragscroll">
+        <template v-for="track in tracks">
+          <workshop-track
+            :key="track._id"
+            :track="track"
+            class="track"
+            :data-id="track._id"
+          />
+        </template>
       </div>
-      <tasks
-        :project-id="session.projectId"
-        :list-id="session._id"
-        :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"
-      />
     </div>
   </div>
 </template>
@@ -100,15 +93,20 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Tracks } from "/imports/api/workshops/tracks/tracks";
 import { Attachments } from "/imports/api/attachments/attachments";
 import SelectActivity from "./SelectActivity.vue";
+import WorkshopTrack from "./WorkshopTrack.vue";
 
 import { colors } from "/imports/colors";
 import { mapState } from "vuex";
 
+import * as Sortable from "sortablejs";
+
 export default {
   components: {
-    SelectActivity
+    SelectActivity,
+    WorkshopTrack
   },
   props: {
     session: {
@@ -120,9 +118,8 @@ export default {
     return {
       selectedSession: {},
       savedName: "",
-      forceShowHiddenTask: false,
-      showHiddenTasks: false,
-      showSelectActivityDialog: false
+      showSelectActivityDialog: false,
+      sortable: null
     };
   },
   computed: {
@@ -150,24 +147,33 @@ export default {
     }
   },
   mounted() {
-    this.$events.listen("edit-list", (sessionId) => {
+    this.$events.listen("edit-session", (sessionId) => {
       if (sessionId === this.session._id) {
         this.editSession(this.session);
       }
     });
-    this.$events.listen("filter-tasks", (name) => {
-      if (name && name.length > 0) {
-        this.forceShowHiddenTask = true;
-      } else {
-        this.forceShowHiddenTask = false;
+    const options = {
+      delayOnTouchOnly: true,
+      delay: 250,
+      animation: 150,
+      group: "tasks",
+      onUpdate: (event) => {
+        this.handleMove(event);
+      },
+      onAdd: (event) => {
+        this.handleMove(event);
       }
-    });
+    };
+    this.sortable = Sortable.create(this.$refs.tracks, options);
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
     this.$events.off("edit-list");
   },
   meteor: {
+    tracks() {
+      return Tracks.find({ sessionId: this.session._id });
+    },
     taskCount() {
       return Tasks.find({ sessionId: this.session._id }).count();
     },
@@ -275,65 +281,29 @@ export default {
       return true;
     },
 
-    onDrop(event) {
-      event.preventDefault();
-
-      const files = [];
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          if (event.dataTransfer.items[i].kind === "file") {
-            const file = event.dataTransfer.items[i].getAsFile();
-            files.push(file);
+    handleMove(event) {
+      const trackId = event.item.dataset.id;
+      const index = event.newIndex;
+      if (index < this.tracks.length) {
+        const nextTrack = this.tracks[index];
+        Meteor.call(
+          "tracks.move", {
+            workshopId: this.workshopId,
+            sessionId: this.session._id,
+            trackId: trackId,
+            order: nextTrack.order - 1
           }
-        }
+        );
       } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files[i]);
-        }
-      }
-      if (files.length === 0) {
-        return;
-      }
-      event.stopPropagation();
-
-      const taskName = files[0].name;
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-      Meteor.call(
-        "tasks.insert",
-        this.session.projectId,
-        this.session._id,
-        taskName,
-        (error, task) => {
-          if (error) {
-            return;
+        Meteor.call(
+          "tracks.move", {
+            workshopId: this.workshopId,
+            sessionId: this.session._id,
+            trackId: trackId,
+            order: 1
           }
-          files.forEach((file) => {
-            const upload = Attachments.insert(
-              {
-                file: file,
-                streams: "dynamic",
-                chunkSize: "dynamic",
-                transport: transport,
-                meta: {
-                  projectId: task.projectId,
-                  taskId: task._id,
-                  createdBy: Meteor.userId()
-                }
-              },
-              false
-            );
-            upload.on("start", function() {});
-            upload.on("end", function(uploadError) {
-              if (error) {
-                this.$store.dispatch("notifyError", uploadError);
-              } else {
-                Meteor.call("tasks.addAttachment", task._id);
-              }
-            });
-            upload.start();
-          });
-        }
-      );
+        );
+      }
     },
 
     onDragOver(e) {
@@ -511,5 +481,31 @@ export default {
 
 .flex1 {
   flex: 1;
+}
+
+@media (min-width: 601px) {
+  .tracks {
+    min-height: 400px;
+  }
+}
+
+.track {
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+.track h2 {
+  text-align: left;
+  background-color: #2d6293;
+  color: white;
+  font-weight: normal;
+  font-size: 14px;
+  padding: 5px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  margin-bottom: 0;
+}
+
+.drag-image .track {
+  width: 272px;
 }
 </style>
