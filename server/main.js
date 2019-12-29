@@ -48,6 +48,7 @@ import "../imports/api/workshops/workshops";
 import "../imports/api/workshops/server/publications";
 import "../imports/api/workshops/sessions/sessions";
 import "../imports/api/workshops/tracks/tracks";
+import "../imports/api/workshops/tracks/server/methods";
 import "../imports/api/workshops/activities/activities";
 import "../imports/api/workshops/activities/server/methods";
 

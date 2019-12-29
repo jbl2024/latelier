@@ -1,9 +1,8 @@
 <template>
   <div class="list" @drop="onDrop" @dragover="onDragOver">
-    <new-task
-      :project-id="session.projectId"
-      :list-id="session._id"
-      :active.sync="showNewTaskDialog"
+    <select-activity
+      :active.sync="showSelectActivityDialog"
+      @select="onSelectActivity"
     />
     <div class="list-header">
       <div class="swimlane dragscroll">
@@ -30,7 +29,7 @@
                 </v-btn>
               </template>
               <v-list dense>
-                <v-list-item @click="newTaskInline(session._id)">
+                <v-list-item @click="addActivity(session._id)">
                   <v-list-item-action>
                     <v-icon>mdi-plus</v-icon>
                   </v-list-item-action>
@@ -74,7 +73,7 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
-      <v-btn small block class="dragscroll" @click="newTaskInline(session._id)">
+      <v-btn small block class="dragscroll" @click="addActivity(session._id)">
         {{ $t("Add new activity") }}
       </v-btn>
       <div
@@ -102,10 +101,15 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
+import SelectActivity from "./SelectActivity.vue";
+
 import { colors } from "/imports/colors";
 import { mapState } from "vuex";
 
 export default {
+  components: {
+    SelectActivity
+  },
   props: {
     session: {
       type: Object,
@@ -118,7 +122,7 @@ export default {
       savedName: "",
       forceShowHiddenTask: false,
       showHiddenTasks: false,
-      showNewTaskDialog: false
+      showSelectActivityDialog: false
     };
   },
   computed: {
@@ -228,8 +232,20 @@ export default {
         }
       });
     },
-    newTaskInline() {
-      this.showNewTaskDialog = true;
+
+    addActivity() {
+      this.showSelectActivityDialog = true;
+    },
+
+    onSelectActivity(activity) {
+      Meteor.call("workshops.tracks.create", {
+        sessionId: this.session._id,
+        activityId: activity._id
+      },(error) => {
+        if (error) {
+          this.$store.dispatch("notifyError", error);
+        }
+      });
     },
 
     getTransferData(session) {
