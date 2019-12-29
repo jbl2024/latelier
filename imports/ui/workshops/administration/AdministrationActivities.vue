@@ -1,50 +1,64 @@
 <template>
-  <div class="elevation-1">
+  <div class="admin">
     <edit-activity ref="editActivity" @updated="findActivities()" />
     <new-activity ref="newActivity" @created="findActivities()" />
-    <v-container fluid class="filters">
-      <v-row>
-        <v-col sm="12" md="6" xs="12">
-          <v-text-field
-            v-model="search"
-            :label="$t('Search') + '...'"
-            single-line
-            append-icon="mdi-magnify"
-            clearable
-            @input="debouncedFilter"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
-    <v-list subheader>
-      <v-subheader inset>
-        {{ pagination.totalItems }} {{ $t('activities')}}
-        <v-btn text icon @click="$refs.newActivity.open()">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-subheader>
-      <template v-for="activity in activities">
-        <v-list-item :key="activity._id" @click="editActivity(activity)">
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ activity.name }}
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon ripple @click.stop="removeActivity(activity)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
-    </v-list>
-    <div class="text-xs-center">
-      <v-pagination
-        v-if="pagination.totalPages > 0"
-        v-model="page"
-        :length="pagination.totalPages"
-      />
-    </div>
+    <v-card max-width="800" class="mx-auto mt-2">
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              v-model="search"
+              :label="$t('Search') + '...'"
+              single-line
+              append-icon="mdi-magnify"
+              clearable
+              @input="debouncedFilter"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col cols="12">
+            <v-list subheader>
+              <v-subheader inset>
+                {{ pagination.totalItems }} {{ $t("activities") }}
+                <v-btn text icon @click="$refs.newActivity.open()">
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </v-subheader>
+              <template v-for="activity in activities">
+                <v-list-item
+                  :key="activity._id"
+                  @click="editActivity(activity)"
+                >
+                  <v-list-item-avatar>
+                    <v-icon class="blue white--text">
+                      mdi-gamepad-variant
+                    </v-icon>
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>
+                      {{ activity.name }}
+                    </v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn icon ripple @click.stop="removeActivity(activity)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </template>
+            </v-list>
+            <div class="text-xs-center">
+              <v-pagination
+                v-if="pagination.totalPages > 0"
+                v-model="page"
+                :length="pagination.totalPages"
+              />
+            </div>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-card>
   </div>
 </template>
 
@@ -109,10 +123,12 @@ export default {
   methods: {
     findActivities() {
       Meteor.call(
-        "workshops.activities.find", {
+        "workshops.activities.find",
+        {
           page: this.page,
           filter: this.search
-        }, (error, result) => {
+        },
+        (error, result) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;
@@ -132,14 +148,18 @@ export default {
         confirmText: this.$t("Delete")
       }).then((res) => {
         if (res) {
-          Meteor.call("workshops.activities.remove", { activityId: activity._id }, (error) => {
-            if (error) {
-              this.$store.dispatch("notifyError", error);
-              return;
+          Meteor.call(
+            "workshops.activities.remove",
+            { activityId: activity._id },
+            (error) => {
+              if (error) {
+                this.$store.dispatch("notifyError", error);
+                return;
+              }
+              this.$store.dispatch("notify", this.$t("Activity deleted"));
+              this.findActivities();
             }
-            this.$store.dispatch("notify", this.$t("Activity deleted"));
-            this.findActivities();
-          });
+          );
         }
       });
     },
@@ -163,6 +183,10 @@ export default {
 </script>
 
 <style scoped>
+
+.admin {
+  background-color: #e5e5e5;
+}
 .manage-user {
   overflow-y: scroll;
 }
