@@ -15,6 +15,21 @@
           class="kanban-container flex1"
           :workshop-id="workshopId"
         />
+        <v-navigation-drawer
+          v-model="showDetail"
+          :clipped="$vuetify.breakpoint.lgAndUp"
+          class="elevation-16"
+          fixed
+          app
+          right
+          :width="600"
+          stateless
+          permanent
+        >
+          <v-card>
+            Coucou
+          </v-card>
+        </v-navigation-drawer>
       </div>
     </div>
   </div>
@@ -41,6 +56,7 @@ export default {
   },
   data() {
     return {
+      showDetail: false
     };
   },
   mounted() {
