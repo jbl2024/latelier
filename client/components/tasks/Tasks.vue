@@ -15,7 +15,7 @@
 <script>
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
-import * as Sortable from "sortablejs";
+import Sortable from "sortablejs";
 
 export default {
   props: {
