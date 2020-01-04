@@ -11,6 +11,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update vuetify to 2.1.14
 
 ### Changed
+- Update to Meteor 1.8.3
+- Update packages:
+  - accounts-base              upgraded from 1.4.4 to 1.4.5
+  - accounts-password          upgraded from 1.5.1 to 1.5.2
+  - babel-compiler             upgraded from 7.3.4 to 7.4.2
+  - babel-runtime              upgraded from 1.3.0 to 1.4.0
+  - callback-hook              upgraded from 1.1.0 to 1.2.0
+  - ecmascript                 upgraded from 0.12.7 to 0.13.2
+  - ecmascript-runtime-client  upgraded from 0.8.0 to 0.9.0
+  - ecmascript-runtime-server  upgraded from 0.7.1 to 0.8.0
+  - minifier-css               upgraded from 1.4.2 to 1.4.3
+  - minifier-js                upgraded from 2.4.1 to 2.5.1
+  - modules                    upgraded from 0.13.0 to 0.14.0
+  - modules-runtime            upgraded from 0.10.3 to 0.11.0
+  - mongo                      upgraded from 1.6.3 to 1.7.0
+  - npm-mongo                  upgraded from 3.1.2 to 3.2.0
+  - standard-minifier-css      upgraded from 1.5.3 to 1.5.4
+  - standard-minifier-js       upgraded from 2.4.1 to 2.5.2
+  - webapp                     upgraded from 1.7.4 to 1.7.5
+  - akryum:vue-component       upgraded from 0.15.1 to 0.15.2
+  - blaze                      upgraded from 2.3.3 to 2.3.4
+  - ejson                      upgraded from 1.1.0 to 1.1.1
+  - ostrio:cookies             upgraded from 2.4.1 to 2.5.0
+  - ostrio:files               upgraded from 1.12.2 to 1.13.0
+  - reywood:publish-composite  upgraded from 1.7.2 to 1.7.3
 
 ### Removed
 

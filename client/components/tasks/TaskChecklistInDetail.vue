@@ -79,7 +79,7 @@
 
 <script>
 import "moment/locale/fr";
-import * as Sortable from "sortablejs";
+import Sortable from "sortablejs";
 
 export default {
   name: "TaskChecklistInDetail",

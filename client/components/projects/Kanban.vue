@@ -30,7 +30,7 @@
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
 import { dragscroll } from "vue-dragscroll";
-import * as Sortable from "sortablejs";
+import Sortable from "sortablejs";
 
 export default {
   directives: {
