@@ -250,6 +250,9 @@ export default {
       },
       deep: false,
       update({ id }) {
+        if (this.editDescription) {
+          this.updateDescription();
+        }
         const task = Tasks.findOne({ _id: id }) || {};
         this.completed = task.completed;
         return task;
