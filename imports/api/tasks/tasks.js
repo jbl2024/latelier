@@ -230,8 +230,10 @@ Meteor.methods({
     check(taskId, String);
     check(description, String);
     checkCanWriteTask(taskId);
-    if (description.length === 0) {
-      throw new Meteor.Error("invalid-description");
+
+    const task = Tasks.findOne({ _id: taskId });
+    if (task.description && task.description === description) {
+      return;
     }
 
     Tasks.update({ _id: taskId }, { $set: { description } });

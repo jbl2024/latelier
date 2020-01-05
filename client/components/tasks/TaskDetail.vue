@@ -309,11 +309,13 @@ export default {
 
     updateDescription() {
       this.editDescription = false;
-      Meteor.call(
-        "tasks.updateDescription",
-        this.task._id,
-        this.task.description
-      );
+      if (this.task.description !== null) {
+        Meteor.call(
+          "tasks.updateDescription",
+          this.task._id,
+          this.task.description
+        );
+      }
     },
 
     cancelUpdateDescription() {
