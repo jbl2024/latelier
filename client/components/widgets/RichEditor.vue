@@ -92,6 +92,8 @@ export default {
 
 .ql-editor {
   min-height: 120px !important;
+  font-family: Roboto, sans-serif !important;
+  font-size: 14px;
 }
 
 .no-border .ql-toolbar.ql-snow {
