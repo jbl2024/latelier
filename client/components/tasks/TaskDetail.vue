@@ -132,11 +132,12 @@
         {{ $t("No description") }}
       </div>
 
-      <div v-show="editDescription">
+      <div v-if="editDescription">
         <rich-editor
           ref="description"
           v-model="task.description"
           @submit="updateDescription"
+          @click-outside="updateDescription"
         />
         <v-btn icon text @click="updateDescription">
           <v-icon>mdi-check-circle</v-icon>
