@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update vuetify to 2.1.14
 
 ### Changed
+- Task description is automatically saved when clicking outside or closing task detail
+- Canvas item is automatically saved when clicking outside text area
 - Update to Meteor 1.8.3
 - Update packages:
   - accounts-base              upgraded from 1.4.4 to 1.4.5

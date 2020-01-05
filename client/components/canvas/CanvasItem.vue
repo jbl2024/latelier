@@ -19,11 +19,16 @@
           v-html="linkifyHtml(content)"
         />
         <div v-if="editContent" class="edit-content">
-          <rich-editor v-model="content" autofocus @submit="updateContent" />
-          <v-btn icon text @click.native="updateContent">
+          <rich-editor
+            v-model="content"
+            autofocus
+            @submit="updateContent"
+            @click-outside="updateContent"
+          />
+          <v-btn icon text @click.native.stop="updateContent">
             <v-icon>mdi-check-circle</v-icon>
           </v-btn>
-          <v-btn icon text @click.native="cancelUpdateContent">
+          <v-btn icon text @click.native.stop="cancelUpdateContent">
             <v-icon>mdi-close-circle</v-icon>
           </v-btn>
         </div>
@@ -91,7 +96,7 @@ export default {
 
 .canvas-headline {
   font-size: 12px;
-  color: #546E7A;
+  color: #546e7a;
   min-height: 90px;
 }
 

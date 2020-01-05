@@ -2,6 +2,7 @@
   <vue-editor
     ref="editor"
     v-model="content"
+    v-click-outside="onClickOutside"
     :class="{ editor: true, 'no-border': noBorder }"
     :editor-options="editorSettings"
     :editor-toolbar="customToolbar"
@@ -74,6 +75,9 @@ export default {
   methods: {
     focus() {
       this.$refs.editor.quill.focus();
+    },
+    onClickOutside() {
+      this.$emit("click-outside");
     }
   }
 };
@@ -88,6 +92,8 @@ export default {
 
 .ql-editor {
   min-height: 120px !important;
+  font-family: Roboto, sans-serif !important;
+  font-size: 14px !important;
 }
 
 .no-border .ql-toolbar.ql-snow {

@@ -10,6 +10,9 @@ import VueMeteorTracker from "vue-meteor-tracker";
 
 import VueEvents from "vue-event-handler";
 import VueObserveVisibility from "vue-observe-visibility";
+import vClickOutside from "v-click-outside";
+
+
 
 // Vuetify
 import Vuetify from "vuetify";
@@ -68,6 +71,7 @@ Vue.use(VueMeteorTracker);
 Vue.use(VueEvents);
 Vue.use(Vuetify);
 Vue.use(VueObserveVisibility);
+Vue.use(vClickOutside);
 
 const vuetify = new Vuetify({
   icons: {
