@@ -21,6 +21,7 @@ import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
+import ProjectMindmaps from "/imports/ui/projects/ProjectMindmaps.vue";
 
 import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
@@ -140,6 +141,13 @@ export default [
     name: "project-bpmn-process-diagram",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: async () => (await import("/imports/ui/projects/ProjectProcessDiagram.vue")).default,
+    props: true
+  },
+  {
+    path: "/projects-mindmap/:projectId",
+    name: "project-mindmaps",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectMindmaps,
     props: true
   },
   {

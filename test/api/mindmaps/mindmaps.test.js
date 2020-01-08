@@ -1,0 +1,83 @@
+import { expect } from "chai";
+import { initData } from "/test/fixtures/fixtures";
+import { Mindmaps } from "/imports/api/mindmaps/mindmaps";
+import { Projects } from "/imports/api/projects/projects";
+import { createStubs, restoreStubs } from "/test/stubs";
+
+if (Meteor.isServer) {
+  describe("mindmaps.create", function() {
+    beforeEach(function() {
+      initData();
+      createStubs();
+    });
+
+    afterEach(function() {
+      restoreStubs();
+    });
+
+    it("must be logged in", async function() {
+      const context = {};
+      let errorCode;
+
+      const args = {
+        projectId: "0",
+        name: "name",
+        description: "description"
+      };
+      try {
+        Mindmaps.methods.create._execute(context, args);
+      } catch (error) {
+        errorCode = error.error;
+      }
+      expect(errorCode, "should throw not logged in").to.be.equal(
+        "not-authorized"
+      );
+    });
+
+    it("creates a new diagram", async function() {
+      const context = { userId: Meteor.users.findOne()._id };
+
+      const args = {
+        projectId: Projects.findOne()._id,
+        name: "name",
+        description: "description"
+      };
+      Mindmaps.methods.create._execute(context, args);
+      expect(Mindmaps.find().count()).to.be.equal(1);
+    });
+  });
+
+  describe("mindmaps.clone", function() {
+    beforeEach(function() {
+      initData();
+      createStubs();
+    });
+
+    afterEach(function() {
+      restoreStubs();
+    });
+
+    it("clone a a diagram should copy all data except name", async function() {
+      const context = { userId: Meteor.users.findOne()._id };
+
+      const args = {
+        projectId: Projects.findOne()._id,
+        name: "name",
+        description: "description"
+      };
+      Mindmaps.methods.create._execute(context, args);
+      expect(Mindmaps.find().count()).to.be.equal(1);
+
+      Mindmaps.methods.clone._execute(context, {
+        mindmapId: Mindmaps.findOne()._id
+      });
+      expect(Mindmaps.find().count()).to.be.equal(2);
+
+      const diagrams = Mindmaps.find().fetch();
+      expect(`Copie de ${diagrams[0].name}`).to.be.equal(diagrams[1].name);
+      expect(diagrams[0].description).to.be.equal(diagrams[1].description);
+      expect(diagrams[0].xml).to.be.equal(diagrams[1].xml);
+      expect(diagrams[0].projectId).to.be.equal(diagrams[1].projectId);
+    });
+  });
+}
