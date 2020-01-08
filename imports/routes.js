@@ -151,6 +151,13 @@ export default [
     props: true
   },
   {
+    path: "/projects-mindmap/:projectId/:mindmapId",
+    name: "project-mindmap",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: async () => (await import("/imports/ui/projects/ProjectMindmap.vue")).default,
+    props: true
+  },
+  {
     path: "/projects-canvas/:projectId",
     name: "project-canvas",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),

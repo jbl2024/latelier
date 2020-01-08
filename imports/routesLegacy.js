@@ -3,6 +3,7 @@ import { isBasicAuth, projectAuth } from "./router/check-auth";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
+import ProjectMindmap from "/imports/ui/projects/ProjectMindmap.vue";
 
 import modern from "./routes";
 
@@ -26,6 +27,13 @@ const legacy = [
     name: "project-bpmn-process-diagram",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProcessDiagram,
+    props: true
+  },
+  {
+    path: "/projects-mindmap/:projectId/:processDiagramId",
+    name: "project-mindmap",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectMindmap,
     props: true
   }
 ];
