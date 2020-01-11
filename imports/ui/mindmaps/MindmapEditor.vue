@@ -6,6 +6,7 @@
 
 <script>
 import { fabric } from "fabric";
+import { MindmapNode } from "./widgets/MindmapNode";
 
 export default {
   props: {
@@ -87,13 +88,21 @@ export default {
       });
       this.canvas.add(circle);
 
-      const text = new fabric.IText("hello world", {
+      // const text = new fabric.IText("hello world", {
+      //   left: 100,
+      //   top: 100,
+      //   fontFamily: "Roboto"
+      // });
+      // this.canvas.add(text);
+      // text.enterEditing();
+
+      const mindmapNode = new MindmapNode({
         left: 100,
         top: 100,
-        fontFamily: "Roboto"
+        label: "hello, world"
       });
-      this.canvas.add(text);
-      text.enterEditing();
+      this.canvas.add(mindmapNode);
+
     },
 
     destroyCanvas() {
