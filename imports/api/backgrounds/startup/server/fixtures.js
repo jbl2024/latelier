@@ -2,6 +2,7 @@ import { Backgrounds } from "/imports/api/backgrounds/backgrounds";
 import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";
 
 import * as path from "path";
+import fs from "fs-extra";
 
 function generateFixtures() {
   const backgrounds = JSON.parse(Assets.getText("backgrounds.json"));
@@ -13,10 +14,14 @@ function generateFixtures() {
 
     const existingBackground = Backgrounds.findOne({ "meta.name": name, "meta.userId": { $exists: false } });
     if (existingBackground) {
-      if (!existingBackground.versions.thumbnail) {
+      const { thumbnail } = existingBackground.versions;
+      if (!thumbnail || !fs.pathExistsSync(thumbnail.path)) {
+        /* eslint no-console: off */
+        console.log(`Creating thumbnail for ${name}`);
         createThumbnails(Backgrounds, existingBackground, (error) => {
           if (error) {
-            // console.error(error);
+            /* eslint no-console: off */
+            console.error(error);
           }
         });
       }
