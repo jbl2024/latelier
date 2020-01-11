@@ -1,6 +1,17 @@
 <template>
   <div ref="container" v-resize="onResizeCanvas" class="canvas-container">
     <canvas ref="canvas" class="fabric" />
+    <v-navigation-drawer
+      v-model="showDrawer"
+      class="elevation-16 panel"
+      :width="$vuetify.breakpoint.xsOnly ? '100%' : '256px'"
+      absolute
+      stateless
+      right
+      fixed
+    >
+      coucou
+    </v-navigation-drawer>
   </div>
 </template>
 
@@ -17,7 +28,8 @@ export default {
   },
   data() {
     return {
-      canvas: null
+      canvas: null,
+      showDrawer: true
     };
   },
   mounted() {
@@ -96,13 +108,15 @@ export default {
       // this.canvas.add(text);
       // text.enterEditing();
 
-      const mindmapNode = new MindmapNode({
+      const mindmapNode = new MindmapNode(this.canvas, "hello, world", {
         left: 100,
         top: 100,
-        label: "hello, world"
+        fontFamily: "Roboto",
+        rx: 10,
+        ry: 10,
+        backgroundColor: "#CFD8DC"
       });
-      this.canvas.add(mindmapNode);
-
+      // this.canvas.add(mindmapNode);
     },
 
     destroyCanvas() {
