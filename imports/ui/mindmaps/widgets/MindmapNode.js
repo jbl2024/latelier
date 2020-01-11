@@ -3,12 +3,16 @@ import { fabric } from "fabric";
 export const MindmapNode = function(canvas, label, options) {
   options = options || {};
   let items;
+  let dimensionText = null;
+  let dimensionMark = null;
+  let dimensionGroup = null;
 
   // Double-click event handler
   const onDoubleClick = function(obj, handler) {
     return function() {
-      if (obj.clicked) handler(obj);
-      else {
+      if (obj.clicked) {
+        handler(obj);
+      } else {
         obj.clicked = true;
         setTimeout(function() {
           obj.clicked = false;
@@ -31,11 +35,10 @@ export const MindmapNode = function(canvas, label, options) {
   };
 
   // Re-group when text editing finishes
-  const dimensionText = new fabric.IText("Dimension Text", {
-    fontFamily: "Comic Sans",
+  dimensionText = new fabric.IText("Dimension Text", {
+    fontFamily: "Roboto",
     fontSize: 14,
     stroke: "#000",
-    strokeWidth: 1,
     fill: "#000",
     left: 170,
     top: 60
@@ -58,7 +61,7 @@ export const MindmapNode = function(canvas, label, options) {
   });
 
   function addRuler() {
-    const dimensionMark = new fabric.Path(
+    dimensionMark = new fabric.Path(
       "M0,0L0,-5L0,5L0,0L150,0L150,-5L150,5L150,0z"
     );
     dimensionMark.set({
@@ -66,9 +69,10 @@ export const MindmapNode = function(canvas, label, options) {
       top: 70,
       stroke: "#333333",
       strokeWidth: 2,
-      scaleY: 1
+      scaleY: 1,
+      selectable: false
     });
-    const dimensionGroup = new fabric.Group([dimensionMark, dimensionText], {
+    dimensionGroup = new fabric.Group([dimensionMark, dimensionText], {
       left: 50,
       top: 50
     });
