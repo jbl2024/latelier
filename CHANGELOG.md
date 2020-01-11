@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update vuetify to 2.1.14
 
 ### Changed
+- Regenerate background thumbnail if thumbnail file is missing
 - Task description is automatically saved when clicking outside or closing task detail
 - Canvas item is automatically saved when clicking outside text area
 - Update to Meteor 1.8.3
