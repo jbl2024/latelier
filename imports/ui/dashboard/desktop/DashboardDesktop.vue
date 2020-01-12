@@ -624,7 +624,7 @@ export default {
 }
 
 .tasks-title {
-  margin: 22px;
+  margin: 15.5px;
   text-transform: uppercase;
   font-weight: bold;
   letter-spacing: 0.08em;
