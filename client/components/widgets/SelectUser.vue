@@ -63,7 +63,6 @@
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
-                    v-model="search"
                     :label="$t('Search') + '...'"
                     single-line
                     append-icon="mdi-magnify"
