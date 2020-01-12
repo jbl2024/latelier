@@ -55,7 +55,10 @@
       "legacy": "client/legacy.js",
       "server": "server/main.js"
     },
-    "testModule": "test/main.js"
+    "testModule": "test/main.js",
+    "nodeModules": {
+      "diagram-js-minimap": true
+    }
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
