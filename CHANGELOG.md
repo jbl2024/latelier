@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.7.2] - 2020-01-12
+
+### Added
 - Project dashboard
 - Update vuetify to 2.1.14
 
