@@ -8,11 +8,13 @@
       @input="$emit('update:active')"
     >
       <v-card>
-        <v-card-title class="headline grey lighten-2">
+        <v-card-title class="headline">
           {{ $t("Select user") }}
         </v-card-title>
-        <v-card-text>
-          <v-tabs v-if="active" ref="tabs">
+        <v-divider />
+        <div>
+          <v-tabs v-if="active" ref="tabs" fixed-tabs>
+            <v-tabs-slider color="accent" />
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
             </v-tab>
@@ -22,8 +24,18 @@
             <v-tab v-if="isAdmin">
               {{ $t("Find") }}
             </v-tab>
-            <v-tab-item v-if="!hideProject && project">
+            <v-tab-item v-if="!hideProject && project" class="pa-4">
               <div class="flex-container">
+                <div class="flex0">
+                  <v-text-field
+                    :label="$t('Search') + '...'"
+                    single-line
+                    append-icon="mdi-magnify"
+                    clearable
+                    autofocus
+                    @input="dfFilterProjectUsers"
+                  />
+                </div>
                 <v-list class="flex1" subheader>
                   <template v-for="user in projectUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
@@ -40,8 +52,18 @@
                 </v-list>
               </div>
             </v-tab-item>
-            <v-tab-item v-if="project && project.organizationId">
+            <v-tab-item v-if="project && project.organizationId" class="pa-4">
               <div class="flex-container">
+                <div class="flex0">
+                  <v-text-field
+                    :label="$t('Search') + '...'"
+                    single-line
+                    append-icon="mdi-magnify"
+                    clearable
+                    autofocus
+                    @input="dfFilterOrganizationUsers"
+                  />
+                </div>
                 <v-list class="flex1" subheader>
                   <template v-for="user in organizationUsers">
                     <v-list-item :key="user._id" @click="selectUser(user)">
@@ -59,11 +81,10 @@
               </div>
             </v-tab-item>
 
-            <v-tab-item v-if="isAdmin">
+            <v-tab-item v-if="isAdmin" class="pa-4">
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
-                    v-model="search"
                     :label="$t('Search') + '...'"
                     single-line
                     append-icon="mdi-magnify"
@@ -121,7 +142,7 @@
               </div>
             </v-tab-item>
           </v-tabs>
-        </v-card-text>
+        </div>
         <v-divider />
         <v-card-actions>
           <v-spacer />
@@ -156,7 +177,7 @@ export default {
           "No user found, do you want to send an invitation?"
       },
       fr: {
-        "Select user": "Selectionner un utilisateur",
+        "Select user": "Sélectionner un utilisateur",
         "Available users": "Utilisateurs disponibles",
         Find: "Rechercher",
         "Send invitation": "Envoyer une invitation",
@@ -186,7 +207,11 @@ export default {
     return {
       selectedTab: 0,
       search: "",
+      searchProjectUsers: "",
+      searchOrganizationUsers: "",
       debouncedFilter: null,
+      dfFilterProjectUsers: null,
+      dfFilterOrganizationUsers: null,
       users: [],
       user: null,
       showUserDetail: false,
@@ -201,7 +226,14 @@ export default {
   computed: {
     projectUsers() {
       if (this.project) {
-        return Meteor.users.find({ _id: { $in: this.project.members } });
+        const users = Meteor.users.find({ _id: { $in: this.project.members } }).fetch();
+        if (!this.searchProjectUsers) {
+          return users;
+        }
+        return users.filter((user) => {
+          const email = user.emails[0].address;
+          return email.toUpperCase().indexOf(this.searchProjectUsers.toUpperCase()) >= 0;
+        });
       }
       return null;
     },
@@ -210,7 +242,14 @@ export default {
         const organization = Organizations.findOne(this.project.organizationId);
         if (organization) {
           const members = organization.members || [];
-          return Meteor.users.find({ _id: { $in: members } });
+          const users = Meteor.users.find({ _id: { $in: members } }).fetch();
+          if (!this.searchOrganizationUsers) {
+            return users;
+          }
+          return users.filter((user) => {
+            const email = user.emails[0].address;
+            return email.toUpperCase().indexOf(this.searchOrganizationUsers.toUpperCase()) >= 0;
+          });
         }
       }
       return null;
@@ -231,6 +270,12 @@ export default {
   created() {
     this.debouncedFilter = debounce((val) => {
       this.search = val;
+    }, 400);
+    this.dfFilterProjectUsers = debounce((val) => {
+      this.searchProjectUsers = val;
+    }, 400);
+    this.dfFilterOrganizationUsers = debounce((val) => {
+      this.searchOrganizationUsers = val;
     }, 400);
   },
   methods: {
