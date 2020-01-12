@@ -242,7 +242,7 @@ export default {
         const organization = Organizations.findOne(this.project.organizationId);
         if (organization) {
           const members = organization.members || [];
-          const users = Meteor.users.find({ _id: { $in: members } });
+          const users = Meteor.users.find({ _id: { $in: members } }).fetch();
           if (!this.searchOrganizationUsers) {
             return users;
           }
