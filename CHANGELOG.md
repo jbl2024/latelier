@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Select user dialog: allow search in all tabs, update ux to looks like SelectLabel
 
 ### Removed
 
