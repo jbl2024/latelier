@@ -12,8 +12,6 @@ import VueEvents from "vue-event-handler";
 import VueObserveVisibility from "vue-observe-visibility";
 import vClickOutside from "v-click-outside";
 
-
-
 // Vuetify
 import Vuetify from "vuetify";
 
