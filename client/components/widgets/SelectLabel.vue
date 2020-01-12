@@ -12,6 +12,14 @@
         </v-card-title>
         <v-divider />
         <v-card-text>
+          <v-text-field
+            :label="$t('Search') + '...'"
+            single-line
+            append-icon="mdi-magnify"
+            clearable
+            autofocus
+            @input="debouncedFilter"
+          />
           <v-list class="content">
             <template v-for="aLabel in labels">
               <v-list-item :key="aLabel._id" @click="selectLabel(aLabel)">
@@ -49,6 +57,7 @@
 
 <script>
 import { Labels } from "/imports/api/labels/labels.js";
+import debounce from "lodash/debounce";
 
 export default {
   props: {
@@ -66,18 +75,35 @@ export default {
       showDialog: false,
       showSelectColor: false,
       label: {},
+      debouncedFilter: null,
+      search: "",
       name: ""
     };
+  },
+  created() {
+    this.debouncedFilter = debounce((val) => {
+      this.search = val;
+    }, 400);
   },
   meteor: {
     labels: {
       params() {
         return {
-          projectId: this.projectId
+          projectId: this.projectId,
+          search: this.search
         };
       },
-      update({ projectId }) {
-        return Labels.find({ projectId: projectId }, { sort: { name: 1 } });
+      update({ projectId, search }) {
+        const query = {
+          projectId: projectId
+        };
+        if (search) {
+          query.name = {
+            $regex: `.*${search}.*`,
+            $options: "i"
+          };
+        }
+        return Labels.find(query, { sort: { name: 1 } });
       }
     }
   },
