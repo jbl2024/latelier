@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.7.3] - 2020-01-13
+
+### Added
+
+### Changed
 - Remove symlink for diagram-js-minimap (see https://github.com/meteor/meteor/pull/10603)
 - Select user dialog: allow search in all tabs, update ux to looks like SelectLabel
 - Select label dialog: allow search
