@@ -9,8 +9,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update to Meteor 1.9
+- Update packages:
+  - accounts-base              upgraded from 1.4.5 to 1.5.0
+  - babel-compiler             upgraded from 7.4.2 to 7.5.0
+  - babel-runtime              upgraded from 1.4.0 to 1.5.0
+  - callback-hook              upgraded from 1.2.0 to 1.3.0
+  - ecmascript                 upgraded from 0.13.2 to 0.14.0
+  - ecmascript-runtime-client  upgraded from 0.9.0 to 0.10.0
+  - ecmascript-runtime-server  upgraded from 0.8.0 to 0.9.0
+  - minifier-css               upgraded from 1.4.3 to 1.5.0
+  - minifier-js                upgraded from 2.5.1 to 2.6.0
+  - modules                    upgraded from 0.14.0 to 0.15.0
+  - modules-runtime            upgraded from 0.11.0 to 0.12.0
+  - mongo                      upgraded from 1.7.0 to 1.8.0
+  - npm-mongo                  upgraded from 3.2.0 to 3.3.0
+  - standard-minifier-css      upgraded from 1.5.4 to 1.6.0
+  - standard-minifier-js       upgraded from 2.5.2 to 2.6.0
+  - webapp                     upgraded from 1.7.5 to 1.8.0
+  - accounts-password          upgraded from 1.5.2 to 1.5.3
+  - meteortesting:mocha        upgraded from 1.1.3 to 1.1.4
+  - meteortesting:mocha-core*  upgraded from 6.2.2 to 7.0.0
+  - modern-browsers            upgraded from 0.1.4 to 0.1.5
 
 ### Removed
+- Dependency to  simonhochrein:meteor-mjml (not compatible with nodejs >= 12)
 
 ## [2.7.3] - 2020-01-13
 

@@ -2,6 +2,7 @@ import { Email } from "meteor/email";
 import get from "lodash/get";
 import { Tasks } from "/imports/api/tasks/tasks";
 import * as htmlToText from "html-to-text";
+import { MJML } from "/imports/mjml";
 
 /**
  * Build email data suitable for sendEmail
