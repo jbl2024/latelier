@@ -4,6 +4,7 @@ import { Projects } from "/imports/api/projects/projects";
 import { Digests } from "/imports/api/digests/digests";
 import { Permissions } from "/imports/api/permissions/permissions";
 import * as htmlToText from "html-to-text";
+import { MJML } from "/imports/mjml";
 
 import moment from "moment";
 
