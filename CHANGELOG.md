@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix unit test exit
 - Update to Meteor 1.9
 - Update packages:
   - accounts-base              upgraded from 1.4.5 to 1.5.0
