@@ -4,7 +4,7 @@ import {
   Permissions,
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
-import { Email } from "meteor/email";
+import { Email } from "/imports/email";
 import * as htmlToText from "html-to-text";
 import { MJML } from "/imports/mjml";
 
@@ -447,7 +447,6 @@ Meteor.methods({
     });
     try {
       Email.send({
-        from: Meteor.settings.email.from,
         to: user.emails[0].address,
         subject: emailData.subject(),
         text,

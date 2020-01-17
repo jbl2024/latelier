@@ -1,3 +1,4 @@
+import { Meteor } from "meteor/meteor";
 import { MJML } from "/imports/mjml";
 
 Meteor.startup(function() {
@@ -13,7 +14,8 @@ if (Meteor.settings && Meteor.settings.email) {
 }
 Accounts.emailTemplates.verifyEmail = {
   subject() {
-    return "Activate your account now!";
+    const prefix = Meteor.settings.email.prefix || "";
+    return `${prefix}Activate your account now!`;
   },
   text(user, url) {
     return `Bienvenue sur l'atelier. Confirmer votre inscription en cliquant sur le lien suivant : ${url}`;

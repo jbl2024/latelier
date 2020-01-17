@@ -15,7 +15,8 @@
     "invite": "admin"
   },
   "email": {
-    "from": "foo@bar.com"
+    "from": "foo@bar.com",
+    "prefix": "latelier"
   },
   "roles": {
     "admin": ["foo@bar.com"]
