@@ -38,7 +38,7 @@ Settings:
 |disableAccountCreation | boolean       | false                    | If true account creation is forbidden |
 |attachmentsPath        | string        | /tmp/                    | Attachment storage path on fs |
 |avatarsPath            | string        | attachmentsPath          | Avatar storage path on fs |
-|email.from             | string        | noreply@localhost        | From email when sending mail |
+|email                  | object        |                          | Email settings |
 |roles.admin            | [string]      | []                       | Users matching emails will have the admin role |
 |public.seo.titlePrefix | string        | l'atelier                | window.title prefix |
 |sso                    | object        | {}                       | See below |
@@ -47,6 +47,13 @@ Settings:
 |users                  | object        | {}                       | See below |
 |elasticApm             | object        | {}                       | See below |
 |digestsRetention       | number        | 60                       | Number of days to keep in digest |
+
+email:
+
+| Key                   | Type          | Default value            | Description                  |
+|-----------------------|---------------|--------------------------|------------------------------|
+|from                   | string        | noreply@localhost        | From email when sending mail |
+|prefix                 | string        |                          | Subject prefix               |
 
 users:
 
