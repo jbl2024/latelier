@@ -12,7 +12,7 @@
           {{ project.name }}
         </div>
         <div class="subtitle grey--text">
-          {{ formatProjectDates(project) }}
+          {{ formatProjectDates(project) }}&nbsp;
         </div>
       </div>
     </v-card-title>
