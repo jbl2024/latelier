@@ -1,9 +1,10 @@
 import { Jobs } from "meteor/msavin:sjobs";
-import { Email } from "meteor/email";
+import { Email } from "/imports/email";
 import { Projects } from "/imports/api/projects/projects";
 import { Digests } from "/imports/api/digests/digests";
 import { Permissions } from "/imports/api/permissions/permissions";
 import * as htmlToText from "html-to-text";
+import { MJML } from "/imports/mjml";
 
 import moment from "moment";
 
@@ -46,7 +47,6 @@ const sendEmail = function(user, digests, date, emailData) {
   });
   try {
     Email.send({
-      from: Meteor.settings.email.from,
       to: user.emails[0].address,
       subject: emailData.subject(user, digests),
       text,

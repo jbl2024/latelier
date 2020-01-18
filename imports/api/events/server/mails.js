@@ -1,7 +1,8 @@
-import { Email } from "meteor/email";
+import { Email } from "/imports/email";
 import get from "lodash/get";
 import { Tasks } from "/imports/api/tasks/tasks";
 import * as htmlToText from "html-to-text";
+import { MJML } from "/imports/mjml";
 
 /**
  * Build email data suitable for sendEmail
@@ -41,7 +42,6 @@ const sendEmail = function(user, task, emailData) {
   });
   try {
     Email.send({
-      from: Meteor.settings.email.from,
       to: user.emails[0].address,
       subject: emailData.subject(user, task),
       text,

@@ -21,11 +21,13 @@
     "file-saver": "^2.0.2",
     "fs-extra": "^7.0.1",
     "gm": "^1.23.1",
+    "handlebars": "^4.7.2",
     "html-to-text": "^5.1.1",
     "jquery": "^3.4.1",
     "linkifyjs": "^2.1.8",
     "lodash": ">=4.17.13",
     "meteor-node-stubs": "^1.0.0",
+    "mjml": "^4.5.1",
     "mobile-drag-drop": "^2.3.0-rc.2",
     "moment": "^2.24.0",
     "path": "^0.12.7",
@@ -47,7 +49,7 @@
     "vue2-editor": "^2.10.2",
     "vue2vis": "0.0.16",
     "vuelidate": "^0.7.4",
-    "vuetify": "^2.1.14",
+    "vuetify": "^2.2.4",
     "vuex": "^3.1.1"
   },
   "meteor": {
@@ -56,7 +58,10 @@
       "legacy": "client/legacy.js",
       "server": "server/main.js"
     },
-    "testModule": "test/main.js"
+    "testModule": "test/main.js",
+    "nodeModules": {
+      "diagram-js-minimap": true
+    }
   },
   "devDependencies": {
     "@meteorjs/eslint-config-meteor": "^1.0.5",
