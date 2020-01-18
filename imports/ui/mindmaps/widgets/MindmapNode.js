@@ -35,7 +35,7 @@ export const MindmapNode = function(canvas, label, options) {
   };
 
   // Re-group when text editing finishes
-  dimensionText = new fabric.IText("Dimension Text", {
+  dimensionText = new fabric.IText(label, {
     fontFamily: "Roboto",
     fontSize: 14,
     stroke: "#000",

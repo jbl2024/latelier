@@ -116,7 +116,6 @@ export default {
         ry: 10,
         backgroundColor: "#CFD8DC"
       });
-      // this.canvas.add(mindmapNode);
     },
 
     destroyCanvas() {
