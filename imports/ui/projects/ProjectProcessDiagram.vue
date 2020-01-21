@@ -202,7 +202,7 @@ export default {
   right: 0;
   display: flex;
   flex-direction: column;
-  background-color: white;
+  background-image: linear-gradient(to top, #e6e9f0 0%, #eef1f5 100%);
 }
 
 .toolbar {
