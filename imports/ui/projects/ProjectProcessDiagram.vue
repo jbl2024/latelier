@@ -202,6 +202,7 @@ export default {
   right: 0;
   display: flex;
   flex-direction: column;
+  background-color: white;
 }
 
 .toolbar {
