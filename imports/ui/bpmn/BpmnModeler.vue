@@ -47,6 +47,7 @@ export default {
             keyboard: { bindTo: document },
             additionalModules: [minimapModule]
           });
+          this.modeler.get("minimap").open();
           this.modeler.on("element.changed", () => {
             this.saveDebounce();
           });
