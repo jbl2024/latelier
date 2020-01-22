@@ -19,78 +19,74 @@
         </v-btn>
       </empty-state>
 
-      <v-container>
-        <v-row no-gutters>
-          <v-spacer />
-          <v-col xs="12" sm="10" md="10">
-            <v-list v-show="processDiagrams.length > 0" two-line subheader>
-              <v-subheader>
-                {{ $t("Process diagrams") }}
-                <v-btn icon dark small color="primary" @click="newDiagram()">
-                  <v-icon>mdi-plus</v-icon>
+      <v-list v-show="processDiagrams.length > 0" two-line subheader class="list">
+        <v-subheader>
+          {{ $t("Process diagrams") }}
+          <v-btn icon dark small color="primary" @click="newDiagram()">
+            <v-icon>mdi-plus</v-icon>
+          </v-btn>
+        </v-subheader>
+        <v-list-item
+          v-for="processDiagram in processDiagrams"
+          :key="processDiagram._id"
+          @click="openProcessDiagram(processDiagram)"
+        >
+          <v-list-item-avatar>
+            <v-icon color="teal">
+              mdi-chart-donut
+            </v-icon>
+          </v-list-item-avatar>
+
+          <v-list-item-content class="pointer">
+            <v-list-item-title>{{ processDiagram.name }}</v-list-item-title>
+            <v-list-item-subtitle>
+              {{ htmlToText(processDiagram.description) }}
+            </v-list-item-subtitle>
+          </v-list-item-content>
+
+          <v-list-item-action>
+            <v-menu bottom left class="menu">
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  icon
+                  text
+                  color="grey darken-1"
+                  v-on="on"
+                  @click.native.stop
+                >
+                  <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
-              </v-subheader>
-              <v-list-item
-                v-for="processDiagram in processDiagrams"
-                :key="processDiagram._id"
-                @click="openProcessDiagram(processDiagram)"
-              >
-                <v-list-item-avatar>
-                  <v-icon color="teal">
-                    mdi-chart-donut
-                  </v-icon>
-                </v-list-item-avatar>
-
-                <v-list-item-content class="pointer">
-                  <v-list-item-title>{{
-                    processDiagram.name
-                  }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ htmlToText(processDiagram.description) }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-
-                <v-list-item-action>
-                  <v-menu bottom left class="menu">
-                    <template v-slot:activator="{ on }">
-                      <v-btn icon text color="grey darken-1" v-on="on" @click.native.stop>
-                        <v-icon>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list dense>
-                      <v-list-item @click="editProcessDiagram(processDiagram)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-pencil</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Edit") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="cloneProcessDiagram(processDiagram)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-content-copy</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Clone") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="deleteProcessDiagram(processDiagram)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-delete</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Delete") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-          </v-col>
-          <v-spacer />
-        </v-row>
-      </v-container>
+              </template>
+              <v-list dense>
+                <v-list-item @click="editProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Edit") }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="cloneProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-content-copy</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Clone") }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="deleteProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Delete") }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
     </div>
   </div>
 </template>
@@ -242,6 +238,12 @@ export default {
 
 <style scoped>
 .empty {
+  margin-top: 24px;
+}
+
+.list {
+  max-width: 800px;
+  margin: 0 auto;
   margin-top: 24px;
 }
 </style>
