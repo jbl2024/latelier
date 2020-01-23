@@ -1,5 +1,5 @@
 import { Examples } from "../examples";
-import { checkAdmin } from "/imports/api/permissions/permissions";
+import { checkLoggedIn } from "/imports/api/permissions/permissions";
 
 Examples.methods.find = new ValidatedMethod({
   name: "bpmnExamples.find",
@@ -7,7 +7,7 @@ Examples.methods.find = new ValidatedMethod({
     page: { type: Number }
   }).validator(),
   run({ page }) {
-    checkAdmin();
+    checkLoggedIn();
 
     const perPage = 25;
     let skip = 0;

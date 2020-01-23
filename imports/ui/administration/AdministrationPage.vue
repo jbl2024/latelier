@@ -6,8 +6,14 @@
           <v-tab id="tab-users">
             Utilisateurs
           </v-tab>
+          <v-tab id="tab-users">
+            {{ $t('BPMN examples') }}
+          </v-tab>
           <v-tab-item>
             <administration-users />
+          </v-tab-item>
+          <v-tab-item>
+            <administration-bpmn-examples />
           </v-tab-item>
         </v-tabs>
       </template>
