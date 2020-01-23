@@ -133,6 +133,12 @@ export const checkLoggedIn = () => {
   }
 };
 
+export const checkAdmin = (scope) => {
+  if (!Permissions.isAdmin(Meteor.userId(), scope)) {
+    throw new Meteor.Error("not-authorized");
+  }
+};
+
 export const checkCanReadProject = (projectId) => {
   Meteor.call("permissions.canReadProject", { projectId });
 };
