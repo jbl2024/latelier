@@ -36,6 +36,10 @@
                 <label>{{ $t("Description") }}</label>
                 <rich-editor ref="description" v-model="description" />
               </v-flex>
+              <v-flex xs12>
+                <label>{{ $t("XML") }}</label>
+                <v-textarea ref="xml" v-model="xml" />
+              </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
@@ -64,19 +68,6 @@ export default {
       default: null
     }
   },
-  i18n: {
-    messages: {
-      en: {
-        "New process diagram": "New process diagram"
-      },
-      fr: {
-        "New process diagram": "Nouveau diagramme"
-      },
-      oc: {
-        "New process diagram": "Nòu diagrama"
-      }
-    }
-  },
   data() {
     return {
       showDialog: false,
@@ -86,7 +77,8 @@ export default {
         (v) => !!v || this.$t("Name is mandatory"),
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
-      description: ""
+      description: "",
+      xml: ""
     };
   },
   methods: {
@@ -105,7 +97,8 @@ export default {
         "bpmnExamples.create",
         {
           name: this.name,
-          description: this.description
+          description: this.description,
+          xml: this.xml
         },
         (error) => {
           if (error) {

@@ -1,19 +1,22 @@
 <template>
   <div>
     <new-example ref="newExample" @created="refresh()" />
-    <edit-example ref="editExample" />
+    <edit-example ref="editExample" @updated="refresh()" />
     <v-container fluid>
-      <v-row>
+      <v-row align="stretch">
         <v-col cols="12" xs="12" sm="6" md="4">
           <v-card>
-            <v-toolbar dark color="primary">
-              {{ $t("Examples") }}
+            <v-toolbar dense dark color="primary">
+              <span class="title">{{ $t("Examples") }}</span>
               <v-spacer />
+              <v-btn icon @click="refresh()">
+                <v-icon>mdi-refresh</v-icon>
+              </v-btn>
               <v-btn icon @click="newExample()">
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-toolbar>
-            <v-list two-line>
+            <v-list two-line dense>
               <v-text-field
                 :label="$t('Search') + '...'"
                 class="pr-6 pl-6"
@@ -55,7 +58,7 @@
                         </v-btn>
                       </template>
                       <v-list dense>
-                        <v-list-item @click="editExample(example)">
+                        <v-list-item @click.stop="editExample(example)">
                           <v-list-item-icon>
                             <v-icon>mdi-pencil</v-icon>
                           </v-list-item-icon>
@@ -95,7 +98,11 @@
           </v-card>
         </v-col>
         <v-col cols="12" xs="12" sm="6" md="8">
-          Preview
+          <template v-if="selectedExample">
+            <div class="wrapper">
+              <example-editor :example="selectedExample" />
+            </div>
+          </template>
         </v-col>
       </v-row>
     </v-container>
@@ -111,12 +118,14 @@ import debounce from "lodash/debounce";
 
 import NewExample from "./NewExample";
 import EditExample from "./EditExample";
+import ExampleEditor from "./ExampleEditor";
 
 export default {
   name: "AdministrationBpmnExamples",
   components: {
     NewExample,
-    EditExample
+    EditExample,
+    ExampleEditor
   },
   mixins: [TextRenderingMixin],
   data() {
@@ -124,6 +133,8 @@ export default {
       search: "",
       debouncedFilter: null,
       examples: [],
+      selectedExample: null,
+      selectedExampleIndex: null,
       page: 1,
       pagination: {
         totalItems: 0,
@@ -131,7 +142,8 @@ export default {
         totalPages: 0
       },
       filterOnline: false,
-      filterAway: false
+      filterAway: false,
+      mode: "view"
     };
   },
   watch: {
@@ -159,7 +171,8 @@ export default {
       Meteor.call(
         "bpmnExamples.find",
         {
-          page: this.page
+          page: this.page,
+          name: this.search
         },
         (error, result) => {
           if (error) {
@@ -179,13 +192,7 @@ export default {
     },
 
     openExample(example) {
-      // this.$router.push({
-      //   name: "project-bpmn-process-diagram",
-      //   params: {
-      //     projectId: this.projectId,
-      //     exampleId: example._id
-      //   }
-      // });
+      this.selectedExample = example;
     },
 
     deleteExample(example) {
@@ -249,4 +256,10 @@ export default {
 .empty {
   margin-top: 24px;
 }
+
+.wrapper {
+  position: relative;
+  height: 465px;
+}
+
 </style>

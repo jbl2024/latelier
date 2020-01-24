@@ -15,14 +15,16 @@ Examples.methods.create = new ValidatedMethod({
   name: "bpmnExamples.create",
   validate: new SimpleSchema({
     name: { type: String },
-    description: { type: String, optional: true }
+    description: { type: String, optional: true },
+    xml: { type: String, optional: true }
   }).validator(),
-  run({ name, description }) {
+  run({ name, description, xml }) {
     checkAdmin();
 
     const id = Examples.insert({
       name,
       description,
+      xml,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });
@@ -35,9 +37,10 @@ Examples.methods.update = new ValidatedMethod({
   validate: new SimpleSchema({
     exampleId: { type: String },
     name: { type: String },
-    description: { type: String, optional: true }
+    description: { type: String, optional: true },
+    xml: { type: String, optional: true }
   }).validator(),
-  run({ exampleId, name, description }) {
+  run({ exampleId, name, description, xml }) {
     checkAdmin();
     const example = Examples.findOne({ _id: exampleId });
     if (!example) {
@@ -51,7 +54,8 @@ Examples.methods.update = new ValidatedMethod({
       {
         $set: {
           name,
-          description
+          description,
+          xml
         }
       }
     );

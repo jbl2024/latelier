@@ -36,6 +36,10 @@
                 <label>{{ $t("Description") }}</label>
                 <rich-editor ref="description" v-model="description" />
               </v-flex>
+              <v-flex xs12>
+                <label>{{ $t("XML") }}</label>
+                <v-textarea ref="xml" v-model="xml" />
+              </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
@@ -68,7 +72,8 @@ export default {
         (v) => !!v || this.$t("Name is mandatory"),
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
-      description: ""
+      description: "",
+      xml: ""
     };
   },
   methods: {
@@ -76,6 +81,7 @@ export default {
       this.example = example;
       this.name = this.example.name;
       this.description = this.example.description;
+      this.xml = this.example.xml;
       this.showDialog = true;
       this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
@@ -90,12 +96,14 @@ export default {
         {
           exampleId: this.example._id,
           name: this.name,
-          description: this.description
+          description: this.description,
+          xml: this.xml
         },
         (error) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
           }
+          this.$emit("updated");
         }
       );
       this.showDialog = false;

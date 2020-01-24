@@ -4,12 +4,13 @@ import { checkLoggedIn } from "/imports/api/permissions/permissions";
 Examples.methods.find = new ValidatedMethod({
   name: "bpmnExamples.find",
   validate: new SimpleSchema({
-    page: { type: Number }
+    page: { type: Number },
+    name: { type: String, optional: true }
   }).validator(),
-  run({ page }) {
+  run({ page, name }) {
     checkLoggedIn();
 
-    const perPage = 25;
+    const perPage = 4;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;
@@ -19,6 +20,13 @@ Examples.methods.find = new ValidatedMethod({
       skip = 0;
     }
     const query = {};
+
+    if (name && name.length > 0) {
+      query.name = {
+        $regex: `.*${name}.*`,
+        $options: "i"
+      };
+    }
 
     const count = Examples.find(query).count();
     const data = Examples.find(query, {
