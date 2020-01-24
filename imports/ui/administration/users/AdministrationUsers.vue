@@ -74,8 +74,15 @@ import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
 
+import NewUser from "./NewUser";
+import UserDetail from "./UserDetail";
+
 export default {
   name: "AdministrationUsers",
+  components: {
+    NewUser,
+    UserDetail
+  },
   mixins: [usersMixin],
   data() {
     return {

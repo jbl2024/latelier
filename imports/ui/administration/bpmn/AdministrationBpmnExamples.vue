@@ -1,8 +1,8 @@
 <template>
-  <div class="container">
+  <div>
     <new-example ref="newExample" @created="refresh()" />
-    <edit-exampple ref="editExample" />
-    <v-container>
+    <edit-example ref="editExample" />
+    <v-container fluid>
       <v-row>
         <v-col cols="12" xs="12" sm="6" md="4">
           <v-card>
@@ -22,66 +22,68 @@
                 clearable
                 @input="debouncedFilter"
               />
-              <v-list-item
-                v-for="example in examples"
-                :key="example._id"
-                @click="openExample(example)"
-              >
-                <v-list-item-avatar>
-                  <v-icon color="teal">
-                    mdi-chart-donut
-                  </v-icon>
-                </v-list-item-avatar>
+              <v-list-item-group>
+                <v-list-item
+                  v-for="example in examples"
+                  :key="example._id"
+                  @click="openExample(example)"
+                >
+                  <v-list-item-avatar>
+                    <v-icon color="teal">
+                      mdi-chart-donut
+                    </v-icon>
+                  </v-list-item-avatar>
 
-                <v-list-item-content class="pointer">
-                  <v-list-item-title>{{ example.name }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ htmlToText(example.description) }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
+                  <v-list-item-content class="pointer">
+                    <v-list-item-title>{{ example.name }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      {{ htmlToText(example.description) }}
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
 
-                <v-list-item-action>
-                  <v-menu bottom left class="menu">
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        icon
-                        text
-                        color="grey darken-1"
-                        v-on="on"
-                        @click.native.stop
-                      >
-                        <v-icon>mdi-dots-vertical</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list dense>
-                      <v-list-item @click="editExample(example)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-pencil</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Edit") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="cloneExample(example)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-content-copy</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Clone") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                      <v-list-item @click="deleteExample(example)">
-                        <v-list-item-icon>
-                          <v-icon>mdi-delete</v-icon>
-                        </v-list-item-icon>
-                        <v-list-item-title>
-                          {{ $t("Delete") }}
-                        </v-list-item-title>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                </v-list-item-action>
-              </v-list-item>
+                  <v-list-item-action>
+                    <v-menu bottom left class="menu">
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          icon
+                          text
+                          color="grey darken-1"
+                          v-on="on"
+                          @click.native.stop
+                        >
+                          <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-list dense>
+                        <v-list-item @click="editExample(example)">
+                          <v-list-item-icon>
+                            <v-icon>mdi-pencil</v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-title>
+                            {{ $t("Edit") }}
+                          </v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="cloneExample(example)">
+                          <v-list-item-icon>
+                            <v-icon>mdi-content-copy</v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-title>
+                            {{ $t("Clone") }}
+                          </v-list-item-title>
+                        </v-list-item>
+                        <v-list-item @click="deleteExample(example)">
+                          <v-list-item-icon>
+                            <v-icon>mdi-delete</v-icon>
+                          </v-list-item-icon>
+                          <v-list-item-title>
+                            {{ $t("Delete") }}
+                          </v-list-item-title>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list-item-group>
             </v-list>
             <div class="text-xs-center">
               <v-pagination
@@ -107,8 +109,15 @@ import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import * as htmlToText from "html-to-text";
 import debounce from "lodash/debounce";
 
+import NewExample from "./NewExample";
+import EditExample from "./EditExample";
+
 export default {
   name: "AdministrationBpmnExamples",
+  components: {
+    NewExample,
+    EditExample
+  },
   mixins: [TextRenderingMixin],
   data() {
     return {
@@ -135,7 +144,7 @@ export default {
       } else {
         this.refresh();
       }
-    },
+    }
   },
   mounted() {
     this.refresh();
@@ -148,7 +157,8 @@ export default {
   methods: {
     refresh() {
       Meteor.call(
-        "bpmnExamples.find", {
+        "bpmnExamples.find",
+        {
           page: this.page
         },
         (error, result) => {
@@ -168,7 +178,7 @@ export default {
       this.$refs.newExample.open();
     },
 
-    openExample(example) {    
+    openExample(example) {
       // this.$router.push({
       //   name: "project-bpmn-process-diagram",
       //   params: {
@@ -237,12 +247,6 @@ export default {
 
 <style scoped>
 .empty {
-  margin-top: 24px;
-}
-
-.list {
-  max-width: 800px;
-  margin: 0 auto;
   margin-top: 24px;
 }
 </style>

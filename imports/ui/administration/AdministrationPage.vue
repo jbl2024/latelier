@@ -24,9 +24,14 @@
 <script>
 import { Permissions } from "/imports/api/permissions/permissions";
 
-export default {
-  props: {},
+import AdministrationUsers from "./users/AdministrationUsers";
+import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
 
+export default {
+  components: {
+    AdministrationUsers,
+    AdministrationBpmnExamples
+  },
   data() {
     return {};
   },
