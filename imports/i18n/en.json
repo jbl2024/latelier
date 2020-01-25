@@ -166,6 +166,10 @@
   "Clear template": "Clear template",
   "No template": "No template",
   "Template:": "Template:",
+  "Empty diagram": "Empty diagram",
+  "Start edition": "Start edition",
+  "Undo": "Undo",
+  "Redo": "Redo",
   "history": {
     "tasks": {
       "create": "Creation",

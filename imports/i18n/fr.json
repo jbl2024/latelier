@@ -166,6 +166,10 @@
   "Clear template": "Effacer le modèle",
   "No template": "Aucun modèle",
   "Template:": "Modèle :",
+  "Empty diagram": "Diagramme vide",
+  "Start edition": "Démarrer l'édition",
+  "Undo": "Annuler",
+  "Redo": "Refaire",
   "history": {
     "tasks": {
       "create": "Création",
