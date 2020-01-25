@@ -160,6 +160,8 @@
   "Canvas completion": "Remplissage du canevas",
   "Pending tasks": "Tâches en cours",
   "Completed tasks": "Tâches terminées",
+  "BPMN examples": "exemples de BPMN",
+  "Examples": "Exemples",
   "history": {
     "tasks": {
       "create": "Création",

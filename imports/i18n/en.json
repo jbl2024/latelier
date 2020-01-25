@@ -160,6 +160,8 @@
   "Canvas completion": "Canvas completion",
   "Pending tasks": "Pending tasks",
   "Completed tasks": "Completed tasks",
+  "BPMN examples": "BPMN examples",
+  "Examples": "Examples",
   "history": {
     "tasks": {
       "create": "Creation",

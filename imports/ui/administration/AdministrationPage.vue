@@ -4,7 +4,7 @@
       <template v-if="isAdmin()">
         <v-tabs>
           <v-tab id="tab-users">
-            Utilisateurs
+            {{ $t('Users') }}
           </v-tab>
           <v-tab id="tab-users">
             {{ $t('BPMN examples') }}
