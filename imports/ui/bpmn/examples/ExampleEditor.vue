@@ -14,7 +14,7 @@
           :tooltip="$t('Export image')"
           @on="exportSVG()"
         />
-        <template v-if="mode === 'view'">
+        <template v-if="mode === 'view' && isAdmin()">
           <tooltip-button
             icon="mdi-pencil"
             :tooltip="$t('Edit')"
@@ -53,7 +53,7 @@
         illustration="empty"
         :label="$t('Empty diagram')"
       >
-        <v-btn class="primary" @click="edit()">
+        <v-btn v-if="isAdmin()" class="primary" @click="edit()">
           {{ $t("Start edition") }}
         </v-btn>
       </empty-state>
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import { Permissions } from "/imports/api/permissions/permissions";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import ExampleViewer from "./ExampleViewer";
 import ExampleModeler from "./ExampleModeler";
@@ -94,6 +95,9 @@ export default {
   },
   methods: {
     edit() {
+      if (!this.isAdmin()) {
+        return;
+      }
       this.mode = "edit";
     },
     view() {
@@ -124,6 +128,10 @@ export default {
       const { xml } = this.example;
       const blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
       saveAs(blob, `${this.example.name}.xml`);
+    },
+
+    isAdmin() {
+      return Permissions.isAdmin(Meteor.userId());
     }
   }
 };

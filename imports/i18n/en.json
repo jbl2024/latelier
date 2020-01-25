@@ -164,6 +164,8 @@
   "Examples": "Examples",
   "Select template": "Select template",
   "Clear template": "Clear template",
+  "No template": "No template",
+  "Template:": "Template:",
   "history": {
     "tasks": {
       "create": "Creation",

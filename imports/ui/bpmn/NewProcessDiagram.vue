@@ -39,10 +39,16 @@
               </v-flex>
               <v-flex xs12>
                 <template v-if="!example">
-                  {{ $t('No template') }}
+                  <div class="template-label-empty">
+                    {{
+                      $t("No template")
+                    }}
+                  </div>
                 </template>
                 <template v-if="example">
-                  {{ example.name }}
+                  <div class="template-label">
+                    {{ $t("Template:") }} {{ example.name }}
+                  </div>
                 </template>
               </v-flex>
             </v-layout>
@@ -158,4 +164,16 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.template-label {
+  font-size: 14px;
+  margin-top: 12px;
+  font-weight: bold;
+  color: black;
+}
+
+.template-label-empty {
+  font-size: 14px;
+  margin-top: 12px;
+}
+</style>
