@@ -124,13 +124,6 @@ export default {
       const { xml } = this.example;
       const blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
       saveAs(blob, `${this.example.name}.xml`);
-    },
-
-    gotoBpmn() {
-      this.$router.push({
-        name: "project-bpmn",
-        params: { projectId: this.projectId }
-      });
     }
   }
 };
