@@ -22,7 +22,6 @@ import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
 
-import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
 import ProfileSettingsPage from "/imports/ui/settings/ProfileSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
@@ -181,7 +180,7 @@ export default [
     path: "/administration",
     name: "administration-page",
     beforeEnter: isBasicAuth,
-    component: AdministrationPage,
+    component: async () => (await import("/imports/ui/administration/AdministrationPage.vue")).default,
     props: true
   },
   {

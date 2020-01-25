@@ -1,5 +1,6 @@
 import multiguard from "vue-router-multiguard";
 import { isBasicAuth, projectAuth } from "./router/check-auth";
+import AdministrationPage from "/imports/ui/administration/AdministrationPage.vue";
 import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
@@ -7,6 +8,13 @@ import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
 import modern from "./routes";
 
 const legacy = [
+  {
+    path: "/administration",
+    name: "administration-page",
+    beforeEnter: isBasicAuth,
+    component: AdministrationPage,
+    props: true
+  },
   {
     path: "/timeline/:organizationId",
     name: "projects-timeline",

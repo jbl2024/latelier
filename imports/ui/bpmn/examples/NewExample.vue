@@ -1,9 +1,8 @@
 <template>
   <div class="new-process-diagram">
-    <select-example :active.sync="showSelectExample" @select="selectExample" />
     <v-dialog
       v-model="showDialog"
-      max-width="520"
+      max-width="420"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
@@ -38,29 +37,13 @@
                 <rich-editor ref="description" v-model="description" />
               </v-flex>
               <v-flex xs12>
-                <template v-if="!example">
-                  <div class="template-label-empty">
-                    {{
-                      $t("No template")
-                    }}
-                  </div>
-                </template>
-                <template v-if="example">
-                  <div class="template-label">
-                    {{ $t("Template:") }} {{ example.name }}
-                  </div>
-                </template>
+                <label>{{ $t("XML") }}</label>
+                <v-textarea ref="xml" v-model="xml" />
               </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
         <v-card-actions>
-          <v-btn v-if="example" text @click="clearExample">
-            {{ $t("Clear template") }}
-          </v-btn>
-          <v-btn v-if="!example" text @click="showSelectExample = true">
-            {{ $t("Select template") }}
-          </v-btn>
           <v-spacer />
           <v-btn text @click="showDialog = false">
             {{ $t("Cancel") }}
@@ -77,35 +60,17 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { autofocus } from "/imports/ui/autofocus";
-import SelectExample from "/imports/ui/bpmn/examples/SelectExample";
 
 export default {
-  components: {
-    SelectExample
-  },
   props: {
     projectId: {
       type: String,
       default: null
     }
   },
-  i18n: {
-    messages: {
-      en: {
-        "New process diagram": "New process diagram"
-      },
-      fr: {
-        "New process diagram": "Nouveau diagramme"
-      },
-      oc: {
-        "New process diagram": "Nòu diagrama"
-      }
-    }
-  },
   data() {
     return {
       showDialog: false,
-      showSelectExample: false,
       valid: false,
       name: "",
       nameRules: [
@@ -113,7 +78,7 @@ export default {
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
       description: "",
-      example: null
+      xml: ""
     };
   },
   methods: {
@@ -129,51 +94,24 @@ export default {
     create() {
       this.showDialog = false;
       Meteor.call(
-        "processDiagrams.create",
+        "bpmnExamples.create",
         {
-          projectId: this.projectId,
           name: this.name,
           description: this.description,
-          xml: this.example ? this.example.xml : null
+          xml: this.xml
         },
-        (error, result) => {
+        (error) => {
           if (error) {
             this.$store.dispatch("notifyError", error);
             return;
           }
-          this.$router.push({
-            name: "project-bpmn-process-diagram",
-            params: {
-              projectId: this.projectId,
-              processDiagramId: result
-            }
-          });
+          this.$emit("created");
         }
       );
       this.showDialog = false;
-    },
-
-    selectExample(example) {
-      this.example = example;
-    },
-
-    clearExample() {
-      this.example = null;
     }
   }
 };
 </script>
 
-<style scoped>
-.template-label {
-  font-size: 14px;
-  margin-top: 12px;
-  font-weight: bold;
-  color: black;
-}
-
-.template-label-empty {
-  font-size: 14px;
-  margin-top: 12px;
-}
-</style>
+<style scoped></style>

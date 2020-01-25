@@ -1,9 +1,6 @@
 <template>
   <div class="project-bpmn">
-    <new-process-diagram
-      ref="newProcessDiagram"
-      :project-id="projectId"
-    />
+    <new-process-diagram ref="newProcessDiagram" :project-id="projectId" />
     <edit-process-diagram ref="editProcessDiagram" />
     <div v-if="!$subReady.processDiagrams">
       <v-progress-linear indeterminate />
@@ -22,7 +19,7 @@
         </v-btn>
       </empty-state>
 
-      <v-list v-show="processDiagrams.length > 0" two-line subheader>
+      <v-list v-show="processDiagrams.length > 0" two-line subheader class="list">
         <v-subheader>
           {{ $t("Process diagrams") }}
           <v-btn icon dark small color="primary" @click="newDiagram()">
@@ -35,7 +32,9 @@
           @click="openProcessDiagram(processDiagram)"
         >
           <v-list-item-avatar>
-            <v-icon>mdi-chart-donut</v-icon>
+            <v-icon color="teal">
+              mdi-chart-donut
+            </v-icon>
           </v-list-item-avatar>
 
           <v-list-item-content class="pointer">
@@ -46,52 +45,45 @@
           </v-list-item-content>
 
           <v-list-item-action>
-            <v-tooltip top>
+            <v-menu bottom left class="menu">
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
                   text
                   color="grey darken-1"
                   v-on="on"
-                  @click.stop="editProcessDiagram(processDiagram)"
+                  @click.native.stop
                 >
-                  <v-icon>mdi-pencil</v-icon>
+                  <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
               </template>
-              <span>{{ $t("Edit") }}</span>
-            </v-tooltip>
-          </v-list-item-action>
-          <v-list-item-action>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  text
-                  color="grey darken-1"
-                  v-on="on"
-                  @click.stop="cloneProcessDiagram(processDiagram)"
-                >
-                  <v-icon>mdi-content-copy</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Clone") }}</span>
-            </v-tooltip>
-          </v-list-item-action>
-          <v-list-item-action>
-            <v-tooltip top>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  icon
-                  text
-                  color="grey darken-1"
-                  v-on="on"
-                  @click.stop="deleteProcessDiagram(processDiagram)"
-                >
-                  <v-icon>mdi-delete</v-icon>
-                </v-btn>
-              </template>
-              <span>{{ $t("Delete") }}</span>
-            </v-tooltip>
+              <v-list dense>
+                <v-list-item @click="editProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Edit") }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="cloneProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-content-copy</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Clone") }}
+                  </v-list-item-title>
+                </v-list-item>
+                <v-list-item @click="deleteProcessDiagram(processDiagram)">
+                  <v-list-item-icon>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-title>
+                    {{ $t("Delete") }}
+                  </v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-list-item-action>
         </v-list-item>
       </v-list>
@@ -246,6 +238,12 @@ export default {
 
 <style scoped>
 .empty {
+  margin-top: 24px;
+}
+
+.list {
+  max-width: 800px;
+  margin: 0 auto;
   margin-top: 24px;
 }
 </style>

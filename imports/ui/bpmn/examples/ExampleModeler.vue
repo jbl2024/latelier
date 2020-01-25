@@ -8,14 +8,14 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Modeler from "bpmn-js/dist/bpmn-modeler.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
-import "./minimap-custom.css";
+import "/imports/ui/bpmn/minimap-custom.css";
 import minimapModule from "diagram-js-minimap";
 
 import debounce from "lodash/debounce";
 
 export default {
   props: {
-    processDiagram: {
+    example: {
       type: Object,
       default: () => {}
     }
@@ -28,7 +28,7 @@ export default {
     };
   },
   watch: {
-    processDiagram: {
+    example: {
       immediate: true,
       handler() {
         this.refresh();
@@ -45,7 +45,8 @@ export default {
           this.modeler = new Modeler({
             container: this.$refs.canvas,
             keyboard: { bindTo: document },
-            additionalModules: [minimapModule]
+            additionalModules: [minimapModule],
+            height: 430
           });
           this.modeler.get("minimap").open();
           this.modeler.on("element.changed", () => {
@@ -53,11 +54,11 @@ export default {
           });
         }
         if (
-          this.processDiagram.xml
-          && this.processDiagram.xml !== this.xmlCache
+          this.example.xml
+          && this.example.xml !== this.xmlCache
         ) {
-          this.modeler.importXML(this.processDiagram.xml);
-          this.xmlCache = this.processDiagram.xml;
+          this.modeler.importXML(this.example.xml);
+          this.xmlCache = this.example.xml;
         } else if (!this.xmlCache) {
           this.modeler.createDiagram();
         }
@@ -72,8 +73,8 @@ export default {
         }
         this.xmlCache = xml;
         Meteor.call(
-          "processDiagrams.saveXML",
-          { processDiagramId: this.processDiagram._id, xml },
+          "bpmnExamples.saveXML",
+          { exampleId: this.example._id, xml },
           (error) => {
             if (error) {
               this.$store.dispatch("notifyError", error);

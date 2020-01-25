@@ -7,8 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- BPMN examples (templates)
 
 ### Changed
+- Improve bpmn edition
+- Update packages:
+  - bpmn-js to 6.2.0
+  - diagram-js-minimap to 2.0.3
 
 ### Removed
 

@@ -43,6 +43,8 @@ import "../imports/api/attachments/server/methods.js";
 
 import "../imports/api/bpmn/processDiagrams";
 import "../imports/api/bpmn/server/publications";
+import "../imports/api/bpmn/examples/examples";
+import "../imports/api/bpmn/examples/server/methods";
 
 import "../imports/api/notifications/notifications.js";
 import "../imports/api/notifications/server/methods.js";

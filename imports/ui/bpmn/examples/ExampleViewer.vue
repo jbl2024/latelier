@@ -8,12 +8,12 @@ import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
 import Viewer from "bpmn-js/dist/bpmn-navigated-viewer.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
-import "./minimap-custom.css";
+import "/imports/ui/bpmn/minimap-custom.css";
 import minimapModule from "diagram-js-minimap";
 
 export default {
   props: {
-    processDiagram: {
+    example: {
       type: Object,
       default: () => {}
     }
@@ -24,7 +24,7 @@ export default {
     };
   },
   watch: {
-    processDiagram: {
+    example: {
       immediate: true,
       handler() {
         this.refresh();
@@ -37,11 +37,12 @@ export default {
         if (!this.viewer) {
           this.viewer = new Viewer({
             container: this.$refs.canvas,
-            additionalModules: [minimapModule]
+            additionalModules: [minimapModule],
+            height: 430
           });
         }
-        if (this.processDiagram.xml) {
-          this.viewer.importXML(this.processDiagram.xml, () => {
+        if (this.example.xml) {
+          this.viewer.importXML(this.example.xml, () => {
             const canvas = this.viewer.get("canvas");
             canvas.zoom("fit-viewport");
           });

@@ -1,14 +1,8 @@
 <template>
-  <div class="project-process-diagram">
-    <div v-if="!$subReady.processDiagram">
-      <v-progress-linear indeterminate />
-    </div>
-    <div v-if="$subReady.processDiagram" class="wrapper">
-      <v-toolbar dense class="toolbar">
-        <v-btn icon @click="gotoBpmn()">
-          <v-icon>mdi-chart-donut</v-icon>
-        </v-btn>
-        <span class="title">{{ processDiagram.name }}</span>
+  <div>
+    <div class="wrapper">
+      <v-toolbar dense class="toolbar" dark color="primary">
+        <span class="title">{{ example.name }}</span>
         <v-spacer />
         <tooltip-button
           icon="mdi-file-export"
@@ -20,7 +14,7 @@
           :tooltip="$t('Export image')"
           @on="exportSVG()"
         />
-        <template v-if="mode === 'view'">
+        <template v-if="mode === 'view' && isAdmin()">
           <tooltip-button
             icon="mdi-pencil"
             :tooltip="$t('Edit')"
@@ -45,28 +39,29 @@
           />
         </template>
       </v-toolbar>
-      <bpmn-viewer
-        v-if="mode === 'view' && processDiagram.xml"
+      <example-viewer
+        v-if="mode === 'view' && example.xml"
         ref="viewer"
-        :process-diagram="processDiagram"
+        :example="example"
         class="bpmn"
         @dblclick.native="edit()"
       />
       <empty-state
-        v-show="mode === 'view' && !processDiagram.xml"
+        v-show="mode === 'view' && !example.xml"
         class="empty"
+        small
         illustration="empty"
         :label="$t('Empty diagram')"
       >
-        <v-btn class="primary" @click="edit()">
+        <v-btn v-if="isAdmin()" class="primary" @click="edit()">
           {{ $t("Start edition") }}
         </v-btn>
       </empty-state>
 
-      <bpmn-modeler
+      <example-modeler
         v-if="mode === 'edit'"
         ref="modeler"
-        :process-diagram="processDiagram"
+        :example="example"
         class="bpmn"
       />
     </div>
@@ -74,47 +69,22 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
-import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
+import { Permissions } from "/imports/api/permissions/permissions";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import BpmnViewer from "/imports/ui/bpmn/BpmnViewer.vue";
-import BpmnModeler from "/imports/ui/bpmn/BpmnModeler.vue";
+import ExampleViewer from "./ExampleViewer";
+import ExampleModeler from "./ExampleModeler";
 import { saveAs } from "file-saver";
 
 export default {
   components: {
-    BpmnViewer: BpmnViewer,
-    BpmnModeler: BpmnModeler
+    ExampleViewer: ExampleViewer,
+    ExampleModeler: ExampleModeler
   },
   mixins: [TextRenderingMixin],
-  i18n: {
-    messages: {
-      en: {
-        "Empty diagram": "Empty diagram",
-        "Start edition": "Start edition",
-        Undo: "Undo",
-        Redo: "Redo",
-        Edit: "Edit",
-        Close: "Close"
-      },
-      fr: {
-        "Empty diagram": "Diagramme vide",
-        "Start edition": "Démarrer l'édition",
-        Undo: "Annuler",
-        Redo: "Refaire",
-        Edit: "Editer",
-        Close: "Fermer"
-      }
-    }
-  },
   props: {
-    projectId: {
-      type: String,
-      default: null
-    },
-    processDiagramId: {
-      type: String,
-      default: "0"
+    example: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -123,27 +93,11 @@ export default {
       mode: "view"
     };
   },
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
-  },
-  meteor: {
-    $subscribe: {
-      processDiagram: function() {
-        return [this.processDiagramId];
-      }
-    },
-    processDiagram() {
-      return ProcessDiagrams.findOne();
-    },
-    project() {
-      return Projects.findOne();
-    }
-  },
   methods: {
     edit() {
+      if (!this.isAdmin()) {
+        return;
+      }
       this.mode = "edit";
     },
     view() {
@@ -160,7 +114,7 @@ export default {
     exportSVG() {
       const cb = (err, svg) => {
         const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
-        saveAs(blob, `${this.processDiagram.name}.svg`);
+        saveAs(blob, `${this.example.name}.svg`);
       };
 
       if (this.mode === "edit") {
@@ -171,25 +125,19 @@ export default {
     },
 
     exportXML() {
-      const { xml } = this.processDiagram;
+      const { xml } = this.example;
       const blob = new Blob([xml], { type: "application/xml;charset=utf-8" });
-      saveAs(blob, `${this.processDiagram.name}.xml`);
+      saveAs(blob, `${this.example.name}.xml`);
     },
 
-    gotoBpmn() {
-      this.$router.push({
-        name: "project-bpmn",
-        params: { projectId: this.projectId }
-      });
+    isAdmin() {
+      return Permissions.isAdmin(Meteor.userId());
     }
   }
 };
 </script>
 
 <style scoped>
-#canvas {
-  height: 90vh;
-}
 .empty {
   margin-top: 24px;
 }
