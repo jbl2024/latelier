@@ -46,7 +46,7 @@ export default {
             container: this.$refs.canvas,
             keyboard: { bindTo: document },
             additionalModules: [minimapModule],
-            height: 420
+            height: 430
           });
           this.modeler.get("minimap").open();
           this.modeler.on("element.changed", () => {

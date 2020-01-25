@@ -6,7 +6,7 @@
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css";
-import Viewer from "bpmn-js/dist/bpmn-viewer.production.min";
+import Viewer from "bpmn-js/dist/bpmn-navigated-viewer.production.min";
 import "diagram-js-minimap/assets/diagram-js-minimap.css";
 import "/imports/ui/bpmn/minimap-custom.css";
 import minimapModule from "diagram-js-minimap";
@@ -38,7 +38,7 @@ export default {
           this.viewer = new Viewer({
             container: this.$refs.canvas,
             additionalModules: [minimapModule],
-            height: 420
+            height: 430
           });
         }
         if (this.example.xml) {

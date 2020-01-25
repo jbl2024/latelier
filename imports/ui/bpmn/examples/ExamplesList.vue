@@ -16,7 +16,7 @@
                 <v-icon>mdi-plus</v-icon>
               </v-btn>
             </v-toolbar>
-            <v-list two-line dense>
+            <v-list two-line dense class="list">
               <v-text-field
                 :label="$t('Search') + '...'"
                 class="pr-6 pl-6"
@@ -259,7 +259,11 @@ export default {
 
 .wrapper {
   position: relative;
-  height: 465px;
+  height: 480px;
+}
+
+.list {
+  min-height: 389px;
 }
 
 </style>
