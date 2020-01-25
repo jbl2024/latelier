@@ -3,8 +3,8 @@
     <new-example ref="newExample" @created="refresh()" />
     <edit-example ref="editExample" @updated="refresh()" />
     <v-container fluid>
-      <v-row align="stretch">
-        <v-col cols="12" xs="12" sm="6" md="4">
+      <v-row align="stretch" no-gutters>
+        <v-col cols="12" xs="12" sm="4" md="4" class="pr-1 pl-1">
           <v-card>
             <v-toolbar dense dark color="primary">
               <span class="title">{{ $t("Examples") }}</span>
@@ -97,7 +97,7 @@
             </div>
           </v-card>
         </v-col>
-        <v-col cols="12" xs="12" sm="6" md="8">
+        <v-col cols="12" xs="12" sm="8" md="8">
           <template v-if="selectedExample">
             <div class="wrapper">
               <example-editor :example="selectedExample" />
