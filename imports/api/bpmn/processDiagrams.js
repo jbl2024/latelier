@@ -23,9 +23,10 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String },
     name: { type: String },
-    description: { type: String, optional: true }
+    description: { type: String, optional: true },
+    xml: { type: String, optional: true }
   }).validator(),
-  run({ projectId, name, description }) {
+  run({ projectId, name, description, xml }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
 
@@ -33,6 +34,7 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
       projectId,
       name,
       description,
+      xml,
       createdAt: new Date(),
       createdBy: Meteor.userId()
     });

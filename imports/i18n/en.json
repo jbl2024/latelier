@@ -162,6 +162,8 @@
   "Completed tasks": "Completed tasks",
   "BPMN examples": "BPMN examples",
   "Examples": "Examples",
+  "Select template": "Select template",
+  "Clear template": "Clear template",
   "history": {
     "tasks": {
       "create": "Creation",

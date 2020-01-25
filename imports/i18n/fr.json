@@ -162,6 +162,8 @@
   "Completed tasks": "Tâches terminées",
   "BPMN examples": "exemples de BPMN",
   "Examples": "Exemples",
+  "Select template": "Sélectionner un modèle",
+  "Clear template": "Effacer le modèle",
   "history": {
     "tasks": {
       "create": "Création",

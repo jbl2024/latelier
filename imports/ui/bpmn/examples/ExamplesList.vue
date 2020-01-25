@@ -193,6 +193,7 @@ export default {
 
     openExample(example) {
       this.selectedExample = example;
+      this.$emit("select", example);
     },
 
     deleteExample(example) {

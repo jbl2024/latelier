@@ -3,6 +3,7 @@
     <template v-if="$subReady.user">
       <template v-if="isAdmin()">
         <v-tabs>
+          <v-tabs-slider color="accent" />
           <v-tab id="tab-users">
             {{ $t('Users') }}
           </v-tab>
