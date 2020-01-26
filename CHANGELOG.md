@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - BPMN examples (templates)
 
 ### Changed
+- Fix check admin in project methods
 - Improve bpmn edition
 - Update packages:
   - bpmn-js to 6.2.0

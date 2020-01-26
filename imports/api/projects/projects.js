@@ -49,10 +49,10 @@ const checkIfAdminOrCreator = (projectId) => {
     return true;
   }
   const project = Projects.findOne(projectId);
-  if (project.createdBy !== Meteor.userId()) {
-    throw new Meteor.Error("not-authorized");
+  if (project.createdBy === Meteor.userId()) {
+    return true;
   }
-  return false;
+  throw new Meteor.Error("not-authorized");
 };
 
 const checkIfAdmin = (projectId) => {
@@ -62,7 +62,7 @@ const checkIfAdmin = (projectId) => {
   if (Permissions.isAdmin(Meteor.userId(), projectId)) {
     return true;
   }
-  return false;
+  throw new Meteor.Error("not-authorized");
 };
 
 Projects.methods.insert = new ValidatedMethod({
