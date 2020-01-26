@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.9.0] - 2020-01-26
+
+### Added
 - BPMN examples (templates)
 
 ### Changed
