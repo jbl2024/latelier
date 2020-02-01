@@ -257,7 +257,7 @@ export default {
         this.task.name,
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             this.task.name = this.savedName;
           }
         }
@@ -385,7 +385,7 @@ export default {
         upload.on("start", function() {});
         upload.on("end", function(error) {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
           } else {
             Meteor.call("tasks.addAttachment", task._id);
           }

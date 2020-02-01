@@ -235,7 +235,7 @@ export default {
         { projectId: this.projectId },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
           } else {
             this.$store.dispatch(
               "notify",

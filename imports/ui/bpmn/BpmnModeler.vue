@@ -67,7 +67,7 @@ export default {
     save() {
       this.modeler.saveXML({ format: false }, (err, xml) => {
         if (err) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.xmlCache = xml;
@@ -76,7 +76,7 @@ export default {
           { processDiagramId: this.processDiagram._id, xml },
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           }
         );

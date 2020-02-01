@@ -85,7 +85,7 @@ export default {
         { projectId: this.projectId, name: this.name, color: this.color },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
           }
         }
       );

@@ -364,7 +364,7 @@ export default {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
     Meteor.call("users.getEmailPreferences", (error, result) => {
       if (error) {
-        this.$store.dispatch("notifyError", error);
+        this.$notifyError(error);
         return;
       }
       this.user = result;
@@ -522,10 +522,10 @@ export default {
             },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Organization deleted"));
+              this.$notify(this.$t("Organization deleted"));
             }
           );
         }

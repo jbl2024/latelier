@@ -125,10 +125,10 @@ export default {
     create() {
       Meteor.call("admin.addUser", this.user, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
-        this.$store.dispatch("notify", this.$t("User created"));
+        this.$notify(this.$t("User created"));
 
         this.close();
         this.$emit("created");

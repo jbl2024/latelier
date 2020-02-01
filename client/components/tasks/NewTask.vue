@@ -189,10 +189,10 @@ export default {
           (error, task) => {
             this.loading = false;
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("Task created"));
+            this.$notify(this.$t("Task created"));
             this.reset();
             if (!keep) {
               this.close();
@@ -231,7 +231,7 @@ export default {
                 labelIds,
                 (error) => {
                   if (error) {
-                    this.$store.dispatch("notifyError", error);
+                    this.$notifyError(error);
                   }
                 }
               );
@@ -241,7 +241,7 @@ export default {
                 this.close();
               }
             });
-            this.$store.dispatch("notify", this.$t("Tasks created"));
+            this.$notify(this.$t("Tasks created"));
           }
         });
       }

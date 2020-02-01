@@ -98,10 +98,10 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
-          this.$store.dispatch("notify", this.$t("Project added to favorites"));
+          this.$notify(this.$t("Project added to favorites"));
         }
       );
     },
@@ -112,7 +112,7 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$store.dispatch(
@@ -137,10 +137,10 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
-          this.$store.dispatch("notify", this.$t("Project added to daily digest"));
+          this.$notify(this.$t("Project added to daily digest"));
         }
       );
     },
@@ -151,7 +151,7 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$store.dispatch(

@@ -95,7 +95,7 @@ export default {
           this.notify = true;
         } else {
           this.clearForm();
-          this.$store.dispatch("notify", this.$t("Welcome back!"));
+          this.$notify(this.$t("Welcome back!"));
           this.$router.push({ name: "dashboard-page" });
         }
       });

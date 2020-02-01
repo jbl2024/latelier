@@ -231,7 +231,7 @@ export default {
     exportODT() {
       Meteor.call("canvas.exportODT", { projectId: this.projectId }, (error, result) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });

@@ -390,7 +390,7 @@ export default {
         },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$router.push({
@@ -423,7 +423,7 @@ export default {
         },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             this.cancelUpdateDescription();
           }
         }
@@ -482,9 +482,9 @@ export default {
         accessRights: project.accessRights
       });
       if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        this.$store.dispatch("notify", this.$t("Organization"));
+        this.$notify(this.$t("Organization"));
       } else {
-        this.$store.dispatch("notify", this.$t("The project is private"));
+        this.$notify(this.$t("The project is private"));
       }
     },
 

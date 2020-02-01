@@ -163,7 +163,7 @@ export default {
         (error, result) => {
           this.loading = false;
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
@@ -190,7 +190,7 @@ export default {
     restoreTask(task) {
       Meteor.call("tasks.restore", task._id, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.refresh();
@@ -206,10 +206,10 @@ export default {
         if (res) {
           Meteor.call("tasks.deleteForever", task._id, (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("Task deleted"));
+            this.$notify(this.$t("Task deleted"));
             this.refresh();
           });
         }
@@ -230,10 +230,10 @@ export default {
             (error) => {
               this.loading = false;
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Tasks deleted"));
+              this.$notify(this.$t("Tasks deleted"));
               this.refresh();
             }
           );

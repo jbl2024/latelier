@@ -81,7 +81,7 @@ export default {
         this.projectGroup.name,
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.showDialog = false;
@@ -99,7 +99,7 @@ export default {
           this.projectGroup._id,
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           }
         );

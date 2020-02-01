@@ -84,7 +84,7 @@ export default {
       upload.on("end", function(error) {
         that.isUploading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
         } else {
           Meteor.call("tasks.addAttachment", that.task._id);
           that.file = null;

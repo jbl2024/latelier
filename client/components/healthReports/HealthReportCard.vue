@@ -96,10 +96,10 @@ export default {
             (error) => {
               this.$emit("updated");
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Report deleted"));
+              this.$notify(this.$t("Report deleted"));
             }
           );
         }
@@ -116,7 +116,7 @@ export default {
         (error, result) => {
           this.loading = false;
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.tasks = result.data;

@@ -145,7 +145,7 @@ export default {
         (error, result) => {
           this.loading = false;
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
@@ -173,7 +173,7 @@ export default {
     markAllAsRead() {
       Meteor.call("notifications.markAllAsRead", (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.refresh();
@@ -189,7 +189,7 @@ export default {
         if (res) {
           Meteor.call("notifications.clear", (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
             this.refresh();

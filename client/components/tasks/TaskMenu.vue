@@ -96,7 +96,7 @@ export default {
         if (res) {
           Meteor.call("tasks.clone", id, (error, result) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
             this.$router.push({
@@ -136,9 +136,9 @@ export default {
     moveToLeft(id) {
       Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "left" }, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
         } else {
-          this.$store.dispatch("notify", this.$t("Task moved"));
+          this.$notify(this.$t("Task moved"));
         }
       });
     },
@@ -146,9 +146,9 @@ export default {
     moveToRight(id) {
       Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "right" }, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
         } else {
-          this.$store.dispatch("notify", this.$t("Task moved"));
+          this.$notify(this.$t("Task moved"));
         }
       });
     }

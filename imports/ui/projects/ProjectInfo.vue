@@ -140,7 +140,7 @@ export default {
         { projectId: this.projectId },
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.info = result;

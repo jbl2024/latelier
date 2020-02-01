@@ -66,11 +66,11 @@ export default {
         { notificationId: notification._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("refresh");
-          this.$store.dispatch("notify", this.$t("Notification deleted"));
+          this.$notify(this.$t("Notification deleted"));
         }
       );
     },

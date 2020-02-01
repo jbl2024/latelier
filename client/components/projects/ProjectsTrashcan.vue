@@ -123,7 +123,7 @@ export default {
       Meteor.call("projects.getDeletedProjects", (error, result) => {
         this.loading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.projects = result.data;
@@ -136,7 +136,7 @@ export default {
         { projectId: project._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.refresh();
@@ -156,10 +156,10 @@ export default {
             { projectId: project._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Project deleted"));
+              this.$notify(this.$t("Project deleted"));
               this.refresh();
             }
           );

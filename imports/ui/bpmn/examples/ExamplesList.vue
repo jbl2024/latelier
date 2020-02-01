@@ -183,7 +183,7 @@ export default {
         },
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
@@ -215,10 +215,10 @@ export default {
             { exampleId: example._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Diagram deleted"));
+              this.$notify(this.$t("Diagram deleted"));
               this.refresh();
             }
           );
@@ -242,10 +242,10 @@ export default {
             { exampleId: example._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Diagram cloned"));
+              this.$notify(this.$t("Diagram cloned"));
               this.refresh();
             }
           );

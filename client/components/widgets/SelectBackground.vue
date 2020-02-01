@@ -95,10 +95,10 @@ export default {
         { backgroundId: image._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
-          this.$store.dispatch("notify", this.$t("Background updated"));
+          this.$notify(this.$t("Background updated"));
           this.$emit("update:active", false);
         }
       );
@@ -107,10 +107,10 @@ export default {
     clearBackground() {
       Meteor.call("backgrounds.clear", (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
-        this.$store.dispatch("notify", this.$t("Background updated"));
+        this.$notify(this.$t("Background updated"));
         this.$emit("update:active", false);
       });
     },

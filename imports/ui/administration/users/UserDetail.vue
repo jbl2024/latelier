@@ -147,10 +147,10 @@ export default {
     save() {
       Meteor.call("admin.updateUser", this.user, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
-        this.$store.dispatch("notify", this.$t("User updated"));
+        this.$notify(this.$t("User updated"));
         this.$emit("saved");
         this.$emit("close");
       });

@@ -134,7 +134,7 @@ export default {
         (error, result) => {
           this.loading = false;
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
