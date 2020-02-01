@@ -124,10 +124,10 @@ export default {
             note._id,
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Note deleted"));
+              this.$notify(this.$t("Note deleted"));
             }
           );
         }
@@ -155,7 +155,7 @@ export default {
         this.selectedNote,
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.selectedNote = null;

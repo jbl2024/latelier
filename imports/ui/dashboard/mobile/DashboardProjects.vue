@@ -575,7 +575,7 @@ export default {
         { projectId: this.projectId },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
           } else {
             this.$store.dispatch(
               "notify",
@@ -714,10 +714,10 @@ export default {
             organization._id,
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Organization deleted"));
+              this.$notify(this.$t("Organization deleted"));
             }
           );
         }

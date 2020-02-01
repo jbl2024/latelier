@@ -48,7 +48,7 @@ export default {
     refreshUser() {
       Meteor.call("users.getProfile", (error, result) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.user = result;
@@ -84,7 +84,7 @@ export default {
       upload.on("end", function(uploadError, fileObj) {
         that.isUploading = false;
         if (uploadError) {
-          this.$store.dispatch("notifyError", uploadError);
+          this.$notifyError(uploadError);
         } else {
           Meteor.call(
             "avatars.setAvatar",
@@ -106,7 +106,7 @@ export default {
     remove() {
       Meteor.call("avatars.clear", (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         this.refreshUser();

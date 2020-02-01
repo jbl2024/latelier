@@ -184,7 +184,7 @@ export default {
         (error) => {
           this.$emit("updated");
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
           }
         }
       );

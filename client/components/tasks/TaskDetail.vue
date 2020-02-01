@@ -344,7 +344,7 @@ export default {
         this.task.name,
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             this.task.name = this.savedName;
           }
         }
@@ -398,7 +398,7 @@ export default {
             project._id,
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
               this.$store.dispatch(

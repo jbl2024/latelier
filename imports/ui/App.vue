@@ -186,7 +186,7 @@ export default {
     },
     showSnackbar(show) {
       if (!show) {
-        this.$store.dispatch("notify", "");
+        this.$notify("");
       }
     },
     windowTitle(title) {

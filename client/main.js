@@ -132,6 +132,14 @@ Meteor.startup(() => {
     render: (h) => h(App)
   }).$mount("app");
 
+  Vue.prototype.$notifyError = function (error) {
+    store.dispatch("notifyError", error);
+  };
+
+  Vue.prototype.$notify = function (message) {
+    store.dispatch("notify", message);
+  };
+
   Tracker.autorun((c) => {
     const userId = Meteor.userId();
     if (c.firstRun) return;

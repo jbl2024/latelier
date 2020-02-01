@@ -138,7 +138,7 @@ export default {
         },
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$router.push({

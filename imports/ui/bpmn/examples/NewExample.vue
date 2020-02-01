@@ -102,7 +102,7 @@ export default {
         },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("created");

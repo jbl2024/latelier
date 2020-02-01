@@ -165,7 +165,7 @@ export default {
           { userId: user._id, scope: project._id },
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           }
         );
@@ -178,7 +178,7 @@ export default {
           { userId: user._id, scope: project._id },
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           }
         );

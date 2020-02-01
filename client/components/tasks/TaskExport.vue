@@ -122,7 +122,7 @@ export default {
       Meteor.call("tasks.export", { taskId: this.taskId, format: "odt" }, (error, result) => {
         this.loading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });
@@ -136,7 +136,7 @@ export default {
       Meteor.call("tasks.export", { taskId: this.taskId, format: "ods" }, (error, result) => {
         this.loading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.spreadsheet" });
@@ -150,7 +150,7 @@ export default {
       Meteor.call("tasks.export", { taskId: this.taskId, format: "xlsx" }, (error, result) => {
         this.loading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -164,7 +164,7 @@ export default {
       Meteor.call("tasks.export", { taskId: this.taskId, format: "docx" }, (error, result) => {
         this.loading = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
           return;
         }
         const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });

@@ -81,7 +81,7 @@ export default {
       const { token } = this.$route.params;
       Accounts.resetPassword(token, newPassword, (err) => {
         if (err) {
-          this.$store.dispatch("notify", err.reason);
+          this.$notify(err.reason);
           this.isLoading = false;
         } else {
           this.$store.dispatch(

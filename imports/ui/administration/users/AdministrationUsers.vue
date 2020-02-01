@@ -152,7 +152,7 @@ export default {
         this.filterAway,
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
@@ -181,10 +181,10 @@ export default {
         if (res) {
           Meteor.call("admin.removeUser", user._id, (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("User deleted"));
+            this.$notify(this.$t("User deleted"));
             this.findUsers();
           });
         }

@@ -219,7 +219,7 @@ export default {
       this.selectedList = null;
       Meteor.call("lists.updateName", list._id, list.name, (error) => {
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
         }
       });
     },
@@ -238,7 +238,7 @@ export default {
         if (res) {
           Meteor.call("lists.remove", listId, (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           });
         }
@@ -346,7 +346,7 @@ export default {
             upload.on("start", function() {});
             upload.on("end", function(uploadError) {
               if (error) {
-                this.$store.dispatch("notifyError", uploadError);
+                this.$notifyError(uploadError);
               } else {
                 Meteor.call("tasks.addAttachment", task._id);
               }

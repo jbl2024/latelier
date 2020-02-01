@@ -193,10 +193,10 @@ export default {
             { processDiagramId: processDiagram._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Diagram deleted"));
+              this.$notify(this.$t("Diagram deleted"));
             }
           );
         }
@@ -219,10 +219,10 @@ export default {
             { processDiagramId: processDiagram._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Diagram cloned"));
+              this.$notify(this.$t("Diagram cloned"));
             }
           );
         }

@@ -74,7 +74,7 @@ export default {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
     Meteor.call("users.getEmailPreferences", (error, result) => {
       if (error) {
-        this.$store.dispatch("notifyError", error);
+        this.$notifyError(error);
         return;
       }
       this.user = result;

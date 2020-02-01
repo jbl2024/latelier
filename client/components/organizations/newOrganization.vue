@@ -63,7 +63,7 @@ export default {
         { name: this.name },
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$router.push({

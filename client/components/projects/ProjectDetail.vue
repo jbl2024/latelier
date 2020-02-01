@@ -122,7 +122,7 @@ export default {
         { projectId: this.project._id, startDate: date },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("refresh");
@@ -136,7 +136,7 @@ export default {
         { projectId: this.project._id, endDate: date },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("refresh");
@@ -153,7 +153,7 @@ export default {
         { projectId: this.project._id, color: hex },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("refresh");
@@ -168,7 +168,7 @@ export default {
         { projectId: this.project._id, color: "" },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$emit("refresh");

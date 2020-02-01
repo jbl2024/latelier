@@ -286,7 +286,7 @@ export default {
         this.search,
         (error, result) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.pagination.totalItems = result.totalItems;
@@ -342,10 +342,10 @@ export default {
         if (res) {
           Meteor.call("users.invite", email, (error, result) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
-            this.$store.dispatch("notify", this.$t("Invitation sent"));
+            this.$notify(this.$t("Invitation sent"));
             const user = result;
 
             this.$emit("update:active", false);

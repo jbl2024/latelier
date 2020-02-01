@@ -70,7 +70,7 @@ export default {
       Accounts.forgotPassword({ email }, (err) => {
         this.sending = false;
         if (err) {
-          this.$store.dispatch("notify", err.reason);
+          this.$notify(err.reason);
         } else {
           this.$store.dispatch(
             "notify",

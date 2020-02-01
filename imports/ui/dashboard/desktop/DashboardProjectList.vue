@@ -250,10 +250,10 @@ export default {
             { projectId: project._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
                 return;
               }
-              this.$store.dispatch("notify", this.$t("Project deleted"));
+              this.$notify(this.$t("Project deleted"));
             }
           );
         }
@@ -272,7 +272,7 @@ export default {
             { projectId: project._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
               }
             }
           );
@@ -295,7 +295,7 @@ export default {
           { projectId: projectId, userId: user._id },
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
               return;
             }
             this.$store.dispatch(
@@ -308,14 +308,14 @@ export default {
     },
 
     removeFromFavorites(user, projectId) {
-      this.$store.dispatch("notify", this.$t("Project removed from favorites"));
+      this.$notify(this.$t("Project removed from favorites"));
       this.$nextTick(() => {
         Meteor.call(
           "projects.removeFromUserFavorites",
           { projectId: projectId, userId: user._id },
           (error) => {
             if (error) {
-              this.$store.dispatch("notifyError", error);
+              this.$notifyError(error);
             }
           }
         );
@@ -349,9 +349,9 @@ export default {
             { projectId: project._id },
             (error) => {
               if (error) {
-                this.$store.dispatch("notifyError", error);
+                this.$notifyError(error);
               } else {
-                this.$store.dispatch("notify", this.$t("Project cloned successfully"));
+                this.$notify(this.$t("Project cloned successfully"));
               }
             }
           );
@@ -373,10 +373,10 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
-          this.$store.dispatch("notify", this.$t("Project added to daily digest"));
+          this.$notify(this.$t("Project added to daily digest"));
         }
       );
     },
@@ -387,7 +387,7 @@ export default {
         { projectId, userId: user._id },
         (error) => {
           if (error) {
-            this.$store.dispatch("notifyError", error);
+            this.$notifyError(error);
             return;
           }
           this.$store.dispatch(

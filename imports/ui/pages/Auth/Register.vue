@@ -91,7 +91,7 @@ export default {
         this.sending = false;
         this.notify = false;
         if (error) {
-          this.$store.dispatch("notifyError", error);
+          this.$notifyError(error);
         } else {
           this.$router.push({ name: "registration-completed" });
         }
