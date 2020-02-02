@@ -4,12 +4,18 @@
       <template v-if="isAdmin()">
         <v-tabs>
           <v-tabs-slider color="accent" />
+          <v-tab id="tab-dashboard">
+            {{ $t('Dashboard') }}
+          </v-tab>
           <v-tab id="tab-users">
             {{ $t('Users') }}
           </v-tab>
           <v-tab id="tab-users">
             {{ $t('BPMN examples') }}
           </v-tab>
+          <v-tab-item>
+            <administration-dashboard />
+          </v-tab-item>
           <v-tab-item>
             <administration-users />
           </v-tab-item>
@@ -25,11 +31,13 @@
 <script>
 import { Permissions } from "/imports/api/permissions/permissions";
 
+import AdministrationDashboard from "./dashboard/AdministrationDashboard";
 import AdministrationUsers from "./users/AdministrationUsers";
 import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
 
 export default {
   components: {
+    AdministrationDashboard,
     AdministrationUsers,
     AdministrationBpmnExamples
   },
@@ -50,5 +58,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>
