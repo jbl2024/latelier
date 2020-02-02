@@ -37,7 +37,7 @@
             </v-list-item>
             <v-list-item @click="removeAll()">
               <v-list-item-action>
-                <v-icon>mdi-delete</v-icon>
+                <v-icon>mdi-notification-clear-all</v-icon>
               </v-list-item-action>
               <v-list-item-title>
                 {{ $t("Clear notifications") }}
