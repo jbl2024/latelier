@@ -162,23 +162,4 @@ export default {
   flex-direction: row;
 }
 
-/* @media (max-width: 600px) {
-  .container-wrapper {
-    min-height: 100vh;
-  }
-} */
-
-.left {
-  flex: 1;
-}
-
-.right {
-  flex-direction: column;
-  overflow-y: auto;
-  width: 360px;
-  background-color: white;
-  border-left: 1px solid #ddd;
-  display: flex;
-  position: relative;
-}
 </style>
