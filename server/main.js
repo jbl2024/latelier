@@ -73,7 +73,7 @@ if (Meteor.isDevelopment) {
 
 Accounts.config({
   forbidClientAccountCreation: true,
-  sendVerificationEmail: true
+  sendVerificationEmail: Meteor.settings.public.email_verification_needed
 });
 
 Meteor.startup(() => {

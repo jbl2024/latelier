@@ -43,7 +43,7 @@ Meteor.startup(() => {
 
 Accounts.config({
   forbidClientAccountCreation: true,
-  sendVerificationEmail: true
+  sendVerificationEmail: Meteor.settings.public.email_verification_needed
 });
 
 /* eslint no-underscore-dangle: "off" */

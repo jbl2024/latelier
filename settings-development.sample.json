@@ -26,6 +26,10 @@
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "http|ddp" 
+    "uploadTransport": "http|ddp"
+  },
+  "private": {
+    "mail_url": "smtp://localhost:1025",
+    "email_verification_needed": false
   }
 }
