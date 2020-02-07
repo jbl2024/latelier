@@ -59,6 +59,7 @@ import "../imports/api/administration/server/methods.js";
 
 import "./apm.js";
 
+process.env.MAIL_URL = Meteor.settings.private.mail_url;
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText("loader.html"));
 }
