@@ -16,6 +16,12 @@ A project management tool.
 
 ## Installation
 
+### Docker
+
+Since v2.9.0, Docker images are available on docker hub: https://hub.docker.com/r/jbl2024/latelier .
+
+The Dockerfile can be found at https://github.com/jbl2024/latelier-docker/ together with a sample docker-compose.yml.
+
 ### Meteor
 
 This application is built with [Meteor](https://www.meteor.com/) framework.
@@ -24,7 +30,7 @@ See https://www.meteor.com/install for installation instructions.
 
 ### Requirements
 
-GraphicsMagick is required to generate thumbnails
+GraphicsMagick is required to generate thumbnails. See http://www.graphicsmagick.org/
 
 ### Configuration
 
