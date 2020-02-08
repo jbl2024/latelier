@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
+    "aws-sdk": "^2.614.0",
     "bcrypt": "^3.0.6",
     "bpmn-js": "^6.2.0",
     "carbone": "^1.2.1",

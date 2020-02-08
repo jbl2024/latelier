@@ -57,6 +57,8 @@ import "../imports/api/digests/server/jobs.js";
 
 import "../imports/api/administration/server/methods.js";
 
+import "../imports/api/storage/server/s3";
+
 import "./apm.js";
 
 if (Meteor.isServer) {
