@@ -101,9 +101,9 @@ export const interceptDownload = ({ collection, http, fileRef, version }) => {
       const vRef = fileRef.versions[version];
       const range = _.clone(http.request.headers.range);
       const array = range.split(/bytes=([0-9]*)-([0-9]*)/);
-      const start = parseInt(array[1]);
-      let end = parseInt(array[2]);
-      if (isNaN(end)) {
+      const start = parseInt(array[1], 10);
+      let end = parseInt(array[2], 10);
+      if (Number.isNaN(end)) {
         // Request data from AWS:S3 by small chunks
         end = start + this.chunkSize - 1;
         if (end >= vRef.size) {
