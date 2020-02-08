@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Better clear notifications icon
 - Improve code readability for internal notifications (snackbars)
+- Admin rights are checked and set if needed at login
 
 ### Removed
 

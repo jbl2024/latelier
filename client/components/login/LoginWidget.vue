@@ -95,6 +95,7 @@ export default {
           this.notify = true;
         } else {
           this.clearForm();
+          Meteor.call("permissions.setAdminIfNeeded");
           this.$notify(this.$t("Welcome back!"));
           this.$router.push({ name: "dashboard-page" });
         }

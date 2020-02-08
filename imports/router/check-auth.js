@@ -19,6 +19,7 @@ export const isBasicAuth = (to, from, next) => {
         if (!error) {
           Meteor.loginWithToken(result.token, (err) => {
             if (!err) {
+              Meteor.call("permissions.setAdminIfNeeded");
               next();
             } else {
               store.dispatch("notifyError", error);
