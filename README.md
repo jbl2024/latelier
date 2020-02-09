@@ -91,6 +91,7 @@ storage:
 | Key                   | Type          | Default value            | Description                |
 |-----------------------|---------------|--------------------------|----------------------------|
 | type                  | string ("s3") |                          | Storage type               |
+| migrateFromFS         | boolean       | false                    | If true, files are moved from FS to storage system at startup (make sure you backup your data before!) |
 | s3                    | object        | {}                       | s3 options                 |
 
 s3
