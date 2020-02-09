@@ -1,4 +1,6 @@
 # latelier
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
+
 
 A project management tool.
 
