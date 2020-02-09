@@ -22,6 +22,8 @@ if (s3Conf && s3Conf.key && s3Conf.secret && s3Conf.bucket && s3Conf.region) {
       agent: false
     }
   });
+
+  /* eslint: no-console: off */
   console.log("## storage: ready for s3");
 }
 
