@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Basic key figures for administrator
-- Storage: S3 support
+- Storage: S3 support for attachments & avatars
 
 ### Changed
 - Better clear notifications icon
