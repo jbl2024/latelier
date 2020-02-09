@@ -4,6 +4,7 @@
   "attachmentsPath": "/tmp/attachments/",
   "storage": {
     "type": "s3",
+    "migrateFromFS": "false",
     "s3": {
       "endpoint": "xxx",
       "key": "xxx",

@@ -25,10 +25,7 @@ if (s3Conf && s3Conf.key && s3Conf.secret && s3Conf.bucket && s3Conf.region) {
   console.log("## storage: ready for s3");
 }
 
-export const onAfterUpload = ({ collection, folder, fileRef }) => {
-  if (!s3) {
-    return;
-  }
+const moveToS3 = ({ collection, folder, fileRef }) => {
   _.each(fileRef.versions, (vRef, version) => {
     const filePath = `${folder}/${Random.id()}-${version}.${fileRef.extension}`;
     s3.putObject(
@@ -68,6 +65,13 @@ export const onAfterUpload = ({ collection, folder, fileRef }) => {
       }
     );
   });
+};
+
+export const onAfterUpload = ({ collection, folder, fileRef }) => {
+  if (!s3) {
+    return;
+  }
+  moveToS3({ collection, folder, fileRef });
 };
 
 export const interceptDownload = ({ collection, http, fileRef, version }) => {
@@ -170,6 +174,37 @@ export const onBeforeRemove = ({ collection, search }) => {
           });
         });
       }
+    });
+  });
+};
+
+
+export const migrateCollectionToS3 = ({ collection, folder, search = {} }) => {
+  if (!folder) return;
+  if (!collection) return;
+
+  const cursor = collection.find(search);
+  const isAlreadyMigrated = (vRef) => {
+    if (vRef && vRef.meta && vRef.meta.pipePath) {
+      return true;
+    }
+    return false;
+  };
+
+  cursor.forEach((fileRef) => {
+    _.each(fileRef.versions, (vRef) => {
+      if (isAlreadyMigrated(vRef)) return;
+
+
+      if (!fs.existsSync(vRef.path)) {
+        console.log(`${collection.collection._name}: file not found: ${vRef.path}`);
+        return;
+      }
+
+      /* eslint no-console: off */
+      console.log(`${collection.collection._name}: moving ${vRef.path} to s3 (folder: ${folder})`);
+
+      moveToS3({ collection, folder, fileRef });
     });
   });
 };
