@@ -5,7 +5,7 @@
     :title="getEmailForUser(userId)"
   >
     <template v-if="avatar">
-      <img :src="avatar" :alt="formatUserLetters(userId)">
+      <v-img :src="avatar" :alt="formatUserLetters(userId)" />
     </template>
     <template v-if="!avatar">
       <span>{{ formatUserLetters(userId) }}</span>
