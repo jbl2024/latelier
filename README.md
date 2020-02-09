@@ -132,6 +132,7 @@ Default password for generated users is ```password```.
 ### Screenshots
 
 ![Dashboard](/docs/dashboard.png)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
 
 ![Planning (organization)](/docs/planning1.png)
 
@@ -146,3 +147,5 @@ Default password for generated users is ```password```.
 ### License
 
 Apache License 2.0
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_large)
