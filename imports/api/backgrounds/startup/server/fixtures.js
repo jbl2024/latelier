@@ -28,6 +28,7 @@ function generateFixtures() {
       return;
     }
 
+    // addFile add existing local file without copying it
     Backgrounds.addFile(backgroundPath, {
       meta: {
         name,
