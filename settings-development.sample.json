@@ -16,16 +16,18 @@
   },
   "email": {
     "from": "foo@bar.com",
-    "prefix": "latelier"
+    "prefix": "latelier",
+    "mailUrl": "smtp://localhost:1025"
   },
   "roles": {
     "admin": ["foo@bar.com"]
   },
   "public": {
+    "emailVerificationNeeded": false,
     "sso": {
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "http|ddp" 
+    "uploadTransport": "http|ddp"
   }
 }
