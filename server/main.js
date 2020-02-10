@@ -59,7 +59,7 @@ import "../imports/api/administration/server/methods.js";
 
 import "./apm.js";
 
-if (Meteor.settings.email.mailUrl) {
+if (Meteor.settings.email?.mailUrl) {
   process.env.MAIL_URL = Meteor.settings.email.mailUrl;
 }
 
