@@ -118,8 +118,8 @@ if (Meteor.isServer) {
     }
 
     if (
-      !Meteor.settings.public.email_verification_needed ||
-      attemptObj.user.emails[0].verified === true
+      !Meteor.settings.public.email_verification_needed
+      || attemptObj.user.emails[0].verified === true
     ) {
       return true;
     }

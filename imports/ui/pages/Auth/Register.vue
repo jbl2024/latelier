@@ -87,7 +87,7 @@ export default {
         password: this.form.password,
         email: this.form.email
       };
-      Meteor.call("users.create", userData, error => {
+      Meteor.call("users.create", userData, (error) => {
         this.sending = false;
         this.notify = false;
         if (error) {
@@ -95,7 +95,7 @@ export default {
         } else if (Meteor.settings.public.emailVerificationNeeded) {
           this.$router.push({ name: "registration-completed" });
         } else {
-          Meteor.loginWithPassword(this.form.email, this.form.password, err => {
+          Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
             this.sending = false;
             this.notify = false;
             if (err) {

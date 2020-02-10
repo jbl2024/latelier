@@ -258,7 +258,7 @@ Meteor.methods({
     }
     const userId = Accounts.createUser(userData);
     if (Meteor.settings.public.emailVerificationNeeded) {
-      return Accounts.sendVerificationEmail(userId);
+      Accounts.sendVerificationEmail(userId);
     }
   },
 
