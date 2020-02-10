@@ -49,7 +49,8 @@ Settings:
 |email                  | object        |                          | Email settings |
 |roles.admin            | [string]      | []                       | Users matching emails will have the admin role |
 |public.seo.titlePrefix | string        | l'atelier                | window.title prefix |
-|sso                    | object        | {}                       | See below |
+|public.sso             | object        | {}                       | See below |
+|public.emailVerificationNeeded  | boolean        | false | If false, no verification email is sent |
 |uploadTransport        | string        | ddp                      | http or ddp |
 |notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
 |users                  | object        | {}                       | See below |
@@ -105,6 +106,7 @@ Example:
     "admin": ["foo@bar.com"]
   },
   "public": {
+    "emailVerificationNeeded": false,
     "seo": {
       "titlePrefix": "l'atelier"
     },

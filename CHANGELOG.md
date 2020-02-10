@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Basic key figures for administrator
+- Conditional email verification setting
 
 ### Changed
 - Better clear notifications icon
