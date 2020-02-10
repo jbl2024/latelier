@@ -92,7 +92,7 @@ export default {
         this.notify = false;
         if (error) {
           this.$notifyError(error);
-        } else if (Meteor.settings.public.email_verification_needed) {
+        } else if (Meteor.settings.public.emailVerificationNeeded) {
           this.$router.push({ name: "registration-completed" });
         } else {
           Meteor.loginWithPassword(this.form.email, this.form.password, err => {

@@ -257,7 +257,7 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
     const userId = Accounts.createUser(userData);
-    if (Meteor.settings.public.email_verification_needed) {
+    if (Meteor.settings.public.emailVerificationNeeded) {
       return Accounts.sendVerificationEmail(userId);
     }
   },
