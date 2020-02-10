@@ -118,7 +118,7 @@ if (Meteor.isServer) {
     }
 
     if (
-      !Meteor.settings.public.email_verification_needed
+      !Meteor.settings.public.emailVerificationNeeded
       || attemptObj.user.emails[0].verified === true
     ) {
       return true;
