@@ -3,12 +3,12 @@ FROM geoffreybooth/meteor-base:1.9 as build
 # Copy app package.json and package-lock.json into container
 COPY ./package*.json $APP_SOURCE_FOLDER/
 
-RUN "bash $SCRIPTS_FOLDER/build-app-npm-dependencies.sh"
+RUN bash "$SCRIPTS_FOLDER/build-app-npm-dependencies.sh"
 
 # Copy app source into container
 COPY ./ $APP_SOURCE_FOLDER/
 
-RUN "METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash $SCRIPTS_FOLDER/build-meteor-bundle.sh"
+RUN METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash "$SCRIPTS_FOLDER/build-meteor-bundle.sh"
 
 
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.9
