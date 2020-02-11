@@ -1,6 +1,6 @@
 # latelier
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
 
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
 
 A project management tool.
 
@@ -8,7 +8,7 @@ A project management tool.
 
 ## Features
 
-- [Kanban](https://en.wikipedia.org/wiki/Kanban_(development)) task board with realtime updates
+- [Kanban](<https://en.wikipedia.org/wiki/Kanban_(development)>) task board with realtime updates
 - Timeline view of tasks and projects
 - [BPMN](https://en.wikipedia.org/wiki/Business_Process_Model_and_Notation) diagrams
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
@@ -40,55 +40,53 @@ Copy `settings-development.json.sample.json` to `settings-development.json` and 
 
 Settings:
 
-| Key                   | Type          | Default value            | Description              |
-|-----------------------|---------------|--------------------------|--------------------------|
-|generateFixtures       | boolean       | false                    | If true, users fixtures are generated at startup |
-|disableAccountCreation | boolean       | false                    | If true account creation is forbidden |
-|attachmentsPath        | string        | /tmp/                    | Attachment storage path on fs |
-|avatarsPath            | string        | attachmentsPath          | Avatar storage path on fs |
-|email                  | object        |                          | Email settings |
-|roles.admin            | [string]      | []                       | Users matching emails will have the admin role |
-|public.seo.titlePrefix | string        | l'atelier                | window.title prefix |
-|public.sso             | object        | {}                       | See below |
-|public.emailVerificationNeeded  | boolean        | false | If false, no verification email is sent |
-|uploadTransport        | string        | ddp                      | http or ddp |
-|notificationsPerUser   | number        | 50                       | max number of notifications stored per user |
-|users                  | object        | {}                       | See below |
-|elasticApm             | object        | {}                       | See below |
-|digestsRetention       | number        | 60                       | Number of days to keep in digest |
+| Key                            | Type     | Default value   | Description                                      |
+| ------------------------------ | -------- | --------------- | ------------------------------------------------ |
+| generateFixtures               | boolean  | false           | If true, users fixtures are generated at startup |
+| disableAccountCreation         | boolean  | false           | If true account creation is forbidden            |
+| attachmentsPath                | string   | /tmp/           | Attachment storage path on fs                    |
+| avatarsPath                    | string   | attachmentsPath | Avatar storage path on fs                        |
+| email                          | object   |                 | Email settings                                   |
+| roles.admin                    | [string] | []              | Users matching emails will have the admin role   |
+| public.seo.titlePrefix         | string   | l'atelier       | window.title prefix                              |
+| public.sso                     | object   | {}              | See below                                        |
+| public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
+| uploadTransport                | string   | ddp             | http or ddp                                      |
+| notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
+| users                          | object   | {}              | See below                                        |
+| elasticApm                     | object   | {}              | See below                                        |
+| digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 
 email:
 
-| Key                   | Type          | Default value            | Description                  |
-|-----------------------|---------------|--------------------------|------------------------------|
-|from                   | string        | noreply@localhost        | From email when sending mail |
-|prefix                 | string        |                          | Subject prefix               |
+| Key    | Type   | Default value     | Description                  |
+| ------ | ------ | ----------------- | ---------------------------- |
+| from   | string | noreply@localhost | From email when sending mail |
+| prefix | string |                   | Subject prefix               |
 
 users:
 
-| Key                   | Type                    | Default value            | Description                    |
-|-----------------------|-------------------------|--------------------------|--------------------------------|
-| search                | string ("admin", "all") | all                      | Who can search existing users  |
-| invite                | string ("admin", "all") | all                      | Who can invite people          |
-
+| Key    | Type                    | Default value | Description                   |
+| ------ | ----------------------- | ------------- | ----------------------------- |
+| search | string ("admin", "all") | all           | Who can search existing users |
+| invite | string ("admin", "all") | all           | Who can invite people         |
 
 sso:
 
-| Key                   | Type          | Default value            | Description                |
-|-----------------------|---------------|--------------------------|----------------------------|
-| enabled               | boolean       | false                    | If true, sso is enabled    |
-| email                 | string        | null                     | email header to match user |
+| Key     | Type    | Default value | Description                |
+| ------- | ------- | ------------- | -------------------------- |
+| enabled | boolean | false         | If true, sso is enabled    |
+| email   | string  | null          | email header to match user |
 
+elasticApm:
 
-elasticApm: 
-
-| Key                   | Type          | Default value            | Description                |
-|-----------------------|---------------|--------------------------|----------------------------|
-| enabled               | boolean       | false                    | If true, elastic-apm is enabled    |
-| options               | object        | {}                       | see https://github.com/kschingiz/meteor-elastic-apm |
-
+| Key     | Type    | Default value | Description                                         |
+| ------- | ------- | ------------- | --------------------------------------------------- |
+| enabled | boolean | false         | If true, elastic-apm is enabled                     |
+| options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
 
 Example:
+
 ```
 {
   "generateFixtures": false,
@@ -120,18 +118,17 @@ Example:
 ```
 
 ### Fixtures (dev only feature)
- 
-If ```generateFixtures``` parameter is set to true, 50 users are created at startup (if user count is <= 2).
-Default password for generated users is ```password```.
 
+If `generateFixtures` parameter is set to true, 50 users are created at startup (if user count is <= 2).
+Default password for generated users is `password`.
 
 ### Install dependencies
 
-```meteor npm install ```
+`meteor npm install`
 
 ### Start
 
-```npm start```
+`npm start`
 
 ### Screenshots
 
