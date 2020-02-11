@@ -6,6 +6,7 @@
 *.swp
 *.tar.gz
 build.sh
+build_docker.sh
 docker-compose.yml
 Dockerfile
 node_modules/
