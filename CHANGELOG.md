@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.9.1] - 2020-02-11
+
+### Added
 - Basic key figures for administrator
 - Conditional email verification setting
 
