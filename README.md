@@ -1,6 +1,6 @@
 # latelier
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier)
 
 A project management tool.
 
@@ -133,7 +133,6 @@ Default password for generated users is `password`.
 ### Screenshots
 
 ![Dashboard](/docs/dashboard.png)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield)
 
 ![Planning (organization)](/docs/planning1.png)
 
