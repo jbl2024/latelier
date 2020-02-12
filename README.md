@@ -1,6 +1,6 @@
 # latelier
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/404a011df8c04d219242ef80d1c26397)](https://www.codacy.com/manual/jbl2024/latelier?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=jbl2024/latelier&amp;utm_campaign=Badge_Grade)
 
 A project management tool.
 
