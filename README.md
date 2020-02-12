@@ -56,6 +56,7 @@ Settings:
 | users                          | object   | {}              | See below                                        |
 | elasticApm                     | object   | {}              | See below                                        |
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
+| storage                        | object   | {}              | Storage. If empty, fs is used                    |
 
 email:
 
@@ -84,6 +85,26 @@ elasticApm:
 | ------- | ------- | ------------- | --------------------------------------------------- |
 | enabled | boolean | false         | If true, elastic-apm is enabled                     |
 | options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
+
+storage: 
+
+| Key                   | Type          | Default value            | Description                |
+|-----------------------|---------------|--------------------------|----------------------------|
+| type                  | string ("s3") |                          | Storage type               |
+| migrateFromFS         | boolean       | false                    | If true, files are moved from FS to storage system at startup (make sure you backup your data before!) |
+| s3                    | object        | {}                       | s3 options                 |
+
+s3
+
+| Key                   | Type          | Default value            | Description                |
+|-----------------------|---------------|--------------------------|----------------------------|
+| endpoint              | string        |                          | Storage url (optional)     |
+| key                   | string        |                          | key                        |
+| secret                | string        |                          | secret                     |
+| region                | string        |                          | region                     |
+| bucket                | string        |                          | bucket                     |
+
+Note: tested only with minio (see https://min.io/)
 
 Example:
 
