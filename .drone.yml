@@ -1,0 +1,17 @@
+kind: pipeline
+name: default
+
+steps:
+- name: docker  
+  image: plugins/docker
+  repo: jbl2024/latelier
+  settings:
+    auto_tag: true
+    tags: 
+      - latest
+      - '2.9.1'
+
+trigger:
+  ref:
+  - refs/heads/master
+  - refs/tags/*
