@@ -1,0 +1,55 @@
+version: '3'
+
+services:
+  latelier:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '80:3000'
+    depends_on:
+      - mongo
+    environment:
+      ROOT_URL: ${APP_ROOT_URL:-http://localhost}
+      MONGO_URL: mongodb://mongo:27017/meteor
+      PORT: 3000
+      MAIL_URL: smtp://maildev:25
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+      METEOR_SETTINGS: '{
+        "generateFixtures": false,
+        "disableAccountCreation": false,
+        "attachmentsPath": "/attachments",
+        "email": {
+          "from": "noreply@localhost",
+          "prefix": "[latelier]"
+        },
+        "roles": {
+          "admin": ["admin@localhost"]
+        }
+      }'
+    volumes:
+        - attachments:/attachments
+  
+  mongo:
+    image: mongo:latest
+    command:
+      - --storageEngine=wiredTiger
+    volumes:
+      - data:/data/db
+
+  mongoexpress:
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - "8081:8081"
+
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
+      - "1025:25"
+
+volumes:
+  data:
+  attachments:

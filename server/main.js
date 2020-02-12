@@ -62,13 +62,20 @@ import "../imports/api/storage/server/s3";
 
 import "./apm.js";
 
+if (Meteor.settings.email?.mailUrl) {
+  process.env.MAIL_URL = Meteor.settings.email.mailUrl;
+}
+
 if (Meteor.isServer) {
   Inject.rawBody("loader", Assets.getText("loader.html"));
 }
 
-setMinimumBrowserVersions({
-  firefox: 61
-}, "async import");
+setMinimumBrowserVersions(
+  {
+    firefox: 61
+  },
+  "async import"
+);
 
 if (Meteor.isDevelopment) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
@@ -76,7 +83,7 @@ if (Meteor.isDevelopment) {
 
 Accounts.config({
   forbidClientAccountCreation: true,
-  sendVerificationEmail: true
+  sendVerificationEmail: Meteor.settings.public.emailVerificationNeeded
 });
 
 Meteor.startup(() => {

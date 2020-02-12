@@ -117,7 +117,10 @@ if (Meteor.isServer) {
       return true;
     }
 
-    if (attemptObj.user.emails[0].verified === true) {
+    if (
+      !Meteor.settings.public.emailVerificationNeeded
+      || attemptObj.user.emails[0].verified === true
+    ) {
       return true;
     }
     throw new Meteor.Error(

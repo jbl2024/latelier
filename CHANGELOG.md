@@ -7,8 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Docker configuration files
+
+### Changed
+
+### Removed
+
+## [2.9.1] - 2020-02-11
+
+### Added
 - Basic key figures for administrator
 - Storage: S3 support for attachments & avatars
+- Conditional email verification setting
 
 ### Changed
 - Better clear notifications icon
@@ -254,6 +264,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix i18n for "clone project" dialog
 - Give admin rights to user when cloning a project
 - Do not display empty state on project timeline
+- Fix avatar wrong orientation display
 
 ### Removed
 - Useless changelog statements
