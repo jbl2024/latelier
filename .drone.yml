@@ -11,9 +11,7 @@ steps:
     password:
       from_secret: docker_password
     auto_tag: true
-    tags: 
-      - latest
-      - '2.9.1'
+
 
 trigger:
   ref:
