@@ -39,6 +39,6 @@
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "http|ddp"
+    "uploadTransport": "ddp"
   }
 }
