@@ -476,6 +476,9 @@ Meteor.methods({
     };
 
     const user = Meteor.users.findOne({ _id: Meteor.userId() }, options);
+    if (!user.profile) {
+      user.profile = {};
+    }
     return user;
   }
 });
