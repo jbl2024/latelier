@@ -69,7 +69,7 @@
   "Leave project": "Quitter le projet",
   "Leave project?": "Quitter le projet ?",
   "Project": "Projet",
-  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs",
+  "noProjectYet": "Vous n'avez encore aucun projet. Vous pouvez commencer par créer un projet ou alors une organisation qui pourra contenir des membres et des projets communs",
   "Duties": "Responsabilités",
   "Unassigned": "Non assignée",
   "Start date": "Date de début",

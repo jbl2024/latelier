@@ -90,7 +90,7 @@
         <!-- eslint-disable -->
         <empty-state
           class="main-empty-state"
-          :description="$t('You don\'t have any project yet. You can start by creating a project or an organization that may contain members and different projects.')"
+          :description="$t('noProjectYet')"
           illustration="project"
         >
           <v-btn text @click="newProject()">

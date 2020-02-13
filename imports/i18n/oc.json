@@ -68,7 +68,7 @@
   "Leave project": "Quitar lo projècte",
   "Leave project?": "Quitar lo projècte ?",
   "Project": "Projècte",
-  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "Avètz pas cap de projècte pel moment. Podètz començar de crear un projècte o una organizacion que contenga de membres e diferents projèctes.",
+  "noProjectYet": "Avètz pas cap de projècte pel moment. Podètz començar de crear un projècte o una organizacion que contenga de membres e diferents projèctes.",
   "Duties": "Devers",
   "Unassigned": "Pas assignat",
   "Start date": "Data de debuta",

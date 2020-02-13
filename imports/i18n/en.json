@@ -69,7 +69,7 @@
   "Leave project": "Leave project",
   "Leave project?": "Leave project?",
   "Project": "Project",
-  "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.": "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.",
+  "noProjectYet": "You don't have any project yet. You can start by creating a project or an organization that may contain members and different projects.",
   "Duties": "Duties",
   "Unassigned": "Unassigned",
   "Start date": "Start date",
