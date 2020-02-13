@@ -7,10 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.9.2] - 2020-02-13
+
+### Added
 - Docker configuration files
 - Storage: S3 support for attachments & avatars
 
 ### Changed
+- Fix profile page first time display
+- Fix missing translation
 
 ### Removed
 
