@@ -22,7 +22,7 @@ A project management tool.
 
 Since v2.9.0, Docker images are available on docker hub: https://hub.docker.com/r/jbl2024/latelier .
 
-The Dockerfile can be found at https://github.com/jbl2024/latelier-docker/ together with a sample docker-compose.yml.
+A [docker-compose.yml](/docker-compose.yml) is also provided.
 
 ### Meteor
 
