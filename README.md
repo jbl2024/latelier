@@ -1,6 +1,6 @@
 # latelier
 
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/404a011df8c04d219242ef80d1c26397)](https://www.codacy.com/manual/jbl2024/latelier?utm_source=github.com&utm_medium=referral&utm_content=jbl2024/latelier&utm_campaign=Badge_Grade)
 
 A project management tool.
 
@@ -56,6 +56,7 @@ Settings:
 | users                          | object   | {}              | See below                                        |
 | elasticApm                     | object   | {}              | See below                                        |
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
+| storage                        | object   | {}              | Storage. If empty, fs is used                    |
 
 email:
 
@@ -84,6 +85,26 @@ elasticApm:
 | ------- | ------- | ------------- | --------------------------------------------------- |
 | enabled | boolean | false         | If true, elastic-apm is enabled                     |
 | options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
+
+storage:
+
+| Key           | Type          | Default value | Description                                                                                            |
+| ------------- | ------------- | ------------- | ------------------------------------------------------------------------------------------------------ |
+| type          | string ("s3") |               | Storage type                                                                                           |
+| migrateFromFS | boolean       | false         | If true, files are moved from FS to storage system at startup (make sure you backup your data before!) |
+| s3            | object        | {}            | s3 options                                                                                             |
+
+s3
+
+| Key      | Type   | Default value | Description            |
+| -------- | ------ | ------------- | ---------------------- |
+| endpoint | string |               | Storage url (optional) |
+| key      | string |               | key                    |
+| secret   | string |               | secret                 |
+| region   | string |               | region                 |
+| bucket   | string |               | bucket                 |
+
+Note: tested only with [minio](<https://min.io/>).
 
 Example:
 

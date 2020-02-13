@@ -8,6 +8,7 @@ import "../imports/startup/server/fixEmptyAttributes.js";
 import "../imports/startup/server/fixTaskNumber.js";
 import "../imports/startup/server/permissions.js";
 import "../imports/startup/server/userPresence.js";
+import "../imports/startup/server/migrateStorage.js";
 import "../imports/api/organizations/organizations.js";
 import "../imports/api/organizations/server/publications.js";
 import "../imports/api/projects/projects.js";
@@ -56,6 +57,8 @@ import "../imports/api/digests/server/methods.js";
 import "../imports/api/digests/server/jobs.js";
 
 import "../imports/api/administration/server/methods.js";
+
+import "../imports/api/storage/server/s3";
 
 import "./apm.js";
 

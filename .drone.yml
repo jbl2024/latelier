@@ -15,5 +15,4 @@ steps:
 
 trigger:
   ref:
-  - refs/heads/master
   - refs/tags/*

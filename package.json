@@ -3,15 +3,16 @@
   "private": true,
   "scripts": {
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
-    "test": "MOCHA_TIMEOUT=5000 meteor test --once --driver-package meteortesting:mocha",
-    "test-run": "MOCHA_TIMEOUT=5000 meteor test --driver-package meteortesting:mocha",
-    "test-app": "MOCHA_TIMEOUT=5000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "test": "MOCHA_TIMEOUT=8000 meteor test --once --driver-package meteortesting:mocha",
+    "test-run": "MOCHA_TIMEOUT=8000 meteor test --driver-package meteortesting:mocha",
+    "test-app": "MOCHA_TIMEOUT=8000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "lint": "eslint .",
     "pretest": "npm run lint --silent"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
+    "aws-sdk": "^2.614.0",
     "bcrypt": "^3.0.6",
     "bpmn-js": "^6.2.0",
     "carbone": "^1.2.1",

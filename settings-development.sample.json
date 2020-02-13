@@ -2,6 +2,17 @@
   "generateFixtures": true,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
+  "storage": {
+    "type": "s3",
+    "migrateFromFS": "false",
+    "s3": {
+      "endpoint": "xxx",
+      "key": "xxx",
+      "secret": "xxx",
+      "region": "xxx",
+      "bucket": "xxx"
+    }
+  },
   "notificationsPerUser": 50,
   "digestsRetention": 60,
   "elasticApm": {
