@@ -3,7 +3,6 @@
     <v-dialog
       v-model="showDialog"
       max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <new-label ref="newLabel" :project-id="projectId" />
       <v-card>

@@ -7,6 +7,31 @@
       @input="$emit('update:active')"
     >
       <v-card>
+        <v-toolbar v-if="$vuetify.breakpoint.xsOnly" dark color="primary">
+          <v-btn icon dark @click="close">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn
+              text
+              dark
+              :disabled="!valid || loading"
+              @click="newTask(true)"
+            >
+              {{ $t("Create and add") }}
+            </v-btn>
+            <v-btn
+              text
+              dark
+              :disabled="!valid || loading"
+              @click="newTask(false)"
+            >
+              {{ $t("Create") }}
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+
         <v-card-title class="headline">
           {{ $t("Add new task") }}
         </v-card-title>
@@ -61,33 +86,6 @@
             @click="newTask(true)"
           >
             {{ $t("Create and add") }}
-          </v-btn>
-        </v-card-actions>
-
-        <v-card-actions class="show-mobile">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            :disabled="!valid || loading"
-            @click="newTask(false)"
-          >
-            {{ $t("Create") }}
-          </v-btn>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            :disabled="!valid || loading"
-            @click="newTask(true)"
-          >
-            {{ $t("Create and add") }}
-          </v-btn>
-          <v-spacer />
-        </v-card-actions>
-
-        <v-card-actions class="show-mobile">
-          <v-spacer />
-          <v-btn text @click="close">
-            {{ $t("Cancel") }}
           </v-btn>
         </v-card-actions>
       </v-card>

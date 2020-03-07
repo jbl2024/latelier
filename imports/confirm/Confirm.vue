@@ -5,7 +5,6 @@
       value="true"
       :max-width="width"
       @keydown.esc="choose(false)"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
         <v-card-title class="headline">{{ title }}</v-card-title>
