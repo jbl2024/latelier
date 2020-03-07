@@ -26,7 +26,6 @@
 </template>
 
 <script>
-import { Meteor } from "meteor/meteor";
 
 export default {
   props: {
@@ -34,7 +33,10 @@ export default {
       type: String,
       default: "Confirm"
     },
-    message: String,
+    message: {
+      type: String,
+      default: null
+    },
     cancelText: {
       type: String,
       default: "Cancel"
@@ -59,7 +61,7 @@ export default {
       this.value = value;
       this.$destroy();
     },
-    change(res) {
+    change() {
       this.$destroy();
     }
   }

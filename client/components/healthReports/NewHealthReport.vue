@@ -84,12 +84,19 @@
 
               <v-flex xs12>
                 <label>{{ $t("Description") }}</label>
-                <rich-editor ref="description" v-model="description" :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null " />
+                <rich-editor
+                  ref="description"
+                  v-model="description"
+                  :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+                />
               </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly" class="flex0 actions">
+        <v-card-actions
+          v-if="!$vuetify.breakpoint.xsOnly"
+          class="flex0 actions"
+        >
           <v-spacer />
           <v-btn text @click="showDialog = false">
             {{ $t("Cancel") }}
