@@ -1,0 +1,26 @@
+.tiptap-editor-view blockquote {
+  border-left: 4px solid#ccc;
+  margin-bottom: 5px;
+  margin-top: 5px;
+  padding-left: 16px;
+}
+
+.tiptap-editor-view pre {
+  padding: 0.7rem 1rem;
+  border-radius: 5px;
+  background: black;
+  color: white;
+  overflow-x: auto;
+}
+
+.tiptap-editor-view pre code {
+  display: block;
+  color: white;
+  background-color: black;
+  font-size: 1em;
+}
+
+.tiptap-editor-view pre code:after,
+.tiptap-editor-view pre code:before {
+  content: "";
+}

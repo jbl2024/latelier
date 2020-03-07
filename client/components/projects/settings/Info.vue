@@ -4,7 +4,7 @@
     <div class="elevation-1">
       <div class="description">
         <div v-show="project.description && project.description.length > 0">
-          <div class="ql-editor-view" v-html="markDown(project.description)" />
+          <div class="tiptap-editor-view" v-html="markDown(project.description)" />
         </div>
         <div v-show="!project.description">
           {{ $t("No description") }}

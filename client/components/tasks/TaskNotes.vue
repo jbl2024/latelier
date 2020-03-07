@@ -38,7 +38,7 @@
           </author-line>
           <div
             v-if="!isNoteEdited(aNote._id)"
-            class="bubble ql-editor-view"
+            class="bubble tiptap-editor-view"
             @click.self="startEditNote(aNote)"
             v-html="linkifyHtml(aNote.content)"
           />
