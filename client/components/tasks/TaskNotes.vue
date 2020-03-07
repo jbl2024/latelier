@@ -62,7 +62,7 @@
     <v-divider v-if="task.notes && task.notes.length > 0" />
     <div class="add-note">
       <div class="input">
-        <rich-editor v-model="note" no-border class="input" @submit="addNote" />
+        <rich-editor v-model="note" no-border dense class="input" @submit="addNote" />
       </div>
       <div class="action">
         <v-btn color="primary" :disabled="!note" @click="addNote">

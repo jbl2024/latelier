@@ -3,7 +3,7 @@
     v-click-outside="onClickOutside"
     :class="{
       'tiptap-editor-view': true,
-      border: !noBorder,
+      'border': !noBorder,
       'no-border': noBorder
     }"
     @click="focus"
@@ -69,7 +69,10 @@
     </editor-menu-bar>
     <editor-content
       :editor="editor"
-      class="editor"
+      :class="{
+        'editor': true,
+        'dense': dense
+      }"
       @keydown.shift.enter="submit"
     />
   </div>
@@ -84,8 +87,6 @@ import {
   OrderedList,
   BulletList,
   ListItem,
-  TodoItem,
-  TodoList,
   Bold,
   Code,
   Italic,
@@ -110,6 +111,10 @@ export default {
       default: false
     },
     noBorder: {
+      type: Boolean,
+      default: false
+    },
+    dense: {
       type: Boolean,
       default: false
     }
@@ -213,6 +218,10 @@ export default {
 .editor {
   padding: 8px;
   min-height: 120px;
+}
+
+.dense {
+  min-height: 72px;
 }
 
 .small-medium {
