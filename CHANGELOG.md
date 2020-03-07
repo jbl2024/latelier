@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Replace vue2-editor with tiptap (see https://github.com/scrumpy/tiptap)
+- Improve dialogs on mobile (no more fullscreen everywhere)
 
 ### Removed
 
