@@ -86,7 +86,7 @@ const vuetify = new Vuetify({
 });
 
 Vue.use(require("vue-shortkey"), {
-  prevent: ["input", "textarea", ".ql-editor"]
+  prevent: ["input", "textarea", ".ProseMirror"]
 });
 
 Vue.use(confirm, { vuetify });

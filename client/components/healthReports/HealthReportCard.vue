@@ -17,7 +17,7 @@
     <v-card-text>
       <div
         v-if="report.description"
-        class="ql-editor-view"
+        class="tiptap-editor-view"
         v-html="report.description"
       />
     </v-card-text>
