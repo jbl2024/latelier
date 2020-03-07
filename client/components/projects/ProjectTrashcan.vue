@@ -95,7 +95,7 @@
           <v-btn color="error" @click="flush()">
             {{ $t("Flush") }}
           </v-btn>
-          <v-btn v-shortkey="['esc']" text @click="close()" @shortkey="close()">
+          <v-btn text @click="close()">
             {{ $t("Close") }}
           </v-btn>
         </v-card-actions>
