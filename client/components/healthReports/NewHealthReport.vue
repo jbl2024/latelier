@@ -76,7 +76,6 @@
                 <rich-editor
                   ref="description"
                   v-model="description"
-                  class="editor"
                 />
               </v-flex>
             </v-layout>

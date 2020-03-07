@@ -14,7 +14,7 @@
       <v-card-text>
         <div
           v-if="!editContent"
-          class="content ql-editor-view"
+          class="content tiptap-editor-view"
           @click="startUpdateContent"
           v-html="linkifyHtml(content)"
         />

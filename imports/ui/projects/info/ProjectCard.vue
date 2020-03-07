@@ -22,7 +22,7 @@
         <v-row>
           <v-col :cols="12">
             <div
-              class="ql-editor-view description"
+              class="tiptap-editor-view description"
               v-html="linkifyHtml(project.description)"
             />
           </v-col>
@@ -85,7 +85,7 @@
               </v-icon>
               <template v-if="!$vuetify.breakpoint.xsOnly">
                 {{ $t('Attachments') }}
-              </template>            
+              </template>
             </div>
             <div class="number">
               12
@@ -430,7 +430,7 @@ export default {
           );
         }
       );
-    },    
+    },
   }
 };
 </script>

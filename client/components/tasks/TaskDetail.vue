@@ -123,7 +123,7 @@
         "
         @click="startEditDescription"
       >
-        <div class="ql-editor-view" v-html="linkifyHtml(task.description)" />
+        <div class="tiptap-editor-view" v-html="linkifyHtml(task.description)" />
       </div>
       <div
         v-show="!task.description && !editDescription"

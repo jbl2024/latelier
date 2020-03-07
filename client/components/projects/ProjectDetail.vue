@@ -31,12 +31,12 @@
     <v-divider />
     <div
       v-if="project.description && project.description.length > 0"
-      class="ql-editor-view description"
+      class="tiptap-editor-view description"
       v-html="linkifyHtml(project.description)"
     />
     <div
       v-if="!project.description || project.description.length == 0"
-      class="ql-editor-view description"
+      class="tiptap-editor-view description"
     >
       {{ $t("No description") }}
     </div>
