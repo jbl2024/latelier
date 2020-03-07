@@ -2,7 +2,7 @@
   <div class="edit-process-diagram">
     <v-dialog
       v-model="showDialog"
-      max-width="420"
+      max-width="520"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card class="flex-container">
