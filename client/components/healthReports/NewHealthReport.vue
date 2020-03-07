@@ -84,7 +84,7 @@
 
               <v-flex xs12>
                 <label>{{ $t("Description") }}</label>
-                <rich-editor ref="description" v-model="description" max-height="200px" />
+                <rich-editor ref="description" v-model="description" :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null " />
               </v-flex>
             </v-layout>
           </v-form>
