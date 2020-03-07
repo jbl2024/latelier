@@ -13,13 +13,7 @@
           color="primary"
           class="flex0"
         >
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="close()"
-            @shortkey="close()"
-          >
+          <v-btn icon text @click="close()">
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
@@ -43,10 +37,20 @@
           <v-form v-model="valid" class="pt-4" @submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
-                <v-btn v-if="example" color="primary" block @click="clearExample">
+                <v-btn
+                  v-if="example"
+                  color="primary"
+                  block
+                  @click="clearExample"
+                >
                   {{ $t("Clear template") }}
                 </v-btn>
-                <v-btn v-if="!example" color="primary" block @click="showSelectExample = true">
+                <v-btn
+                  v-if="!example"
+                  color="primary"
+                  block
+                  @click="showSelectExample = true"
+                >
                   {{ $t("Select template") }}
                 </v-btn>
               </v-flex>
@@ -84,7 +88,12 @@
         </v-card-text>
         <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
           <v-spacer />
-          <v-btn text @click="showDialog = false">
+          <v-btn
+            v-shortkey="['esc']"
+            text
+            @click="showDialog = false"
+            @shortkey="close()"
+          >
             {{ $t("Cancel") }}
           </v-btn>
           <v-btn color="primary" :disabled="!valid" @click="create">
