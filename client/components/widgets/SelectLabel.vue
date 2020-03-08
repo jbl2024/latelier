@@ -4,7 +4,6 @@
       v-model="showDialog"
       :title="$t('Add label')"
       simple
-      max-height="400px"
     >
       <template v-slot:content>
         <new-label ref="newLabel" :project-id="projectId" />

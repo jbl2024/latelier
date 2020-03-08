@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <select-background :active.sync="showSelectBackgroundDialog" />
+      <select-background v-model="showSelectBackgroundDialog" />
       <task-history
         :task-id="selectedTask ? selectedTask._id : '0'"
         :active.sync="showTaskHistory"

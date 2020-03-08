@@ -61,10 +61,6 @@ export default {
       type: [Number, String],
       default: 420
     },
-    maxHeight: {
-      type: [Number, String],
-      default: null
-    },
     closeLabel: {
       type: String,
       default: function () {
