@@ -26,7 +26,7 @@
             </v-btn>
           </v-toolbar-items>
         </v-toolbar>
-        <v-card-title class="headline">
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
           {{ $t("Select date") }}
         </v-card-title>
         <v-divider />
