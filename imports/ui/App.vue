@@ -106,7 +106,7 @@
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
-        <v-btn icon text @click="showSnackbar = false">
+        <v-btn dark icon text @click="showSnackbar = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-snackbar>
