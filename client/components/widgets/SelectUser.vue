@@ -12,7 +12,7 @@
         </v-card-title>
         <v-divider />
         <div>
-          <v-tabs v-if="active" ref="tabs" class="select-user-tabs" fixed-tabs>
+          <v-tabs v-if="active" ref="tabs" class="select-user-tabs" grow>
             <v-tabs-slider color="accent" />
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
