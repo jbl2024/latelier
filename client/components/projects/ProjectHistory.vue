@@ -5,22 +5,24 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       max-width="60%"
     >
-      <v-toolbar dark color="primary">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="close()"
-          @shortkey="close()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>
-          Historique
-        </v-toolbar-title>
-      </v-toolbar>
-
       <v-card class="flex-container">
+        <v-toolbar
+          v-if="$vuetify.breakpoint.xsOnly"
+          dark
+          color="primary"
+          class="flex0"
+        >
+          <v-btn icon text @click="close()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>
+            {{ $t("History") }}
+          </v-toolbar-title>
+        </v-toolbar>
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
+          {{ $t("History") }}
+        </v-card-title>
+
         <v-card-text class="flex1">
           <v-progress-linear v-if="loading" indeterminate />
 
@@ -52,16 +54,22 @@
           </v-timeline>
         </v-card-text>
         <div class="flex0">
-          <div class="text-xs-center">
+          <div class="text-xs-center pb-2">
             <v-pagination
               v-if="showDialog && pagination.totalPages > 0"
               v-model="page"
               :length="pagination.totalPages"
+              :total-visible="6"
             />
           </div>
-          <v-card-actions>
+          <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
             <v-spacer />
-            <v-btn text @click="close()">
+            <v-btn
+              v-shortkey="['esc']"
+              text
+              @click="close()"
+              @shortkey="close()"
+            >
               {{ this.$t("Close") }}
             </v-btn>
           </v-card-actions>
@@ -132,8 +140,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
       ) {
         return 0;
       }
@@ -157,7 +165,7 @@ export default {
     flex-direction: column;
     height: calc(100vh - 200px);
     min-height: 360px;
-    max-height: 530px;
+    max-height: 580px;
   }
 
   .flex0 {

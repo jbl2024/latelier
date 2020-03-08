@@ -3,7 +3,6 @@
     <v-dialog
       v-model="showDialog"
       max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <select-color :active.sync="showSelectColor" @select="onSelectColor" />
       <v-card>

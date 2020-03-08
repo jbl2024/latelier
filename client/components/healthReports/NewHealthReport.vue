@@ -6,12 +6,14 @@
       @select="onSelectDate"
     />
 
-    <v-dialog
-      v-model="showDialog"
-      fullscreen
-    >
+    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly">
       <v-card class="flex-container">
-        <v-toolbar dark color="primary" class="flex0">
+        <v-toolbar
+          v-if="$vuetify.breakpoint.xsOnly"
+          dark
+          color="primary"
+          class="flex0"
+        >
           <v-btn
             v-shortkey="['esc']"
             icon
@@ -24,7 +26,16 @@
           <v-toolbar-title>
             <span>{{ $t("New report") }} </span>
           </v-toolbar-title>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn text dark :disabled="!valid || !coherent" @click="create">
+              {{ $t("Create") }}
+            </v-btn>
+          </v-toolbar-items>
         </v-toolbar>
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
+          {{ $t("New report") }}
+        </v-card-title>
         <v-card-text class="flex1">
           <v-form v-model="valid" @submit.prevent>
             <v-layout wrap>
@@ -76,12 +87,16 @@
                 <rich-editor
                   ref="description"
                   v-model="description"
+                  :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
                 />
               </v-flex>
             </v-layout>
           </v-form>
         </v-card-text>
-        <v-card-actions class="flex0 actions">
+        <v-card-actions
+          v-if="!$vuetify.breakpoint.xsOnly"
+          class="flex0 actions"
+        >
           <v-spacer />
           <v-btn text @click="showDialog = false">
             {{ $t("Cancel") }}
@@ -222,5 +237,4 @@ export default {
 .actions {
   min-height: 48px;
 }
-
 </style>

@@ -3,7 +3,6 @@
     <v-dialog
       :value="active"
       max-width="340"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
       <v-card>

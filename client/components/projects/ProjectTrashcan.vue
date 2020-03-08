@@ -5,20 +5,28 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       max-width="640px"
     >
-      <v-toolbar dark color="primary">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="close()"
-          @shortkey="close()"
+      <v-card class="flex-container">
+        <v-toolbar
+          v-if="$vuetify.breakpoint.xsOnly"
+          dark
+          color="primary"
+          class="flex0"
         >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
-      </v-toolbar>
-      <v-card>
-        <v-card-text class="content">
+          <v-btn icon text @click="close()">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn dark text @click="flush()">
+              {{ $t("Flush") }}
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
+          {{ $t("Trashcan") }}
+        </v-card-title>
+        <v-card-text class="content flex1">
           <v-progress-linear v-if="loading" indeterminate />
           <empty-state
             v-if="tasks && tasks.length === 0 && !loading"
@@ -30,7 +38,9 @@
             <template v-for="task in tasks">
               <v-list-item :key="task._id" @click="restoreTask(task)">
                 <v-list-item-content>
-                  <v-list-item-title>#{{ task.number }} - {{ task.name }}</v-list-item-title>
+                  <v-list-item-title>
+                    #{{ task.number }} - {{ task.name }}
+                  </v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-tooltip top>
@@ -71,14 +81,16 @@
             </template>
           </v-list>
         </v-card-text>
-        <div class="text-xs-center">
-          <v-pagination
-            v-if="pagination.totalPages > 0"
-            v-model="page"
-            :length="pagination.totalPages"
-          />
+        <div class="flex0">
+          <div class="text-xs-center">
+            <v-pagination
+              v-if="pagination.totalPages > 0"
+              v-model="page"
+              :length="pagination.totalPages"
+            />
+          </div>
         </div>
-        <v-card-actions>
+        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
           <v-spacer />
           <v-btn color="error" @click="flush()">
             {{ $t("Flush") }}
@@ -249,5 +261,20 @@ export default {
   overflow-y: auto;
   max-height: 400px;
   min-height: 400px;
+}
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.flex0 {
+  flex: 0;
+  height: 100%;
+}
+
+.flex1 {
+  flex: 1; /* takes the remaining height of the "container" div */
+  overflow: auto; /* to scroll just the "main" div */
 }
 </style>

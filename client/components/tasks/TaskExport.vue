@@ -2,7 +2,6 @@
   <div class="task-export">
     <v-dialog
       :value="active"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       max-width="420"
       @input="$emit('update:active')"
     >

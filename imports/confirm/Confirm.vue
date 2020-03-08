@@ -1,19 +1,24 @@
 <template>
   <div class="confirm">
     <v-dialog
-      @input="change"
       value="true"
       :max-width="width"
+      @input="change"
       @keydown.esc="choose(false)"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <v-card>
-        <v-card-title class="headline">{{ title }}</v-card-title>
+        <v-card-title class="headline">
+          {{ title }}
+        </v-card-title>
         <v-card-text>{{ message }}</v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn text @click="choose(false)">{{ cancelText}}</v-btn>
-          <v-btn color="error" @click="choose(true)">{{ confirmText }}</v-btn>
+          <v-spacer />
+          <v-btn text @click="choose(false)">
+            {{ cancelText }}
+          </v-btn>
+          <v-btn color="error" @click="choose(true)">
+            {{ confirmText }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -21,7 +26,6 @@
 </template>
 
 <script>
-import { Meteor } from "meteor/meteor";
 
 export default {
   props: {
@@ -29,7 +33,10 @@ export default {
       type: String,
       default: "Confirm"
     },
-    message: String,
+    message: {
+      type: String,
+      default: null
+    },
     cancelText: {
       type: String,
       default: "Cancel"
@@ -54,7 +61,7 @@ export default {
       this.value = value;
       this.$destroy();
     },
-    change(res) {
+    change() {
       this.$destroy();
     }
   }
