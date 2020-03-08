@@ -6,22 +6,36 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
-      <v-toolbar dark color="primary">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="closeDialog()"
-          @shortkey="closeDialog()"
+      <v-card class="flex-container">
+        <v-toolbar
+          v-if="$vuetify.breakpoint.xsOnly"
+          dark
+          color="primary"
+          class="flex0"
         >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>
+          <v-btn
+            v-shortkey="['esc']"
+            icon
+            text
+            @click="closeDialog()"
+            @shortkey="closeDialog()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-toolbar-title>
+            {{ $t("Select background") }}
+          </v-toolbar-title>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn dark text @click="clearBackground">
+              {{ $t("BackgroundNone") }}
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
           {{ $t("Select background") }}
-        </v-toolbar-title>
-      </v-toolbar>
-      <v-card>
-        <v-card-text class="backgrounds-wrapper">
+        </v-card-title>
+        <v-card-text class="backgrounds-wrapper flex1">
           <div class="backgrounds">
             <v-card
               v-for="image in backgrounds"
@@ -50,7 +64,7 @@
             </v-card>
           </div>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
           <v-btn color="error" text @click="clearBackground">
             {{ $t("BackgroundNone") }}
           </v-btn>
@@ -161,7 +175,6 @@ export default {
 
 @media (max-width: 600px) {
   .backgrounds-wrapper {
-    height: 440px;
     overflow-y: scroll;
   }
 }
@@ -175,5 +188,20 @@ export default {
 
 .background-card {
   margin: 12px;
+}
+
+.flex-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.flex0 {
+  flex: 0;
+}
+
+.flex1 {
+  flex: 1;
+  overflow-y: scroll;
 }
 </style>
