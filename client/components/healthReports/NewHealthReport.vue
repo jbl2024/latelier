@@ -1,7 +1,7 @@
 <template>
   <div class="new-health-report">
     <select-date
-      :active.sync="showSelectDate"
+      v-model="showSelectDate"
       :disable-time="true"
       @select="onSelectDate"
     />

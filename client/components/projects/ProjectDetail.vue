@@ -1,12 +1,12 @@
 <template>
   <div class="project-detail">
     <select-date
-      :active.sync="showSelectStartDate"
+      v-model="showSelectStartDate"
       :disable-time="true"
       @select="onSelectStartDate"
     />
     <select-date
-      :active.sync="showSelectEndDate"
+      v-model="showSelectEndDate"
       :disable-time="true"
       @select="onSelectEndDate"
     />
