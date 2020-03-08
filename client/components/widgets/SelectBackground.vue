@@ -1,41 +1,12 @@
 <template>
   <div class="select-background">
-    <v-dialog
-      :value="active"
+    <generic-dialog
+      v-model="showDialog"
       max-width="620"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      @input="$emit('update:active')"
+      :title="$t('Select background')"
     >
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="closeDialog()"
-            @shortkey="closeDialog()"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            {{ $t("Select background") }}
-          </v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text @click="clearBackground">
-              {{ $t("BackgroundNone") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          {{ $t("Select background") }}
-        </v-card-title>
-        <v-card-text class="backgrounds-wrapper flex1">
+      <template v-slot:content>
+        <div class="backgrounds-wrapper">
           <div class="backgrounds">
             <v-card
               v-for="image in backgrounds"
@@ -63,18 +34,14 @@
               <v-card-text v-html="image.meta.credits" />
             </v-card>
           </div>
-        </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-btn color="error" text @click="clearBackground">
-            {{ $t("BackgroundNone") }}
-          </v-btn>
-          <v-spacer />
-          <v-btn text @click="closeDialog">
-            {{ $t("Cancel") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+        </div>
+      </template>
+      <template v-slot:actions>
+        <v-btn text @click="clearBackground">
+          {{ $t("BackgroundNone") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -84,12 +51,25 @@ import { Backgrounds } from "/imports/api/backgrounds/backgrounds";
 
 export default {
   props: {
-    active: Boolean
+    value: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
-      backgrounds: undefined
+      backgrounds: null
     };
+  },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
   },
   mounted() {
     Meteor.call("backgrounds.find", (error, result) => {
@@ -99,10 +79,6 @@ export default {
     });
   },
   methods: {
-    closeDialog() {
-      this.$emit("update:active", false);
-    },
-
     selectBackground(image) {
       Meteor.call(
         "backgrounds.choose",
@@ -113,7 +89,7 @@ export default {
             return;
           }
           this.$notify(this.$t("Background updated"));
-          this.$emit("update:active", false);
+          this.showDialog = false;
         }
       );
     },
@@ -125,7 +101,7 @@ export default {
           return;
         }
         this.$notify(this.$t("Background updated"));
-        this.$emit("update:active", false);
+        this.showDialog = false;
       });
     },
 
@@ -137,29 +113,6 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-  overflow-y: scroll;
-  max-height: 300px;
-}
-
-.cursor {
-  cursor: pointer;
-}
-
-.cursor:hover {
-  background-color: #aaa;
-}
-
-.avatar {
-  background-color: rgba(0, 0, 0, 0.14);
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  padding-top: 8px;
-}
-
 .backgrounds-wrapper {
   -webkit-overflow-scrolling: touch;
 }
@@ -188,20 +141,5 @@ export default {
 
 .background-card {
   margin: 12px;
-}
-
-.flex-container {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-.flex0 {
-  flex: 0;
-}
-
-.flex1 {
-  flex: 1;
-  overflow-y: scroll;
 }
 </style>

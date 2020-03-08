@@ -1,81 +1,47 @@
 <template>
   <div class="edit-label">
-    <v-dialog
-      v-model="showDialog"
-      max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-    >
-      <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn icon text @click="showDialog = false">
-            <v-icon>mdi-close</v-icon>
+    <generic-dialog v-model="showDialog" max-width="420" :title="$t('Edit')">
+      <template v-slot:content>
+        <select-color :active.sync="showSelectColor" @select="onSelectColor" />
+        <v-form v-model="valid" @submit.prevent>
+          <v-text-field
+            v-model="label.name"
+            autofocus
+            :rules="nameRules"
+            :label="$t('Name')"
+            required
+            @keyup.enter="updateNameAndColor()"
+          />
+          <v-btn
+            color="primary"
+            class="btn-color"
+            @click="showSelectColor = true"
+          >
+            Choisir une couleur
           </v-btn>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text @click="remove">
-              {{ this.$t("Delete") }}
-            </v-btn>
-            <v-btn dark text :disabled="!valid" @click="updateNameAndColor">
-              Modifier
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          Editer le label
-        </v-card-title>
-        <v-card-text class="flex1">
-          <v-form v-model="valid" @submit.prevent>
-            <v-text-field
-              ref="name"
-              v-model="label.name"
-              :rules="nameRules"
-              :label="$t('Name')"
-              required
-              @keyup.enter="updateNameAndColor()"
-            />
-            <v-btn
-              color="primary"
-              class="btn-color"
-              @click="showSelectColor = true"
-            >
-              Choisir une couleur
-            </v-btn>
-            <div
-              ref="color"
-              class="color"
-              :style="getColor(label)"
-              @click="showSelectColor = true"
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
-          </v-btn>
-          <v-btn color="error" @click="remove">
-            {{ this.$t("Delete") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="updateNameAndColor">
-            Modifier
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <div
+            ref="color"
+            class="color"
+            :style="getColor(label)"
+            @click="showSelectColor = true"
+          />
+        </v-form>
+      </template>
+      <template v-slot:actions>
+        <v-btn text @click="remove">
+          {{ $t("Delete") }}
+        </v-btn>
+        <v-btn text :disabled="!valid" @click="updateNameAndColor">
+          {{ $t("Update") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
 import { Labels } from "/imports/api/labels/labels.js";
-import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   props: {
@@ -113,7 +79,6 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
 
     updateNameAndColor() {

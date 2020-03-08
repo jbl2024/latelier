@@ -1,47 +1,33 @@
 <template>
   <div class="new-project">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
       max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      :title="$t('New project')"
     >
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="close()"
-            @shortkey="close()"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            <span>{{ $t("New project") }}</span>
-          </v-toolbar-title>
-        </v-toolbar>
-        <v-card-text>
-          <v-form v-model="valid" @submit.prevent>
-            <v-layout wrap>
-              <v-flex xs12>
+      <template v-slot:content>
+        <v-form v-model="valid" @submit.prevent>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
                 <v-text-field
-                  ref="name"
                   v-model="name"
+                  autofocus
                   :rules="nameRules"
                   :label="$t('Name')"
                   required
                   @keyup.enter="create()"
                 />
-              </v-flex>
-              <v-flex sm6 md6>
+              </v-col>
+              <v-col cols="6">
                 <label>{{ $t("Template") }}</label>
                 <v-radio-group v-model="projectType">
                   <v-radio label="Kanban" value="kanban" />
                   <v-radio :label="$t('People')" value="people" />
                   <v-radio :label="$t('Empty')" value="none" />
                 </v-radio-group>
-              </v-flex>
-              <v-flex sm6 md6>
+              </v-col>
+              <v-col cols="6">
                 <label>{{ $t("State") }}</label>
                 <v-radio-group v-model="projectState">
                   <v-radio
@@ -51,8 +37,8 @@
                     :value="item.value"
                   />
                 </v-radio-group>
-              </v-flex>
-              <v-flex v-if="organizationId" xs12>
+              </v-col>
+              <v-col v-if="organizationId" cols="12">
                 <v-subheader>{{ $t("Access rights") }}</v-subheader>
                 <v-list class="elevation-1">
                   <v-list-item @click="allowOrganization = !allowOrganization">
@@ -74,32 +60,27 @@
                     </v-list-item-action>
                   </v-list-item>
                 </v-list>
-              </v-flex>
-            </v-layout>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ $t("Cancel") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="create">
-            {{ $t("Create") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid" @click="create">
+          {{ $t("Create") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { autofocus } from "/imports/ui/autofocus";
 import {
   ProjectStates,
   ProjectAccessRights
 } from "/imports/api/projects/projects.js";
-
 
 export default {
   props: {
@@ -125,7 +106,6 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     close() {
       this.showDialog = false;
@@ -148,13 +128,13 @@ export default {
             this.$notifyError(error);
             return;
           }
+          this.close();
           this.$router.push({
             name: "project",
             params: { projectId: result }
           });
         }
       );
-      this.showDialog = false;
     },
     projectStates() {
       const states = [];
@@ -183,10 +163,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-}
-</style>

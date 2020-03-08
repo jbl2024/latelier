@@ -1,43 +1,41 @@
 <template>
   <div class="new-organization">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
       max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      :title="$t('New organization')"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("New organization") }}
-        </v-card-title>
-        <v-card-text>
-          <v-form v-model="valid" @submit.prevent>
-            <v-text-field
-              ref="name"
-              v-model="name"
-              :rules="nameRules"
-              :label="$t('Name')"
-              required
-              @keyup.enter="create()"
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
-          </v-btn>
-          <v-btn color="info" :disabled="!valid" @click="create">
-            {{ this.$t("Create") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <v-form v-model="valid" @submit.prevent>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  v-model="name"
+                  v-col
+                  autofocus
+                  :rules="nameRules"
+                  :label="$t('Name')"
+                  required
+                  @keyup.enter="create()"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-form>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid" @click="create">
+          {{ $t("Create") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   data() {
@@ -55,7 +53,6 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     create() {
       Meteor.call(
@@ -66,21 +63,14 @@ export default {
             this.$notifyError(error);
             return;
           }
+          this.showDialog = false;
           this.$router.push({
             name: "projects-page",
             params: { organizationId: result }
           });
         }
       );
-      this.showDialog = false;
     }
   }
 };
 </script>
-
-<style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-}
-</style>

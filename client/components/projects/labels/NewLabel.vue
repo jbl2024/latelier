@@ -1,75 +1,50 @@
 <template>
   <div class="new-label">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
       max-width="420"
       :fullscreen="$vuetify.breakpoint.xsOnly"
+      :title="$t('Label')"
     >
-      <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn icon text @click="showDialog = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text :disabled="!valid" @click="create">
-              {{ this.$t("Create") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
+      <template v-slot:content>
+        <select-color :active.sync="showSelectColor" @select="onSelectColor" />
+        <v-form v-model="valid" class="form" @submit.prevent>
+          <v-text-field
+            ref="name"
+            v-model="name"
+            :rules="nameRules"
+            :label="$t('Name')"
+            autofocus
+            required
+            @keyup.enter="create()"
+          />
 
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          Créer un label
-        </v-card-title>
-        <v-card-text class="flex1">
-          <v-form v-model="valid" class="form" @submit.prevent>
-            <v-text-field
-              ref="name"
-              v-model="name"
-              :rules="nameRules"
-              :label="$t('Name')"
-              required
-              @keyup.enter="create()"
-            />
-
-            <v-btn
-              color="primary"
-              class="btn-color"
-              @click="showSelectColor = true"
-            >
-              Choisir une couleur
-            </v-btn>
-            <div
-              ref="color"
-              class="color"
-              :style="getColor(color)"
-              @click="showSelectColor = true"
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
+          <v-btn
+            color="primary"
+            class="btn-color"
+            @click="showSelectColor = true"
+          >
+            Choisir une couleur
           </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="create">
-            {{ this.$t("Create") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <div
+            ref="color"
+            class="color"
+            :style="getColor(color)"
+            @click="showSelectColor = true"
+          />
+        </v-form>
+      </template>
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid" @click="create">
+          {{ $t("Create") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   props: {
@@ -94,7 +69,6 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
     create() {
       Meteor.call(
@@ -141,7 +115,6 @@ export default {
   width: 100%;
 }
 
-
 .flex-container {
   display: flex;
   flex-direction: column;
@@ -157,5 +130,4 @@ export default {
   flex: 1; /* takes the remaining height of the "container" div */
   overflow: auto; /* to scroll just the "main" div */
 }
-
 </style>

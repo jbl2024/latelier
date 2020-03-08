@@ -1,57 +1,45 @@
 <template>
   <div class="select-label">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
-      max-width="420"
+      :title="$t('Add label')"
+      simple
     >
-      <new-label ref="newLabel" :project-id="projectId" />
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("Add label") }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-text-field
-            v-if="!$vuetify.breakpoint.xsOnly"
-            :label="$t('Search') + '...'"
-            single-line
-            append-icon="mdi-magnify"
-            clearable
-            autofocus
-            @input="debouncedFilter"
-          />
-          <v-list class="content">
-            <template v-for="aLabel in labels">
-              <v-list-item :key="aLabel._id" @click="selectLabel(aLabel)">
-                <v-list-item-avatar>
-                  <v-icon :style="getColor(aLabel)">
-                    mdi-label
-                  </v-icon>
-                </v-list-item-avatar>
-                <v-list-item-content class="pointer">
-                  <v-list-item-title>{{ aLabel.name }}</v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </template>
-            <v-list-item @click="$refs.newLabel.open()">
+      <template v-slot:content>
+        <new-label ref="newLabel" :project-id="projectId" />
+        <v-text-field
+          v-if="!$vuetify.breakpoint.xsOnly"
+          :label="$t('Search') + '...'"
+          single-line
+          append-icon="mdi-magnify"
+          clearable
+          autofocus
+          @input="debouncedFilter"
+        />
+        <v-list class="content">
+          <template v-for="aLabel in labels">
+            <v-list-item :key="aLabel._id" @click="selectLabel(aLabel)">
               <v-list-item-avatar>
-                <v-icon>mdi-label</v-icon>
+                <v-icon :style="getColor(aLabel)">
+                  mdi-label
+                </v-icon>
               </v-list-item-avatar>
-              <v-list-item-content class="cursor">
-                <v-list-item-title>{{ this.$t("Create") }}...</v-list-item-title>
+              <v-list-item-content class="pointer">
+                <v-list-item-title>{{ aLabel.name }}</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          </template>
+          <v-list-item @click="$refs.newLabel.open()">
+            <v-list-item-avatar>
+              <v-icon>mdi-label</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content class="cursor">
+              <v-list-item-title>{{ $t("Create") }}...</v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -125,15 +113,9 @@ export default {
 </script>
 
 <style scoped>
+
 .content {
   overflow-y: scroll;
   max-height: 400px;
-}
-
-.color {
-  width: 100%;
-  height: 32px;
-  margin-bottom: 24px;
-  cursor: pointer;
 }
 </style>

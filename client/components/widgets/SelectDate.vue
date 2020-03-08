@@ -1,92 +1,60 @@
 <template>
   <div class="select-date">
-    <v-dialog
-      :value="active"
+    <generic-dialog
+      v-model="showDialog"
       max-width="520"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      @input="$emit('update:active')"
+      :title="$t('Select date')"
     >
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn icon text @click="closeDialog()">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            <span>{{ $t("Select date") }}</span>
-          </v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text :disabled="!date" @click="selectDate">
-              {{ $t("Select") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          {{ $t("Select date") }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text class="flex1">
-          <v-tabs v-if="active" fixed-tabs>
-            <v-tabs-slider color="accent" />
-            <v-tab>
-              Date
-            </v-tab>
-            <v-tab>
-              Heure
-            </v-tab>
-            <v-tab-item class="pt-2 text-center">
-              <v-date-picker
-                v-model="date"
-                :landscape="!$vuetify.breakpoint.xsOnly"
-                locale="fr-fr"
-                @dblclick.native="checkDblClick"
-              />
-            </v-tab-item>
-            <v-tab-item class="pt-2 text-center">
-              <v-time-picker
-                v-model="hour"
-                :landscape="!$vuetify.breakpoint.xsOnly"
-                format="24hr"
-              />
-            </v-tab-item>
-          </v-tabs>
-          <v-select
-            v-if="reminder"
-            v-model="selectedReminder"
-            class="reminder"
-            dense
-            :items="reminders"
-            :label="$t('Reminder')"
-          />
-        </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-spacer />
-          <v-btn
-            v-shortkey="['esc']"
-            text
-            @click="closeDialog"
-            @shortkey="closeDialog()"
-          >
-            {{ this.$t("Cancel") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!date" @click="selectDate">
-            {{ $t("Select") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <v-tabs v-if="showDialog" fixed-tabs>
+          <v-tabs-slider color="accent" />
+          <v-tab>
+            Date
+          </v-tab>
+          <v-tab>
+            Heure
+          </v-tab>
+          <v-tab-item class="pt-2 text-center">
+            <v-date-picker
+              v-model="date"
+              :landscape="!$vuetify.breakpoint.xsOnly"
+              locale="fr-fr"
+              @dblclick.native="checkDblClick"
+            />
+          </v-tab-item>
+          <v-tab-item class="pt-2 text-center">
+            <v-time-picker
+              v-model="hour"
+              :landscape="!$vuetify.breakpoint.xsOnly"
+              format="24hr"
+            />
+          </v-tab-item>
+        </v-tabs>
+        <v-select
+          v-if="reminder"
+          v-model="selectedReminder"
+          class="reminder"
+          dense
+          :items="reminders"
+          :label="$t('Reminder')"
+        />
+      </template>
+      <template v-slot:actions>
+        <v-btn text :disabled="!date" @click="selectDate">
+          {{ $t("Select") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    active: Boolean,
+    value: {
+      type: Boolean,
+      default: false
+    },
     disableTime: Boolean,
     reminder: Boolean
   },
@@ -107,17 +75,23 @@ export default {
       ]
     };
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
-    closeDialog() {
-      this.$emit("update:active", false);
-    },
-
     selectDate() {
       let dateTime = this.date;
       if (this.hour) {
         dateTime = `${dateTime} ${this.hour}`;
       }
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("select", dateTime, this.selectedReminder);
     },
 
@@ -146,19 +120,4 @@ export default {
   border-top: 1px solid #aaa;
 }
 
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.flex0 {
-  flex: 0;
-  height: 100%;
-}
-
-.flex1 {
-  flex: 1; /* takes the remaining height of the "container" div */
-  overflow: auto; /* to scroll just the "main" div */
-}
 </style>

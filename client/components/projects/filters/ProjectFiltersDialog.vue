@@ -1,27 +1,14 @@
 <template>
   <div class="project-filters-dialog">
-    <v-dialog
-      :value="active"
-      max-width="340"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      @input="$emit('update:active')"
+    <generic-dialog
+      v-model="showDialog"
+      :title="$t('Filters')"
+      :close-label="$t('Close')"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("Filters") }}
-        </v-card-title>
-        <v-card-text>
-          <project-filters :project-id="projectId" />
-        </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="cancelDialog">
-            {{ $t("Close") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <project-filters :project-id="projectId" />
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -40,7 +27,10 @@ export default {
     }
   },
   props: {
-    active: Boolean,
+    value: {
+      type: Boolean,
+      default: false
+    },
     projectId: {
       type: String,
       default: ""
@@ -49,19 +39,26 @@ export default {
   data() {
     return {};
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
     cancelDialog() {
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("cancel");
     },
 
     confirmDialog() {
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("confirm");
     }
   }
 };
 </script>
-
-<style scoped>
-</style>

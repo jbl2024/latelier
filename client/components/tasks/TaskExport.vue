@@ -1,96 +1,83 @@
 <template>
   <div class="task-export">
-    <v-dialog
-      :value="active"
-      max-width="420"
-      @input="$emit('update:active')"
+    <generic-dialog
+      v-model="showDialog"
+      :title="$t('Export')"
+      simple
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("Export") }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-progress-linear v-if="loading" indeterminate absolute top />
-          <v-list>
-            <v-list-item @click="exportODT()">
-              <v-list-item-avatar>
-                <v-icon class="blue white--text">
-                  mdi-file-document-box-outline
-                </v-icon>
-              </v-list-item-avatar>
+      <template v-slot:content>
+        <v-progress-linear v-if="loading" indeterminate absolute top />
+        <v-list>
+          <v-list-item @click="exportODT()">
+            <v-list-item-avatar>
+              <v-icon class="blue white--text">
+                mdi-file-document-box-outline
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  ODT
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  OpenDocument Format - LibreOffice Writer
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                ODT
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                OpenDocument Format - LibreOffice Writer
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-            <v-list-item @click="exportODS()">
-              <v-list-item-avatar>
-                <v-icon class="blue white--text">
-                  mdi-google-spreadsheet
-                </v-icon>
-              </v-list-item-avatar>
+          <v-list-item @click="exportODS()">
+            <v-list-item-avatar>
+              <v-icon class="blue white--text">
+                mdi-google-spreadsheet
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  ODS
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  OpenDocument Format - LibreOffice Calc
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                ODS
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                OpenDocument Format - LibreOffice Calc
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-            <v-list-item @click="exportDOCX()">
-              <v-list-item-avatar>
-                <v-icon class="green white--text">
-                  mdi-file-document-box-outline
-                </v-icon>
-              </v-list-item-avatar>
+          <v-list-item @click="exportDOCX()">
+            <v-list-item-avatar>
+              <v-icon class="green white--text">
+                mdi-file-document-box-outline
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  DOCX
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  Word
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                DOCX
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                Word
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-            <v-list-item @click="exportXLSX()">
-              <v-list-item-avatar>
-                <v-icon class="green white--text">
-                  mdi-google-spreadsheet
-                </v-icon>
-              </v-list-item-avatar>
+          <v-list-item @click="exportXLSX()">
+            <v-list-item-avatar>
+              <v-icon class="green white--text">
+                mdi-google-spreadsheet
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  XLSX
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  Excel
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn v-shortkey="['esc']" text @click="close()" @shortkey="close()">
-            {{ this.$t("Close") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-list-item-content>
+              <v-list-item-title>
+                XLSX
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                Excel
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -103,18 +90,27 @@ export default {
       type: String,
       default: ""
     },
-    active: Boolean
+    value: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       loading: false
     };
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
-    close() {
-      this.$emit("update:active", false);
-    },
-
     exportODT() {
       if (this.loading) return;
       this.loading = true;
@@ -173,6 +169,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-</style>

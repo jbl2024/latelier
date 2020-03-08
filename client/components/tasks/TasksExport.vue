@@ -1,62 +1,45 @@
 <template>
   <div class="tasks-export">
-    <v-dialog
-      :value="active"
-      max-width="420"
-      @input="$emit('update:active')"
-    >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("Export") }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-progress-linear v-if="loading" indeterminate absolute top />
-          <v-list>
-            <v-list-item @click="exportODS()">
-              <v-list-item-avatar>
-                <v-icon class="blue white--text">
-                  mdi-google-spreadsheet
-                </v-icon>
-              </v-list-item-avatar>
+    <generic-dialog v-model="showDialog" :title="$t('Export')" simple>
+      <template v-slot:content>
+        <v-progress-linear v-if="loading" indeterminate absolute top />
+        <v-list>
+          <v-list-item @click="exportODS()">
+            <v-list-item-avatar>
+              <v-icon class="blue white--text">
+                mdi-google-spreadsheet
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  ODS
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  OpenDocument Format - LibreOffice Calc
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                ODS
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                OpenDocument Format - LibreOffice Calc
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
 
-            <v-list-item @click="exportXLSX()">
-              <v-list-item-avatar>
-                <v-icon class="green white--text">
-                  mdi-google-spreadsheet
-                </v-icon>
-              </v-list-item-avatar>
+          <v-list-item @click="exportXLSX()">
+            <v-list-item-avatar>
+              <v-icon class="green white--text">
+                mdi-google-spreadsheet
+              </v-icon>
+            </v-list-item-avatar>
 
-              <v-list-item-content>
-                <v-list-item-title>
-                  XLSX
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  Excel
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-          </v-list>
-        </v-card-text>
-        <v-divider />
-        <v-card-actions>
-          <v-spacer />
-          <v-btn v-shortkey="['esc']" text @click="close()" @shortkey="close()">
-            {{ this.$t("Close") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-list-item-content>
+              <v-list-item-title>
+                XLSX
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                Excel
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -69,48 +52,67 @@ export default {
       type: String,
       default: ""
     },
-    active: Boolean
+    value: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
       loading: false
     };
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
-    close() {
-      this.$emit("update:active", false);
-    },
-
     exportODS() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call("tasks.exportProject", { projectId: this.projectId, format: "ods" }, (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
+      Meteor.call(
+        "tasks.exportProject",
+        { projectId: this.projectId, format: "ods" },
+        (error, result) => {
+          this.loading = false;
+          if (error) {
+            this.$notifyError(error);
+            return;
+          }
+          const blob = new Blob([result.data], {
+            type: "application/vnd.oasis.opendocument.spreadsheet"
+          });
+          saveAs(blob, "task.ods");
         }
-        const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.spreadsheet" });
-        saveAs(blob, "task.ods");
-      });
+      );
     },
 
     exportXLSX() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call("tasks.exportProject", { projectId: this.projectId, format: "xlsx" }, (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
+      Meteor.call(
+        "tasks.exportProject",
+        { projectId: this.projectId, format: "xlsx" },
+        (error, result) => {
+          this.loading = false;
+          if (error) {
+            this.$notifyError(error);
+            return;
+          }
+          const blob = new Blob([result.data], {
+            type:
+              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+          });
+          saveAs(blob, "task.xlsx");
         }
-        const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-        saveAs(blob, "task.xlsx");
-      });
+      );
     }
   }
 };
 </script>
-
-<style scoped>
-</style>

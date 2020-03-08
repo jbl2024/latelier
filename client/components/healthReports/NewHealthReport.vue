@@ -1,116 +1,80 @@
 <template>
   <div class="new-health-report">
-    <select-date
-      :active.sync="showSelectDate"
-      :disable-time="true"
-      @select="onSelectDate"
-    />
+    <generic-dialog
+      v-model="showDialog"
+      :title="$t('New report')"
+      max-width="800px"
+    >
+      <template v-slot:content>
+        <select-date
+          v-model="showSelectDate"
+          :disable-time="true"
+          @select="onSelectDate"
+        />
 
-    <v-dialog v-model="showDialog" :fullscreen="$vuetify.breakpoint.xsOnly">
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="close()"
-            @shortkey="close()"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            <span>{{ $t("New report") }} </span>
-          </v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn text dark :disabled="!valid || !coherent" @click="create">
-              {{ $t("Create") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          {{ $t("New report") }}
-        </v-card-title>
-        <v-card-text class="flex1">
-          <v-form v-model="valid" @submit.prevent>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  v-model="name"
-                  :rules="nameRules"
-                  :label="$t('Name')"
-                  required
-                />
-              </v-flex>
-              <v-flex xs12>
-                <v-list two-line class="elevation-1 date">
-                  <v-list-item @click="showSelectDate = true">
-                    <v-list-item-avatar>
-                      <v-icon>mdi-calendar-today</v-icon>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>{{ $t("Date") }}</v-list-item-title>
-                      <v-list-item-subtitle>
-                        <span v-show="date">{{ formatDate(date) }}</span>
-                      </v-list-item-subtitle>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-btn text icon @click.stop="onSelectDate(null)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-flex>
-              <v-flex xs12>
-                <v-combobox
-                  v-model="weather"
-                  :items="items"
-                  :label="$t('Project health')"
-                >
-                  <template slot="selection" slot-scope="data">
-                    <img :src="getIcon(data.item)">
-                  </template>
-                  <template slot="item" slot-scope="data">
-                    <img :src="getIcon(data.item)">
-                  </template>
-                </v-combobox>
-              </v-flex>
+        <v-form v-model="valid" @submit.prevent>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+                v-model="name"
+                :rules="nameRules"
+                :label="$t('Name')"
+                required
+              />
+            </v-flex>
+            <v-flex xs12>
+              <v-list two-line class="elevation-1 date">
+                <v-list-item @click="showSelectDate = true">
+                  <v-list-item-avatar>
+                    <v-icon>mdi-calendar-today</v-icon>
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title>{{ $t("Date") }}</v-list-item-title>
+                    <v-list-item-subtitle>
+                      <span v-show="date">{{ formatDate(date) }}</span>
+                    </v-list-item-subtitle>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-btn text icon @click.stop="onSelectDate(null)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+            </v-flex>
+            <v-flex xs12>
+              <v-combobox
+                v-model="weather"
+                :items="items"
+                :label="$t('Project health')"
+              >
+                <template slot="selection" slot-scope="data">
+                  <img :src="getIcon(data.item)">
+                </template>
+                <template slot="item" slot-scope="data">
+                  <img :src="getIcon(data.item)">
+                </template>
+              </v-combobox>
+            </v-flex>
 
-              <v-flex xs12>
-                <label>{{ $t("Description") }}</label>
-                <rich-editor
-                  ref="description"
-                  v-model="description"
-                  :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
-                />
-              </v-flex>
-            </v-layout>
-          </v-form>
-        </v-card-text>
-        <v-card-actions
-          v-if="!$vuetify.breakpoint.xsOnly"
-          class="flex0 actions"
-        >
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ $t("Cancel") }}
-          </v-btn>
-          <v-btn
-            color="primary"
-            :disabled="!valid || !coherent"
-            @click="create"
-          >
-            {{ $t("Create") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+            <v-flex xs12>
+              <label>{{ $t("Description") }}</label>
+              <rich-editor
+                ref="description"
+                v-model="description"
+                :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+              />
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid || !coherent" @click="create">
+          {{ $t("Create") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -169,8 +133,6 @@ export default {
       this.date = moment().format("YYYY-MM-DD");
       this.description = "";
       this.checkConsistency();
-
-      this.$nextTick(() => this.$refs.description.focus());
     },
     close() {
       this.showDialog = false;
@@ -216,25 +178,5 @@ export default {
 <style scoped>
 .date {
   margin-bottom: 24px;
-}
-
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.flex0 {
-  flex: 0;
-  height: 100%;
-}
-
-.flex1 {
-  flex: 1; /* takes the remaining height of the "container" div */
-  overflow: auto; /* to scroll just the "main" div */
-}
-
-.actions {
-  min-height: 48px;
 }
 </style>

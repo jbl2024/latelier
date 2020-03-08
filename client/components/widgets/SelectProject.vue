@@ -1,63 +1,46 @@
 <template>
   <div class="select-project">
-    <v-dialog
-      :value="active"
+    <generic-dialog
+      v-model="showDialog"
       max-width="820"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      @input="$emit('update:active')"
+      :title="$t('Select a project')"
     >
-      <v-card class="flex-container">
-        <v-card-title class="headline">
-          {{ $t("Select a project") }}
-        </v-card-title>
+      <template v-slot:content>
+        <v-text-field
+          v-model="search"
+          :label="$t('Search') + '...'"
+          single-line
+          append-icon="mdi-magnify"
+          clearable
+          @input="debouncedFilter"
+        />
 
-        <div class="flex0 search">
-          <v-text-field
-            v-model="search"
-            :label="$t('Search') + '...'"
-            single-line
-            append-icon="mdi-magnify"
-            clearable
-            @input="debouncedFilter"
+        <v-list class="content">
+          <template v-for="project in projects">
+            <v-list-item :key="project._id" @click="selectProject(project)">
+              <v-list-item-avatar :color="getColor(project)">
+                <v-icon :class="getVisibilityIconClass(project)">
+                  {{ getVisibilityIcon(project) }}
+                </v-icon>
+              </v-list-item-avatar>
+              <v-list-item-content class="pointer">
+                <v-list-item-title>{{ project.name }}</v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ formatProjectDates(project) }}
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+          </template>
+        </v-list>
+        <div class="text-xs-center pb-2 flex0">
+          <v-pagination
+            v-if="showDialog && pagination.totalPages > 1"
+            v-model="page"
+            :length="pagination.totalPages"
           />
         </div>
-
-        <v-card-text class="flex1">
-          <v-list class="content">
-            <template v-for="project in projects">
-              <v-list-item :key="project._id" @click="selectProject(project)">
-                <v-list-item-avatar :color="getColor(project)">
-                  <v-icon :class="getVisibilityIconClass(project)">
-                    {{ getVisibilityIcon(project) }}
-                  </v-icon>
-                </v-list-item-avatar>
-                <v-list-item-content class="pointer">
-                  <v-list-item-title>{{ project.name }}</v-list-item-title>
-                  <v-list-item-subtitle>
-                    {{ formatProjectDates(project) }}
-                  </v-list-item-subtitle>
-                </v-list-item-content>
-              </v-list-item>
-            </template>
-          </v-list>
-        </v-card-text>
-        <div class="flex0">
-          <div class="text-xs-center">
-            <v-pagination
-              v-if="active && pagination.totalPages > 1"
-              v-model="page"
-              :length="pagination.totalPages"
-            />
-          </div>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="closeDialog">
-              {{ $t("Cancel") }}
-            </v-btn>
-          </v-card-actions>
-        </div>
-      </v-card>
-    </v-dialog>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -70,7 +53,10 @@ import debounce from "lodash/debounce";
 export default {
   mixins: [DatesMixin],
   props: {
-    active: Boolean
+    value: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -86,9 +72,19 @@ export default {
       }
     };
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   watch: {
-    active(active) {
-      if (active) {
+    showDialog(showDialog) {
+      if (showDialog) {
         this.page = 1;
         this.refresh();
       }
@@ -122,10 +118,6 @@ export default {
     }
   },
   methods: {
-    closeDialog() {
-      this.$emit("update:active", false);
-    },
-
     refresh() {
       this.loading = true;
       Meteor.call(
@@ -147,8 +139,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
       ) {
         return 0;
       }
@@ -159,13 +151,15 @@ export default {
     },
 
     selectProject(project) {
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("select", project);
     },
 
     formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
+        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
+          project.endDate
+        )}`;
       }
       if (project.startDate) {
         return `A partir du ${this.formatDate(project.startDate)}`;
@@ -198,29 +192,16 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: scroll;
-}
-
-.search {
-  padding-left: 48px;
-  padding-right: 48px;
-}
-
 @media (max-width: 600px) {
-  .search {
-    padding-left: 12px;
-    padding-right: 12px;
+  .content {
+    overflow-y: auto;
   }
 }
 
 @media (min-width: 601px) {
-  .flex-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 100px);
-    min-height: 360px;
-    max-height: 530px;
+  .content {
+    overflow-y: auto;
+    height: 320px;
   }
 
   .flex0 {
@@ -228,8 +209,9 @@ export default {
   }
 
   .flex1 {
-    flex: 1;
-    overflow-y: scroll;
+    flex: 1; /* takes the remaining height of the "container" div */
+    overflow: auto; /* to scroll just the "main" div */
   }
 }
+
 </style>

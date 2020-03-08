@@ -1,15 +1,15 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <select-background :active.sync="showSelectBackgroundDialog" />
+      <select-background v-model="showSelectBackgroundDialog" />
       <task-history
+        v-model="showTaskHistory"
         :task-id="selectedTask ? selectedTask._id : '0'"
-        :active.sync="showTaskHistory"
       />
 
       <task-export
+        v-model="showTaskExport"
         :task-id="selectedTask ? selectedTask._id : '0'"
-        :active.sync="showTaskExport"
       />
 
       <v-app-bar
@@ -106,7 +106,7 @@
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
-        <v-btn icon text @click="showSnackbar = false">
+        <v-btn dark icon text @click="showSnackbar = false">
           <v-icon>mdi-close</v-icon>
         </v-btn>
       </v-snackbar>
