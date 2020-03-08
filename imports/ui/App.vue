@@ -366,7 +366,7 @@ html {
 
 @media (min-width: 1265px) {
   .main-content {
-    margin-left: 80px;
+    margin-left: 56px;
   }
 }
 
