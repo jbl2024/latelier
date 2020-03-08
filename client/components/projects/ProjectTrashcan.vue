@@ -1,32 +1,12 @@
 <template>
   <div class="project-trashcan">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       max-width="640px"
+      :title="$t('Trashcan')"
     >
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn icon text @click="close()">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text @click="flush()">
-              {{ $t("Flush") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          {{ $t("Trashcan") }}
-        </v-card-title>
-        <v-card-text class="content flex1">
+      <template v-slot:content>
+        <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
           <empty-state
             v-if="tasks && tasks.length === 0 && !loading"
@@ -80,27 +60,23 @@
               <v-divider :key="`divider-${task._id}`" />
             </template>
           </v-list>
-        </v-card-text>
-        <div class="flex0">
-          <div class="text-xs-center">
-            <v-pagination
-              v-if="pagination.totalPages > 0"
-              v-model="page"
-              :length="pagination.totalPages"
-            />
-          </div>
         </div>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-spacer />
-          <v-btn color="error" @click="flush()">
-            {{ $t("Flush") }}
-          </v-btn>
-          <v-btn text @click="close()">
-            {{ $t("Close") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+
+        <div class="text-xs-center flex0">
+          <v-pagination
+            v-if="pagination.totalPages > 0"
+            v-model="page"
+            :length="pagination.totalPages"
+          />
+        </div>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn text @click="flush()">
+          {{ $t("Flush") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -188,8 +164,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
       ) {
         return 0;
       }
@@ -257,24 +233,25 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: auto;
-  max-height: 400px;
-  min-height: 400px;
-}
-.flex-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+@media (max-width: 600px) {
+  .content {
+    overflow-y: auto;
+  }
 }
 
-.flex0 {
-  flex: 0;
-  height: 100%;
-}
+@media (min-width: 601px) {
+  .content {
+    overflow-y: auto;
+    height: 300px;
+  }
 
-.flex1 {
-  flex: 1; /* takes the remaining height of the "container" div */
-  overflow: auto; /* to scroll just the "main" div */
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1; /* takes the remaining height of the "container" div */
+    overflow: auto; /* to scroll just the "main" div */
+  }
 }
 </style>
