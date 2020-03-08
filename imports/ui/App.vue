@@ -60,6 +60,7 @@
           width="270px"
           class="drawer"
           :mini-variant="!hover && !$vuetify.breakpoint.xs"
+          :mini-variant-width="80"
         >
           <div ref="menu" class="drawer-wrapper">
             <organization-menu
@@ -366,7 +367,7 @@ html {
 
 @media (min-width: 1265px) {
   .main-content {
-    margin-left: 56px;
+    margin-left: 80px;
   }
 }
 
