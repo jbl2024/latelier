@@ -1,73 +1,39 @@
 <template>
   <div class="edit-process-diagram">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
       max-width="520"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      :title="$t('Edit process diagram')"
     >
-      <v-card class="flex-container">
-        <v-toolbar
-          v-if="$vuetify.breakpoint.xsOnly"
-          dark
-          color="primary"
-          class="flex0"
-        >
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="close()"
-            @shortkey="close()"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            <span>{{ $t("Edit process diagram") }}</span>
-          </v-toolbar-title>
-          <v-spacer />
-          <v-toolbar-items>
-            <v-btn dark text :disabled="!valid" @click="update">
-              {{ $t("Update") }}
-            </v-btn>
-          </v-toolbar-items>
-        </v-toolbar>
-        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
-          {{ $t("Edit process diagram") }}
-        </v-card-title>
-        <v-card-text class="flex1">
-          <v-form v-model="valid" @submit.prevent>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  ref="name"
-                  v-model="name"
-                  :rules="nameRules"
-                  :label="$t('Name')"
-                  required
-                />
-              </v-flex>
-              <v-flex xs12>
-                <label>{{ $t("Description") }}</label>
-                <rich-editor
-                  ref="description"
-                  v-model="description"
-                  :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
-                />
-              </v-flex>
-            </v-layout>
-          </v-form>
-        </v-card-text>
-        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ $t("Cancel") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="update">
-            {{ $t("Update") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <v-form v-model="valid" @submit.prevent>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+                ref="name"
+                v-model="name"
+                :rules="nameRules"
+                :label="$t('Name')"
+                required
+              />
+            </v-flex>
+            <v-flex xs12>
+              <label>{{ $t("Description") }}</label>
+              <rich-editor
+                ref="description"
+                v-model="description"
+                :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+              />
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </template>
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid" @click="update">
+          {{ $t("Update") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
