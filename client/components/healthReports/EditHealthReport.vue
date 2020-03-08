@@ -49,10 +49,10 @@
                 :label="$t('Project health')"
               >
                 <template slot="selection" slot-scope="data">
-                  <img :src="getIcon(data.item)" />
+                  <img :src="getIcon(data.item)">
                 </template>
                 <template slot="item" slot-scope="data">
-                  <img :src="getIcon(data.item)" />
+                  <img :src="getIcon(data.item)">
                 </template>
               </v-combobox>
             </v-flex>
