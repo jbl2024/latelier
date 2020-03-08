@@ -111,6 +111,7 @@
         <v-list-item-action>
           <v-switch
             v-model="allowedOrganization"
+            color="accent"
             @click="toggleProjectVisibility(project)"
           />
         </v-list-item-action>

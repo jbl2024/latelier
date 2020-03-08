@@ -22,9 +22,9 @@
               <v-col cols="6">
                 <label>{{ $t("Template") }}</label>
                 <v-radio-group v-model="projectType">
-                  <v-radio label="Kanban" value="kanban" />
-                  <v-radio :label="$t('People')" value="people" />
-                  <v-radio :label="$t('Empty')" value="none" />
+                  <v-radio color="accent" label="Kanban" value="kanban" />
+                  <v-radio color="accent" :label="$t('People')" value="people" />
+                  <v-radio color="accent" :label="$t('Empty')" value="none" />
                 </v-radio-group>
               </v-col>
               <v-col cols="6">
@@ -35,6 +35,7 @@
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
+                    color="accent"
                   />
                 </v-radio-group>
               </v-col>
@@ -55,6 +56,7 @@
                     <v-list-item-action>
                       <v-switch
                         v-model="allowOrganization"
+                        color="accent"
                         @click="allowOrganization = !allowOrganization"
                       />
                     </v-list-item-action>

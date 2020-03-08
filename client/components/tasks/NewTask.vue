@@ -60,6 +60,7 @@
               <v-flex xs12>
                 <v-checkbox
                   v-model="multiline"
+                  color="accent"
                   :class="{ hidden: !showMultilineOption }"
                   :label="$t('Create one task per line')"
                 />

@@ -24,10 +24,10 @@
         </v-flex>
         <v-flex sm6 />
         <v-flex xs12 sm3>
-          <v-switch v-model="filterOnline" :label="$t('Online')" />
+          <v-switch v-model="filterOnline" color="accent" :label="$t('Online')" />
         </v-flex>
         <v-flex xs12 sm3>
-          <v-switch v-model="filterAway" :label="$t('Away')" />
+          <v-switch v-model="filterAway" color="accent" :label="$t('Away')" />
         </v-flex>
         <v-flex xs12 sm3 />
       </v-layout>

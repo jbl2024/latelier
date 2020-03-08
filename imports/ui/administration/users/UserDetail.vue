@@ -46,6 +46,7 @@
             <v-switch
               v-if="!isMe()"
               v-model="user.features.isActive"
+              color="accent"
               :label="
                 `${
                   user.features.isActive ? 'Compte activé' : 'Compte déactivé'
@@ -57,6 +58,7 @@
             <v-switch
               v-if="!isMe()"
               v-model="user.features.emailVerified"
+              color="accent"
               :label="
                 `${
                   user.features.emailVerified
@@ -70,6 +72,7 @@
             <v-switch
               v-if="!isMe()"
               v-model="user.features.isAdmin"
+              color="accent"
               :label="$t('Admin rights')"
             />
           </v-flex>

@@ -27,6 +27,7 @@
               <v-flex xs12 sm6 md6>
                 <v-switch
                   v-model="user.isActive"
+                  color="accent"
                   :label="
                     `${user.isActive ? 'Compte activé' : 'Compte déactivé'}`
                   "
@@ -35,6 +36,7 @@
               <v-flex xs12 sm6 md6>
                 <v-switch
                   v-model="user.isConfirmed"
+                  color="accent"
                   :label="
                     `${
                       user.isConfirmed ? 'Mail confirmé' : 'Mail non confirmé'
