@@ -3,8 +3,8 @@
     <v-app v-resize="onResizeApp">
       <select-background v-model="showSelectBackgroundDialog" />
       <task-history
+        v-model="showTaskHistory"
         :task-id="selectedTask ? selectedTask._id : '0'"
-        :active.sync="showTaskHistory"
       />
 
       <task-export
