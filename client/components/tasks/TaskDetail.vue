@@ -1,7 +1,7 @@
 <template>
   <div class="task-detail">
     <select-project
-      :active.sync="showSelectProjectToClone"
+      v-model="showSelectProjectToClone"
       @select="cloneToProject"
     />
     <div class="toolbar">

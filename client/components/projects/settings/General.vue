@@ -24,7 +24,7 @@
       :active.sync="showSelectOrganization"
       @select="onSelectOrganization"
     />
-    <select-project :active.sync="showSelectProject" @select="importLabels" />
+    <select-project v-model="showSelectProject" @select="importLabels" />
     <select-color :active.sync="showSelectColor" @select="onSelectColor" />
 
     <v-subheader>{{ $t("Description") }}</v-subheader>

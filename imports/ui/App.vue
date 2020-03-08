@@ -8,8 +8,8 @@
       />
 
       <task-export
+        v-model="showTaskExport"
         :task-id="selectedTask ? selectedTask._id : '0'"
-        :active.sync="showTaskExport"
       />
 
       <v-app-bar

@@ -27,9 +27,11 @@
         <v-card-title v-if="!isFullscreen" class="headline flex0">
           {{ title }}
         </v-card-title>
+        <v-divider />
         <v-card-text class="flex1">
           <slot name="content" />
         </v-card-text>
+        <v-divider />
         <v-card-actions v-if="!isFullscreen" class="flex0">
           <v-spacer />
           <v-btn text @click="close()">
