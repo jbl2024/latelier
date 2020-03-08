@@ -31,7 +31,7 @@
         </v-card-title>
         <v-divider />
         <v-card-text class="flex1">
-          <v-tabs v-if="active" grow>
+          <v-tabs v-if="active" fixed-tabs>
             <v-tabs-slider color="accent" />
             <v-tab>
               Date

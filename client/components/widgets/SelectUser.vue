@@ -12,7 +12,7 @@
         </v-card-title>
         <v-divider />
         <div>
-          <v-tabs v-if="active" ref="tabs" grow>
+          <v-tabs v-if="active" ref="tabs" class="select-user-tabs" fixed-tabs>
             <v-tabs-slider color="accent" />
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
@@ -380,5 +380,12 @@ export default {
 .invite {
   margin-top: 24px;
   text-align: center;
+}
+
+</style>
+
+<style>
+.select-user-tabs .v-slide-group__prev {
+  display: none !important;
 }
 </style>
