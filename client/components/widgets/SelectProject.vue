@@ -32,7 +32,7 @@
             </v-list-item>
           </template>
         </v-list>
-        <div class="text-xs-center">
+        <div class="text-xs-center pb-2 flex0">
           <v-pagination
             v-if="showDialog && pagination.totalPages > 1"
             v-model="page"
@@ -192,19 +192,25 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: scroll;
-}
-
-.search {
-  padding-left: 48px;
-  padding-right: 48px;
-}
-
 @media (max-width: 600px) {
-  .search {
-    padding-left: 12px;
-    padding-right: 12px;
+  .content {
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 601px) {
+  .content {
+    overflow-y: auto;
+    height: 320px;
+  }
+
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1; /* takes the remaining height of the "container" div */
+    overflow: auto; /* to scroll just the "main" div */
   }
 }
 
