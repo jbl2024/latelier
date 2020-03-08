@@ -3,13 +3,34 @@
     <v-dialog
       v-model="showDialog"
       max-width="420"
+      :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-      <v-card>
-        <v-card-title class="headline">
+      <v-card class="flex-container">
+        <v-toolbar
+          v-if="$vuetify.breakpoint.xsOnly"
+          dark
+          color="primary"
+          class="flex0"
+        >
+          <v-btn icon text @click="showDialog = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn dark text @click="remove">
+              {{ this.$t("Delete") }}
+            </v-btn>
+            <v-btn dark text :disabled="!valid" @click="updateNameAndColor">
+              Modifier
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+
+        <v-card-title v-if="!$vuetify.breakpoint.xsOnly" class="headline">
           Editer le label
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="flex1">
           <v-form v-model="valid" @submit.prevent>
             <v-text-field
               ref="name"
@@ -34,7 +55,7 @@
             />
           </v-form>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions v-if="!$vuetify.breakpoint.xsOnly">
           <v-spacer />
           <v-btn text @click="showDialog = false">
             {{ this.$t("Cancel") }}
@@ -117,17 +138,13 @@ export default {
       /* eslint no-alert: off */
       /* eslint no-restricted-globals: off */
       if (confirm("Voulez-vous supprimer définitivement ce label ?")) {
-        Meteor.call(
-          "labels.remove",
-          { labelId: this.label._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.showDialog = false;
+        Meteor.call("labels.remove", { labelId: this.label._id }, (error) => {
+          if (error) {
+            this.$notifyError(error);
+            return;
           }
-        );
+          this.showDialog = false;
+        });
       }
     },
 
