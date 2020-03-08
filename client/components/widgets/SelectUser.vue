@@ -25,7 +25,7 @@
             </v-tab>
             <v-tab-item v-if="!hideProject && project" class="pa-4">
               <div class="flex-container">
-                <div class="flex0">
+                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
                     :label="$t('Search') + '...'"
                     single-line
@@ -53,7 +53,7 @@
             </v-tab-item>
             <v-tab-item v-if="project && project.organizationId" class="pa-4">
               <div class="flex-container">
-                <div class="flex0">
+                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
                     :label="$t('Search') + '...'"
                     single-line
