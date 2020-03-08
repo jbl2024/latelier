@@ -6,7 +6,7 @@
     />
 
     <project-filters-dialog
-      :active.sync="showFiltersDialog"
+      v-model="showFiltersDialog"
       :project-id="project._id"
     />
 
