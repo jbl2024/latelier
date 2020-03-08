@@ -565,32 +565,32 @@ export default {
 
 .edit-button {
   overflow: hidden;
-  position: absolute;
+  position: absolute !important;
   right: 8px;
   top: 4px;
 }
 
 .delete-button {
   overflow: hidden;
-  position: absolute;
+  position: absolute !important;
   right: 8px;
   top: 40px;
 }
 
 .has-notes {
-  position: absolute;
+  position: absolute !important;
   right: 8px;
   top: 24px;
 }
 
 .has-attachments-shifted {
-  position: absolute;
+  position: absolute !important;
   right: 24px;
   top: 24px;
 }
 
 .has-attachments {
-  position: absolute;
+  position: absolute !important;
   right: 8px;
   top: 24px;
 }
