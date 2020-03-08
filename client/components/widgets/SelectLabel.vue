@@ -12,6 +12,7 @@
         <v-divider />
         <v-card-text>
           <v-text-field
+            v-if="!$vuetify.breakpoint.xsOnly"
             :label="$t('Search') + '...'"
             single-line
             append-icon="mdi-magnify"
