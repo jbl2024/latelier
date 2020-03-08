@@ -1,8 +1,8 @@
 <template>
   <v-toolbar ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
     <tasks-export
+      v-model="showTasksExport"
       :project-id="project._id"
-      :active.sync="showTasksExport"
     />
 
     <project-filters-dialog
