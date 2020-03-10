@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replace vue2-editor with tiptap (see https://github.com/scrumpy/tiptap)
 - Improve dialogs on mobile (no more fullscreen everywhere)
 - Update vuetify to 2.2.15
+- Fix icons display in task items (weird behavior in ff74)
+
 
 ### Removed
 
