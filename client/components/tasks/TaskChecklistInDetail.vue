@@ -70,9 +70,11 @@
       ref="newItem"
       v-model="item"
       class="add-item"
-      preprend-icon="mdi-checkbox-blank-outline"
+      append-icon="mdi-send"
+      prepend-icon="mdi-checkbox-blank-outline"
       :label="$t('New item')"
       @keyup.enter="addItem"
+      @click:append="addItem"
     />
   </div>
 </template>
