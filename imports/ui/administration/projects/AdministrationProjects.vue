@@ -24,15 +24,28 @@
           <v-row>
             <v-col>
               <v-list subheader>
-                <v-subheader>
+                <v-subheader inset>
                   {{ pagination.totalItems }} {{ $t("Projects") }}
                 </v-subheader>
                 <template v-for="project in projects">
                   <v-list-item :key="project._id" @click="openDetail(project)">
+                    <v-list-item-avatar :color="getColor(project)">
+                      <v-icon :class="getVisibilityIconClass(project)">
+                        {{ getVisibilityIcon(project) }}
+                      </v-icon>
+                    </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title :class="getClass(project)">
                         {{ project.name }}
                       </v-list-item-title>
+                      <v-list-item-subtitle>
+                        <author-line
+                          :user-id="project.createdBy"
+                          :date="project.createdAt"
+                          class="author"
+                          :prefix="$t('Created by')"
+                        />
+                      </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action v-if="project.deleted">
                       <v-btn color="red" icon ripple @click.stop="deleteForever(project)">
@@ -73,7 +86,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { Permissions } from "/imports/api/permissions/permissions";
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 
 import debounce from "lodash/debounce";
 
@@ -225,7 +238,26 @@ export default {
         return "deleted";
       }
       return "";
+    },
+
+    getVisibilityIcon(project) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
+        return "mdi-eye";
+      }
+      return "mdi-eye-off";
+    },
+
+    getVisibilityIconClass(project) {
+      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
+        return "";
+      }
+      return "";
+    },
+
+    getColor(project) {
+      return project.color;
     }
+
 
   }
 };
