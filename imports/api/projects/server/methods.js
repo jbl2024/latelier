@@ -123,7 +123,7 @@ Projects.methods.adminFind = new ValidatedMethod({
   validate: new SimpleSchema({
     page: { type: Number },
     filter: { type: String, optional: true },
-    isDeleted: { type: Boolean, optional: true}
+    isDeleted: { type: Boolean, optional: true }
   }).validator(),
   run({ page, filter, isDeleted }) {
     if (!Permissions.isAdmin(Meteor.userId())) {
