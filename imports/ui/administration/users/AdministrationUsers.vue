@@ -20,7 +20,6 @@
           <v-row>
             <v-col cols="12" sm="12" lg="6">
               <v-text-field
-                v-model="search"
                 :label="$t('Search') + '...'"
                 single-line
                 append-icon="mdi-magnify"
