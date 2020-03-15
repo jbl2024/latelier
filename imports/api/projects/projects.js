@@ -201,7 +201,7 @@ Projects.methods.deleteForever = new ValidatedMethod({
     );
     const projectGroups = ProjectGroups.find({ projects: projectId });
     projectGroups.forEach((projectGroup) => {
-      Meteor.call("projectGroups.removeProjet", projectGroup._id, projectId);
+      Meteor.call("projectGroups.removeProject", projectGroup._id, projectId);
     });
 
     const query = {};

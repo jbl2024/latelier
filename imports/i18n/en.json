@@ -170,6 +170,13 @@
   "Start edition": "Start edition",
   "Undo": "Undo",
   "Redo": "Redo",
+  "Delete forever": "Delete forever",
+  "Restore from trash": "Restore from trash",
+  "Delete task?": "Delete task?",
+  "Delete all tasks?": "Delete all tasks?",
+  "Task deleted": "Task deleted",
+  "Tasks deleted": "Tasks deleted",
+  "Flush": "Flush",
   "history": {
     "tasks": {
       "create": "Creation",

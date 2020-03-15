@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Add projects in administration pages (actions: view/move to trash/delete)
 
 ### Changed
 - Fix list move bug when moving created list to first row
