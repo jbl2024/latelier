@@ -87,28 +87,6 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
   mixins: [usersMixin, DatesMixin],
-  i18n: {
-    messages: {
-      en: {
-        "Delete task?": "Delete task?",
-        "Delete all tasks?": "Delete all tasks?",
-        "Task deleted": "Task deleted",
-        "Tasks deleted": "Tasks deleted",
-        "Delete forever": "Delete forever",
-        "Restore from trash": "Restore from trash",
-        Flush: "Flush"
-      },
-      fr: {
-        "Delete task?": "Supprimer la tâche ?",
-        "Delete all tasks?": "Supprimer toutes les tâches ?",
-        "Task deleted": "Tâche supprimée",
-        "Tasks deleted": "Tâches supprimées",
-        "Delete forever": "Supprimer définitivement",
-        "Restore from trash": "Restaurer de la corbeille",
-        Flush: "Vider"
-      }
-    }
-  },
   props: {
     projectId: {
       type: String,

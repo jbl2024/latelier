@@ -170,6 +170,13 @@
   "Start edition": "Démarrer l'édition",
   "Undo": "Annuler",
   "Redo": "Refaire",
+  "Delete forever": "Supprimer définitivement",
+  "Restore from trash": "Restaurer de la corbeille",
+  "Delete task?": "Supprimer la tâche ?",
+  "Delete all tasks?": "Supprimer toutes les tâches ?",
+  "Task deleted": "Tâche supprimée",
+  "Tasks deleted": "Tâches supprimées",
+  "Flush": "Vider",
   "history": {
     "tasks": {
       "create": "Création",
