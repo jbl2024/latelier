@@ -117,3 +117,78 @@ Projects.methods.info = new ValidatedMethod({
     };
   }
 });
+
+Projects.methods.adminFind = new ValidatedMethod({
+  name: "admin.findProjects",
+  validate: new SimpleSchema({
+    page: { type: Number },
+    filter: { type: String, optional: true },
+    isDeleted: { type: Boolean, optional: true}
+  }).validator(),
+  run({ page, filter, isDeleted }) {
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    const perPage = 10;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+    const query = {};
+    if (filter && filter.length > 0) {
+      query.name = {
+        $regex: `.*${filter}.*`,
+        $options: "i"
+      };
+    }
+    if (isDeleted) {
+      query.deleted = true;
+    }
+    const count = Projects.find(query).count();
+
+    const data = Projects
+      .find(query, {
+        skip,
+        limit: perPage,
+        sort: {
+          name: 1
+        }
+      })
+      .fetch();
+
+    const loadUser = (aUserId) => {
+      if (!aUserId) return {};
+      return Meteor.users.findOne(
+        { _id: aUserId },
+        {
+          fields: {
+            profile: 1,
+            status: 1,
+            statusDefault: 1,
+            statusConnection: 1,
+            emails: 1,
+            roles: 1
+          }
+        }
+      );
+    };
+
+    data.forEach((project) => {
+      project.createdBy = loadUser(project.createdBy);
+    });
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
+  }
+});
