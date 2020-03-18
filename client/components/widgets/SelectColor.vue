@@ -4,7 +4,6 @@
       :value="active"
       persistent
       max-width="390"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
       <v-card>

@@ -13,13 +13,13 @@
       @select="onChooseAssignedTo"
     />
     <select-date
+      v-model="showSelectDueDate"
       reminder
-      :active.sync="showSelectDueDate"
       @select="onSelectDueDate"
     />
     <select-date
+      v-model="showSelectStartDate"
       reminder
-      :active.sync="showSelectStartDate"
       @select="onSelectStartDate"
     />
 

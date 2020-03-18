@@ -42,7 +42,7 @@ Meteor.startup(() => {
 
 Accounts.config({
   forbidClientAccountCreation: true,
-  sendVerificationEmail: true
+  sendVerificationEmail: Meteor.settings.public.emailVerificationNeeded
 });
 
 /* eslint no-underscore-dangle: "off" */
@@ -84,7 +84,7 @@ const vuetify = new Vuetify({
 });
 
 Vue.use(require("vue-shortkey"), {
-  prevent: ["input", "textarea", ".ql-editor"]
+  prevent: ["input", "textarea", ".ProseMirror"]
 });
 
 Vue.use(confirm, { vuetify });

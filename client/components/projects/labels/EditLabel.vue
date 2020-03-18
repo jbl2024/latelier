@@ -1,61 +1,47 @@
 <template>
   <div class="edit-label">
-    <v-dialog
-      v-model="showDialog"
-      max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-    >
-      <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-      <v-card>
-        <v-card-title class="headline">
-          Editer le label
-        </v-card-title>
-        <v-card-text>
-          <v-form v-model="valid" @submit.prevent>
-            <v-text-field
-              ref="name"
-              v-model="label.name"
-              :rules="nameRules"
-              :label="$t('Name')"
-              required
-              @keyup.enter="updateNameAndColor()"
-            />
-            <v-btn
-              color="primary"
-              class="btn-color"
-              @click="showSelectColor = true"
-            >
-              Choisir une couleur
-            </v-btn>
-            <div
-              ref="color"
-              class="color"
-              :style="getColor(label)"
-              @click="showSelectColor = true"
-            />
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
+    <generic-dialog v-model="showDialog" max-width="420" :title="$t('Edit')">
+      <template v-slot:content>
+        <select-color :active.sync="showSelectColor" @select="onSelectColor" />
+        <v-form v-model="valid" @submit.prevent>
+          <v-text-field
+            v-model="label.name"
+            autofocus
+            :rules="nameRules"
+            :label="$t('Name')"
+            required
+            @keyup.enter="updateNameAndColor()"
+          />
+          <v-btn
+            color="primary"
+            class="btn-color"
+            @click="showSelectColor = true"
+          >
+            Choisir une couleur
           </v-btn>
-          <v-btn color="error" @click="remove">
-            {{ this.$t("Delete") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="updateNameAndColor">
-            Modifier
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+          <div
+            ref="color"
+            class="color"
+            :style="getColor(label)"
+            @click="showSelectColor = true"
+          />
+        </v-form>
+      </template>
+      <template v-slot:actions>
+        <v-btn text @click="remove">
+          {{ $t("Delete") }}
+        </v-btn>
+        <v-btn text :disabled="!valid" @click="updateNameAndColor">
+          {{ $t("Update") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
 import { Labels } from "/imports/api/labels/labels.js";
-import { autofocus } from "/imports/ui/autofocus";
 
 export default {
   props: {
@@ -93,7 +79,6 @@ export default {
   methods: {
     open() {
       this.showDialog = true;
-      this.$nextTick(() => autofocus.focus(this.$refs.name));
     },
 
     updateNameAndColor() {
@@ -118,17 +103,13 @@ export default {
       /* eslint no-alert: off */
       /* eslint no-restricted-globals: off */
       if (confirm("Voulez-vous supprimer définitivement ce label ?")) {
-        Meteor.call(
-          "labels.remove",
-          { labelId: this.label._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.showDialog = false;
+        Meteor.call("labels.remove", { labelId: this.label._id }, (error) => {
+          if (error) {
+            this.$notifyError(error);
+            return;
           }
-        );
+          this.showDialog = false;
+        });
       }
     },
 

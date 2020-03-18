@@ -1,12 +1,12 @@
 <template>
   <div class="project-detail">
     <select-date
-      :active.sync="showSelectStartDate"
+      v-model="showSelectStartDate"
       :disable-time="true"
       @select="onSelectStartDate"
     />
     <select-date
-      :active.sync="showSelectEndDate"
+      v-model="showSelectEndDate"
       :disable-time="true"
       @select="onSelectEndDate"
     />
@@ -31,12 +31,12 @@
     <v-divider />
     <div
       v-if="project.description && project.description.length > 0"
-      class="ql-editor-view description"
+      class="tiptap-editor-view description"
       v-html="linkifyHtml(project.description)"
     />
     <div
       v-if="!project.description || project.description.length == 0"
-      class="ql-editor-view description"
+      class="tiptap-editor-view description"
     >
       {{ $t("No description") }}
     </div>

@@ -1,24 +1,12 @@
 <template>
   <div class="project-trashcan">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       max-width="640px"
+      :title="$t('Trashcan')"
     >
-      <v-toolbar dark color="primary">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="close()"
-          @shortkey="close()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>{{ $t("Trashcan") }}</v-toolbar-title>
-      </v-toolbar>
-      <v-card>
-        <v-card-text class="content">
+      <template v-slot:content>
+        <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
           <empty-state
             v-if="tasks && tasks.length === 0 && !loading"
@@ -30,7 +18,9 @@
             <template v-for="task in tasks">
               <v-list-item :key="task._id" @click="restoreTask(task)">
                 <v-list-item-content>
-                  <v-list-item-title>#{{ task.number }} - {{ task.name }}</v-list-item-title>
+                  <v-list-item-title>
+                    #{{ task.number }} - {{ task.name }}
+                  </v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-tooltip top>
@@ -70,25 +60,23 @@
               <v-divider :key="`divider-${task._id}`" />
             </template>
           </v-list>
-        </v-card-text>
-        <div class="text-xs-center">
+        </div>
+
+        <div class="text-xs-center flex0">
           <v-pagination
             v-if="pagination.totalPages > 0"
             v-model="page"
             :length="pagination.totalPages"
           />
         </div>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="error" @click="flush()">
-            {{ $t("Flush") }}
-          </v-btn>
-          <v-btn text @click="close()">
-            {{ $t("Close") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      </template>
+
+      <template v-slot:actions>
+        <v-btn text @click="flush()">
+          {{ $t("Flush") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -99,28 +87,6 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
   mixins: [usersMixin, DatesMixin],
-  i18n: {
-    messages: {
-      en: {
-        "Delete task?": "Delete task?",
-        "Delete all tasks?": "Delete all tasks?",
-        "Task deleted": "Task deleted",
-        "Tasks deleted": "Tasks deleted",
-        "Delete forever": "Delete forever",
-        "Restore from trash": "Restore from trash",
-        Flush: "Flush"
-      },
-      fr: {
-        "Delete task?": "Supprimer la tâche ?",
-        "Delete all tasks?": "Supprimer toutes les tâches ?",
-        "Task deleted": "Tâche supprimée",
-        "Tasks deleted": "Tâches supprimées",
-        "Delete forever": "Supprimer définitivement",
-        "Restore from trash": "Restaurer de la corbeille",
-        Flush: "Vider"
-      }
-    }
-  },
   props: {
     projectId: {
       type: String,
@@ -176,8 +142,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
       ) {
         return 0;
       }
@@ -245,9 +211,25 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: auto;
-  max-height: 400px;
-  min-height: 400px;
+@media (max-width: 600px) {
+  .content {
+    overflow-y: auto;
+  }
+}
+
+@media (min-width: 601px) {
+  .content {
+    overflow-y: auto;
+    height: 300px;
+  }
+
+  .flex0 {
+    flex: 0;
+  }
+
+  .flex1 {
+    flex: 1; /* takes the remaining height of the "container" div */
+    overflow: auto; /* to scroll just the "main" div */
+  }
 }
 </style>

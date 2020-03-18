@@ -1,27 +1,8 @@
 <template>
   <div class="project-history">
-    <v-dialog
-      v-model="showDialog"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      max-width="60%"
-    >
-      <v-toolbar dark color="primary">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="close()"
-          @shortkey="close()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title>
-          Historique
-        </v-toolbar-title>
-      </v-toolbar>
-
-      <v-card class="flex-container">
-        <v-card-text class="flex1">
+    <generic-dialog v-model="showDialog" max-width="60%" :title="$t('History')">
+      <template v-slot:content>
+        <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
 
           <v-timeline v-if="!loading" dense clipped>
@@ -50,24 +31,18 @@
               </v-card>
             </v-timeline-item>
           </v-timeline>
-        </v-card-text>
-        <div class="flex0">
-          <div class="text-xs-center">
-            <v-pagination
-              v-if="showDialog && pagination.totalPages > 0"
-              v-model="page"
-              :length="pagination.totalPages"
-            />
-          </div>
-          <v-card-actions>
-            <v-spacer />
-            <v-btn text @click="close()">
-              {{ this.$t("Close") }}
-            </v-btn>
-          </v-card-actions>
         </div>
-      </v-card>
-    </v-dialog>
+
+        <div class="text-xs-center pb-2 flex0">
+          <v-pagination
+            v-if="showDialog && pagination.totalPages > 0"
+            v-model="page"
+            :length="pagination.totalPages"
+            :total-visible="6"
+          />
+        </div>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -150,14 +125,16 @@ export default {
 .task-name {
   font-weight: bold;
 }
+@media (max-width: 600px) {
+  .content {
+    overflow-y: auto;
+  }
+}
 
 @media (min-width: 601px) {
-  .flex-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 200px);
-    min-height: 360px;
-    max-height: 530px;
+  .content {
+    overflow-y: auto;
+    height: 420px;
   }
 
   .flex0 {
@@ -165,8 +142,8 @@ export default {
   }
 
   .flex1 {
-    flex: 1;
-    overflow-y: scroll;
+    flex: 1; /* takes the remaining height of the "container" div */
+    overflow: auto; /* to scroll just the "main" div */
   }
 }
 </style>

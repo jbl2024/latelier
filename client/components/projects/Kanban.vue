@@ -106,8 +106,13 @@ export default {
     handleMove(event) {
       const listId = event.item.dataset.id;
       const index = event.newIndex;
-      const { oldIndex } = event;
-      if (index < this.lists.length) {
+      let newOrder = 0;
+
+      if (index >= this.lists.length) {
+        const lastList = this.lists[this.lists.length - 1];
+        newOrder = lastList.order + 1;
+      } else {
+        const { oldIndex } = event;
         const nextList = this.lists[index];
         let inc;
         if (oldIndex < index) {
@@ -115,11 +120,10 @@ export default {
         } else {
           inc = -1;
         }
-
-        Meteor.call("lists.move", this.projectId, listId, nextList.order + inc);
-      } else {
-        Meteor.call("lists.move", this.projectId, listId);
+        newOrder = nextList.order + inc;
       }
+
+      Meteor.call("lists.move", this.projectId, listId, newOrder);
     }
   }
 };

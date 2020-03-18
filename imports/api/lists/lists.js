@@ -85,23 +85,14 @@ Meteor.methods({
       }
     };
 
-    if (order) {
-      Lists.update(
-        { _id: listId },
-        { $set: { order } },
-        {},
-        () => {
-          _reorder();
-        }
-      );
-    } else {
-      const lastList = Lists.findOne({ listId }, { sort: { order: -1 } });
-      if (lastList) {
-        order = lastList.order + 10;
-      } else {
-        order = 10;
+    Lists.update(
+      { _id: listId },
+      { $set: { order } },
+      {},
+      () => {
+        _reorder();
       }
-    }
+    );
   },
 
   "lists.autoComplete"(listId, autoComplete) {

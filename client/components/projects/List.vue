@@ -48,7 +48,7 @@
                 <v-divider />
                 <v-list-item @click="list.autoComplete = !list.autoComplete">
                   <v-list-item-action>
-                    <v-checkbox :input-value="list.autoComplete" />
+                    <v-checkbox color="accent" :input-value="list.autoComplete" />
                   </v-list-item-action>
                   <v-list-item-title>
                     {{ $t("Automatically mark as completed") }}
@@ -58,7 +58,7 @@
                   @click="list.catchCompleted = !list.catchCompleted"
                 >
                   <v-list-item-action>
-                    <v-checkbox :input-value="list.catchCompleted" />
+                    <v-checkbox color="accent" :input-value="list.catchCompleted" />
                   </v-list-item-action>
                   <v-list-item-title>
                     {{ $t("Catch completed tasks") }}

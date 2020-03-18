@@ -3,15 +3,16 @@
   "private": true,
   "scripts": {
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
-    "test": "MOCHA_TIMEOUT=5000 meteor test --once --driver-package meteortesting:mocha",
-    "test-run": "MOCHA_TIMEOUT=5000 meteor test --driver-package meteortesting:mocha",
-    "test-app": "MOCHA_TIMEOUT=5000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "test": "MOCHA_TIMEOUT=8000 meteor test --once --driver-package meteortesting:mocha",
+    "test-run": "MOCHA_TIMEOUT=8000 meteor test --driver-package meteortesting:mocha",
+    "test-app": "MOCHA_TIMEOUT=8000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "lint": "eslint .",
     "pretest": "npm run lint --silent"
   },
   "dependencies": {
     "@babel/runtime": "^7.7.7",
+    "aws-sdk": "^2.614.0",
     "bcrypt": "^3.0.6",
     "bpmn-js": "^6.2.0",
     "carbone": "^1.2.1",
@@ -33,7 +34,9 @@
     "pretty-checkbox": "^3.0.3",
     "showdown": "^1.9.1",
     "simpl-schema": "^1.5.6",
-    "sortablejs": "^1.10.1",
+    "sortablejs": "^1.10.2",
+    "tiptap": "^1.26.6",
+    "tiptap-extensions": "^1.28.6",
     "v-click-outside": "^2.1.5",
     "vue": "^2.6.0",
     "vue-dragscroll": "^1.10.2",
@@ -45,10 +48,9 @@
     "vue-router": "^3.1.3",
     "vue-router-multiguard": "^1.0.3",
     "vue-shortkey": "^3.1.7",
-    "vue2-editor": "^2.10.2",
     "vue2vis": "0.0.16",
     "vuelidate": "^0.7.4",
-    "vuetify": "^2.2.4",
+    "vuetify": "^2.2.15",
     "vuex": "^3.1.1"
   },
   "meteor": {

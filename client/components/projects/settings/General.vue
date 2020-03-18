@@ -1,12 +1,12 @@
 <template>
   <div class="project-settings-general">
     <select-date
-      :active.sync="showSelectStartDate"
+      v-model="showSelectStartDate"
       :disable-time="true"
       @select="onSelectStartDate"
     />
     <select-date
-      :active.sync="showSelectEndDate"
+      v-model="showSelectEndDate"
       :disable-time="true"
       @select="onSelectEndDate"
     />
@@ -24,7 +24,7 @@
       :active.sync="showSelectOrganization"
       @select="onSelectOrganization"
     />
-    <select-project :active.sync="showSelectProject" @select="importLabels" />
+    <select-project v-model="showSelectProject" @select="importLabels" />
     <select-color :active.sync="showSelectColor" @select="onSelectColor" />
 
     <v-subheader>{{ $t("Description") }}</v-subheader>
@@ -39,7 +39,7 @@
           "
           @click="startEditDescription"
         >
-          <div class="ql-editor-view" v-html="markDown(project.description)" />
+          <div class="tiptap-editor-view" v-html="markDown(project.description)" />
         </div>
         <div
           v-show="!project.description && !editDescription"
@@ -111,6 +111,7 @@
         <v-list-item-action>
           <v-switch
             v-model="allowedOrganization"
+            color="accent"
             @click="toggleProjectVisibility(project)"
           />
         </v-list-item-action>

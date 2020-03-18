@@ -1,0 +1,27 @@
+kind: pipeline
+name: default
+
+steps:
+- name: docker  
+  image: plugins/docker
+  settings:
+    repo: jbl2024/latelier
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    auto_tag: true
+
+- name: docker-latest  
+  image: plugins/docker
+  settings:
+    repo: jbl2024/latelier
+    username:
+      from_secret: docker_username
+    password:
+      from_secret: docker_password
+    tags: latest
+
+trigger:
+  ref:
+  - refs/tags/*

@@ -1,68 +1,60 @@
 <template>
   <div class="select-date">
-    <v-dialog
-      :value="active"
+    <generic-dialog
+      v-model="showDialog"
       max-width="520"
-      persistent
-      :fullscreen="$vuetify.breakpoint.xsOnly"
-      @input="$emit('update:active')"
+      :title="$t('Select date')"
     >
-      <v-card>
-        <v-card-title class="headline">
-          {{ $t("Select date") }}
-        </v-card-title>
-        <v-divider />
-        <v-card-text>
-          <v-tabs v-if="active" grow>
-            <v-tab>
-              Date
-            </v-tab>
-            <v-tab>
-              Heure
-            </v-tab>
-            <v-tab-item>
-              <v-date-picker
-                v-model="date"
-                :landscape="!$vuetify.breakpoint.xsOnly"
-                locale="fr-fr"
-                @dblclick.native="checkDblClick"
-              />
-            </v-tab-item>
-            <v-tab-item>
-              <v-time-picker
-                v-model="hour"
-                :landscape="!$vuetify.breakpoint.xsOnly"
-                format="24hr"
-              />
-            </v-tab-item>
-          </v-tabs>
-          <v-select
-            v-if="reminder"
-            v-model="selectedReminder"
-            class="reminder"
-            dense
-            :items="reminders"
-            :label="$t('Reminder')"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="closeDialog">
-            {{ this.$t("Cancel") }}
-          </v-btn>
-          <v-btn color="info" :disabled="!date" @click="selectDate">
-            {{ $t("Select") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <v-tabs v-if="showDialog" fixed-tabs>
+          <v-tabs-slider color="accent" />
+          <v-tab>
+            Date
+          </v-tab>
+          <v-tab>
+            Heure
+          </v-tab>
+          <v-tab-item class="pt-2 text-center">
+            <v-date-picker
+              v-model="date"
+              :landscape="!$vuetify.breakpoint.xsOnly"
+              locale="fr-fr"
+              @dblclick.native="checkDblClick"
+            />
+          </v-tab-item>
+          <v-tab-item class="pt-2 text-center">
+            <v-time-picker
+              v-model="hour"
+              :landscape="!$vuetify.breakpoint.xsOnly"
+              format="24hr"
+            />
+          </v-tab-item>
+        </v-tabs>
+        <v-select
+          v-if="reminder"
+          v-model="selectedReminder"
+          class="reminder"
+          dense
+          :items="reminders"
+          :label="$t('Reminder')"
+        />
+      </template>
+      <template v-slot:actions>
+        <v-btn text :disabled="!date" @click="selectDate">
+          {{ $t("Select") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
 <script>
 export default {
   props: {
-    active: Boolean,
+    value: {
+      type: Boolean,
+      default: false
+    },
     disableTime: Boolean,
     reminder: Boolean
   },
@@ -83,17 +75,23 @@ export default {
       ]
     };
   },
+  computed: {
+    showDialog: {
+      get() {
+        return this.value;
+      },
+      set(val) {
+        this.$emit("input", val);
+      }
+    }
+  },
   methods: {
-    closeDialog() {
-      this.$emit("update:active", false);
-    },
-
     selectDate() {
       let dateTime = this.date;
       if (this.hour) {
         dateTime = `${dateTime} ${this.hour}`;
       }
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("select", dateTime, this.selectedReminder);
     },
 
@@ -121,4 +119,5 @@ export default {
   padding: 24px;
   border-top: 1px solid #aaa;
 }
+
 </style>

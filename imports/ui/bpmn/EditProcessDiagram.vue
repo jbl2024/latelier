@@ -1,55 +1,39 @@
 <template>
   <div class="edit-process-diagram">
-    <v-dialog
+    <generic-dialog
       v-model="showDialog"
-      max-width="420"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
+      max-width="520"
+      :title="$t('Edit process diagram')"
     >
-      <v-card>
-        <v-toolbar dark color="primary">
-          <v-btn
-            v-shortkey="['esc']"
-            icon
-            text
-            @click="close()"
-            @shortkey="close()"
-          >
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
-          <v-toolbar-title>
-            <span>{{ $t("Edit process diagram") }}</span>
-          </v-toolbar-title>
-        </v-toolbar>
-        <v-card-text>
-          <v-form v-model="valid" @submit.prevent>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-text-field
-                  ref="name"
-                  v-model="name"
-                  :rules="nameRules"
-                  :label="$t('Name')"
-                  required
-                />
-              </v-flex>
-              <v-flex xs12>
-                <label>{{ $t("Description") }}</label>
-                <rich-editor ref="description" v-model="description" />
-              </v-flex>
-            </v-layout>
-          </v-form>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn text @click="showDialog = false">
-            {{ $t("Cancel") }}
-          </v-btn>
-          <v-btn color="primary" :disabled="!valid" @click="update">
-            {{ $t("Update") }}
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+      <template v-slot:content>
+        <v-form v-model="valid" @submit.prevent>
+          <v-layout wrap>
+            <v-flex xs12>
+              <v-text-field
+                ref="name"
+                v-model="name"
+                :rules="nameRules"
+                :label="$t('Name')"
+                required
+              />
+            </v-flex>
+            <v-flex xs12>
+              <label>{{ $t("Description") }}</label>
+              <rich-editor
+                ref="description"
+                v-model="description"
+                :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+              />
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </template>
+      <template v-slot:actions>
+        <v-btn text :disabled="!valid" @click="update">
+          {{ $t("Update") }}
+        </v-btn>
+      </template>
+    </generic-dialog>
   </div>
 </template>
 
@@ -114,4 +98,20 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.flex0 {
+  flex: 0;
+  height: 100%;
+}
+
+.flex1 {
+  flex: 1; /* takes the remaining height of the "container" div */
+  overflow: auto; /* to scroll just the "main" div */
+}
+</style>

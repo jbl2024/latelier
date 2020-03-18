@@ -10,6 +10,9 @@
           <v-tab id="tab-users">
             {{ $t('Users') }}
           </v-tab>
+          <v-tab id="tab-projects">
+            {{ $t('Projects') }}
+          </v-tab>
           <v-tab id="tab-users">
             {{ $t('BPMN examples') }}
           </v-tab>
@@ -18,6 +21,9 @@
           </v-tab-item>
           <v-tab-item>
             <administration-users />
+          </v-tab-item>
+          <v-tab-item>
+            <administration-projects />
           </v-tab-item>
           <v-tab-item>
             <administration-bpmn-examples />
@@ -33,12 +39,14 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 import AdministrationDashboard from "./dashboard/AdministrationDashboard";
 import AdministrationUsers from "./users/AdministrationUsers";
+import AdministrationProjects from "./projects/AdministrationProjects";
 import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
 
 export default {
   components: {
     AdministrationDashboard,
     AdministrationUsers,
+    AdministrationProjects,
     AdministrationBpmnExamples
   },
   data() {

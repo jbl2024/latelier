@@ -4,7 +4,6 @@
     <v-dialog
       :value="active"
       max-width="620"
-      :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
       <v-card>
@@ -13,7 +12,7 @@
         </v-card-title>
         <v-divider />
         <div>
-          <v-tabs v-if="active" ref="tabs" fixed-tabs>
+          <v-tabs v-if="active" ref="tabs" class="select-user-tabs" grow>
             <v-tabs-slider color="accent" />
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
@@ -26,7 +25,7 @@
             </v-tab>
             <v-tab-item v-if="!hideProject && project" class="pa-4">
               <div class="flex-container">
-                <div class="flex0">
+                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
                     :label="$t('Search') + '...'"
                     single-line
@@ -54,7 +53,7 @@
             </v-tab-item>
             <v-tab-item v-if="project && project.organizationId" class="pa-4">
               <div class="flex-container">
-                <div class="flex0">
+                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
                     :label="$t('Search') + '...'"
                     single-line
@@ -361,32 +360,12 @@ export default {
 </script>
 
 <style scoped>
-.content {
-  overflow-y: scroll;
-  max-height: 300px;
-}
-
-.cursor {
-  cursor: pointer;
-}
-
-.cursor:hover {
-  background-color: #aaa;
-}
-
-.avatar {
-  background-color: rgba(0, 0, 0, 0.14);
-  border-radius: 50%;
-  width: 38px;
-  height: 38px;
-  padding-top: 8px;
-}
 
 .flex-container {
   width: 100%;
   display: flex;
   flex-direction: column;
-  height: 360px;
+  height: 300px;
 }
 
 .flex0 {
@@ -401,5 +380,12 @@ export default {
 .invite {
   margin-top: 24px;
   text-align: center;
+}
+
+</style>
+
+<style>
+.select-user-tabs .v-slide-group__prev {
+  display: none !important;
 }
 </style>

@@ -13,6 +13,7 @@
           <v-list-item-action>
             <v-switch
               v-model="user.emailSettings.tasks.assignTo"
+              color="accent"
               @click="toggleSettings('emailSettings.tasks.assignTo')"
             />
           </v-list-item-action>
@@ -24,6 +25,7 @@
           <v-list-item-action>
             <v-switch
               v-model="user.emailSettings.tasks.update"
+              color="accent"
               @click="toggleSettings('emailSettings.tasks.update')"
             />
           </v-list-item-action>
@@ -35,6 +37,7 @@
           <v-list-item-action>
             <v-switch
               v-model="user.emailSettings.digests.daily"
+              color="accent"
               @click="toggleSettings('emailSettings.digests.daily')"
             />
           </v-list-item-action>

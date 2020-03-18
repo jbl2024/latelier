@@ -89,18 +89,6 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
   mixins: [usersMixin, DatesMixin],
-  i18n: {
-    messages: {
-      en: {
-        "Delete forever": "Delete forever",
-        "Restore from trash": "Restore from trash"
-      },
-      fr: {
-        "Delete forever": "Supprimer définitivement",
-        "Restore from trash": "Restaurer de la corbeille"
-      }
-    }
-  },
   data() {
     return {
       showDialog: false,

@@ -70,9 +70,10 @@
       ref="newItem"
       v-model="item"
       class="add-item"
-      preprend-icon="mdi-checkbox-blank-outline"
+      append-icon="mdi-send"
       :label="$t('New item')"
       @keyup.enter="addItem"
+      @click:append="addItem"
     />
   </div>
 </template>
@@ -232,7 +233,10 @@ export default {
 .icons {
   border: 2px solid black;
 }
-
+.add-item {
+  margin-left: 8px;
+  margin-right: 8px;
+}
 .add-item label {
   font-size: 13px;
 }

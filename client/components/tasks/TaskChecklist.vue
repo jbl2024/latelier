@@ -218,7 +218,6 @@ export default {
   white-space: nowrap;
   overflow: hidden;
   box-sizing: border-box;
-  text-overflow: ellipsis;
 }
 
 .clear {

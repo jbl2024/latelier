@@ -42,7 +42,7 @@
           @click="startEditDescription"
         >
           <div
-            class="ql-editor-view"
+            class="tiptap-editor-view"
             v-html="markDown(organization.description)"
           />
         </div>

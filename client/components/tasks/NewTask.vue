@@ -6,11 +6,36 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       @input="$emit('update:active')"
     >
-      <v-card>
+      <v-card class="flex-container">
+        <v-toolbar v-if="$vuetify.breakpoint.xsOnly" dark color="primary" class="flex0">
+          <v-btn icon dark @click="close">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+          <v-spacer />
+          <v-toolbar-items>
+            <v-btn
+              text
+              dark
+              :disabled="!valid || loading"
+              @click="newTask(true)"
+            >
+              {{ $t("Create and add") }}
+            </v-btn>
+            <v-btn
+              text
+              dark
+              :disabled="!valid || loading"
+              @click="newTask(false)"
+            >
+              {{ $t("Create") }}
+            </v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+
         <v-card-title class="headline">
           {{ $t("Add new task") }}
         </v-card-title>
-        <v-card-text>
+        <v-card-text class="flex1">
           <v-form v-model="valid" class="form" @submit.prevent>
             <v-layout wrap>
               <v-flex xs12>
@@ -35,6 +60,7 @@
               <v-flex xs12>
                 <v-checkbox
                   v-model="multiline"
+                  color="accent"
                   :class="{ hidden: !showMultilineOption }"
                   :label="$t('Create one task per line')"
                 />
@@ -61,33 +87,6 @@
             @click="newTask(true)"
           >
             {{ $t("Create and add") }}
-          </v-btn>
-        </v-card-actions>
-
-        <v-card-actions class="show-mobile">
-          <v-spacer />
-          <v-btn
-            color="primary"
-            :disabled="!valid || loading"
-            @click="newTask(false)"
-          >
-            {{ $t("Create") }}
-          </v-btn>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            :disabled="!valid || loading"
-            @click="newTask(true)"
-          >
-            {{ $t("Create and add") }}
-          </v-btn>
-          <v-spacer />
-        </v-card-actions>
-
-        <v-card-actions class="show-mobile">
-          <v-spacer />
-          <v-btn text @click="close">
-            {{ $t("Cancel") }}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -258,4 +257,21 @@ export default {
 .hidden {
   visibility: hidden;
 }
+
+.flex-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.flex0 {
+  flex: 0;
+  height: 100%;
+}
+
+.flex1 {
+  flex: 1; /* takes the remaining height of the "container" div */
+  overflow: auto; /* to scroll just the "main" div */
+}
+
 </style>

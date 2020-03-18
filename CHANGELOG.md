@@ -7,7 +7,42 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Add projects in administration pages (actions: view/move to trash/delete)
+
+### Changed
+- Fix list move bug when moving created list to first row
+
+### Removed
+
+## [2.10.0] - 2020-03-14
+
+### Added
+
+### Changed
+- Replace vue2-editor with tiptap (see https://github.com/scrumpy/tiptap)
+- Improve dialogs on mobile (no more fullscreen everywhere)
+- Update vuetify to 2.2.15
+- Fix icons display in task items (weird behavior in ff74)
+
+### Removed
+
+## [2.9.2] - 2020-02-13
+
+### Added
+- Docker configuration files
+- Storage: S3 support for attachments & avatars
+
+### Changed
+- Fix profile page first time display
+- Fix missing translation
+
+### Removed
+
+## [2.9.1] - 2020-02-11
+
+### Added
 - Basic key figures for administrator
+- Conditional email verification setting
 
 ### Changed
 - Better clear notifications icon

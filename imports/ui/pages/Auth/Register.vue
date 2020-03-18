@@ -92,8 +92,21 @@ export default {
         this.notify = false;
         if (error) {
           this.$notifyError(error);
-        } else {
+        } else if (Meteor.settings.public.emailVerificationNeeded) {
           this.$router.push({ name: "registration-completed" });
+        } else {
+          Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
+            this.sending = false;
+            this.notify = false;
+            if (err) {
+              this.notifyText = `Erreur ${err.reason}`;
+              this.notify = true;
+            } else {
+              this.clearForm();
+              this.$notify(this.$t("Welcome to you!"));
+              this.$router.push({ name: "dashboard-page" });
+            }
+          });
         }
       });
     },
