@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Add projects in administration pages (actions: view/move to trash/delete)
+- Display completed info in tasks list
 
 ### Changed
 - Fix list move bug when moving created list to first row

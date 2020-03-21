@@ -15,7 +15,9 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-              <span class="black--text">{{ task.name }}</span>
+              <span class="black--text">
+                <v-icon v-if="task.completed" small>mdi-check-box-outline</v-icon>
+                {{ task.name }}</span>
             </v-list-item-title>
             <v-list-item-subtitle>
               <span class="grey--text text--darken-1 show-desktop">
@@ -37,6 +39,12 @@
               <template v-if="task.dueDate && !isLate(task)">
                 {{ $t("Expires") }}
                 <b>{{ formatDateDuration(task.dueDate) }}</b>
+              </template>
+            </v-list-item-subtitle>
+            <v-list-item-subtitle v-if="task.completed">
+              <template>
+                {{ $t("Completed on") }}
+                <b>{{ formatDateDuration(task.completedAt) }}</b>
               </template>
             </v-list-item-subtitle>
           </v-list-item-content>
