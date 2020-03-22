@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [2.10.1] - 2020-03-22
+
+### Added
 - Add projects in administration pages (actions: view/move to trash/delete)
 - Display completed info in tasks list
 
