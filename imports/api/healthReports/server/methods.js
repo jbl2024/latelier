@@ -81,6 +81,36 @@ HealthReports.methods.update = new ValidatedMethod({
   }
 });
 
+HealthReports.methods.updateDescription = new ValidatedMethod({
+  name: "healthReports.updateDescription",
+  validate: new SimpleSchema({
+    id: { type: String },
+    description: { type: String }
+  }).validator(),
+  run({ id, description }) {
+    checkLoggedIn();
+
+    const report = HealthReports.findOne({ _id: id });
+    if (!report) {
+      throw new Meteor.Error("not-found");
+    }
+    checkCanWriteProject(report.projectId);
+
+    const reportId = HealthReports.update(
+      {
+        _id: id
+      },
+      {
+        $set: {
+          description
+        }
+      }
+    );
+
+    return reportId;
+  }
+});
+
 HealthReports.methods.remove = new ValidatedMethod({
   name: "healthReports.remove",
   validate: new SimpleSchema({
@@ -254,5 +284,22 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
       totalItems: count,
       data
     };
+  }
+});
+
+HealthReports.methods.get = new ValidatedMethod({
+  name: "healthReports.get",
+  validate: new SimpleSchema({
+    healthReportId: { type: String }
+  }).validator(),
+  run({ healthReportId }) {
+    checkLoggedIn();
+    const healthReport = HealthReports.findOne({ _id: healthReportId });
+    if (healthReport) {
+      checkCanReadProject(healthReport.projectId);
+    } else {
+      throw new Meteor.Error("not-found");
+    }
+    return healthReport;
   }
 });
