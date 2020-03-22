@@ -81,6 +81,36 @@ HealthReports.methods.update = new ValidatedMethod({
   }
 });
 
+HealthReports.methods.updateDescription = new ValidatedMethod({
+  name: "healthReports.updateDescription",
+  validate: new SimpleSchema({
+    id: { type: String },
+    description: { type: String }
+  }).validator(),
+  run({ id, description }) {
+    checkLoggedIn();
+
+    const report = HealthReports.findOne({ _id: id });
+    if (!report) {
+      throw new Meteor.Error("not-found");
+    }
+    checkCanWriteProject(report.projectId);
+
+    const reportId = HealthReports.update(
+      {
+        _id: id
+      },
+      {
+        $set: {
+          description
+        }
+      }
+    );
+
+    return reportId;
+  }
+});
+
 HealthReports.methods.remove = new ValidatedMethod({
   name: "healthReports.remove",
   validate: new SimpleSchema({

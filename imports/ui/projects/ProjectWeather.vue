@@ -28,7 +28,7 @@
         :style="getBackgroundUrl(user)"
       >
         <div v-if="loading">
-          <v-progress-linear indeterminate />
+          <v-progress-linear indeterminate absolute />
         </div>
 
         <v-container v-if="$vuetify.breakpoint.smAndDown" fluid>
@@ -111,26 +111,60 @@
             <v-col cols="8">
               <template v-if="selectedReport">
                 <v-card class="flex-container-report">
-                  <v-toolbar class="flex0" flat>
-                    <v-avatar>
+                  <v-list-item two-lines class="flex0 py-8 px-8">
+                    <v-list-item-avatar>
                       <v-img :src="getIcon(selectedReport.weather)" contain />
-                    </v-avatar>
-                    <v-toolbar-title class="ml-2">
-                      {{ selectedReport.name }}
-                    </v-toolbar-title>
-                    <v-spacer />
-                    <v-btn icon @click.stop="editReport(selectedReport)">
-                      <v-icon>mdi-pencil</v-icon>
-                    </v-btn>
-                    <v-btn icon @click.stop="deleteReport(selectedReport)">
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </v-toolbar>
-                  <v-card-text class="flex1">
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title class="headline">
+                        {{ selectedReport.name }}
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ formatDate(selectedReport.date) }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn icon @click.stop="editReport(selectedReport)">
+                        <v-icon>mdi-pencil</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                    <v-list-item-action>
+                      <v-btn icon @click.stop="deleteReport(selectedReport)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+
+                  <v-card-text class="flex1 px-8">
                     <div
+                      v-show="isEmpty(selectedReport.description) && !editDescription"
                       class="tiptap-editor-view body-1 black--text"
+                      @click="startEditDescription"
+                    >
+                      {{ $t("No description") }}
+                    </div>
+                    <div
+                      v-if="!editDescription"
+                      class="tiptap-editor-view body-1 black--text"
+                      @click="startEditDescription"
                       v-html="selectedReport.description"
                     />
+                    <div v-if="editDescription">
+                      <rich-editor
+                        ref="description"
+                        v-model="selectedReport.description"
+                        class="body-1 black--text"
+                        @submit="updateDescription"
+                        @click-outside="updateDescription"
+                      />
+                      <v-btn icon text @click="updateDescription">
+                        <v-icon>mdi-check-circle</v-icon>
+                      </v-btn>
+
+                      <v-btn icon text @click="cancelUpdateDescription">
+                        <v-icon>mdi-close-circle</v-icon>
+                      </v-btn>
+                    </div>
                     <task-list :tasks="tasks" />
                   </v-card-text>
                 </v-card>
@@ -162,6 +196,8 @@ export default {
       page: 1,
       selectedReportForAction: null,
       selectedReport: null,
+      editDescription: false,
+      savedDescription: "",
       tasks: null,
       pagination: {
         totalItems: 0,
@@ -279,6 +315,7 @@ export default {
                 this.selectedReport = null;
               }
               this.$notify(this.$t("Report deleted"));
+              this.refresh();
             }
           );
         }
@@ -314,6 +351,35 @@ export default {
           this.tasks = result.data;
         }
       );
+    },
+
+    startEditDescription() {
+      this.savedDescription = this.selectedReport.description;
+      this.editDescription = true;
+      this.$nextTick(() => this.$refs.description.focus());
+    },
+
+    updateDescription() {
+      this.editDescription = false;
+      if (this.selectedReport.description != null) {
+        Meteor.call(
+          "healthReports.updateDescription", {
+            id: this.selectedReport._id,
+            description: this.selectedReport.description
+          }
+        );
+      }
+    },
+
+    cancelUpdateDescription() {
+      this.editDescription = false;
+      this.selectedReport.description = this.savedDescription;
+    },
+
+    isEmpty(description) {
+      if (!description) return true;
+      if (description === "<p></p>") return true;
+      return false;
     }
   }
 };
