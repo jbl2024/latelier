@@ -256,3 +256,20 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
     };
   }
 });
+
+HealthReports.methods.get = new ValidatedMethod({
+  name: "healthReports.get",
+  validate: new SimpleSchema({
+    healthReportId: { type: String }
+  }).validator(),
+  run({ healthReportId }) {
+    checkLoggedIn();
+    const healthReport = HealthReports.findOne({ _id: healthReportId });
+    if (healthReport) {
+      checkCanReadProject(healthReport.projectId);
+    } else {
+      throw new Meteor.Error("not-found");
+    }
+    return healthReport;
+  }
+});
