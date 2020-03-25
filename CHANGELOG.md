@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Add sticky position on task detail & tasks list tabs
+- Firefox: do not hide scrollbar
 
 ### Removed
 
