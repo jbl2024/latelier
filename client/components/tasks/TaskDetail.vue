@@ -150,7 +150,7 @@
     </div>
     <v-divider />
 
-    <v-tabs grow show-arrows>
+    <v-tabs grow show-arrows class="sticky-tabs">
       <v-tabs-slider color="accent" />
       <v-tab id="tab-properties">
         {{ $t("Properties") }}

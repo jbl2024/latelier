@@ -34,7 +34,7 @@
             <v-divider />
 
             <div class="tabs-wrapper">
-              <v-tabs grow>
+              <v-tabs grow class="sticky-tabs">
                 <v-tabs-slider color="accent" />
                 <v-tab>{{ $t("Recents") }}</v-tab>
                 <v-tab>{{ $t("Assigned to me") }}</v-tab>

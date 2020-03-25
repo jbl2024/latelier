@@ -289,37 +289,35 @@
         </div>
         <v-divider />
 
-        <div class="tabs-wrapper">
-          <v-tabs v-model="tab">
-            <v-tabs-slider color="accent" />
-            <v-tab>{{ $t("Recents") }}</v-tab>
-            <v-tab>{{ $t("Assigned to me") }}</v-tab>
-            <v-tab>{{ $t("Late") }}</v-tab>
+        <v-tabs v-model="tab" class="sticky-tabs">
+          <v-tabs-slider color="accent" />
+          <v-tab>{{ $t("Recents") }}</v-tab>
+          <v-tab>{{ $t("Assigned to me") }}</v-tab>
+          <v-tab>{{ $t("Late") }}</v-tab>
 
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="recent"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="assignedToMe"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="late"
-                empty-illustration="celebration"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-          </v-tabs>
-        </div>
+          <v-tab-item>
+            <dashboard-task-list
+              :user="user"
+              type="recent"
+              :organization-id="organizationId"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <dashboard-task-list
+              :user="user"
+              type="assignedToMe"
+              :organization-id="organizationId"
+            />
+          </v-tab-item>
+          <v-tab-item>
+            <dashboard-task-list
+              :user="user"
+              type="late"
+              empty-illustration="celebration"
+              :organization-id="organizationId"
+            />
+          </v-tab-item>
+        </v-tabs>
       </div>
     </div>
   </div>
@@ -652,18 +650,6 @@ export default {
 
 .main-empty-state {
   margin-top: 24px;
-}
-
-.tabs-wrapper {
-  flex: 1;
-  flex-direction: column;
-  overflow-y: auto;
-  display: flex;
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 66px;
-  bottom: 0;
 }
 
 .card3 {

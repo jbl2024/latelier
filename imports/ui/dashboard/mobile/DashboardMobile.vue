@@ -27,7 +27,8 @@
         <div v-if="bottomNav === 'tasks'" class="mobile-tasks">
           <v-card class="flex-container">
             <div class="tabs-wrapper">
-              <v-tabs v-model="tab" icons-and-text centered>
+              <v-tabs v-model="tab" centered class="sticky-tabs">
+                <v-tabs-slider color="accent" />
                 <v-tab>{{ $t("Recents") }}</v-tab>
                 <v-tab>{{ $t("Assigned to me") }}</v-tab>
                 <v-tab>{{ $t("Late") }}</v-tab>

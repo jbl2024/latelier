@@ -381,4 +381,11 @@ html {
   }
 }
 
+.sticky-tabs .v-tabs-bar {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 2;
+}
+
 </style>
