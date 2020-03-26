@@ -165,6 +165,7 @@
                         <v-icon>mdi-close-circle</v-icon>
                       </v-btn>
                     </div>
+                    <v-progress-linear v-if="loadingTasks" indeterminate absolute />
                     <task-list :tasks="tasks" />
                   </v-card-text>
                 </v-card>
@@ -192,6 +193,7 @@ export default {
   data() {
     return {
       loading: false,
+      loadingTasks: false,
       healthReports: [],
       page: 1,
       selectedReportForAction: null,
@@ -336,6 +338,7 @@ export default {
     },
 
     refreshTasks(report) {
+      this.loadingTasks = true;
       Meteor.call(
         "healthReports.findTasks",
         {
@@ -343,7 +346,7 @@ export default {
           page: 1
         },
         (error, result) => {
-          this.loading = false;
+          this.loadingTasks = false;
           if (error) {
             this.$notifyError(error);
             return;

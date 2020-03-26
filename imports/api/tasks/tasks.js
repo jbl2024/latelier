@@ -33,6 +33,8 @@ if (Meteor.isServer) {
     Tasks.rawCollection().createIndex({ listId: 1 });
     Tasks.rawCollection().createIndex({ projectId: 1 });
     Tasks.rawCollection().createIndex({ deleted: 1 });
+    Tasks.rawCollection().createIndex({ completed: 1 });
+    Tasks.rawCollection().createIndex({ completedAt: 1 });
     Tasks.rawCollection().createIndex({ number: 1 }, { unique: true });
   });
 }

@@ -162,7 +162,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       }
     );
 
-    if (previous) previousDate = previous.date;
+    if (previous) previousDate = moment(previous.date).add(1, "days").startOf("day").toDate();
 
     const perPage = 250;
     let skip = 0;
