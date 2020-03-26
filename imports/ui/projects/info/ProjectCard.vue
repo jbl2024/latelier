@@ -279,7 +279,7 @@ export default {
     taskCount(info) {
       if (!info) return 0;
 
-      return info.taskCount;
+      return info.taskCount - info.completedTaskCount;
     },
 
     completedTaskCount(info) {
