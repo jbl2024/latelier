@@ -47,6 +47,7 @@
             <login-menu />
           </v-menu>
         </v-avatar>
+        <chat-button @toggle-chat="toggleChat"/>
         <notification-button />
       </v-app-bar>
 
@@ -98,12 +99,22 @@
           />
         </v-card>
       </v-navigation-drawer>
-
       <v-content class="main-content">
         <v-container class="page-container" fluid>
           <router-view />
         </v-container>
       </v-content>
+      
+      <v-navigation-drawer
+        v-model="rightDrawer"
+        :clipped="$vuetify.breakpoint.lgAndUp"
+        app
+        fixed
+        :width="400"
+        right
+      >
+        <chat/>
+      </v-navigation-drawer>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
         <v-btn dark icon text @click="showSnackbar = false">
@@ -116,11 +127,18 @@
 
 <script>
 import { mapState } from "vuex";
-
+import { Permissions } from "/imports/api/permissions/permissions";
+import ChatButton from './chat/ChatButton';
+import Chat from './chat/Chat';
 export default {
+  components: {
+    ChatButton,
+    Chat
+  },
   data() {
     return {
       drawer: null,
+      rightDrawer: null,
       openMenu: false,
       showSnackbar: false,
       timeout: 6000
@@ -230,6 +248,9 @@ export default {
     });
   },
   methods: {
+    toggleChat() {
+      this.rightDrawer = !this.rightDrawer
+    },
     onResizeApp() {
       const width = window.innerWidth;
       if (width >= 1264 && !this.drawer) {
