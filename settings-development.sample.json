@@ -40,5 +40,12 @@
       "email": "ct-remote-email"
     },
     "uploadTransport": "ddp"
+  },
+  "chat": {
+    "enabled": false,
+    "rocketchat": {
+      "url": "xxx",
+      "type": "iframe"
+    }
   }
 }

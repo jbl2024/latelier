@@ -66,6 +66,15 @@
               color="blue-grey"
             />
           </v-col>
+          <v-col :cols="cardColumns">
+            <admin-dashboard-card
+              :title="$t('Chat')"
+              icon="mdi-chat"
+              :legend="$t('Total')"
+              :value="info.chatChannelCount"
+              color="blue-grey"
+            />
+          </v-col>
         </v-row>
       </v-container>
     </div>

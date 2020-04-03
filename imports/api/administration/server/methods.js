@@ -4,6 +4,7 @@ import { Tasks } from "/imports/api/tasks/tasks";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
+import { ChatChannels } from "/imports/api/chatChannels/chatChannels";
 
 import { checkAdmin } from "/imports/api/permissions/permissions";
 
@@ -27,6 +28,7 @@ methods.info = new ValidatedMethod({
     const healthReportCount = HealthReports.find({}).count();
     const attachmentCount = Attachments.find({}).count();
     const userCount = Meteor.users.find({}).count();
+    const chatChannelCount = ChatChannels.find({}).count();
 
     return {
       organizationCount,
@@ -35,7 +37,8 @@ methods.info = new ValidatedMethod({
       processDiagramCount,
       healthReportCount,
       attachmentCount,
-      userCount
+      userCount,
+      chatChannelCount
     };
   }
 });

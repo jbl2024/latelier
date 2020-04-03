@@ -39,6 +39,9 @@ import "../imports/api/events/server/methods.js";
 import "../imports/api/backgrounds/startup/server/fixtures.js";
 import "../imports/api/dashboards/dashboards.js";
 
+import "../imports/api/chatChannels/chatChannels.js";
+import "../imports/api/chatChannels/server/methods.js";
+
 import "../imports/api/attachments/attachments.js";
 import "../imports/api/attachments/server/methods.js";
 

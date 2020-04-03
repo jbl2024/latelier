@@ -4,12 +4,14 @@ import { Meteor } from "meteor/meteor";
 
 import get from "lodash/get";
 import { projectFilters } from "./projectFilters";
+import { chat } from './chat';
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    projectFilters
+    projectFilters,
+    chat
   },
   state: {
     selectedGroup: {},
