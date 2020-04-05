@@ -113,7 +113,7 @@
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import * as htmlToText from "html-to-text";
+import * as htmlToText from "@mxiii/html-to-text";
 import debounce from "lodash/debounce";
 
 import NewExample from "./NewExample";
