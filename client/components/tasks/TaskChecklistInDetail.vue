@@ -5,14 +5,14 @@
     @click.stop
   >
     <div class="progress">
-      <v-progress-linear v-model="completion" />
+      <v-progress-linear :value="completion" />
     </div>
 
     <v-simple-table
       v-if="task.checklist && task.checklist.length > 0"
       class="tasks-wrapper elevation-1"
     >
-      <tbody v-sortable-list="objectSortOccurred">
+      <tbody v-sortable-list="moveItem">
         <tr v-for="checkItem in task.checklist" :key="checkItem._id">
           <td class="check">
             <div class="checkbox">
@@ -28,7 +28,7 @@
                     <!-- eslint-disable -->
                     <path
                       d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                      style="stroke: white;fill:white;"
+                      style="stroke: white; fill: white;"
                     ></path>
                     <!-- eslint-enable -->
                   </svg>
@@ -37,30 +37,75 @@
               </div>
             </div>
           </td>
-          <td>
-            <input
-              v-model.lazy="checkItem.name"
-              type="text"
-              class="edit"
-              @change="updateItem(checkItem)"
-            >
+          <td
+            class="edit"
+            @click="startEditCheckItem(checkItem)"
+          >
+            <template v-if="!isCheckItemEdited(checkItem)">
+              <span>
+                {{ checkItem.name }}
+              </span>
+            </template>
+            <template v-if="isCheckItemEdited(checkItem)">
+              <v-textarea
+                v-model="checkItem.name"
+                autofocus
+                outlined
+                auto-grow
+                :rows="3"
+                solo
+                @keyup.esc="cancelUpdateCheckItem(checkItem)"
+                @keydown.shift.enter="updateCheckItem(checkItem)"
+              />
+              <v-btn icon text @click.native.stop="updateCheckItem(checkItem)">
+                <v-icon>mdi-check-circle</v-icon>
+              </v-btn>
+
+              <v-btn
+                icon
+                text
+                @click.native.stop="cancelUpdateCheckItem(checkItem)"
+              >
+                <v-icon>mdi-close-circle</v-icon>
+              </v-btn>
+            </template>
           </td>
-          <td class="sortHandle text-right">
-            <v-icon style="cursor: row-resize">
+          <td class="table-actions">
+            <v-icon style="cursor: row-resize;" class="sortHandle">
               mdi-drag-vertical
             </v-icon>
-            <v-btn
-              small
-              icon
-              ripple
-              @click="
-                (event) => {
-                  deleteItem(event, checkItem);
-                }
-              "
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
+          </td>
+          <td class="table-actions">
+            <v-menu bottom left class="menu" :close-on-content-click="false">
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-title>{{ $t("Move") }}</v-list-item-title>
+                  <v-list-item-action>
+                    <v-btn icon small @click="moveUp(checkItem)">
+                      <v-icon>mdi-arrow-up</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                  <v-list-item-action>
+                    <v-btn icon small @click="moveDown(checkItem)">
+                      <v-icon>mdi-arrow-down</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title>{{ $t("Delete") }}</v-list-item-title>
+                  <v-list-item-action>
+                    <v-btn icon small @click="deleteItem(checkItem)">
+                      <v-icon>mdi-delete</v-icon>
+                    </v-btn>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </td>
         </tr>
       </tbody>
@@ -90,7 +135,10 @@ export default {
         const options = {
           handle: ".sortHandle",
           animation: 150,
-          onUpdate: function(event) {
+          forceFallback: true,
+          fallbackTolerance: 4,
+          touchStartThreshold: 4,
+          onUpdate: function (event) {
             binding.value(event);
           }
         };
@@ -112,7 +160,9 @@ export default {
     return {
       editNewItem: false,
       item: "",
-      completion: 0
+      completion: 0,
+      selectedCheckItem: null,
+      savedName: null
     };
   },
   watch: {
@@ -160,10 +210,7 @@ export default {
       );
     },
 
-    deleteItem(e, item) {
-      if (e) {
-        e.stopPropagation();
-      }
+    deleteItem(item) {
       this.$confirm(this.$t("Delete element?"), {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
@@ -203,15 +250,69 @@ export default {
       });
     },
 
-    updateItem(item) {
-      Meteor.call("tasks.updateCheckListItem", this.task._id, item);
+    isCheckItemEdited(item) {
+      if (!this.selectedCheckItem) {
+        return false;
+      }
+      return item._id === this.selectedCheckItem._id;
     },
 
-    objectSortOccurred({ oldIndex, newIndex }) {
+    startEditCheckItem(item) {
+      if (this.isCheckItemEdited(item)) {
+        return;
+      }
+      this.selectedCheckItem = item;
+      this.savedName = item.name;
+    },
+
+    cancelUpdateCheckItem(item) {
+      item.name = this.savedName;
+      this.selectedCheckItem = null;
+    },
+
+    updateCheckItem(item) {
+      if (!this.isCheckItemEdited(item)) {
+        return;
+      }
+      Meteor.call("tasks.updateCheckListItem", this.task._id, item);
+      this.selectedCheckItem = null;
+    },
+
+    moveItem({ oldIndex, newIndex }) {
       const moved = this.task.checklist.splice(oldIndex, 1)[0];
       this.task.checklist.splice(newIndex, 0, moved);
       Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
+    },
+
+    moveUp(item) {
+      const oldIndex = this.task.checklist.findIndex(
+        (anItem) => anItem._id === item._id
+      );
+      if (oldIndex === 0) {
+        return;
+      }
+      const newIndex = oldIndex - 1;
+      this.moveItem({ oldIndex, newIndex });
+    },
+
+    moveDown(item) {
+      const oldIndex = this.task.checklist.findIndex(
+        (anItem) => anItem._id === item._id
+      );
+      if (oldIndex === this.task.checklist.length - 1) {
+        return;
+      }
+      const newIndex = oldIndex + 1;
+      this.moveItem({ oldIndex, newIndex });
     }
+
+    // moveItem(oldIndex, newIndex) {
+    //   [this.task.checklist[oldIndex], this.task.checklist[newIndex]] = [
+    //     this.task.checklist[newIndex],
+    //     this.task.checklist[oldIndex]
+    //   ];
+    //   Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
+    // },
   }
 };
 </script>
@@ -251,5 +352,9 @@ export default {
 .check {
   width: 48px;
   padding-right: 0;
+}
+
+.table-actions {
+  padding: 0;
 }
 </style>

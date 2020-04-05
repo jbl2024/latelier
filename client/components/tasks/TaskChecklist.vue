@@ -1,7 +1,7 @@
 <template>
   <div v-show="showList(task.checklist)" class="task-checklist">
     <div class="progress">
-      <v-progress-linear v-model="completion" />
+      <v-progress-linear :value="completion" />
     </div>
     <div
       v-for="item in task.checklist"
