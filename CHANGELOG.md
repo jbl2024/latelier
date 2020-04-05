@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move from html-to-text to @mxiii/html-to-text (see https://github.com/werk85/node-html-to-text/issues/198)
 - Upgrade handlebars to 4.7.6
 - Force fallback method for dragging items (fix mobile support)
+- Fix new task dialog display glitches
 
 ### Removed
 
