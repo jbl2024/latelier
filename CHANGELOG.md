@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.10.3] - 2020-04-05
+
+### Added
+
+### Changed
 - Fix pending task count on dashboard
 - Project wheather: improve tasks loading & fix duplicates
 - Preserve newlines in edited content
