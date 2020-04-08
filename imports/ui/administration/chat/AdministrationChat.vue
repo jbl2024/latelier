@@ -96,18 +96,6 @@ export default {
       }
     }
   },
-  i18n: {
-    messages: {
-      en: {
-        "Delete chat channel?": "Delete chat channel?",
-        "Chat channel deleted": "Chat channel deleted"
-      },
-      fr: {
-        "Delete chat channel?": "Supprimer la conversation?",
-        "Chat channel deleted": "Conversation supprimée"
-      }
-    }
-  },
   methods: {
     findChatChannels() {
       Meteor.call("chatChannels.load", {
@@ -126,7 +114,7 @@ export default {
     },
 
     removeChatChannel(chatChannel) {
-      this.$confirm(this.$t("Delete chat channel?"), {
+      this.$confirm(this.$t("chat.channels.deleteConfirm"), {
         title: chatChannel.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
@@ -137,7 +125,7 @@ export default {
               this.$notifyError(error);
               return;
             }
-            this.$notify(this.$t("Chat channel deleted"));
+            this.$notify(this.$t("chat.channels.deleted"));
             this.findChatChannels();
           });
         }

@@ -10,6 +10,7 @@
   "Weather": "Météo",
   "Description": "Description",
   "Deletion is permanent": "La suppression est définitive",
+  "Confirm deletion?": "Confirmer la suppression ?",
   "Properties": "Propriétés",
   "Notes": "Notes",
   "List": "Liste",
@@ -241,5 +242,22 @@
     "1day": "1 jour avant",
     "2days": "2 jours avant",
     "1week": "1 semaine avant"
+  },
+  "chat": {
+    "channels": {
+      "new": "Nouvelle conversation",
+      "created": "Conversation créée",
+      "updated": "Conversation mise à jour",
+      "deleteConfirm": "Supprimer la conversation?",
+      "deleteConfirmContent": "La conversation sera définitivement supprimé",
+      "deleted": "Conversation supprimée",
+      "fields": {
+        "name": "Nom de la conversation",
+        "channel": "Groupe ou canal"
+      }
+    }
+  },
+  "validation": {
+    "requiredHint": "*indique un champ obligatoire"
   }
 }

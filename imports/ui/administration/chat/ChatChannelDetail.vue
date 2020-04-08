@@ -3,10 +3,10 @@
     <confirm-dialog
       v-if="!isNew"
       :active.sync="showConfirmDeleteChatChannelDialog"
-      title="Confirmer la suppression ?"
-      content="La conversation sera définitivement supprimé"
-      confirm-text="Supprimer"
-      cancel-text="Annuler"
+      :title="$t('Confirm deletion?')"
+      :content="$t('chat.channels.deleteConfirmContent')"
+      :confirm-text="$t('Delete')"
+      :cancel-text="$t('Cancel')"
       @cancel="onCancelDeleteChatChannel"
       @confirm="onConfirmDeleteChatChannel"
     />
@@ -22,7 +22,7 @@
       </v-btn>
       <v-toolbar-title>
         <span>
-          {{ name ? name : $t("New chat channel") }}
+          {{ name ? name : $t("chat.channels.new") }}
         </span>
       </v-toolbar-title>
       <!-- Menu (Suppression) -->
@@ -46,19 +46,20 @@
         <v-container grid-list-md>
           <v-layout wrap>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="name" required label="Nom de la conversation*"/>
+              <v-text-field v-model="name" required :label="$t('chat.channels.fields.name')"/>
             </v-flex>
             <v-flex xs12 sm6 md6>
-              <v-text-field v-model="channel" required label="Groupe ou canal*"/>
+              <v-text-field v-model="channel" required :label="$t('chat.channels.fields.channel')"/>
             </v-flex>
-            <!-- Projet associé à la conversation -->
             <v-flex xs12>
               <chat-project-autocomplete v-model="project">
               </chat-project-autocomplete>
             </v-flex>
           </v-layout>
         </v-container>
-      <small>*indique un champ obligatoire</small>
+      <small>
+        {{ $t("validation.requiredHint") }}
+      </small>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
@@ -77,22 +78,6 @@ import ChatProjectAutocomplete from './ChatProjectAutocomplete';
 export default {
   components: {
     ChatProjectAutocomplete
-  },
-  i18n: {
-    messages: {
-      en: {
-        "New chat channel": "New chat channel",
-        "Chat channel created": "Chat channel created",
-        "Chat channel updated": "Chat channel updated",
-        "Chat channel deleted": "Chat channel delete"
-      },
-      fr: {
-        "New chat channel": "Nouvelle conversation",
-        "Chat channel created": "Conversation créée",
-        "Chat channel updated": "Conversation mise à jour",
-        "Chat channel deleted": "Conversation supprimée"
-      }
-    }
   },
   props: {
     chatChannel: {
@@ -132,7 +117,7 @@ export default {
           this.$notifyError(error);
           return;
         }
-        this.$notify(this.$t("Chat channel created"));
+        this.$notify(this.$t("chat.channels.created"));
         this.close();
         this.$emit("created");
       });
@@ -149,7 +134,7 @@ export default {
           this.$notifyError(error);
           return;
         }
-        this.$notify(this.$t("Chat channel updated"));
+        this.$notify(this.$t("chat.channels.updated"));
         this.close();
         this.$emit("saved");
       });
@@ -164,7 +149,7 @@ export default {
           this.$notifyError(error);
           return;
         }
-        this.$notify(this.$t("Chat channel deleted"));
+        this.$notify(this.$t("chat.channels.deleted"));
         this.$emit("saved");
         this.$emit("close");
       });
