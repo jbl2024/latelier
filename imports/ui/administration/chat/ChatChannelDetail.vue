@@ -7,8 +7,7 @@
       :content="$t('chat.channels.deleteConfirmContent')"
       :confirm-text="$t('Delete')"
       :cancel-text="$t('Cancel')"
-      @cancel="onCancelDeleteChatChannel"
-      @confirm="onConfirmDeleteChatChannel"
+      @confirm="remove"
     />
     <v-toolbar dark color="primary">
       <v-btn
@@ -87,10 +86,10 @@ export default {
   },
   data() {
     return {
-      name: this.chatChannel ? this.chatChannel.name : '',
-      channel: this.chatChannel ? this.chatChannel.channel : '',
-      projectId: this.chatChannel ? this.chatChannel.projectId : null,
-      project: this.chatChannel && this.chatChannel.projectId ? {_id: this.chatChannel.projectId} : null,
+      name: this.chatChannel?.name,
+      channel: this.chatChannel?.channel,
+      projectId: this.chatChannel?.projectId || null,
+      project: this.chatChannel?.projectId ? {_id: this.chatChannel.projectId} : null,
       showConfirmDeleteChatChannelDialog: false
     };
   },
@@ -110,7 +109,7 @@ export default {
       const newChatChannel = {
         name: this.name,
         channel: this.channel,
-        projectId: this.project && this.project._id ? this.project._id : null
+        projectId: this.project?._id ? this.project._id : null
       };
       Meteor.call("chatChannels.create", newChatChannel, (error) => {
         if (error) {
@@ -127,7 +126,7 @@ export default {
         id: this.chatChannel._id,
         name: this.name,
         channel: this.channel,
-        projectId: this.project && this.project._id ?this.project._id : null
+        projectId: this.project?._id ? this.project._id : null
       };
       Meteor.call('chatChannels.update', updatedChatChannel, (error) => {
         if (error) {
@@ -140,10 +139,6 @@ export default {
       });
     },
     remove() {
-
-    },
-    onCancelDeleteChatChannel() {},
-    onConfirmDeleteChatChannel() {
       Meteor.call("chatChannels.remove", {chatChannelId: this.chatChannel._id}, (error) => {
         if (error) {
           this.$notifyError(error);
@@ -153,12 +148,7 @@ export default {
         this.$emit("saved");
         this.$emit("close");
       });
-    }
+    },
   }
 };
 </script>
-<style scoped>
-  .deactivated {
-    font-weight: bold;
-  }
-</style>

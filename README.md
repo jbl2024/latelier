@@ -51,6 +51,7 @@ Settings:
 | public.seo.titlePrefix         | string   | l'atelier       | window.title prefix                              |
 | public.sso                     | object   | {}              | See below                                        |
 | public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
+| public.chat | object  | | See below |
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |
@@ -85,6 +86,22 @@ elasticApm:
 | ------- | ------- | ------------- | --------------------------------------------------- |
 | enabled | boolean | false         | If true, elastic-apm is enabled                     |
 | options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
+
+chat:
+
+| Key      | Type   | Default value | Description            |
+| -------- | ------ | ------------- | ---------------------- |
+| enabled  | string |               | Enable chat features |
+| rocketChat  | object |               | RocketChat options|
+
+chat rocketChat:
+
+| Key      | Type   | Default value | Description            |
+| -------- | ------ | ------------- | ---------------------- |
+| rocketChat.baseUrl| string |      | URL of your RocketChat server                    |
+| rocketChat.defaultChatChannel   | object |            | default chat channel|
+| rocketChat.defaultChatChannel.name | string |            | name of the default channel|
+| rocketChat.defaultChatChannel.channel   | string |            | URI of the default chat channel |
 
 storage:
 
@@ -133,7 +150,17 @@ Example:
       "enabled": true,
       "email": "header-email"
     },
-    "uploadTransport": "ddp"
+    "uploadTransport": "ddp",
+    "chat": {
+      "enabled": true,
+      "rocketChat": {
+        "baseUrl": "https://rocketchat.url",
+        "defaultChatChannel": {
+          "name": "Default Channel",
+          "channel": "/channel/default"
+        }
+      }
+    }
   }
 }
 ```

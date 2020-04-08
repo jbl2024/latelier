@@ -45,9 +45,8 @@
       "rocketChat": {
         "baseUrl": "https://rocketchat.url",
         "defaultChatChannel": {
-          "type": "rocketchat",
-          "name": "Général",
-          "channel": "/general"
+          "name": "Default Channel",
+          "channel": "/channel/default"
         }
       }
     }

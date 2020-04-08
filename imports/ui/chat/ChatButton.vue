@@ -1,9 +1,7 @@
 <template>
-  <div v-if="$store.state.chat.isEnabled && isConnected" class="chat-button">
-    <v-btn icon @click="$emit('toggle-chat')">
-        <v-icon>mdi-chat</v-icon>
-    </v-btn>
-  </div>
+  <v-btn v-if="$store.state.chat.isEnabled && isConnected" class="chat-button" icon @click="$emit('toggle-chat')">
+      <v-icon>mdi-chat</v-icon>
+  </v-btn>
 </template>
 <script>
 export default {
