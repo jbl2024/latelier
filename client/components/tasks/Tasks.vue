@@ -55,6 +55,9 @@ export default {
       delay: 250,
       animation: 150,
       group: "tasks",
+      forceFallback: true,
+      fallbackTolerance: 4,
+      touchStartThreshold: 4,
       onUpdate: (event) => {
         this.handleMove(event);
       },

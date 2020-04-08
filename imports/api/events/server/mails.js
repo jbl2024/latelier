@@ -1,7 +1,7 @@
 import { Email } from "/imports/email";
 import get from "lodash/get";
 import { Tasks } from "/imports/api/tasks/tasks";
-import * as htmlToText from "html-to-text";
+import * as htmlToText from "@mxiii/html-to-text";
 import { MJML } from "/imports/mjml";
 
 /**

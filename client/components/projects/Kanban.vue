@@ -57,6 +57,9 @@ export default {
       delayOnTouchOnly: true,
       delay: 250,
       animation: 150,
+      forceFallback: true,
+      fallbackTolerance: 4,
+      touchStartThreshold: 4,
       handle: ".list-header",
       group: "lists",
       onUpdate: (event) => {

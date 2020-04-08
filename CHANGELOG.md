@@ -9,8 +9,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.10.3] - 2020-04-05
+
+### Added
+
+### Changed
 - Fix pending task count on dashboard
 - Project wheather: improve tasks loading & fix duplicates
+- Preserve newlines in edited content
+- Move from html-to-text to @mxiii/html-to-text (see https://github.com/werk85/node-html-to-text/issues/198)
+- Upgrade handlebars to 4.7.6
+- Force fallback method for dragging items (fix mobile support)
+- Fix new task dialog display glitches
+- Improve check list item edition
 
 ### Removed
 

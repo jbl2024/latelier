@@ -24,3 +24,13 @@
 .tiptap-editor-view pre code:before {
   content: "";
 }
+
+/* 
+tiptap removes <br> inside empty <p> tag so there is 
+a mismatch between editing text & result
+
+see https://github.com/scrumpy/tiptap/issues/412
+*/
+.tiptap-editor-view p:empty::after {
+  content: "\00A0";
+}

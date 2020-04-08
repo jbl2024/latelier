@@ -5,7 +5,7 @@ import {
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 import { Email } from "/imports/email";
-import * as htmlToText from "html-to-text";
+import * as htmlToText from "@mxiii/html-to-text";
 import { MJML } from "/imports/mjml";
 
 // Disable client insert/remove/update

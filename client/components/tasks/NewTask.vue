@@ -35,37 +35,29 @@
         <v-card-title class="headline">
           {{ $t("Add new task") }}
         </v-card-title>
-        <v-card-text class="flex1">
+        <v-card-text>
           <v-form v-model="valid" class="form" @submit.prevent>
-            <v-layout wrap>
-              <v-flex xs12>
-                <v-textarea
-                  ref="name"
-                  v-model="name"
-                  class="edit-name"
-                  :label="$t('Title')"
-                  outlined
-                  required
-                  :rules="nameRules"
-                  @focus.native="$event.target.select()"
-                  @keydown.shift.enter="newTask(false)"
-                />
-              </v-flex>
-              <v-flex xs12>
-                <task-labels-in-new-task
-                  v-model="labels"
-                  :project-id="projectId"
-                />
-              </v-flex>
-              <v-flex xs12>
-                <v-checkbox
-                  v-model="multiline"
-                  color="accent"
-                  :class="{ hidden: !showMultilineOption }"
-                  :label="$t('Create one task per line')"
-                />
-              </v-flex>
-            </v-layout>
+            <v-textarea
+              ref="name"
+              v-model="name"
+              class="edit-name"
+              :label="$t('Name')"
+              outlined
+              required
+              :rules="nameRules"
+              @focus.native="$event.target.select()"
+              @keydown.shift.enter="newTask(false)"
+            />
+            <task-labels-in-new-task
+              v-model="labels"
+              :project-id="projectId"
+            />
+            <v-checkbox
+              v-model="multiline"
+              color="accent"
+              :class="{ hidden: !showMultilineOption }"
+              :label="$t('Create one task per line')"
+            />
           </v-form>
         </v-card-text>
 

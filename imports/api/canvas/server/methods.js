@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { Canvas } from "/imports/api/canvas/canvas";
 import { checkCanReadProject } from "/imports/api/permissions/permissions";
-import * as htmlToText from "html-to-text";
+import * as htmlToText from "@mxiii/html-to-text";
 import carbone from "carbone";
 
 const bound = Meteor.bindEnvironment((callback) => callback());
