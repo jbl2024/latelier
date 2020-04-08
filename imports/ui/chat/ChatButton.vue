@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isEnabled && isConnected" class="chat-button">
+  <div v-if="$store.state.chat.isEnabled && isConnected" class="chat-button">
     <v-btn icon @click="$emit('toggle-chat')">
         <v-icon>mdi-chat</v-icon>
     </v-btn>
@@ -7,12 +7,6 @@
 </template>
 <script>
 export default {
-  computed: {
-    isEnabled() {
-      if (!Meteor) return false;
-      return Boolean(Meteor.settings.public?.chat?.enabled) === true;
-    }
-  },
   meteor: {
     isConnected() {
       return Meteor ? Meteor.userId() : false;

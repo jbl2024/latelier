@@ -47,7 +47,7 @@
             <login-menu />
           </v-menu>
         </v-avatar>
-        <chat-button @toggle-chat="toggleChat"/>
+        <chat-button v-if="chatEnabled" @toggle-chat="toggleChat"/>
         <notification-button />
       </v-app-bar>
 
@@ -113,7 +113,7 @@
         :width="400"
         right
       >
-        <chat/>
+        <chat v-if="chatEnabled"/>
       </v-navigation-drawer>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
@@ -138,9 +138,10 @@ export default {
   data() {
     return {
       drawer: null,
-      rightDrawer: null,
+      rightDrawer: false,
       openMenu: false,
       showSnackbar: false,
+      chatEnabled: Meteor.settings.public?.chat?.enabled,
       timeout: 6000
     };
   },

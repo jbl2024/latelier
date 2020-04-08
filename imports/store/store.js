@@ -4,14 +4,13 @@ import { Meteor } from "meteor/meteor";
 
 import get from "lodash/get";
 import { projectFilters } from "./projectFilters";
-import { chat } from './chat';
+import { chat } from "./chat";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    projectFilters,
-    chat
+    projectFilters
   },
   state: {
     selectedGroup: {},
@@ -167,4 +166,11 @@ const store = new Vuex.Store({
     }
   }
 });
+
+// Chat
+const isChatEnabled = Meteor ? Meteor.settings.public?.chat?.enabled : false;
+if (isChatEnabled) {
+  store.registerModule('chat', chat);
+}
+
 export default store;

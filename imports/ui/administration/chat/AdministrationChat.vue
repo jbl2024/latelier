@@ -1,5 +1,6 @@
 <template>
   <div class="chat">
+    <!-- Création / Mise à jour d'une conversation -->
     <v-dialog
       v-model="showChatChannelDetail"
       eager
@@ -8,12 +9,13 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <chat-channel-detail
-        ref="chatChannelDetail"
-        @close="closeDetail()"
+        :key="showChatChannelDetail"
+        :chat-channel="selectedChatChannel"
+        @close="closeChatChannelDetail()"
+        @created="findChatChannels()"
         @saved="findChatChannels()"
       />
     </v-dialog>
-    <new-chat-channel ref="newChatChannel" @created="findChatChannels()" />
     <v-card class="center">
       <v-card-text>
         <v-container>
@@ -22,19 +24,23 @@
               <v-list subheader>
                 <v-subheader inset>
                   {{ pagination.totalItems }} conversations
-                  <v-btn text icon @click="$refs.newChatChannel.open()">
+                  <!-- Rajouter click new conversation -->
+                  <v-btn text icon @click="saveChatChannel(null)">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
                 </v-subheader>
-                <template v-for="channel in chatChannels">
-                  <v-list-item :key="channel._id" @click="openDetail(channel)">
+                <template v-for="chatChannel in chatChannels">
+                  <v-list-item :key="chatChannel._id" @click="saveChatChannel(chatChannel)">
+                    <v-list-item-avatar>
+                      <v-icon>mdi-chat</v-icon>
+                    </v-list-item-avatar>
                     <v-list-item-content>
                       <v-list-item-title>
-                        {{ channel.name }}
+                        {{ chatChannel.name }}
                       </v-list-item-title>
                     </v-list-item-content>
                     <v-list-item-action>
-                      <v-btn icon ripple @click.stop="removeChatChannel(channel)">
+                      <v-btn icon ripple @click.stop="removeChatChannel(chatChannel)">
                         <v-icon>mdi-delete</v-icon>
                       </v-btn>
                     </v-list-item-action>
@@ -60,16 +66,15 @@
   </div>
 </template>
 <script>
-import NewChatChannel from "./NewChatChannel";
 import ChatChannelDetail from "./ChatChannelDetail";
 export default {
   components: {
-    NewChatChannel,
     ChatChannelDetail
   },
   data() {
     return {
       chatChannels: [],
+      selectedChatChannel: null,
       showChatChannelDetail: false,
       page: 1,
       pagination: {
@@ -91,9 +96,21 @@ export default {
       }
     }
   },
-    methods: {
+  i18n: {
+    messages: {
+      en: {
+        "Delete chat channel?": "Delete chat channel?",
+        "Chat channel deleted": "Chat channel deleted"
+      },
+      fr: {
+        "Delete chat channel?": "Supprimer la conversation?",
+        "Chat channel deleted": "Conversation supprimée"
+      }
+    }
+  },
+  methods: {
     findChatChannels() {
-      Meteor.call("admin.findChatChannels", {
+      Meteor.call("chatChannels.load", {
         page: this.page
       }, (error, result) => {
           if (error) {
@@ -108,24 +125,23 @@ export default {
       );
     },
 
-    removeChatChannel(channel) {
-      /*
-      this.$confirm(this.$t("Delete chat?"), {
-        title: user.emails[0].address,
+    removeChatChannel(chatChannel) {
+      this.$confirm(this.$t("Delete chat channel?"), {
+        title: chatChannel.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       }).then((res) => {
         if (res) {
-          Meteor.call("admin.removeUser", user._id, (error) => {
+          Meteor.call("chatChannels.remove", {chatChannelId: chatChannel._id}, (error) => {
             if (error) {
               this.$notifyError(error);
               return;
             }
-            this.$notify(this.$t("User deleted"));
-            this.findUsers();
+            this.$notify(this.$t("Chat channel deleted"));
+            this.findChatChannels();
           });
         }
-      }); */
+      });
     },
     calculateTotalPages() {
       if (this.pagination.rowsPerPage == null || this.pagination.totalItems == null) {
@@ -133,11 +149,12 @@ export default {
       }
       return Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage);
     },
-    openDetail(channel) {
-      this.$refs.chatChannelDetail.open(channel);
+    saveChatChannel(chatChannel) {
+      this.selectedChatChannel = chatChannel;
       this.showChatChannelDetail = true;
     },
-    closeDetail() {
+    closeChatChannelDetail() {
+      this.selectedChatChannel = null;
       this.showChatChannelDetail = false;
     },
   },

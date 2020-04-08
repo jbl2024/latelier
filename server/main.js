@@ -41,6 +41,7 @@ import "../imports/api/dashboards/dashboards.js";
 
 import "../imports/api/chatChannels/chatChannels.js";
 import "../imports/api/chatChannels/server/methods.js";
+import "../imports/api/chatChannels/server/publications.js";
 
 import "../imports/api/attachments/attachments.js";
 import "../imports/api/attachments/server/methods.js";

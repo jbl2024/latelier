@@ -39,13 +39,17 @@
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "ddp"
-  },
-  "chat": {
-    "enabled": false,
-    "rocketchat": {
-      "url": "xxx",
-      "type": "iframe"
+    "uploadTransport": "ddp",
+    "chat": {
+      "enabled": true,
+      "rocketChat": {
+        "baseUrl": "https://rocketchat.url",
+        "defaultChatChannel": {
+          "type": "rocketchat",
+          "name": "Général",
+          "channel": "/general"
+        }
+      }
     }
   }
 }
