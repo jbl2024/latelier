@@ -14,7 +14,7 @@
             <author-avatar :user-id="task.assignedTo" />
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title class="no-wrap">
               <span class="black--text">
                 <v-icon v-if="task.completed" small>mdi-check-box-outline</v-icon>
                 {{ task.name }}</span>
@@ -106,5 +106,9 @@ export default {
 <style scoped>
 .empty-state {
   margin-top: 24px;
+}
+
+.no-wrap {
+  white-space: normal;
 }
 </style>
