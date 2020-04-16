@@ -12,12 +12,19 @@
       class="kanban-flex dragscroll"
       :data-id="list._id"
     >
-      <list
-        :ref="list._id"
-        :list="list"
-        class="kanban-list-item dragscroll"
-        :data-id="list._id"
-      />
+      <vue-resizable
+        :width="272"
+        height="100%"
+        :active="['r']"
+        :min-width="100"
+      >
+        <list
+          :ref="list._id"
+          :list="list"
+          class="kanban-list-item dragscroll"
+          :data-id="list._id"
+        />
+      </vue-resizable>
     </div>
     <div class="swimlane dragscroll new">
       <h2 @click="newListInline">
@@ -31,10 +38,14 @@
 import { Lists } from "/imports/api/lists/lists.js";
 import { dragscroll } from "vue-dragscroll";
 import Sortable from "sortablejs";
+import VueResizable from "vue-resizable";
 
 export default {
   directives: {
     dragscroll: dragscroll
+  },
+  components: {
+    VueResizable
   },
   props: {
     projectId: {
@@ -182,6 +193,7 @@ export default {
   .kanban-flex {
     border-right: 1px solid rgba(0, 0, 0, 0.12);
     margin-right: 10px;
+    padding-right: 10px;
   }
 }
 </style>
