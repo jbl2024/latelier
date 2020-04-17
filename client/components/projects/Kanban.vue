@@ -11,12 +11,13 @@
       :key="list._id"
       class="kanban-flex dragscroll"
       :data-id="list._id"
+      @dblclick="(e) => resetColumnSize(e, list._id)"
     >
-      <vue-resizable
-        :width="272"
-        height="100%"
+      <resizable
+        :ref="`resizable-${list._id}`"
+        :width="defaultListWidth"
         :active="['r']"
-        :min-width="100"
+        :min-width="42"
       >
         <list
           :ref="list._id"
@@ -24,7 +25,7 @@
           class="kanban-list-item dragscroll"
           :data-id="list._id"
         />
-      </vue-resizable>
+      </resizable>
     </div>
     <div class="swimlane dragscroll new">
       <h2 @click="newListInline">
@@ -38,14 +39,10 @@
 import { Lists } from "/imports/api/lists/lists.js";
 import { dragscroll } from "vue-dragscroll";
 import Sortable from "sortablejs";
-import VueResizable from "vue-resizable";
 
 export default {
   directives: {
     dragscroll: dragscroll
-  },
-  components: {
-    VueResizable
   },
   props: {
     projectId: {
@@ -55,6 +52,10 @@ export default {
     addMargin: {
       type: Boolean,
       default: false
+    },
+    defaultListWidth: {
+      type: Number,
+      default: 272
     }
   },
   data() {
@@ -110,7 +111,13 @@ export default {
     },
 
     onMouseMove(e) {
-      if (e && e.target && e.target.classList.contains("dragscroll")) {
+      console.log(e);
+      if (
+        e
+        && e.target
+        && e.target.classList.contains("dragscroll")
+        && e.target.className !== "resizable-r"
+      ) {
         this.scrollEnabled = true;
       } else {
         this.scrollEnabled = false;
@@ -138,6 +145,16 @@ export default {
       }
 
       Meteor.call("lists.move", this.projectId, listId, newOrder);
+    },
+
+    resetColumnSize(event, id) {
+      // first check if double-click target is the resizable item
+      const className = event.target?.className;
+      if (className === "resizable-r") {
+        // then reset to initial pos
+        const ref = this.$refs[`resizable-${id}`][0];
+        ref.w = this.defaultListWidth;
+      }
     }
   }
 };
