@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix task card display when title is very large on chrome/safari
 - Add resize columns feature
 - Improve task list title display
 

@@ -505,6 +505,7 @@ export default {
   padding-right: 22px;
   line-height: 1.3;
   flex-grow: 1;
+  overflow: hidden;
 }
 
 .task {
