@@ -11,13 +11,21 @@
       :key="list._id"
       class="kanban-flex dragscroll"
       :data-id="list._id"
+      @dblclick="(e) => resetColumnSize(e, list._id)"
     >
-      <list
-        :ref="list._id"
-        :list="list"
-        class="kanban-list-item dragscroll"
-        :data-id="list._id"
-      />
+      <resizable
+        :ref="`resizable-${list._id}`"
+        :width="defaultListWidth"
+        :active="['r']"
+        :min-width="42"
+      >
+        <list
+          :ref="list._id"
+          :list="list"
+          class="kanban-list-item dragscroll"
+          :data-id="list._id"
+        />
+      </resizable>
     </div>
     <div class="swimlane dragscroll new">
       <h2 @click="newListInline">
@@ -51,6 +59,22 @@ export default {
       scrollEnabled: false,
       sortable: null
     };
+  },
+  computed: {
+    defaultListWidth() {
+      if (this.$vuetify.breakpoint.xsOnly) {
+        // force refresh when switching to mobile view
+        this.lists.forEach((list) => {
+          if (!this.$refs[`resizable-${list._id}`]) {
+            return;
+          }
+          const ref = this.$refs[`resizable-${list._id}`][0];
+          ref.w = "100%";
+        });
+        return "100%";
+      }
+      return 272;
+    }
   },
   mounted() {
     const options = {
@@ -99,7 +123,12 @@ export default {
     },
 
     onMouseMove(e) {
-      if (e && e.target && e.target.classList.contains("dragscroll")) {
+      if (
+        e
+        && e.target
+        && e.target.classList.contains("dragscroll")
+        && e.target.className !== "resizable-r"
+      ) {
         this.scrollEnabled = true;
       } else {
         this.scrollEnabled = false;
@@ -127,6 +156,16 @@ export default {
       }
 
       Meteor.call("lists.move", this.projectId, listId, newOrder);
+    },
+
+    resetColumnSize(event, id) {
+      // first check if double-click target is the resizable item
+      const className = event.target?.className;
+      if (className === "resizable-r") {
+        // then reset to initial pos
+        const ref = this.$refs[`resizable-${id}`][0];
+        ref.w = this.defaultListWidth;
+      }
     }
   }
 };
@@ -182,6 +221,7 @@ export default {
   .kanban-flex {
     border-right: 1px solid rgba(0, 0, 0, 0.12);
     margin-right: 10px;
+    padding-right: 10px;
   }
 }
 </style>

@@ -271,13 +271,7 @@ pre {
 }
 .pretty {
   white-space: normal !important;
-  max-width: 200px;
-}
-
-@media (max-width: 600px) {
-  .pretty {
-    max-width: 260px;
-  }
+  margin-right: 48px;
 }
 
 .pretty .state label {

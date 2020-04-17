@@ -381,13 +381,13 @@ export default {
 @media (min-width: 601px) {
   .swimlane {
     flex: 0 0 auto;
-    width: 274px;
+    width: 100%;
     display: inline-block;
     margin-right: 8px;
   }
 
   .tasks-wrapper {
-    width: 274px;
+    width: 100%;
     overflow-y: auto;
     flex: 1;
     position: absolute;
@@ -429,7 +429,7 @@ export default {
   border: 1px solid #eee;
   font-size: 12px;
   padding: 8px;
-  width: 272px;
+  width: 100%;
   font-weight: normal;
   color: #777;
   cursor: pointer;
@@ -472,7 +472,7 @@ export default {
 
 @media (max-width: 600px) {
   .list-name {
-    width: 280px;
+    width: 100%;
     display: inline-block;
     margin-left: 4px;
   }
