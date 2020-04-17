@@ -52,10 +52,6 @@ export default {
     addMargin: {
       type: Boolean,
       default: false
-    },
-    defaultListWidth: {
-      type: Number,
-      default: 272
     }
   },
   data() {
@@ -63,6 +59,22 @@ export default {
       scrollEnabled: false,
       sortable: null
     };
+  },
+  computed: {
+    defaultListWidth() {
+      if (this.$vuetify.breakpoint.xsOnly) {
+        // force refresh when switching to mobile view
+        this.lists.forEach((list) => {
+          if (!this.$refs[`resizable-${list._id}`]) {
+            return;
+          }
+          const ref = this.$refs[`resizable-${list._id}`][0];
+          ref.w = "100%";
+        });
+        return "100%";
+      }
+      return 272;
+    }
   },
   mounted() {
     const options = {
@@ -111,7 +123,6 @@ export default {
     },
 
     onMouseMove(e) {
-      console.log(e);
       if (
         e
         && e.target
