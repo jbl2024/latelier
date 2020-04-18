@@ -3,6 +3,7 @@ import { Email } from "/imports/email";
 import { Projects } from "/imports/api/projects/projects";
 import { Digests } from "/imports/api/digests/digests";
 import { Permissions } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 import * as htmlToText from "@mxiii/html-to-text";
 import { MJML } from "/imports/mjml";
 
@@ -47,7 +48,7 @@ const sendEmail = function(user, digests, date, emailData) {
   });
   try {
     Email.send({
-      to: user.emails[0].address,
+      to: UserUtils.getEmail(user),
       subject: emailData.subject(user, digests),
       text,
       html

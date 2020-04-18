@@ -1,3 +1,5 @@
+import { UserUtils } from "/imports/api/users/utils";
+
 const getUser = function(user) {
   if (!user) return null;
   if (typeof user === "string" || user instanceof String) {
@@ -23,7 +25,7 @@ export default {
       user = getUser(user);
       if (!user) return null;
 
-      const emailComponents = user.emails[0].address.split("@")[0].split(".");
+      const emailComponents = UserUtils.getEmail(user).split("@")[0].split(".");
       if (emailComponents.length <= 1) {
         return emailComponents[0][0];
       }
@@ -33,7 +35,7 @@ export default {
     formatUser(user) {
       user = getUser(user);
       if (!user) return null;
-      return user.emails[0].address;
+      return UserUtils.getEmail(user);
     },
 
     isOnline(user) {
@@ -48,7 +50,7 @@ export default {
       user = getUser(user);
       if (!user) return null;
       if (user.emails && user.emails.length > 0) {
-        return user.emails[0].address;
+        return UserUtils.getEmail(user);
       }
       return null;
     },

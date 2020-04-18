@@ -6,6 +6,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Roles } from "meteor/alanning:roles";
+import { UserUtils } from "/imports/api/users/utils";
 
 /**
  * Project
@@ -236,10 +237,10 @@ Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
     const user = Meteor.user();
     const admin = Meteor.settings.roles?.admin || [];
     admin.forEach((email) => {
-      if (user.emails[0].address === email) {
+      if (UserUtils.getEmail(user) === email) {
         if (!Permissions.isAdmin(user._id)) {
           /* eslint no-console: off */
-          console.info(`Adding ${user.emails[0].address} to admin role`);
+          console.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
           Roles.addUsersToRoles(user._id, "admin", Roles.GLOBAL_GROUP);
         }
       }

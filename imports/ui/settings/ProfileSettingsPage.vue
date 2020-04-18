@@ -22,7 +22,7 @@
         </div>
         <v-divider />
         <div class="center title pa-8">
-          {{ user.emails[0].address }}
+          {{ getEmail(user) }}
         </div>
       </div>
     </template>
@@ -31,6 +31,7 @@
 
 <script>
 import { Avatars } from "/imports/api/users/avatars";
+import { UserUtils } from "/imports/api/users/utils";
 
 export default {
   props: {},
@@ -111,6 +112,10 @@ export default {
         }
         this.refreshUser();
       });
+    },
+
+    getEmail(user) {
+      return UserUtils.getEmail(user);
     }
   }
 };

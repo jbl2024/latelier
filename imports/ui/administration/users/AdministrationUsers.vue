@@ -91,6 +91,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
@@ -195,7 +196,7 @@ export default {
 
     removeUser(user) {
       this.$confirm(this.$t("Delete user?"), {
-        title: user.emails[0].address,
+        title: UserUtils.getEmail(user),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       }).then((res) => {

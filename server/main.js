@@ -61,6 +61,7 @@ import "../imports/api/administration/server/methods.js";
 import "../imports/api/storage/server/s3";
 
 import "./apm.js";
+import "./oauth2";
 
 if (Meteor.settings.email?.mailUrl) {
   process.env.MAIL_URL = Meteor.settings.email.mailUrl;

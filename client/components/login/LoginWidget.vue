@@ -52,6 +52,11 @@
         </v-card>
       </v-form>
     </div>
+    <div>
+      <v-btn @click="loginOauth2()">
+        Login with keycloak
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -103,6 +108,12 @@ export default {
     },
     validateLogin() {
       this.login();
+    },
+
+    loginOauth2() {
+      Meteor.loginWithOidc({ redirectUrl: Meteor.absoluteUrl("/dashboard") }, () => {
+        console.log("callback")
+      });
     }
   }
 };

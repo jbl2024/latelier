@@ -33,6 +33,22 @@
   "roles": {
     "admin": ["foo@bar.com"]
   },
+  "auth": {
+    "oauth2": {
+      "enabled": true,
+      "id_map": "preferred_username",
+      "usernameMap": "preferred_username",
+      "fullnameMap": "given_name",
+      "emailMap": "email",
+      "clientId": "<Keycloak create Client ID>",
+      "secret": "<Keycloak Client secret>",
+      "serverUrl": "<Keycloak server name>/auth",
+      "authEndpoint": "/realms/<keycloak realm>/protocol/openid-connect/auth",
+      "userinfoEndpoint": "/realms/<keycloak realm>/protocol/openid-connect/userinfo",
+      "tokenEndpoint" : "/realms/<keycloak realm>/protocol/openid-connect/token",
+      "idTokenWhitelistFields": []
+    }
+  },  
   "public": {
     "emailVerificationNeeded": false,
     "sso": {

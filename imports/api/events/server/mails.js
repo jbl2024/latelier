@@ -1,4 +1,5 @@
 import { Email } from "/imports/email";
+import { UserUtils } from "/imports/api/users/utils";
 import get from "lodash/get";
 import { Tasks } from "/imports/api/tasks/tasks";
 import * as htmlToText from "@mxiii/html-to-text";
@@ -42,7 +43,7 @@ const sendEmail = function(user, task, emailData) {
   });
   try {
     Email.send({
-      to: user.emails[0].address,
+      to: UserUtils.getEmail(user),
       subject: emailData.subject(user, task),
       text,
       html

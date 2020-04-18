@@ -13,6 +13,7 @@ import {
   checkCanDeleteTask,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 import SimpleSchema from "simpl-schema";
 import { incrementCounter } from "./counter";
 import TaskSchema from "./schema";
@@ -769,7 +770,7 @@ Tasks.methods.getHistory = new ValidatedMethod({
       item.user = item.userId;
       const user = Meteor.users.findOne({ _id: item.userId });
       if (user) {
-        item.user = user.emails[0].address;
+        item.user = UserUtils.getEmail(user);
       }
       dataWithUsers.push(item);
     });
