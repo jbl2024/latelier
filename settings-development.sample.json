@@ -46,6 +46,8 @@
       "authEndpoint": "/realms/<keycloak realm>/protocol/openid-connect/auth",
       "userinfoEndpoint": "/realms/<keycloak realm>/protocol/openid-connect/userinfo",
       "tokenEndpoint" : "/realms/<keycloak realm>/protocol/openid-connect/token",
+      "logoutUrl": "/realms/l<keycloak realm>/protocol/openid-connect/logout",
+      "logoutRedirectParameter": "redirect_uri",
       "idTokenWhitelistFields": []
     }
   },  

@@ -487,5 +487,33 @@ Meteor.methods({
       user.profile = {};
     }
     return user;
+  },
+
+  /**
+   * This is useful to force log out from
+   * oauth2 id provider for example
+   */
+  "users.getRedirectUrlAfterLogout"() {
+    const user = Meteor.user();
+    if (!user) {
+      return null;
+    }
+    if (!user.services?.oidc) {
+      return null;
+    }
+    const redirectUrl = Meteor.absoluteUrl("/login");
+    const redirectParameter = Meteor.settings.auth?.oauth2?.logoutRedirectParameter;
+    const baseUrl = Meteor.settings.auth?.oauth2.serverUrl;
+    let logoutUrl = Meteor.settings.auth?.oauth2?.logoutUrl;
+
+    if (!logoutUrl || !baseUrl) {
+      return null;
+    }
+    if (redirectParameter) {
+      if (logoutUrl.indexOf("?") === -1) {
+        logoutUrl = `${logoutUrl}?${redirectParameter}=${redirectUrl}`;
+      }
+    }
+    return `${baseUrl}${logoutUrl}`;
   }
 });
