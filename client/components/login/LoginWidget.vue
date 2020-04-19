@@ -50,12 +50,12 @@
             {{ notifyText }}
           </v-snackbar>
         </v-card>
+        <v-card>
+          <v-btn @click="loginOauth2()">
+            Login with keycloak
+          </v-btn>
+        </v-card>
       </v-form>
-    </div>
-    <div>
-      <v-btn @click="loginOauth2()">
-        Login with keycloak
-      </v-btn>
     </div>
   </div>
 </template>
@@ -111,8 +111,11 @@ export default {
     },
 
     loginOauth2() {
-      Meteor.loginWithOidc({ redirectUrl: Meteor.absoluteUrl("/dashboard") }, () => {
-        console.log("callback")
+      Meteor.loginWithOidc({ loginStyle: "popup" }, () => {
+        const user = Meteor.user();
+        if (user) {
+          this.$router.push({ name: "dashboard-page" });
+        }
       });
     }
   }
