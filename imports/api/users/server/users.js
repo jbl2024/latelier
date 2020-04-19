@@ -515,5 +515,12 @@ Meteor.methods({
       }
     }
     return `${baseUrl}${logoutUrl}`;
+  },
+
+  "users.oauthEnabled"() {
+    return {
+      enabled: Meteor.settings.auth?.oauth2?.enabled,
+      title: Meteor.settings.auth?.oauth2?.title
+    };
   }
 });
