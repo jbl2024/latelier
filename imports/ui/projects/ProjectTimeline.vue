@@ -241,14 +241,13 @@ export default {
       }
 
       tasks.forEach((task) => {
-        let start = moment(task.startDate).toDate();
-        let end = moment(task.dueDate).toDate();
+        let start = task.startDate ? moment(task.startDate).toDate() : null;
+        let end = task.dueDate ? moment(task.dueDate).toDate() : null;
 
-        const { completed } = task;
-        const { completedAt } = task;
+        const { completed, completedAt } = task;
 
         if (completed && completedAt) {
-          end = completedAt;
+          end = moment(completedAt).toDate();
         }
 
         let type = "range";

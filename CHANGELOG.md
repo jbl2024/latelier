@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for oauth2 (tested with keycloack)
 
 ### Changed
+- Fix completed tasks in timeline
 
 ### Removed
 
