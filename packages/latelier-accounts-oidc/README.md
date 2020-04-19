@@ -52,24 +52,24 @@ The following service configuration are available:
 
 Then in your project:
 
-```js
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    ServiceConfiguration.configurations.upsert(
-      { service: "oidc" },
-      {
-        $set: {
-          loginStyle: "redirect",
-          clientId: "my-client-id-registered-with-the-oidc-server",
-          secret: "my-client-shared-secret",
-          serverUrl: "https://openid.example.org",
-          authorizationEndpoint: "/oidc/authorize",
-          tokenEndpoint: "/oidc/token",
-          userinfoEndpoint: "/oidc/userinfo",
-          idTokenWhitelistFields: [],
-        },
-      }
-    );
-  });
-}
-```
+  ```js
+  if (Meteor.isServer) {
+    Meteor.startup(function () {
+      ServiceConfiguration.configurations.upsert(
+        { service: "oidc" },
+        {
+          $set: {
+            loginStyle: "redirect",
+            clientId: "my-client-id-registered-with-the-oidc-server",
+            secret: "my-client-shared-secret",
+            serverUrl: "https://openid.example.org",
+            authorizationEndpoint: "/oidc/authorize",
+            tokenEndpoint: "/oidc/token",
+            userinfoEndpoint: "/oidc/userinfo",
+            idTokenWhitelistFields: [],
+          },
+        }
+      );
+    });
+  }
+  ```
