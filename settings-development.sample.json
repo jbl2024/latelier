@@ -37,7 +37,7 @@
     "oauth2": {
       "enabled": true,
       "title": "OAuth2 login",
-      "id_map": "preferred_username",
+      "idMap": "preferred_username",
       "usernameMap": "preferred_username",
       "fullnameMap": "given_name",
       "emailMap": "email",
