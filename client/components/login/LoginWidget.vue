@@ -89,7 +89,7 @@ export default {
   },
   mounted () {
     Meteor.call("users.oauthEnabled", (error, { enabled, title }) => {
-      if (error) {;
+      if (error) {
         this.notifyError(error);
         return;
       }
