@@ -10,10 +10,10 @@ A Meteor login service for OpenID Connect (OIDC).
 
 `Meteor.loginWithOidc(options, callback)`
 
-- `options` - object containing options, see below (optional)
-- `callback` - callback function (optional)
+-   `options` - object containing options, see below (optional)
+-   `callback` - callback function (optional)
 
-#### Example
+### Example
 
 ```js
 Template.myTemplateName.events({
@@ -27,8 +27,8 @@ Template.myTemplateName.events({
 
 These options override service configuration stored in the database.
 
-- `loginStyle`: `redirect` or `popup`
-- `redirectUrl`: Where to redirect after successful login. Only used if `loginStyle` is set to `redirect`
+-   `loginStyle`: `redirect` or `popup`
+-   `redirectUrl`: Where to redirect after successful login. Only used if `loginStyle` is set to `redirect`
 
 ## Manual Configuration Setup
 
@@ -40,13 +40,13 @@ You can manually configure this package by upserting the service configuration o
 
 The following service configuration are available:
 
-- `clientId`: OIDC client identifier
-- `secret`: OIDC client shared secret
-- `serverUrl`: URL of the OIDC server. e.g. `https://openid.example.org:8443`
-- `authorizationEndpoint`: Endpoint of the OIDC authorization service, e.g. `/oidc/authorize`
-- `tokenEndpoint`: Endpoint of the OIDC token service, e.g. `/oidc/token`
-- `userinfoEndpoint`: Endpoint of the OIDC userinfo service, e.g. `/oidc/userinfo`
-- `idTokenWhitelistFields`: A list of fields from IDToken to be added to Meteor.user().services.oidc object
+-   `clientId`: OIDC client identifier
+-   `secret`: OIDC client shared secret
+-   `serverUrl`: URL of the OIDC server. e.g. `https://openid.example.org:8443`
+-   `authorizationEndpoint`: Endpoint of the OIDC authorization service, e.g. `/oidc/authorize`
+-   `tokenEndpoint`: Endpoint of the OIDC token service, e.g. `/oidc/token`
+-   `userinfoEndpoint`: Endpoint of the OIDC userinfo service, e.g. `/oidc/userinfo`
+-   `idTokenWhitelistFields`: A list of fields from IDToken to be added to Meteor.user().services.oidc object
 
 ### Project Configuration
 
