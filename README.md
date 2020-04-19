@@ -57,6 +57,7 @@ Settings:
 | elasticApm                     | object   | {}              | See below                                        |
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
+| auth                           | object   | {}              | See below                                        |
 
 email:
 
@@ -104,7 +105,33 @@ s3
 | region   | string |               | region                 |
 | bucket   | string |               | bucket                 |
 
-Note: tested only with [minio](<https://min.io/>).
+auth:
+
+| Key    | Type   | Default value | Description |
+| ------ | ------ | ------------- | ----------- |
+| oauth2 | object | {}            | See below   |
+
+oauth2:
+
+| Key                     | Type    | Default value | Description                                               |
+| ----------------------- | ------- | ------------- | --------------------------------------------------------- |
+| enabled                 | boolean | false         | If true, oauth2 is enabled                                |
+| title                   | string  | OAuth2        | Button title                                              |
+| idMap                   | string  |               | id map                                                    |
+| usernameMap             | string  |               | preferred_username                                        |
+| fullnameMap             | string  |               | given_name                                                |
+| emailMap                | string  |               | email                                                     |
+| clientId                | string  |               | <Keycloak create Client ID>                               |
+| secret                  | string  |               | <Keycloak Client secret>"                                 |
+| serverUrl               | string  |               | <Keycloak server name>/auth                               |
+| authEndpoint            | string  |               | /realms/<keycloak realm>/protocol/openid-connect/auth     |
+| userInfoEndpoint        | string  |               | /realms/<keycloak realm>/protocol/openid-connect/userinfo |
+| tokenEndpoint           | string  |               | /realms/<keycloak realm>/protocol/openid-connect/token    |
+| logoutUrl               | string  |               | /realms/l<keycloak realm>/protocol/openid-connect/logout  |
+| logoutRedirectParameter | string  |               | redirect_uri                                              |
+| idTokenWhitelistFields  | string  |               | []                                                        |
+
+Note: tested only with [keycloak](https://www.keycloak.org/).
 
 Example:
 

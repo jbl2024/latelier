@@ -16,6 +16,7 @@ import {
   checkCanReadProject,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 import ProjectSchema from "./schema";
 
 export const Projects = new Mongo.Collection("projects");
@@ -584,7 +585,7 @@ Projects.methods.getHistory = new ValidatedMethod({
       item.user = item.userId;
       const user = Meteor.users.findOne({ _id: item.userId });
       if (user) {
-        item.user = user.emails[0].address;
+        item.user = UserUtils.getEmail(user);
       }
       dataWithUsers.push(item);
     });

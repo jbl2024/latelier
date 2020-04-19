@@ -50,6 +50,13 @@
             {{ notifyText }}
           </v-snackbar>
         </v-card>
+        <template v-if="oauth2Enabled">
+          <v-card class="mt-4">
+            <v-btn block color="primary" @click="loginOauth2()">
+              {{ oauth2Title }}
+            </v-btn>
+          </v-card>
+        </template>
       </v-form>
     </div>
   </div>
@@ -61,6 +68,8 @@ export default {
   data() {
     return {
       valid: false,
+      oauth2Enabled: false,
+      oauth2Title: "OAuth2",
       form: {
         email: "",
         password: ""
@@ -77,6 +86,16 @@ export default {
         (v) => v.length > 1 || this.$t("Password is too short")
       ]
     };
+  },
+  mounted () {
+    Meteor.call("users.oauthEnabled", (error, { enabled, title }) => {
+      if (error) {
+        this.notifyError(error);
+        return;
+      }
+      this.oauth2Enabled = enabled;
+      this.oauth2Title = title;
+    });
   },
   methods: {
     clearForm() {
@@ -103,6 +122,15 @@ export default {
     },
     validateLogin() {
       this.login();
+    },
+
+    loginOauth2() {
+      Meteor.loginWithOidc({ loginStyle: "popup" }, () => {
+        const user = Meteor.user();
+        if (user) {
+          this.$router.push({ name: "dashboard-page" });
+        }
+      });
     }
   }
 };

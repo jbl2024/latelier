@@ -80,6 +80,7 @@
 import "moment/locale/fr";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import { UserUtils } from "/imports/api/users/utils";
 
 export default {
   mixins: [DatesMixin, TextRenderingMixin],
@@ -136,7 +137,7 @@ export default {
 
     formatUser(userId) {
       const user = Meteor.users.findOne({ _id: userId });
-      return user.emails[0].address;
+      return UserUtils.getEmail(user);
     },
 
     startEditNote(note) {

@@ -132,7 +132,19 @@ export default {
         confirmText: this.$t("Log out")
       }).then((res) => {
         if (res) {
-          Meteor.logout();
+          Meteor.call("users.getRedirectUrlAfterLogout", (error, url) => {
+            if (error) {
+              this.$notifyError(error);
+            }
+            Meteor.logout((err) => {
+              if (err) {
+                this.$notifyError(err);
+              }
+              if (url) {
+                window.location = url;
+              }
+            });
+          });
         }
       });
     },

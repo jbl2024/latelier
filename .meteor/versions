@@ -1,4 +1,5 @@
 accounts-base@1.5.0
+accounts-oauth@1.1.16
 accounts-password@1.5.3
 akryum:vue-component@0.15.2
 akryum:vue-component-dev-client@0.4.7
@@ -49,6 +50,8 @@ jquery@3.0.0
 konecty:user-presence@2.6.0
 kschingiz:meteor-elastic-apm@2.2.4
 kschingiz:meteor-measured@1.0.3
+latelier-accounts-oidc@1.0.10
+latelier-oidc@1.0.12
 launch-screen@1.1.1
 livedata@1.0.18
 lmieulet:meteor-coverage@3.2.0
@@ -79,6 +82,8 @@ mongo-livedata@1.0.12
 msavin:sjobs@3.1.1
 npm-bcrypt@0.9.3
 npm-mongo@3.3.0
+oauth@1.2.8
+oauth2@1.2.1
 observe-sequence@1.0.16
 ordered-dict@1.1.0
 ostrio:cookies@2.5.0

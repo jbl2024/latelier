@@ -116,6 +116,7 @@
 
 <script>
 import { mapState } from "vuex";
+import { UserUtils } from "/imports/api/users/utils";
 
 export default {
   data() {
@@ -205,7 +206,7 @@ export default {
       if (Meteor) {
         const user = Meteor.user();
         if (user) {
-          return user.emails[0].address;
+          return UserUtils.getEmail(user);
         }
       }
       return null;

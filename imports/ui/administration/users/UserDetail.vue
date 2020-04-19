@@ -94,7 +94,7 @@
               required
             />
           </v-flex>
-          <v-flex xs12>
+          <v-flex v-if="user.emails" xs12>
             <v-text-field
               v-model="user.emails[0].address"
               label="Email*"

@@ -158,6 +158,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { UserUtils } from "/imports/api/users/utils";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import debounce from "lodash/debounce";
 
@@ -230,7 +231,7 @@ export default {
           return users;
         }
         return users.filter((user) => {
-          const email = user.emails[0].address;
+          const email = UserUtils.getEmail(user);
           return email.toUpperCase().indexOf(this.searchProjectUsers.toUpperCase()) >= 0;
         });
       }
@@ -246,7 +247,7 @@ export default {
             return users;
           }
           return users.filter((user) => {
-            const email = user.emails[0].address;
+            const email = UserUtils.getEmail(user);
             return email.toUpperCase().indexOf(this.searchOrganizationUsers.toUpperCase()) >= 0;
           });
         }

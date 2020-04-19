@@ -5,6 +5,7 @@ import {
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 import { Email } from "/imports/email";
+import { UserUtils } from "/imports/api/users/utils";
 import * as htmlToText from "@mxiii/html-to-text";
 import { MJML } from "/imports/mjml";
 
@@ -53,6 +54,9 @@ Meteor.methods({
         $or: [
           { emails },
           {
+            "profile.email": { $regex: `.*${filter}.*`, $options: "i" }
+          },
+          {
             "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
           },
           {
@@ -92,7 +96,7 @@ Meteor.methods({
 
     data.forEach((user) => {
       user.features = {
-        emailVerified: user.emails[0].verified,
+        emailVerified: user.emails ? user.emails[0].verified : false,
         isActive: Permissions.isActive(user),
         isAdmin: Permissions.isAdmin(user)
       };
@@ -336,6 +340,9 @@ Meteor.methods({
         $or: [
           { emails },
           {
+            "profile.email": { $regex: `.*${filter}.*`, $options: "i" }
+          },
+          {
             "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
           },
           {
@@ -449,7 +456,7 @@ Meteor.methods({
     });
     try {
       Email.send({
-        to: user.emails[0].address,
+        to: UserUtils.getEmail(user),
         subject: emailData.subject(),
         text,
         html
@@ -480,5 +487,40 @@ Meteor.methods({
       user.profile = {};
     }
     return user;
+  },
+
+  /**
+   * This is useful to force log out from
+   * oauth2 id provider for example
+   */
+  "users.getRedirectUrlAfterLogout"() {
+    const user = Meteor.user();
+    if (!user) {
+      return null;
+    }
+    if (!user.services?.oidc) {
+      return null;
+    }
+    const redirectUrl = Meteor.absoluteUrl("/login");
+    const redirectParameter = Meteor.settings.auth?.oauth2?.logoutRedirectParameter;
+    const baseUrl = Meteor.settings.auth?.oauth2.serverUrl;
+    let logoutUrl = Meteor.settings.auth?.oauth2?.logoutUrl;
+
+    if (!logoutUrl || !baseUrl) {
+      return null;
+    }
+    if (redirectParameter) {
+      if (logoutUrl.indexOf("?") === -1) {
+        logoutUrl = `${logoutUrl}?${redirectParameter}=${redirectUrl}`;
+      }
+    }
+    return `${baseUrl}${logoutUrl}`;
+  },
+
+  "users.oauthEnabled"() {
+    return {
+      enabled: Meteor.settings.auth?.oauth2?.enabled,
+      title: Meteor.settings.auth?.oauth2?.title
+    };
   }
 });
