@@ -2,8 +2,7 @@
 Package.describe({
   summary: "OpenID Connect (OIDC) flow for Meteor",
   version: "1.0.12",
-  name: "latelier-oidc",
-  git: "https://github.com/wekan/wekan-oidc.git",
+  name: "latelier-oidc"
 });
 
 Package.onUse(function(api) {
