@@ -7,7 +7,7 @@ OAuth.registerService('oidc', 2, null, function (query) {
     oauth2 = Meteor.settings.auth.oauth2;
   }
   if (!oauth2.enabled) {
-    return;
+    return null;
   }
 
   var debug = process.env.DEBUG || false;
