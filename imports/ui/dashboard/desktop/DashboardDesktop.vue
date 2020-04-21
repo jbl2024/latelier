@@ -7,17 +7,10 @@
     />
     <projects-trashcan ref="projectsTrashcan" />
 
-    <div
-      v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user"
-      class="left"
-    >
+    <div v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
       <v-progress-linear indeterminate />
     </div>
-
-    <div
-      v-if="$subReady.allProjects && $subReady.organizations && $subReady.user"
-      class="left"
-    >
+    <div v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
@@ -282,6 +275,7 @@
         </template>
       </div>
     </div>
+    <!--
     <div class="right">
       <div v-if="$subReady.user" class="tasks">
         <div class="tasks-title">
@@ -319,7 +313,7 @@
           </v-tab-item>
         </v-tabs>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -560,15 +554,13 @@ export default {
 }
 
 .dashboard-desktop {
+  padding: 2rem;
   display: flex;
-  flex-direction: row;
-  padding-left: 24px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  min-height: 0;
   height: 100%;
+  flex-direction: column;
+  position: relative;
+  flex: 1;
 }
 
 .header {
@@ -585,25 +577,6 @@ export default {
 
 .header-action {
   flex: 0;
-}
-
-.left {
-  flex: 1;
-  flex-direction: column;
-  overflow-y: auto;
-  margin-right: 24px;
-  margin-top: 12px;
-  display: flex;
-}
-
-.right {
-  flex-direction: column;
-  overflow-y: auto;
-  width: 360px;
-  background-color: white;
-  border-left: 1px solid #ddd;
-  display: flex;
-  position: relative;
 }
 
 .action-button {

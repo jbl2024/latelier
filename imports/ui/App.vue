@@ -1,91 +1,21 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
+      <nav-drawer v-show="$vuetify.breakpoint.smAndDown"/>
       <select-background v-model="showSelectBackgroundDialog" />
       <task-history
         v-model="showTaskHistory"
         :task-id="selectedTask ? selectedTask._id : '0'"
       />
-
       <task-export
         v-model="showTaskExport"
         :task-id="selectedTask ? selectedTask._id : '0'"
       />
-
-      <v-app-bar
-        :clipped-left="$vuetify.breakpoint.lgAndUp"
-        color="primary"
-        dark
-        app
-        fixed
-        clipped-right
-      >
-        <v-app-bar-nav-icon
-          v-show="$vuetify.breakpoint.mdAndDown"
-          @click.stop="drawer = !drawer"
-        />
-        <home-title v-if="!currentProjectId" />
-        <project-title
-          v-if="currentProjectId"
-          :project-id="currentProjectId"
-        />
-        <search-input />
-        <v-spacer />
-        <template v-if="$vuetify.breakpoint.lgAndUp">
-          {{ email }}
-        </template>
-        <v-avatar dark>
-          <v-menu offset-y eager>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on">
-                <author-avatar v-if="hasAvatar" small :user-id="currentUser" />
-                <v-icon v-if="!hasAvatar">
-                  mdi-account-circle
-                </v-icon>
-              </v-btn>
-            </template>
-            <login-menu />
-          </v-menu>
-        </v-avatar>
-        <notification-button />
-      </v-app-bar>
-
-      <v-hover v-slot:default="{ hover }" open-delay="300" :value="openMenu">
-        <v-navigation-drawer
-          v-model="drawer"
-          :clipped="$vuetify.breakpoint.lgAndUp"
-          fixed
-          dark
-          left
-          width="270px"
-          class="drawer"
-          :mini-variant="!hover && !$vuetify.breakpoint.xs"
-          :mini-variant-width="80"
-        >
-          <div ref="menu" class="drawer-wrapper">
-            <organization-menu
-              v-if="currentOrganizationId && !currentProjectId"
-              :organization-id="currentOrganizationId"
-            />
-            <project-menu
-              v-if="currentProjectId"
-              :organization-id="currentOrganizationId"
-              :project-id="currentProjectId"
-            />
-            <project-groups
-              v-if="showCategories"
-              :organization-id="currentOrganizationId"
-            />
-            <login-menu />
-          </div>
-        </v-navigation-drawer>
-      </v-hover>
-
+      <top-bar/>
       <v-navigation-drawer
         v-model="showTaskDetail"
         :clipped="$vuetify.breakpoint.lgAndUp"
         class="elevation-16"
-        fixed
         app
         right
         :width="600"
@@ -117,8 +47,13 @@
 <script>
 import { mapState } from "vuex";
 import { UserUtils } from "/imports/api/users/utils";
-
+import TopBar from './ui/TopBar';
+import NavDrawer from './ui/NavDrawer';
 export default {
+  components: {
+    TopBar,
+    NavDrawer
+  },
   data() {
     return {
       drawer: null,
@@ -129,10 +64,6 @@ export default {
   },
   computed: {
     ...mapState([
-      "showCategories",
-      "showDashboardTitle",
-      "currentProjectId",
-      "currentOrganizationId",
       "notifyMessage",
       "selectedTask",
       "windowTitle"
@@ -168,16 +99,6 @@ export default {
       set(value) {
         this.$store.dispatch("showSelectBackgroundDialog", value);
       }
-    },
-    hasAvatar() {
-      if (Meteor) {
-        return (
-          this.currentUser
-          && this.currentUser.profile
-          && this.currentUser.profile.avatar
-        );
-      }
-      return false;
     }
   },
   watch: {
@@ -237,7 +158,6 @@ export default {
         this.drawer = true;
       }
     },
-
     onKeyup(event) {
       const targetIsEditable = (target) => {
         if (!target) {
@@ -354,32 +274,6 @@ html {
 
 .drawer .v-list-item--active .v-icon {
   color: white !important;
-}
-
-@media (min-width: 961px) {
-  .drawer {
-    top: 64px !important;
-  }
-  .drawer-wrapper {
-    position: relative;
-    height: calc(100% + 64px);
-  }
-}
-
-@media (min-width: 1265px) {
-  .main-content {
-    margin-left: 80px;
-  }
-}
-
-@media (max-width: 960px) {
-  .drawer {
-    top: 48px;
-  }
-  .drawer-wrapper {
-    position: relative;
-    height: calc(100% + 42px);
-  }
 }
 
 .sticky-tabs .v-tabs-bar {

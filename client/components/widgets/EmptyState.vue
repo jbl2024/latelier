@@ -71,6 +71,10 @@ export default {
 <style scoped>
 .empty-state {
   text-align: center;
+  height: calc(100vh - 88px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .icon {
   font-size: 140px;

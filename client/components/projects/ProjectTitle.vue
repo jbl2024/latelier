@@ -151,7 +151,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  flex: 2;
 }
 
 .align-left {

@@ -210,6 +210,10 @@ export default {
   }
 }
 
+.kanban-container {
+  margin-top: 1rem;
+}
+
 .container-wrapper {
   overflow-y: hidden;
   height: 100%;

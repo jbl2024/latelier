@@ -26,6 +26,7 @@ const store = new Vuex.Store({
     projectFeatures: [],
     windowTitle: "",
     notifyMessage: "",
+    showMobileDrawer: false,
     showLabelText: false
   },
   getters: {
@@ -91,6 +92,9 @@ const store = new Vuex.Store({
         fullTitle = `${fullTitle} - ${titleValue}`;
       }
       state.windowTitle = fullTitle;
+    },
+    updateShowMobileDrawer(state, showMobileDrawer) {
+      state.showMobileDrawer = showMobileDrawer
     }
   },
   actions: {

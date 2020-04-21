@@ -76,7 +76,7 @@ export default {
   flex: 1 1 auto;
   font-size: 16px;
   letter-spacing: normal;
-  max-width: 100%;
+  max-width: 480px;
   text-align: left;
 }
 .search-results {

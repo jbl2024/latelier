@@ -8,25 +8,8 @@
       class="container-wrapper"
       :style="getBackgroundUrl(user)"
     >
-      <v-container ref="cards" v-resize="onResize" fluid class="left">
-        <v-row>
-          <v-col cols="12">
-            <project-card :project="project" :user="user" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <canvas-card :project="project" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <process-card :project="project" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <weather-card :project="project" :info="info" />
-          </v-col>
-        </v-row>
-      </v-container>
-
       <template v-if="!$vuetify.breakpoint.xsOnly">
-        <div class="right">
+        <div class="left">
           <div v-if="$subReady.user" class="tasks">
             <div class="tasks-title">
               {{ $t("Tasks") }}
@@ -67,6 +50,23 @@
           </div>
         </div>
       </template>
+      <v-container ref="cards" v-resize="onResize" fluid class="right">
+        <v-row>
+          <v-col cols="12">
+            <project-card :project="project" :user="user" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <canvas-card :project="project" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <process-card :project="project" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <weather-card :project="project" :info="info" />
+          </v-col>
+        </v-row>
+      </v-container>
+
     </div>
   </div>
 </template>
@@ -175,7 +175,6 @@ export default {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  /* box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3); */
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
@@ -191,10 +190,6 @@ export default {
 }
 
 .left {
-  flex: 1;
-}
-
-.right {
   flex-direction: column;
   overflow-y: auto;
   width: 360px;
@@ -202,6 +197,11 @@ export default {
   border-left: 1px solid #ddd;
   display: flex;
   position: relative;
+}
+
+.right {
+  padding: 3rem;
+  flex: 1;
 }
 
 .tasks-title {
