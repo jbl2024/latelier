@@ -23,9 +23,9 @@
         >
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>
-        <span class="title" @click="startUpdateProjectName">{{
-          project.name
-        }}</span>
+        <span class="title" @click="startUpdateProjectName">
+          {{ truncatedProjectName }}
+        </span>
       </div>
     </v-toolbar-title>
     <div v-show="editProjectName" class="title edit align-left">
@@ -51,6 +51,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import debounce from "lodash/debounce";
+import { truncate } from '/imports/ui/utils/truncate';
 
 export default {
   props: {
@@ -67,6 +68,12 @@ export default {
       debouncedFilter: "",
       showMenu: true
     };
+  },
+  computed: {
+    truncatedProjectName() {
+      if (!this.project) return '';
+      return truncate(this.project.name, 30);
+    }
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -139,11 +146,5 @@ export default {
 .edit .v-text-field {
   float: left;
 }
-
-.title {
-  position: relative;
-  top: 3px;
-}
-
 
 </style>

@@ -1,7 +1,7 @@
 <template>
   <v-app-bar class="top-bar" color="primary" dark app fixed>
     <v-app-bar-nav-icon v-show="$vuetify.breakpoint.mdAndDown" @click.stop="showMobileDrawer = !showMobileDrawer"/>
-    <top-bar-title :projectId="currentProjectId ? currentProjectId : null"/>
+    <top-bar-title :organizationId="currentOrganizationId" :projectId="currentProjectId"/>
     <project-menu v-if="$vuetify.breakpoint.lgAndUp && currentProjectId" :project-id="currentProjectId" />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
       <v-btn class="prevent-search-blur" icon v-show="!showSearchInput" @click="showSearchInput = !showSearchInput">
@@ -42,6 +42,7 @@ export default {
   computed: {
     ...mapState([
       "currentProjectId",
+      "currentOrganizationId"
     ]),
     showMobileDrawer: {
       set(showMobileDrawer) {

@@ -18,14 +18,11 @@
         </v-list-item>
       </v-list>
       <v-divider />
-      <labels :project-id="projectId" />
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions";
-
 export default {
   props: {
     projectId: {
@@ -85,23 +82,10 @@ export default {
           to: {name: 'project-attachments-page', params: {projectId: this.projectId}}
         },
     ];
-    if (this.canManageProject(this.projectId)) {
-      menuItems.push({
-        id: 'settings',
-        title: this.$t('Settings'),
-        icon: 'mdi-settings',
-        to: {name: 'project-settings', params: {projectId: this.projectId}}
-      })
-    }
     return {
       menuItems,
       showHistoryDialog: false
     };
-  },
-  methods: {
-    canManageProject(projectId) {
-      return (Permissions.isAdmin(Meteor.userId(), projectId) || Permissions.isAdmin(Meteor.userId()));
-    }
   }
 };
 </script>

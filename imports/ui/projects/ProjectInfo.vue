@@ -3,12 +3,8 @@
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate />
     </div>
-    <div
-      v-if="$subReady.project && info"
-      class="container-wrapper"
-      :style="getBackgroundUrl(user)"
-    >
-      <div v-show="$vuetify.breakpoint.lgAndUp" class="left">
+    <container-wrapper v-if="$subReady.project && info" :style="getBackgroundUrl(user)">
+      <template slot="left">
         <div v-if="$subReady.user" class="tasks">
           <div class="tasks-title">
             {{ $t("Tasks") }}
@@ -47,25 +43,26 @@
             </v-tabs>
           </div>
         </div>
-      </div>
-      <v-container ref="cards" v-resize="onResize" fluid class="right">
-        <v-row>
-          <v-col cols="12">
-            <project-card :project="project" :user="user" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <canvas-card :project="project" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <process-card :project="project" :info="info" />
-          </v-col>
-          <v-col :cols="cardColumns">
-            <weather-card :project="project" :info="info" />
-          </v-col>
-        </v-row>
-      </v-container>
-
-    </div>
+      </template>
+      <template slot="right">
+        <v-container ref="cards" v-resize="onResize" fluid>
+          <v-row>
+            <v-col cols="12">
+              <project-card :project="project" :user="user" :info="info" />
+            </v-col>
+            <v-col :cols="cardColumns">
+              <canvas-card :project="project" :info="info" />
+            </v-col>
+            <v-col :cols="cardColumns">
+              <process-card :project="project" :info="info" />
+            </v-col>
+            <v-col :cols="cardColumns">
+              <weather-card :project="project" :info="info" />
+            </v-col>
+          </v-row>
+        </v-container>
+      </template>
+    </container-wrapper>
   </div>
 </template>
 
@@ -76,6 +73,7 @@ import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
 import WeatherCard from "/imports/ui/projects/info/WeatherCard";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
+import ContainerWrapper from '/imports/ui/ui/ContainerWrapper';
 
 export default {
   components: {
@@ -83,7 +81,8 @@ export default {
     ProcessCard,
     CanvasCard,
     WeatherCard,
-    DashboardTaskList
+    DashboardTaskList,
+    ContainerWrapper
   },
   props: {
     projectId: {
@@ -160,48 +159,6 @@ export default {
 </script>
 
 <style scoped>
-.container-wrapper {
-  overflow-y: scroll;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  -o-background-size: cover;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-attachment: fixed;
-  display: flex;
-  flex-direction: row;
-}
-
-
-@media (max-width: 600px) {
-  .container-wrapper {
-    min-height: 100vh;
-  }
-}
-
-.left {
-  flex-direction: column;
-  overflow-y: auto;
-  width: 360px;
-  background-color: white;
-  border-left: 1px solid #ddd;
-  display: flex;
-  position: relative;
-}
-
-.right {
-  padding: 3rem;
-  flex: 1;
-}
-
 .tasks-title {
   margin: 15.5px;
   text-transform: uppercase;
