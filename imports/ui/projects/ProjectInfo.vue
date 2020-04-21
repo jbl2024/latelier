@@ -8,48 +8,46 @@
       class="container-wrapper"
       :style="getBackgroundUrl(user)"
     >
-      <template v-if="!$vuetify.breakpoint.xsOnly">
-        <div class="left">
-          <div v-if="$subReady.user" class="tasks">
-            <div class="tasks-title">
-              {{ $t("Tasks") }}
-            </div>
-            <v-divider />
+      <div v-show="$vuetify.breakpoint.lgAndUp" class="left">
+        <div v-if="$subReady.user" class="tasks">
+          <div class="tasks-title">
+            {{ $t("Tasks") }}
+          </div>
+          <v-divider />
 
-            <div class="tabs-wrapper">
-              <v-tabs grow class="sticky-tabs">
-                <v-tabs-slider color="accent" />
-                <v-tab>{{ $t("Recents") }}</v-tab>
-                <v-tab>{{ $t("Assigned to me") }}</v-tab>
-                <v-tab>{{ $t("Late") }}</v-tab>
+          <div class="tabs-wrapper">
+            <v-tabs grow class="sticky-tabs">
+              <v-tabs-slider color="accent" />
+              <v-tab>{{ $t("Recents") }}</v-tab>
+              <v-tab>{{ $t("Assigned to me") }}</v-tab>
+              <v-tab>{{ $t("Late") }}</v-tab>
 
-                <v-tab-item>
-                  <dashboard-task-list
-                    :user="user"
-                    type="recent"
-                    :project-id="project._id"
-                  />
-                </v-tab-item>
-                <v-tab-item>
-                  <dashboard-task-list
-                    :user="user"
-                    type="assignedToMe"
-                    :project-id="project._id"
-                  />
-                </v-tab-item>
-                <v-tab-item>
-                  <dashboard-task-list
-                    :user="user"
-                    type="late"
-                    empty-illustration="celebration"
-                    :project-id="project._id"
-                  />
-                </v-tab-item>
-              </v-tabs>
-            </div>
+              <v-tab-item>
+                <dashboard-task-list
+                  :user="user"
+                  type="recent"
+                  :project-id="project._id"
+                />
+              </v-tab-item>
+              <v-tab-item>
+                <dashboard-task-list
+                  :user="user"
+                  type="assignedToMe"
+                  :project-id="project._id"
+                />
+              </v-tab-item>
+              <v-tab-item>
+                <dashboard-task-list
+                  :user="user"
+                  type="late"
+                  empty-illustration="celebration"
+                  :project-id="project._id"
+                />
+              </v-tab-item>
+            </v-tabs>
           </div>
         </div>
-      </template>
+      </div>
       <v-container ref="cards" v-resize="onResize" fluid class="right">
         <v-row>
           <v-col cols="12">

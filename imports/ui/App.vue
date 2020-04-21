@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <nav-drawer v-show="$vuetify.breakpoint.smAndDown"/>
+      <nav-drawer v-show="$vuetify.breakpoint.mdAndDown"/>
       <select-background v-model="showSelectBackgroundDialog" />
       <task-history
         v-model="showTaskHistory"

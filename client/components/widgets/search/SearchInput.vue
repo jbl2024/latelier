@@ -62,7 +62,11 @@ export default {
         }, 500);
       }
     },
-    onClickOutside() {
+    onClickOutside(event) {
+      if (event.target.classList.contains('prevent-search-blur')) {
+        return false;
+      }
+      this.$emit('blur');
       this.showMenu = false;
     }
   }

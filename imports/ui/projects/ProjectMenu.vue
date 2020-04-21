@@ -1,12 +1,12 @@
 <template>
   <div class="project-menu" v-if="projectId">
-    <v-tabs v-if="$vuetify.breakpoint.mdAndUp" background-color="primary" :show-arrows="false" hide-slider>
+    <v-tabs v-if="$vuetify.breakpoint.lgAndUp" background-color="primary" hide-slider>
       <v-tab v-for="menuItem in menuItems" :to="menuItem.to" :key="menuItem.id">
         <v-icon>{{ menuItem.icon }}</v-icon>
         {{ menuItem.title }}
       </v-tab>
     </v-tabs>
-    <template v-if="$vuetify.breakpoint.smAndDown">
+    <template v-if="$vuetify.breakpoint.mdAndDown">
       <v-list class="pt-0">
         <v-list-item v-for="menuItem in menuItems" :to="menuItem.to" :key="menuItem.id">
           <v-list-item-action>

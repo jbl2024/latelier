@@ -2,12 +2,12 @@
   <v-app-bar class="top-bar" color="primary" dark app fixed>
     <v-app-bar-nav-icon v-show="$vuetify.breakpoint.mdAndDown" @click.stop="showMobileDrawer = !showMobileDrawer"/>
     <top-bar-title :projectId="currentProjectId ? currentProjectId : null"/>
-    <project-menu v-if="$vuetify.breakpoint.mdAndUp && currentProjectId" :project-id="currentProjectId" />
+    <project-menu v-if="$vuetify.breakpoint.lgAndUp && currentProjectId" :project-id="currentProjectId" />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
-      <v-btn icon>
-        <v-icon>mdi-magnify</v-icon>
+      <v-btn class="prevent-search-blur" icon v-show="!showSearchInput" @click="showSearchInput = !showSearchInput">
+        <v-icon class="prevent-search-blur">mdi-magnify</v-icon>
       </v-btn>
-      <!-- <search-input />-->
+      <search-input @blur="showSearchInput = false" v-show="showSearchInput"/>
       <v-avatar dark>
         <v-menu offset-y eager>
           <template v-slot:activator="{ on }">
@@ -34,6 +34,11 @@ export default {
     ProjectMenu,
     TopBarTitle
   },
+  data() {
+    return {
+      showSearchInput: false
+    }
+  },
   computed: {
     ...mapState([
       "currentProjectId",
@@ -48,6 +53,11 @@ export default {
     },
     hasAvatar() {
       return Boolean(Meteor && this.currentUser?.profile?.avatar)
+    }
+  },
+  methods: {
+    blurSearchInput() {
+      console.log(arguments)
     }
   }
 }
