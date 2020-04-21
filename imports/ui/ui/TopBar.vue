@@ -5,7 +5,7 @@
     <project-menu v-if="$vuetify.breakpoint.lgAndUp && currentProjectId" :project-id="currentProjectId" />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
       <v-btn class="prevent-search-blur" icon v-show="!showSearchInput" @click="showSearchInput = !showSearchInput">
-        <v-icon class="prevent-search-blur">mdi-magnify</v-icon>
+        <v-icon>mdi-magnify</v-icon>
       </v-btn>
       <search-input @blur="showSearchInput = false" v-show="showSearchInput"/>
       <v-avatar dark>

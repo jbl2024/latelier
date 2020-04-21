@@ -94,7 +94,7 @@ const store = new Vuex.Store({
       state.windowTitle = fullTitle;
     },
     updateShowMobileDrawer(state, showMobileDrawer) {
-      state.showMobileDrawer = showMobileDrawer
+      state.showMobileDrawer = showMobileDrawer;
     }
   },
   actions: {

@@ -63,7 +63,7 @@ export default {
       }
     },
     onClickOutside(event) {
-      if (event.target.classList.contains('prevent-search-blur')) {
+      if (event.target.closest('.prevent-search-blur') !== null) {
         return false;
       }
       this.$emit('blur');
