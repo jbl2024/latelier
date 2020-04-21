@@ -6,10 +6,9 @@
         <v-btn icon text @click="goTo('dashboard-page')">
           <v-icon>mdi-home</v-icon>
         </v-btn>
-        <span
-          class="title hidden-xs-only"
-          @click="startUpdateOrganizationName"
-        >{{ organization.name }}</span>
+        <span class="title hidden-xs-only" @click="startUpdateOrganizationName">
+          {{ truncatedTitle }}
+        </span>
       </div>
     </v-toolbar-title>
     <div v-show="editOrganizationName" class="title edit align-left">
@@ -38,6 +37,7 @@
 
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { truncate } from '/imports/ui/utils/truncate';
 
 export default {
   props: {
@@ -63,6 +63,12 @@ export default {
       update({ id }) {
         return Organizations.findOne({ _id: id }) || {};
       }
+    }
+  },
+  computed: {
+    truncatedTitle() {
+      if (!this.organization) return '';
+      return truncate(this.organization.name, 30);
     }
   },
   methods: {

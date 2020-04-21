@@ -24,7 +24,7 @@
           <v-icon>mdi-view-dashboard</v-icon>
         </v-btn>
         <span class="title" @click="startUpdateProjectName">
-          {{ truncatedProjectName }}
+          {{ truncatedTitle }}
         </span>
       </div>
     </v-toolbar-title>
@@ -70,7 +70,7 @@ export default {
     };
   },
   computed: {
-    truncatedProjectName() {
+    truncatedTitle() {
       if (!this.project) return '';
       return truncate(this.project.name, 30);
     }

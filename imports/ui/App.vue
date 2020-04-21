@@ -14,12 +14,11 @@
       <top-bar/>
       <v-navigation-drawer
         v-model="showTaskDetail"
-        :clipped="$vuetify.breakpoint.lgAndUp"
         class="elevation-16"
-        app
+        fixed
+        temporary
         right
         :width="600"
-        stateless
       >
         <v-card>
           <task-detail
