@@ -117,4 +117,8 @@ export default {
   .project-menu .v-tabs > .v-tabs-bar {
     height: 100%;
   }
+  .project-menu .v-tabs .v-tab {
+    font-size: 0.8rem;
+    padding: 0 0.75rem;
+  }
 </style>

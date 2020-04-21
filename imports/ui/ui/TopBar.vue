@@ -54,11 +54,6 @@ export default {
     hasAvatar() {
       return Boolean(Meteor && this.currentUser?.profile?.avatar)
     }
-  },
-  methods: {
-    blurSearchInput() {
-      console.log(arguments)
-    }
   }
 }
 </script>
@@ -67,16 +62,17 @@ export default {
     padding: 0 16px;
   }
   .top-bar .project-menu {
-    width: 66%;
-    height:100;
-    padding: 0 1rem;
+    height:100%;
+    padding: 0 0.5rem;
   }
   .top-bar .additional-menu {
     display: flex;
-    flex: 1;
     justify-content: flex-end;
     align-items: center;
     height:100;
     max-width: 100%;
+  }
+  .top-bar .additional-menu {
+    flex-grow: 3;
   }
 </style>
