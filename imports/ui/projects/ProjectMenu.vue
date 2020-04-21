@@ -82,7 +82,7 @@ export default {
           id: 'attachments',
           title: this.$t('Attachments'),
           icon: 'mdi-attachment',
-          to: {name: 'project-weather', params: {projectId: this.projectId}}
+          to: {name: 'project-attachments-page', params: {projectId: this.projectId}}
         },
     ];
     if (this.canManageProject(this.projectId)) {

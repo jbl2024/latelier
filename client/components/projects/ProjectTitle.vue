@@ -4,16 +4,6 @@
       <div>
         <slot />
         <v-btn
-          v-if="showKanbanLink"
-          text
-          icon
-          color="white"
-          :to="{ name: 'project', params: { projectId: project._id } }"
-        >
-          <v-icon>mdi-arrow-left</v-icon>
-        </v-btn>
-        <v-btn
-          v-if="!showKanbanLink"
           text
           icon
           color="white"
@@ -22,7 +12,7 @@
           <v-icon>mdi-home</v-icon>
         </v-btn>
         <v-btn
-          v-if="!showKanbanLink && project.organizationId"
+          v-if="project.organizationId"
           text
           icon
           color="white"
@@ -75,23 +65,8 @@ export default {
       editProjectName: false,
       savedValue: "",
       debouncedFilter: "",
-      showKanbanLink: false,
       showMenu: true
     };
-  },
-  watch: {
-    $route: {
-      deep: true,
-      immediate: true,
-      handler: function () {
-        const page = this.$router.currentRoute.name;
-        if (page !== "project" && page !== "project-task") {
-          this.showKanbanLink = true;
-        } else {
-          this.showKanbanLink = false;
-        }
-      }
-    }
   },
   created() {
     this.debouncedFilter = debounce((val) => {
