@@ -19,6 +19,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Fix completed tasks in timeline
+- Upgrade meteor to 1.10.1
+- Update vuetify to 2.2.22
+- Update packages:
+  - accounts-base            upgraded from 1.5.0 to 1.6.0
+  - accounts-oauth           upgraded from 1.1.16 to 1.2.0
+  - accounts-password        upgraded from 1.5.3 to 1.6.0
+  - babel-compiler           upgraded from 7.5.0 to 7.5.2
+  - boilerplate-generator    upgraded from 1.6.0 to 1.7.0
+  - ddp-server               upgraded from 2.3.0 to 2.3.1
+  - ecmascript               upgraded from 0.14.0 to 0.14.2
+  - inter-process-messaging  upgraded from 0.1.0 to 0.1.1
+  - launch-screen            upgraded from 1.1.1 to 1.2.0
+  - minimongo                upgraded from 1.4.5 to 1.5.0
+  - mobile-experience        upgraded from 1.0.5 to 1.1.0
+  - mobile-status-bar        upgraded from 1.0.14 to 1.1.0
+  - mongo                    upgraded from 1.8.0 to 1.9.0
+  - npm-mongo                upgraded from 3.3.0 to 3.7.0
+  - oauth                    upgraded from 1.2.8 to 1.3.0
+  - oauth2                   upgraded from 1.2.1 to 1.3.0
+  - random                   upgraded from 1.1.0 to 1.2.0
+  - shell-server             upgraded from 0.4.0 to 0.5.0
+  - socket-stream-client     upgraded from 0.2.2 to 0.2.3
+  - webapp                   upgraded from 1.8.0 to 1.9.0
 
 ### Removed
 
@@ -153,7 +176,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - meteortesting:mocha        upgraded from 1.1.3 to 1.1.4
   - meteortesting:mocha-core*  upgraded from 6.2.2 to 7.0.0
   - modern-browsers            upgraded from 0.1.4 to 0.1.5
-
+  - babel-compiler                upgraded from 7.5.2 to 7.5.3
+  - caching-compiler              upgraded from 1.2.1 to 1.2.2
+  - dynamic-import                upgraded from 0.5.1 to 0.5.2
+  - ecmascript                    upgraded from 0.14.2 to 0.14.3
+  - konecty:user-presence         upgraded from 2.6.0 to 2.6.3
+  - kschingiz:meteor-elastic-apm  upgraded from 2.2.4 to 2.3.0
+  - meteortesting:browser-tests   upgraded from 1.3.1 to 1.3.3
+  - meteortesting:mocha           upgraded from 1.1.4 to 1.1.5
+  - meteortesting:mocha-core      upgraded from 7.0.0 to 7.0.1
+  - mongo                         upgraded from 1.9.0 to 1.9.1
+  - ostrio:cookies                upgraded from 2.5.0 to 2.6.0
+  - ostrio:files                  upgraded from 1.13.0 to 1.14.0
+  - webapp                        upgraded from 1.9.0 to 1.9.1
+  - xolvio:cleaner                upgraded from 0.3.3 to 0.4.0
+  - 
 ### Removed
 - Dependency to  simonhochrein:meteor-mjml (not compatible with nodejs >= 12)
 
