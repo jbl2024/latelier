@@ -3,66 +3,22 @@
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate />
     </div>
-    <container-wrapper v-if="$subReady.project && info" :style="getBackgroundUrl(user)">
-      <template slot="left">
-        <div v-if="$subReady.user" class="tasks">
-          <div class="tasks-title">
-            {{ $t("Tasks") }}
-          </div>
-          <v-divider />
-
-          <div class="tabs-wrapper">
-            <v-tabs grow class="sticky-tabs">
-              <v-tabs-slider color="accent" />
-              <v-tab>{{ $t("Recents") }}</v-tab>
-              <v-tab>{{ $t("Assigned to me") }}</v-tab>
-              <v-tab>{{ $t("Late") }}</v-tab>
-
-              <v-tab-item>
-                <dashboard-task-list
-                  :user="user"
-                  type="recent"
-                  :project-id="project._id"
-                />
-              </v-tab-item>
-              <v-tab-item>
-                <dashboard-task-list
-                  :user="user"
-                  type="assignedToMe"
-                  :project-id="project._id"
-                />
-              </v-tab-item>
-              <v-tab-item>
-                <dashboard-task-list
-                  :user="user"
-                  type="late"
-                  empty-illustration="celebration"
-                  :project-id="project._id"
-                />
-              </v-tab-item>
-            </v-tabs>
-          </div>
-        </div>
-      </template>
-      <template slot="right">
-        <v-container ref="cards" v-resize="onResize" fluid>
-          <v-row>
-            <v-col cols="12">
-              <project-card :project="project" :user="user" :info="info" />
-            </v-col>
-            <v-col :cols="cardColumns">
-              <canvas-card :project="project" :info="info" />
-            </v-col>
-            <v-col :cols="cardColumns">
-              <process-card :project="project" :info="info" />
-            </v-col>
-            <v-col :cols="cardColumns">
-              <weather-card :project="project" :info="info" />
-            </v-col>
-          </v-row>
-        </v-container>
-      </template>
-    </container-wrapper>
+    <v-container v-if="$subReady.project && info" :style="getBackgroundUrl(user)" ref="cards" v-resize="onResize" fluid>
+      <v-row>
+        <v-col cols="12">
+          <project-card :project="project" :user="user" :info="info" />
+        </v-col>
+        <v-col :cols="cardColumns">
+          <canvas-card :project="project" :info="info" />
+        </v-col>
+        <v-col :cols="cardColumns">
+          <process-card :project="project" :info="info" />
+        </v-col>
+        <v-col :cols="cardColumns">
+          <weather-card :project="project" :info="info" />
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -73,7 +29,6 @@ import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
 import WeatherCard from "/imports/ui/projects/info/WeatherCard";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
-import ContainerWrapper from '/imports/ui/ui/ContainerWrapper';
 
 export default {
   components: {
@@ -81,8 +36,7 @@ export default {
     ProcessCard,
     CanvasCard,
     WeatherCard,
-    DashboardTaskList,
-    ContainerWrapper
+    DashboardTaskList
   },
   props: {
     projectId: {

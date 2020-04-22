@@ -1,7 +1,12 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
+      <v-navigation-drawer v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"  width="360" v-model="leftDrawer" app clipped>
+        <dashboard-task-tabs v-if="$subReady.user" :user="currentUser" :project-id="currentProjectId" :organization-id="currentOrganizationId">
+        </dashboard-task-tabs>
+      </v-navigation-drawer>
       <nav-drawer v-show="$vuetify.breakpoint.mdAndDown"/>
+
       <select-background v-model="showSelectBackgroundDialog" />
       <task-history
         v-model="showTaskHistory"
@@ -21,10 +26,7 @@
         :width="600"
       >
         <v-card>
-          <task-detail
-            :task-id="selectedTask ? selectedTask._id : '0'"
-            :task-object="selectedTask"
-          />
+          <task-detail :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
         </v-card>
       </v-navigation-drawer>
 
@@ -48,14 +50,16 @@ import { mapState } from "vuex";
 import { UserUtils } from "/imports/api/users/utils";
 import TopBar from './ui/TopBar';
 import NavDrawer from './ui/NavDrawer';
+import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
 export default {
   components: {
     TopBar,
-    NavDrawer
+    NavDrawer,
+    DashboardTaskTabs
   },
   data() {
     return {
-      drawer: null,
+      leftDrawer: null,
       openMenu: false,
       showSnackbar: false,
       timeout: 6000
@@ -63,6 +67,8 @@ export default {
   },
   computed: {
     ...mapState([
+      "currentOrganizationId",
+      "currentProjectId",
       "notifyMessage",
       "selectedTask",
       "windowTitle"
@@ -98,6 +104,10 @@ export default {
       set(value) {
         this.$store.dispatch("showSelectBackgroundDialog", value);
       }
+    },
+    hasLeftDrawer() {
+      const routeName = this.$route?.name;
+      return Boolean(['dashboard-organization-page','project-dashboard'].includes(routeName));
     }
   },
   watch: {
@@ -137,7 +147,6 @@ export default {
       }
       return null;
     },
-
     $subscribe: {
       user() {
         return [];

@@ -1,53 +1,13 @@
 <template>
   <div class="dashboard-desktop">
     <new-organization ref="newOrganization" />
-    <new-project
-      ref="newProject"
-      :organization-id="selectedOrganizationId"
-    />
+    <new-project ref="newProject" :organization-id="selectedOrganizationId"/>
     <projects-trashcan ref="projectsTrashcan" />
 
     <div v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
       <v-progress-linear indeterminate />
     </div>
-    <container-wrapper v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
-      <template slot="left">
-        <div v-if="$subReady.user" class="tasks">
-          <div class="tasks-title">
-            {{ $t("Tasks") }}
-          </div>
-          <v-divider/>
-          <v-tabs v-model="tab" class="sticky-tabs">
-            <v-tabs-slider color="accent" />
-            <v-tab>{{ $t("Recents") }}</v-tab>
-            <v-tab>{{ $t("Assigned to me") }}</v-tab>
-            <v-tab>{{ $t("Late") }}</v-tab>
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="recent"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="assignedToMe"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-            <v-tab-item>
-              <dashboard-task-list
-                :user="user"
-                type="late"
-                empty-illustration="celebration"
-                :organization-id="organizationId"
-              />
-            </v-tab-item>
-          </v-tabs>
-        </div>
-      </template>
-      <template slot="right">
+    <div v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
         <div class="projects-title">
           <v-layout align-center>
             <v-flex grow>
@@ -309,13 +269,11 @@
             </empty-state>
           </template>
         </div>
-      </template>
-    </container-wrapper>
+    </div>
   </div>
 </template>
 
 <script>
-import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
 import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
@@ -324,14 +282,11 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
 
 import { Permissions } from "/imports/api/permissions/permissions";
-import ContainerWrapper from '/imports/ui/ui/ContainerWrapper';
 
 export default {
   components: {
-    DashboardTaskList,
     DashboardProjectCard,
-    DashboardProjectList,
-    ContainerWrapper
+    DashboardProjectList
   },
   mixins: [DatesMixin],
   props: {
@@ -343,7 +298,6 @@ export default {
   data() {
     return {
       user: null,
-      tab: null,
       selectedOrganizationId: "",
       cardClass: "card1"
     };
@@ -555,8 +509,7 @@ export default {
 .dashboard-desktop {
   padding: 2rem;
   display: flex;
-  min-height: 0;
-  height: 100%;
+  min-height: 100vh;
   flex-direction: column;
   position: relative;
   flex: 1;
@@ -584,21 +537,9 @@ export default {
   font-size: 12px;
 }
 
-.tasks {
-  width: 100%;
-}
-
 .projects {
   padding-left: 0;
   padding-right: 12px;
-}
-
-.tasks-title {
-  margin: 15.5px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  flex: 0;
 }
 
 .projects-title {

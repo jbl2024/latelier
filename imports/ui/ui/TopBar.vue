@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar class="top-bar" color="primary" dark app fixed>
+  <v-app-bar class="top-bar" color="primary" dark app clipped-left>
     <v-app-bar-nav-icon v-show="$vuetify.breakpoint.mdAndDown" @click.stop="showMobileDrawer = !showMobileDrawer"/>
     <top-bar-title :organizationId="currentOrganizationId" :projectId="currentProjectId"/>
     <project-menu v-if="$vuetify.breakpoint.lgAndUp && currentProjectId" :project-id="currentProjectId" />
