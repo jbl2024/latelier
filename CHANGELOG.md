@@ -9,16 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-
-### Removed
-
-## [2.10.5] - 2020-04-19
-
-### Added
-- Support for oauth2 (tested with keycloack)
-
-### Changed
-- Fix completed tasks in timeline
 - Upgrade meteor to 1.10.1
 - Update vuetify to 2.2.22
 - Update packages:
@@ -42,6 +32,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - shell-server             upgraded from 0.4.0 to 0.5.0
   - socket-stream-client     upgraded from 0.2.2 to 0.2.3
   - webapp                   upgraded from 1.8.0 to 1.9.0
+
+### Removed
+
+## [2.10.5] - 2020-04-19
+
+### Added
+- Support for oauth2 (tested with keycloack)
+
+### Changed
+- Fix completed tasks in timeline
+
 
 ### Removed
 
