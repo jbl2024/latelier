@@ -2,7 +2,7 @@
   "name": "latelier",
   "private": true,
   "scripts": {
-    "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json",
+    "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json --exclude-archs web.browser.legacy",
     "test": "MOCHA_TIMEOUT=8000 meteor test --once --driver-package meteortesting:mocha",
     "test-run": "MOCHA_TIMEOUT=8000 meteor test --driver-package meteortesting:mocha",
     "test-app": "MOCHA_TIMEOUT=8000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
@@ -50,7 +50,7 @@
     "vue-shortkey": "^3.1.7",
     "vue2vis": "0.0.16",
     "vuelidate": "^0.7.4",
-    "vuetify": "^2.2.15",
+    "vuetify": "^2.2.22",
     "vuex": "^3.1.1"
   },
   "meteor": {
