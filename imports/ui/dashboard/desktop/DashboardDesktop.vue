@@ -310,12 +310,12 @@ export default {
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
-    Meteor.call("users.getEmailPreferences", (error, result) => {
+    Meteor.call("users.getEmailPreferences", (error, user) => {
       if (error) {
         this.$notifyError(error);
         return;
       }
-      this.user = result;
+      this.user = user;
     });
   },
   meteor: {
@@ -325,9 +325,6 @@ export default {
       },
       organizations: function() {
         return ["", this.organizationId];
-      },
-      user: function() {
-        return [];
       }
     },
     projects: {
@@ -395,9 +392,6 @@ export default {
         }
         return Projects.find(query, { sort: { state: 1, name: 1 } });
       }
-    },
-    user() {
-      return Meteor.user();
     }
   },
   methods: {
@@ -405,9 +399,9 @@ export default {
       this.$refs.newOrganization.open();
     },
     toggleTaskAssignedTo() {
-      this.user.emailSettings.tasks.assignTo = !this.user.emailSettings.tasks
+      this.currentUser.emailSettings.tasks.assignTo = !this.currentUser.emailSettings.tasks
         .assignTo;
-      Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
+      Meteor.call("users.updateEmailPreferences", this.currentUser.emailSettings);
     },
     newProject(organizationId) {
       this.selectedOrganizationId = organizationId;

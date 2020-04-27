@@ -26,7 +26,7 @@
       <div
         ref="container"
         class="container-wrapper"
-        :style="getBackgroundUrl(user)"
+        :style="getBackgroundUrl(currentUser)"
       >
         <div v-if="loading">
           <v-progress-linear indeterminate absolute />
@@ -182,9 +182,10 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 
 export default {
-  mixins: [DatesMixin],
+  mixins: [DatesMixin, BackgroundMixin],
   props: {
     projectId: {
       type: String,
@@ -215,11 +216,11 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.refresh();
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
@@ -230,9 +231,6 @@ export default {
     },
     project() {
       return Projects.findOne();
-    },
-    user() {
-      return Meteor.user();
     }
   },
   methods: {
@@ -278,16 +276,6 @@ export default {
     newHealthReport() {
       this.$refs.newHealthReport.open();
     },
-    getBackgroundUrl(user) {
-      if (user && user.profile) {
-        const { background } = user.profile;
-        if (background) {
-          return `background-image: url('${background}');`;
-        }
-      }
-      return "";
-    },
-
     getIcon(weather) {
       return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     },

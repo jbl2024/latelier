@@ -1,16 +1,16 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { Meteor } from "meteor/meteor";
+import { Permissions } from "/imports/api/permissions/permissions";
 
 import get from "lodash/get";
-import { projectFilters } from "./projectFilters";
-import { Permissions } from "/imports/api/permissions/permissions";
+import project from "./modules/project/";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    projectFilters
+    project
   },
   state: {
     currentUserId: null,
@@ -25,8 +25,6 @@ const store = new Vuex.Store({
     showDashboardTitle: false,
     dashboardFilter: "",
     currentOrganizationId: null,
-    currentProjectId: null,
-    projectFeatures: [],
     windowTitle: "",
     notifyMessage: "",
     showMobileDrawer: false,
@@ -38,10 +36,6 @@ const store = new Vuex.Store({
     },
     isAdmin: (state) => {
       return Permissions.isAdmin(state.currentUserId);
-    },
-    hasProjectFeature: (state) => (feature) => {
-      if (!state.projectFeatures) return false;
-      return state.projectFeatures.find((feat) => feat === feature);
     }
   },
   mutations: {
@@ -77,12 +71,6 @@ const store = new Vuex.Store({
     },
     updateDashboardFilter(state, dashboardFilter) {
       state.dashboardFilter = dashboardFilter;
-    },
-    updateCurrentProjectId(state, currentProjectId) {
-      state.currentProjectId = currentProjectId;
-    },
-    setProjectFeatures(state, features) {
-      state.projectFeatures = features;
     },
     updateCurrentOrganizationId(state, currentOrganizationId) {
       state.currentOrganizationId = currentOrganizationId;
@@ -142,22 +130,6 @@ const store = new Vuex.Store({
         "updateShowSelectBackgroundDialog",
         showSelectBackgroundDialog
       );
-    },
-    setCurrentProjectId(context, projectId) {
-      context.commit("projectFilters/clearSelectedLabels");
-      if (projectId) {
-        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
-          context.commit("setProjectFeatures", result);
-        });
-      }
-      context.commit("updateCurrentProjectId", projectId);
-    },
-    reloadProjectFeatures(context, projectId) {
-      if (projectId) {
-        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
-          context.commit("setProjectFeatures", result);
-        });
-      }
     },
     setCurrentOrganizationId(context, organizationId) {
       context.commit("clearSelectedGroup");

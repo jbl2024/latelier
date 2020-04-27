@@ -1,6 +1,6 @@
 <template>
   <div class="page">
-    <div class="container-wrapper" :style="getBackgroundUrl(user)">
+    <div class="container-wrapper" :style="getBackgroundUrl(currentUser)">
       <v-container ref="cards" v-resize="onResize" fluid>
         <v-row>
           <v-col :cols="cardColumns">
@@ -73,11 +73,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import AdminDashboardCard from "./AdminDashboardCard";
+import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 
 export default {
+  mixins: [BackgroundMixin],
   components: {
     AdminDashboardCard
+  },
+  computed: {
+    ...mapState(["currentUser"])
   },
   data() {
     return {
@@ -88,27 +94,7 @@ export default {
   mounted() {
     this.refresh();
   },
-  meteor: {
-    $subscribe: {
-      user: function() {
-        return [];
-      }
-    },
-    user() {
-      return Meteor.user();
-    }
-  },
   methods: {
-    getBackgroundUrl(user) {
-      if (user && user.profile) {
-        const { background } = user.profile;
-        if (background) {
-          return `background-image: url('${background}');`;
-        }
-      }
-      return "";
-    },
-
     refresh() {
       Meteor.call(
         "administration.info",

@@ -5,9 +5,9 @@
     </div>
 
     <div v-if="$subReady.project" class="project-wrapper">
-      <div class="container-wrapper" :style="getBackgroundUrl(user)">
+      <div class="container-wrapper" :style="getBackgroundUrl(currentUser)">
         <project-toolbar
-          :user="user"
+          :user="currentUser"
           :project="project"
           class="flex0"
         />
@@ -26,10 +26,12 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
+import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import debounce from "lodash/debounce";
 import { mapState } from "vuex";
 
 export default {
+  mixins: [BackgroundMixin],
   props: {
     projectId: {
       type: String,
@@ -49,7 +51,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["showTaskDetail"])
+    ...mapState([
+      "currentUser",
+      "showTaskDetail"
+    ])
   },
   watch: {
     taskId: {
@@ -62,7 +67,7 @@ export default {
     },
     projectId: {
       handler() {
-        this.$store.dispatch("setCurrentProjectId", this.projectId);
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
     },
     showTaskDetail(now, prev) {
@@ -79,7 +84,7 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("delete-task", (task) => {
       this.deleteTask(task);
     });
@@ -91,7 +96,7 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("delete-task");
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
@@ -101,9 +106,6 @@ export default {
     $subscribe: {
       project() {
         return [this.projectId];
-      },
-      user() {
-        return [];
       }
     },
     project() {
@@ -115,9 +117,6 @@ export default {
         this.$store.dispatch("setWindowTitle", project.name);
       }
       return project;
-    },
-    user() {
-      return Meteor.user();
     }
   },
   methods: {
@@ -128,21 +127,6 @@ export default {
         this.$store.dispatch("showTaskDetail", true);
       }
     },
-
-    hasBackground() {
-      return this.getBackgroundUrl();
-    },
-
-    getBackgroundUrl(user) {
-      if (user && user.profile) {
-        const { background } = user.profile;
-        if (background) {
-          return `background-image: url('${background}');`;
-        }
-      }
-      return null;
-    },
-
     deleteTask(task) {
       this.$confirm(this.$t("Do you really want to delete this task?"), {
         title: this.$t("Confirm"),

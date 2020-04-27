@@ -1,17 +1,9 @@
-import Vue from "vue";
-import Vuex from "vuex";
-
-Vue.use(Vuex);
-
-export const projectFilters = {
+export default {
   namespaced: true,
   state: {
     selectedLabels: [],
     selectedAssignedTos: [],
     selectedUpdatedBy: []
-  },
-  getters: {
-    // Compute derived state based on the current state. More like computed property.
   },
   mutations: {
     selectLabel(state, label) {

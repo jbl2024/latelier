@@ -151,7 +151,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
@@ -175,7 +175,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentProjectId"]),
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters("project", ["hasProjectFeature"]),
     selected: {
       get() {
         return (
@@ -324,7 +325,7 @@ export default {
     },
 
     isProjectEstimationFeatureEnabled() {
-      return this.$store.getters.hasProjectFeature("estimation");
+      return this.hasProjectFeature("estimation");
     },
 
     getColor(projectId) {

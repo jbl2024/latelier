@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
+  <v-toolbar v-if="project" ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
     <tasks-export
       v-model="showTasksExport"
       :project-id="project._id"
@@ -69,11 +69,11 @@ export default {
   props: {
     project: {
       type: Object,
-      default: () => {}
+      default: null
     },
     user: {
       type: Object,
-      default: () => {}
+      default: null
     }
   },
   data() {

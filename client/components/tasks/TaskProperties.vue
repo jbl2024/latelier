@@ -156,7 +156,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from "moment";
 import "moment/locale/fr";
-
+import { mapGetters } from "vuex";
 export default {
   mixins: [usersMixin],
   props: {
@@ -175,6 +175,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("project", ["hasProjectFeature"]),
     project() {
       if (!this.task) return null;
       return Projects.findOne({ _id: this.task.projectId });
@@ -238,9 +239,7 @@ export default {
 
       const { currentProjectId } = this.$store.state;
       if (task.projectId === currentProjectId) {
-        this.isEstimationEnabled = this.$store.getters.hasProjectFeature(
-          "estimation"
-        );
+        this.isEstimationEnabled = this.hasProjectFeature("estimation");
         return;
       }
 

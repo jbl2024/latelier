@@ -123,7 +123,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
-import { mapState } from "vuex";
+import { mapState, mapGetters} from "vuex";
 
 export default {
   props: {
@@ -142,7 +142,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentProjectId"]),
+    ...mapState('project', ["currentProjectId"]),
+    ...mapGetters('project', ["hasProjectFeature"]),
     projectColor: {
       get() {
         const project = Projects.findOne({ _id: this.currentProjectId });
@@ -276,7 +277,7 @@ export default {
     },
 
     getEstimations(tasks) {
-      if (!this.$store.getters.hasProjectFeature("estimation")) {
+      if (!this.hasProjectFeature("estimation")) {
         return null;
       }
 

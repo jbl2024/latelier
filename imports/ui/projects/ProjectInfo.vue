@@ -3,10 +3,10 @@
     <div v-if="!$subReady.project">
       <v-progress-linear indeterminate />
     </div>
-    <v-container v-if="$subReady.project && info" :style="getBackgroundUrl(user)" ref="cards" v-resize="onResize" fluid>
+    <v-container v-if="$subReady.project && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
       <v-row>
         <v-col cols="12">
-          <project-card :project="project" :user="user" :info="info" />
+          <project-card :project="project" :user="currentUser" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
           <canvas-card :project="project" :info="info" />
@@ -29,8 +29,10 @@ import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
 import WeatherCard from "/imports/ui/projects/info/WeatherCard";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
-
+import { mapState } from "vuex";
+import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 export default {
+  mixins: [BackgroundMixin],
   components: {
     ProjectCard,
     ProcessCard,
@@ -50,41 +52,28 @@ export default {
       cardColumns: 4
     };
   },
+  computed: {
+    ...mapState(["currentUser"])
+  },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       project: function() {
         return [this.projectId];
-      },
-      user: function() {
-        return [];
       }
     },
     project() {
       this.refresh();
       return Projects.findOne();
-    },
-    user() {
-      return Meteor.user();
     }
   },
   methods: {
-    getBackgroundUrl(user) {
-      if (user && user.profile) {
-        const { background } = user.profile;
-        if (background) {
-          return `background-image: url('${background}');`;
-        }
-      }
-      return "";
-    },
-
     refresh() {
       Meteor.call(
         "projects.info",

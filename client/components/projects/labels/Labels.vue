@@ -150,10 +150,10 @@ export default {
   computed: {
     selectedLabels: {
       get() {
-        return this.$store.state.projectFilters.selectedLabels;
+        return this.$store.state.project.filters.selectedLabels;
       },
       set(value) {
-        this.$store.dispatch("projectFilters/selectLabels", value);
+        this.$store.dispatch("project/filters/selectLabels", value);
       }
     }
   },
@@ -180,7 +180,7 @@ export default {
     },
 
     selectLabel(label) {
-      this.$store.dispatch("projectFilters/selectLabel", label);
+      this.$store.dispatch("project/filters/selectLabel", label);
     },
 
     getColor(label) {

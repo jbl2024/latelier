@@ -122,21 +122,21 @@ export default {
     };
   },
   computed: {
-    ...mapState("projectFilters", {
+    ...mapState("project/filters", {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
       selectedUpdatedBy: (state) => state.selectedUpdatedBy
     })
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
