@@ -47,8 +47,10 @@ export default {
     ...mapState([
       "showCategories",
       "showDashboardTitle",
-      "currentProjectId",
       "currentOrganizationId"
+    ]),
+    ...mapState("project", [
+      "currentProjectId",
     ]),
     showMobileDrawer: {
       set(showMobileDrawer) {

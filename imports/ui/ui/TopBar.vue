@@ -40,10 +40,8 @@ export default {
     }
   },
   computed: {
-    ...mapState([
-      "currentProjectId",
-      "currentOrganizationId"
-    ]),
+    ...mapState("project", ["currentProjectId"]),
+    ...mapState(["currentOrganizationId"]),
     topBarColor() {
       return "primary"
     },

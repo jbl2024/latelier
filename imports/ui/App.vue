@@ -71,14 +71,12 @@ export default {
     ...mapState([
       "currentUser",
       "currentOrganizationId",
-      "currentProjectId",
       "notifyMessage",
       "selectedTask",
       "windowTitle"
     ]),
-    ...mapGetters([
-      "isConnected"
-    ]),
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters(["isConnected"]),
     showTaskDetail: {
       get() {
         return this.$store.state.showTaskDetail;
