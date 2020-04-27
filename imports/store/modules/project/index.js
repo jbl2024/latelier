@@ -1,4 +1,5 @@
 import filters from "./filters";
+
 export default {
   namespaced: true,
   modules: {
@@ -6,7 +7,7 @@ export default {
   },
   state: {
     currentProjectId: null,
-    projectFeatures: [],
+    projectFeatures: []
   },
   mutations: {
     updateCurrentProjectId(state, currentProjectId) {
@@ -33,4 +34,4 @@ export default {
       context.commit("updateCurrentProjectId", projectId);
     }
   }
-}
+};

@@ -4,7 +4,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 import get from "lodash/get";
-import project from "./modules/project/";
+import project from "./modules/project";
 
 Vue.use(Vuex);
 
@@ -31,12 +31,8 @@ const store = new Vuex.Store({
     showLabelText: false
   },
   getters: {
-    isConnected: (state) => {
-      return state.currentUserId !== null
-    },
-    isAdmin: (state) => {
-      return Permissions.isAdmin(state.currentUserId);
-    }
+    isConnected: (state) => state.currentUserId !== null,
+    isAdmin: (state) => Permissions.isAdmin(state.currentUserId)
   },
   mutations: {
     updateCurrentUserId(state, currentUserId) {
@@ -102,10 +98,10 @@ const store = new Vuex.Store({
   },
   actions: {
     setCurrentUserId(context, currentUserId) {
-      context.commit("updateCurrentUserId", currentUserId)
+      context.commit("updateCurrentUserId", currentUserId);
     },
     setCurrentUser(context, currentUser) {
-      context.commit("updateCurrentUser", currentUser)
+      context.commit("updateCurrentUser", currentUser);
     },
     setSelectedGroup(context, selectedGroup) {
       if (!selectedGroup) {
