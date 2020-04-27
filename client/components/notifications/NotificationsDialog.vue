@@ -51,6 +51,7 @@
           <empty-state
             v-if="!loading && pagination.totalPages == 0"
             class="empty-state"
+            full-height
             small
             :description="$t('No notification')"
             illustration="notifications_empty"

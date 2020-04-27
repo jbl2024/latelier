@@ -10,6 +10,7 @@
         v-show="processDiagrams.length == 0"
         class="empty"
         rounded
+        full-page
         illustration="empty"
         :label="$t('No diagram')"
         :description="$t('You can add a new diagram')"

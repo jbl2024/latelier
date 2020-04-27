@@ -7,7 +7,7 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list v-if="$subReady.user && $subReady.usersInProject">
+    <v-list v-if="currentUser && $subReady.usersInProject">
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
@@ -87,7 +87,7 @@
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
-
+import { mapState } from "vuex";
 export default {
   name: "ProjectSettingsManageUsers",
   mixins: [usersMixin],
@@ -102,13 +102,13 @@ export default {
       showSelectUserDialog: false
     };
   },
+  computed: {
+    ...mapState(["currentUser"])
+  },
   meteor: {
     $subscribe: {
       usersInProject() {
         return [this.project._id];
-      },
-      user() {
-        return [];
       }
     },
     projectUsers: {

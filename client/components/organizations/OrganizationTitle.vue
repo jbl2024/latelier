@@ -67,7 +67,7 @@ export default {
   },
   computed: {
     truncatedTitle() {
-      if (!this.organization) return '';
+      if (!this.organization?.name) return '';
       return truncate(this.organization.name, 30);
     }
   },
@@ -77,7 +77,6 @@ export default {
       this.editOrganizationName = true;
       this.$nextTick(() => this.$refs.name.focus());
     },
-
     updateOrganizationName() {
       this.editOrganizationName = false;
       Meteor.call("organizations.updateName", {

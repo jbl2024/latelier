@@ -1,47 +1,44 @@
 <template>
   <div class="administration-page">
-    <template v-if="$subReady.user">
-      <template v-if="isAdmin()">
-        <v-tabs>
-          <v-tabs-slider color="accent" />
-          <v-tab id="tab-dashboard">
-            {{ $t('Dashboard') }}
-          </v-tab>
-          <v-tab id="tab-users">
-            {{ $t('Users') }}
-          </v-tab>
-          <v-tab id="tab-projects">
-            {{ $t('Projects') }}
-          </v-tab>
-          <v-tab id="tab-users">
-            {{ $t('BPMN examples') }}
-          </v-tab>
-          <v-tab-item>
-            <administration-dashboard />
-          </v-tab-item>
-          <v-tab-item>
-            <administration-users />
-          </v-tab-item>
-          <v-tab-item>
-            <administration-projects />
-          </v-tab-item>
-          <v-tab-item>
-            <administration-bpmn-examples />
-          </v-tab-item>
-        </v-tabs>
-      </template>
+    <template v-if="isConnected && isAdmin">
+      <v-tabs>
+        <v-tabs-slider color="accent" />
+        <v-tab id="tab-dashboard">
+          {{ $t('Dashboard') }}
+        </v-tab>
+        <v-tab id="tab-users">
+          {{ $t('Users') }}
+        </v-tab>
+        <v-tab id="tab-projects">
+          {{ $t('Projects') }}
+        </v-tab>
+        <v-tab id="tab-users">
+          {{ $t('BPMN examples') }}
+        </v-tab>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <administration-dashboard />
+        </v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <administration-users />
+        </v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <administration-projects />
+        </v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <administration-bpmn-examples />
+        </v-tab-item>
+      </v-tabs>
     </template>
   </div>
 </template>
 
 <script>
-import { Permissions } from "/imports/api/permissions/permissions";
 
 import AdministrationDashboard from "./dashboard/AdministrationDashboard";
 import AdministrationUsers from "./users/AdministrationUsers";
 import AdministrationProjects from "./projects/AdministrationProjects";
 import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
-
+import { mapGetters } from "vuex";
 export default {
   components: {
     AdministrationDashboard,
@@ -49,20 +46,11 @@ export default {
     AdministrationProjects,
     AdministrationBpmnExamples
   },
-  data() {
-    return {};
-  },
-  meteor: {
-    $subscribe: {
-      user: function() {
-        return [];
-      }
-    }
-  },
-  methods: {
-    isAdmin() {
-      return Permissions.isAdmin(Meteor.userId());
-    }
+  computed: {
+    ...mapGetters([
+      "isConnected", 
+      "isAdmin"
+    ])
   }
 };
 </script>

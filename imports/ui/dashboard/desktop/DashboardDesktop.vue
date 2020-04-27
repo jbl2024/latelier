@@ -4,10 +4,10 @@
     <new-project ref="newProject" :organization-id="selectedOrganizationId"/>
     <projects-trashcan ref="projectsTrashcan" />
 
-    <div v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user">
+    <div v-if="!$subReady.allProjects || !$subReady.organizations || !currentUser">
       <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.allProjects && $subReady.organizations && $subReady.user">
+    <div v-if="$subReady.allProjects && $subReady.organizations && currentUser">
         <div class="projects-title">
           <v-layout align-center>
             <v-flex grow>
@@ -303,7 +303,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["dashboardFilter"])
+    ...mapState([
+      "currentUser",
+      "dashboardFilter"
+    ])
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));

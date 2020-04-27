@@ -71,7 +71,7 @@ export default {
   },
   computed: {
     truncatedTitle() {
-      if (!this.project) return '';
+      if (!this.project?.name) return '';
       return truncate(this.project.name, 30);
     }
   },

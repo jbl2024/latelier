@@ -1,5 +1,5 @@
 <template>
-  <div class="empty-state">
+  <div :class="['empty-state', fullPage ? 'full-page' : null]">
     <div class="empty-state-container">
       <div>
         <v-img
@@ -52,6 +52,10 @@ export default {
     xs: {
       type: Boolean,
       default: false
+    },
+    fullPage: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -74,6 +78,10 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.empty-state.full-page {
+  /* Full minus topbar+margin height */
+  height: calc(100vh - 88px);
 }
 .icon {
   font-size: 140px;

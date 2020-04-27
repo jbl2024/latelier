@@ -1,35 +1,37 @@
 <template>
   <div>
     <v-app v-resize="onResizeApp">
-      <v-navigation-drawer v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"  width="360" v-model="leftDrawer" app clipped>
-        <dashboard-task-tabs v-if="$subReady.user" :user="currentUser" :project-id="currentProjectId" :organization-id="currentOrganizationId">
-        </dashboard-task-tabs>
-      </v-navigation-drawer>
-      <nav-drawer v-show="$vuetify.breakpoint.mdAndDown"/>
-
-      <select-background v-model="showSelectBackgroundDialog" />
-      <task-history
-        v-model="showTaskHistory"
-        :task-id="selectedTask ? selectedTask._id : '0'"
-      />
-      <task-export
-        v-model="showTaskExport"
-        :task-id="selectedTask ? selectedTask._id : '0'"
-      />
-      <top-bar/>
-      <v-navigation-drawer
-        v-model="showTaskDetail"
-        class="elevation-16"
-        fixed
-        temporary
-        right
-        :width="600"
-      >
-        <v-card>
-          <task-detail :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
-        </v-card>
-      </v-navigation-drawer>
-
+      <template v-if="isConnected">
+        <v-navigation-drawer v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"  width="360" v-model="leftDrawer" app clipped>
+          <dashboard-task-tabs v-if="currentUser" :user="currentUser" :project-id="currentProjectId" :organization-id="currentOrganizationId">
+          </dashboard-task-tabs>
+        </v-navigation-drawer>
+        <nav-drawer v-show="$vuetify.breakpoint.mdAndDown"/>
+      </template>
+        <select-background v-model="showSelectBackgroundDialog" />
+      <template v-if="isConnected">
+        <task-history
+          v-model="showTaskHistory"
+          :task-id="selectedTask ? selectedTask._id : '0'"
+        />
+        <task-export
+          v-model="showTaskExport"
+          :task-id="selectedTask ? selectedTask._id : '0'"
+        />
+        <top-bar/>
+        <v-navigation-drawer
+          v-model="showTaskDetail"
+          class="elevation-16"
+          fixed
+          temporary
+          right
+          :width="600"
+        >
+          <v-card>
+            <task-detail :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
+          </v-card>
+        </v-navigation-drawer>
+      </template>
       <v-content class="main-content">
         <v-container class="page-container" fluid>
           <router-view />
@@ -46,7 +48,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import { UserUtils } from "/imports/api/users/utils";
 import TopBar from './ui/TopBar';
 import NavDrawer from './ui/NavDrawer';
@@ -67,11 +69,15 @@ export default {
   },
   computed: {
     ...mapState([
+      "currentUser",
       "currentOrganizationId",
       "currentProjectId",
       "notifyMessage",
       "selectedTask",
       "windowTitle"
+    ]),
+    ...mapGetters([
+      "isConnected"
     ]),
     showTaskDetail: {
       get() {
@@ -126,12 +132,6 @@ export default {
     }
   },
   meteor: {
-    isConnected() {
-      if (Meteor) {
-        return Meteor.userId();
-      }
-      return false;
-    },
     email() {
       if (Meteor) {
         const user = Meteor.user();
@@ -140,17 +140,6 @@ export default {
         }
       }
       return null;
-    },
-    currentUser() {
-      if (Meteor) {
-        return Meteor.user();
-      }
-      return null;
-    },
-    $subscribe: {
-      user() {
-        return [];
-      }
     }
   },
   mounted() {

@@ -4,6 +4,7 @@ import { Meteor } from "meteor/meteor";
 
 import get from "lodash/get";
 import { projectFilters } from "./projectFilters";
+import { Permissions } from "/imports/api/permissions/permissions";
 
 Vue.use(Vuex);
 
@@ -12,6 +13,8 @@ const store = new Vuex.Store({
     projectFilters
   },
   state: {
+    currentUserId: null,
+    currentUser: null,
     selectedGroup: {},
     selectedTask: null,
     showSelectBackgroundDialog: false,
@@ -30,12 +33,24 @@ const store = new Vuex.Store({
     showLabelText: false
   },
   getters: {
+    isConnected: (state) => {
+      return state.currentUserId !== null
+    },
+    isAdmin: (state) => {
+      return Permissions.isAdmin(state.currentUserId);
+    },
     hasProjectFeature: (state) => (feature) => {
       if (!state.projectFeatures) return false;
       return state.projectFeatures.find((feat) => feat === feature);
     }
   },
   mutations: {
+    updateCurrentUserId(state, currentUserId) {
+      state.currentUserId = currentUserId;
+    },
+    updateCurrentUser(state, currentUser) {
+      state.currentUser = currentUser;
+    },
     updateSelectedGroup(state, selectedGroup) {
       state.selectedGroup = selectedGroup;
     },
@@ -98,6 +113,12 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setCurrentUserId(context, currentUserId) {
+      context.commit("updateCurrentUserId", currentUserId)
+    },
+    setCurrentUser(context, currentUser) {
+      context.commit("updateCurrentUser", currentUser)
+    },
     setSelectedGroup(context, selectedGroup) {
       if (!selectedGroup) {
         selectedGroup = {};

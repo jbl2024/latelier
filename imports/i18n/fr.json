@@ -93,6 +93,7 @@
   "Password is too short": "Le mot de passe est trop court",
   "Welcome back!": "Ravi de vous revoir!",
   "Empty": "Vide",
+  "Background": "Fond d'écran",
   "Select background": "Sélectionner un fond d'écran",
   "Background updated": "Fond d'écran mis à jour",
   "Visibility": "Visibilité",
@@ -240,5 +241,9 @@
     "1day": "1 jour avant",
     "2days": "2 jours avant",
     "1week": "1 semaine avant"
+  },
+  "login": {
+    "logout": "Se déconnecter",
+    "logoutConfirm": "Voulez-vous vous déconnecter ?"
   }
 }

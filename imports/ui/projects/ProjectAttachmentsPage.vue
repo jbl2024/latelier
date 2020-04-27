@@ -7,6 +7,7 @@
       <empty-state
         v-show="attachments.length == 0"
         small
+        full-page
         illustration="documents"
         label="Aucune pièce jointe"
         description="Vous pouvez ajouter une pièce jointe sur une tâche"

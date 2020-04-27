@@ -142,9 +142,15 @@ Meteor.startup(() => {
 
   Tracker.autorun((c) => {
     const userId = Meteor.userId();
+    const user = Meteor.user();
     if (c.firstRun) return;
     if (!userId) {
+      store.dispatch("setCurrentUserId", null);
+      store.dispatch("setCurrentUser", null);
       router.push({ name: "login" });
+    } else {
+      store.dispatch("setCurrentUserId", userId);
+      store.dispatch("setCurrentUser", user);
     }
   });
 });

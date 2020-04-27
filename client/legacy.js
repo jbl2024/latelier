@@ -10,6 +10,7 @@ import VueMeteorTracker from "vue-meteor-tracker";
 
 import VueEvents from "vue-event-handler";
 import VueObserveVisibility from "vue-observe-visibility";
+import vClickOutside from "v-click-outside";
 
 // Vuetify
 import Vuetify from "vuetify";
@@ -68,6 +69,7 @@ Vue.use(VueMeteorTracker);
 Vue.use(VueEvents);
 Vue.use(Vuetify);
 Vue.use(VueObserveVisibility);
+Vue.use(vClickOutside);
 
 const vuetify = new Vuetify({
   icons: {
@@ -97,6 +99,13 @@ Meteor.startup(() => {
   // Start monitor for user activity
   UserPresence.start();
 
+  Vue.directive("focus", {
+    inserted: (el) => {
+      setTimeout(() => {
+        el.focus();
+      }, 500);
+    }
+  });
   const router = new VueRouter({
     mode: "history",
     base: new URL(Meteor.absoluteUrl()).pathname,
@@ -123,11 +132,25 @@ Meteor.startup(() => {
     render: (h) => h(App)
   }).$mount("app");
 
+  Vue.prototype.$notifyError = function (error) {
+    store.dispatch("notifyError", error);
+  };
+
+  Vue.prototype.$notify = function (message) {
+    store.dispatch("notify", message);
+  };
+
   Tracker.autorun((c) => {
     const userId = Meteor.userId();
+    const user = Meteor.user();
     if (c.firstRun) return;
     if (!userId) {
+      store.dispatch("setCurrentUserId", null);
+      store.dispatch("setCurrentUser", null);
       router.push({ name: "login" });
+    } else {
+      store.dispatch("setCurrentUserId", userId);
+      store.dispatch("setCurrentUser", user);
     }
   });
 });

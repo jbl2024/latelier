@@ -12,6 +12,7 @@
     />
     <empty-state
       v-if="healthReports.length == 0 && !loading"
+      full-page
       class="empty"
       illustration="weather"
       :description="$t('No report defined')"
