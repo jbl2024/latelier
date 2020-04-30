@@ -23,7 +23,7 @@
     "fs-extra": "^7.0.1",
     "gm": "^1.23.1",
     "handlebars": "^4.7.6",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "linkifyjs": "^2.1.8",
     "lodash": ">=4.17.13",
     "meteor-node-stubs": "^1.0.0",
