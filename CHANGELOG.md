@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade meteor to 1.10.1
 - Update vuetify to 2.2.22
+- Update jquery to 3.5.0
 - Update packages:
   - accounts-base            upgraded from 1.5.0 to 1.6.0
   - accounts-oauth           upgraded from 1.1.16 to 1.2.0
