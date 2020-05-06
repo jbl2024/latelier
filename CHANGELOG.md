@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Upgrade meteor to 1.10.1
 - Update vuetify to 2.2.22
-- Update jquery to 3.5.0
-- Update packages:
+- Update jquery to 3.5.1
+- Update meteor packages:
   - accounts-base            upgraded from 1.5.0 to 1.6.0
   - accounts-oauth           upgraded from 1.1.16 to 1.2.0
   - accounts-password        upgraded from 1.5.3 to 1.6.0
@@ -33,6 +33,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - shell-server             upgraded from 0.4.0 to 0.5.0
   - socket-stream-client     upgraded from 0.2.2 to 0.2.3
   - webapp                   upgraded from 1.8.0 to 1.9.0
+- Update npm packages:
+  - babel-eslint@10.1.0
+  - bcrypt@3.0.8
+  - eslint-config-airbnb@18.1.0
+  - eslint-plugin-react@7.19.0
+  - @babel/runtime@7.9.6
+  - eslint@6.8.0
+  - eslint-config-airbnb-base@14.1.0
+  - linkifyjs@2.1.9
+  - mjml@4.6.3
+  - vue@2.6.11
+  - vue-router@3.1.6
+  - vuelidate@0.7.5
+  - vuex@3.3.0
+  - simpl-schema@1.7.0
+  - tiptap-extensions@1.29.1
+  - vue-i18n@8.17.4
+  - eslint-plugin-import@2.20.2
+  - tiptap@1.27.1
+  - moment@2.25.3
+  - bpmn-js@6.5.1
+  - aws-sdk@2.670.0  
 
 ### Removed
 
