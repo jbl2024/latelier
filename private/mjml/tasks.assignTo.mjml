@@ -23,6 +23,10 @@
         <mj-button background-color="#455a64" color="white" href="{{ task.url }}">
           Ouvrir
          </mj-button>
+         {{#if task.description }}
+          <mj-divider border-width="1px" border-color="#ecedee" />
+          <mj-text>{{{ task.description }}}</mj-text>
+         {{/if}}
       </mj-column>
     </mj-section>
     <mj-section background-color="#eee">
