@@ -6,7 +6,7 @@
     <template v-else-if="currentProject && currentProject._id">
       <project-filters-dialog
         v-model="showFiltersDialog"
-        :project-id="currentProject"
+        :project-id="currentProject._id"
       />
 
       <v-toolbar
@@ -48,7 +48,7 @@
 
         <project-filters
           v-if="!showFilters"
-          :project-id="project._id"
+          :project-id="currentProject._id"
           class="ml-3"
         />
       </v-toolbar>
