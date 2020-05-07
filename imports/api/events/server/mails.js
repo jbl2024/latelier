@@ -84,6 +84,12 @@ export const callbacks = {
       template: "tasks.assignTo.mjml",
       subject: "Une tâche vous a été assignée"
     });
+    if (task.description) {
+      task.description = htmlToText.fromString(task.description, {
+        singleNewLineParagraphs: true
+      });
+      task.description = task.description.replace(/(?:\r\n|\r|\n)/g, "<br>");
+    }
     sendEmail(user, task, emailData);
   },
 
