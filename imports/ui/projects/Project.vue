@@ -64,6 +64,7 @@ export default {
       }
     },
     projectId: {
+      immediate: true,
       handler() {
         this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
@@ -90,7 +91,6 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("delete-task", (task) => {
       this.deleteTask(task);
     });

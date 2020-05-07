@@ -3,19 +3,19 @@
     <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <v-container v-else-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
+    <v-container v-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
       <v-row>
         <v-col cols="12">
           <project-card :project="currentProject" :user="currentUser" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <canvas-card :project="currentProject" :info="info" />
+          <canvas-card :project="currentProject" :info="info"/>
         </v-col>
         <v-col :cols="cardColumns">
-          <process-card :project="currentProject" :info="info" />
+          <process-card :project="currentProject" :info="info"/>
         </v-col>
         <v-col :cols="cardColumns">
-          <weather-card :project="currentProject" :info="info" />
+          <weather-card :project="currentProject" :info="info"/>
         </v-col>
       </v-row>
     </v-container>
@@ -55,9 +55,6 @@ export default {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"])
   },
-  mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-  },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
@@ -65,14 +62,14 @@ export default {
     projectId: {
       immediate: true,
       handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
         this.refresh();
       }
-    }
+    },
   },
   methods: {
     refresh() {
-      Meteor.call(
-        "projects.info",
+      Meteor.call("projects.info",
         { projectId: this.projectId },
         (error, result) => {
           if (error) {
@@ -83,7 +80,6 @@ export default {
         }
       );
     },
-
     onResize() {
       const { cards } = this.$refs;
       const width = cards.offsetWidth;
