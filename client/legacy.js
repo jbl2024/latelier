@@ -80,7 +80,7 @@ const vuetify = new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: "#455A64",
+        primary: "#363636",
         accent: "#F9A825"
       }
     }
