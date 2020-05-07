@@ -72,12 +72,6 @@ export default {
   computed: {
     ...mapState("project", ["currentProject"]),
   },
-  mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("project/setCurrentProjectId", null);
-  },
   meteor: {
     attachments: {
       params() {
@@ -91,6 +85,14 @@ export default {
           { sort: { "meta.taskId": 1, name: 1 } }
         ).fetch();
         return attachments.filter((attachment) => Tasks.findOne({ _id: attachment.meta.taskId }));
+      }
+    }
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
     }
   },

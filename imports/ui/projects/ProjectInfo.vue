@@ -55,9 +55,6 @@ export default {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"])
   },
-  beforeDestroy() {
-    this.$store.dispatch("project/setCurrentProjectId", null);
-  },
   watch: {
     projectId: {
       immediate: true,

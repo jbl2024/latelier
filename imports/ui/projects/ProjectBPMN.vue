@@ -142,12 +142,6 @@ export default {
       modeler: null
     };
   },
-  mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("project/setCurrentProjectId", null);
-  },
   meteor: {
     // Subscriptions
     $subscribe: {
@@ -162,9 +156,14 @@ export default {
           sort: { name: 1 }
         }
       );
-    },
-    project() {
-      return Projects.findOne();
+    }
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      }
     }
   },
   methods: {

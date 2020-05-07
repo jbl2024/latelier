@@ -19,6 +19,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+      <v-divider></v-divider>
       <search-projects :filter="filterProjects" @select="switchProject" auto-search/>
     </v-card>
   </v-menu>
@@ -42,10 +43,14 @@ export default {
   },
   methods: {
     async switchProject(project) {
-      if (!project || project._id && project._id === this.currentProjectId) return;
-      this.isMenuShown = false;
-      const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project"
-      await this.$router.push({ name: routeName, params: { projectId: project._id } });
+      try {
+        if (!project || project._id && project._id === this.currentProjectId) return;
+        this.isMenuShown = false;
+        const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project"
+        await this.$router.push({ name: routeName, params: { projectId: project._id } });
+      } catch (error) {
+        this.$notifyError(error)
+      }
     }
   }
 }

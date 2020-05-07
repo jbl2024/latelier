@@ -33,7 +33,7 @@ const store = new Vuex.Store({
     showLabelText: false
   },
   getters: {
-    isConnected: (state) => state.currentUserId !== null,
+    isConnected: (state) => Boolean(state.currentUserId),
     isAdmin: (state) => state.isAdmin,
     currentUserEmail: (state) => state.currentUser ? UserUtils.getEmail(state.currentUser) : null
   },

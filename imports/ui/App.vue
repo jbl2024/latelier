@@ -31,7 +31,7 @@
       </template>
       <v-content class="main-content">
         <v-container class="page-container" fluid>
-          <router-view />
+          <router-view :key="$route.fullPath"/>
         </v-container>
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
@@ -49,9 +49,6 @@ import { mapState, mapGetters } from "vuex";
 import TopBar from './ui/TopBar';
 import NavDrawer from './ui/NavDrawer';
 import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
-
-import { Permissions } from "/imports/api/permissions/permissions";
-import { Projects } from "/imports/api/projects/projects.js";
 
 export default {
   components: {
@@ -136,11 +133,6 @@ export default {
     });
   },
   meteor: {
-    $subscribe: {
-      project() {
-        return [this.currentProjectId];
-      }
-    },
     async fetchCurrentUser() {
       const userId = Meteor.userId();
       const user = Meteor.user();
@@ -150,10 +142,6 @@ export default {
       } else if (user) {
         await this.$store.dispatch("fetchCurrentUser", user);
       }
-    },
-    fetchCurrentProject() {
-      const project = Projects.findOne();
-      this.$store.dispatch("project/setCurrentProject", this.currentProjectId ? project : null);
     }
   },
   methods: {

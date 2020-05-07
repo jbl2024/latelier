@@ -123,12 +123,6 @@ export default {
       mode: "view"
     };
   },
-  mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("project/setCurrentProjectId", null);
-  },
   meteor: {
     $subscribe: {
       processDiagram: function() {
@@ -137,9 +131,14 @@ export default {
     },
     processDiagram() {
       return ProcessDiagrams.findOne();
-    },
-    project() {
-      return Projects.findOne();
+    }
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      }
     }
   },
   methods: {

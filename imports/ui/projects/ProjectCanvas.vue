@@ -206,12 +206,6 @@ export default {
       default: null
     }
   },
-  mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("project/setCurrentProjectId", null);
-  },
   meteor: {
     // Subscriptions
     $subscribe: {
@@ -238,7 +232,15 @@ export default {
         saveAs(blob, "canvas.odt");
       });
     }
-  }
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      }
+    }
+  },
 };
 </script>
 

@@ -71,12 +71,10 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Timeline } from "vue2vis";
 import { mapState } from "vuex";
-
 import moment from "moment";
 
 export default {
@@ -130,14 +128,20 @@ export default {
     })
   },
   mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
-    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      }
+    }
   },
   meteor: {
     tasks: {

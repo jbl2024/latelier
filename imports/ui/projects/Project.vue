@@ -69,14 +69,6 @@ export default {
         this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
     },
-    currentProject: {
-      immediate: true,
-      handler() {
-        if (this.currentProject?.name) {
-          this.$store.dispatch("setWindowTitle", this.currentProject.name);
-        }
-      }
-    },
     showTaskDetail(now, prev) {
       if (!now && prev) {
         this.$store.dispatch("selectTask", null);
@@ -102,7 +94,6 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("delete-task");
-    this.$store.dispatch("project/setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
