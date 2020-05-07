@@ -23,7 +23,6 @@
           v-model="showTaskDetail"
           class="elevation-16"
           fixed
-          temporary
           right
           :width="600"
         >
