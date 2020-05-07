@@ -29,7 +29,7 @@ export default {
   },
   actions: {
     setCurrentProject(context, project) {
-      context.commit("updateCurrentProject", project)
+      context.commit("updateCurrentProject", project);
     },
     setCurrentProjectId(context, projectId) {
       context.commit("filters/clearSelectedLabels");

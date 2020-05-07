@@ -45,7 +45,7 @@ const store = new Vuex.Store({
       state.currentUser = currentUser;
     },
     updateIsAdmin(state, isAdmin) {
-      state.isAdmin = isAdmin
+      state.isAdmin = isAdmin;
     },
     updateSelectedGroup(state, selectedGroup) {
       state.selectedGroup = selectedGroup;
@@ -117,7 +117,7 @@ const store = new Vuex.Store({
       } catch (error) {
         context.commit("updateCurrentUser", null);
         context.commit("updateCurrentUserId", null);
-        context.commit("updateIsAdmin", false)
+        context.commit("updateIsAdmin", false);
       }
     },
     setSelectedGroup(context, selectedGroup) {
