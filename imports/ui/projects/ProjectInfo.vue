@@ -1,9 +1,9 @@
 <template>
   <div class="project-dashboard">
-    <div v-if="currentProject">
+    <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <v-container v-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
+    <v-container v-else-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
       <v-row>
         <v-col cols="12">
           <project-card :project="currentProject" :user="currentUser" :info="info" />
@@ -52,7 +52,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentUser"])
+    ...mapState(["currentUser"]),
+    ...mapState("project", ["currentProject"])
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);

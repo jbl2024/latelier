@@ -71,7 +71,9 @@ export default {
     currentProject: {
       immediate: true,
       handler() {
-        this.$store.dispatch("setWindowTitle", this.currentProject.name);
+        if (this.currentProject?.name) {
+          this.$store.dispatch("setWindowTitle", this.currentProject.name);
+        }
       }
     },
     showTaskDetail(now, prev) {
