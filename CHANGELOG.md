@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [2.11.0 - 2020-05-07]
+
+### Added
+
+### Changed
 - Upgrade meteor to 1.10.1
 - Update vuetify to 2.2.22
 - Update jquery to 3.5.1
