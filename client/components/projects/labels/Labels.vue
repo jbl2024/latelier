@@ -238,8 +238,4 @@ export default {
 .auto-complete {
   max-width: 320px;
 }
-
-.selected {
-  font-size: bold;
-}
 </style>

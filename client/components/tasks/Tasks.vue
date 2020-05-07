@@ -5,7 +5,6 @@
         v-if="showCompleted(task, showHiddenTasks)"
         :key="task._id"
         :task="task"
-        class="task"
         :data-id="task._id"
       />
     </template>
@@ -163,30 +162,13 @@ export default {
 };
 </script>
 
-<style scoped>
-@media (min-width: 601px) {
+<style lang="scss" scoped>
   .tasks {
-    min-height: 400px;
+      @media (min-width: 601px) {
+        min-height: 400px;
+      }
   }
-}
-
-.task {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-.task h2 {
-  text-align: left;
-  background-color: #2d6293;
-  color: white;
-  font-weight: normal;
-  font-size: 14px;
-  padding: 5px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 0;
-}
-
-.drag-image .task {
-  width: 272px;
-}
+  .drag-image .task {
+    width: 272px;
+  }
 </style>

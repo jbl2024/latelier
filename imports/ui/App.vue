@@ -27,9 +27,7 @@
           right
           :width="600"
         >
-          <v-card>
-            <task-detail :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
-          </v-card>
+          <task-detail :key="showTaskDetail" :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
         </v-navigation-drawer>
       </template>
       <v-content class="main-content">
@@ -49,10 +47,13 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import { UserUtils } from "/imports/api/users/utils";
 import TopBar from './ui/TopBar';
 import NavDrawer from './ui/NavDrawer';
 import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
+
+import { Permissions } from "/imports/api/permissions/permissions";
+import { Projects } from "/imports/api/projects/projects.js";
+
 export default {
   components: {
     TopBar,
@@ -129,22 +130,32 @@ export default {
       document.title = title;
     }
   },
-  meteor: {
-    email() {
-      if (Meteor) {
-        const user = Meteor.user();
-        if (user) {
-          return UserUtils.getEmail(user);
-        }
-      }
-      return null;
-    }
-  },
   mounted() {
     const that = this;
     window.addEventListener("keyup", (event) => {
       that.onKeyup(event);
     });
+  },
+  meteor: {
+    $subscribe: {
+      project() {
+        return [this.currentProjectId];
+      }
+    },
+    async fetchCurrentUser() {
+      const userId = Meteor.userId();
+      const user = Meteor.user();
+      if (!userId) {
+        await this.$store.dispatch("fetchCurrentUser", null);
+        await this.$router.push({ name: "login" });
+      } else if (user) {
+        await this.$store.dispatch("fetchCurrentUser", user);
+      }
+    },
+    fetchCurrentProject() {
+      const project = Projects.findOne();
+      this.$store.dispatch("project/setCurrentProject", this.currentProjectId ? project : null);
+    }
   },
   methods: {
     onResizeApp() {

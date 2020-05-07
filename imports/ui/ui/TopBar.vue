@@ -1,13 +1,19 @@
 <template>
-  <v-app-bar class="top-bar" :color="topBarColor" dark app clipped-left>
+  <v-app-bar class="top-bar" dense :color="topBarColor" dark app clipped-left>
     <v-app-bar-nav-icon v-show="$vuetify.breakpoint.mdAndDown" @click.stop="showMobileDrawer = !showMobileDrawer"/>
     <top-bar-title :organizationId="currentOrganizationId" :projectId="currentProjectId"/>
-    <project-menu v-if="$vuetify.breakpoint.lgAndUp && currentProjectId" :project-id="currentProjectId" />
+    <!-- Project Menu Items -->
+    <project-menu 
+      v-if="$vuetify.breakpoint.lgAndUp && currentProjectId"
+      :background-color="topBarColor"
+      :project-id="currentProjectId"
+    />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
       <v-btn class="prevent-search-blur" icon v-show="!showSearchInput" @click="showSearchInput = !showSearchInput">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
       <search-input @blur="showSearchInput = false" v-show="showSearchInput"/>
+      <notification-button />
       <v-avatar dark>
         <v-menu offset-y eager>
           <template v-slot:activator="{ on }">
@@ -21,7 +27,6 @@
           <login-menu />
         </v-menu>
       </v-avatar>
-      <notification-button />
     </div>
   </v-app-bar>
 </template>
@@ -59,22 +64,22 @@ export default {
   }
 }
 </script>
-<style>
-  .top-bar .v-toolbar__content {
-    padding: 0 16px;
-  }
-  .top-bar .project-menu {
-    height:100%;
-    padding: 0 0.5rem;
-  }
-  .top-bar .additional-menu {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height:100;
-    max-width: 100%;
-  }
-  .top-bar .additional-menu {
-    flex-grow: 3;
+<style lang="scss">
+  .top-bar {
+    .v-toolbar__content {
+      padding: 0 16px;
+    }
+    .project-menu {
+      height:100%;
+      padding: 0 0.5rem;
+    }
+    .additional-menu {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      height:100;
+      max-width: 100%;
+      flex-grow: 3;
+    }
   }
 </style>

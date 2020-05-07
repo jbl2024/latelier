@@ -16,17 +16,6 @@
     </v-toolbar-title>
   </div>
 </template>
-
-<script>
-
-export default {
-  data() {
-    return {
-    };
-  }
-};
-</script>
-
 <style scoped>
 .home-title {
   display: flex;

@@ -30,7 +30,7 @@
               <v-tabs v-model="tab" centered class="sticky-tabs">
                 <v-tabs-slider color="accent" />
                 <v-tab>{{ $t("Recents") }}</v-tab>
-                <v-tab>{{ $t("Assigned to me") }}</v-tab>
+                <v-tab>{{ $t("My tasks") }}</v-tab>
                 <v-tab>{{ $t("Late") }}</v-tab>
                 <v-tab-item>
                   <dashboard-task-list :user="user" type="recent" />

@@ -1,12 +1,12 @@
 <template>
   <div class="project-timeline">
-    <template v-if="!$subReady.project">
+    <template v-if="!currentProject">
       <v-progress-linear indeterminate />
     </template>
-    <template v-if="$subReady.project && project">
+    <template v-else-if="currentProject && currentProject._id">
       <project-filters-dialog
         v-model="showFiltersDialog"
-        :project-id="project._id"
+        :project-id="currentProject"
       />
 
       <v-toolbar
@@ -122,6 +122,7 @@ export default {
     };
   },
   computed: {
+    ...mapState("project", ["currentProject"]),
     ...mapState("project/filters", {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
@@ -139,15 +140,6 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
-    // Subscriptions
-    $subscribe: {
-      project: function() {
-        return [this.projectId];
-      }
-    },
-    project() {
-      return Projects.findOne();
-    },
     tasks: {
       params() {
         return {
@@ -220,21 +212,21 @@ export default {
       const items = [];
       const { tasks } = this;
 
-      if (this.project.startDate) {
+      if (this.currentProject.startDate) {
         items.push({
           id: "start",
           content: this.getStartContent(),
-          start: moment(this.project.startDate).toDate(),
+          start: moment(this.currentProject.startDate).toDate(),
           type: "box",
           group: 0
         });
       }
 
-      if (this.project.endDate) {
+      if (this.currentProject.endDate) {
         items.push({
           id: "end",
           content: this.getEndContent(),
-          start: moment(this.project.endDate).toDate(),
+          start: moment(this.currentProject.endDate).toDate(),
           type: "box",
           group: 0
         });

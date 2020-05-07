@@ -1,21 +1,18 @@
 <template>
   <div class="project">
-    <div v-if="!$subReady.project">
+    <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-
-    <div v-if="$subReady.project" class="project-wrapper">
+    <div v-else class="project-wrapper">
       <div class="container-wrapper" :style="getBackgroundUrl(currentUser)">
         <project-toolbar
           :user="currentUser"
-          :project="project"
-          class="flex0"
+          :project="currentProject"
         />
         <kanban
           ref="container"
           class="kanban-container flex1"
           :project-id="projectId"
-          :add-margin="showTaskDetail"
         />
       </div>
     </div>
@@ -23,7 +20,7 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
+
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
@@ -51,10 +48,11 @@ export default {
     };
   },
   computed: {
+    ...mapState("project", ["currentProject"]),
     ...mapState([
       "currentUser",
       "showTaskDetail"
-    ])
+    ]),
   },
   watch: {
     taskId: {
@@ -68,6 +66,12 @@ export default {
     projectId: {
       handler() {
         this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      }
+    },
+    currentProject: {
+      immediate: true,
+      handler() {
+        this.$store.dispatch("setWindowTitle", this.currentProject.name);
       }
     },
     showTaskDetail(now, prev) {
@@ -100,23 +104,11 @@ export default {
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
   },
-
   meteor: {
-    // Subscriptions
-    $subscribe: {
-      project() {
-        return [this.projectId];
-      }
-    },
-    project() {
+    fetchSelectedTask() {
       if (this.taskId) {
         this.selectTask(this.taskId);
       }
-      const project = Projects.findOne();
-      if (project) {
-        this.$store.dispatch("setWindowTitle", project.name);
-      }
-      return project;
     }
   },
   methods: {
@@ -143,17 +135,12 @@ export default {
 };
 </script>
 
-<style scoped>
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 7px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-}
+<style lang="scss" scoped>
+
+@import '/imports/ui/styles/mixins/scrollbar';
+
+@include scrollbar;
+
 
 .project {
   display: flex;
@@ -206,25 +193,14 @@ export default {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
-  /* box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3); */
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
   display: flex;
   flex-direction: column;
-}
-
-@media (max-width: 600px) {
-  .container-wrapper {
+  @media (max-width: 600px) {
     min-height: 100vh;
   }
 }
 
-.flex0 {
-  flex: 0;
-}
-
-.flex1 {
-  flex: 1;
-}
 </style>

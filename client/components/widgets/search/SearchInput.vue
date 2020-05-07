@@ -3,6 +3,7 @@
     <v-text-field
       ref="input"
       solo-inverted
+      dense
       color="primary"
       clearable
       hide-details

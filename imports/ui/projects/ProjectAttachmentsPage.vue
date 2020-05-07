@@ -1,9 +1,9 @@
 <template>
   <div class="project-attachments-page">
-    <div v-if="!$subReady.project">
+    <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.project">
+    <div v-else>
       <empty-state
         v-show="attachments.length == 0"
         small
@@ -59,10 +59,9 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
-
+import { mapState } from "vuex";
 export default {
   props: {
     projectId: {
@@ -70,8 +69,8 @@ export default {
       default: null
     }
   },
-  data() {
-    return {};
+  computed: {
+    ...mapState("project", ["currentProject"]),
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
@@ -80,16 +79,6 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
-    // Subscriptions
-    $subscribe: {
-      project: function() {
-        return [this.projectId];
-      }
-    },
-    project() {
-      return Projects.findOne();
-    },
-
     attachments: {
       params() {
         return {

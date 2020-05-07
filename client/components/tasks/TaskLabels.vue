@@ -23,6 +23,7 @@
       {{ $t("Add label") }}
     </v-chip>
     <v-btn
+      class="add-label"
       v-show="labels.length > 0"
       fab
       x-small
@@ -80,8 +81,12 @@ export default {
 };
 </script>
 
-<style scoped>
-.v-chip {
-  margin: 4px;
-}
+<style lang="scss" scoped>
+  .task-labels {
+    margin-bottom: 1rem;
+    .v-chip + .v-chip,
+    .v-chip + .add-label {
+      margin-left: 4px;
+    }
+  }
 </style>

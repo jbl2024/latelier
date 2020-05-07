@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 
 import get from "lodash/get";
 import project from "./modules/project";
@@ -15,6 +16,7 @@ const store = new Vuex.Store({
   state: {
     currentUserId: null,
     currentUser: null,
+    isAdmin: false,
     selectedGroup: {},
     selectedTask: null,
     showSelectBackgroundDialog: false,
@@ -32,7 +34,8 @@ const store = new Vuex.Store({
   },
   getters: {
     isConnected: (state) => state.currentUserId !== null,
-    isAdmin: (state) => Permissions.isAdmin(state.currentUserId)
+    isAdmin: (state) => state.isAdmin,
+    currentUserEmail: (state) => state.currentUser ? UserUtils.getEmail(state.currentUser) : null
   },
   mutations: {
     updateCurrentUserId(state, currentUserId) {
@@ -40,6 +43,9 @@ const store = new Vuex.Store({
     },
     updateCurrentUser(state, currentUser) {
       state.currentUser = currentUser;
+    },
+    updateIsAdmin(state, isAdmin) {
+      state.isAdmin = isAdmin
     },
     updateSelectedGroup(state, selectedGroup) {
       state.selectedGroup = selectedGroup;
@@ -100,8 +106,19 @@ const store = new Vuex.Store({
     setCurrentUserId(context, currentUserId) {
       context.commit("updateCurrentUserId", currentUserId);
     },
-    setCurrentUser(context, currentUser) {
-      context.commit("updateCurrentUser", currentUser);
+    async fetchCurrentUser(context, currentUser) {
+      try {
+        if (!currentUser) {
+          throw new Error("Invalid user");
+        }
+        context.commit("updateCurrentUser", currentUser);
+        context.commit("updateCurrentUserId", currentUser._id);
+        context.commit("updateIsAdmin", Permissions.isAdmin(currentUser._id));
+      } catch (error) {
+        context.commit("updateCurrentUser", null);
+        context.commit("updateCurrentUserId", null);
+        context.commit("updateIsAdmin", false)
+      }
     },
     setSelectedGroup(context, selectedGroup) {
       if (!selectedGroup) {

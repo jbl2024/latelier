@@ -1,21 +1,21 @@
 <template>
   <div class="project-dashboard">
-    <div v-if="!$subReady.project">
+    <div v-if="currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <v-container v-if="$subReady.project && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
+    <v-container v-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
       <v-row>
         <v-col cols="12">
-          <project-card :project="project" :user="currentUser" :info="info" />
+          <project-card :project="currentProject" :user="currentUser" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <canvas-card :project="project" :info="info" />
+          <canvas-card :project="currentProject" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <process-card :project="project" :info="info" />
+          <process-card :project="currentProject" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <weather-card :project="project" :info="info" />
+          <weather-card :project="currentProject" :info="info" />
         </v-col>
       </v-row>
     </v-container>
@@ -23,7 +23,6 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
 import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
@@ -61,16 +60,12 @@ export default {
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      project: function() {
-        return [this.projectId];
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.refresh();
       }
-    },
-    project() {
-      this.refresh();
-      return Projects.findOne();
     }
   },
   methods: {

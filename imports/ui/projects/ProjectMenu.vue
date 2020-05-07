@@ -1,6 +1,6 @@
 <template>
   <div class="project-menu" v-if="projectId">
-    <v-tabs v-if="$vuetify.breakpoint.lgAndUp" background-color="primary" hide-slider>
+    <v-tabs v-if="$vuetify.breakpoint.lgAndUp" :background-color="backgroundColor" hide-slider>
       <v-tab v-for="menuItem in menuItems" :to="menuItem.to" :key="menuItem.id">
         <v-icon>{{ menuItem.icon }}</v-icon>
         {{ menuItem.title }}
@@ -28,6 +28,10 @@ export default {
     projectId: {
       type: String,
       default: null
+    },
+    backgroundColor: {
+      type: String,
+      default: 'primary'
     }
   },
   data() {
@@ -46,19 +50,26 @@ export default {
           icon: 'mdi-format-list-bulleted',
           to: {name: 'project', params: {projectId: this.projectId}}
         },
-        // BPMN
-        {
-          id: 'bpmn',
-          title: this.$t('BPMN'),
-          icon: 'mdi-chart-donut',
-          to: {name: 'project-bpmn', params: {projectId: this.projectId}}
-        },
         // Planning
         {
           id: 'planning',
           title: this.$t('Planning'),
           icon: 'mdi-chart-timeline-variant',
           to: {name: 'project-timeline', params: {projectId: this.projectId}}
+        },
+        // Attachments
+        {
+          id: 'attachments',
+          title: this.$t('Documents'),
+          icon: 'mdi-attachment',
+          to: {name: 'project-attachments-page', params: {projectId: this.projectId}}
+        },
+        // BPMN
+        {
+          id: 'bpmn',
+          title: this.$t('BPMN'),
+          icon: 'mdi-chart-donut',
+          to: {name: 'project-bpmn', params: {projectId: this.projectId}}
         },
         // Canvas
         {
@@ -73,13 +84,6 @@ export default {
           title: this.$t('Weather'),
           icon: 'mdi-white-balance-sunny',
           to: {name: 'project-weather', params: {projectId: this.projectId}}
-        },
-        // Attachments
-        {
-          id: 'attachments',
-          title: this.$t('Attachments'),
-          icon: 'mdi-attachment',
-          to: {name: 'project-attachments-page', params: {projectId: this.projectId}}
         },
     ];
     return {

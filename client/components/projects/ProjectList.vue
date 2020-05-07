@@ -2,7 +2,7 @@
   <div class="project-list">
     <v-list v-if="projects" two-line>
       <empty-state
-        v-if="projects.length == 0"
+        v-if="projects.length == 0 && emptyIllustration"
         :illustration="emptyIllustration"
         small
         :label="$t('No project')"
@@ -41,7 +41,7 @@ export default {
     },
     emptyIllustration: {
       type: String,
-      default: "empty"
+      default: null
     }
   },
   methods: {

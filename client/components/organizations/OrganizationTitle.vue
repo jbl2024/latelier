@@ -26,10 +26,10 @@
         @keyup.enter="updateOrganizationName"
       />
       <v-btn icon @click="updateOrganizationName">
-        <v-icon>mdi-check-circle</v-icon>
+        <v-icon color="green">mdi-check-circle</v-icon>
       </v-btn>
       <v-btn icon @click="cancelUpdateOrganizationName">
-        <v-icon>mdi-close-circle</v-icon>
+        <v-icon color="red">mdi-close-circle</v-icon>
       </v-btn>
     </div>
   </div>

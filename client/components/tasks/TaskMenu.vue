@@ -41,7 +41,7 @@
         </v-list-item-action>
         <v-list-item-title>{{ $t("Clone") }}</v-list-item-title>
       </v-list-item>
-      <v-list-item @click="$emit('startCloneToProject')">
+      <v-list-item @click="$emit('start-clone-to-project')">
         <v-list-item-action>
           <v-icon>mdi-content-duplicate</v-icon>
         </v-list-item-action>

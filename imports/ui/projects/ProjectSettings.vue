@@ -1,9 +1,9 @@
 <template>
   <div class="project-settings">
-    <div v-if="!$subReady.project">
+    <div v-if="currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.project" class="project-wrapper">
+    <div v-else class="project-wrapper">
       <v-tabs>
         <v-tab id="tab-general">
           {{ $t("Settings") }}
@@ -13,12 +13,12 @@
         </v-tab>
         <v-tab-item>
           <project-settings-general
-            :project="project"
+            :project="currentProject"
           />
         </v-tab-item>
         <v-tab-item>
           <project-settings-manage-users
-            :project="project"
+            :project="currentProject"
             class="users"
           />
         </v-tab-item>
@@ -30,6 +30,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 
+import { mapState } from "vuex";
 export default {
   props: {
     projectId: {
@@ -41,29 +42,18 @@ export default {
     return {
       savedProjectName: "",
       editProjectName: false,
-      title() {
-        return this.$t("Settings");
-      }
+      title: $t("Settings")
     };
+  },
+  computed: {
+    ...mapState("project", ["currentProject"])
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
-  },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      project: function() {
-        return [this.projectId];
-      }
-    },
-    project() {
-      return Projects.findOne();
-    }
-  },
-  methods: {}
+  }
 };
 </script>
 

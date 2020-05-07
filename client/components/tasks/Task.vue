@@ -95,11 +95,11 @@
               @keydown.shift.enter="updateName"
             />
             <v-btn icon text @click.native="updateName">
-              <v-icon>mdi-check-circle</v-icon>
+              <v-icon color="green">mdi-check-circle</v-icon>
             </v-btn>
 
             <v-btn icon text @click.native="cancelUpdateName">
-              <v-icon>mdi-close-circle</v-icon>
+              <v-icon color="red">mdi-close-circle</v-icon>
             </v-btn>
           </span>
         </div>
@@ -417,7 +417,7 @@ export default {
 }
 .card {
   background-color: white;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   transition: box-shadow 0.5s ease, opacity 0.5s ease,
     background-color 0.5s ease;

@@ -7,11 +7,15 @@ export default {
   },
   state: {
     currentProjectId: null,
+    currentProject: null,
     projectFeatures: []
   },
   mutations: {
     updateCurrentProjectId(state, currentProjectId) {
       state.currentProjectId = currentProjectId;
+    },
+    updateCurrentProject(state, currentProject) {
+      state.currentProject = currentProject;
     },
     updateProjectFeatures(state, features) {
       state.projectFeatures = features;
@@ -24,6 +28,9 @@ export default {
     }
   },
   actions: {
+    setCurrentProject(context, project) {
+      context.commit("updateCurrentProject", project)
+    },
     setCurrentProjectId(context, projectId) {
       context.commit("filters/clearSelectedLabels");
       if (projectId) {

@@ -219,7 +219,7 @@ export default {
   }
 
   .kanban-flex {
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.04);
     margin-right: 10px;
     padding-right: 10px;
   }

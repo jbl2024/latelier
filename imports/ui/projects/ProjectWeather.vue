@@ -159,11 +159,10 @@
                         @click-outside="updateDescription"
                       />
                       <v-btn icon text @click="updateDescription">
-                        <v-icon>mdi-check-circle</v-icon>
+                        <v-icon color="green">mdi-check-circle</v-icon>
                       </v-btn>
-
                       <v-btn icon text @click="cancelUpdateDescription">
-                        <v-icon>mdi-close-circle</v-icon>
+                        <v-icon color="red">mdi-close-circle</v-icon>
                       </v-btn>
                     </div>
                     <v-progress-linear v-if="loadingTasks" indeterminate absolute />
@@ -183,6 +182,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
+import { mapState } from "vuex";
 
 export default {
   mixins: [DatesMixin, BackgroundMixin],
@@ -209,6 +209,9 @@ export default {
         totalPages: 0
       }
     };
+  },
+  computed: {
+    ...mapState(["currentUser"])
   },
   watch: {
     page() {

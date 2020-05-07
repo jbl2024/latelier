@@ -1,14 +1,6 @@
 <template>
   <div class="login-menu" v-if="isConnected">
     <v-list class="pt-0">
-      <v-list-item :to="{ name: 'dashboard-page' }">
-        <v-list-item-action>
-          <v-icon>mdi-view-dashboard</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("Dashboard") }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
       <v-list-item v-if="isAdmin" :to="{ name: 'administration-page' }">
         <v-list-item-action>
           <v-icon>mdi-shield-check</v-icon>
@@ -17,21 +9,20 @@
           <v-list-item-title>Administration</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-list-item @click="$store.dispatch('showSelectBackgroundDialog', true)">
-        <v-list-item-action>
-          <v-icon>mdi-image-multiple</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("Background") }}</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-divider />
       <v-list-item :to="{ name: 'profile-settings-page' }">
         <v-list-item-action>
           <v-icon>mdi-account-circle-outline</v-icon>
         </v-list-item-action>
         <v-list-item-content>
           <v-list-item-title>{{ $t("Profile") }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item @click="$store.dispatch('showSelectBackgroundDialog', true)">
+        <v-list-item-action>
+          <v-icon>mdi-image-multiple</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("Background") }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
       <v-list-item :to="{ name: 'mail-settings-page' }">
@@ -44,6 +35,7 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-divider/>
       <v-list-item @click="logout()">
         <v-list-item-action>
           <v-icon>mdi-exit-to-app</v-icon>

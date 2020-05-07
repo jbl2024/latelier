@@ -6,7 +6,7 @@
     <v-divider/>
     <v-tabs v-model="tab">
       <v-tab>{{ $t("Recents") }}</v-tab>
-      <v-tab>{{ $t("Assigned to me") }}</v-tab>
+      <v-tab>{{ $t("My tasks") }}</v-tab>
       <v-tab>{{ $t("Late") }}</v-tab>
       <v-tab-item>
         <dashboard-task-list

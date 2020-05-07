@@ -24,6 +24,10 @@ export default {
     organizationId: {
       type: String,
       default: null
+    },
+    autoSearch: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -56,7 +60,7 @@ export default {
   },
   methods: {
     find() {
-      if (!this.filter || !this.filter.length === 0) return;
+      if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
       Meteor.call(
         "search.findProjects",
