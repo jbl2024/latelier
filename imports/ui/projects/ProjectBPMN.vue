@@ -142,10 +142,16 @@ export default {
       modeler: null
     };
   },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
   meteor: {
     // Subscriptions
     $subscribe: {
-      processDiagrams: function() {
+      processDiagrams() {
         return [this.projectId];
       }
     },
@@ -156,14 +162,13 @@ export default {
           sort: { name: 1 }
         }
       );
-    }
-  },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
       }
+      return project;
     }
   },
   methods: {

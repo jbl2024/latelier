@@ -1,8 +1,5 @@
 import filters from "./filters";
 
-import { Projects } from "/imports/api/projects/projects.js";
-
-
 export default {
   namespaced: true,
   modules: {
@@ -34,18 +31,17 @@ export default {
     setCurrentProjectId(context, projectId) {
       context.commit("filters/clearSelectedLabels");
       if (projectId) {
+        context.commit("updateCurrentProjectId", projectId);
         Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("updateProjectFeatures", result);
         });
+      } else {
+        context.commit("updateCurrentProjectId", null);
+        context.commit("updateProjectFeatures", []);
       }
-      Tracker.autorun(() => {
-        let subProject = Meteor.subscribe("project", projectId);
-        if (subProject.ready()) {
-          const project = Projects.findOne({_id: projectId});
-          context.commit("updateCurrentProject", project ? project : null);
-        }
-      });
-      context.commit("updateCurrentProjectId", projectId);
+    },
+    setCurrentProject(context, project) {
+      context.commit("updateCurrentProject", project);
     }
   }
 };

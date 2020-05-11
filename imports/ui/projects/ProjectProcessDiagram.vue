@@ -123,22 +123,27 @@ export default {
       mode: "view"
     };
   },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
   meteor: {
     $subscribe: {
-      processDiagram: function() {
+      processDiagram() {
         return [this.processDiagramId];
       }
     },
     processDiagram() {
       return ProcessDiagrams.findOne();
-    }
-  },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
       }
+      return project;
     }
   },
   methods: {

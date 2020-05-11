@@ -7,5 +7,8 @@ export const UserUtils = {
       return user.profile.email;
     }
     return null;
+  },
+  hasAvatar(user) {
+    return Boolean(user && user.profile && user.profile.avatar);
   }
 };

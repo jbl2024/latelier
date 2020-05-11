@@ -106,7 +106,7 @@ const store = new Vuex.Store({
     setCurrentUserId(context, currentUserId) {
       context.commit("updateCurrentUserId", currentUserId);
     },
-    async fetchCurrentUser(context, currentUser) {
+    setCurrentUser(context, currentUser) {
       try {
         if (!currentUser) {
           throw new Error("Invalid user");

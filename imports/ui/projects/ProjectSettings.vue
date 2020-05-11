@@ -29,8 +29,8 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-
 import { mapState } from "vuex";
+
 export default {
   props: {
     projectId: {
@@ -42,20 +42,33 @@ export default {
     return {
       savedProjectName: "",
       editProjectName: false,
-      title: $t("Settings")
+      title: this.$t("Settings")
     };
   },
   computed: {
     ...mapState("project", ["currentProject"])
   },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
       }
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
-  }
+  },
 };
 </script>
 

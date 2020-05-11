@@ -21,6 +21,7 @@
 
 <script>
 
+import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
@@ -54,6 +55,25 @@ export default {
       "showTaskDetail"
     ]),
   },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
+      }
+    },
+    project() {
+      if (this.taskId) {
+        this.selectTask(this.taskId);
+      }
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+        this.$store.dispatch("setWindowTitle", project.name);
+      }
+      return project;
+    }
+  },
   watch: {
     taskId: {
       immediate: true,
@@ -64,7 +84,6 @@ export default {
       }
     },
     projectId: {
-      immediate: true,
       handler() {
         this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
@@ -83,6 +102,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("delete-task", (task) => {
       this.deleteTask(task);
     });
@@ -94,15 +114,9 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("delete-task");
+    this.$store.dispatch("project/setCurrentProjectId", null);
     this.$store.dispatch("selectTask", null);
     this.$store.dispatch("showTaskDetail", false);
-  },
-  meteor: {
-    fetchSelectedTask() {
-      if (this.taskId) {
-        this.selectTask(this.taskId);
-      }
-    }
   },
   methods: {
     selectTask(taskId) {

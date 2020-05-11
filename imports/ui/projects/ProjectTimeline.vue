@@ -1,9 +1,9 @@
 <template>
   <div class="project-timeline">
-    <template v-if="!currentProject">
+    <template v-if="!$subReady">
       <v-progress-linear indeterminate />
     </template>
-    <template v-else-if="currentProject && currentProject._id">
+    <template v-else-if="$subReady.project && currentProject && currentProject._id">
       <project-filters-dialog
         v-model="showFiltersDialog"
         :project-id="currentProject._id"
@@ -52,7 +52,6 @@
           class="ml-3"
         />
       </v-toolbar>
-
       <div
         ref="timelineContainer"
         v-resize="onResizeTimelineContainer"
@@ -60,8 +59,8 @@
       >
         <timeline
           ref="timeline"
-          :items="getItems()"
-          :groups="getGroups()"
+          :items="items"
+          :groups="groups"
           :options="timeline.options"
           @select="onSelectTask"
         />
@@ -71,10 +70,12 @@
 </template>
 
 <script>
+import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Timeline } from "vue2vis";
 import { mapState } from "vuex";
+
 import moment from "moment";
 
 export default {
@@ -125,82 +126,15 @@ export default {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
       selectedUpdatedBy: (state) => state.selectedUpdatedBy
-    })
-  },
-  mounted() {
-    this.$events.listen("filter-tasks", (name) => {
-      this.filterName = name;
-    });
-  },
-  beforeDestroy() {
-    this.$events.off("filter-tasks");
-  },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-      }
-    }
-  },
-  meteor: {
-    tasks: {
-      params() {
-        return {
-          name: this.filterName,
-          projectId: this.projectId,
-          labels: this.selectedLabels,
-          assignedTos: this.selectedAssignedTos,
-          updatedBy: this.selectedUpdatedBy
-        };
-      },
-      deep: false,
-      update({ name, projectId, labels, assignedTos, updatedBy }) {
-        const query = {
-          projectId: projectId,
-          $or: [
-            { startDate: { $ne: null } },
-            { dueDate: { $ne: null } },
-            { completed: true }
-          ]
-        };
-
-        if (name && name.length > 0) {
-          query.name = { $regex: `.*${name}.*`, $options: "i" };
-        }
-
-        if (labels && labels.length > 0) {
-          query.labels = {
-            $in: labels.map((label) => label._id)
-          };
-        }
-
-        if (assignedTos && assignedTos.length > 0) {
-          query.assignedTo = {
-            $in: assignedTos
-          };
-        }
-
-        if (updatedBy && updatedBy.length > 0) {
-          query.updatedBy = {
-            $in: updatedBy
-          };
-        }
-
-        return Tasks.find(query);
-      }
-    }
-  },
-  methods: {
-    getGroups() {
+    }),
+    groups() {
+      if (!this.$subReady.project || !this.currentProject) return [];
       const lists = Lists.find({});
       const groups = [];
-
       groups.push({
         id: 0,
         content: "Projet"
       });
-
       lists.forEach((list) => {
         const group = {
           id: list._id,
@@ -211,8 +145,8 @@ export default {
       });
       return groups;
     },
-
-    getItems() {
+    items() {
+      if (!this.$subReady.project || !this.currentProject) return [];
       const items = [];
       const { tasks } = this;
 
@@ -275,10 +209,81 @@ export default {
           this.$refs.timeline.redraw();
         }
       }, 1000);
-
       return items;
     },
+  },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    this.$events.listen("filter-tasks", (name) => {
+      this.filterName = name;
+    });
+  },
+  beforeDestroy() {
+    this.$events.off("filter-tasks");
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
+      }
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
+    },
+    tasks: {
+      params() {
+        return {
+          name: this.filterName,
+          projectId: this.projectId,
+          labels: this.selectedLabels,
+          assignedTos: this.selectedAssignedTos,
+          updatedBy: this.selectedUpdatedBy
+        };
+      },
+      deep: false,
+      update({ name, projectId, labels, assignedTos, updatedBy }) {
+        const query = {
+          projectId: projectId,
+          $or: [
+            { startDate: { $ne: null } },
+            { dueDate: { $ne: null } },
+            { completed: true }
+          ]
+        };
 
+        if (name && name.length > 0) {
+          query.name = { $regex: `.*${name}.*`, $options: "i" };
+        }
+
+        if (labels && labels.length > 0) {
+          query.labels = {
+            $in: labels.map((label) => label._id)
+          };
+        }
+
+        if (assignedTos && assignedTos.length > 0) {
+          query.assignedTo = {
+            $in: assignedTos
+          };
+        }
+
+        if (updatedBy && updatedBy.length > 0) {
+          query.updatedBy = {
+            $in: updatedBy
+          };
+        }
+
+        return Tasks.find(query);
+      }
+    }
+  },
+  methods: {
     onSelectTask(data) {
       const { items } = data;
       if (items && items.length > 0) {
@@ -366,9 +371,6 @@ export default {
   overflow-y: auto;
 }
 
-.project-timeline {
-  background-color: white;
-}
 .drawer-task-detail {
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
     0 1px 3px 0 rgba(0, 0, 0, 0.12);

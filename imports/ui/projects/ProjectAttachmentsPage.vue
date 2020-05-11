@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { mapState } from "vuex";
@@ -73,6 +74,18 @@ export default {
     ...mapState("project", ["currentProject"]),
   },
   meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
+      }
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+    },
     attachments: {
       params() {
         return {
@@ -85,14 +98,6 @@ export default {
           { sort: { "meta.taskId": 1, name: 1 } }
         ).fetch();
         return attachments.filter((attachment) => Tasks.findOne({ _id: attachment.meta.taskId }));
-      }
-    }
-  },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
       }
     }
   },
@@ -116,7 +121,18 @@ export default {
         }
       });
     }
-  }
+  },
+  watch: {
+    projectId() {
+      this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    }
+  },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
 };
 </script>
 

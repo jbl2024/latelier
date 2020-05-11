@@ -133,16 +133,24 @@ export default {
     });
   },
   meteor: {
-    async fetchCurrentUser() {
-      const userId = Meteor.userId();
-      const user = Meteor.user();
-      if (!userId) {
-        await this.$store.dispatch("fetchCurrentUser", null);
-        await this.$router.push({ name: "login" });
-      } else if (user) {
-        await this.$store.dispatch("fetchCurrentUser", user);
+    $subscribe: {
+      user() {
+        return [];
       }
-    }
+    },
+    userId() {
+      const userId = Meteor.userId();
+      if (!userId) {
+        this.$store.dispatch("setCurrentUser", null);
+        this.$router.push({ name: "login" });
+      }
+    },
+    user() {
+      const user = Meteor.user();
+      if (user) {
+        this.$store.dispatch("setCurrentUser", user);
+      }
+    },
   },
   methods: {
     onResizeApp() {

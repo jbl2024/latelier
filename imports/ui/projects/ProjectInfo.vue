@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import { Projects } from "/imports/api/projects/projects.js";
 import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
@@ -55,14 +56,27 @@ export default {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"])
   },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-        this.refresh();
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
       }
     },
+    project() {
+      this.refresh();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
+    }
   },
   methods: {
     refresh() {

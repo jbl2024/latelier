@@ -179,6 +179,7 @@
 </template>
 
 <script>
+import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState } from "vuex";
@@ -216,13 +217,28 @@ export default {
   watch: {
     page() {
       this.refresh();
-    },
-    projectId: {
-      immediate: true,
-      handler() {
-        this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-        this.refresh();
+    }
+  },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    this.refresh();
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
       }
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
   methods: {
