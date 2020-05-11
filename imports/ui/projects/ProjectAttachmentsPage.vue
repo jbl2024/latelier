@@ -14,7 +14,9 @@
       />
 
       <v-list v-show="attachments.length > 0" two-line subheader>
-        <v-subheader>Pièces jointes</v-subheader>
+        <v-subheader>
+          {{ $t('Attachments') }}
+        </v-subheader>
         <v-list-item v-for="attachment in attachments" :key="attachment._id">
           <v-list-item-avatar>
             <v-icon>mdi-file-document</v-icon>

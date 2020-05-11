@@ -66,7 +66,7 @@ export default {
           // Attachments
           {
             id: 'attachments',
-            title: this.$t('Documents'),
+            title: this.$t('Attachments'),
             icon: 'mdi-attachment',
             to: {name: 'project-attachments-page', params: {projectId: this.projectId}}
           },
