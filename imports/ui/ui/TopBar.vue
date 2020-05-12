@@ -39,7 +39,7 @@
   </v-app-bar>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import ProjectMenu from "/imports/ui/projects/ProjectMenu";
 import TopBarTitle from "./TopBarTitle";
 
@@ -54,8 +54,9 @@ export default {
     };
   },
   computed: {
-    ...mapState("project", ["currentProjectId"]),
     ...mapState(["currentOrganizationId"]),
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters(["hasAvatar"]),
     topBarColor() {
       return "primary";
     },
@@ -66,9 +67,6 @@ export default {
       get() {
         return this.$store.state.showMobileDrawer;
       }
-    },
-    hasAvatar() {
-      return Boolean(Meteor && this.currentUser?.profile?.avatar);
     }
   }
 };

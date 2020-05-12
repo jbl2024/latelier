@@ -9,6 +9,6 @@ export const UserUtils = {
     return null;
   },
   hasAvatar(user) {
-    return Boolean(user && user.profile && user.profile.avatar);
+    return user?.profile?.avatar;
   }
 };

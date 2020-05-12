@@ -35,7 +35,8 @@ const store = new Vuex.Store({
   getters: {
     isConnected: (state) => Boolean(state.currentUserId),
     isAdmin: (state) => state.isAdmin,
-    currentUserEmail: (state) => state.currentUser ? UserUtils.getEmail(state.currentUser) : null
+    currentUserEmail: (state) => state.currentUser ? UserUtils.getEmail(state.currentUser) : null,
+    hasAvatar: (state) => state.currentUser ? UserUtils.hasAvatar(state.currentUser) : false
   },
   mutations: {
     updateCurrentUserId(state, currentUserId) {
