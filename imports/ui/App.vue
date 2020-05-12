@@ -45,7 +45,7 @@
       </template>
       <v-content class="main-content">
         <v-container class="page-container" fluid>
-          <router-view :key="$route.fullPath" />
+          <router-view />
         </v-container>
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
