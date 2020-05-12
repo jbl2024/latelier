@@ -8,7 +8,7 @@
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
       <v-tab>{{ $t("Late") }}</v-tab>
-      <v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :user="user"
           type="recent"
@@ -16,7 +16,7 @@
           :project-id="projectId"
         />
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :user="user"
           type="assignedToMe"
@@ -24,7 +24,7 @@
           :project-id="projectId"
         />
       </v-tab-item>
-      <v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :user="user"
           type="late"

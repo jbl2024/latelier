@@ -1,6 +1,6 @@
 <template>
   <div class="project-settings">
-    <div v-if="currentProject">
+    <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
     <div v-else class="project-wrapper">
@@ -11,12 +11,12 @@
         <v-tab id="tab-users">
           {{ $t("Users") }}
         </v-tab>
-        <v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
           <project-settings-general
             :project="currentProject"
           />
         </v-tab-item>
-        <v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
           <project-settings-manage-users
             :project="currentProject"
             class="users"

@@ -1,5 +1,5 @@
 <template>
-  <div class="project-settings-general">
+  <div v-if="project" class="project-settings-general">
     <select-date
       v-model="showSelectStartDate"
       :disable-time="true"
@@ -248,7 +248,7 @@ export default {
   props: {
     project: {
       type: Object,
-      default: () => {}
+      default: null
     }
   },
   data() {
