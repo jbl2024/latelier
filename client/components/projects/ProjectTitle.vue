@@ -4,7 +4,7 @@
       <v-btn text icon color="white" @click="$router.push({ name: 'dashboard-page' })">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <project-selector :key="projectId">
+      <project-selector :key="project._id">
         <template v-slot:activator="{ on }">
           <v-btn color="white" text dark v-on="on">
             <span>{{ truncatedTitle }}</span>
@@ -19,7 +19,6 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
 import debounce from "lodash/debounce";
 import { truncate } from "/imports/ui/utils/truncate";
 import ProjectSelector from "/imports/ui/projects/ProjectSelector";
@@ -29,8 +28,8 @@ export default {
     ProjectSelector
   },
   props: {
-    projectId: {
-      type: String,
+    project: {
+      type: Object,
       default: null
     }
   },
@@ -39,8 +38,7 @@ export default {
       savedProjectName: "",
       editProjectName: false,
       savedValue: "",
-      debouncedFilter: "",
-      showMenu: true
+      debouncedFilter: ""
     };
   },
   computed: {
@@ -50,7 +48,6 @@ export default {
   },
   created() {
     this.debouncedFilter = debounce((val) => {
-      this.showMenu = true;
       this.$events.fire("filter-tasks", val);
     }, 400);
   },
@@ -62,19 +59,6 @@ export default {
   },
   beforeDestroy() {
     this.$events.off("reset-filter-tasks");
-  },
-  meteor: {
-    project: {
-      params() {
-        return {
-          id: this.projectId
-        };
-      },
-      deep: false,
-      update({ id }) {
-        return Projects.findOne({ _id: id }) || {};
-      }
-    }
   }
 };
 </script>

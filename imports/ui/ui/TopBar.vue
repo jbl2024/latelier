@@ -4,11 +4,11 @@
       v-show="$vuetify.breakpoint.mdAndDown"
       @click.stop="showMobileDrawer = !showMobileDrawer"
     />
-    <top-bar-title :organization-id="currentOrganizationId" :project-id="currentProjectId" />
+    <top-bar-title :organization-id="currentOrganizationId" :project="currentProject" />
     <!-- Project Menu Items -->
     <project-menu
-      v-if="$vuetify.breakpoint.lgAndUp && currentProjectId"
-      :project-id="currentProjectId"
+      v-if="$vuetify.breakpoint.lgAndUp && currentProject"
+      :project="currentProject"
       :background-color="topBarColor"
     />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
@@ -55,7 +55,7 @@ export default {
   },
   computed: {
     ...mapState(["currentOrganizationId"]),
-    ...mapState("project", ["currentProjectId"]),
+    ...mapState("project", ["currentProject"]),
     ...mapGetters(["hasAvatar"]),
     topBarColor() {
       return "primary";
@@ -67,6 +67,21 @@ export default {
       get() {
         return this.$store.state.showMobileDrawer;
       }
+    }
+  },
+  meteor: {
+    // Subscriptions
+    $subscribe: {
+      project() {
+        return [this.projectId];
+      }
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   }
 };

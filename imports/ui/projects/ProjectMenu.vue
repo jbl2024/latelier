@@ -25,8 +25,8 @@
 <script>
 export default {
   props: {
-    projectId: {
-      type: String,
+    project: {
+      type: Object,
       default: null
     },
     backgroundColor: {
@@ -40,6 +40,9 @@ export default {
     };
   },
   computed: {
+    projectId() {
+      return this.project._id;
+    },
     menuItems() {
       const menuItems = [
         // Project Dashboard

@@ -1,9 +1,7 @@
 <template>
   <div class="project-settings">
-    <div v-if="!currentProject">
-      <v-progress-linear indeterminate />
-    </div>
-    <div v-else class="project-wrapper">
+    <v-progress-linear v-if="!currentProject" indeterminate />
+    <div v-else>
       <v-tabs>
         <v-tab id="tab-general">
           {{ $t("Settings") }}
@@ -11,12 +9,20 @@
         <v-tab id="tab-users">
           {{ $t("Users") }}
         </v-tab>
-        <v-tab-item :transition="false" :reverse-transition="false">
+        <v-tab-item
+          class="project-settings-tab-item"
+          :transition="false"
+          :reverse-transition="false"
+        >
           <project-settings-general
             :project="currentProject"
           />
         </v-tab-item>
-        <v-tab-item :transition="false" :reverse-transition="false">
+        <v-tab-item
+          class="project-settings-tab-item"
+          :transition="false"
+          :reverse-transition="false"
+        >
           <project-settings-manage-users
             :project="currentProject"
             class="users"
@@ -85,6 +91,10 @@ export default {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
+
+.project-settings-tab-item {
+  padding: 2rem;
 }
 
 .users {

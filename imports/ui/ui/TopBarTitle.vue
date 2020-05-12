@@ -1,7 +1,7 @@
 <template>
-  <project-title v-if="projectId" :project-id="projectId" />
+  <project-title v-if="project" :project="project" />
   <organization-title v-else-if="organizationId" :organization-id="organizationId" />
-  <home-title v-else-if="!projectId" />
+  <home-title v-else-if="!project" />
 </template>
 <script>
 export default {
@@ -10,8 +10,8 @@ export default {
       type: String,
       default: null
     },
-    projectId: {
-      type: String,
+    project: {
+      type: Object,
       default: null
     }
   }

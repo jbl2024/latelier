@@ -75,21 +75,19 @@
       </v-btn>
     </v-subheader>
     <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-      <template v-for="feature in projectFeatures">
-        <v-list-item :key="feature._id">
-          <v-list-item-avatar>
-            <v-icon>mdi-folder</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ feature }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn text icon @click.stop="removeFeature(feature)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
+      <v-list-item v-for="feature in projectFeatures" :key="feature._id">
+        <v-list-item-avatar>
+          <v-icon>mdi-folder</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ feature }}</v-list-item-title>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-btn text icon @click.stop="removeFeature(feature)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </v-list-item-action>
+      </v-list-item>
     </v-list>
 
     <v-subheader>{{ $t("State") }}</v-subheader>
@@ -457,42 +455,23 @@ export default {
         color: ""
       });
     },
-
     getColor(project) {
       return `background-color: ${project.color}`;
     },
-
     getVisibilityIcon(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return "mdi-eye";
-      }
-      return "mdi-eye-off";
+      return project.accessRights === ProjectAccessRights.ORGANIZATION ? "mdi-eye" : "mdi-eye-off";
     },
-
     getVisibilityText(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return this.$t("Organization");
-      }
-      return this.$t("The project is private");
+      return this.$t(project.accessRights === ProjectAccessRights.ORGANIZATION ? "Organization" : "The project is private");
     },
-
     toggleProjectVisibility(project) {
-      if (project.accessRights === "private") {
-        project.accessRights = "organization";
-      } else {
-        project.accessRights = "private";
-      }
+      project.accessRights = project.accessRights === "private" ? "organization" : "private";
       Meteor.call("projects.updateAccessRights", {
         projectId: project._id,
         accessRights: project.accessRights
       });
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        this.$notify(this.$t("Organization"));
-      } else {
-        this.$notify(this.$t("The project is private"));
-      }
+      this.$notify(this.getVisibilityText(project));
     },
-
     projectStates() {
       const states = [];
       Object.keys(ProjectStates).forEach((state) => {
@@ -507,11 +486,7 @@ export default {
 };
 </script>
 
-<style scoped>
-.project-settings-general {
-  margin-bottom: 24px;
-}
-
+<style lang="scss" scoped>
 .groups {
   width: 100%;
 }
