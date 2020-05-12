@@ -210,7 +210,7 @@ export default {
         }
       }, 1000);
       return items;
-    },
+    }
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);

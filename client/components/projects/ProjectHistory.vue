@@ -4,7 +4,6 @@
       <template v-slot:content>
         <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
-
           <v-timeline v-if="!loading" dense clipped>
             <v-timeline-item
               v-for="item in history"
@@ -20,12 +19,14 @@
                   </div>
                   <div>
                     {{ $t(`history.${item.type}`) }}
-                    <span class="grey--text">{{
-                      $t("dates.duration.by", {
-                        duration: formatDateDuration(item.createdAt),
-                        user: item.user
-                      })
-                    }}</span>
+                    <span class="grey--text">
+                      {{
+                        $t("dates.duration.by", {
+                          duration: formatDateDuration(item.createdAt),
+                          user: item.user
+                        })
+                      }}
+                    </span>
                   </div>
                 </v-card-text>
               </v-card>
@@ -81,11 +82,9 @@ export default {
       this.refresh();
       this.showDialog = true;
     },
-
     close() {
       this.showDialog = false;
     },
-
     refresh() {
       this.loading = true;
       Meteor.call(
@@ -106,16 +105,10 @@ export default {
     },
 
     calculateTotalPages() {
-      if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
-      ) {
-        return 0;
-      }
-
-      return Math.ceil(
-        this.pagination.totalItems / this.pagination.rowsPerPage
-      );
+      return (this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null)
+        ? 0
+        : Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage);
     }
   }
 };

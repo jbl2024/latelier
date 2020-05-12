@@ -17,10 +17,14 @@
           @keydown.shift.enter="updateTaskName"
         />
         <v-btn icon @click="updateTaskName">
-          <v-icon color="green">mdi-check-circle</v-icon>
+          <v-icon color="green">
+            mdi-check-circle
+          </v-icon>
         </v-btn>
         <v-btn icon @click="cancelUpdateTaskName">
-          <v-icon color="red">mdi-close-circle</v-icon>
+          <v-icon color="red">
+            mdi-close-circle
+          </v-icon>
         </v-btn>
       </div>
 
@@ -140,11 +144,15 @@
           @click-outside="updateDescription"
         />
         <v-btn icon text @click="updateDescription">
-          <v-icon color="green">mdi-check-circle</v-icon>
+          <v-icon color="green">
+            mdi-check-circle
+          </v-icon>
         </v-btn>
 
         <v-btn icon text @click="cancelUpdateDescription">
-          <v-icon color="red">mdi-close-circle</v-icon>
+          <v-icon color="red">
+            mdi-close-circle
+          </v-icon>
         </v-btn>
       </div>
     </div>

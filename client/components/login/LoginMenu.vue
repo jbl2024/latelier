@@ -1,5 +1,5 @@
 <template>
-  <div class="login-menu" v-if="isConnected">
+  <div v-if="isConnected" class="login-menu">
     <v-list class="pt-0">
       <v-list-item v-if="isAdmin" :to="{ name: 'administration-page' }">
         <v-list-item-action>
@@ -35,7 +35,7 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
-      <v-divider/>
+      <v-divider />
       <v-list-item @click="logout()">
         <v-list-item-action>
           <v-icon>mdi-exit-to-app</v-icon>
@@ -49,13 +49,11 @@
 </template>
 
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
+
 export default {
   computed: {
-    ...mapGetters([
-      "isConnected", 
-      "isAdmin"
-    ])
+    ...mapGetters(["isConnected", "isAdmin"])
   },
   methods: {
     logout() {

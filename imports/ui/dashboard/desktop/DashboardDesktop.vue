@@ -1,274 +1,247 @@
 <template>
   <div class="dashboard-desktop">
     <new-organization ref="newOrganization" />
-    <new-project ref="newProject" :organization-id="selectedOrganizationId"/>
+    <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
 
     <div v-if="!$subReady.allProjects || !$subReady.organizations || !currentUser">
       <v-progress-linear indeterminate />
     </div>
     <div v-if="$subReady.allProjects && $subReady.organizations && currentUser">
-        <div class="projects-title">
-          <v-layout align-center>
-            <v-flex grow>
-              <v-btn
-                v-if="organizationId"
-                class="back-button"
-                small
-                icon
-                :to="{ name: 'dashboard-page' }"
-              >
-                <v-icon>mdi-arrow-left</v-icon>
-              </v-btn>
+      <div class="projects-title">
+        <v-layout align-center>
+          <v-flex grow>
+            <v-btn
+              v-if="organizationId"
+              class="back-button"
+              small
+              icon
+              :to="{ name: 'dashboard-page' }"
+            >
+              <v-icon>mdi-arrow-left</v-icon>
+            </v-btn>
 
-              <template v-if="!organizationId">
-                {{
-                  $t("Organizations & Projects")
-                }}
+            <template v-if="!organizationId">
+              {{
+                $t("Organizations & Projects")
+              }}
+            </template>
+            <template v-if="organizationId && organization">
+              {{
+                organization.name
+              }}
+            </template>
+          </v-flex>
+          <v-flex shrink>
+            <v-menu bottom left class="menu">
+              <template v-slot:activator="{ on }">
+                <v-btn small icon v-on="on">
+                  <v-icon>mdi-dots-vertical</v-icon>
+                </v-btn>
               </template>
-              <template v-if="organizationId && organization">
-                {{
-                  organization.name
-                }}
+              <v-list>
+                <template v-if="!organizationId">
+                  <v-list-item @click="newProject()">
+                    <v-list-item-action>
+                      <v-icon>mdi-format-list-bulleted</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      {{
+                        $t("New project")
+                      }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-list-item @click="newOrganization()">
+                    <v-list-item-action>
+                      <v-icon>mdi-domain</v-icon>
+                    </v-list-item-action>
+                    <v-list-item-title>
+                      {{
+                        $t("New organization")
+                      }}
+                    </v-list-item-title>
+                  </v-list-item>
+                  <v-divider />
+                </template>
+                <v-list-item @click="$refs.projectsTrashcan.open()">
+                  <v-list-item-action>
+                    <v-icon>mdi-delete</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-title>{{ $t("Trashcan") }}</v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>
+          </v-flex>
+        </v-layout>
+      </div>
+      <v-divider />
+      <template v-if="projects.length == 0 && organizations.length == 0">
+        <empty-state
+          class="main-empty-state"
+          :description="$t('noProjectYet')"
+          illustration="project"
+        >
+          <v-btn text @click="newProject()">
+            {{
+              $t("Create new project")
+            }}
+          </v-btn>
+          <v-btn class="primary" @click="newOrganization()">
+            {{
+              $t("Create new organization")
+            }}
+          </v-btn>
+        </empty-state>
+      </template>
+      <div class="projects-wrapper">
+        <template v-if="favorites.length > 0">
+          <div class="header">
+            <div class="header-title">
+              {{ $t("Favorites") }}
+            </div>
+          </div>
+          <v-container
+            ref="projects"
+            v-resize="onResizeProjects"
+            fluid
+            grid-list-xl
+            class="projects"
+          >
+            <v-layout row wrap>
+              <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
+                <dashboard-project-card :project="project" :user="user" />
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </template>
+
+        <template v-if="individuals.length > 0">
+          <div class="header">
+            <div class="header-title">
+              {{ $t("Individuals") }}
+            </div>
+            <div class="header-action">
+              <v-btn text solo class="action-button" @click="newProject()">
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
+                {{ $t("New project") }}
+              </v-btn>
+            </div>
+          </div>
+          <v-list two-line class="list">
+            <template v-for="project in individuals">
+              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+            </template>
+          </v-list>
+        </template>
+
+        <template v-for="organization in organizations">
+          <div :key="`header-${organization._id}`" class="header">
+            <div class="header-title" @click="openOrganization(organization._id)">
+              <router-link
+                v-if="!organizationId"
+                class="link"
+                :to="{
+                  name: 'dashboard-organization-page',
+                  params: { organizationId: organization._id }
+                }"
+              >
+                {{ organization.name }}
+              </router-link>
+              <template v-if="organizationId">
+                {{ organization.name }}
               </template>
-            </v-flex>
-            <v-flex shrink>
-              <v-menu bottom left class="menu">
+              <v-tooltip top>
                 <template v-slot:activator="{ on }">
-                  <v-btn small icon v-on="on">
-                    <v-icon>mdi-dots-vertical</v-icon>
+                  <v-btn
+                    icon
+                    small
+                    text
+                    color="grey darken-1"
+                    @click.stop="openOrganizationTimeline(organization._id)"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-chart-timeline-variant</v-icon>
                   </v-btn>
                 </template>
-                <v-list>
-                  <template v-if="!organizationId">
-                    <v-list-item @click="newProject()">
-                      <v-list-item-action>
-                        <v-icon>mdi-format-list-bulleted</v-icon>
-                      </v-list-item-action>
-                      <v-list-item-title>
-                        {{
-                          $t("New project")
-                        }}
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="newOrganization()">
-                      <v-list-item-action>
-                        <v-icon>mdi-domain</v-icon>
-                      </v-list-item-action>
-                      <v-list-item-title>
-                        {{
-                          $t("New organization")
-                        }}
-                      </v-list-item-title>
-                    </v-list-item>
-                    <v-divider />
-                  </template>
-                  <v-list-item @click="$refs.projectsTrashcan.open()">
-                    <v-list-item-action>
-                      <v-icon>mdi-delete</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-title>{{ $t("Trashcan") }}</v-list-item-title>
-                  </v-list-item>
-                </v-list>
-              </v-menu>
-            </v-flex>
-          </v-layout>
-        </div>
-        <v-divider />
-        <template v-if="projects.length == 0 && organizations.length == 0">
-          <!-- eslint-disable -->
+                <span>{{ $t("Timeline") }}</span>
+              </v-tooltip>
+              <v-tooltip v-if="canManageOrganization(organization)" top>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    icon
+                    small
+                    text
+                    color="grey darken-1"
+                    @click.stop="openOrganizationSettings(organization._id)"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-settings</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t("Settings") }}</span>
+              </v-tooltip>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-if="canDeleteOrganization(organization)"
+                    icon
+                    small
+                    text
+                    color="grey darken-1"
+                    @click.stop="deleteOrganization(organization)"
+                    v-on="on"
+                  >
+                    <v-icon>mdi-delete</v-icon>
+                  </v-btn>
+                </template>
+                <span>{{ $t("Delete") }}</span>
+              </v-tooltip>
+            </div>
+            <div class="header-action">
+              <v-btn text solo class="action-button" @click="newProject(organization._id)">
+                <v-icon left>
+                  mdi-plus
+                </v-icon>
+                {{ $t("New project") }}
+              </v-btn>
+            </div>
+          </div>
+          <v-list
+            v-if="projectsByOrganization(organization, dashboardFilter).length > 0"
+            :key="`projects-${organization._id}`"
+            two-line
+            class="list"
+          >
+            <template
+              v-for="project in projectsByOrganization(
+                organization,
+                dashboardFilter
+              )"
+            >
+              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+            </template>
+          </v-list>
+
           <empty-state
-            class="main-empty-state"
-            :description="$t('noProjectYet')"
+            v-if="
+              dashboardFilter === '' &&
+                projectsByOrganization(organization).length == 0
+            "
+            :key="`${organization._id}-empty`"
+            small
+            :description="`Aucun projet disponible`"
             illustration="project"
           >
-            <v-btn text @click="newProject()">
+            <v-btn class="primary" @click="newProject(organization._id)">
               {{
                 $t("Create new project")
               }}
             </v-btn>
-            <v-btn class="primary" @click="newOrganization()">
-              {{
-                $t("Create new organization")
-              }}
-            </v-btn>
           </empty-state>
-          <!-- eslint-enable -->
         </template>
-        <div class="projects-wrapper">
-          <template v-if="favorites.length > 0">
-            <div class="header">
-              <div class="header-title">
-                {{ $t("Favorites") }}
-              </div>
-            </div>
-            <v-container
-              ref="projects"
-              v-resize="onResizeProjects"
-              fluid
-              grid-list-xl
-              class="projects"
-            >
-              <v-layout row wrap>
-                <v-flex
-                  v-for="project in favorites"
-                  :key="project._id"
-                  :class="cardClass"
-                >
-                  <dashboard-project-card
-                    :project="project"
-                    :user="user"
-                  />
-                </v-flex>
-              </v-layout>
-            </v-container>
-          </template>
-
-          <template v-if="individuals.length > 0">
-            <div class="header">
-              <div class="header-title">
-                {{ $t("Individuals") }}
-              </div>
-              <div class="header-action">
-                <v-btn text solo class="action-button" @click="newProject()">
-                  <v-icon left>
-                    mdi-plus
-                  </v-icon>
-                  {{ $t("New project") }}
-                </v-btn>
-              </div>
-            </div>
-            <v-list two-line class="list">
-              <template v-for="project in individuals">
-                <dashboard-project-list
-                  :key="project._id"
-                  :project="project"
-                  :user="user"
-                />
-              </template>
-            </v-list>
-          </template>
-
-          <template v-for="organization in organizations">
-            <div :key="`header-${organization._id}`" class="header">
-              <div
-                class="header-title"
-                @click="openOrganization(organization._id)"
-              >
-                <router-link
-                  v-if="!organizationId"
-                  class="link"
-                  :to="{
-                    name: 'dashboard-organization-page',
-                    params: { organizationId: organization._id }
-                  }"
-                >
-                  {{ organization.name }}
-                </router-link>
-                <template v-if="organizationId">
-                  {{ organization.name }}
-                </template>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      small
-                      text
-                      color="grey darken-1"
-                      @click.stop="openOrganizationTimeline(organization._id)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-chart-timeline-variant</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Timeline") }}</span>
-                </v-tooltip>
-                <v-tooltip v-if="canManageOrganization(organization)" top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      small
-                      text
-                      color="grey darken-1"
-                      @click.stop="openOrganizationSettings(organization._id)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-settings</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Settings") }}</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-if="canDeleteOrganization(organization)"
-                      icon
-                      small
-                      text
-                      color="grey darken-1"
-                      @click.stop="deleteOrganization(organization)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Delete") }}</span>
-                </v-tooltip>
-              </div>
-              <div class="header-action">
-                <v-btn
-                  text
-                  solo
-                  class="action-button"
-                  @click="newProject(organization._id)"
-                >
-                  <v-icon left>
-                    mdi-plus
-                  </v-icon>
-                  {{ $t("New project") }}
-                </v-btn>
-              </div>
-            </div>
-            <v-list
-              v-if="
-                projectsByOrganization(organization, dashboardFilter).length > 0
-              "
-              :key="`projects-${organization._id}`"
-              two-line
-              class="list"
-            >
-              <template
-                v-for="project in projectsByOrganization(
-                  organization,
-                  dashboardFilter
-                )"
-              >
-                <dashboard-project-list
-                  :key="project._id"
-                  :project="project"
-                  :user="user"
-                />
-              </template>
-            </v-list>
-
-            <empty-state
-              v-if="
-                dashboardFilter === '' &&
-                  projectsByOrganization(organization).length == 0
-              "
-              :key="`${organization._id}-empty`"
-              small
-              :description="`Aucun projet disponible`"
-              illustration="project"
-            >
-              <v-btn class="primary" @click="newProject(organization._id)">
-                {{
-                  $t("Create new project")
-                }}
-              </v-btn>
-            </empty-state>
-          </template>
-        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -303,10 +276,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      "currentUser",
-      "dashboardFilter"
-    ])
+    ...mapState(["currentUser", "dashboardFilter"])
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
@@ -399,9 +369,12 @@ export default {
       this.$refs.newOrganization.open();
     },
     toggleTaskAssignedTo() {
-      this.currentUser.emailSettings.tasks.assignTo = !this.currentUser.emailSettings.tasks
-        .assignTo;
-      Meteor.call("users.updateEmailPreferences", this.currentUser.emailSettings);
+      this.currentUser.emailSettings.tasks.assignTo = !this.currentUser
+        .emailSettings.tasks.assignTo;
+      Meteor.call(
+        "users.updateEmailPreferences",
+        this.currentUser.emailSettings
+      );
     },
     newProject(organizationId) {
       this.selectedOrganizationId = organizationId;

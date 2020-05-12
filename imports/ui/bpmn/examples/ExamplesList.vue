@@ -249,10 +249,9 @@ export default {
         }
       });
     },
-
     htmlToText(html) {
       return htmlToText.fromString(html);
-    },
+    }
   }
 };
 </script>

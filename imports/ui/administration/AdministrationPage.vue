@@ -34,11 +34,12 @@
 
 <script>
 
+import { mapGetters } from "vuex";
 import AdministrationDashboard from "./dashboard/AdministrationDashboard";
 import AdministrationUsers from "./users/AdministrationUsers";
 import AdministrationProjects from "./projects/AdministrationProjects";
 import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
-import { mapGetters } from "vuex";
+
 export default {
   components: {
     AdministrationDashboard,
@@ -47,10 +48,7 @@ export default {
     AdministrationBpmnExamples
   },
   computed: {
-    ...mapGetters([
-      "isConnected", 
-      "isAdmin"
-    ])
+    ...mapGetters(["isConnected", "isAdmin"])
   }
 };
 </script>

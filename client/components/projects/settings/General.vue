@@ -55,10 +55,14 @@
             @submit="updateDescription"
           />
           <v-btn icon @click="updateDescription">
-            <v-icon color="green">mdi-check-circle</v-icon>
+            <v-icon color="green">
+              mdi-check-circle
+            </v-icon>
           </v-btn>
           <v-btn icon @click="cancelUpdateDescription">
-            <v-icon color="red">mdi-close-circle</v-icon>
+            <v-icon color="red">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </div>
       </div>

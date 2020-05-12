@@ -26,10 +26,14 @@
         @keyup.enter="updateOrganizationName"
       />
       <v-btn icon @click="updateOrganizationName">
-        <v-icon color="green">mdi-check-circle</v-icon>
+        <v-icon color="green">
+          mdi-check-circle
+        </v-icon>
       </v-btn>
       <v-btn icon @click="cancelUpdateOrganizationName">
-        <v-icon color="red">mdi-close-circle</v-icon>
+        <v-icon color="red">
+          mdi-close-circle
+        </v-icon>
       </v-btn>
     </div>
   </div>
@@ -37,7 +41,7 @@
 
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import { truncate } from '/imports/ui/utils/truncate';
+import { truncate } from "/imports/ui/utils/truncate";
 
 export default {
   props: {
@@ -67,7 +71,7 @@ export default {
   },
   computed: {
     truncatedTitle() {
-      if (!this.organization?.name) return '';
+      if (!this.organization?.name) return "";
       return truncate(this.organization.name, 30);
     }
   },

@@ -21,7 +21,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import debounce from "lodash/debounce";
-import { truncate } from '/imports/ui/utils/truncate';
+import { truncate } from "/imports/ui/utils/truncate";
 import ProjectSelector from "/imports/ui/projects/ProjectSelector";
 
 export default {
@@ -45,9 +45,7 @@ export default {
   },
   computed: {
     truncatedTitle() {
-      if (this.project?.name) {
-        return truncate(this.project.name, 30);
-      }
+      return this.project?.name ? truncate(this.project.name, 30) : "";
     }
   },
   created() {

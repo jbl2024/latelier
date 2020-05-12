@@ -425,7 +425,7 @@ export default {
           );
         }
       );
-    },
+    }
   }
 };
 </script>

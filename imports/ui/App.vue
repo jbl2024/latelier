@@ -2,13 +2,23 @@
   <div>
     <v-app v-resize="onResizeApp">
       <template v-if="isConnected">
-        <v-navigation-drawer v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"  width="360" v-model="leftDrawer" app clipped>
-          <dashboard-task-tabs v-if="currentUser" :user="currentUser" :project-id="currentProjectId" :organization-id="currentOrganizationId">
-          </dashboard-task-tabs>
+        <v-navigation-drawer
+          v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"
+          v-model="leftDrawer"
+          width="360"
+          app
+          clipped
+        >
+          <dashboard-task-tabs
+            v-if="currentUser"
+            :user="currentUser"
+            :project-id="currentProjectId"
+            :organization-id="currentOrganizationId"
+          />
         </v-navigation-drawer>
-        <nav-drawer v-show="$vuetify.breakpoint.mdAndDown"/>
+        <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
       </template>
-        <select-background v-model="showSelectBackgroundDialog" />
+      <select-background v-model="showSelectBackgroundDialog" />
       <template v-if="isConnected">
         <task-history
           v-model="showTaskHistory"
@@ -18,7 +28,7 @@
           v-model="showTaskExport"
           :task-id="selectedTask ? selectedTask._id : '0'"
         />
-        <top-bar/>
+        <top-bar />
         <v-navigation-drawer
           v-model="showTaskDetail"
           class="elevation-16"
@@ -26,12 +36,16 @@
           right
           :width="600"
         >
-          <task-detail :key="showTaskDetail" :task-id="selectedTask ? selectedTask._id : '0'" :task-object="selectedTask"/>
+          <task-detail
+            :key="showTaskDetail"
+            :task-id="selectedTask ? selectedTask._id : '0'"
+            :task-object="selectedTask"
+          />
         </v-navigation-drawer>
       </template>
       <v-content class="main-content">
         <v-container class="page-container" fluid>
-          <router-view :key="$route.fullPath"/>
+          <router-view :key="$route.fullPath" />
         </v-container>
       </v-content>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
@@ -46,8 +60,8 @@
 
 <script>
 import { mapState, mapGetters } from "vuex";
-import TopBar from './ui/TopBar';
-import NavDrawer from './ui/NavDrawer';
+import TopBar from "./ui/TopBar";
+import NavDrawer from "./ui/NavDrawer";
 import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
 
 export default {
@@ -108,7 +122,7 @@ export default {
     },
     hasLeftDrawer() {
       const routeName = this.$route?.name;
-      return Boolean(['dashboard-organization-page','project-dashboard'].includes(routeName));
+      return Boolean(["dashboard-organization-page", "project-dashboard"].includes(routeName));
     }
   },
   watch: {
@@ -150,7 +164,7 @@ export default {
       if (user) {
         this.$store.dispatch("setCurrentUser", user);
       }
-    },
+    }
   },
   methods: {
     onResizeApp() {
@@ -255,10 +269,6 @@ html {
   right: 0;
   flex: 1;
 }
-
-/* .drawer .v-list .v-list-item {
-  color: #aaa !important;
-} */
 
 .drawer .v-icon {
   color: gray;

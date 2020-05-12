@@ -32,16 +32,17 @@
   </v-hover>
 </template>
 <script>
-import { mapState } from 'vuex';
-import ProjectMenu from '/imports/ui/projects/ProjectMenu';
+import { mapState } from "vuex";
+import ProjectMenu from "/imports/ui/projects/ProjectMenu";
+
 export default {
   components: {
     ProjectMenu
   },
   data() {
     return {
-      openMenu: false,
-    }
+      openMenu: false
+    };
   },
   computed: {
     ...mapState([
@@ -49,17 +50,15 @@ export default {
       "showDashboardTitle",
       "currentOrganizationId"
     ]),
-    ...mapState("project", [
-      "currentProjectId",
-    ]),
+    ...mapState("project", ["currentProjectId"]),
     showMobileDrawer: {
       set(showMobileDrawer) {
-        this.$store.commit('updateShowMobileDrawer', showMobileDrawer)
+        this.$store.commit("updateShowMobileDrawer", showMobileDrawer);
       },
       get() {
-        return this.$store.state.showMobileDrawer
+        return this.$store.state.showMobileDrawer;
       }
     }
   }
-}
+};
 </script>

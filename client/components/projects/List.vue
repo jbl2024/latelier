@@ -1,18 +1,14 @@
 <template>
   <div class="list" @drop="onDrop" @dragover="onDragOver">
-    <new-task
-      :project-id="list.projectId"
-      :list-id="list._id"
-      :active.sync="showNewTaskDialog"
-    />
+    <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog" />
     <div class="list-header">
       <div class="swimlane dragscroll">
-        <div v-show="!isListEdited(list, selectedList)" :style="getColor" class="flex-container-row list-name-wrapper">
-          <div
-            v-if="hiddenTaskCount == 0"
-            class="list-name flex1"
-            @click="editList(list)"
-          >
+        <div
+          v-show="!isListEdited(list, selectedList)"
+          :style="getColor"
+          class="flex-container-row list-name-wrapper"
+        >
+          <div v-if="hiddenTaskCount == 0" class="list-name flex1" @click="editList(list)">
             {{ list.name }} ({{ taskCount }})
             {{ getEstimations(tasksForEstimation) }}
           </div>
@@ -34,19 +30,13 @@
                 <v-list-item-action>
                   <v-checkbox color="accent" :input-value="list.autoComplete" />
                 </v-list-item-action>
-                <v-list-item-title>
-                  {{ $t("Automatically mark as completed") }}
-                </v-list-item-title>
+                <v-list-item-title>{{ $t("Automatically mark as completed") }}</v-list-item-title>
               </v-list-item>
-              <v-list-item
-                @click="list.catchCompleted = !list.catchCompleted"
-              >
+              <v-list-item @click="list.catchCompleted = !list.catchCompleted">
                 <v-list-item-action>
                   <v-checkbox color="accent" :input-value="list.catchCompleted" />
                 </v-list-item-action>
-                <v-list-item-title>
-                  {{ $t("Catch completed tasks") }}
-                </v-list-item-title>
+                <v-list-item-title>{{ $t("Catch completed tasks") }}</v-list-item-title>
               </v-list-item>
               <v-divider />
               <v-list-item @click="deleteList(list._id)">
@@ -58,10 +48,7 @@
             </v-list>
           </v-menu>
         </div>
-        <div
-          v-show="isListEdited(list, selectedList)"
-          class="list-edit flex-container-row"
-        >
+        <div v-show="isListEdited(list, selectedList)" class="list-edit flex-container-row">
           <input
             ref="name"
             v-model="list.name"
@@ -73,10 +60,14 @@
           <div class="flex0">
             <div class="flex-container-row">
               <v-btn text icon @click.native="updateName(list)">
-                <v-icon color="green">mdi-check-circle</v-icon>
+                <v-icon color="green">
+                  mdi-check-circle
+                </v-icon>
               </v-btn>
               <v-btn text icon @click.native="cancelUpdate(list)">
-                <v-icon color="red">mdi-close-circle</v-icon>
+                <v-icon color="red">
+                  mdi-close-circle
+                </v-icon>
               </v-btn>
             </div>
           </div>
@@ -84,12 +75,21 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
-      <v-btn small block class="add-new-task dragscroll" @click="newTaskInline(list._id)">
+      <v-btn
+        small
+        block
+        class="add-new-task dragscroll"
+        @click="newTaskInline(list._id)"
+      >
         {{ $t("Add new task") }}
       </v-btn>
-      <div v-if="hiddenTaskCount > 0 && !forceShowHiddenTask" class="task show-hidden" @click="showHiddenTasks = !showHiddenTasks">
+      <div
+        v-if="hiddenTaskCount > 0 && !forceShowHiddenTask"
+        class="task show-hidden"
+        @click="showHiddenTasks = !showHiddenTasks"
+      >
         <div class="list-title">
-          {{ showHiddenTasks ? `Masquer les ${hiddenTaskCount} tâches terminées` : `Afficher les ${hiddenTaskCount} tâches terminées` }}
+          {{ showHiddenTasksText }}
         </div>
       </div>
       <tasks
@@ -106,7 +106,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
-import { mapState, mapGetters} from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   props: {
@@ -125,14 +125,19 @@ export default {
     };
   },
   computed: {
-    ...mapState('project', ["currentProjectId"]),
-    ...mapGetters('project', ["hasProjectFeature"]),
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters("project", ["hasProjectFeature"]),
     projectColor() {
       const project = Projects.findOne({ _id: this.currentProjectId });
       if (project && project.color) {
         return project.color;
       }
       return null;
+    },
+    showHiddenTasksText() {
+      return this.showHiddenTasks
+        ? `Masquer les ${this.hiddenTaskCount} tâches terminées`
+        : `Afficher les ${this.hiddenTaskCount} tâches terminées`;
     },
     getColor() {
       if (this.projectColor) {
@@ -172,11 +177,7 @@ export default {
       }
     });
     this.$events.listen("filter-tasks", (name) => {
-      if (name && name.length > 0) {
-        this.forceShowHiddenTask = true;
-      } else {
-        this.forceShowHiddenTask = false;
-      }
+      this.forceShowHiddenTask = Boolean(name && name.length > 0);
     });
   },
   beforeDestroy() {
@@ -344,8 +345,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-@import '/imports/ui/styles/mixins/scrollbar';
+@import "/imports/ui/styles/mixins/scrollbar";
 
 @include scrollbar;
 
@@ -439,7 +439,6 @@ export default {
   cursor: pointer;
   background-color: #e5e5e5;
   border-radius: 2px;
-
 }
 
 @media (max-width: 600px) {
@@ -453,7 +452,6 @@ export default {
   padding: 4px 8px;
   margin-bottom: 12px;
 }
-
 
 @media (max-width: 600px) {
   .list-name {

@@ -3,29 +3,33 @@
     v-model="isMenuShown"
     :nudge-bottom="10"
     :close-on-content-click="false"
-    @click-outside="isMenuShown = false"
     offset-y
+    @click-outside="isMenuShown = false"
   >
     <template v-slot:activator="{ on }">
-      <slot name="activator" :on="on">
-      </slot>
+      <slot name="activator" :on="on" />
     </template>
     <v-card>
       <v-list>
-        <v-list-item>  
+        <v-list-item>
           <v-list-item-content>
-            <v-text-field v-model="filterProjects" :placeholder="$t('Search project')" solo hide-details>
-            </v-text-field>
+            <v-text-field
+              v-model="filterProjects"
+              :placeholder="$t('Search project')"
+              solo
+              hide-details
+            />
           </v-list-item-content>
         </v-list-item>
       </v-list>
-      <v-divider></v-divider>
-      <search-projects :filter="filterProjects" @select="switchProject" auto-search/>
+      <v-divider />
+      <search-projects :filter="filterProjects" auto-search @select="switchProject" />
     </v-card>
   </v-menu>
 </template>
 <script>
 import { mapState } from "vuex";
+
 export default {
   data() {
     return {
@@ -33,7 +37,7 @@ export default {
       filterProjects: "",
       favoritesOnly: false,
       projects: []
-    }
+    };
   },
   computed: {
     ...mapState("project", ["currentProjectId"]),
@@ -44,14 +48,14 @@ export default {
   methods: {
     async switchProject(project) {
       try {
-        if (!project || project._id && project._id === this.currentProjectId) return;
+        if (!project || (project._id && project._id === this.currentProjectId)) return;
         this.isMenuShown = false;
-        const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project"
+        const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project";
         await this.$router.push({ name: routeName, params: { projectId: project._id } });
       } catch (error) {
-        this.$notifyError(error)
+        this.$notifyError(error);
       }
     }
   }
-}
+};
 </script>

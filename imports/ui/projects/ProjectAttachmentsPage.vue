@@ -65,6 +65,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { mapState } from "vuex";
+
 export default {
   props: {
     projectId: {
@@ -73,10 +74,9 @@ export default {
     }
   },
   computed: {
-    ...mapState("project", ["currentProject"]),
+    ...mapState("project", ["currentProject"])
   },
   meteor: {
-    // Subscriptions
     $subscribe: {
       project() {
         return [this.projectId];
@@ -103,27 +103,6 @@ export default {
       }
     }
   },
-  methods: {
-    link(attachment) {
-      return Attachments.link(attachment);
-    },
-
-    getTask(attachment) {
-      return Tasks.findOne({ _id: attachment.meta.taskId });
-    },
-
-    deleteAttachment(attachment) {
-      this.$confirm(this.$t("Delete attachment?"), {
-        title: attachment.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("attachments.remove", attachment._id);
-        }
-      });
-    }
-  },
   watch: {
     projectId() {
       this.$store.dispatch("project/setCurrentProjectId", this.projectId);
@@ -135,9 +114,27 @@ export default {
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
+  methods: {
+    link(attachment) {
+      return Attachments.link(attachment);
+    },
+    getTask(attachment) {
+      return Tasks.findOne({ _id: attachment.meta.taskId });
+    },
+    deleteAttachment(attachment) {
+      this.$confirm(this.$t("Delete attachment?"), {
+        title: attachment.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then((res) => {
+        if (res) {
+          Meteor.call("attachments.remove", attachment._id);
+        }
+      });
+    }
+  }
 };
 </script>
-
 <style scoped>
 .toolbar {
   background-color: white;

@@ -78,18 +78,18 @@ import AdminDashboardCard from "./AdminDashboardCard";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 
 export default {
-  mixins: [BackgroundMixin],
   components: {
     AdminDashboardCard
   },
-  computed: {
-    ...mapState(["currentUser"])
-  },
+  mixins: [BackgroundMixin],
   data() {
     return {
       info: {},
       cardColumns: 4
     };
+  },
+  computed: {
+    ...mapState(["currentUser"])
   },
   mounted() {
     this.refresh();

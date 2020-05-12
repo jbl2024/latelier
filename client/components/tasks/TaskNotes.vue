@@ -51,10 +51,14 @@
               @submit="updateNote"
             />
             <v-btn text icon @click="updateNote">
-              <v-icon color="green">mdi-check-circle</v-icon>
+              <v-icon color="green">
+                mdi-check-circle
+              </v-icon>
             </v-btn>
             <v-btn text icon @click="cancelUpdateNote">
-              <v-icon color="red">mdi-close-circle</v-icon>
+              <v-icon color="red">
+                mdi-close-circle
+              </v-icon>
             </v-btn>
           </template>
         </div>

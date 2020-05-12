@@ -64,11 +64,12 @@ export default {
       }
     },
     onClickOutside(event) {
-      if (event.target.closest('.prevent-search-blur') !== null) {
+      if (event.target.closest(".prevent-search-blur") !== null) {
         return false;
       }
-      this.$emit('blur');
+      this.$emit("blur");
       this.showMenu = false;
+      return true;
     }
   }
 };

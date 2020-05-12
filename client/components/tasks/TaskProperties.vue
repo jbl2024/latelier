@@ -151,12 +151,13 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from "moment";
 import "moment/locale/fr";
-import { mapState, mapGetters } from "vuex";
+
 export default {
   mixins: [usersMixin],
   props: {

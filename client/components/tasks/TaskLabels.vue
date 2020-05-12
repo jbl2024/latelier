@@ -23,13 +23,15 @@
       {{ $t("Add label") }}
     </v-chip>
     <v-btn
-      class="add-label"
       v-show="labels.length > 0"
+      class="add-label"
       fab
       x-small
       @click="$refs.selectLabel.open()"
     >
-      <v-icon>mdi-plus</v-icon>
+      <v-icon>
+        mdi-plus
+      </v-icon>
     </v-btn>
   </div>
 </template>

@@ -3,19 +3,25 @@
     <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <v-container v-if="currentProject && info" :style="getBackgroundUrl(currentUser)" ref="cards" v-resize="onResize" fluid>
+    <v-container
+      v-if="currentProject && info"
+      ref="cards"
+      v-resize="onResize"
+      :style="getBackgroundUrl(currentUser)"
+      fluid
+    >
       <v-row>
         <v-col cols="12">
           <project-card :project="currentProject" :user="currentUser" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <canvas-card :project="currentProject" :info="info"/>
+          <canvas-card :project="currentProject" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <process-card :project="currentProject" :info="info"/>
+          <process-card :project="currentProject" :info="info" />
         </v-col>
         <v-col :cols="cardColumns">
-          <weather-card :project="currentProject" :info="info"/>
+          <weather-card :project="currentProject" :info="info" />
         </v-col>
       </v-row>
     </v-container>
@@ -28,18 +34,17 @@ import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
 import WeatherCard from "/imports/ui/projects/info/WeatherCard";
-import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
-import { mapState } from "vuex";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
+import { mapState } from "vuex";
+
 export default {
-  mixins: [BackgroundMixin],
   components: {
     ProjectCard,
     ProcessCard,
     CanvasCard,
-    WeatherCard,
-    DashboardTaskList
+    WeatherCard
   },
+  mixins: [BackgroundMixin],
   props: {
     projectId: {
       type: String,
@@ -88,17 +93,12 @@ export default {
             return;
           }
           this.info = result;
-        }
-      );
+        });
     },
     onResize() {
       const { cards } = this.$refs;
       const width = cards.offsetWidth;
-      if (width > 600) {
-        this.cardColumns = 4;
-      } else {
-        this.cardColumns = 12;
-      }
+      this.cardColumns = width > 600 ? 4 : 12;
     }
   }
 };

@@ -215,8 +215,8 @@ export default {
 
     calculateTotalPages() {
       if (
-        this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
       ) {
         return 0;
       }

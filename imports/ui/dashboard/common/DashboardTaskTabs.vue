@@ -3,7 +3,7 @@
     <div class="tasks-title">
       {{ $t("Tasks") }}
     </div>
-    <v-divider/>
+    <v-divider />
     <v-tabs v-model="tab">
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
@@ -37,6 +37,7 @@
 </template>
 <script>
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
+
 export default {
   components: {
     DashboardTaskList
@@ -57,10 +58,10 @@ export default {
   },
   data() {
     return {
-      tab: null,
-    }
+      tab: null
+    };
   }
-}
+};
 </script>
 <style scoped>
 .tasks-title {

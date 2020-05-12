@@ -65,7 +65,9 @@
               <div class="flex-container elevation-1">
                 <v-toolbar dark color="primary" class="flex0">
                   <v-btn text @click="newHealthReport">
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon>
+                      mdi-plus
+                    </v-icon>
                     {{ $t("Add report") }}
                   </v-btn>
                 </v-toolbar>
@@ -89,12 +91,16 @@
                       </v-list-item-content>
                       <v-list-item-action>
                         <v-btn icon @click.stop="editReport(report)">
-                          <v-icon>mdi-pencil</v-icon>
+                          <v-icon>
+                            mdi-pencil
+                          </v-icon>
                         </v-btn>
                       </v-list-item-action>
                       <v-list-item-action>
                         <v-btn icon @click.stop="deleteReport(report)">
-                          <v-icon>mdi-delete</v-icon>
+                          <v-icon>
+                            mdi-delete
+                          </v-icon>
                         </v-btn>
                       </v-list-item-action>
                     </v-list-item>
@@ -126,12 +132,16 @@
                     </v-list-item-content>
                     <v-list-item-action>
                       <v-btn icon @click.stop="editReport(selectedReport)">
-                        <v-icon>mdi-pencil</v-icon>
+                        <v-icon>
+                          mdi-pencil
+                        </v-icon>
                       </v-btn>
                     </v-list-item-action>
                     <v-list-item-action>
                       <v-btn icon @click.stop="deleteReport(selectedReport)">
-                        <v-icon>mdi-delete</v-icon>
+                        <v-icon>
+                          mdi-delete
+                        </v-icon>
                       </v-btn>
                     </v-list-item-action>
                   </v-list-item>
@@ -159,10 +169,14 @@
                         @click-outside="updateDescription"
                       />
                       <v-btn icon text @click="updateDescription">
-                        <v-icon color="green">mdi-check-circle</v-icon>
+                        <v-icon color="green">
+                          mdi-check-circle
+                        </v-icon>
                       </v-btn>
                       <v-btn icon text @click="cancelUpdateDescription">
-                        <v-icon color="red">mdi-close-circle</v-icon>
+                        <v-icon color="red">
+                          mdi-close-circle
+                        </v-icon>
                       </v-btn>
                     </div>
                     <v-progress-linear v-if="loadingTasks" indeterminate absolute />

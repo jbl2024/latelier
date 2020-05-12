@@ -88,6 +88,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
+
 export default {
   name: "OrganizationSettingsManageUsers",
   mixins: [usersMixin],

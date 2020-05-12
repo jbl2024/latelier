@@ -50,10 +50,7 @@ export default {
   },
   computed: {
     ...mapState("project", ["currentProject"]),
-    ...mapState([
-      "currentUser",
-      "showTaskDetail"
-    ]),
+    ...mapState(["currentUser", "showTaskDetail"])
   },
   meteor: {
     // Subscriptions

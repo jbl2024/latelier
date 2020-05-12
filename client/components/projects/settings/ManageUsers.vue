@@ -11,7 +11,9 @@
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
-          <v-icon>mdi-plus</v-icon>
+          <v-icon>
+            mdi-plus
+          </v-icon>
         </v-btn>
       </v-subheader>
       <template v-for="user in projectUsers">
@@ -74,7 +76,9 @@
 
           <v-list-item-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>
+                mdi-delete
+              </v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -88,6 +92,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
+
 export default {
   name: "ProjectSettingsManageUsers",
   mixins: [usersMixin],
