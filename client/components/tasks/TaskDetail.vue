@@ -67,7 +67,7 @@
       <div v-if="!editTaskName" class="toolbar-button">
         <task-menu
           :task="task"
-          @startCloneToProject="showSelectProjectToClone = true"
+          @start-clone-to-project="showSelectProjectToClone = true"
         />
       </div>
     </div>
