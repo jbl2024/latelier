@@ -30,15 +30,16 @@ export default {
   actions: {
     setCurrentProjectId(context, projectId) {
       context.commit("filters/clearSelectedLabels");
-      if (projectId) {
-        context.commit("updateCurrentProjectId", projectId);
+      if (projectId != null) {
         Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
           context.commit("updateProjectFeatures", result);
         });
-      } else {
-        context.commit("updateCurrentProjectId", null);
-        context.commit("updateProjectFeatures", []);
+        if (context.state.currentProject && (context.state.currentProject._id !== projectId)) {
+          context.commit("updateProjectFeatures", []);
+          context.commit("updateCurrentProject", null);
+        }
       }
+      context.commit("updateCurrentProjectId", projectId);
     },
     setCurrentProject(context, project) {
       context.commit("updateCurrentProject", project);

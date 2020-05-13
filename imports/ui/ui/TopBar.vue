@@ -56,7 +56,7 @@ export default {
   },
   computed: {
     ...mapState(["currentOrganizationId"]),
-    ...mapState("project", ["currentProject"]),
+    ...mapState("project", ["currentProject", "currentProjectId"]),
     ...mapGetters(["hasAvatar"]),
     topBarColor() {
       return "primary";
@@ -68,21 +68,6 @@ export default {
       get() {
         return this.$store.state.showMobileDrawer;
       }
-    }
-  },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      project() {
-        return [this.projectId];
-      }
-    },
-    project() {
-      const project = Projects.findOne();
-      if (project) {
-        this.$store.dispatch("project/setCurrentProject", project);
-      }
-      return project;
     }
   }
 };

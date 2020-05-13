@@ -1,10 +1,10 @@
 <template>
   <div class="project-title">
     <v-toolbar-title>
-      <v-btn text icon color="white" @click="$router.push({ name: 'dashboard-page' })">
+      <v-btn text icon color="white" @click="$emit('go-home')">
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <project-selector :key="project._id">
+      <project-selector :key="projectId">
         <template v-slot:activator="{ on }">
           <v-btn color="white" text dark v-on="on">
             <span>{{ truncatedTitle }}</span>
@@ -42,6 +42,10 @@ export default {
     };
   },
   computed: {
+    projectId() {
+      if (!this.project) return null;
+      return this.project._id;
+    },
     truncatedTitle() {
       return this.project?.name ? truncate(this.project.name, 30) : "";
     }

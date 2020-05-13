@@ -238,7 +238,7 @@ export default {
 
     openProject(project) {
       this.$router.push({
-        name: "project",
+        name: "project-dashboard",
         params: {
           projectId: project._id
         }

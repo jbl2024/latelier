@@ -1,18 +1,15 @@
 <template>
   <div class="home-title">
-    <v-toolbar-title class="align-left">
-      <div>
-        <slot />
-        <v-btn
-          text
-          icon
-          color="white"
-          @click="$router.push({ name: 'dashboard-page' })"
-        >
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-        <span class="title">L'atelier</span>
-      </div>
+    <v-toolbar-title>
+      <v-btn
+        text
+        icon
+        color="white"
+        @click="$emit('go-home')"
+      >
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <span class="title">L'atelier</span>
     </v-toolbar-title>
   </div>
 </template>
@@ -21,21 +18,9 @@
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  flex: 2;
 }
-
-.align-left {
-  flex: 1;
+.home-title .v-toolbar__title {
+  display: flex;
+  align-items: center;
 }
-
-.align-remaining {
-  flex: 1;
-}
-
-.title {
-  position: relative;
-  top: 3px;
-}
-
-
 </style>
