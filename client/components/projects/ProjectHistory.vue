@@ -98,7 +98,6 @@ export default {
         }
       );
     },
-
     calculateTotalPages() {
       return this.pagination.rowsPerPage == null
         || this.pagination.totalItems == null
@@ -110,7 +109,6 @@ export default {
 </script>
 
 <style scoped>
-
 .project-history {
   display: flex;
   flex-direction: column;
