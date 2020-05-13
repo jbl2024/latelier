@@ -103,13 +103,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.tasks-title {
-  margin: 15.5px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  flex: 0;
-}
-</style>

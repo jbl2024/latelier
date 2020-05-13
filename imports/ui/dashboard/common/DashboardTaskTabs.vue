@@ -1,10 +1,18 @@
 <template>
   <div class="tasks">
-    <div class="tasks-title">
-      {{ $t("Tasks") }}
+    <div class="categories">
+      <div 
+        v-for="category in categories" 
+        :key="category.id"
+        :class="cssCategoryClasses(category.id)"
+        @click="currentCategory = category.id"
+      >
+        {{ category.text }}
+      </div>
     </div>
     <v-divider />
-    <v-tabs v-model="tab">
+    <!-- Taches -->
+    <v-tabs v-model="taskTab" v-if="currentCategory === 'task'">
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
       <v-tab>{{ $t("Late") }}</v-tab>
@@ -33,6 +41,10 @@
         />
       </v-tab-item>
     </v-tabs>
+    <!-- Historique et activité -->
+    <div v-show="currentCategory === 'history'">
+      <project-history v-if="projectId" :project-id="projectId" />
+    </div>
   </div>
 </template>
 <script>
@@ -58,17 +70,37 @@ export default {
   },
   data() {
     return {
-      tab: null
+      currentCategory: 'task',
+      categories: Object.freeze([
+        {id:"task", text: this.$t("Tasks")},
+        {id:"history", text: this.$t("History")}
+      ]),
+      taskTab: null
     };
+  },
+  methods: {
+    cssCategoryClasses(category) {
+      return ['category-title', this.currentCategory === category ? 'selected' : null];
+    }
   }
 };
 </script>
-<style scoped>
-.tasks-title {
-  margin: 1rem;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  flex: 0;
+<style lang="scss" scoped>
+
+.categories {
+  display: flex;
+
+  .category-title {
+    cursor: pointer;
+    margin: 15.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    flex: 0;
+    &.selected,
+    :hover {
+      font-weight: bold;
+    }
+  }
+
 }
 </style>

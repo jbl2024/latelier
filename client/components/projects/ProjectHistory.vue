@@ -1,67 +1,53 @@
 <template>
   <div class="project-history">
-    <generic-dialog v-model="showDialog" max-width="60%" :title="$t('History')">
-      <template v-slot:content>
-        <div class="content">
-          <v-progress-linear v-if="loading" indeterminate />
-          <v-timeline v-if="!loading" dense clipped>
-            <v-timeline-item
-              v-for="item in history"
-              :key="item._id"
-              color="indigo"
-              :small="$vuetify.breakpoint.xsOnly"
-            >
-              <span slot="opposite" />
-              <v-card class="elevation-2">
-                <v-card-text>
-                  <div class="task-name">
-                    {{ item.properties.task.name }}
-                  </div>
-                  <div>
-                    {{ $t(`history.${item.type}`) }}
-                    <span class="grey--text">
-                      {{
-                        $t("dates.duration.by", {
-                          duration: formatDateDuration(item.createdAt),
-                          user: item.user
-                        })
-                      }}
-                    </span>
-                  </div>
-                </v-card-text>
-              </v-card>
-            </v-timeline-item>
-          </v-timeline>
-        </div>
-
-        <div class="text-xs-center pb-2 flex0">
-          <v-pagination
-            v-if="showDialog && pagination.totalPages > 0"
-            v-model="page"
-            :length="pagination.totalPages"
-            :total-visible="6"
-          />
-        </div>
+    <v-progress-linear v-if="loading" indeterminate />
+    <v-list v-else two-line>
+      <template v-for="item in history">
+        <v-list-item :key="item._id">
+          <v-list-item-avatar :color="isOnline(item.user)">
+            <author-avatar :user-id="item.user" />
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title class="no-wrap">
+              <span class="black--text">
+                {{ item.properties.task.name }}
+              </span>
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              {{ $t(`history.${item.type}`) }}
+              <span class="grey--text">
+                {{
+                  $t("dates.duration.by", {
+                    duration: formatDateDuration(item.createdAt),
+                    user: item.user
+                  })
+                }}
+              </span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider :key="`history-divider-${item._id}`" inset />
       </template>
-    </generic-dialog>
+    </v-list>
+
   </div>
 </template>
 
 <script>
 import { Meteor } from "meteor/meteor";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
-  mixins: [DatesMixin],
+  mixins: [DatesMixin, usersMixin],
   props: {
     projectId: {
       type: String,
-      default: ""
+      default: null
     }
   },
   data() {
     return {
-      showDialog: false,
       history: [],
       loading: true,
       page: 1,
@@ -73,18 +59,14 @@ export default {
     };
   },
   watch: {
-    page() {
-      this.refresh();
+    projectId: {
+      immediate: true,
+      handler() {
+        this.refresh();
+      }
     }
   },
   methods: {
-    open() {
-      this.refresh();
-      this.showDialog = true;
-    },
-    close() {
-      this.showDialog = false;
-    },
     refresh() {
       this.loading = true;
       Meteor.call(
@@ -105,8 +87,8 @@ export default {
     },
 
     calculateTotalPages() {
-      return (this.pagination.rowsPerPage == null
-        || this.pagination.totalItems == null)
+      return this.pagination.rowsPerPage == null ||
+        this.pagination.totalItems == null
         ? 0
         : Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage);
     }
@@ -117,26 +99,5 @@ export default {
 <style scoped>
 .task-name {
   font-weight: bold;
-}
-@media (max-width: 600px) {
-  .content {
-    overflow-y: auto;
-  }
-}
-
-@media (min-width: 601px) {
-  .content {
-    overflow-y: auto;
-    height: 420px;
-  }
-
-  .flex0 {
-    flex: 0;
-  }
-
-  .flex1 {
-    flex: 1; /* takes the remaining height of the "container" div */
-    overflow: auto; /* to scroll just the "main" div */
-  }
 }
 </style>

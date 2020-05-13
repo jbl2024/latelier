@@ -49,8 +49,8 @@ export default {
         // Project Dashboard
         {
           id: "dashboard",
-          title: this.$t("Dashboard"),
-          icon: "mdi-information-outline",
+          title: this.$t("Activity"),
+          icon: "mdi-pulse",
           to: {
             name: "project-dashboard",
             params: { projectId: this.projectId }
