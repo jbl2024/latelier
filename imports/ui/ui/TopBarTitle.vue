@@ -1,7 +1,7 @@
 <template>
   <project-title v-if="project" :project="project" @go-home="goHome" />
   <organization-title v-else-if="organizationId" :organization-id="organizationId" />
-  <home-title v-else-if="!project" @go-home="goHome"/>
+  <home-title v-else-if="!project" @go-home="goHome" />
 </template>
 <script>
 export default {

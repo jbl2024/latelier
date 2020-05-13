@@ -41,7 +41,6 @@
 <script>
 import { mapState, mapGetters } from "vuex";
 import ProjectMenu from "/imports/ui/projects/ProjectMenu";
-import { Projects } from "/imports/api/projects/projects.js";
 import TopBarTitle from "./TopBarTitle";
 
 export default {
