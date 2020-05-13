@@ -1,8 +1,8 @@
 <template>
   <div class="tasks">
     <div class="categories">
-      <div 
-        v-for="category in categories" 
+      <div
+        v-for="category in categories"
         :key="category.id"
         :class="cssCategoryClasses(category.id)"
         @click="currentCategory = category.id"
@@ -12,7 +12,7 @@
     </div>
     <v-divider />
     <!-- Taches -->
-    <v-tabs v-model="taskTab" v-if="currentCategory === 'task'">
+    <v-tabs v-if="currentCategory === 'task'" v-model="taskTab">
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
       <v-tab>{{ $t("Late") }}</v-tab>
@@ -70,17 +70,17 @@ export default {
   },
   data() {
     return {
-      currentCategory: 'task',
+      currentCategory: "task",
       categories: Object.freeze([
-        {id:"task", text: this.$t("Tasks")},
-        {id:"history", text: this.$t("History")}
+        { id: "task", text: this.$t("Tasks") },
+        { id: "history", text: this.$t("History") }
       ]),
       taskTab: null
     };
   },
   methods: {
     cssCategoryClasses(category) {
-      return ['category-title', this.currentCategory === category ? 'selected' : null];
+      return ["category-title", this.currentCategory === category ? "selected" : null];
     }
   }
 };

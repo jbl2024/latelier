@@ -13,8 +13,10 @@
                 {{ item.properties.task.name }}
               </span>
             </v-list-item-title>
-            <v-list-item-subtitle>
+            <v-list-item-subtitle class="text--primary">
               {{ $t(`history.${item.type}`) }}
+            </v-list-item-subtitle>
+            <v-list-item-subtitle>
               <span class="grey--text">
                 {{
                   $t("dates.duration.by", {
@@ -29,7 +31,14 @@
         <v-divider :key="`history-divider-${item._id}`" inset />
       </template>
     </v-list>
-
+    <div class="text-xs-center pb-2 flex0">
+      <v-pagination
+        v-if="pagination.totalPages > 0"
+        v-model="page"
+        :length="pagination.totalPages"
+        :total-visible="6"
+      />
+    </div>
   </div>
 </template>
 
@@ -58,8 +67,13 @@ export default {
       }
     };
   },
+  computed: {
+    triggerRefresh() {
+      return `${this.projectId}-${this.page}`;
+    }
+  },
   watch: {
-    projectId: {
+    triggerRefresh: {
       immediate: true,
       handler() {
         this.refresh();
@@ -68,7 +82,6 @@ export default {
   },
   methods: {
     refresh() {
-      this.loading = true;
       Meteor.call(
         "projects.getHistory",
         { projectId: this.projectId, page: this.page },
@@ -87,8 +100,8 @@ export default {
     },
 
     calculateTotalPages() {
-      return this.pagination.rowsPerPage == null ||
-        this.pagination.totalItems == null
+      return this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
         ? 0
         : Math.ceil(this.pagination.totalItems / this.pagination.rowsPerPage);
     }
@@ -97,6 +110,12 @@ export default {
 </script>
 
 <style scoped>
+
+.project-history {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
 .task-name {
   font-weight: bold;
 }
