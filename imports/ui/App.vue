@@ -32,7 +32,7 @@
         <v-navigation-drawer
           v-model="showTaskDetail"
           class="elevation-16"
-          fixed
+          app
           right
           :width="600"
         >
