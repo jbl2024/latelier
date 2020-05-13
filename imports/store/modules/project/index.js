@@ -42,7 +42,12 @@ export default {
       context.commit("updateCurrentProjectId", projectId);
     },
     setCurrentProject(context, project) {
-      context.commit("updateCurrentProject", project);
+      if (project == null) {
+        context.commit("updateCurrentProject", null);
+      } else {
+        context.commit("updateCurrentProjectId", project._id);
+        context.commit("updateCurrentProject", project);
+      }
     }
   }
 };
