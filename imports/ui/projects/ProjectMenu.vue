@@ -41,6 +41,7 @@ export default {
   },
   computed: {
     projectId() {
+      if (!this.project) return null;
       return this.project._id;
     },
     menuItems() {

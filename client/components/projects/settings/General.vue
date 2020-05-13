@@ -27,47 +27,31 @@
     <select-project v-model="showSelectProject" @select="importLabels" />
     <select-color :active.sync="showSelectColor" @select="onSelectColor" />
 
-    <v-subheader>{{ $t("Description") }}</v-subheader>
-
+    <v-subheader>{{ $t("Name") }}</v-subheader>
     <div class="elevation-1 settings">
-      <div class="description">
-        <div
-          v-show="
-            !editDescription &&
-              project.description &&
-              project.description.length > 0
-          "
-          @click="startEditDescription"
-        >
-          <div class="tiptap-editor-view" v-html="markDown(project.description)" />
-        </div>
-        <div
-          v-show="!project.description && !editDescription"
-          @click="startEditDescription"
-        >
-          {{ $t("No description") }}
-        </div>
-
-        <div v-show="editDescription">
-          <rich-editor
-            ref="description"
-            v-model="project.description"
-            @submit="updateDescription"
-          />
-          <v-btn icon @click="updateDescription">
-            <v-icon color="green">
-              mdi-check-circle
-            </v-icon>
-          </v-btn>
-          <v-btn icon @click="cancelUpdateDescription">
-            <v-icon color="red">
-              mdi-close-circle
-            </v-icon>
-          </v-btn>
-        </div>
+      <div class="name">
+        <editable-text
+          v-model="project.name"
+          type="text-field"
+          :is-edited.sync="editName"
+          @update="updateProjectName"
+          @cancel="cancelUpdateProjectName"
+        />
       </div>
     </div>
-
+    <v-subheader>{{ $t("Description") }}</v-subheader>
+    <div class="elevation-1 settings">
+      <div class="description">
+        <editable-text
+          v-model="project.description"
+          :is-edited.sync="editDescription"
+          :empty-text="$t('No description')"
+          :options="{markdown: true}"
+          @update="updateDescription"
+          @cancel="cancelUpdateDescription"
+        />
+      </div>
+    </div>
     <v-subheader>
       {{ $t("Features") }}
       <v-btn text icon @click="showSelectFeature = true">
@@ -236,13 +220,15 @@ import {
 } from "/imports/api/projects/projects.js";
 
 import { Organizations } from "/imports/api/organizations/organizations.js";
-
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import EditableText from "/imports/ui/widgets/EditableText";
 
 export default {
   name: "ProjectSettingsGeneral",
-  mixins: [DatesMixin, MarkdownMixin],
+  components: {
+    EditableText
+  },
+  mixins: [DatesMixin],
   props: {
     project: {
       type: Object,
@@ -258,6 +244,7 @@ export default {
       showSelectProject: false,
       showSelectColor: false,
       showSelectFeature: false,
+      editName: false,
       editDescription: false
     };
   },
@@ -273,11 +260,8 @@ export default {
         );
       },
       set(value) {
-        if (value) {
-          this.project.accessRights = ProjectAccessRights.ORGANIZATION;
-        } else {
-          this.project.accessRights = ProjectAccessRights.PRIVATE;
-        }
+        const accessRights = value ? ProjectAccessRights.ORGANIZATION : ProjectAccessRights.PRIVATE;
+        this.project.accessRights = accessRights;
       }
     }
   },
@@ -363,7 +347,6 @@ export default {
         }
       );
     },
-
     removeFeature(feature) {
       Meteor.call(
         "projects.removeFeature",
@@ -409,14 +392,23 @@ export default {
     importLabels(project) {
       Meteor.call("labels.import", { from: project._id, to: this.project._id });
     },
-
-    startEditDescription() {
-      this.savedDescription = this.project.description;
-      this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.focus());
+    updateProjectName(name, savedName) {
+      this.editName = false;
+      Meteor.call("projects.updateName", {
+        projectId: this.project._id,
+        name: this.project.name
+      }, (error) => {
+        if (error) {
+          this.$notifyError(error);
+          this.cancelUpdateProjectName(savedName);
+        }
+      });
     },
-
-    updateDescription() {
+    cancelUpdateProjectName(savedProjectName) {
+      this.editName = false;
+      this.project.name = savedProjectName;
+    },
+    updateDescription(description, savedDescription) {
       this.editDescription = false;
       Meteor.call(
         "projects.updateDescription",
@@ -427,15 +419,14 @@ export default {
         (error) => {
           if (error) {
             this.$notifyError(error);
-            this.cancelUpdateDescription();
+            this.cancelUpdateDescription(savedDescription);
           }
         }
       );
     },
-
-    cancelUpdateDescription() {
+    cancelUpdateDescription(savedDescription) {
       this.editDescription = false;
-      this.project.description = this.savedDescription;
+      this.project.description = savedDescription;
     },
 
     onSelectColor(color) {
@@ -491,6 +482,7 @@ export default {
   width: 100%;
 }
 
+.name,
 .description {
   margin-left: 24px;
   margin-right: 24px;
