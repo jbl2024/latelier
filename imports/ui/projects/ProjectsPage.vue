@@ -35,6 +35,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProject", null);
     this.$store.dispatch("setWindowTitle", this.$t("Projects"));
     this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
   },

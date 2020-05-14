@@ -57,6 +57,7 @@ export default {
     }
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProject", null);
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
     this.$store.dispatch("setShowDashboardTitle", true);
   },

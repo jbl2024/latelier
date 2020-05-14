@@ -13,14 +13,10 @@
       :mini-variant-width="80"
     >
       <div ref="menu" class="drawer-wrapper">
-        <organization-menu
-          v-if="currentOrganizationId && !currentProjectId"
-          :organization-id="currentOrganizationId"
-        />
-        <project-menu
-          v-if="currentProject"
+        <main-menu
+          v-if="(currentProject || currentOrganization)"
           :project="currentProject"
-          :organization-id="currentOrganizationId"
+          :organization="currentOrganization"
         />
         <project-groups
           v-if="showCategories"
@@ -33,11 +29,11 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import ProjectMenu from "/imports/ui/projects/ProjectMenu";
+import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
-    ProjectMenu
+    MainMenu
   },
   data() {
     return {
@@ -47,10 +43,10 @@ export default {
   computed: {
     ...mapState([
       "showCategories",
-      "showDashboardTitle",
-      "currentOrganizationId"
+      "showDashboardTitle"
     ]),
-    ...mapState("project", ["currentProjectId", "currentProject"]),
+    ...mapState("project", ["currentProject"]),
+    ...mapState("organization", ["currentOrganizationId", "currentOrganization"]),
     showMobileDrawer: {
       set(showMobileDrawer) {
         this.$store.commit("updateShowMobileDrawer", showMobileDrawer);

@@ -83,19 +83,18 @@
       </v-list-item>
     </v-list>
     <v-divider />
-
-    <project-menu
-      :organization-id="project.organizationId"
-      :project-id="project._id"
-    />
+    <main-menu :project="{_id: project._id}" display="list"/>
   </div>
 </template>
 
 <script>
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-
+import MainMenu from "/imports/ui/ui/MainMenu";
 export default {
+  components: {
+    MainMenu
+  },
   mixins: [TextRenderingMixin, DatesMixin],
   props: {
     active: Boolean,

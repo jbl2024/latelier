@@ -1,8 +1,7 @@
 <template>
-  <div v-if="projectId" class="project-menu">
+  <div v-if="menuItems && menuItems.length" class="main-menu">
     <v-tabs
-      v-if="displayAsTabs"
-      :background-color="backgroundColor"
+      v-if="computedDisplay === 'tabs'"
       hide-slider
       :class="{ radius: radius }"
     >
@@ -11,7 +10,7 @@
         {{ menuItem.title }}
       </v-tab>
     </v-tabs>
-    <template v-if="displayAsList">
+    <template v-else-if="computedDisplay === 'list'">
       <v-list class="pt-0">
         <v-list-item
           v-for="menuItem in menuItems"
@@ -38,27 +37,76 @@ export default {
       type: Object,
       default: null
     },
-    backgroundColor: {
-      type: String,
-      default: "primary"
+    organization: {
+      type: Object,
+      default: null
     },
     radius: {
       type: Boolean,
       default: false
+    },
+    display: {
+      type: String,
+      default: null,
+      validator: (display) => ["list", "tabs"].includes(display)
     }
   },
   computed: {
-    displayAsList() {
-      return this.$vuetify.breakpoint.mdAndDown;
+    computedDisplay() {
+      if (this.display != null) return this.display;
+      if (this.$vuetify.breakpoint.mdAndDown) return "list";
+      if (this.$vuetify.breakpoint.lgAndUp) return "tabs";
     },
-    displayAsTabs() {
-      return this.$vuetify.breakpoint.lgAndUp;
+    organizationId() {
+      if (!this.organization) return null;
+      return this.organization._id;
     },
     projectId() {
       if (!this.project) return null;
       return this.project._id;
     },
     menuItems() {
+      if (this.projectId !== null) {
+        return this.projectMenuItems;
+      } else if (this.organizationId !== null) {
+        return this.organizationMenuItems;
+      } else {
+        return [];
+      }
+    },
+    organizationMenuItems() {
+      const menuItems = [
+        {
+          id: "projects",
+          title: "Projets",
+          icon: "mdi-google-pages",
+          to: {
+            name: "projects-page",
+            params: { organizationId: this.organizationId }
+          }
+        },
+        {
+          id: "projects-timeline",
+          title: "Planning",
+          icon: "mdi-chart-timeline-variant",
+          to: {
+            name: "projects-timeline",
+            params: { organizationId: this.organizationId }
+          }
+        },
+        {
+          id: "organization-settings",
+          title: "Paramètres",
+          icon: "mdi-settings",
+          to: {
+            name: "organization-settings",
+            params: { organizationId: this.organizationId }
+          }
+        }
+      ];
+      return menuItems;
+    },
+    projectMenuItems() {
       const menuItems = [
         // Project Dashboard
         {
@@ -130,7 +178,7 @@ export default {
 <style lang="scss" scoped>
 @import "/imports/ui/styles/mixins/tabs-menu";
 
-.project-menu {
+.main-menu {
   @include tabs-menu;
 }
 </style>

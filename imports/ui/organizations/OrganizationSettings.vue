@@ -51,6 +51,7 @@ export default {
     ...mapState("organization", ["currentOrganization"])
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProject", null);
     this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
   },
   beforeDestroy() {

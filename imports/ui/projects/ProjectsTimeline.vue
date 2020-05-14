@@ -143,6 +143,7 @@ export default {
     }, 400);
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProject", null);
     this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
     this.$store.dispatch("setShowCategories", true);
     this.$events.listen("close-project-detail", () => {

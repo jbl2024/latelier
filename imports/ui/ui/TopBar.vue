@@ -9,16 +9,11 @@
       :organization="currentOrganization"
       :project="currentProject"
     />
-    <project-menu
-      v-if="$vuetify.breakpoint.lgAndUp && currentProject"
+    <!-- [ProjectMenu|OrganizationMenu] -->
+    <main-menu
+      v-if="$vuetify.breakpoint.lgAndUp && (currentProject || currentOrganization)"
       :project="currentProject"
-      :background-color="navBarColor"
-      radius
-    />
-    <organization-menu
-      v-else-if="$vuetify.breakpoint.lgAndUp && currentOrganization"
       :organization="currentOrganization"
-      :background-color="navBarColor"
       radius
     />
     <!-- SearchBar, Notification and Profile -->
@@ -27,15 +22,15 @@
 </template>
 <script>
 import { mapState } from "vuex";
-import ProjectMenu from "/imports/ui/projects/ProjectMenu";
 import TopBarTitle from "./TopBarTitle";
 import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
+import MainMenu from "./MainMenu";
 
 export default {
   components: {
-    ProjectMenu,
     TopBarTitle,
-    TopBarAdditionalMenu
+    TopBarAdditionalMenu,
+    MainMenu
   },
   props: {
     dense: {
@@ -50,7 +45,7 @@ export default {
       if (this.currentProject && this.currentProject.color) {
         return this.currentProject.color;
       }
-      return "primary";
+      return this.$vuetify.theme.currentTheme.primary;
     },
     navBarColor() {
       return "#555555";
@@ -68,6 +63,7 @@ export default {
 </script>
 <style lang="scss">
   .top-bar {
+    transition: background-color 50ms linear;
     .v-toolbar__content {
       padding: 0 16px;
       display: flex;
