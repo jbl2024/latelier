@@ -122,7 +122,7 @@ export default {
     },
     hasLeftDrawer() {
       const routeName = this.$route?.name;
-      return Boolean(["dashboard-organization-page", "project-dashboard"].includes(routeName));
+      return Boolean(["dashboard-page", "dashboard-organization-page", "project-dashboard"].includes(routeName));
     }
   },
   watch: {

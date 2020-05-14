@@ -71,12 +71,17 @@ export default {
   data() {
     return {
       currentCategory: "task",
-      categories: Object.freeze([
-        { id: "task", text: this.$t("Tasks") },
-        { id: "history", text: this.$t("History") }
-      ]),
       taskTab: null
     };
+  },
+  computed: {
+    categories() {
+      const categories = [{ id: "task", text: this.$t("Tasks") }];
+      if (this.projectId) {
+        categories.push({ id: "history", text: this.$t("History") });
+      }
+      return Object.freeze(categories);
+    }
   },
   methods: {
     cssCategoryClasses(category) {
