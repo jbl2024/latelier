@@ -206,7 +206,7 @@ publishComposite("project", function(projectId) {
       {
         // users
         find(project) {
-          const members = Array.from(project.members) || [];
+          const members = Array.from(project.members || []);
           const tasks = Tasks.find(
             { projectId: project._id, deleted: { $ne: true } },
             { fields: { createdBy: 1, updatedBy: 1 } }
