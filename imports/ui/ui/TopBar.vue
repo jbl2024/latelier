@@ -47,6 +47,9 @@ export default {
     ...mapState("project", ["currentProject"]),
     ...mapState("organization", ["currentOrganization"]),
     topBarColor() {
+      if (this.currentProject && this.currentProject.color) {
+        return this.currentProject.color;
+      }
       return "primary";
     },
     navBarColor() {
