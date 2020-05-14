@@ -38,6 +38,7 @@
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
 import { dragscroll } from "vue-dragscroll";
+import { devices } from "/imports/devices";
 import Sortable from "sortablejs";
 
 export default {
@@ -77,13 +78,10 @@ export default {
     }
   },
   mounted() {
-    const options = {
+    let options = {
       delayOnTouchOnly: true,
       delay: 250,
       animation: 150,
-      forceFallback: true,
-      fallbackTolerance: 4,
-      touchStartThreshold: 4,
       handle: ".list-header",
       group: "lists",
       onUpdate: (event) => {
@@ -93,6 +91,14 @@ export default {
         this.handleMove(event);
       }
     };
+    if (devices.isMobile()) {
+      options = {
+        ...options,
+        forceFallback: true,
+        fallbackTolerance: 4,
+        touchStartThreshold: 4
+      };
+    }
     this.sortable = Sortable.create(this.$refs.kanban, options);
   },
   beforeDestroy() {
