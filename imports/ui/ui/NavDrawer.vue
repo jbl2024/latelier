@@ -18,9 +18,9 @@
           :organization-id="currentOrganizationId"
         />
         <project-menu
-          v-if="currentProjectId"
+          v-if="currentProject"
+          :project="currentProject"
           :organization-id="currentOrganizationId"
-          :project-id="currentProjectId"
         />
         <project-groups
           v-if="showCategories"
@@ -50,7 +50,7 @@ export default {
       "showDashboardTitle",
       "currentOrganizationId"
     ]),
-    ...mapState("project", ["currentProjectId"]),
+    ...mapState("project", ["currentProjectId", "currentProject"]),
     showMobileDrawer: {
       set(showMobileDrawer) {
         this.$store.commit("updateShowMobileDrawer", showMobileDrawer);

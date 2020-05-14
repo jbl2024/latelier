@@ -43,7 +43,7 @@
     </v-tabs>
     <!-- Historique et activité -->
     <div v-show="currentCategory === 'history'">
-      <project-history v-if="projectId" :project-id="projectId" :key="projectId" />
+      <project-history v-if="projectId" :key="projectId" :project-id="projectId" />
     </div>
   </div>
 </template>
