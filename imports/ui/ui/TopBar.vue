@@ -9,7 +9,8 @@
     <project-menu
       v-if="$vuetify.breakpoint.lgAndUp && currentProject"
       :project="currentProject"
-      :background-color="topBarColor"
+      :background-color="navBarColor"
+      radius
     />
     <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
       <v-btn
@@ -59,6 +60,9 @@ export default {
     ...mapGetters(["hasAvatar"]),
     topBarColor() {
       return "primary";
+    },
+    navBarColor() {
+      return "#555555";
     },
     showMobileDrawer: {
       set(showMobileDrawer) {

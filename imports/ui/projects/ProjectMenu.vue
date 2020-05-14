@@ -1,6 +1,11 @@
 <template>
   <div v-if="projectId" class="project-menu">
-    <v-tabs v-if="$vuetify.breakpoint.lgAndUp" :background-color="backgroundColor" hide-slider>
+    <v-tabs
+      v-if="$vuetify.breakpoint.lgAndUp"
+      :background-color="backgroundColor"
+      hide-slider
+      :class="{ radius: radius }"
+    >
       <v-tab v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
         <v-icon>{{ menuItem.icon }}</v-icon>
         {{ menuItem.title }}
@@ -8,7 +13,11 @@
     </v-tabs>
     <template v-if="$vuetify.breakpoint.mdAndDown">
       <v-list class="pt-0">
-        <v-list-item v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
+        <v-list-item
+          v-for="menuItem in menuItems"
+          :key="menuItem.id"
+          :to="menuItem.to"
+        >
           <v-list-item-action>
             <v-icon>{{ menuItem.icon }}</v-icon>
           </v-list-item-action>
@@ -32,6 +41,10 @@ export default {
     backgroundColor: {
       type: String,
       default: "primary"
+    },
+    radius: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -102,7 +115,10 @@ export default {
           id: "weather",
           title: this.$t("Weather"),
           icon: "mdi-white-balance-sunny",
-          to: { name: "project-weather", params: { projectId: this.projectId } }
+          to: {
+            name: "project-weather",
+            params: { projectId: this.projectId }
+          }
         }
       ];
       return menuItems;
@@ -112,18 +128,27 @@ export default {
 </script>
 <style lang="scss" scoped>
 .project-menu {
+
   height: 100%;
+  overflow: hidden;
   .v-tabs .v-icon {
     color: inherit;
     padding-right: 0.5rem;
   }
   .v-tabs,
   .v-tabs > .v-tabs-bar {
-    height: 100%;
+    height: 48px;
   }
   .v-tabs .v-tab {
     font-size: 0.8rem;
     padding: 0 0.75rem;
+  }
+
+  .radius {
+    border-radius: 40px;
+    overflow: hidden;
+    mask-image: -webkit-radial-gradient(white, black);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
   }
 }
 </style>
