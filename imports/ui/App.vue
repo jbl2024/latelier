@@ -81,11 +81,11 @@ export default {
   computed: {
     ...mapState([
       "currentUser",
-      "currentOrganizationId",
       "notifyMessage",
       "selectedTask",
       "windowTitle"
     ]),
+    ...mapState("organization", ["currentOrganizationId"]),
     ...mapState("project", ["currentProjectId"]),
     ...mapGetters(["isConnected"]),
     showTaskDetail: {

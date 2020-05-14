@@ -1,5 +1,5 @@
 <template>
-  <div v-if="menuItems && menuItems.length" class="main-menu">
+  <div v-if="computedDisplay && menuItems && menuItems.length" class="main-menu">
     <v-tabs
       v-if="computedDisplay === 'tabs'"
       hide-slider
@@ -56,6 +56,7 @@ export default {
       if (this.display != null) return this.display;
       if (this.$vuetify.breakpoint.mdAndDown) return "list";
       if (this.$vuetify.breakpoint.lgAndUp) return "tabs";
+      return null;
     },
     organizationId() {
       if (!this.organization) return null;
@@ -68,11 +69,10 @@ export default {
     menuItems() {
       if (this.projectId !== null) {
         return this.projectMenuItems;
-      } else if (this.organizationId !== null) {
+      } if (this.organizationId !== null) {
         return this.organizationMenuItems;
-      } else {
-        return [];
       }
+      return [];
     },
     organizationMenuItems() {
       const menuItems = [

@@ -15,11 +15,11 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: ""
+      default: null
     },
     projectId: {
       type: String,
-      default: ""
+      default: null
     },
     user: {
       type: Object,
