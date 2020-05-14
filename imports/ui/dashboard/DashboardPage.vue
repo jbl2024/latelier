@@ -14,6 +14,7 @@
 <script>
 import DashboardDesktop from "/imports/ui/dashboard/desktop/DashboardDesktop";
 import DashboardMobile from "/imports/ui/dashboard/mobile/DashboardMobile";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 
 export default {
   components: {
@@ -29,9 +30,30 @@ export default {
   watch: {
     organizationId: {
       immediate: true,
-      handler (id) {
-        this.$store.dispatch("setCurrentOrganizationId", id);
+      handler() {
+        if (this.organizationId == null) {
+          this.$store.dispatch("organization/setCurrentOrganization", null);
+        } else {
+          this.$startMeteor();
+          this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
+        }
       }
+    }
+  },
+  meteor: {
+    $lazy: true,
+    // Subscriptions
+    $subscribe: {
+      organization() {
+        return [this.organizationId];
+      }
+    },
+    organization() {
+      const organization = Organizations.findOne();
+      if (organization) {
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+      }
+      return organization;
     }
   },
   mounted() {
@@ -40,7 +62,7 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch("setShowDashboardTitle", false);
-    this.$store.dispatch("setCurrentOrganizationId", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", null);
   }
 };
 </script>

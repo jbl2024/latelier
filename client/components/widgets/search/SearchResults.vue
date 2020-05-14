@@ -64,7 +64,7 @@ export default {
   },
   computed: {
     ...mapState("project", ["currentProjectId"]),
-    ...mapState(["currentOrganizationId"])
+    ...mapState("organization", ["currentOrganizationId"])
   },
   watch: {
     page() {

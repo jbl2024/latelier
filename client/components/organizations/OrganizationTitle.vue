@@ -1,101 +1,30 @@
 <template>
   <div class="organization-title">
-    <v-toolbar-title v-show="!editOrganizationName" class="align-left">
-      <div>
-        <slot />
-        <v-btn icon text @click="goTo('dashboard-page')">
-          <v-icon>mdi-home</v-icon>
-        </v-btn>
-        <span class="title hidden-xs-only" @click="startUpdateOrganizationName">
-          {{ truncatedTitle }}
-        </span>
-      </div>
+    <v-toolbar-title>
+      <v-btn text icon color="white" @click="$emit('go-home')">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <span class="title">
+        {{ truncatedTitle }}
+      </span>
     </v-toolbar-title>
-    <div v-show="editOrganizationName" class="title edit align-left">
-      <v-text-field
-        ref="name"
-        v-model="organization.name"
-        style="width: 500px"
-        text
-        solo-inverted
-        color="primary"
-        hide-details
-        prepend-inner-icon="mdi-pencil"
-        label="Saisir un nom..."
-        @focus="$event.target.select()"
-        @keyup.enter="updateOrganizationName"
-      />
-      <v-btn icon @click="updateOrganizationName">
-        <v-icon color="green">
-          mdi-check-circle
-        </v-icon>
-      </v-btn>
-      <v-btn icon @click="cancelUpdateOrganizationName">
-        <v-icon color="red">
-          mdi-close-circle
-        </v-icon>
-      </v-btn>
-    </div>
   </div>
 </template>
 
 <script>
-import { Organizations } from "/imports/api/organizations/organizations.js";
 import { truncate } from "/imports/ui/utils/truncate";
 
 export default {
   props: {
-    organizationId: {
-      type: String,
-      default: ""
-    }
-  },
-  data() {
-    return {
-      savedOrganizationName: "",
-      editOrganizationName: false
-    };
-  },
-  meteor: {
     organization: {
-      params() {
-        return {
-          id: this.organizationId
-        };
-      },
-      deep: false,
-      update({ id }) {
-        return Organizations.findOne({ _id: id }) || {};
-      }
+      type: Object,
+      default: null
     }
   },
   computed: {
     truncatedTitle() {
       if (!this.organization?.name) return "";
       return truncate(this.organization.name, 30);
-    }
-  },
-  methods: {
-    startUpdateOrganizationName() {
-      this.savedOrganizationName = this.organization.name;
-      this.editOrganizationName = true;
-      this.$nextTick(() => this.$refs.name.focus());
-    },
-    updateOrganizationName() {
-      this.editOrganizationName = false;
-      Meteor.call("organizations.updateName", {
-        organizationId: this.organization._id,
-        name: this.organization.name
-      });
-    },
-
-    cancelUpdateOrganizationName() {
-      this.editOrganizationName = false;
-      this.organization.name = this.savedOrganizationName;
-    },
-
-    goTo(link) {
-      this.$router.push({ name: link });
     }
   }
 };
@@ -106,23 +35,5 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-  flex: 2;
-}
-
-.align-left {
-  flex: 1;
-}
-
-.align-remaining {
-  flex: 1;
-}
-
-.edit .v-text-field {
-  float: left;
-}
-
-.title {
-  position: relative;
-  top: 3px;
 }
 </style>

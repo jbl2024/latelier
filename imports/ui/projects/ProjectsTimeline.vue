@@ -76,6 +76,7 @@
 
 <script>
 import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 
 import { colors } from "/imports/colors.js";
 
@@ -142,14 +143,14 @@ export default {
     }, 400);
   },
   mounted() {
-    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
+    this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
     this.$store.dispatch("setShowCategories", true);
     this.$events.listen("close-project-detail", () => {
       this.showProjectDetail = false;
     });
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentOrganizationId", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", null);
     this.$store.dispatch("setShowCategories", false);
     this.$events.off("close-project-detail");
   },
@@ -165,20 +166,21 @@ export default {
       }
     }
   },
+
   meteor: {
     // Subscriptions
     $subscribe: {
-      projectsForTimeline: function() {
+      projectsForTimeline() {
         return [
           this.organizationId,
           this.filter,
           this.$store.state.selectedGroup._id
         ];
       },
-      organization: function() {
+      organization() {
         return [this.organizationId];
       },
-      projectGroups: function() {
+      projectGroups() {
         return [this.organizationId];
       }
     },
@@ -190,6 +192,13 @@ export default {
     },
     count() {
       return Projects.find({ organizationId: this.organizationId }).count();
+    },
+    organization() {
+      const organization = Organizations.findOne();
+      if (organization) {
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+      }
+      return organization;
     }
   },
   methods: {

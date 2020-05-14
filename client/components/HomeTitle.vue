@@ -13,14 +13,14 @@
     </v-toolbar-title>
   </div>
 </template>
-<style scoped>
+<style lang="scss" scoped>
 .home-title {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
-}
-.home-title .v-toolbar__title {
-  display: flex;
-  align-items: center;
+  .v-toolbar__title {
+    display: flex;
+    align-items: center;
+  }
 }
 </style>

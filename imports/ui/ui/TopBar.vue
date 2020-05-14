@@ -1,63 +1,51 @@
 <template>
-  <v-app-bar class="top-bar" dense :color="topBarColor" dark app clipped-left>
+  <v-app-bar class="top-bar" :dense="dense" :color="topBarColor" dark app clipped-left>
     <v-app-bar-nav-icon
       v-show="$vuetify.breakpoint.mdAndDown"
       @click.stop="showMobileDrawer = !showMobileDrawer"
     />
-    <top-bar-title :organization-id="currentOrganizationId" :project="currentProject" />
-    <!-- Project Menu Items -->
+    <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
+    <top-bar-title
+      :organization="currentOrganization"
+      :project="currentProject"
+    />
     <project-menu
       v-if="$vuetify.breakpoint.lgAndUp && currentProject"
       :project="currentProject"
       :background-color="navBarColor"
       radius
     />
-    <div v-if="$vuetify.breakpoint.mdAndUp" class="additional-menu">
-      <v-btn
-        v-show="!showSearchInput"
-        class="prevent-search-blur"
-        icon
-        @click="showSearchInput = !showSearchInput"
-      >
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <search-input v-show="showSearchInput" @blur="showSearchInput = false" />
-      <notification-button />
-      <v-avatar dark>
-        <v-menu offset-y eager>
-          <template v-slot:activator="{ on }">
-            <v-btn icon v-on="on">
-              <author-avatar v-if="hasAvatar" small :user-id="currentUser" />
-              <v-icon v-if="!hasAvatar">
-                mdi-account-circle
-              </v-icon>
-            </v-btn>
-          </template>
-          <login-menu />
-        </v-menu>
-      </v-avatar>
-    </div>
+    <organization-menu
+      v-else-if="$vuetify.breakpoint.lgAndUp && currentOrganization"
+      :organization="currentOrganization"
+      :background-color="navBarColor"
+      radius
+    />
+    <!-- SearchBar, Notification and Profile -->
+    <top-bar-additional-menu v-if="$vuetify.breakpoint.mdAndUp" />
   </v-app-bar>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import ProjectMenu from "/imports/ui/projects/ProjectMenu";
 import TopBarTitle from "./TopBarTitle";
+import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
 
 export default {
   components: {
     ProjectMenu,
-    TopBarTitle
+    TopBarTitle,
+    TopBarAdditionalMenu
   },
-  data() {
-    return {
-      showSearchInput: false
-    };
+  props: {
+    dense: {
+      type: Boolean,
+      default: true
+    }
   },
   computed: {
-    ...mapState(["currentOrganizationId"]),
-    ...mapState("project", ["currentProject", "currentProjectId"]),
-    ...mapGetters(["hasAvatar"]),
+    ...mapState("project", ["currentProject"]),
+    ...mapState("organization", ["currentOrganization"]),
     topBarColor() {
       return "primary";
     },
@@ -79,18 +67,8 @@ export default {
   .top-bar {
     .v-toolbar__content {
       padding: 0 16px;
-    }
-    .project-menu {
-      height:100%;
-      padding: 0 0.5rem;
-    }
-    .additional-menu {
       display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      height:100;
-      max-width: 100%;
-      flex-grow: 3;
+      justify-content: space-between;
     }
   }
 </style>

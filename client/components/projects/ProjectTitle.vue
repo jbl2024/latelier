@@ -7,7 +7,7 @@
       <project-selector :key="projectId">
         <template v-slot:activator="{ on }">
           <v-btn color="white" text dark v-on="on">
-            <span>{{ truncatedTitle }}</span>
+            <span class="title title-selector">{{ truncatedTitle }}</span>
             <v-icon class="ml-1">
               mdi-chevron-down
             </v-icon>
@@ -35,8 +35,6 @@ export default {
   },
   data() {
     return {
-      savedProjectName: "",
-      editProjectName: false,
       savedValue: "",
       debouncedFilter: ""
     };
@@ -67,10 +65,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .project-title {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  .title-selector {
+    text-transform: none;
+  }
 }
 </style>

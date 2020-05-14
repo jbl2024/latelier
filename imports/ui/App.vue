@@ -28,7 +28,7 @@
           v-model="showTaskExport"
           :task-id="selectedTask ? selectedTask._id : '0'"
         />
-        <top-bar />
+        <top-bar :dense="false" />
         <v-navigation-drawer
           v-model="showTaskDetail"
           class="elevation-16"

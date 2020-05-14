@@ -6,12 +6,14 @@ import { UserUtils } from "/imports/api/users/utils";
 
 import get from "lodash/get";
 import project from "./modules/project";
+import organization from "./modules/organization";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    project
+    project,
+    organization
   },
   state: {
     currentUserId: null,
@@ -26,7 +28,6 @@ const store = new Vuex.Store({
     showTaskExport: false,
     showDashboardTitle: false,
     dashboardFilter: "",
-    currentOrganizationId: null,
     windowTitle: "",
     notifyMessage: "",
     showMobileDrawer: false,
@@ -74,9 +75,6 @@ const store = new Vuex.Store({
     },
     updateDashboardFilter(state, dashboardFilter) {
       state.dashboardFilter = dashboardFilter;
-    },
-    updateCurrentOrganizationId(state, currentOrganizationId) {
-      state.currentOrganizationId = currentOrganizationId;
     },
     selectTask(state, selectedTask) {
       state.selectedTask = selectedTask;
@@ -144,10 +142,6 @@ const store = new Vuex.Store({
         "updateShowSelectBackgroundDialog",
         showSelectBackgroundDialog
       );
-    },
-    setCurrentOrganizationId(context, organizationId) {
-      context.commit("clearSelectedGroup");
-      context.commit("updateCurrentOrganizationId", organizationId);
     },
     selectTask(context, task) {
       context.commit("selectTask", task);

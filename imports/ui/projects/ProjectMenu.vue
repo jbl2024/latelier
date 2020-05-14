@@ -1,7 +1,7 @@
 <template>
   <div v-if="projectId" class="project-menu">
     <v-tabs
-      v-if="$vuetify.breakpoint.lgAndUp"
+      v-if="displayAsTabs"
       :background-color="backgroundColor"
       hide-slider
       :class="{ radius: radius }"
@@ -11,7 +11,7 @@
         {{ menuItem.title }}
       </v-tab>
     </v-tabs>
-    <template v-if="$vuetify.breakpoint.mdAndDown">
+    <template v-if="displayAsList">
       <v-list class="pt-0">
         <v-list-item
           v-for="menuItem in menuItems"
@@ -47,12 +47,13 @@ export default {
       default: false
     }
   },
-  data() {
-    return {
-      showHistoryDialog: false
-    };
-  },
   computed: {
+    displayAsList() {
+      return this.$vuetify.breakpoint.mdAndDown;
+    },
+    displayAsTabs() {
+      return this.$vuetify.breakpoint.lgAndUp;
+    },
     projectId() {
       if (!this.project) return null;
       return this.project._id;
@@ -127,28 +128,9 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+@import "/imports/ui/styles/mixins/tabs-menu";
+
 .project-menu {
-
-  height: 100%;
-  overflow: hidden;
-  .v-tabs .v-icon {
-    color: inherit;
-    padding-right: 0.5rem;
-  }
-  .v-tabs,
-  .v-tabs > .v-tabs-bar {
-    height: 48px;
-  }
-  .v-tabs .v-tab {
-    font-size: 0.8rem;
-    padding: 0 0.75rem;
-  }
-
-  .radius {
-    border-radius: 40px;
-    overflow: hidden;
-    mask-image: -webkit-radial-gradient(white, black);
-    -webkit-mask-image: -webkit-radial-gradient(white, black);
-  }
+  @include tabs-menu;
 }
 </style>
