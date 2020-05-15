@@ -5,7 +5,7 @@
         <v-navigation-drawer
           v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"
           v-model="leftDrawer"
-          width="360"
+          :width="leftDrawerWidth"
           app
           clipped
         >
@@ -30,14 +30,17 @@
         />
         <top-bar :dense="false" />
         <v-navigation-drawer
-          v-model="showTaskDetail"
+          v-model="rightDrawer"
           class="elevation-16"
           app
           right
-          :width="600"
+          :temporary="$vuetify.breakpoint.smAndDown"
+          :stateless="$vuetify.breakpoint.mdAndUp"
+          :width="rightDrawerWidth"
         >
           <task-detail
             :key="showTaskDetail"
+            v-click-outside="clickOutsideTaskDetail"
             :task-id="selectedTask ? selectedTask._id : '0'"
             :task-object="selectedTask"
           />
@@ -73,6 +76,9 @@ export default {
   data() {
     return {
       leftDrawer: null,
+      leftDrawerWidth: 320,
+      rightDrawer: false,
+      rightDrawerWidth: 600,
       openMenu: false,
       showSnackbar: false,
       timeout: 6000
@@ -87,7 +93,7 @@ export default {
     ]),
     ...mapState("organization", ["currentOrganizationId"]),
     ...mapState("project", ["currentProjectId"]),
-    ...mapGetters(["isConnected"]),
+    ...mapGetters(["isTaskDetailShown", "isConnected"]),
     showTaskDetail: {
       get() {
         return this.$store.state.showTaskDetail;
@@ -138,6 +144,12 @@ export default {
     },
     windowTitle(title) {
       document.title = title;
+    },
+    isTaskDetailShown: {
+      immediate: true,
+      handler() {
+        this.rightDrawer = this.isTaskDetailShown;
+      }
     }
   },
   mounted() {
@@ -167,6 +179,9 @@ export default {
     }
   },
   methods: {
+    clickOutsideTaskDetail() {
+      this.showTaskDetail = false;
+    },
     onKeyup(event) {
       const targetIsEditable = (target) => {
         if (!target) {
