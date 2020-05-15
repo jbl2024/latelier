@@ -40,13 +40,12 @@
         >
           <task-detail
             :key="showTaskDetail"
-            v-click-outside="clickOutsideTaskDetail"
             :task-id="selectedTask ? selectedTask._id : '0'"
             :task-object="selectedTask"
           />
         </v-navigation-drawer>
       </template>
-      <v-content class="main-content">
+      <v-content class="main-content" @click.native="showTaskDetail = false">
         <v-container class="page-container" fluid>
           <router-view />
         </v-container>
@@ -179,9 +178,6 @@ export default {
     }
   },
   methods: {
-    clickOutsideTaskDetail() {
-      this.showTaskDetail = false;
-    },
     onKeyup(event) {
       const targetIsEditable = (target) => {
         if (!target) {
