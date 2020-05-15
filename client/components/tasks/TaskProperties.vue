@@ -62,12 +62,6 @@
       </div>
     </div>
 
-    <div v-if="task.completedAt" class="completed-date">
-      <span class="success--text">
-        {{ $t("Completed on") }}
-        {{ formatDate(task.completedAt) }}
-      </span>
-    </div>
     <v-subheader>{{ $t("Dates") }} </v-subheader>
     <v-list two-line class="elevation-1">
       <v-list-item @click="showSelectStartDate = true">
