@@ -39,8 +39,8 @@
           :width="rightDrawerWidth"
         >
           <task-detail
-            v-click-outside="taskDetailClickOutside"
             :key="showTaskDetail"
+            v-click-outside="taskDetailClickOutside"
             :task-id="selectedTask ? selectedTask._id : '0'"
             :task-object="selectedTask"
           />
@@ -180,7 +180,7 @@ export default {
   },
   methods: {
     taskDetailClickOutside(event, $el) {
-      if (event.path.includes($el)) {
+      if (event.path && event.path.includes($el)) {
         this.showTaskDetail = true;
       } else if (this.showTaskDetail === true) {
         this.showTaskDetail = false;
