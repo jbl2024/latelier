@@ -10,18 +10,17 @@
       <slot name="activator" :on="on" />
     </template>
     <v-card>
-      <v-list>
-        <v-list-item>
-          <v-list-item-content>
-            <v-text-field
-              v-model="filterProjects"
-              :placeholder="$t('Search project')"
-              solo
-              hide-details
-            />
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
+      <v-card-text>
+        <v-text-field
+          v-model="filterProjects"
+          :placeholder="$t('Search project')"
+          prepend-inner-icon="mdi-magnify"
+          rounded
+          solo
+          dense
+          hide-details
+        />
+      </v-card-text>
       <v-divider />
       <search-projects :filter="filterProjects" auto-search @select="switchProject" />
     </v-card>
