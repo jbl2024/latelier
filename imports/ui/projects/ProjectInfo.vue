@@ -1,5 +1,5 @@
 <template>
-  <div class="project-dashboard">
+  <div class="project-info">
     <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
@@ -7,6 +7,7 @@
       v-if="currentProject && info"
       ref="cards"
       v-resize="onResize"
+      class="container-wrapper"
       :style="getBackgroundUrl(currentUser)"
       fluid
     >
@@ -103,3 +104,25 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.container-wrapper {
+  overflow-y: scroll;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: row;
+}
+</style>
