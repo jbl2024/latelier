@@ -1,11 +1,11 @@
 <template>
   <div>
-    <v-app v-resize="onResizeApp">
+    <v-app>
       <template v-if="isConnected">
         <v-navigation-drawer
           v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"
           v-model="leftDrawer"
-          width="320"
+          width="360"
           app
           clipped
         >
@@ -167,12 +167,6 @@ export default {
     }
   },
   methods: {
-    onResizeApp() {
-      const width = window.innerWidth;
-      if (width >= 1264 && !this.drawer) {
-        this.drawer = true;
-      }
-    },
     onKeyup(event) {
       const targetIsEditable = (target) => {
         if (!target) {
@@ -220,18 +214,6 @@ export default {
 html {
   font-size: 14px;
 }
-
-.v-btn--fab.v-size--default {
-  height: 42px;
-  width: 42px;
-}
-
-/* colors for main drawer (left): labels are set to white when activated */
-.list-item--active .list-item__action,
-.list-item--active .list-item__action .icon {
-  color: white;
-}
-
 /* app theme */
 #app {
   background-color: #e5e5e5;
@@ -258,40 +240,6 @@ html {
   display: flex;
   flex-direction: column;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 0;
-  padding-left: 0px;
-  padding-top: 0px;
-  padding-right: 0px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  flex: 1;
+  padding: 0;
 }
-
-.drawer .v-icon {
-  color: gray;
-}
-
-.drawer .v-list a.v-list-item--active {
-  color: white !important;
-}
-
-.drawer
-  .theme--dark.v-list-item:not(.v-list-item--active):not(.v-list-item--disabled) {
-  color: #aaa !important;
-}
-
-.drawer .v-list-item--active .v-icon {
-  color: white !important;
-}
-
-.sticky-tabs .v-tabs-bar {
-  position: sticky;
-  position: -webkit-sticky;
-  top: 0;
-  z-index: 2;
-}
-
 </style>
