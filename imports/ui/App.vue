@@ -253,4 +253,10 @@ html {
   -webkit-overflow-scrolling: touch;
   padding: 0;
 }
+
+/* fix for safari : all parents must have height defined for height:100% to work */
+.v-content__wrap {
+  height: 100%;
+}
+
 </style>
