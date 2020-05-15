@@ -236,7 +236,13 @@ html {
 /* app theme */
 #app {
   background-color: #e5e5e5;
+  font-family: 'Inter', sans-serif;
 }
+
+.v-application .headline, .v-application .title {
+  font-family: 'Inter', sans-serif !important;
+}
+
 .search {
   width: 100%;
 }

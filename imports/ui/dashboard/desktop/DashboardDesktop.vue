@@ -493,7 +493,7 @@ export default {
 .header-title {
   flex: 1;
   font-size: 20px;
-  font-weight: lighter;
+  font-weight: 300;
 }
 
 .header-action {

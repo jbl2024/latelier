@@ -481,7 +481,7 @@ export default {
   font-weight: 500;
   line-height: 1 !important;
   letter-spacing: 0.02em !important;
-  font-family: Roboto, sans-serif !important;
+  font-family: Inter, sans-serif !important;
 }
 
 .title-wrapper {

@@ -107,7 +107,7 @@ export default {
   letter-spacing: 0.02em;
   margin-top: 6px;
   padding: 0;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 @media (max-width: 600px) {
