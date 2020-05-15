@@ -23,43 +23,33 @@
       @select="onSelectStartDate"
     />
     <v-subheader>{{ $t("Properties") }} </v-subheader>
-    <v-list two-line class="elevation-1">
-      <v-list-item v-if="showProjectLink(taskObject)" class="project-link">
-        <v-list-item-content>
-          <v-list-item-title>
-            <router-link
-              :to="{
-                name: 'project-task',
-                params: {
-                  projectId: taskObject.project._id,
-                  taskId: taskObject._id
-                }
-              }"
-            >
-              [{{ taskObject.project.name }}]
-            </router-link>
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            <author-line
-              v-if="showCreatedBy(task)"
-              :user-id="task.createdBy"
-              :date="task.createdAt"
-              class="author"
-              :prefix="$t('Created by')"
-            />
-          </v-list-item-subtitle>
-          <v-list-item-subtitle>
-            <author-line
-              v-if="showUpdatedBy(task)"
-              :user-id="task.updatedBy"
-              :date="task.updatedAt"
-              class="author"
-              :prefix="$t('Last update by')"
-            />
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
+    <div v-if="showProjectLink(taskObject)" class="project-link">
+      <router-link
+        :to="{
+          name: 'project-task',
+          params: {
+            projectId: taskObject.project._id,
+            taskId: taskObject._id
+          }
+        }"
+      >
+        [{{ taskObject.project.name }}]
+      </router-link>
+    </div>
+    <author-line
+      v-if="showCreatedBy(task)"
+      :user-id="task.createdBy"
+      :date="task.createdAt"
+      class="author"
+      :prefix="$t('Created by')"
+    />
+    <author-line
+      v-if="showUpdatedBy(task)"
+      :user-id="task.updatedBy"
+      :date="task.updatedAt"
+      class="author"
+      :prefix="$t('Last update by')"
+    />
     <v-layout row>
       <v-flex>
         <div v-if="task.completedAt" class="completed-date">

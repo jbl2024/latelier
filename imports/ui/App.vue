@@ -39,13 +39,14 @@
           :width="rightDrawerWidth"
         >
           <task-detail
+            v-click-outside="taskDetailClickOutside"
             :key="showTaskDetail"
             :task-id="selectedTask ? selectedTask._id : '0'"
             :task-object="selectedTask"
           />
         </v-navigation-drawer>
       </template>
-      <v-content class="main-content" @click.native="showTaskDetail = false">
+      <v-content class="main-content">
         <v-container class="page-container" fluid>
           <router-view />
         </v-container>
@@ -178,6 +179,13 @@ export default {
     }
   },
   methods: {
+    taskDetailClickOutside(event, $el) {
+      if (event.path.includes($el)) {
+        this.showTaskDetail = true;
+      } else if (this.showTaskDetail === true) {
+        this.showTaskDetail = false;
+      }
+    },
     onKeyup(event) {
       const targetIsEditable = (target) => {
         if (!target) {
@@ -256,7 +264,7 @@ html {
 
 /* fix for safari : all parents must have height defined for height:100% to work */
 .v-content__wrap {
-  height: 100%;
+  height: 100vh;
 }
 
 </style>

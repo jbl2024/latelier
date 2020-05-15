@@ -479,7 +479,6 @@ export default {
 .dashboard-desktop {
   padding: 2rem;
   display: flex;
-  min-height: 100vh;
   flex-direction: column;
   position: relative;
   flex: 1;
