@@ -14,6 +14,7 @@
 <script>
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
+import { devices } from "/imports/devices";
 import Sortable from "sortablejs";
 
 export default {
@@ -49,14 +50,11 @@ export default {
       this.filterName = name;
     });
 
-    const options = {
+    let options = {
       delayOnTouchOnly: true,
       delay: 250,
       animation: 150,
       group: "tasks",
-      forceFallback: true,
-      fallbackTolerance: 4,
-      touchStartThreshold: 4,
       onUpdate: (event) => {
         this.handleMove(event);
       },
@@ -64,6 +62,15 @@ export default {
         this.handleMove(event);
       }
     };
+
+    if (devices.isMobile()) {
+      options = {
+        ...options,
+        forceFallback: true,
+        fallbackTolerance: 4,
+        touchStartThreshold: 4
+      };
+    }
     this.sortable = Sortable.create(this.$refs.tasks, options);
   },
   beforeDestroy() {
