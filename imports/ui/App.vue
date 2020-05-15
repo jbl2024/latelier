@@ -241,6 +241,13 @@ html {
   width: 100%;
 }
 
+.sticky-tabs .v-tabs-bar {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  z-index: 2;
+}
+
 .main-content {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
