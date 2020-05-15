@@ -22,7 +22,7 @@
           v-on="on"
           @focus="onFocus"
           @input="debouncedFilter"
-          @keyup.esc="showMenu = false"
+          @keyup.esc="isEnabled = false"
           @keyup.enter="showMenu = true"
         />
       </div>
@@ -57,6 +57,16 @@ export default {
       width: 0
     };
   },
+  computed: {
+    isEnabled: {
+      get() {
+        return this.value;
+      },
+      set(newValue) {
+        this.$emit("input", newValue);
+      }
+    }
+  },
   watch: {
     filter() {
       this.showMenu = this.filter && this.filter.length > 0;
@@ -66,7 +76,7 @@ export default {
         this.width = this.$refs.input.$el.offsetWidth;
       }
     },
-    value() {
+    isEnabled() {
       if (this.value !== true) return;
       setTimeout(() => {
         this.$refs.input.focus();
