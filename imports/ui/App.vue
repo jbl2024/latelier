@@ -180,7 +180,8 @@ export default {
   },
   methods: {
     taskDetailClickOutside(event, $el) {
-      if (event.path && event.path.includes($el)) {
+      const path = event.path || (event.composedPath && event.composedPath());
+      if (path && path.includes($el)) {
         this.showTaskDetail = true;
       } else if (this.showTaskDetail === true) {
         this.showTaskDetail = false;
