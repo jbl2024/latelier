@@ -1,8 +1,8 @@
 <template>
   <v-menu
     v-if="value"
-    class="search-input-menu"
     v-model="showMenu"
+    class="search-input-menu"
     :nudge-bottom="10"
     offset-y
     :close-on-content-click="false"
@@ -65,6 +65,12 @@ export default {
       if (showMenu) {
         this.width = this.$refs.input.$el.offsetWidth;
       }
+    },
+    value() {
+      if (this.value !== true) return;
+      setTimeout(() => {
+        this.$refs.input.focus();
+      });
     }
   },
   created() {
