@@ -126,6 +126,7 @@
         <v-tab id="tab-notes">
           <v-badge
             color="green"
+            offset-x="-1"
             :value="notesCount > 0"
             :content="notesCount"
           >
@@ -135,6 +136,7 @@
         <v-tab id="tab-checklist">
           <v-badge
             color="green"
+            offset-x="-1"
             :value="checklistCount > 0"
             :content="checklistCount"
           >
