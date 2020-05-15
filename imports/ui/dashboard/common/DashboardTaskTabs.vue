@@ -12,7 +12,8 @@
     </div>
     <v-divider />
     <!-- Taches -->
-    <v-tabs v-if="currentCategory === 'task'" v-model="taskTab">
+    <v-tabs v-if="currentCategory === 'task'" v-model="taskTab" class="sticky-tabs">
+      <v-tabs-slider color="accent" />
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
       <v-tab>{{ $t("Late") }}</v-tab>

@@ -241,6 +241,7 @@ html {
   width: 100%;
 }
 
+
 .sticky-tabs .v-tabs-bar {
   position: sticky;
   position: -webkit-sticky;
