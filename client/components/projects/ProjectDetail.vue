@@ -83,7 +83,7 @@
       </v-list-item>
     </v-list>
     <v-divider />
-    <main-menu :project="{_id: project._id}" display="list"/>
+    <main-menu :project="{_id: project._id}" display="list" />
   </div>
 </template>
 
@@ -91,6 +91,7 @@
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import MainMenu from "/imports/ui/ui/MainMenu";
+
 export default {
   components: {
     MainMenu

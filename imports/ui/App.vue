@@ -5,7 +5,7 @@
         <v-navigation-drawer
           v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"
           v-model="leftDrawer"
-          width="360"
+          width="320"
           app
           clipped
         >

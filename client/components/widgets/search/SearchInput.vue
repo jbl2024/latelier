@@ -1,27 +1,38 @@
 <template>
-  <div v-click-outside="onClickOutside" class="search-input">
-    <v-text-field
-      ref="input"
-      solo-inverted
-      dense
-      color="primary"
-      clearable
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      :label="$t('Search') + '...'"
-      class="hidden-sm-and-down align-remaining"
-      @focus="onFocus"
-      @input="debouncedFilter"
-      @keyup.esc="showMenu = false"
-      @keyup.enter="showMenu = true"
-    />
+  <v-menu
+    v-if="value"
+    class="search-input-menu"
+    v-model="showMenu"
+    :nudge-bottom="10"
+    offset-y
+    :close-on-content-click="false"
+    @click-outside="onClickOutside"
+  >
+    <template v-slot:activator="{ on }">
+      <div class="search-input radius">
+        <v-text-field
+          ref="input"
+          solo
+          color="#fff"
+          clearable
+          hide-details
+          prepend-inner-icon="mdi-magnify"
+          :label="$t('Search') + '...'"
+          class="hidden-sm-and-down align-remaining"
+          v-on="on"
+          @focus="onFocus"
+          @input="debouncedFilter"
+          @keyup.esc="showMenu = false"
+          @keyup.enter="showMenu = true"
+        />
+      </div>
+    </template>
     <search-results
-      v-if="showMenu"
       :filter="filter"
       :active.sync="showMenu"
       :width="width"
     />
-  </div>
+  </v-menu>
 </template>
 
 <script>
@@ -31,6 +42,12 @@ import vClickOutside from "v-click-outside";
 export default {
   directives: {
     clickOutside: vClickOutside.directive
+  },
+  props: {
+    value: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -75,22 +92,25 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+.v-menu__content {
+  border-radius: 10px;
+}
 .search-input {
-  align-items: flex-start;
+  width: 100%;
+  max-width: 35%;
   display: flex;
-  flex: 1 1 auto;
-  font-size: 16px;
   letter-spacing: normal;
-  max-width: 480px;
   text-align: left;
+  &.radius {
+    border-radius: 40px;
+    overflow: hidden;
+    mask-image: -webkit-radial-gradient(white, black);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
 }
 .search-results {
-  position: absolute;
-  top: 58px;
-  width: 500px;
-  overflow-y: auto;
-  max-height: calc(100vh - 58px);
   box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
 }
 

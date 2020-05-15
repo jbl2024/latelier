@@ -1,14 +1,12 @@
 <template>
   <div class="additional-menu">
     <v-btn
-      v-show="!showSearchInput"
       class="prevent-search-blur"
       icon
-      @click="showSearchInput = !showSearchInput"
+      @click="$emit('toggle-search', !isSearchEnabled)"
     >
       <v-icon>mdi-magnify</v-icon>
     </v-btn>
-    <search-input v-show="showSearchInput" @blur="showSearchInput = false" />
     <notification-button />
     <v-avatar dark>
       <v-menu offset-y eager>
@@ -29,10 +27,11 @@
 import { mapState, mapGetters } from "vuex";
 
 export default {
-  data() {
-    return {
-      showSearchInput: false
-    };
+  props: {
+    isSearchEnabled: {
+      type: Boolean,
+      default: false
+    }
   },
   computed: {
     ...mapState(["currentUserId"]),

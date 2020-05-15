@@ -10,14 +10,20 @@
       :project="currentProject"
     />
     <!-- [ProjectMenu|OrganizationMenu] -->
+    <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
     <main-menu
+      v-show="!isSearchEnabled"
       v-if="$vuetify.breakpoint.lgAndUp && (currentProject || currentOrganization)"
       :project="currentProject"
       :organization="currentOrganization"
       radius
     />
     <!-- SearchBar, Notification and Profile -->
-    <top-bar-additional-menu v-if="$vuetify.breakpoint.mdAndUp" />
+    <top-bar-additional-menu
+      v-if="$vuetify.breakpoint.mdAndUp"
+      :is-search-enabled="isSearchEnabled"
+      @toggle-search="isSearchEnabled = $event"
+    />
   </v-app-bar>
 </template>
 <script>
@@ -38,6 +44,11 @@ export default {
       default: true
     }
   },
+  data() {
+    return {
+      isSearchEnabled: false
+    };
+  },
   computed: {
     ...mapState("project", ["currentProject"]),
     ...mapState("organization", ["currentOrganization"]),
@@ -57,6 +68,11 @@ export default {
       get() {
         return this.$store.state.showMobileDrawer;
       }
+    }
+  },
+  watch: {
+    "$route.fullPath"() {
+      this.isSearchEnabled = false;
     }
   }
 };

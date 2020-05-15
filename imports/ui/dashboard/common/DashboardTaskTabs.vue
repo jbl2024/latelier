@@ -18,29 +18,29 @@
       <v-tab>{{ $t("Late") }}</v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
+          :key="key('recent')"
           :user="user"
           type="recent"
           :organization-id="organizationId"
           :project-id="projectId"
-          :key="key('recent')"
         />
       </v-tab-item>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
+          :key="key('assignedToMe')"
           :user="user"
           type="assignedToMe"
           :organization-id="organizationId"
           :project-id="projectId"
-          :key="key('assignedToMe')"
         />
       </v-tab-item>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
+          :key="key('late')"
           :user="user"
           type="late"
           empty-illustration="celebration"
           :organization-id="organizationId"
-          :key="key('late')"
         />
       </v-tab-item>
     </v-tabs>
@@ -87,10 +87,8 @@ export default {
     },
     key() {
       return function(type) {
-        if (this.projectId) return type + '-' + this.projectId;
-        if (this.organizationId) return type + '-' + this.organizationId;
-        return type;
-      }
+        return [this.projectId, this.organizationId, type].filter((part) => part).join("-");
+      };
     }
   },
   methods: {
