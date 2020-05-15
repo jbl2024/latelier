@@ -76,7 +76,7 @@ export default {
   data() {
     return {
       leftDrawer: null,
-      leftDrawerWidth: 320,
+      leftDrawerWidth: 360,
       rightDrawer: false,
       rightDrawerWidth: 600,
       openMenu: false,
