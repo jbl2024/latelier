@@ -7,7 +7,7 @@
     >
       <v-tab v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
         <v-icon>{{ menuItem.icon }}</v-icon>
-        {{ menuItem.title }}
+        <span v-if="!onlyIcons">{{ menuItem.title }}</span>
       </v-tab>
     </v-tabs>
     <template v-else-if="computedDisplay === 'list'">
@@ -49,6 +49,10 @@ export default {
       type: String,
       default: null,
       validator: (display) => ["list", "tabs"].includes(display)
+    },
+    onlyIcons: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

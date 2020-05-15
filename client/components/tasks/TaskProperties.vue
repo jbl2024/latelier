@@ -22,7 +22,52 @@
       reminder
       @select="onSelectStartDate"
     />
-
+    <v-subheader>{{ $t("Properties") }} </v-subheader>
+    <v-list two-line class="elevation-1">
+      <v-list-item v-if="showProjectLink(taskObject)" class="project-link">
+        <v-list-item-content>
+          <v-list-item-title>
+            <router-link
+              :to="{
+                name: 'project-task',
+                params: {
+                  projectId: taskObject.project._id,
+                  taskId: taskObject._id
+                }
+              }"
+            >
+              [{{ taskObject.project.name }}]
+            </router-link>
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            <author-line
+              v-if="showCreatedBy(task)"
+              :user-id="task.createdBy"
+              :date="task.createdAt"
+              class="author"
+              :prefix="$t('Created by')"
+            />
+          </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            <author-line
+              v-if="showUpdatedBy(task)"
+              :user-id="task.updatedBy"
+              :date="task.updatedAt"
+              class="author"
+              :prefix="$t('Last update by')"
+            />
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+    </v-list>
+    <v-layout row>
+      <v-flex>
+        <div v-if="task.completedAt" class="completed-date">
+          {{ $t("Completed on") }}
+          {{ formatDate(task.completedAt) }}
+        </div>
+      </v-flex>
+    </v-layout>
     <v-subheader>{{ $t("Dates") }} </v-subheader>
     <v-list two-line class="elevation-1">
       <v-list-item @click="showSelectStartDate = true">
@@ -164,6 +209,10 @@ export default {
     task: {
       type: Object,
       default: () => {}
+    },
+    taskObject: {
+      type: Object,
+      default: null
     }
   },
   data() {
@@ -191,6 +240,26 @@ export default {
     }
   },
   methods: {
+    showProjectLink(task) {
+      return task && task.project;
+    },
+    showUpdatedBy(task) {
+      return task.updatedAt && task.updatedBy;
+    },
+    showCreatedBy(task) {
+      if (!task.updatedBy) {
+        return true;
+      }
+      if (task.createdBy === task.updatedBy) {
+        const dif = task.updatedAt.getTime() - task.createdAt.getTime();
+        const seconds = Math.abs(dif / 1000);
+        if (seconds > 60) {
+          return true;
+        }
+        return false;
+      }
+      return true;
+    },
     onChooseWatcher(user) {
       Meteor.call("tasks.addWatcher", this.task._id, user._id);
     },
@@ -255,9 +324,14 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .task-properties {
   margin: 12px;
+  .v-subheader {
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding: 0;
+  }
 }
 
 .cursor {
