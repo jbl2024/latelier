@@ -6,57 +6,8 @@
         @select="cloneToProject"
       />
       <!-- Standard Title -->
-      <v-toolbar flat class="default-toolbar">
-        <v-btn
-          v-shortkey="['esc']"
-          icon
-          text
-          @click="requestClose()"
-          @shortkey="requestClose()"
-        >
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-        <v-toolbar-title class="default-toolbar-title">
-          <div class="checkbox">
-            <div class="pretty p-svg p-curve">
-              <input v-model="completed" type="checkbox">
-              <div class="state p-primary">
-                <svg class="svg svg-icon" viewBox="0 0 20 20">
-                  <!-- eslint-disable -->
-                  <path
-                    d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                    style="stroke: white;fill:white;"
-                  ></path>
-                  <!-- eslint-enable -->
-                </svg>
-                <label />
-              </div>
-            </div>
-          </div>
-          <span
-            @click="startEditTaskName"
-            v-html="toolbarTaskTitle"
-          />
-        </v-toolbar-title>
-        <v-spacer />
-        <task-menu
-          v-if="!editTaskName"
-          :task="task"
-          @start-clone-to-project="showSelectProjectToClone = true"
-        />
-      </v-toolbar>
-      <!-- Task Labels -->
-      <template v-if="!hideLabels">
-        <v-divider />
-        <task-labels :task="task" />
-      </template>
-      <v-divider />
-      <!-- Editing the task name -->
-      <div v-show="!editTaskName" class="name" @click="startEditTaskName">
-        <span v-html="linkifyHtml(task.name)" />
-      </div>
-      <div v-show="editTaskName" class="toolbar">
-        <div class="title edit toolbar-title">
+      <div class="toolbar">
+        <div v-show="editTaskName" class="title edit toolbar-title">
           <v-textarea
             ref="name"
             v-model="task.name"
@@ -79,45 +30,106 @@
             </v-icon>
           </v-btn>
         </div>
-      </div>
-      <v-divider />
-      <div class="description">
-        <div
-          v-show="
-            !editDescription && task.description && task.description.length > 0
-          "
-          @click="startEditDescription"
-        >
-          <div class="tiptap-editor-view" v-html="linkifyHtml(task.description)" />
-        </div>
-        <div
-          v-show="!task.description && !editDescription"
-          @click="startEditDescription"
-        >
-          {{ $t("No description") }}
+
+        <div v-if="!editTaskName" class="toolbar-button">
+          <v-btn
+            v-shortkey="['esc']"
+            icon
+            text
+            @click="requestClose()"
+            @shortkey="requestClose()"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
         </div>
 
-        <div v-if="editDescription">
-          <rich-editor
-            ref="description"
-            v-model="task.description"
-            @submit="updateDescription"
-            @click-outside="updateDescription"
+        <div v-if="!editTaskName" class="checkbox">
+          <div class="pretty p-svg p-curve">
+            <input v-show="!editTaskName" v-model="completed" type="checkbox">
+            <div class="state p-primary">
+              <svg class="svg svg-icon" viewBox="0 0 20 20">
+                <!-- eslint-disable -->
+                <path
+                  d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
+                  style="stroke: white;fill:white;"
+                ></path>
+                <!-- eslint-enable -->
+              </svg>
+              <label />
+            </div>
+          </div>
+        </div>
+
+        <div
+          v-if="!editTaskName"
+          class="toolbar-title"
+          @click="startEditTaskName"
+        >
+          <span class="task-name" v-html="linkifyHtml(task.name)" />
+        </div>
+        <div v-if="!editTaskName" class="toolbar-button">
+          <task-menu
+            :task="task"
+            @startCloneToProject="showSelectProjectToClone = true"
           />
-          <v-btn icon text @click="updateDescription">
-            <v-icon color="green">
-              mdi-check-circle
-            </v-icon>
-          </v-btn>
-
-          <v-btn icon text @click="cancelUpdateDescription">
-            <v-icon color="red">
-              mdi-close-circle
-            </v-icon>
-          </v-btn>
         </div>
       </div>
+
+      <!-- Task Labels -->
+      <template v-if="!hideLabels">
+        <task-labels :task="task" />
+      </template>
+
+      <!-- Dates -->
+      <div class="authors">
+        <template v-if="showProjectLink(taskObject)">
+          <div>
+            <router-link
+              :to="{
+                name: 'project-task',
+                params: {
+                  projectId: taskObject.project._id,
+                  taskId: taskObject._id
+                }
+              }"
+            >
+              [{{ taskObject.project.name }}]
+            </router-link>
+          </div>
+        </template>
+        <div v-if="task.completedAt" class="completed-date">
+          {{ $t("Completed on") }}
+          {{ formatDate(task.completedAt) }}
+        </div>
+
+        <v-layout row>
+          <v-flex shrink>
+            <div class="number">
+              #{{ task.number }}
+            </div>
+          </v-flex>
+          <v-flex>
+            <author-line
+              v-if="showCreatedBy(task)"
+              :user-id="task.createdBy"
+              :date="task.createdAt"
+              class="author"
+              :prefix="$t('Created by')"
+            />
+            <author-line
+              v-if="showUpdatedBy(task)"
+              :user-id="task.updatedBy"
+              :date="task.updatedAt"
+              class="author"
+              :prefix="$t('Last update by')"
+            />
+          </v-flex>
+        </v-layout>
+      </div>
+
+
       <v-divider />
+
       <v-tabs grow show-arrows class="sticky-tabs">
         <v-tabs-slider color="accent" />
         <v-tab id="tab-properties">
@@ -203,9 +215,7 @@ export default {
   },
   data() {
     return {
-      editDescription: false,
       editTaskName: false,
-      savedDescription: "",
       savedName: "",
       completed: false,
       showSelectProjectToClone: false
@@ -244,9 +254,6 @@ export default {
       },
       deep: false,
       update({ id }) {
-        if (this.editDescription) {
-          this.updateDescription();
-        }
         const task = Tasks.findOne({ _id: id }) || {};
         this.completed = task.completed;
         return task;
@@ -295,27 +302,7 @@ export default {
     requestClose() {
       this.$store.dispatch("showTaskDetail", false);
     },
-    startEditDescription() {
-      this.savedDescription = this.task.description;
-      this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.focus());
-    },
 
-    updateDescription() {
-      this.editDescription = false;
-      if (this.task.description != null) {
-        Meteor.call(
-          "tasks.updateDescription",
-          this.task._id,
-          this.task.description
-        );
-      }
-    },
-
-    cancelUpdateDescription() {
-      this.editDescription = false;
-      this.task.description = this.savedDescription;
-    },
     startEditTaskName() {
       this.savedName = this.task.name;
       this.editTaskName = true;
@@ -371,6 +358,29 @@ export default {
           );
         }
       });
+    },
+
+    showProjectLink(task) {
+      return task && task.project;
+    },
+
+    showUpdatedBy(task) {
+      return task.updatedAt && task.updatedBy;
+    },
+
+    showCreatedBy(task) {
+      if (!task.updatedBy) {
+        return true;
+      }
+      if (task.createdBy === task.updatedBy) {
+        const dif = task.updatedAt.getTime() - task.createdAt.getTime();
+        const seconds = Math.abs(dif / 1000);
+        if (seconds > 60) {
+          return true;
+        }
+        return false;
+      }
+      return true;
     }
   }
 };
@@ -382,6 +392,11 @@ export default {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+}
+
+.authors {
+  margin: 24px;
+  margin-bottom: 12px;
 }
 
 .author {
@@ -417,7 +432,8 @@ export default {
   }
 }
 .toolbar-title {
-  margin: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   flex: 2;
   font-size: 18px;
 }
@@ -425,6 +441,11 @@ export default {
 .menu {
   z-index: 10000;
 }
+
+.name {
+  font-size: 18px;
+}
+
 .name,
 .description {
   margin: 12px;
@@ -435,9 +456,6 @@ export default {
   margin-left: 12px;
 }
 
-.authors {
-  margin: 12px 24px;
-}
 
 .project-link {
   margin-bottom: 12px;
@@ -452,4 +470,23 @@ pre {
   font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
+
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toolbar-button {
+  flex: 1;
+  max-width: 42px;
+  margin-left: 8px;
+  margin-right: 8px;
+}
+.toolbar-title {
+  flex: 2;
+  font-size: 18px;
+}
+
 </style>

@@ -22,34 +22,46 @@
       reminder
       @select="onSelectStartDate"
     />
-    <v-subheader>{{ $t("Properties") }} </v-subheader>
-    <div v-if="showProjectLink(taskObject)" class="project-link">
-      <router-link
-        :to="{
-          name: 'project-task',
-          params: {
-            projectId: taskObject.project._id,
-            taskId: taskObject._id
-          }
-        }"
+    <v-subheader>{{ $t("Description") }}</v-subheader>
+    <div class="description">
+      <div
+        v-show="
+          !editDescription && task.description && task.description.length > 0
+        "
+        class="elevation-1 pa-4"
+        @click="startEditDescription"
       >
-        [{{ taskObject.project.name }}]
-      </router-link>
+        <div class="tiptap-editor-view" v-html="linkifyHtml(task.description)" />
+      </div>
+      <div
+        v-show="!task.description && !editDescription"
+        class="elevation-1 pa-4"
+        @click="startEditDescription"
+      >
+        {{ $t("No description") }}
+      </div>
+
+      <div v-if="editDescription">
+        <rich-editor
+          ref="description"
+          v-model="task.description"
+          @submit="updateDescription"
+          @click-outside="updateDescription"
+        />
+        <v-btn icon text @click="updateDescription">
+          <v-icon color="green">
+            mdi-check-circle
+          </v-icon>
+        </v-btn>
+
+        <v-btn icon text @click="cancelUpdateDescription">
+          <v-icon color="red">
+            mdi-close-circle
+          </v-icon>
+        </v-btn>
+      </div>
     </div>
-    <author-line
-      v-if="showCreatedBy(task)"
-      :user-id="task.createdBy"
-      :date="task.createdAt"
-      class="author"
-      :prefix="$t('Created by')"
-    />
-    <author-line
-      v-if="showUpdatedBy(task)"
-      :user-id="task.updatedBy"
-      :date="task.updatedAt"
-      class="author"
-      :prefix="$t('Last update by')"
-    />
+
     <div v-if="task.completedAt" class="completed-date">
       <span class="success--text">
         {{ $t("Completed on") }}
@@ -187,12 +199,13 @@
 import { mapState, mapGetters } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from "moment";
 import "moment/locale/fr";
 
 export default {
-  mixins: [usersMixin],
+  mixins: [TextRenderingMixin, usersMixin],
   props: {
     task: {
       type: Object,
@@ -205,6 +218,8 @@ export default {
   },
   data() {
     return {
+      editDescription: false,
+      savedDescription: "",
       showChooseAssignedToDialog: false,
       showChooseWatcherDialog: false,
       showSelectDueDate: false,
@@ -228,26 +243,32 @@ export default {
     }
   },
   methods: {
+    startEditDescription() {
+      this.savedDescription = this.task.description;
+      this.editDescription = true;
+      this.$nextTick(() => this.$refs.description.focus());
+    },
+
+    updateDescription() {
+      this.editDescription = false;
+      if (this.task.description != null) {
+        Meteor.call(
+          "tasks.updateDescription",
+          this.task._id,
+          this.task.description
+        );
+      }
+    },
+
+    cancelUpdateDescription() {
+      this.editDescription = false;
+      this.task.description = this.savedDescription;
+    },
+
     showProjectLink(task) {
       return task && task.project;
     },
-    showUpdatedBy(task) {
-      return task.updatedAt && task.updatedBy;
-    },
-    showCreatedBy(task) {
-      if (!task.updatedBy) {
-        return true;
-      }
-      if (task.createdBy === task.updatedBy) {
-        const dif = task.updatedAt.getTime() - task.createdAt.getTime();
-        const seconds = Math.abs(dif / 1000);
-        if (seconds > 60) {
-          return true;
-        }
-        return false;
-      }
-      return true;
-    },
+
     onChooseWatcher(user) {
       Meteor.call("tasks.addWatcher", this.task._id, user._id);
     },
