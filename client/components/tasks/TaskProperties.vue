@@ -50,14 +50,12 @@
       class="author"
       :prefix="$t('Last update by')"
     />
-    <v-layout row>
-      <v-flex>
-        <div v-if="task.completedAt" class="completed-date">
-          {{ $t("Completed on") }}
-          {{ formatDate(task.completedAt) }}
-        </div>
-      </v-flex>
-    </v-layout>
+    <div v-if="task.completedAt" class="completed-date">
+      <span class="success--text">
+        {{ $t("Completed on") }}
+        {{ formatDate(task.completedAt) }}
+      </span>
+    </div>
     <v-subheader>{{ $t("Dates") }} </v-subheader>
     <v-list two-line class="elevation-1">
       <v-list-item @click="showSelectStartDate = true">
@@ -322,6 +320,10 @@ export default {
     margin-top: 1rem;
     padding: 0;
   }
+}
+
+.completed-date {
+  font-weight: bold;
 }
 
 .cursor {
