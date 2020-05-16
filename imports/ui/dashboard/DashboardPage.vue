@@ -41,13 +41,6 @@ export default {
     }
   },
   meteor: {
-    $lazy: true,
-    // Subscriptions
-    $subscribe: {
-      organization() {
-        return [this.organizationId];
-      }
-    },
     organization() {
       const organization = Organizations.findOne();
       if (organization) {
