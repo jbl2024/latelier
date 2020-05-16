@@ -7,6 +7,7 @@ import { Organizations } from "../../organizations/organizations";
 import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
 import { Tasks } from "../../tasks/tasks";
+import { Labels } from "../../labels/labels";
 import { Attachments } from "../../attachments/attachments";
 import { Permissions } from "/imports/api/permissions/permissions";
 
@@ -243,6 +244,12 @@ publishComposite("project", function(projectId) {
               }
             }
           );
+        }
+      },
+      {
+        // labels
+        find(project) {
+          return Labels.find({ projectId: project._id });
         }
       }
     ]

@@ -2,46 +2,44 @@
   <div class="labels">
     <new-label ref="newLabel" :project-id="projectId" />
     <edit-label ref="editLabel" :label-id="selectedLabelId" />
-    <template v-if="$subReady.labels">
-      <template v-if="mode === 'select'">
-        <div v-if="labels.length > 0">
-          <v-autocomplete
-            v-model="selectedLabels"
-            class="auto-complete"
-            :items="labels"
-            :label="$t('Labels')"
-            multiple
-            :no-data-text="$t('No label available')"
-            :item-text="getItemLabel"
-            :item-value="getItemValue"
-            menu-props="closeOnContentClick"
-          >
-            <template v-slot:item="data">
-              <template>
-                <v-list-item-action>
-                  <v-icon :style="getColor(data.item)">
-                    mdi-label
-                  </v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    <span :class="isSelected(data.item) ? 'selected' : ''">
-                      {{ data.item.name }}</span>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </template>
+    <template v-if="mode === 'select'">
+      <div v-if="labels.length > 0">
+        <v-autocomplete
+          v-model="selectedLabels"
+          class="auto-complete"
+          :items="labels"
+          :label="$t('Labels')"
+          multiple
+          :no-data-text="$t('No label available')"
+          :item-text="getItemLabel"
+          :item-value="getItemValue"
+          menu-props="closeOnContentClick"
+        >
+          <template v-slot:item="data">
+            <template>
+              <v-list-item-action>
+                <v-icon :style="getColor(data.item)">
+                  mdi-label
+                </v-icon>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>
+                  <span :class="isSelected(data.item) ? 'selected' : ''">
+                    {{ data.item.name }}</span>
+                </v-list-item-title>
+              </v-list-item-content>
             </template>
-            <template v-slot:selection="{ item, index }">
-              <v-chip v-if="index === 0" small :style="getStyleForChip(item)">
-                {{ ellipsis(item.name, 15) }}
-              </v-chip>
-              <span v-if="index === 1" class="grey--text caption">
-                (+{{ selectedLabels.length - 1 }} {{ $t("others") }})
-              </span>
-            </template>
-          </v-autocomplete>
-        </div>
-      </template>
+          </template>
+          <template v-slot:selection="{ item, index }">
+            <v-chip v-if="index === 0" small :style="getStyleForChip(item)">
+              {{ ellipsis(item.name, 15) }}
+            </v-chip>
+            <span v-if="index === 1" class="grey--text caption">
+              (+{{ selectedLabels.length - 1 }} {{ $t("others") }})
+            </span>
+          </template>
+        </v-autocomplete>
+      </div>
 
       <v-list v-if="mode === 'settings'" class="pt-0">
         <v-list-item
@@ -158,13 +156,6 @@ export default {
     }
   },
   meteor: {
-    $subscribe: {
-      // Subscribes to the 'threads' publication with no parameters
-      labels() {
-        // Here you can use Vue reactive properties
-        return [this.projectId]; // Subscription params
-      }
-    },
     labels() {
       return Labels.find({}, { sort: { name: 1 } });
     }
