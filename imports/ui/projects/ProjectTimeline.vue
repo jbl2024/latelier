@@ -204,6 +204,7 @@ export default {
         };
         items.push(item);
       });
+      // eslint-disable-next-line vue/no-async-in-computed-properties
       setTimeout(() => {
         if (this.$refs.timeline && this.$refs.timeline.redraw) {
           this.$refs.timeline.redraw();
