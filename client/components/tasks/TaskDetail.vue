@@ -7,7 +7,7 @@
       />
       <!-- Standard Title -->
       <div class="toolbar">
-        <div v-show="editTaskName" class="title edit toolbar-title">
+        <div v-show="editTaskName" class="title edit toolbar-title pl-3 pr-3">
           <v-textarea
             ref="name"
             v-model="task.name"
