@@ -138,7 +138,7 @@
 
         <template v-for="organization in organizations">
           <div :key="`header-${organization._id}`" class="header">
-            <div class="header-title" @click="openOrganization(organization._id)">
+            <div class="header-title">
               <router-link
                 v-if="!organizationId"
                 class="link"
