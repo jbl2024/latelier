@@ -40,7 +40,6 @@
         >
           <task-detail
             :key="showTaskDetail"
-            v-click-outside="taskDetailClickOutside"
             :task-id="selectedTask ? selectedTask._id : '0'"
             :task-object="selectedTask"
           />
