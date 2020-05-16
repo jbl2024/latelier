@@ -13,6 +13,7 @@ import ResetPassword from "/imports/ui/pages/Auth/ResetPassword.vue";
 
 import OrganizationsPage from "/imports/ui/organizations/OrganizationsPage.vue";
 import OrganizationSettings from "/imports/ui/organizations/OrganizationSettings.vue";
+import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
 import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
@@ -82,6 +83,13 @@ export default [
     name: "organization-settings",
     beforeEnter: isBasicAuth,
     component: OrganizationSettings,
+    props: true
+  },
+  {
+    path: "/organizations/:organizationId",
+    name: "projects-page",
+    beforeEnter: isBasicAuth,
+    component: ProjectsPage,
     props: true
   },
   {

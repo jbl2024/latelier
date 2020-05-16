@@ -81,11 +81,11 @@ export default {
     organizationMenuItems() {
       const menuItems = [
         {
-          id: "dashboard",
-          title: this.$t("Activity"),
-          icon: "mdi-pulse",
+          id: "projects",
+          title: "Projets",
+          icon: "mdi-google-pages",
           to: {
-            name: "dashboard-organization-page",
+            name: "projects-page",
             params: { organizationId: this.organizationId }
           }
         },
