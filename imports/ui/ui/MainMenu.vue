@@ -2,6 +2,7 @@
   <div v-if="computedDisplay && menuItems && menuItems.length" class="main-menu">
     <v-tabs
       v-if="computedDisplay === 'tabs'"
+      dark
       hide-slider
       :class="{ radius: radius }"
     >

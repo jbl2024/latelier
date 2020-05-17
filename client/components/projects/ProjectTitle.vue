@@ -1,12 +1,12 @@
 <template>
   <div class="project-title">
     <v-toolbar-title>
-      <v-btn text icon color="white" @click="$emit('go-home')">
+      <v-btn text icon @click="$emit('go-home')">
         <v-icon>mdi-home</v-icon>
       </v-btn>
       <project-selector :key="projectId">
         <template v-slot:activator="{ on }">
-          <v-btn color="white" text dark v-on="on">
+          <v-btn text v-on="on">
             <span class="title title-selector">{{ truncatedTitle }}</span>
             <v-icon class="ml-1">
               mdi-chevron-down

@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar class="top-bar" :dense="dense" :color="topBarColor" dark app clipped-left>
+  <v-app-bar class="top-bar" :dense="dense" :color="topBarColor" :dark="isDark" app clipped-left>
     <v-app-bar-nav-icon
       v-show="$vuetify.breakpoint.mdAndDown"
       @click.stop="showMobileDrawer = !showMobileDrawer"
@@ -31,6 +31,7 @@ import { mapState } from "vuex";
 import TopBarTitle from "./TopBarTitle";
 import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
 import MainMenu from "./MainMenu";
+import { colors } from "/imports/colors";
 
 export default {
   components: {
@@ -57,6 +58,9 @@ export default {
         return this.currentProject.color;
       }
       return this.$vuetify.theme.currentTheme.primary;
+    },
+    isDark() {
+      return colors.isDark(this.topBarColor);
     },
     navBarColor() {
       return "#555555";
