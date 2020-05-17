@@ -1,10 +1,7 @@
 <template>
   <div class="select-label">
-    <generic-dialog
-      v-model="showDialog"
-      :title="$t('Add label')"
-      simple
-    >
+    <edit-label ref="editLabel" :label-id="selectedLabelId" />
+    <generic-dialog v-model="showDialog" :title="$t('Add label')" simple>
       <template v-slot:content>
         <new-label ref="newLabel" :project-id="projectId" />
         <v-text-field
@@ -18,7 +15,12 @@
         />
         <v-list class="content">
           <template v-for="aLabel in labels">
-            <v-list-item :key="aLabel._id" @click="selectLabel(aLabel)">
+            <v-list-item
+              :key="aLabel._id"
+              @click="selectLabel(aLabel)"
+              @mouseover="showButtons = aLabel._id"
+              @mouseleave="showButtons = null"
+            >
               <v-list-item-avatar>
                 <v-icon :style="getColor(aLabel)">
                   mdi-label
@@ -27,6 +29,14 @@
               <v-list-item-content class="pointer">
                 <v-list-item-title>{{ aLabel.name }}</v-list-item-title>
               </v-list-item-content>
+              <v-list-item-action>
+                <v-icon
+                  v-show="showButtons === aLabel._id"
+                  @click.stop="editLabel(aLabel._id)"
+                >
+                  mdi-pencil
+                </v-icon>
+              </v-list-item-action>
             </v-list-item>
           </template>
           <v-list-item @click="$refs.newLabel.open()">
@@ -65,7 +75,9 @@ export default {
       label: {},
       debouncedFilter: null,
       search: "",
-      name: ""
+      name: "",
+      selectedLabelId: "",
+      showButtons: ""
     };
   },
   created() {
@@ -107,13 +119,17 @@ export default {
 
     getColor(label) {
       return `color: ${label.color}`;
+    },
+
+    editLabel(id) {
+      this.selectedLabelId = id;
+      this.$refs.editLabel.open();
     }
   }
 };
 </script>
 
 <style scoped>
-
 .content {
   overflow-y: scroll;
   max-height: 400px;
