@@ -186,4 +186,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .flex0 {
+    flex: 0;
+  }
+</style>
