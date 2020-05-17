@@ -317,8 +317,17 @@ export default {
     organizations() {
       return Organizations.find({}, { sort: { name: 1 } });
     },
-    organization() {
-      return Organizations.findOne();
+    organization: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        const organization = Organizations.findOne({ _id: organizationId });
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+        return organization;
+      }
     },
     favorites: {
       params() {
