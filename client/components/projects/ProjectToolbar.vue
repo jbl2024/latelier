@@ -4,6 +4,7 @@
       v-model="showTasksExport"
       :project-id="project._id"
     />
+    <project-trashcan ref="projectTrashcan" :project-id="project._id" />
 
     <project-filters-dialog
       v-model="showFiltersDialog"
@@ -44,6 +45,12 @@
       icon="mdi-email"
       :tooltip="$t('Remove from daily digest')"
       @on="removeFromDigests(user, project._id)"
+    />
+    <tooltip-button
+      bottom
+      icon="mdi-trash-can"
+      :tooltip="$t('Trashcan')"
+      @on="openTrashcan()"
     />
     <tooltip-button
       bottom
@@ -171,6 +178,10 @@ export default {
         Permissions.isAdmin(Meteor.userId(), project._id)
         || Permissions.isAdmin(Meteor.userId())
       );
+    },
+
+    openTrashcan() {
+      this.$refs.projectTrashcan.open();
     },
 
     onResizeToolbar() {
