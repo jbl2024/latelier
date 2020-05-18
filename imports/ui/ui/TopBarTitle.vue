@@ -1,11 +1,28 @@
 <template>
-  <project-title v-if="project" :project="project" @go-home="goParent" />
-  <organization-title
-    v-else-if="organization"
-    :organization="organization"
-    @go-home="goHome"
-  />
-  <home-title v-else-if="!project" @go-home="goHome" />
+  <div class="top-bar-title">
+    <v-toolbar-title>
+      <v-app-bar-nav-icon
+        v-show="$vuetify.breakpoint.smAndDown"
+        @click.stop="showMobileDrawer = !showMobileDrawer"
+      />
+      <v-btn
+        v-show="$vuetify.breakpoint.mdAndUp"
+        text
+        icon
+        color="white"
+        @click="goHome"
+      >
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+      <project-title v-if="project" :project="project" @go-home="goParent" />
+      <organization-title
+        v-else-if="organization"
+        :organization="organization"
+        @go-home="goHome"
+      />
+      <home-title v-else-if="!project" @go-home="goHome" />
+    </v-toolbar-title>
+  </div>
 </template>
 <script>
 export default {
@@ -17,6 +34,16 @@ export default {
     project: {
       type: Object,
       default: null
+    }
+  },
+  computed: {
+    showMobileDrawer: {
+      set(showMobileDrawer) {
+        this.$store.commit("updateShowMobileDrawer", showMobileDrawer);
+      },
+      get() {
+        return this.$store.state.showMobileDrawer;
+      }
     }
   },
   methods: {
@@ -44,3 +71,10 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+  .top-bar-title .v-toolbar__title {
+    display: flex;
+    align-items: center;
+  }
+
+</style>

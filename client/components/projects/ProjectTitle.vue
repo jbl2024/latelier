@@ -1,20 +1,15 @@
 <template>
   <div class="project-title">
-    <v-toolbar-title>
-      <v-btn text icon @click="$emit('go-home')">
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
-      <project-selector :key="projectId">
-        <template v-slot:activator="{ on }">
-          <v-btn text v-on="on">
-            <span class="title title-selector">{{ truncatedTitle }}</span>
-            <v-icon class="ml-1">
-              mdi-chevron-down
-            </v-icon>
-          </v-btn>
-        </template>
-      </project-selector>
-    </v-toolbar-title>
+    <project-selector :key="projectId">
+      <template v-slot:activator="{ on }">
+        <v-btn text v-on="on">
+          <span class="title title-selector">{{ truncatedTitle }}</span>
+          <v-icon class="ml-1">
+            mdi-chevron-down
+          </v-icon>
+        </v-btn>
+      </template>
+    </project-selector>
   </div>
 </template>
 
@@ -64,14 +59,3 @@ export default {
   }
 };
 </script>
-
-<style lang="scss" scoped>
-.project-title {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  .title-selector {
-    text-transform: none;
-  }
-}
-</style>

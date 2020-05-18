@@ -1,5 +1,6 @@
 <template>
   <div v-if="computedDisplay && menuItems && menuItems.length" class="main-menu">
+    <!-- Display as tabs for top bar navigation -->
     <v-tabs
       v-if="computedDisplay === 'tabs'"
       dark
@@ -11,6 +12,7 @@
         <span v-if="!onlyIcons">{{ menuItem.title }}</span>
       </v-tab>
     </v-tabs>
+    <!-- Display as list for drawer navigation or menu like ProjectDetail.vue -->
     <template v-else-if="computedDisplay === 'list'">
       <v-list class="pt-0">
         <v-list-item
@@ -28,10 +30,39 @@
       </v-list>
       <v-divider />
     </template>
+    <!-- Display as Bottom Navigation used for mobile layout -->
+    <v-bottom-navigation
+      v-else-if="computedDisplay === 'bottom-navigation'"
+      v-show="$vuetify.breakpoint.smAndDown"
+      :value="true"
+      app
+      grow
+      dark
+      :background-color="navigationColor"
+    >
+      <v-btn :key="homeMenuItem.id" :value="homeMenuItem.id" :to="homeMenuItem.to">
+        <span v-if="!onlyIcons">
+          {{ homeMenuItem.title }}
+        </span>
+        <v-icon>{{ homeMenuItem.icon }} </v-icon>
+      </v-btn>
+      <v-btn
+        v-for="menuItem in mobileMenuItems"
+        :key="menuItem.id"
+        :value="menuItem.id"
+        :to="menuItem.to"
+        exact
+      >
+        <span v-if="!onlyIcons">{{ menuItem.title }}</span>
+        <v-icon>{{ menuItem.icon }}</v-icon>
+      </v-btn>
+    </v-bottom-navigation>
   </div>
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     project: {
@@ -49,14 +80,25 @@ export default {
     display: {
       type: String,
       default: null,
-      validator: (display) => ["list", "tabs"].includes(display)
+      validator: (display) => ["list", "tabs", "bottom-navigation"].includes(display)
     },
     onlyIcons: {
       type: Boolean,
       default: false
     }
   },
+  data() {
+    return {
+      homeMenuItem: {
+        id: "dashboard-page",
+        title: this.$t("Home"),
+        icon: "mdi-home",
+        to: { name: "dashboard-page" }
+      }
+    };
+  },
   computed: {
+    ...mapState("ui", ["navigationColor"]),
     computedDisplay() {
       if (this.display != null) return this.display;
       if (this.$vuetify.breakpoint.mdAndDown) return "list";
@@ -71,13 +113,22 @@ export default {
       if (!this.project) return null;
       return this.project._id;
     },
+    mobileMenuItems() {
+      return this.menuItems.filter((item) => item.meta && item.meta.mobile === true);
+    },
     menuItems() {
       if (this.projectId !== null) {
         return this.projectMenuItems;
       } if (this.organizationId !== null) {
         return this.organizationMenuItems;
       }
-      return [];
+      return this.homeMenuItems;
+    },
+    homeMenuItems() {
+      const menuItems = [
+        this.homeMenuItem
+      ];
+      return menuItems;
     },
     organizationMenuItems() {
       const menuItems = [
@@ -88,6 +139,9 @@ export default {
           to: {
             name: "dashboard-organization-page",
             params: { organizationId: this.organizationId }
+          },
+          meta: {
+            mobile: true
           }
         },
         {
@@ -97,6 +151,9 @@ export default {
           to: {
             name: "projects-timeline",
             params: { organizationId: this.organizationId }
+          },
+          meta: {
+            mobile: true
           }
         },
         {
@@ -106,6 +163,9 @@ export default {
           to: {
             name: "organization-settings",
             params: { organizationId: this.organizationId }
+          },
+          meta: {
+            mobile: true
           }
         }
       ];
@@ -121,6 +181,9 @@ export default {
           to: {
             name: "project-dashboard",
             params: { projectId: this.projectId }
+          },
+          meta: {
+            mobile: true
           }
         },
         // Tasks
@@ -128,7 +191,10 @@ export default {
           id: "tasks",
           title: this.$t("Tasks"),
           icon: "mdi-format-list-bulleted",
-          to: { name: "project", params: { projectId: this.projectId } }
+          to: { name: "project", params: { projectId: this.projectId } },
+          meta: {
+            mobile: true
+          }
         },
         // Planning
         {
@@ -138,6 +204,9 @@ export default {
           to: {
             name: "project-timeline",
             params: { projectId: this.projectId }
+          },
+          meta: {
+            mobile: true
           }
         },
         // Attachments
@@ -148,6 +217,9 @@ export default {
           to: {
             name: "project-attachments-page",
             params: { projectId: this.projectId }
+          },
+          meta: {
+            mobile: true
           }
         },
         // BPMN

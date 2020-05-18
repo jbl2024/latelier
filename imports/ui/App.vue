@@ -50,6 +50,13 @@
           <router-view />
         </v-container>
       </v-content>
+      <main-menu
+        v-if="$vuetify.breakpoint.smAndDown"
+        display="bottom-navigation"
+        :project="currentProject"
+        :organization="currentOrganization"
+      />
+
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
         {{ notifyMessage }}
         <v-btn dark icon text @click="showSnackbar = false">
@@ -65,12 +72,14 @@ import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
 import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
+import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
     TopBar,
     NavDrawer,
-    DashboardTaskTabs
+    DashboardTaskTabs,
+    MainMenu
   },
   data() {
     return {
@@ -90,8 +99,8 @@ export default {
       "selectedTask",
       "windowTitle"
     ]),
-    ...mapState("organization", ["currentOrganizationId"]),
-    ...mapState("project", ["currentProjectId"]),
+    ...mapState("organization", ["currentOrganizationId", "currentOrganization"]),
+    ...mapState("project", ["currentProjectId", "currentProject"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
     showTaskDetail: {
       get() {
@@ -150,6 +159,9 @@ export default {
         this.rightDrawer = this.isTaskDetailShown;
       }
     }
+  },
+  created() {
+    this.$store.dispatch("ui/setNavigationColor", this.$vuetify.theme.currentTheme.primary);
   },
   mounted() {
     const that = this;

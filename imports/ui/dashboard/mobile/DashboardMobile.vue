@@ -1,75 +1,34 @@
 <template>
-  <div class="dashboard-mobile">
+  <div v-if="user" class="dashboard-mobile">
     <new-organization ref="newOrganization" />
-    <template v-if="user">
-      <div v-if="$vuetify.breakpoint.xsOnly" class="mobile">
-        <v-bottom-navigation
-          v-model="bottomNav"
-          :value="true"
-          dark
-          color="primary"
-        >
-          <v-btn text value="organizations">
-            <span>{{ $t("Projects") }}</span>
-            <v-icon>mdi-domain</v-icon>
-          </v-btn>
-
-          <v-btn text value="tasks">
-            <span>{{ $t("Tasks") }}</span>
-            <v-icon>mdi-format-list-bulleted</v-icon>
-          </v-btn>
-        </v-bottom-navigation>
-        <div v-if="bottomNav === 'organizations'" class="mobile-organizations">
-          <v-card class="flex-container">
-            <dashboard-projects />
-          </v-card>
-        </div>
-        <div v-if="bottomNav === 'tasks'" class="mobile-tasks">
-          <v-card class="flex-container">
-            <div class="tabs-wrapper">
-              <v-tabs v-model="tab" centered class="sticky-tabs">
-                <v-tabs-slider color="accent" />
-                <v-tab>{{ $t("Recents") }}</v-tab>
-                <v-tab>{{ $t("My tasks") }}</v-tab>
-                <v-tab>{{ $t("Late") }}</v-tab>
-                <v-tab-item>
-                  <dashboard-task-list :user="user" type="recent" />
-                </v-tab-item>
-                <v-tab-item>
-                  <dashboard-task-list :user="user" type="assignedToMe" />
-                </v-tab-item>
-                <v-tab-item>
-                  <dashboard-task-list
-                    :user="user"
-                    type="late"
-                    empty-illustration="celebration"
-                  />
-                </v-tab-item>
-              </v-tabs>
-            </div>
-          </v-card>
-        </div>
-      </div>
-    </template>
+    <div class="mobile">
+      <v-card class="flex-container">
+        <dashboard-projects />
+      </v-card>
+    </div>
   </div>
 </template>
 
 <script>
-import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import DashboardProjects from "/imports/ui/dashboard/mobile/DashboardProjects";
+import { mapState } from "vuex";
 
 export default {
   components: {
-    DashboardTaskList,
     DashboardProjects
   },
-  props: {},
   data() {
     return {
       user: null,
-      tab: null,
-      bottomNav: "organizations"
+      tab: null
     };
+  },
+  computed: {
+    ...mapState([
+      "currentUser"
+    ]),
+    ...mapState("organization", ["currentOrganizationId"]),
+    ...mapState("project", ["currentProjectId"])
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
@@ -94,7 +53,10 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+
+@import "/imports/ui/styles/mixins/breakpoint";
+
 .dashboard-mobile {
   display: flex;
   min-height: 0;

@@ -8,6 +8,7 @@
   "Canvas": "Canevas",
   "Weather": "Météo",
   "Title": "Titre",
+  "Home": "Accueil",
   "Description": "Description",
   "Deletion is permanent": "La suppression est définitive",
   "Last update by": "Dernière modification par",
@@ -188,6 +189,9 @@
   "Task deleted": "Tâche supprimée",
   "Tasks deleted": "Tâches supprimées",
   "Flush": "Vider",
+  "projectSelector": {
+    "search": "Projet ou organisation"
+  },
   "history": {
     "tasks": {
       "create": "Création",

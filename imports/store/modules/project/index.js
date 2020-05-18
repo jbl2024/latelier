@@ -25,7 +25,9 @@ export default {
     hasProjectFeature: (state) => (feature) => {
       if (!state.projectFeatures) return false;
       return state.projectFeatures.find((feat) => feat === feature);
-    }
+    },
+    currentProjectColor: (state) => state.currentProject && state.currentProject.color
+      ? state.currentProject.color : null
   },
   actions: {
     setCurrentProjectId(context, projectId) {
@@ -38,6 +40,8 @@ export default {
           context.commit("updateProjectFeatures", []);
           context.commit("updateCurrentProject", null);
         }
+      } else {
+        context.dispatch("ui/resetNavigationColor", null, { root: true });
       }
       context.commit("updateCurrentProjectId", projectId);
     },

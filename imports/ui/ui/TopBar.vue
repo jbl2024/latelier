@@ -1,9 +1,5 @@
 <template>
   <v-app-bar class="top-bar" :dense="dense" :color="topBarColor" :dark="isDark" app clipped-left>
-    <v-app-bar-nav-icon
-      v-show="$vuetify.breakpoint.mdAndDown"
-      @click.stop="showMobileDrawer = !showMobileDrawer"
-    />
     <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
     <top-bar-title
       :organization="currentOrganization"
@@ -27,7 +23,7 @@
   </v-app-bar>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import TopBarTitle from "./TopBarTitle";
 import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
 import MainMenu from "./MainMenu";
@@ -51,30 +47,23 @@ export default {
     };
   },
   computed: {
+    ...mapState("ui", ["navigationColor"]),
     ...mapState("project", ["currentProject"]),
+    ...mapGetters("project", ["currentProjectColor"]),
     ...mapState("organization", ["currentOrganization"]),
     topBarColor() {
-      if (this.currentProject && this.currentProject.color) {
-        return this.currentProject.color;
-      }
-      return this.$vuetify.theme.currentTheme.primary;
+      return this.navigationColor;
     },
     isDark() {
       return colors.isDark(this.topBarColor);
-    },
-    navBarColor() {
-      return "#555555";
-    },
-    showMobileDrawer: {
-      set(showMobileDrawer) {
-        this.$store.commit("updateShowMobileDrawer", showMobileDrawer);
-      },
-      get() {
-        return this.$store.state.showMobileDrawer;
-      }
     }
   },
   watch: {
+    "currentProjectColor"(newVal) {
+      if (newVal != null) {
+        this.$store.dispatch("ui/setNavigationColor", newVal);
+      }
+    },
     "$route.fullPath"() {
       this.isSearchEnabled = false;
     }

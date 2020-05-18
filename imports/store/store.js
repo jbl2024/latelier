@@ -5,6 +5,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 import { UserUtils } from "/imports/api/users/utils";
 
 import get from "lodash/get";
+import ui from "./modules/ui";
 import project from "./modules/project";
 import organization from "./modules/organization";
 
@@ -12,6 +13,7 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
+    ui,
     project,
     organization
   },

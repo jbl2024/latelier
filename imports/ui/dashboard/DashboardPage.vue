@@ -1,11 +1,11 @@
 <template>
   <div class="dashboard-page">
     <dashboard-desktop
-      v-if="$vuetify.breakpoint.smAndUp"
+      v-if="$vuetify.breakpoint.mdAndUp"
       :organization-id="organizationId"
     />
     <dashboard-mobile
-      v-if="$vuetify.breakpoint.xsOnly"
+      v-if="$vuetify.breakpoint.smAndDown"
       :organization-id="organizationId"
     />
   </div>
