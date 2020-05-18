@@ -9,7 +9,6 @@
         v-show="$vuetify.breakpoint.mdAndUp"
         text
         icon
-        color="white"
         @click="goHome"
       >
         <v-icon>mdi-home</v-icon>
