@@ -1,5 +1,8 @@
 export const UserUtils = {
   getEmail(user) {
+    if (!user) {
+      return null;
+    }
     if (user.emails && user.emails.length > 0) {
       return user.emails[0].address;
     }

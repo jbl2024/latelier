@@ -48,11 +48,7 @@ export default {
 
     getEmailForUser(user) {
       user = getUser(user);
-      if (!user) return null;
-      if (user.emails && user.emails.length > 0) {
-        return UserUtils.getEmail(user);
-      }
-      return null;
+      return UserUtils.getEmail(user);
     },
 
     getAvatarForUser(user) {
