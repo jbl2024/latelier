@@ -1,8 +1,5 @@
 export default {
   methods: {
-    hasBackground() {
-      return this.getBackgroundUrl();
-    },
     getBackgroundUrl(user) {
       if (user && user.profile) {
         const { background } = user.profile;
