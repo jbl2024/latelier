@@ -769,7 +769,7 @@ export default {
 
     openOrganization(id) {
       this.$router.push({
-        name: "projects-page",
+        name: "dashboard-organization-page",
         params: { organizationId: id }
       });
     },

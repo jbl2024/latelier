@@ -18,7 +18,7 @@ export default {
       context.commit("clearSelectedGroup", null, { root: true });
       if (organizationId != null) {
         if (context.state.currentOrganizationId
-          && (context.state.currentOrganization._id !== organizationId)) {
+          && (context.state.currentOrganizationId !== organizationId)) {
           context.commit("updateCurrentOrganization", null);
         }
       }
