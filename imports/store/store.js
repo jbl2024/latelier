@@ -25,6 +25,7 @@ const store = new Vuex.Store({
     selectedTask: null,
     showSelectBackgroundDialog: false,
     showCategories: false,
+    showLeftDrawer: null,
     showTaskDetail: false,
     showTaskHistory: false,
     showTaskExport: false,
@@ -63,6 +64,9 @@ const store = new Vuex.Store({
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
       state.showSelectBackgroundDialog = showSelectBackgroundDialog;
+    },
+    updateShowLeftDrawer(state, showLeftDrawer) {
+      state.showLeftDrawer = showLeftDrawer;
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -148,6 +152,9 @@ const store = new Vuex.Store({
     },
     selectTask(context, task) {
       context.commit("selectTask", task);
+    },
+    showLeftDrawer(context, showLeftDrawer) {
+      context.commit("updateShowLeftDrawer", showLeftDrawer);
     },
     showTaskDetail(context, showTaskDetail) {
       context.commit("updateShowTaskDetail", showTaskDetail);

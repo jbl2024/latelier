@@ -3,8 +3,8 @@
     <v-app>
       <template v-if="isConnected">
         <v-navigation-drawer
-          v-if="hasLeftDrawer && $vuetify.breakpoint.lgAndUp"
-          v-model="leftDrawer"
+          v-if="hasLeftDrawer"
+          v-model="showLeftDrawer"
           :width="leftDrawerWidth"
           app
           clipped
@@ -83,8 +83,6 @@ export default {
   },
   data() {
     return {
-      leftDrawer: null,
-      leftDrawerWidth: 360,
       rightDrawer: false,
       rightDrawerWidth: 600,
       openMenu: false,
@@ -93,6 +91,9 @@ export default {
     };
   },
   computed: {
+    leftDrawerWidth() {
+      return this.$vuetify.breakpoint.smAndDown ? "100%" : 360;
+    },
     ...mapState([
       "currentUser",
       "notifyMessage",
@@ -103,6 +104,14 @@ export default {
     ...mapState("project", ["currentProjectId", "currentProject"]),
     ...mapGetters("project", ["currentProjectColor"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
+    showLeftDrawer: {
+      get() {
+        return this.$store.state.showLeftDrawer;
+      },
+      set(value) {
+        this.$store.dispatch("showLeftDrawer", value);
+      }
+    },
     showTaskDetail: {
       get() {
         return this.$store.state.showTaskDetail;

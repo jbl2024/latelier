@@ -36,6 +36,7 @@
       :value="true"
       app
       grow
+      fixed
       dark
       :background-color="navigationColor"
     >
@@ -45,6 +46,7 @@
         :value="menuItem.id"
         :to="menuItem.to"
         exact
+        @click="handleOnClick(menuItem)"
       >
         <span v-if="!onlyIcons">{{ menuItem.title }}</span>
         <v-icon>{{ menuItem.icon }}</v-icon>
@@ -111,6 +113,14 @@ export default {
           title: this.$t("Home"),
           icon: "mdi-home",
           to: { name: "dashboard-page" }
+        },
+        {
+          id: "tasks-drawer",
+          title: this.$t("Tasks"),
+          icon: "mdi-format-list-bulleted",
+          onClick: () => {
+            this.$store.dispatch("showLeftDrawer", true);
+          }
         }
       ];
       return menuItems;
@@ -242,6 +252,10 @@ export default {
         Permissions.isAdmin(Meteor.userId(), projectId)
         || Permissions.isAdmin(Meteor.userId())
       );
+    },
+    handleOnClick(menuItem) {
+      if (!menuItem.onClick || typeof menuItem.onClick !== "function") return true;
+      return menuItem.onClick();
     }
   }
 };
@@ -251,5 +265,9 @@ export default {
 
 .main-menu {
   @include tabs-menu;
+  .v-item-group.v-bottom-navigation--fixed {
+    z-index: 8;
+  }
 }
+
 </style>
