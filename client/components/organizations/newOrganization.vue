@@ -12,7 +12,6 @@
               <v-col cols="12">
                 <v-text-field
                   v-model="name"
-                  v-col
                   autofocus
                   :rules="nameRules"
                   :label="$t('Name')"
