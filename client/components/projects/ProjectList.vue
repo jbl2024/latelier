@@ -1,6 +1,6 @@
 <template>
-  <div class="project-list">
-    <v-list v-if="projects" two-line>
+  <div v-if="projects" class="project-list">
+    <v-list two-line>
       <empty-state
         v-if="projects.length == 0 && emptyIllustration"
         :illustration="emptyIllustration"
@@ -8,21 +8,19 @@
         :label="$t('No project')"
       />
 
-      <template v-for="project in projects">
-        <v-list-item :key="project._id" @click="selectProject(project)">
-          <v-list-item-avatar :color="getColor(project)">
-            <v-icon :class="getVisibilityIconClass(project)">
-              {{ getVisibilityIcon(project) }}
-            </v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content class="pointer">
-            <v-list-item-title>{{ project.name }}</v-list-item-title>
-            <v-list-item-subtitle>
-              {{ formatProjectDates(project) }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-      </template>
+      <v-list-item v-for="project in projects" :key="project._id" @click="selectProject(project)">
+        <v-list-item-avatar :color="getColor(project)">
+          <v-icon :class="getVisibilityIconClass(project)">
+            {{ getVisibilityIcon(project) }}
+          </v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content class="pointer">
+          <v-list-item-title>{{ project.name }}</v-list-item-title>
+          <v-list-item-subtitle>
+            {{ formatProjectDates(project) }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
   </div>
 </template>
@@ -82,8 +80,13 @@ export default {
 };
 </script>
 
-<style scoped>
-.empty-state {
-  margin-top: 24px;
+<style>
+.project-list .v-list {
+  padding: 0;
 }
+</style>
+<style scoped>
+  .empty-state {
+    margin-top: 24px;
+  }
 </style>

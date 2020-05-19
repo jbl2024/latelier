@@ -140,10 +140,6 @@ export default {
   background-color: white;
 }
 
-.empty-state {
-  margin-top: 24px;
-}
-
 .link {
   text-decoration: none !important;
   color: black;

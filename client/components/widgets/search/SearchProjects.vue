@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-progress-linear v-if="loading" indeterminate absolute top />
-    <project-list :projects="projects" @select="onSelectProject" />
+    <project-list
+      :projects="projects"
+      empty-illustration="empty"
+      @select="onSelectProject"
+    />
     <div class="text-xs-center">
       <v-pagination
         v-if="pagination.totalPages > 0"
@@ -92,5 +96,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>

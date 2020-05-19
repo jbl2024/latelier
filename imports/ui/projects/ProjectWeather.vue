@@ -428,10 +428,6 @@ export default {
   overflow: auto; /* to scroll just the "main" div */
 }
 
-.empty {
-  margin-top: 24px;
-}
-
 .parent {
   padding: 0 !important;
 }

@@ -242,10 +242,6 @@ export default {
 </script>
 
 <style scoped>
-.empty {
-  margin-top: 24px;
-}
-
 .list {
   max-width: 800px;
   margin: 0 auto;
