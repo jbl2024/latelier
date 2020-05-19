@@ -7,14 +7,20 @@
       :label="$t('No organizations')"
     />
     <v-list v-else-if="organizations.length > 0" two-line>
-      <v-list-item v-for="organization in organizations" :key="organization._id" @click="selectOrganization(organization)">
+      <v-list-item
+        v-for="organization in organizations"
+        :key="organization._id"
+        @click="selectOrganization(organization)"
+      >
         <v-list-item-avatar>
           <v-icon>
             mdi-domain
           </v-icon>
         </v-list-item-avatar>
         <v-list-item-content>
-          <v-list-item-title>{{ organization.name }}</v-list-item-title>
+          <v-list-item-title>
+            {{ organization.name }}
+          </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
     </v-list>

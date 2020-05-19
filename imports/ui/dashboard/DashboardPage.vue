@@ -2,6 +2,7 @@
   <div class="dashboard-page">
     <dashboard-desktop
       v-if="organizationId || $vuetify.breakpoint.mdAndUp"
+      :key="organizationId ? organizationId : 'home'"
       :organization-id="organizationId"
     />
     <dashboard-mobile

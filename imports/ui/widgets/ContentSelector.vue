@@ -67,24 +67,29 @@ export default {
   methods: {
     async switchOrganization(organization) {
       try {
-        if (!organization || (organization._id && (organization._id === this.currentOrganizationId))) {
+        if (!organization || (organization._id 
+        && (organization._id === this.currentOrganizationId))) {
           return false;
         }
         this.isMenuShown = false;
-        const routeName = this.$route.name.indexOf("organization") !== -1 ? this.$route.name : "dashboard-organization-page";
-        await this.$router.push({ name: routeName, params: { organizationId: organization._id } });
+        const routeName = this.$route.name.indexOf("organization") !== -1
+          ? this.$route.name : "dashboard-organization-page";
+        return await this.$router.push({ name: routeName, params: { organizationId: organization._id } });
       } catch (error) {
         this.$notifyError(error);
+        return false;
       }
     },
     async switchProject(project) {
       try {
         if (!project || (project._id && (project._id === this.currentProjectId))) return false;
         this.isMenuShown = false;
-        const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project-dashboard";
-        await this.$router.push({ name: routeName, params: { projectId: project._id } });
+        const routeName = this.$route.name.indexOf("project") === 0
+          ? this.$route.name : "project-dashboard";
+        return await this.$router.push({ name: routeName, params: { projectId: project._id } });
       } catch (error) {
         this.$notifyError(error);
+        return false;
       }
     }
   }
