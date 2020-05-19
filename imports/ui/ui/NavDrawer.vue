@@ -15,6 +15,7 @@
       <div ref="menu" class="drawer-wrapper">
         <main-menu
           v-if="(currentProject || currentOrganization)"
+          display="list"
           :project="currentProject"
           :organization="currentOrganization"
         />

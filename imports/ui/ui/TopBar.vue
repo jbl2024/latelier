@@ -10,6 +10,7 @@
     <main-menu
       v-show="!isSearchEnabled"
       v-if="$vuetify.breakpoint.lgAndUp && (currentProject || currentOrganization)"
+      display="tabs"
       :project="currentProject"
       :organization="currentOrganization"
       radius
@@ -23,7 +24,7 @@
   </v-app-bar>
 </template>
 <script>
-import { mapState, mapGetters } from "vuex";
+import { mapState } from "vuex";
 import TopBarTitle from "./TopBarTitle";
 import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
 import MainMenu from "./MainMenu";
@@ -49,7 +50,6 @@ export default {
   computed: {
     ...mapState("ui", ["navigationColor"]),
     ...mapState("project", ["currentProject"]),
-    ...mapGetters("project", ["currentProjectColor"]),
     ...mapState("organization", ["currentOrganization"]),
     topBarColor() {
       return this.navigationColor;
@@ -59,11 +59,6 @@ export default {
     }
   },
   watch: {
-    "currentProjectColor"(newVal) {
-      if (newVal != null) {
-        this.$store.dispatch("ui/setNavigationColor", newVal);
-      }
-    },
     "$route.fullPath"() {
       this.isSearchEnabled = false;
     }

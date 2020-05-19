@@ -101,6 +101,7 @@ export default {
     ]),
     ...mapState("organization", ["currentOrganizationId", "currentOrganization"]),
     ...mapState("project", ["currentProjectId", "currentProject"]),
+    ...mapGetters("project", ["currentProjectColor"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
     showTaskDetail: {
       get() {
@@ -157,6 +158,16 @@ export default {
       immediate: true,
       handler() {
         this.rightDrawer = this.isTaskDetailShown;
+      }
+    },
+    currentProjectColor: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal != null) {
+          this.$store.dispatch("ui/setNavigationColor", newVal);
+        } else {
+          this.$store.dispatch("ui/resetNavigationColor");
+        }
       }
     }
   },
