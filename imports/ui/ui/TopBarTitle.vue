@@ -13,18 +13,30 @@
       >
         <v-icon>mdi-home</v-icon>
       </v-btn>
-      <project-title v-if="project" :project="project" @go-home="goParent" />
-      <organization-title
-        v-else-if="organization"
-        :organization="organization"
-        @go-home="goHome"
-      />
-      <home-title v-else-if="!project" @go-home="goHome" />
+      <!-- Fast selector for any organizations or projects -->
+      <content-selector :key="contentSelectorKey">
+        <template v-slot:activator="{ on }">
+          <v-btn text v-on="on">
+            <span class="title title-selector">
+              {{ selectorTitle }}
+            </span>
+            <v-icon class="ml-1">
+              mdi-chevron-down
+            </v-icon>
+          </v-btn>
+        </template>
+      </content-selector>
     </v-toolbar-title>
   </div>
 </template>
 <script>
+import ContentSelector from "/imports/ui/widgets/ContentSelector";
+import { truncate } from "/imports/ui/utils/truncate";
+
 export default {
+  components: {
+    ContentSelector
+  },
   props: {
     organization: {
       type: Object,
@@ -36,6 +48,24 @@ export default {
     }
   },
   computed: {
+    contentSelectorKey() {
+      if (this.projectId) return this.projectId;
+      if (this.organizationId) return this.organizationId;
+      return "home";
+    },
+    projectId() {
+      if (!this.project) return null;
+      return this.project._id;
+    },
+    organizationId() {
+      if (!this.organization) return null;
+      return this.organization._id;
+    },
+    selectorTitle() {
+      if (this.project) return this.project?.name ? truncate(this.project.name, 30) : "";
+      if (this.organization) return this.organization?.name ? truncate(this.organization.name, 30) : "";
+      return "L'atelier";
+    },
     showMobileDrawer: {
       set(showMobileDrawer) {
         this.$store.commit("updateShowMobileDrawer", showMobileDrawer);
@@ -48,7 +78,6 @@ export default {
   methods: {
     async goParent() {
       const projectHasOrganization = this.project && this.project.organizationId;
-
       if (projectHasOrganization) {
         this.$store.dispatch("project/setCurrentProject", null);
         await this.$router.push({
@@ -74,6 +103,10 @@ export default {
   .top-bar-title .v-toolbar__title {
     display: flex;
     align-items: center;
+  }
+
+  .title-selector {
+    text-transform: none;
   }
 
 </style>

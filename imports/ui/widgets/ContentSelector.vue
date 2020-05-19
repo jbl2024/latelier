@@ -1,0 +1,92 @@
+<template>
+  <v-menu
+    v-model="isMenuShown"
+    :nudge-bottom="10"
+    :close-on-content-click="false"
+    offset-y
+    @click-outside="isMenuShown = false"
+  >
+    <template v-slot:activator="{ on }">
+      <slot name="activator" :on="on" />
+    </template>
+    <v-card>
+      <v-card-text>
+        <v-text-field
+          v-model="filter"
+          :placeholder="$t('contentSelector.search')"
+          prepend-inner-icon="mdi-magnify"
+          rounded
+          solo
+          dense
+          hide-details
+        />
+      </v-card-text>
+      <v-divider />
+      <v-tabs
+        v-model="tab"
+        grow
+        light
+        background-color="white"
+        class="tabs"
+      >
+        <v-tab>
+          {{ $t("Projects") }}
+        </v-tab>
+        <v-tab>
+          {{ $t("Organizations") }}
+        </v-tab>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <search-projects :filter="filter" auto-search @select="switchProject" />
+        </v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <search-organizations :filter="filter" auto-search @select="switchOrganization" />
+        </v-tab-item>
+      </v-tabs>
+    </v-card>
+  </v-menu>
+</template>
+<script>
+import { mapState } from "vuex";
+import SearchOrganizations from "/imports/ui/widgets/search/SearchOrganizations";
+
+export default {
+  components: {
+    SearchOrganizations
+  },
+  data() {
+    return {
+      tab: null,
+      filter: "",
+      isMenuShown: false
+    };
+  },
+  computed: {
+    ...mapState("project", ["currentProjectId"]),
+    ...mapState("organization", ["currentOrganization"])
+  },
+  methods: {
+    async switchOrganization(organization) {
+      try {
+        if (!organization || (organization._id && (organization._id === this.currentOrganizationId))) {
+          return false;
+        }
+        this.isMenuShown = false;
+        const routeName = this.$route.name.indexOf("organization") !== -1 ? this.$route.name : "dashboard-organization-page";
+        await this.$router.push({ name: routeName, params: { organizationId: organization._id } });
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+    async switchProject(project) {
+      try {
+        if (!project || (project._id && (project._id === this.currentProjectId))) return false;
+        this.isMenuShown = false;
+        const routeName = this.$route.name.indexOf("project") === 0 ? this.$route.name : "project-dashboard";
+        await this.$router.push({ name: routeName, params: { projectId: project._id } });
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    }
+  }
+};
+</script>

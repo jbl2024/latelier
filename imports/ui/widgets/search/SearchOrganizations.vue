@@ -1,10 +1,10 @@
 <template>
   <div>
     <v-progress-linear v-if="loading" indeterminate absolute top />
-    <project-list
-      :projects="projects"
+    <organization-list
+      :organizations="organizations"
       empty-illustration="empty"
-      @select="onSelectProject"
+      @select="onSelectOrganization"
     />
     <div class="text-xs-center">
       <v-pagination
@@ -18,16 +18,16 @@
 </template>
 
 <script>
+import OrganizationList from "/imports/ui/organizations/OrganizationList";
 
 export default {
+  components: {
+    OrganizationList
+  },
   props: {
     filter: {
       type: String,
       default: ""
-    },
-    organizationId: {
-      type: String,
-      default: null
     },
     autoSearch: {
       type: Boolean,
@@ -37,8 +37,8 @@ export default {
   data() {
     return {
       loading: false,
-      projects: null,
-      projectCount: 0,
+      organizations: null,
+      organizationCount: 0,
       page: 1,
       pagination: {
         totalItems: 0,
@@ -67,10 +67,9 @@ export default {
       if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
       Meteor.call(
-        "search.findProjects",
+        "search.findOrganizations",
         {
           name: this.filter,
-          organizationId: this.organizationId,
           page: this.page
         },
         (error, result) => {
@@ -83,15 +82,14 @@ export default {
           this.pagination.rowsPerPage = result.rowsPerPage;
           this.pagination.totalPages = result.totalPages;
 
-          this.projects = result.data;
-          this.projectCount = result.totalItems;
-          this.$emit("update:projectCount", this.projectCount);
+          this.organizations = result.data;
+          this.organizationCount = result.totalItems;
+          this.$emit("update:organizationCount", this.organizationCount);
         }
       );
     },
-
-    onSelectProject(project) {
-      this.$emit("select", project);
+    onSelectOrganization(organization) {
+      this.$emit("select", organization);
     }
   }
 };

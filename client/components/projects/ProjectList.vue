@@ -1,13 +1,12 @@
 <template>
   <div v-if="projects" class="project-list">
-    <v-list two-line>
-      <empty-state
-        v-if="projects.length == 0 && emptyIllustration"
-        :illustration="emptyIllustration"
-        small
-        :label="$t('No project')"
-      />
-
+    <empty-state
+      v-if="!projects.length && emptyIllustration"
+      :illustration="emptyIllustration"
+      small
+      :label="$t('No project')"
+    />
+    <v-list v-else-if="projects.length > 0" two-line>
       <v-list-item v-for="project in projects" :key="project._id" @click="selectProject(project)">
         <v-list-item-avatar :color="getColor(project)">
           <v-icon :class="getVisibilityIconClass(project)">
@@ -35,7 +34,7 @@ export default {
   props: {
     projects: {
       type: Array,
-      default: () => []
+      default: null
     },
     emptyIllustration: {
       type: String,
@@ -87,6 +86,6 @@ export default {
 </style>
 <style scoped>
   .empty-state {
-    margin-top: 24px;
+    padding: 2rem;
   }
 </style>

@@ -198,5 +198,59 @@ methods.findProjects = new ValidatedMethod({
   }
 });
 
+methods.findOrganizations = new ValidatedMethod({
+  name: "search.findOrganizations",
+  validate: new SimpleSchema({
+    name: { type: String },
+    page: { type: Number, optional: true }
+  }).validator(),
+  run({ name, page }) {
+    checkLoggedIn();
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
+    const sort = { updatedAt: -1 };
+
+    const perPage = 5;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const organizationQuery = {
+      deleted: { $ne: true }
+    };
+
+    if (isRegularUser) {
+      organizationQuery.members = userId;
+    }
+
+    // filter by name
+    if (name && name.length > 0) {
+      organizationQuery.name = { $regex: `.*${name}.*`, $options: "i" };
+    }
+    // get organizations
+    const count = Organizations.find(organizationQuery).count();
+    const data = Organizations.find(organizationQuery, {
+      skip,
+      limit: perPage,
+      sort
+    }).fetch();
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
+  }
+});
+
 
 export default methods;

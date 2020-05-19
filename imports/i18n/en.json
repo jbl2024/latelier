@@ -26,6 +26,7 @@
   "Activity": "Activité",
   "Tasks": "Tasks",
   "No task": "No task",
+  "No organizations": "No organization",
   "Delete list?": "Delete list?",
   "Organizations": "Organizations",
   "Projects": "Projects",
@@ -186,6 +187,9 @@
   "Task deleted": "Task deleted",
   "Tasks deleted": "Tasks deleted",
   "Flush": "Flush",
+  "contentSelector": {
+    "search": "Projet ou organisation"
+  },
   "history": {
     "tasks": {
       "create": "Creation",
