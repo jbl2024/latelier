@@ -49,7 +49,9 @@
           class="elevation-1"
         >
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon class="mr-2">mdi-star</v-icon>
+            <v-icon class="mr-2">
+              mdi-star
+            </v-icon>
             <v-toolbar-title>{{ $t("Favorites") }}</v-toolbar-title>
           </v-toolbar>
           <template v-for="item in favorites">
@@ -136,7 +138,9 @@
 
         <v-list two-line subheader class="elevation-1">
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon class="mr-2">mdi-account-circle</v-icon>
+            <v-icon class="mr-2">
+              mdi-account-circle
+            </v-icon>
             <v-toolbar-title>{{ $t("Individuals") }}</v-toolbar-title>
             <v-spacer />
 
@@ -247,7 +251,9 @@
               dark
               @click="openOrganization(organization._id)"
             >
-              <v-icon class="mr-2">mdi-domain</v-icon>
+              <v-icon class="mr-2">
+                mdi-domain
+              </v-icon>
 
               <v-toolbar-title>{{ organization.name }}</v-toolbar-title>
 
