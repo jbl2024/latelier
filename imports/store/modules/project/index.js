@@ -40,8 +40,6 @@ export default {
           context.commit("updateProjectFeatures", []);
           context.commit("updateCurrentProject", null);
         }
-      } else {
-        context.dispatch("ui/resetNavigationColor", null, { root: true });
       }
       context.commit("updateCurrentProjectId", projectId);
     },
