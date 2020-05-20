@@ -1,32 +1,28 @@
 <template>
   <!-- Menu mobile -->
-  <v-hover v-slot:default="{ hover }" open-delay="300" :value="openMenu">
-    <v-navigation-drawer
-      v-model="showMobileDrawer"
-      :clipped="$vuetify.breakpoint.lgAndUp"
-      fixed
-      dark
-      left
-      width="270px"
-      class="showMobileDrawer"
-      :mini-variant="!hover && !$vuetify.breakpoint.xs"
-      :mini-variant-width="80"
-    >
-      <div ref="menu" class="drawer-wrapper">
-        <main-menu
-          v-if="(currentProject || currentOrganization)"
-          display="list"
-          :project="currentProject"
-          :organization="currentOrganization"
-        />
-        <project-groups
-          v-if="showCategories"
-          :organization-id="currentOrganizationId"
-        />
-        <login-menu />
-      </div>
-    </v-navigation-drawer>
-  </v-hover>
+  <v-navigation-drawer
+    v-model="showMobileDrawer"
+    :clipped="$vuetify.breakpoint.lgAndUp"
+    fixed
+    dark
+    left
+    width="270px"
+    class="showMobileDrawer"
+  >
+    <div ref="menu" class="drawer-wrapper">
+      <main-menu
+        v-if="(currentProject || currentOrganization)"
+        display="list"
+        :project="currentProject"
+        :organization="currentOrganization"
+      />
+      <project-groups
+        v-if="showCategories"
+        :organization-id="currentOrganizationId"
+      />
+      <login-menu />
+    </div>
+  </v-navigation-drawer>
 </template>
 <script>
 import { mapState } from "vuex";
