@@ -22,13 +22,8 @@
         />
       </v-card-text>
       <v-divider />
-      <v-tabs
-        v-model="tab"
-        grow
-        light
-        background-color="white"
-        class="tabs"
-      >
+      <v-tabs v-model="tab" grow light background-color="white" class="tabs">
+        <v-tabs-slider color="accent" />
         <v-tab>
           {{ $t("Projects") }}
         </v-tab>
@@ -36,10 +31,18 @@
           {{ $t("Organizations") }}
         </v-tab>
         <v-tab-item :transition="false" :reverse-transition="false">
-          <search-projects :filter="filter" auto-search @select="switchProject" />
+          <search-projects
+            :filter="filter"
+            auto-search
+            @select="switchProject"
+          />
         </v-tab-item>
         <v-tab-item :transition="false" :reverse-transition="false">
-          <search-organizations :filter="filter" auto-search @select="switchOrganization" />
+          <search-organizations
+            :filter="filter"
+            auto-search
+            @select="switchOrganization"
+          />
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -67,14 +70,20 @@ export default {
   methods: {
     async switchOrganization(organization) {
       try {
-        if (!organization || (organization._id 
-        && (organization._id === this.currentOrganizationId))) {
+        if (
+          !organization
+          || (organization._id && organization._id === this.currentOrganizationId)
+        ) {
           return false;
         }
         this.isMenuShown = false;
         const routeName = this.$route.name.indexOf("organization") !== -1
-          ? this.$route.name : "dashboard-organization-page";
-        return await this.$router.push({ name: routeName, params: { organizationId: organization._id } });
+          ? this.$route.name
+          : "dashboard-organization-page";
+        return await this.$router.push({
+          name: routeName,
+          params: { organizationId: organization._id }
+        });
       } catch (error) {
         this.$notifyError(error);
         return false;
@@ -82,11 +91,15 @@ export default {
     },
     async switchProject(project) {
       try {
-        if (!project || (project._id && (project._id === this.currentProjectId))) return false;
+        if (!project || (project._id && project._id === this.currentProjectId)) return false;
         this.isMenuShown = false;
         const routeName = this.$route.name.indexOf("project") === 0
-          ? this.$route.name : "project-dashboard";
-        return await this.$router.push({ name: routeName, params: { projectId: project._id } });
+          ? this.$route.name
+          : "project-dashboard";
+        return await this.$router.push({
+          name: routeName,
+          params: { projectId: project._id }
+        });
       } catch (error) {
         this.$notifyError(error);
         return false;
