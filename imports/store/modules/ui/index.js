@@ -1,3 +1,5 @@
+import { colors } from "/imports/colors";
+
 export default {
   namespaced: true,
   state: {
@@ -9,6 +11,12 @@ export default {
     updateNavigationColor(state, color) {
       state.navigationColor = color;
     }
+  },
+  getters: {
+    isNavigationColorDark: (state) => colors.isDark(state.navigationColor),
+    navigationColorBrightness: (state) => colors.getBrightness(state.navigationColor),
+    isContentDark: (state, getters) => getters.navigationColorBrightness < 60 
+    || getters.navigationColorBrightness > 128
   },
   actions: {
     setNavigationColor(context, color) {

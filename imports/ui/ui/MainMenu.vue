@@ -3,7 +3,8 @@
     <!-- Display as tabs for top bar navigation -->
     <v-tabs
       v-if="display === 'tabs'"
-      dark
+      :light="!dark"
+      :dark="dark"
       hide-slider
       :class="{ radius: radius }"
     >
@@ -37,7 +38,8 @@
       app
       grow
       fixed
-      dark
+      :light="!dark"
+      :dark="dark"
       :background-color="navigationColor"
     >
       <v-btn
@@ -68,6 +70,10 @@ export default {
     organization: {
       type: Object,
       default: null
+    },
+    dark: {
+      type: Boolean,
+      default: false
     },
     radius: {
       type: Boolean,

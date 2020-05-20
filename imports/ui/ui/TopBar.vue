@@ -1,5 +1,12 @@
 <template>
-  <v-app-bar class="top-bar" :dense="dense" :color="topBarColor" :dark="isDark" app clipped-left>
+  <v-app-bar 
+    class="top-bar"
+    :dense="dense"
+    :color="navigationColor"
+    :dark="isNavigationColorDark"
+    app
+    clipped-left
+  >
     <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
     <top-bar-title
       :organization="currentOrganization"
@@ -7,10 +14,12 @@
     />
     <!-- [ProjectMenu|OrganizationMenu] -->
     <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
+
     <main-menu
       v-show="!isSearchEnabled"
       v-if="$vuetify.breakpoint.lgAndUp && (currentProject || currentOrganization)"
       display="tabs"
+      :dark="isContentDark"
       :project="currentProject"
       :organization="currentOrganization"
       radius
@@ -24,11 +33,10 @@
   </v-app-bar>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 import TopBarTitle from "./TopBarTitle";
 import TopBarAdditionalMenu from "./TopBarAdditionalMenu";
 import MainMenu from "./MainMenu";
-import { colors } from "/imports/colors";
 
 export default {
   components: {
@@ -49,14 +57,12 @@ export default {
   },
   computed: {
     ...mapState("ui", ["navigationColor"]),
+    ...mapGetters("ui", [
+      "isNavigationColorDark",
+      "isContentDark"
+    ]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("organization", ["currentOrganization"]),
-    topBarColor() {
-      return this.navigationColor;
-    },
-    isDark() {
-      return colors.isDark(this.topBarColor);
-    }
+    ...mapState("organization", ["currentOrganization"])
   },
   watch: {
     "$route.fullPath"() {

@@ -13,7 +13,8 @@
         <v-text-field
           ref="input"
           solo
-          color="#fff"
+          :light="!isContentDark"
+          :dark="isContentDark"
           clearable
           hide-details
           prepend-inner-icon="mdi-magnify"
@@ -38,6 +39,7 @@
 <script>
 import debounce from "lodash/debounce";
 import vClickOutside from "v-click-outside";
+import { mapGetters } from "vuex";
 
 export default {
   directives: {
@@ -58,6 +60,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters("ui", [
+      "isNavigationColorDark",
+      "isContentDark"
+    ]),
     isEnabled: {
       get() {
         return this.value;
