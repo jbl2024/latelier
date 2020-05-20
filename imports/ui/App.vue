@@ -53,6 +53,7 @@
       <main-menu
         v-if="$vuetify.breakpoint.smAndDown"
         display="bottom-navigation"
+        :dark="isNavigationColorDark"
         :project="currentProject"
         :organization="currentOrganization"
       />
@@ -104,6 +105,7 @@ export default {
     ...mapState("project", ["currentProjectId", "currentProject"]),
     ...mapGetters("project", ["currentProjectColor"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
+    ...mapGetters("ui", ["isNavigationColorDark"]),
     showLeftDrawer: {
       get() {
         return this.$store.state.showLeftDrawer;
