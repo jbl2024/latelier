@@ -83,7 +83,10 @@ export default [
     name: "organization-settings",
     beforeEnter: isBasicAuth,
     component: OrganizationSettings,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   {
     path: "/organizations/:organizationId",
@@ -97,7 +100,10 @@ export default [
     name: "projects-timeline",
     beforeEnter: isBasicAuth,
     component: async () => (await import("/imports/ui/projects/ProjectsTimeline.vue")).default,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   {
     path: "/projects/:projectId",
@@ -209,7 +215,10 @@ export default [
     name: "dashboard-organization-page",
     beforeEnter: isBasicAuth,
     component: DashboardPage,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   { path: "*", name: "not-found", component: NotFound }
 ];

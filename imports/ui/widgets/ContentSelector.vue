@@ -78,6 +78,9 @@ export default {
     ...mapState("organization", ["currentOrganization"])
   },
   methods: {
+    isOrganizationRoute(route) {
+      return route?.meta?.isOrganization === true;
+    },
     async switchOrganization(organization) {
       try {
         if (!organization || (organization._id
@@ -85,7 +88,7 @@ export default {
           return false;
         }
         this.isMenuShown = false;
-        const routeName = this.$route.name.indexOf("organization") !== -1
+        const routeName = this.isOrganizationRoute(this.$route)
           ? this.$route.name
           : "dashboard-organization-page";
         return await this.$router.push({
