@@ -1,17 +1,7 @@
 <template>
   <div class="projects-timeline">
-    <template v-if="!$subReady.projectsForTimeline">
-      <v-progress-linear indeterminate />
-    </template>
-
-    <template v-if="$subReady.projectsForTimeline">
-      <empty-state
-        v-show="count == 0"
-        icon="mdi-chart-timeline-variant"
-        :label="$t('No project')"
-        :description="$t('Projects with start and end date are displayed here')"
-      />
-
+    <v-progress-linear v-if="!isReady" indeterminate />
+    <template v-else>
       <v-toolbar dense class="toolbar flex0">
         <tooltip-button
           bottom
@@ -40,6 +30,14 @@
         />
         <v-divider vertical />
       </v-toolbar>
+      <empty-state
+        v-show="count == 0"
+        icon="mdi-chart-timeline-variant"
+        :label="$t('No project')"
+        full-page
+        :description="$t('Projects with start and end date are displayed here')"
+      />
+
 
       <div
         ref="timelineContainer"
@@ -135,7 +133,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["selectedGroup"])
+    ...mapState(["selectedGroup"]),
+    isReady() {
+      return this.$subReady.projectsForTimeline;
+    }
   },
   created() {
     this.debouncedFilter = debounce((val) => {
