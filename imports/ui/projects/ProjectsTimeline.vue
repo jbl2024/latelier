@@ -45,9 +45,10 @@
         class="flex1"
       >
         <timeline
+          :key="organizationId"
           ref="timeline"
-          :items="getItems()"
-          :groups="getGroups()"
+          :items="items"
+          :groups="groups"
           :options="timeline.options"
           @select="onSelectProject"
         />
@@ -136,7 +137,37 @@ export default {
     ...mapState(["selectedGroup"]),
     isReady() {
       return this.$subReady.projectsForTimeline;
-    }
+    },
+    items() {
+      if (!this.$subReady.projectsForTimeline || !this.organizationId) return [];
+      const defaultBefore = moment().subtract(1, "weeks");
+      const defaultAfter = moment().add(1, "weeks");
+      const items = [];
+      this.projects.forEach((project) => {
+        const item = {
+          id: project._id,
+          group: project.state,
+          subgroup: project._id,
+          content: this.getProjectContent(project),
+          className: "item",
+          start: moment(project.startDate).toDate() || defaultBefore,
+          end: moment(project.endDate).toDate() || defaultAfter
+        };
+        items.push(item);
+      });
+      return items;
+    },
+    groups() {
+      const states = [];
+      Object.keys(ProjectStates).forEach((state) => {
+        states.push({
+          id: ProjectStates[state],
+          subgroupStack: true,
+          content: this.$t(`projects.state.${state}`)
+        });
+      });
+      return states;
+    },
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -186,14 +217,28 @@ export default {
         return [this.organizationId];
       }
     },
-    projects() {
-      return Projects.find(
-        { organizationId: this.organizationId },
-        { sort: { name: 1 } }
-      );
+    projects: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        return Projects.find(
+          { organizationId: this.organizationId },
+          { sort: { name: 1 } }
+        );
+      }
     },
-    count() {
-      return Projects.find({ organizationId: this.organizationId }).count();
+    count: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        return Projects.find({ organizationId: this.organizationId }).count();
+      }
     },
     organization() {
       const organization = Organizations.findOne();
@@ -204,36 +249,6 @@ export default {
     }
   },
   methods: {
-    getGroups() {
-      const states = [];
-      Object.keys(ProjectStates).forEach((state) => {
-        states.push({
-          id: ProjectStates[state],
-          subgroupStack: true,
-          content: this.$t(`projects.state.${state}`)
-        });
-      });
-      return states;
-    },
-    getItems() {
-      const defaultBefore = moment().subtract(1, "weeks");
-      const defaultAfter = moment().add(1, "weeks");
-      const items = [];
-      this.projects.forEach((project) => {
-        const item = {
-          id: project._id,
-          group: project.state,
-          subgroup: project._id,
-          content: this.getProjectContent(project),
-          className: "item",
-          start: moment(project.startDate).toDate() || defaultBefore,
-          end: moment(project.endDate).toDate() || defaultAfter
-        };
-        items.push(item);
-      });
-      return items;
-    },
-
     getProjectContent(project) {
       const { name } = project;
       const color = project.color || "";
