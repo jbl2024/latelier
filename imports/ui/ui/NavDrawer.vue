@@ -10,15 +10,15 @@
     class="showMobileDrawer"
   >
     <div ref="menu" class="drawer-wrapper">
+      <project-groups
+        v-if="showCategories"
+        :organization-id="currentOrganizationId"
+      />
       <main-menu
         v-if="(currentProject || currentOrganization)"
         display="list"
         :project="currentProject"
         :organization="currentOrganization"
-      />
-      <project-groups
-        v-if="showCategories"
-        :organization-id="currentOrganizationId"
       />
       <login-menu />
     </div>
