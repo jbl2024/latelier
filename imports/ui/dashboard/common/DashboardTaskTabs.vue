@@ -12,7 +12,12 @@
     </div>
     <v-divider />
     <!-- Taches -->
-    <v-tabs v-if="currentCategory === 'task'" v-model="taskTab" class="sticky-tabs">
+    <v-tabs 
+      v-if="currentCategory === 'task'"
+      v-model="taskTab"
+      v-scroll:[scrollTarget]="onScroll"
+      :class="tabsShouldStick ? 'sticky-tabs' : null"
+    >
       <v-tabs-slider color="accent" />
       <v-tab>{{ $t("Recents") }}</v-tab>
       <v-tab>{{ $t("My tasks") }}</v-tab>
@@ -75,6 +80,8 @@ export default {
   data() {
     return {
       currentCategory: "task",
+      scrollTarget: '#left-drawer > .v-navigation-drawer__content',
+      tabsShouldStick: false,
       taskTab: null
     };
   },
@@ -95,6 +102,9 @@ export default {
   methods: {
     cssCategoryClasses(category) {
       return ["category-title", this.currentCategory === category ? "selected" : null];
+    },
+    onScroll(event) {
+      this.tabsShouldStick = event && event.target.scrollTop > 48;
     }
   }
 };

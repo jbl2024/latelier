@@ -4,6 +4,7 @@
       <template v-if="isConnected">
         <v-navigation-drawer
           v-if="hasLeftDrawer"
+          id="left-drawer"
           v-model="showLeftDrawer"
           :width="leftDrawerWidth"
           app
@@ -32,6 +33,7 @@
         <v-navigation-drawer
           v-model="rightDrawer"
           class="elevation-16"
+          id="right-drawer"
           app
           right
           :temporary="$vuetify.breakpoint.smAndDown"

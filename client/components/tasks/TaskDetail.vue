@@ -130,7 +130,12 @@
 
       <v-divider />
 
-      <v-tabs grow show-arrows class="sticky-tabs">
+      <v-tabs 
+        grow
+        show-arrows
+        v-scroll:[scrollTarget]="onScroll"
+        :class="tabsShouldStick ? 'sticky-tabs' : null"
+      >
         <v-tabs-slider color="accent" />
         <v-tab id="tab-properties">
           {{ $t("Properties") }}
@@ -218,7 +223,9 @@ export default {
       editTaskName: false,
       savedName: "",
       completed: false,
-      showSelectProjectToClone: false
+      showSelectProjectToClone: false,
+      scrollTarget: '#right-drawer > .v-navigation-drawer__content',
+      tabsShouldStick: false,
     };
   },
   computed: {
@@ -381,6 +388,9 @@ export default {
         return false;
       }
       return true;
+    },
+    onScroll(event) {
+      this.tabsShouldStick = event && event.target.scrollTop > 48;
     }
   }
 };
