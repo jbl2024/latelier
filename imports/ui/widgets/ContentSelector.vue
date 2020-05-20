@@ -89,6 +89,9 @@ export default {
     isOrganizationRoute(route) {
       return route?.meta?.isOrganization === true;
     },
+    isProjectRoute(route) {
+      return route?.meta?.isProject === true;
+    },
     async switchOrganization(organization) {
       try {
         if (!organization || (organization._id
@@ -99,7 +102,8 @@ export default {
         const routeName = this.isOrganizationRoute(this.$route)
           ? this.$route.name
           : "dashboard-organization-page";
-        return await this.$router.push({
+        this.$store.dispatch("project/setCurrentProject", null);
+        await this.$router.push({
           name: routeName,
           params: { organizationId: organization._id }
         });
@@ -110,12 +114,15 @@ export default {
     },
     async switchProject(project) {
       try {
-        if (!project || (project._id && project._id === this.currentProjectId)) return false;
+        if (!project || (project._id && project._id === this.currentProjectId)) {
+          return false;
+        }
         this.isMenuShown = false;
-        const routeName = this.$route.name.indexOf("project") === 0
+        const routeName = this.isProjectRoute(this.$route)
           ? this.$route.name
           : "project-dashboard";
-        return await this.$router.push({
+        this.$store.dispatch("organization/setCurrentOrganization", null);
+        await this.$router.push({
           name: routeName,
           params: { projectId: project._id }
         });

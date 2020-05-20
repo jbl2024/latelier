@@ -46,6 +46,7 @@ export default {
     setCurrentProject(context, project) {
       if (project == null) {
         context.commit("updateCurrentProject", null);
+        context.commit("updateCurrentProjectId", null);
       } else {
         context.commit("updateCurrentProjectId", project._id);
         context.commit("updateCurrentProject", project);
