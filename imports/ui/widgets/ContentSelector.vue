@@ -29,17 +29,28 @@
         background-color="white"
         class="tabs"
       >
+        <v-tabs-slider color="accent" />
         <v-tab>
-          {{ $t("Projects") }}
+          {{ $t("Projects") }} ({{ projectCount }})
         </v-tab>
         <v-tab>
-          {{ $t("Organizations") }}
+          {{ $t("Organizations") }} ({{ organizationCount }})
         </v-tab>
-        <v-tab-item :transition="false" :reverse-transition="false">
-          <search-projects :filter="filter" auto-search @select="switchProject" />
+        <v-tab-item eager :transition="false" :reverse-transition="false">
+          <search-projects
+            :filter="filter"
+            :project-count.sync="projectCount"
+            auto-search
+            @select="switchProject"
+          />
         </v-tab-item>
-        <v-tab-item :transition="false" :reverse-transition="false">
-          <search-organizations :filter="filter" auto-search @select="switchOrganization" />
+        <v-tab-item eager :transition="false" :reverse-transition="false">
+          <search-organizations
+            :filter="filter"
+            :organization-count.sync="organizationCount"
+            auto-search
+            @select="switchOrganization"
+          />
         </v-tab-item>
       </v-tabs>
     </v-card>
@@ -57,6 +68,8 @@ export default {
     return {
       tab: null,
       filter: "",
+      organizationCount: 0,
+      projectCount: 0,
       isMenuShown: false
     };
   },
@@ -67,7 +80,7 @@ export default {
   methods: {
     async switchOrganization(organization) {
       try {
-        if (!organization || (organization._id 
+        if (!organization || (organization._id
         && (organization._id === this.currentOrganizationId))) {
           return false;
         }
