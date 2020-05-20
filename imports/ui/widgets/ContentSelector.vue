@@ -23,7 +23,7 @@
       </v-card-text>
       <v-divider />
       <v-tabs
-        v-model="tab"
+        v-model="selecteTab"
         grow
         light
         background-color="white"
@@ -75,7 +75,15 @@ export default {
   },
   computed: {
     ...mapState("project", ["currentProjectId"]),
-    ...mapState("organization", ["currentOrganization"])
+    ...mapState("organization", ["currentOrganization"]),
+    selecteTab: {
+      get() {
+        return this.$route?.meta?.isOrganization ? 1 : this.tab;
+      },
+      set(newTab) {
+        this.tab = newTab;
+      }
+    }
   },
   methods: {
     isOrganizationRoute(route) {
