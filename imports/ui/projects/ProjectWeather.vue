@@ -229,6 +229,12 @@ export default {
     ...mapState(["currentUser"])
   },
   watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.refresh();
+      }
+    },
     page() {
       this.refresh();
     }
