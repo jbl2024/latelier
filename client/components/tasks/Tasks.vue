@@ -70,7 +70,10 @@ export default {
       delay: 250,
       // animation: 150,
       animation: 0,
-      group: "tasks",
+      group: {
+        name: "tasks",
+        pull: "clone"
+      },
       onUpdate: (event) => {
         this.handleMove(event);
       },
@@ -79,7 +82,7 @@ export default {
       }
     };
 
-    if (devices.isMobile()) {
+    if (true) {
       options = {
         ...options,
         forceFallback: true,
