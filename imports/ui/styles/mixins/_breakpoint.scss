@@ -10,5 +10,4 @@ eg Usage:
   @media #{map-get($display-breakpoints, $breakpoint)} {
     @content;
   }
-
 }
