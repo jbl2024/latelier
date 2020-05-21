@@ -3,8 +3,7 @@
     <!-- Display as tabs for top bar navigation -->
     <v-tabs
       v-if="display === 'tabs'"
-      :light="!dark"
-      :dark="dark"
+      dark
       hide-slider
       :class="{ radius: radius }"
     >

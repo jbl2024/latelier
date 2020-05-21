@@ -1,14 +1,29 @@
 <template>
-  <div ref="tasks" class="tasks dragscroll">
-    <template v-for="task in tasks">
-      <task
-        v-if="showCompleted(task, showHiddenTasks)"
-        :key="task._id"
-        :task="task"
-        :data-id="task._id"
-      />
+  <DynamicScroller
+    v-if="tasks.length > 0"
+    ref="tasks"
+    :items="tasks"
+    :min-item-size="54"
+    key-field="_id"
+    class="scroller tasks"
+  >
+    <template v-slot="{ item, index, active }">
+      <DynamicScrollerItem
+        :item="item"
+        :active="active"
+        :size-dependencies="[item.name]"
+        :data-index="index"
+      >
+        <task
+          v-if="showCompleted(item, showHiddenTasks)"
+          :key="item._id"
+          :task="item"
+          class="task"
+          :data-id="item._id"
+        />
+      </DynamicScrollerItem>
     </template>
-  </div>
+  </DynamicScroller>
 </template>
 
 <script>
@@ -53,7 +68,8 @@ export default {
     let options = {
       delayOnTouchOnly: true,
       delay: 250,
-      animation: 150,
+      // animation: 150,
+      animation: 0,
       group: "tasks",
       onUpdate: (event) => {
         this.handleMove(event);
@@ -71,7 +87,14 @@ export default {
         touchStartThreshold: 4
       };
     }
-    this.sortable = Sortable.create(this.$refs.tasks, options);
+    this.$nextTick(() => {
+      if (!this.$refs.tasks) {
+        return;
+      }
+      const el = this.$refs.tasks.$el.querySelector(".vue-recycle-scroller__item-wrapper");
+      this.sortable = Sortable.create(el, options);
+    });
+
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
@@ -150,7 +173,7 @@ export default {
     },
 
     handleMove(event) {
-      const taskId = event.item.dataset.id;
+      const taskId = event.item.firstChild.firstChild.dataset.id;
       const index = event.newIndex;
       if (index < this.tasks.length) {
         const nextTask = this.tasks[index];
@@ -170,12 +193,15 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .tasks {
-      @media (min-width: 601px) {
-        min-height: 400px;
-      }
+.tasks {
+  @media (min-width: 601px) {
+    min-height: 400px;
   }
-  .drag-image .task {
-    width: 272px;
-  }
+}
+.drag-image .task {
+  width: 272px;
+}
+.scroller {
+  height: 100%;
+}
 </style>

@@ -11,6 +11,9 @@ import VueMeteorTracker from "vue-meteor-tracker";
 import VueEvents from "vue-event-handler";
 import VueObserveVisibility from "vue-observe-visibility";
 import vClickOutside from "v-click-outside";
+import VueVirtualScroller from "vue-virtual-scroller";
+
+import "vue-virtual-scroller/dist/vue-virtual-scroller.css";
 
 // Vuetify
 import Vuetify from "vuetify";
@@ -72,6 +75,7 @@ Vue.use(VueEvents);
 Vue.use(Vuetify);
 Vue.use(VueObserveVisibility);
 Vue.use(vClickOutside);
+Vue.use(VueVirtualScroller);
 
 const vuetify = new Vuetify({
   icons: {
