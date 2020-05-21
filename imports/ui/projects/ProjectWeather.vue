@@ -232,6 +232,7 @@ export default {
     projectId: {
       immediate: true,
       handler() {
+        this.selectedReport = null;
         this.refresh();
       }
     },
