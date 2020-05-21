@@ -12,7 +12,7 @@
     </div>
     <v-divider />
     <!-- Taches -->
-    <v-tabs 
+    <v-tabs
       v-if="currentCategory === 'task'"
       v-model="taskTab"
       v-scroll:[scrollTarget]="onScroll"
@@ -80,7 +80,7 @@ export default {
   data() {
     return {
       currentCategory: "task",
-      scrollTarget: '#left-drawer > .v-navigation-drawer__content',
+      scrollTarget: "#left-drawer > .v-navigation-drawer__content",
       tabsShouldStick: false,
       taskTab: null
     };

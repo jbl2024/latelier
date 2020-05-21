@@ -15,7 +15,7 @@ export default {
   getters: {
     isNavigationColorDark: (state) => colors.isDark(state.navigationColor),
     navigationColorBrightness: (state) => colors.getBrightness(state.navigationColor),
-    isContentDark: (state, getters) => getters.navigationColorBrightness < 60 
+    isContentDark: (state, getters) => getters.navigationColorBrightness < 60
     || getters.navigationColorBrightness > 128
   },
   actions: {

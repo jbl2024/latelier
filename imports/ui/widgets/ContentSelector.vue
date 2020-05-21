@@ -111,6 +111,7 @@ export default {
         this.$notifyError(error);
         return false;
       }
+      return false;
     },
     async switchProject(project) {
       try {
@@ -130,6 +131,7 @@ export default {
         this.$notifyError(error);
         return false;
       }
+      return false;
     }
   }
 };

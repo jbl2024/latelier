@@ -31,9 +31,9 @@
         />
         <top-bar :dense="false" />
         <v-navigation-drawer
+          id="right-drawer"
           v-model="rightDrawer"
           class="elevation-16"
-          id="right-drawer"
           app
           right
           :temporary="$vuetify.breakpoint.smAndDown"

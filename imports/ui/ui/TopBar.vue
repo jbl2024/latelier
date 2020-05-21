@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar 
+  <v-app-bar
     class="top-bar"
     :dense="dense"
     :color="navigationColor"

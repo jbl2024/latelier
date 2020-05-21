@@ -1,5 +1,5 @@
-/* 
-eg Usage: 
+/*
+eg Usage:
 @include media-query('md-and-down') {
 	// contenu
 }
@@ -8,6 +8,7 @@ eg Usage:
 
 @mixin media-query($breakpoint) {
   @media #{map-get($display-breakpoints, $breakpoint)} {
-      @content
+    @content;
   }
+
 }

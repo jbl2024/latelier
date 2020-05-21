@@ -167,7 +167,7 @@ export default {
         });
       });
       return states;
-    },
+    }
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -225,7 +225,7 @@ export default {
       },
       update({ organizationId }) {
         return Projects.find(
-          { organizationId: this.organizationId },
+          { organizationId: organizationId },
           { sort: { name: 1 } }
         );
       }
@@ -237,7 +237,7 @@ export default {
         };
       },
       update({ organizationId }) {
-        return Projects.find({ organizationId: this.organizationId }).count();
+        return Projects.find({ organizationId: organizationId }).count();
       }
     },
     organization() {

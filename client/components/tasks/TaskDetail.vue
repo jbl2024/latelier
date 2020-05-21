@@ -130,10 +130,10 @@
 
       <v-divider />
 
-      <v-tabs 
+      <v-tabs
+        v-scroll:[scrollTarget]="onScroll"
         grow
         show-arrows
-        v-scroll:[scrollTarget]="onScroll"
         :class="tabsShouldStick ? 'sticky-tabs' : null"
       >
         <v-tabs-slider color="accent" />
@@ -224,8 +224,8 @@ export default {
       savedName: "",
       completed: false,
       showSelectProjectToClone: false,
-      scrollTarget: '#right-drawer > .v-navigation-drawer__content',
-      tabsShouldStick: false,
+      scrollTarget: "#right-drawer > .v-navigation-drawer__content",
+      tabsShouldStick: false
     };
   },
   computed: {
