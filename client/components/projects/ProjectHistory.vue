@@ -1,7 +1,7 @@
 <template>
   <div class="project-history">
     <v-progress-linear v-if="loading" indeterminate />
-    <v-timeline v-else v-clipped dense>
+    <v-timeline v-else dense>
       <v-timeline-item
         v-for="item in history"
         :key="item._id"
