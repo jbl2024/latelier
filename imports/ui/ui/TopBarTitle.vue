@@ -2,7 +2,7 @@
   <div class="top-bar-title">
     <v-toolbar-title>
       <v-app-bar-nav-icon
-        v-show="$vuetify.breakpoint.smAndDown"
+        v-show="$vuetify.breakpoint.mdAndDown"
         @click.stop="showMobileDrawer = !showMobileDrawer"
       />
       <v-btn
