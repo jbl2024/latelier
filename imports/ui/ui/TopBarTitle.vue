@@ -9,9 +9,9 @@
         v-show="$vuetify.breakpoint.mdAndUp"
         text
         icon
-        @click="goHome"
+        @click="goParent"
       >
-        <v-icon>mdi-home</v-icon>
+        <v-icon>{{ homeIcon }}</v-icon>
       </v-btn>
       <!-- Fast selector for any organizations or projects -->
       <content-selector :key="contentSelectorKey">
@@ -73,6 +73,12 @@ export default {
       get() {
         return this.$store.state.showMobileDrawer;
       }
+    },
+    homeIcon() {
+      if (this.project && this.project.organizationId) {
+        return "mdi-view-dashboard";
+      }
+      return "mdi-home";
     }
   },
   methods: {

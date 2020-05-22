@@ -173,13 +173,6 @@ export default {
     projectMenuItems() {
       const menuItems = [
         {
-          id: "dashboard-page",
-          title: this.$t("Home"),
-          icon: "mdi-home",
-          to: { name: "dashboard-page" },
-          isActive: this.display === "bottom-navigation"
-        },
-        {
           id: "dashboard",
           title: this.$t("Activity"),
           icon: "mdi-pulse",
@@ -237,6 +230,28 @@ export default {
           }
         }
       ];
+      if (this.project && this.project.organizationId) {
+        menuItems.unshift({
+          id: "dashboard-page",
+          title: this.$t("Home"),
+          icon: "mdi-view-dashboard",
+          to: {
+            name: "dashboard-organization-page",
+            params: { organizationId: this.project.organizationId }
+          },
+          isActive: this.display === "bottom-navigation"
+        });
+      } else {
+        menuItems.unshift({
+          id: "dashboard-page",
+          title: this.$t("Home"),
+          icon: "mdi-home",
+          to: {
+            name: "dashboard-page"
+          },
+          isActive: this.display === "bottom-navigation"
+        });
+      }
       if (this.canManageProject(this.projectId)) {
         menuItems.push({
           id: "settings",
@@ -275,5 +290,4 @@ export default {
     z-index: 8;
   }
 }
-
 </style>
