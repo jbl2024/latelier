@@ -1,36 +1,33 @@
 <template>
   <div class="project-history">
     <v-progress-linear v-if="loading" indeterminate />
-    <v-list v-else two-line>
-      <template v-for="item in history">
-        <v-list-item :key="item._id">
-          <v-list-item-avatar :color="isOnline(item.user)">
-            <author-avatar :user-id="item.user" />
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title class="no-wrap">
-              <span class="black--text">
-                {{ item.properties.task.name }}
-              </span>
-            </v-list-item-title>
-            <v-list-item-subtitle class="text--primary">
-              {{ $t(`history.${item.type}`) }}
-            </v-list-item-subtitle>
-            <v-list-item-subtitle>
-              <span class="grey--text">
-                {{
-                  $t("dates.duration.by", {
-                    duration: formatDateDuration(item.createdAt),
-                    user: item.user
-                  })
-                }}
-              </span>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </v-list-item>
-        <v-divider :key="`history-divider-${item._id}`" inset />
-      </template>
-    </v-list>
+    <v-timeline v-else v-clipped dense>
+      <v-timeline-item
+        v-for="item in history"
+        :key="item._id"
+        color="indigo"
+        :small="$vuetify.breakpoint.xsOnly"
+      >
+        <span slot="opposite" />
+        <div>
+          <div class="text--primary ">
+            {{ item.properties.task.name }}
+          </div>
+          <div class="text--primary subtitle-1">
+            {{ $t(`history.${item.type}`) }}
+          </div>
+          <div class="grey--text body-2">
+            {{
+              $t("dates.duration.by", {
+                duration: formatDateDuration(item.createdAt),
+                user: item.user
+              })
+            }}
+          </div>
+        </div>
+      </v-timeline-item>
+    </v-timeline>
+
     <div class="text-xs-center pb-2 flex0">
       <v-pagination
         v-if="pagination.totalPages > 0"
