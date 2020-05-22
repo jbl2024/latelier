@@ -104,7 +104,7 @@ export default {
       if (this.projectId !== null) {
         menuItems = this.projectMenuItems;
       }
-      if (this.organizationId !== null) {
+      if (this.organizationId !== null && !this.projectId) {
         menuItems = this.organizationMenuItems;
       }
       if (this.projectId == null && this.organizationId == null) {
