@@ -271,6 +271,10 @@ html {
   z-index: 9;
 }
 
+#right-drawer .v-navigation-drawer__content {
+  height: -webkit-fill-available;
+}
+
 .v-application .headline, .v-application .title {
   font-family: 'Inter', sans-serif !important;
 }
