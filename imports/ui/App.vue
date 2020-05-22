@@ -267,6 +267,10 @@ html {
   font-family: 'Inter', sans-serif;
 }
 
+#right-drawer {
+  z-index: 9;
+}
+
 .v-application .headline, .v-application .title {
   font-family: 'Inter', sans-serif !important;
 }
