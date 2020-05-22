@@ -34,7 +34,7 @@
           id="right-drawer"
           v-model="rightDrawer"
           class="elevation-16"
-          app
+          fixed
           right
           :temporary="$vuetify.breakpoint.smAndDown"
           :stateless="$vuetify.breakpoint.mdAndUp"
