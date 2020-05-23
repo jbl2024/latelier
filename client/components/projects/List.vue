@@ -207,9 +207,11 @@ export default {
 
     isListEdited(list, selectedList) {
       if (!list || !selectedList) {
+        this.$emit("is-edited", false);
         return false;
       }
       const edited = list._id === selectedList._id;
+      this.$emit("is-edited", edited);
       return edited;
     },
 

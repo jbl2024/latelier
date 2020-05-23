@@ -24,6 +24,7 @@
           :list="list"
           class="kanban-list-item dragscroll"
           :data-id="list._id"
+          @is-edited="onListEdition($event)"
         />
       </resizable>
     </div>
@@ -58,7 +59,8 @@ export default {
   data() {
     return {
       scrollEnabled: false,
-      sortable: null
+      sortable: null,
+      disableSortable: false
     };
   },
   computed: {
@@ -171,6 +173,14 @@ export default {
         // then reset to initial pos
         const ref = this.$refs[`resizable-${id}`][0];
         ref.w = this.defaultListWidth;
+      }
+    },
+
+    onListEdition(edition) {
+      if (this.sortable) {
+        // disable sortable when editing list name
+        // in order to allow text selection with mouse
+        this.sortable.option("disabled", edition);
       }
     }
   }
