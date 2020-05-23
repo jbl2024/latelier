@@ -90,5 +90,6 @@ export default {
     .v-chip + .add-label {
       margin-left: 4px;
     }
+    line-height: 2.5;
   }
 </style>
