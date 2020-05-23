@@ -10,7 +10,6 @@
           icon
           text
           @click="showSearch = !showSearch"
-          v-on="on"
           @shortkey="showSearch = !showSearch"
         >
           <v-icon>mdi-magnify</v-icon>
