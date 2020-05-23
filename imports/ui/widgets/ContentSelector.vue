@@ -12,10 +12,12 @@
     <v-card>
       <v-card-text>
         <v-text-field
+          ref="input"
           v-model="filter"
           :placeholder="$t('contentSelector.search')"
           prepend-inner-icon="mdi-magnify"
           rounded
+          autofocus
           solo
           dense
           hide-details

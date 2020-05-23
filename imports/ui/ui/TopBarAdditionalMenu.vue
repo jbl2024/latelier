@@ -1,8 +1,10 @@
 <template>
   <div class="additional-menu">
     <v-btn
+      v-shortkey="['/']"
       class="prevent-search-blur"
       icon
+      @shortkey="$emit('toggle-search', !isSearchEnabled)"
       @click="$emit('toggle-search', !isSearchEnabled)"
     >
       <v-icon>mdi-magnify</v-icon>

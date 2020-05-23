@@ -5,18 +5,18 @@
         v-show="$vuetify.breakpoint.mdAndDown"
         @click.stop="showMobileDrawer = !showMobileDrawer"
       />
-      <v-btn
-        v-show="$vuetify.breakpoint.mdAndUp"
-        text
-        icon
-        @click="goParent"
-      >
+      <v-btn v-show="$vuetify.breakpoint.mdAndUp" text icon @click="goParent">
         <v-icon>{{ homeIcon }}</v-icon>
       </v-btn>
       <!-- Fast selector for any organizations or projects -->
       <content-selector :key="contentSelectorKey">
         <template v-slot:activator="{ on }">
-          <v-btn text v-on="on">
+          <v-btn
+            v-shortkey="['p']"
+            text
+            v-on="on"
+            @shortkey="on.click($event)"
+          >
             <span class="title title-selector">
               {{ selectorTitle }}
             </span>
@@ -63,7 +63,11 @@ export default {
     },
     selectorTitle() {
       if (this.project) return this.project?.name ? truncate(this.project.name, 30) : "";
-      if (this.organization) return this.organization?.name ? truncate(this.organization.name, 30) : "";
+      if (this.organization) {
+        return this.organization?.name
+          ? truncate(this.organization.name, 30)
+          : "";
+      }
       return "L'atelier";
     },
     showMobileDrawer: {
@@ -106,13 +110,12 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-  .top-bar-title .v-toolbar__title {
-    display: flex;
-    align-items: center;
-  }
+.top-bar-title .v-toolbar__title {
+  display: flex;
+  align-items: center;
+}
 
-  .title-selector {
-    text-transform: none;
-  }
-
+.title-selector {
+  text-transform: none;
+}
 </style>
