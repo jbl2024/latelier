@@ -11,7 +11,6 @@
     @mouseleave="showEditButton = false"
   >
     <v-lazy
-      v-model="isVisible"
       :options="{
         threshold: 0.2,
       }"
@@ -174,25 +173,18 @@ export default {
   },
   data() {
     return {
+      selected: false,
       editName: false,
       savedName: "",
       showEditButton: false,
       completed: false,
-      showConfirmDeleteDialog: false,
-      isVisible: false
+      showConfirmDeleteDialog: false
     };
   },
   computed: {
+    ...mapState(["selectedTask"]),
     ...mapState("project", ["currentProjectId"]),
     ...mapGetters("project", ["hasProjectFeature"]),
-    selected: {
-      get() {
-        return (
-          this.$store.state.selectedTask
-          && this.$store.state.selectedTask._id === this.task._id
-        );
-      }
-    },
     isLate: {
       get() {
         return (
@@ -216,11 +208,16 @@ export default {
     completed(completed) {
       Meteor.call("tasks.complete", this.task._id, completed);
     },
-    selected(selected) {
-      if (selected && !this.isVisible) {
-        this.$el.scrollIntoView({
-          behavior: "smooth"
-        });
+    selectedTask(selectedTask) {
+      if (selectedTask && selectedTask._id === this.task._id) {
+        if (!this.isVisible()) {
+          this.$el.scrollIntoView({
+            behavior: "smooth"
+          });
+        }
+        this.selected = true;
+      } else {
+        this.selected = false;
       }
     }
   },
@@ -407,8 +404,17 @@ export default {
       e.preventDefault();
     },
 
-    visibilityChanged(isVisible) {
-      this.isVisible = isVisible;
+    isVisible() {
+      const bounding = this.$el.getBoundingClientRect();
+      if (
+        bounding.top >= 0
+        && bounding.left >= 0
+        && bounding.right <= (window.innerWidth || document.documentElement.clientWidth)
+        && bounding.bottom <= (window.innerHeight || document.documentElement.clientHeight)
+      ) {
+        return true;
+      }
+      return false;
     }
   }
 };
