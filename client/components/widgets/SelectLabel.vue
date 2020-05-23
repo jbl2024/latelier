@@ -4,8 +4,19 @@
     <generic-dialog v-model="showDialog" :title="$t('Add label')" simple>
       <template v-slot:content>
         <new-label ref="newLabel" :project-id="projectId" />
+        <v-btn
+          v-show="false"
+          v-shortkey="['s']"
+          icon
+          text
+          @click="showSearch = !showSearch"
+          v-on="on"
+          @shortkey="showSearch = !showSearch"
+        >
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
         <v-text-field
-          v-if="!$vuetify.breakpoint.xsOnly"
+          v-if="!$vuetify.breakpoint.xsOnly && showSearch"
           :label="$t('Search') + '...'"
           single-line
           append-icon="mdi-magnify"
@@ -70,6 +81,7 @@ export default {
   },
   data() {
     return {
+      showSearch: false,
       showDialog: false,
       showSelectColor: false,
       label: {},
@@ -113,6 +125,7 @@ export default {
     },
 
     selectLabel(label) {
+      this.showSearch = false;
       this.showDialog = false;
       this.$emit("select", label);
     },
