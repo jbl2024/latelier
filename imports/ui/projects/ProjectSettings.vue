@@ -1,7 +1,7 @@
 <template>
   <div class="project-settings">
     <v-progress-linear v-if="!currentProject" indeterminate />
-    <div v-else>
+    <template v-else>
       <v-tabs ref="tabs" v-resize="centerTabs" centered class="sticky-tabs">
         <v-tabs-slider color="accent" />
         <v-tab id="tab-general">
@@ -30,7 +30,7 @@
           />
         </v-tab-item>
       </v-tabs>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -97,11 +97,7 @@ export default {
 }
 
 .project-settings {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  height: 400px; /* fix sticky on webkit */
 }
 
 .users {
