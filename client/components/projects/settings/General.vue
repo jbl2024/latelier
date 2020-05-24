@@ -211,7 +211,6 @@
           </v-list-item-action>
         </v-list-item>
       </v-list>
-
     </div>
   </div>
 </template>
