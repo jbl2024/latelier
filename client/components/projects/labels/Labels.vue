@@ -40,8 +40,9 @@
           </template>
         </v-autocomplete>
       </div>
-
-      <v-list v-if="mode === 'settings'" class="pt-0">
+    </template>
+    <template v-if="mode === 'settings'">
+      <v-list class="pt-0">
         <v-list-item
           v-for="label in labels"
           :key="label._id"
