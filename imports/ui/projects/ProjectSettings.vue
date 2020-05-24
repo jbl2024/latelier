@@ -2,7 +2,7 @@
   <div class="project-settings">
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
-      <v-tabs class="sticky-tabs">
+      <v-tabs ref="tabs" v-resize="centerTabs" centered class="sticky-tabs">
         <v-tabs-slider color="accent" />
         <v-tab id="tab-general">
           {{ $t("Settings") }}
@@ -74,6 +74,13 @@ export default {
         this.$store.dispatch("project/setCurrentProject", project);
       }
       return project;
+    }
+  },
+  methods: {
+    centerTabs() {
+      setTimeout(() => {
+        this.$refs.tabs.onResize();
+      }, 500);
     }
   }
 };

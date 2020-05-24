@@ -1,7 +1,7 @@
 <template>
   <div class="administration-page">
     <template v-if="isConnected && isAdmin">
-      <v-tabs>
+      <v-tabs ref="tabs" v-resize="centerTabs" centered class="sticky-tabs">
         <v-tabs-slider color="accent" />
         <v-tab id="tab-dashboard">
           {{ $t('Dashboard') }}
@@ -49,6 +49,24 @@ export default {
   },
   computed: {
     ...mapGetters(["isConnected", "isAdmin"])
+  },
+  methods: {
+    centerTabs() {
+      setTimeout(() => {
+        this.$refs.tabs.onResize();
+      }, 500);
+    }
   }
 };
 </script>
+
+<style scoped>
+.administration-page {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+</style>
