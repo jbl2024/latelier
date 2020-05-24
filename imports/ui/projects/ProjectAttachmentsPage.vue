@@ -13,7 +13,7 @@
         description="Vous pouvez ajouter une pièce jointe sur une tâche"
       />
 
-      <v-list v-show="attachments.length > 0" two-line subheader>
+      <v-list v-show="attachments.length > 0" two-line subheader class="list">
         <v-subheader>
           {{ $t('Attachments') }}
         </v-subheader>
@@ -136,6 +136,13 @@ export default {
 };
 </script>
 <style scoped>
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 .toolbar {
   background-color: white;
 }
