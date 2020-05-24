@@ -2,7 +2,8 @@
   <div class="project-settings">
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
-      <v-tabs>
+      <v-tabs class="sticky-tabs">
+        <v-tabs-slider color="accent" />
         <v-tab id="tab-general">
           {{ $t("Settings") }}
         </v-tab>
@@ -79,6 +80,7 @@ export default {
 </script>
 
 <style scoped>
+
 .toolbar {
   background-color: white;
 }
@@ -88,13 +90,11 @@ export default {
 }
 
 .project-settings {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.project-settings-tab-item {
-  padding: 2rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .users {

@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-users elevation-1">
+  <div class="manage-users">
     <select-user
       hide-project
       :project="project"
@@ -7,7 +7,7 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list v-if="currentUser && $subReady.usersInProject">
+    <v-list v-if="currentUser && $subReady.usersInProject" class="list">
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
@@ -204,5 +204,14 @@ export default {
 
 .manage-users {
   margin-top: 12px;
+  background-color: #e5e5e5;
 }
+
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 </style>
