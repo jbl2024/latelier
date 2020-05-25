@@ -306,7 +306,7 @@ export default {
   -webkit-user-select: none;
   cursor: e-resize;
   width: 12px;
-  right: -6px;
+  right: -18px;
   top: 0;
   height: 100%;
 }
