@@ -7,7 +7,7 @@
   "Update": "Update",
   "Canvas": "Canvas",
   "Weather": "Weather",
-  "Title": "Titre",
+  "Title": "Title",
   "Home": "Home",
   "Description": "Description",
   "Last update by": "Last update by",
@@ -188,7 +188,7 @@
   "Tasks deleted": "Tasks deleted",
   "Flush": "Flush",
   "contentSelector": {
-    "search": "Projet ou organisation"
+    "search": "Project or organization"
   },
   "history": {
     "tasks": {
