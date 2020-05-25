@@ -241,7 +241,6 @@
                   </v-tooltip>
                 </v-list-item-action>
               </v-list-item>
-              <v-divider :key="`divider-${item._id}`" inset />
             </v-lazy>
           </template>
         </v-list>
@@ -445,7 +444,6 @@
                       </v-tooltip>
                     </v-list-item-action>
                   </v-list-item>
-                  <v-divider :key="`divider-${item._id}`" inset />
                 </v-lazy>
               </template>
             </template>
