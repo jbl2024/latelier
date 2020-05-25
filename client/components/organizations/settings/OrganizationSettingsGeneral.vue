@@ -22,10 +22,14 @@
             @keyup.enter="updateName"
           />
           <v-btn icon @click="updateName">
-            <v-icon>mdi-check-circle</v-icon>
+            <v-icon color="green">
+              mdi-check-circle
+            </v-icon>
           </v-btn>
           <v-btn icon @click="cancelUpdateName">
-            <v-icon>mdi-close-circle</v-icon>
+            <v-icon color="red">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </div>
       </div>
@@ -61,10 +65,14 @@
             @keydown.shift.enter="updateDescription"
           />
           <v-btn icon @click="updateDescription">
-            <v-icon>mdi-check-circle</v-icon>
+            <v-icon color="green">
+              mdi-check-circle
+            </v-icon>
           </v-btn>
           <v-btn icon @click="cancelUpdateDescription">
-            <v-icon>mdi-close-circle</v-icon>
+            <v-icon color="red">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </div>
       </div>

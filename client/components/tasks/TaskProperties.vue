@@ -22,6 +22,45 @@
       reminder
       @select="onSelectStartDate"
     />
+    <v-subheader>{{ $t("Description") }}</v-subheader>
+    <div class="description">
+      <div
+        v-show="
+          !editDescription && task.description && task.description.length > 0
+        "
+        class="elevation-1 pa-4"
+        @click="startEditDescription"
+      >
+        <div class="tiptap-editor-view" v-html="linkifyHtml(task.description)" />
+      </div>
+      <div
+        v-show="!task.description && !editDescription"
+        class="elevation-1 pa-4"
+        @click="startEditDescription"
+      >
+        {{ $t("No description") }}
+      </div>
+
+      <div v-if="editDescription">
+        <rich-editor
+          ref="description"
+          v-model="task.description"
+          @submit="updateDescription"
+          @click-outside="updateDescription"
+        />
+        <v-btn icon text @click="updateDescription">
+          <v-icon color="green">
+            mdi-check-circle
+          </v-icon>
+        </v-btn>
+
+        <v-btn icon text @click="cancelUpdateDescription">
+          <v-icon color="red">
+            mdi-close-circle
+          </v-icon>
+        </v-btn>
+      </div>
+    </div>
 
     <v-subheader>{{ $t("Dates") }} </v-subheader>
     <v-list two-line class="elevation-1">
@@ -151,22 +190,30 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import moment from "moment";
 import "moment/locale/fr";
 
 export default {
-  mixins: [usersMixin],
+  mixins: [TextRenderingMixin, usersMixin],
   props: {
     task: {
       type: Object,
       default: () => {}
+    },
+    taskObject: {
+      type: Object,
+      default: null
     }
   },
   data() {
     return {
+      editDescription: false,
+      savedDescription: "",
       showChooseAssignedToDialog: false,
       showChooseWatcherDialog: false,
       showSelectDueDate: false,
@@ -175,6 +222,8 @@ export default {
     };
   },
   computed: {
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters("project", ["hasProjectFeature"]),
     project() {
       if (!this.task) return null;
       return Projects.findOne({ _id: this.task.projectId });
@@ -188,6 +237,32 @@ export default {
     }
   },
   methods: {
+    startEditDescription() {
+      this.savedDescription = this.task.description;
+      this.editDescription = true;
+      this.$nextTick(() => this.$refs.description.focus());
+    },
+
+    updateDescription() {
+      this.editDescription = false;
+      if (this.task.description != null) {
+        Meteor.call(
+          "tasks.updateDescription",
+          this.task._id,
+          this.task.description
+        );
+      }
+    },
+
+    cancelUpdateDescription() {
+      this.editDescription = false;
+      this.task.description = this.savedDescription;
+    },
+
+    showProjectLink(task) {
+      return task && task.project;
+    },
+
     onChooseWatcher(user) {
       Meteor.call("tasks.addWatcher", this.task._id, user._id);
     },
@@ -235,12 +310,8 @@ export default {
 
     loadEstimationFeature(task) {
       if (!task.projectId) return;
-
-      const { currentProjectId } = this.$store.state;
-      if (task.projectId === currentProjectId) {
-        this.isEstimationEnabled = this.$store.getters.hasProjectFeature(
-          "estimation"
-        );
+      if (task.projectId === this.currentProjectId) {
+        this.isEstimationEnabled = this.hasProjectFeature("estimation");
         return;
       }
 
@@ -256,9 +327,18 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .task-properties {
   margin: 12px;
+  .v-subheader {
+    font-size: 1rem;
+    margin-top: 1rem;
+    padding: 0;
+  }
+}
+
+.completed-date {
+  font-weight: bold;
 }
 
 .cursor {

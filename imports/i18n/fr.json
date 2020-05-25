@@ -7,10 +7,14 @@
   "Update": "Mettre à jour",
   "Canvas": "Canevas",
   "Weather": "Météo",
+  "Title": "Titre",
+  "Home": "Accueil",
   "Description": "Description",
   "Deletion is permanent": "La suppression est définitive",
+  "Last update by": "Dernière modification par",
   "Properties": "Propriétés",
   "Notes": "Notes",
+  "Checklist": "Checklist",
   "List": "Liste",
   "Completed on": "Terminée le",
   "Created by": "Créée par",
@@ -19,9 +23,12 @@
   "Convert": "Convertir",
   "Email notifications": "Notifications par mail",
   "Dashboard": "Tableau de bord",
+  "Activity": "Activité",
   "Tasks": "Tâches",
   "No task": "Aucune tâche",
+  "No organizations": "Aucune organisation",
   "Delete list?": "Supprimer la liste ?",
+  "Delete list": "Supprimer la liste",
   "Organizations": "Organisations",
   "Projects": "Projets",
   "Settings": "Paramètres",
@@ -53,6 +60,7 @@
   "Individuals": "Sans organisation",
   "Organizations & Projects": "Organisations & Projets",
   "Late": "En retard",
+  "My tasks": "Mes tâches",
   "Assigned to me": "Assignées à moi",
   "Recents": "Récentes",
   "Access forbidden": "Accès interdit",
@@ -64,6 +72,7 @@
   "Close": "Fermer",
   "Do you really want to delete this task?": "Voulez-vous vraiment supprimer cette tâche ?",
   "History": "Historique",
+  "Search project": "Rechercher un projet",
   "Search": "Rechercher",
   "Attachments": "Pièces jointes",
   "Leave project": "Quitter le projet",
@@ -80,6 +89,7 @@
   "No notes": "Aucune note",
   "Add note": "Ajouter une note",
   "edited": "éditée",
+
   "New list": "Nouvelle liste",
   "Template": "Modèle",
   "State": "Etat",
@@ -93,6 +103,7 @@
   "Password is too short": "Le mot de passe est trop court",
   "Welcome back!": "Ravi de vous revoir!",
   "Empty": "Vide",
+  "Background": "Fond d'écran",
   "Select background": "Sélectionner un fond d'écran",
   "Background updated": "Fond d'écran mis à jour",
   "Visibility": "Visibilité",
@@ -100,6 +111,7 @@
   "Dates": "Dates",
   "Color": "Couleur",
   "Categories": "Catégories",
+  "No categories": "Aucune catégorie",
   "Organization": "Organisation",
   "No description": "Aucune description",
   "The project is public": "Le projet est public",
@@ -107,6 +119,7 @@
   "Features": "Fonctionnalités",
   "Members": "Membres",
   "BackgroundNone": "Aucun",
+  "None": "Aucun",
   "Automatically mark as completed": "Terminer automatiquement",
   "Catch completed tasks": "Attraper les tâches terminées",
   "New item": "Nouvel item",
@@ -178,6 +191,9 @@
   "Task deleted": "Tâche supprimée",
   "Tasks deleted": "Tâches supprimées",
   "Flush": "Vider",
+  "contentSelector": {
+    "search": "Projet ou organisation"
+  },
   "history": {
     "tasks": {
       "create": "Création",
@@ -240,5 +256,9 @@
     "1day": "1 jour avant",
     "2days": "2 jours avant",
     "1week": "1 semaine avant"
+  },
+  "login": {
+    "logout": "Se déconnecter",
+    "logoutConfirm": "Voulez-vous vous déconnecter ?"
   }
 }

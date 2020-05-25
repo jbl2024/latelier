@@ -1,7 +1,9 @@
 <template>
   <div class="task-notes">
-    <template v-for="aNote in task.notes">
+    <!-- Current messages -->
+    <div class="task-notes-content">
       <div
+        v-for="aNote in task.notes"
         :key="aNote._id"
         :class="{
           note: true,
@@ -49,16 +51,20 @@
               @submit="updateNote"
             />
             <v-btn text icon @click="updateNote">
-              <v-icon>mdi-check-circle</v-icon>
+              <v-icon color="green">
+                mdi-check-circle
+              </v-icon>
             </v-btn>
             <v-btn text icon @click="cancelUpdateNote">
-              <v-icon>mdi-close-circle</v-icon>
+              <v-icon color="red">
+                mdi-close-circle
+              </v-icon>
             </v-btn>
           </template>
         </div>
       </div>
-    </template>
-
+    </div>
+    <!-- Add a new message -->
     <v-divider v-if="task.notes && task.notes.length > 0" />
     <div class="add-note">
       <div class="input">
@@ -181,11 +187,13 @@ export default {
 
 <style scoped>
 pre {
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
 .task-notes {
-  padding-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
 .empty-state {
   transition: none;

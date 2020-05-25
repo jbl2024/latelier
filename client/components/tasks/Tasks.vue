@@ -5,7 +5,6 @@
         v-if="showCompleted(task, showHiddenTasks)"
         :key="task._id"
         :task="task"
-        class="task"
         :data-id="task._id"
       />
     </template>
@@ -15,6 +14,7 @@
 <script>
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
+import { devices } from "/imports/devices";
 import Sortable from "sortablejs";
 
 export default {
@@ -39,7 +39,7 @@ export default {
     };
   },
   computed: {
-    ...mapState("projectFilters", {
+    ...mapState("project/filters", {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
       selectedUpdatedBy: (state) => state.selectedUpdatedBy
@@ -50,14 +50,11 @@ export default {
       this.filterName = name;
     });
 
-    const options = {
+    let options = {
       delayOnTouchOnly: true,
       delay: 250,
       animation: 150,
       group: "tasks",
-      forceFallback: true,
-      fallbackTolerance: 4,
-      touchStartThreshold: 4,
       onUpdate: (event) => {
         this.handleMove(event);
       },
@@ -65,6 +62,15 @@ export default {
         this.handleMove(event);
       }
     };
+
+    if (devices.isMobile()) {
+      options = {
+        ...options,
+        forceFallback: true,
+        fallbackTolerance: 4,
+        touchStartThreshold: 4
+      };
+    }
     this.sortable = Sortable.create(this.$refs.tasks, options);
   },
   beforeDestroy() {
@@ -163,30 +169,13 @@ export default {
 };
 </script>
 
-<style scoped>
-@media (min-width: 601px) {
+<style lang="scss" scoped>
   .tasks {
-    min-height: 400px;
+      @media (min-width: 601px) {
+        min-height: 400px;
+      }
   }
-}
-
-.task {
-  margin-top: 6px;
-  margin-bottom: 6px;
-}
-.task h2 {
-  text-align: left;
-  background-color: #2d6293;
-  color: white;
-  font-weight: normal;
-  font-size: 14px;
-  padding: 5px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  margin-bottom: 0;
-}
-
-.drag-image .task {
-  width: 272px;
-}
+  .drag-image .task {
+    width: 272px;
+  }
 </style>

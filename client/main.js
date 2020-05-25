@@ -37,7 +37,9 @@ if (Meteor.settings.public.devServerURL) {
 Meteor.startup(() => {
   setTimeout(() => {
     const elem = document.getElementById("inject-loader-wrapper");
-    elem.remove();
+    if (elem) {
+      elem.remove();
+    }
   }, 500);
 });
 
@@ -78,7 +80,7 @@ const vuetify = new Vuetify({
   theme: {
     themes: {
       light: {
-        primary: "#455A64",
+        primary: "#363636",
         accent: "#F9A825"
       }
     }
@@ -132,6 +134,7 @@ Meteor.startup(() => {
     render: (h) => h(App)
   }).$mount("app");
 
+  Vue.prototype.$log = window.console.log;
   Vue.prototype.$notifyError = function (error) {
     store.dispatch("notifyError", error);
   };
@@ -139,12 +142,4 @@ Meteor.startup(() => {
   Vue.prototype.$notify = function (message) {
     store.dispatch("notify", message);
   };
-
-  Tracker.autorun((c) => {
-    const userId = Meteor.userId();
-    if (c.firstRun) return;
-    if (!userId) {
-      router.push({ name: "login" });
-    }
-  });
 });

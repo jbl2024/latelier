@@ -10,6 +10,7 @@
         v-show="processDiagrams.length == 0"
         class="empty"
         rounded
+        full-page
         illustration="empty"
         :label="$t('No diagram')"
         :description="$t('You can add a new diagram')"
@@ -142,15 +143,15 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      processDiagrams: function() {
+      processDiagrams() {
         return [this.projectId];
       }
     },
@@ -163,7 +164,11 @@ export default {
       );
     },
     project() {
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
   methods: {
@@ -237,10 +242,6 @@ export default {
 </script>
 
 <style scoped>
-.empty {
-  margin-top: 24px;
-}
-
 .list {
   max-width: 800px;
   margin: 0 auto;

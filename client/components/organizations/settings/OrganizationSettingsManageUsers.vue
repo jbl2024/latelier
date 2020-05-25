@@ -6,7 +6,7 @@
       @select="onSelectUser"
     />
     <div class="elevation-1 users">
-      <v-list v-if="$subReady.user && $subReady.usersInOrganization">
+      <v-list v-if="currentUser && $subReady.usersInOrganization">
         <v-subheader>
           {{ $t("Members") }}
           <v-btn text icon @click="showSelectUserDialog = true">
@@ -87,6 +87,7 @@
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import { mapState } from "vuex";
 
 export default {
   name: "OrganizationSettingsManageUsers",
@@ -102,13 +103,13 @@ export default {
       showSelectUserDialog: false
     };
   },
+  computed: {
+    ...mapState(["currentUser"])
+  },
   meteor: {
     $subscribe: {
       usersInOrganization() {
         return [this.organization._id];
-      },
-      user() {
-        return [];
       }
     },
     organizationUsers: {

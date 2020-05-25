@@ -1,5 +1,8 @@
 export const UserUtils = {
   getEmail(user) {
+    if (!user) {
+      return null;
+    }
     if (user.emails && user.emails.length > 0) {
       return user.emails[0].address;
     }
@@ -7,5 +10,8 @@ export const UserUtils = {
       return user.profile.email;
     }
     return null;
+  },
+  hasAvatar(user) {
+    return user?.profile?.avatar;
   }
 };

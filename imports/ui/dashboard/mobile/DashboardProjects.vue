@@ -49,7 +49,9 @@
           class="elevation-1"
         >
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon>mdi-star</v-icon>
+            <v-icon class="mr-2">
+              mdi-star
+            </v-icon>
             <v-toolbar-title>{{ $t("Favorites") }}</v-toolbar-title>
           </v-toolbar>
           <template v-for="item in favorites">
@@ -136,7 +138,9 @@
 
         <v-list two-line subheader class="elevation-1">
           <v-toolbar class="pointer" color="primary" dark>
-            <v-icon>mdi-account-circle</v-icon>
+            <v-icon class="mr-2">
+              mdi-account-circle
+            </v-icon>
             <v-toolbar-title>{{ $t("Individuals") }}</v-toolbar-title>
             <v-spacer />
 
@@ -152,84 +156,92 @@
             </div>
           </v-toolbar>
           <template v-for="item in individuals">
-            <v-list-item :key="item._id" @click="openProject(item)">
-              <v-list-item-avatar :color="getColor(item)">
-                <v-icon :class="getVisibilityIconClass(item)">
-                  {{ getVisibilityIcon(item) }}
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content class="pointer">
-                <v-list-item-title>{{ item.name }}</v-list-item-title>
-                <v-list-item-subtitle>
-                  {{ formatProjectDates(item) }}
-                </v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action
-                v-for="group in getProjectGroups(item)"
-                :key="group._id"
-                class="show-desktop"
-                @click.stop="selectGroup(group)"
-              >
-                <v-chip small color="primary" text-color="white">
-                  {{ group.name }}
-                </v-chip>
-              </v-list-item-action>
-              <v-list-item-action
-                v-if="canManageProject(item)"
-                class="show-desktop"
-              >
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      text
-                      color="grey darken-1"
-                      v-on="on"
-                      @click.stop="openProjectSettings(item)"
-                    >
-                      <v-icon>mdi-settings</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Settings") }}</span>
-                </v-tooltip>
-              </v-list-item-action>
-              <v-list-item-action class="show-desktop">
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      text
-                      color="grey darken-1"
-                      @click.stop="cloneProject(item._id)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-content-copy</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Clone") }}</span>
-                </v-tooltip>
-              </v-list-item-action>
-              <v-list-item-action
-                v-if="canDeleteProject(item)"
-                class="show-desktop"
-              >
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      icon
-                      text
-                      color="grey darken-1"
-                      @click.stop="deleteProject(item._id)"
-                      v-on="on"
-                    >
-                      <v-icon>mdi-delete</v-icon>
-                    </v-btn>
-                  </template>
-                  <span>{{ $t("Move to trash") }}</span>
-                </v-tooltip>
-              </v-list-item-action>
-            </v-list-item>
-            <v-divider :key="`divider-${item._id}`" inset />
+            <v-lazy
+              :key="item._id"
+              :options="{
+                threshold: 0.2,
+              }"
+              min-height="72"
+              transition="fade-transition"
+            >
+              <v-list-item :key="item._id" @click="openProject(item)">
+                <v-list-item-avatar :color="getColor(item)">
+                  <v-icon :class="getVisibilityIconClass(item)">
+                    {{ getVisibilityIcon(item) }}
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>{{ item.name }}</v-list-item-title>
+                  <v-list-item-subtitle>
+                    {{ formatProjectDates(item) }}
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+                <v-list-item-action
+                  v-for="group in getProjectGroups(item)"
+                  :key="group._id"
+                  class="show-desktop"
+                  @click.stop="selectGroup(group)"
+                >
+                  <v-chip small color="primary" text-color="white">
+                    {{ group.name }}
+                  </v-chip>
+                </v-list-item-action>
+                <v-list-item-action
+                  v-if="canManageProject(item)"
+                  class="show-desktop"
+                >
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        icon
+                        text
+                        color="grey darken-1"
+                        v-on="on"
+                        @click.stop="openProjectSettings(item)"
+                      >
+                        <v-icon>mdi-settings</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t("Settings") }}</span>
+                  </v-tooltip>
+                </v-list-item-action>
+                <v-list-item-action class="show-desktop">
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        icon
+                        text
+                        color="grey darken-1"
+                        @click.stop="cloneProject(item._id)"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-content-copy</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t("Clone") }}</span>
+                  </v-tooltip>
+                </v-list-item-action>
+                <v-list-item-action
+                  v-if="canDeleteProject(item)"
+                  class="show-desktop"
+                >
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        icon
+                        text
+                        color="grey darken-1"
+                        @click.stop="deleteProject(item._id)"
+                        v-on="on"
+                      >
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>{{ $t("Move to trash") }}</span>
+                  </v-tooltip>
+                </v-list-item-action>
+              </v-list-item>
+            </v-lazy>
           </template>
         </v-list>
 
@@ -247,7 +259,9 @@
               dark
               @click="openOrganization(organization._id)"
             >
-              <v-icon>mdi-domain</v-icon>
+              <v-icon class="mr-2">
+                mdi-domain
+              </v-icon>
 
               <v-toolbar-title>{{ organization.name }}</v-toolbar-title>
 
@@ -345,84 +359,92 @@
                   state.value
                 )"
               >
-                <v-list-item :key="item._id" @click="openProject(item)">
-                  <v-list-item-avatar :color="getColor(item)">
-                    <v-icon :class="getVisibilityIconClass(item)">
-                      {{ getVisibilityIcon(item) }}
-                    </v-icon>
-                  </v-list-item-avatar>
-                  <v-list-item-content class="pointer">
-                    <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    <v-list-item-subtitle>
-                      {{ formatProjectDates(item) }}
-                    </v-list-item-subtitle>
-                  </v-list-item-content>
-                  <v-list-item-action
-                    v-for="group in getProjectGroups(item)"
-                    :key="group._id"
-                    class="show-desktop"
-                    @click.stop="selectGroup(group)"
-                  >
-                    <v-chip small color="primary" text-color="white">
-                      {{ group.name }}
-                    </v-chip>
-                  </v-list-item-action>
-                  <v-list-item-action
-                    v-if="canManageProject(item)"
-                    class="show-desktop"
-                  >
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          icon
-                          text
-                          color="grey darken-1"
-                          v-on="on"
-                          @click.stop="openProjectSettings(item)"
-                        >
-                          <v-icon>mdi-settings</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>{{ $t("Settings") }}</span>
-                    </v-tooltip>
-                  </v-list-item-action>
-                  <v-list-item-action class="show-desktop">
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          icon
-                          text
-                          color="grey darken-1"
-                          @click.stop="cloneProject(item._id)"
-                          v-on="on"
-                        >
-                          <v-icon>mdi-content-copy</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>{{ $t("Clone") }}</span>
-                    </v-tooltip>
-                  </v-list-item-action>
-                  <v-list-item-action
-                    v-if="canDeleteProject(item)"
-                    class="show-desktop"
-                  >
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          icon
-                          text
-                          color="grey darken-1"
-                          @click.stop="deleteProject(item._id)"
-                          v-on="on"
-                        >
-                          <v-icon>mdi-delete</v-icon>
-                        </v-btn>
-                      </template>
-                      <span>{{ $t("Move to trash") }}</span>
-                    </v-tooltip>
-                  </v-list-item-action>
-                </v-list-item>
-                <v-divider :key="`divider-${item._id}`" inset />
+                <v-lazy
+                  :key="item._id"
+                  :options="{
+                    threshold: 0.2,
+                  }"
+                  min-height="72"
+                  transition="fade-transition"
+                >
+                  <v-list-item :key="item._id" @click="openProject(item)">
+                    <v-list-item-avatar :color="getColor(item)">
+                      <v-icon :class="getVisibilityIconClass(item)">
+                        {{ getVisibilityIcon(item) }}
+                      </v-icon>
+                    </v-list-item-avatar>
+                    <v-list-item-content class="pointer">
+                      <v-list-item-title>{{ item.name }}</v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ formatProjectDates(item) }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                    <v-list-item-action
+                      v-for="group in getProjectGroups(item)"
+                      :key="group._id"
+                      class="show-desktop"
+                      @click.stop="selectGroup(group)"
+                    >
+                      <v-chip small color="primary" text-color="white">
+                        {{ group.name }}
+                      </v-chip>
+                    </v-list-item-action>
+                    <v-list-item-action
+                      v-if="canManageProject(item)"
+                      class="show-desktop"
+                    >
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            text
+                            color="grey darken-1"
+                            v-on="on"
+                            @click.stop="openProjectSettings(item)"
+                          >
+                            <v-icon>mdi-settings</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>{{ $t("Settings") }}</span>
+                      </v-tooltip>
+                    </v-list-item-action>
+                    <v-list-item-action class="show-desktop">
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            text
+                            color="grey darken-1"
+                            @click.stop="cloneProject(item._id)"
+                            v-on="on"
+                          >
+                            <v-icon>mdi-content-copy</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>{{ $t("Clone") }}</span>
+                      </v-tooltip>
+                    </v-list-item-action>
+                    <v-list-item-action
+                      v-if="canDeleteProject(item)"
+                      class="show-desktop"
+                    >
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            icon
+                            text
+                            color="grey darken-1"
+                            @click.stop="deleteProject(item._id)"
+                            v-on="on"
+                          >
+                            <v-icon>mdi-delete</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>{{ $t("Move to trash") }}</span>
+                      </v-tooltip>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-lazy>
               </template>
             </template>
             <v-divider :key="`${organization._id}-divider`" />
@@ -592,7 +614,7 @@ export default {
 
     openProject(project) {
       this.$router.push({
-        name: "project",
+        name: "project-dashboard",
         params: {
           projectId: project._id
         }
@@ -763,7 +785,7 @@ export default {
 
     openOrganization(id) {
       this.$router.push({
-        name: "projects-page",
+        name: "dashboard-organization-page",
         params: { organizationId: id }
       });
     },

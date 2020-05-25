@@ -225,7 +225,7 @@ export default {
 }
 
 pre {
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
   white-space: pre-wrap;
 }
 

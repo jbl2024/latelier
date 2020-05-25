@@ -67,9 +67,7 @@ export const colors = {
     return null;
   },
 
-  isDark(color) {
-    // see https://trendct.org/2016/01/22/how-to-choose-a-label-color-to-contrast-with-background/
-
-    return this.getBrightness(color) < 128;
+  isDark(color, threshold = 128) {
+    return this.getBrightness(color) < threshold;
   }
 };

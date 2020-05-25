@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-users elevation-1">
+  <div class="manage-users">
     <select-user
       hide-project
       :project="project"
@@ -7,11 +7,13 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list v-if="$subReady.user && $subReady.usersInProject">
+    <v-list v-if="currentUser && $subReady.usersInProject" class="list">
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
-          <v-icon>mdi-plus</v-icon>
+          <v-icon>
+            mdi-plus
+          </v-icon>
         </v-btn>
       </v-subheader>
       <template v-for="user in projectUsers">
@@ -74,7 +76,9 @@
 
           <v-list-item-action>
             <v-btn icon ripple @click.stop="removeUser(user)">
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>
+                mdi-delete
+              </v-icon>
             </v-btn>
           </v-list-item-action>
         </v-list-item>
@@ -87,6 +91,7 @@
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import { mapState } from "vuex";
 
 export default {
   name: "ProjectSettingsManageUsers",
@@ -102,13 +107,13 @@ export default {
       showSelectUserDialog: false
     };
   },
+  computed: {
+    ...mapState(["currentUser"])
+  },
   meteor: {
     $subscribe: {
       usersInProject() {
         return [this.project._id];
-      },
-      user() {
-        return [];
       }
     },
     projectUsers: {
@@ -199,5 +204,14 @@ export default {
 
 .manage-users {
   margin-top: 12px;
+  background-color: #e5e5e5;
 }
+
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
+}
+
 </style>

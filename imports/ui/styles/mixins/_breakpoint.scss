@@ -1,0 +1,13 @@
+/*
+eg Usage:
+@include media-query('md-and-down') {
+	// contenu
+}
+*/
+@import '~node_modules/vuetify/src/styles/settings/_variables';
+
+@mixin media-query($breakpoint) {
+  @media #{map-get($display-breakpoints, $breakpoint)} {
+    @content;
+  }
+}

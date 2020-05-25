@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-progress-linear v-if="loading" indeterminate absolute top />
-    <project-list :projects="projects" @select="onSelectProject" />
+    <project-list
+      :projects="projects"
+      empty-illustration="empty"
+      @select="onSelectProject"
+    />
     <div class="text-xs-center">
       <v-pagination
         v-if="pagination.totalPages > 0"
@@ -24,12 +28,16 @@ export default {
     organizationId: {
       type: String,
       default: null
+    },
+    autoSearch: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       loading: false,
-      projects: [],
+      projects: null,
       projectCount: 0,
       page: 1,
       pagination: {
@@ -56,7 +64,7 @@ export default {
   },
   methods: {
     find() {
-      if (!this.filter || !this.filter.length === 0) return;
+      if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
       Meteor.call(
         "search.findProjects",
@@ -88,5 +96,3 @@ export default {
   }
 };
 </script>
-
-<style scoped></style>

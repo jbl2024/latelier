@@ -1,19 +1,22 @@
 <template>
   <div class="project-attachments-page">
-    <div v-if="!$subReady.project">
+    <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.project">
+    <div v-else>
       <empty-state
         v-show="attachments.length == 0"
         small
+        full-page
         illustration="documents"
         label="Aucune pièce jointe"
         description="Vous pouvez ajouter une pièce jointe sur une tâche"
       />
 
-      <v-list v-show="attachments.length > 0" two-line subheader>
-        <v-subheader>Pièces jointes</v-subheader>
+      <v-list v-show="attachments.length > 0" two-line subheader class="list">
+        <v-subheader>
+          {{ $t('Attachments') }}
+        </v-subheader>
         <v-list-item v-for="attachment in attachments" :key="attachment._id">
           <v-list-item-avatar>
             <v-icon>mdi-file-document</v-icon>
@@ -61,6 +64,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -69,26 +73,21 @@ export default {
       default: null
     }
   },
-  data() {
-    return {};
-  },
-  mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
-  },
-  beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+  computed: {
+    ...mapState("project", ["currentProject"])
   },
   meteor: {
-    // Subscriptions
     $subscribe: {
-      project: function() {
+      project() {
         return [this.projectId];
       }
     },
     project() {
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
     },
-
     attachments: {
       params() {
         return {
@@ -104,15 +103,24 @@ export default {
       }
     }
   },
+  watch: {
+    projectId() {
+      this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    }
+  },
+  mounted() {
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+  },
+  beforeDestroy() {
+    this.$store.dispatch("project/setCurrentProjectId", null);
+  },
   methods: {
     link(attachment) {
       return Attachments.link(attachment);
     },
-
     getTask(attachment) {
       return Tasks.findOne({ _id: attachment.meta.taskId });
     },
-
     deleteAttachment(attachment) {
       this.$confirm(this.$t("Delete attachment?"), {
         title: attachment.name,
@@ -127,14 +135,16 @@ export default {
   }
 };
 </script>
-
 <style scoped>
-.toolbar {
-  background-color: white;
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
-.empty-state {
-  margin-top: 24px;
+.toolbar {
+  background-color: white;
 }
 
 .link {

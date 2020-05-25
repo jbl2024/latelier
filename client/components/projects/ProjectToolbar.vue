@@ -1,9 +1,10 @@
 <template>
-  <v-toolbar ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
+  <v-toolbar v-if="project" ref="toolbar" v-resize="onResizeToolbar" class="flex0" dense>
     <tasks-export
       v-model="showTasksExport"
       :project-id="project._id"
     />
+    <project-trashcan ref="projectTrashcan" :project-id="project._id" />
 
     <project-filters-dialog
       v-model="showFiltersDialog"
@@ -47,6 +48,12 @@
     />
     <tooltip-button
       bottom
+      icon="mdi-trash-can"
+      :tooltip="$t('Trashcan')"
+      @on="openTrashcan()"
+    />
+    <tooltip-button
+      bottom
       icon="mdi-file-export"
       :tooltip="$t('Export')"
       @on="exportODS()"
@@ -69,11 +76,11 @@ export default {
   props: {
     project: {
       type: Object,
-      default: () => {}
+      default: null
     },
     user: {
       type: Object,
-      default: () => {}
+      default: null
     }
   },
   data() {
@@ -173,6 +180,10 @@ export default {
       );
     },
 
+    openTrashcan() {
+      this.$refs.projectTrashcan.open();
+    },
+
     onResizeToolbar() {
       const toolbar = this.$refs.toolbar.$el;
       const width = toolbar.offsetWidth;
@@ -186,4 +197,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+  .flex0 {
+    flex: 0;
+  }
+</style>

@@ -24,6 +24,7 @@
           :list="list"
           class="kanban-list-item dragscroll"
           :data-id="list._id"
+          @is-edited="onListEdition($event)"
         />
       </resizable>
     </div>
@@ -38,6 +39,7 @@
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
 import { dragscroll } from "vue-dragscroll";
+import { devices } from "/imports/devices";
 import Sortable from "sortablejs";
 
 export default {
@@ -57,7 +59,8 @@ export default {
   data() {
     return {
       scrollEnabled: false,
-      sortable: null
+      sortable: null,
+      disableSortable: false
     };
   },
   computed: {
@@ -77,13 +80,10 @@ export default {
     }
   },
   mounted() {
-    const options = {
+    let options = {
       delayOnTouchOnly: true,
       delay: 250,
       animation: 150,
-      forceFallback: true,
-      fallbackTolerance: 4,
-      touchStartThreshold: 4,
       handle: ".list-header",
       group: "lists",
       onUpdate: (event) => {
@@ -93,6 +93,14 @@ export default {
         this.handleMove(event);
       }
     };
+    if (devices.isMobile()) {
+      options = {
+        ...options,
+        forceFallback: true,
+        fallbackTolerance: 4,
+        touchStartThreshold: 4
+      };
+    }
     this.sortable = Sortable.create(this.$refs.kanban, options);
   },
   beforeDestroy() {
@@ -166,6 +174,14 @@ export default {
         const ref = this.$refs[`resizable-${id}`][0];
         ref.w = this.defaultListWidth;
       }
+    },
+
+    onListEdition(edition) {
+      if (this.sortable) {
+        // disable sortable when editing list name
+        // in order to allow text selection with mouse
+        this.sortable.option("disabled", edition);
+      }
     }
   }
 };
@@ -219,7 +235,7 @@ export default {
   }
 
   .kanban-flex {
-    border-right: 1px solid rgba(0, 0, 0, 0.12);
+    border-right: 1px solid rgba(0, 0, 0, 0.04);
     margin-right: 10px;
     padding-right: 10px;
   }

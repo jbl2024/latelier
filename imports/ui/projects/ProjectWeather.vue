@@ -12,6 +12,7 @@
     />
     <empty-state
       v-if="healthReports.length == 0 && !loading"
+      full-page
       class="empty"
       illustration="weather"
       :description="$t('No report defined')"
@@ -25,7 +26,7 @@
       <div
         ref="container"
         class="container-wrapper"
-        :style="getBackgroundUrl(user)"
+        :style="getBackgroundUrl(currentUser)"
       >
         <div v-if="loading">
           <v-progress-linear indeterminate absolute />
@@ -64,7 +65,9 @@
               <div class="flex-container elevation-1">
                 <v-toolbar dark color="primary" class="flex0">
                   <v-btn text @click="newHealthReport">
-                    <v-icon>mdi-plus</v-icon>
+                    <v-icon>
+                      mdi-plus
+                    </v-icon>
                     {{ $t("Add report") }}
                   </v-btn>
                 </v-toolbar>
@@ -88,12 +91,16 @@
                       </v-list-item-content>
                       <v-list-item-action>
                         <v-btn icon @click.stop="editReport(report)">
-                          <v-icon>mdi-pencil</v-icon>
+                          <v-icon>
+                            mdi-pencil
+                          </v-icon>
                         </v-btn>
                       </v-list-item-action>
                       <v-list-item-action>
                         <v-btn icon @click.stop="deleteReport(report)">
-                          <v-icon>mdi-delete</v-icon>
+                          <v-icon>
+                            mdi-delete
+                          </v-icon>
                         </v-btn>
                       </v-list-item-action>
                     </v-list-item>
@@ -125,12 +132,16 @@
                     </v-list-item-content>
                     <v-list-item-action>
                       <v-btn icon @click.stop="editReport(selectedReport)">
-                        <v-icon>mdi-pencil</v-icon>
+                        <v-icon>
+                          mdi-pencil
+                        </v-icon>
                       </v-btn>
                     </v-list-item-action>
                     <v-list-item-action>
                       <v-btn icon @click.stop="deleteReport(selectedReport)">
-                        <v-icon>mdi-delete</v-icon>
+                        <v-icon>
+                          mdi-delete
+                        </v-icon>
                       </v-btn>
                     </v-list-item-action>
                   </v-list-item>
@@ -158,11 +169,14 @@
                         @click-outside="updateDescription"
                       />
                       <v-btn icon text @click="updateDescription">
-                        <v-icon>mdi-check-circle</v-icon>
+                        <v-icon color="green">
+                          mdi-check-circle
+                        </v-icon>
                       </v-btn>
-
                       <v-btn icon text @click="cancelUpdateDescription">
-                        <v-icon>mdi-close-circle</v-icon>
+                        <v-icon color="red">
+                          mdi-close-circle
+                        </v-icon>
                       </v-btn>
                     </div>
                     <v-progress-linear v-if="loadingTasks" indeterminate absolute />
@@ -181,9 +195,11 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
+import { mapState } from "vuex";
 
 export default {
-  mixins: [DatesMixin],
+  mixins: [DatesMixin, BackgroundMixin],
   props: {
     projectId: {
       type: String,
@@ -208,30 +224,42 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState("project", ["currentProject"]),
+    ...mapState(["currentUser"])
+  },
   watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.selectedReport = null;
+        this.refresh();
+      }
+    },
     page() {
       this.refresh();
     }
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.refresh();
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      project: function() {
+      project() {
         return [this.projectId];
       }
     },
     project() {
-      return Projects.findOne();
-    },
-    user() {
-      return Meteor.user();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
   methods: {
@@ -277,16 +305,6 @@ export default {
     newHealthReport() {
       this.$refs.newHealthReport.open();
     },
-    getBackgroundUrl(user) {
-      if (user && user.profile) {
-        const { background } = user.profile;
-        if (background) {
-          return `background-image: url('${background}');`;
-        }
-      }
-      return "";
-    },
-
     getIcon(weather) {
       return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     },
@@ -415,10 +433,6 @@ export default {
 .flex1 {
   flex: 1; /* takes the remaining height of the "container" div */
   overflow: auto; /* to scroll just the "main" div */
-}
-
-.empty {
-  margin-top: 24px;
 }
 
 .parent {

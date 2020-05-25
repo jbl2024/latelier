@@ -105,7 +105,7 @@ export default {
 
 <style scoped>
 .empty-state {
-  margin-top: 24px;
+  padding: 2rem;
 }
 
 .no-wrap {

@@ -1,12 +1,12 @@
 <template>
   <div class="project-timeline">
-    <template v-if="!$subReady.project">
+    <template v-if="!$subReady">
       <v-progress-linear indeterminate />
     </template>
-    <template v-if="$subReady.project && project">
+    <template v-else-if="$subReady.project && currentProject && currentProject._id">
       <project-filters-dialog
         v-model="showFiltersDialog"
-        :project-id="project._id"
+        :project-id="currentProject._id"
       />
 
       <v-toolbar
@@ -48,11 +48,10 @@
 
         <project-filters
           v-if="!showFilters"
-          :project-id="project._id"
+          :project-id="currentProject._id"
           class="ml-3"
         />
       </v-toolbar>
-
       <div
         ref="timelineContainer"
         v-resize="onResizeTimelineContainer"
@@ -60,8 +59,8 @@
       >
         <timeline
           ref="timeline"
-          :items="getItems()"
-          :groups="getGroups()"
+          :items="items"
+          :groups="groups"
           :options="timeline.options"
           @select="onSelectTask"
         />
@@ -122,31 +121,121 @@ export default {
     };
   },
   computed: {
-    ...mapState("projectFilters", {
+    ...mapState("project", ["currentProject"]),
+    ...mapState("project/filters", {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
       selectedUpdatedBy: (state) => state.selectedUpdatedBy
-    })
+    }),
+    groups() {
+      if (!this.$subReady.project || !this.currentProject) return [];
+      const lists = Lists.find({});
+      const groups = [];
+      groups.push({
+        id: 0,
+        content: "Projet"
+      });
+      lists.forEach((list) => {
+        const group = {
+          id: list._id,
+          content: list.name,
+          subgroupStack: true
+        };
+        groups.push(group);
+      });
+      return groups;
+    },
+    items() {
+      if (!this.$subReady.project || !this.currentProject) return [];
+      const items = [];
+      const { tasks } = this;
+
+      if (this.currentProject.startDate) {
+        items.push({
+          id: "start",
+          content: this.getStartContent(),
+          start: moment(this.currentProject.startDate).toDate(),
+          type: "box",
+          group: 0
+        });
+      }
+
+      if (this.currentProject.endDate) {
+        items.push({
+          id: "end",
+          content: this.getEndContent(),
+          start: moment(this.currentProject.endDate).toDate(),
+          type: "box",
+          group: 0
+        });
+      }
+
+      tasks.forEach((task) => {
+        let start = task.startDate ? moment(task.startDate).toDate() : null;
+        let end = task.dueDate ? moment(task.dueDate).toDate() : null;
+
+        const { completed, completedAt } = task;
+
+        if (completed && completedAt) {
+          end = moment(completedAt).toDate();
+        }
+
+        let type = "range";
+        if (!start || !end) {
+          type = "point";
+        }
+
+        if (!start) {
+          start = end;
+        }
+
+        if (!start && !end) {
+          return;
+        }
+
+        const item = {
+          id: task._id,
+          group: task.listId,
+          subgroup: task._id,
+          content: this.getTaskContent(task),
+          start: start,
+          end: end,
+          type: type
+        };
+        items.push(item);
+      });
+      // eslint-disable-next-line vue/no-async-in-computed-properties
+      setTimeout(() => {
+        if (this.$refs.timeline && this.$refs.timeline.redraw) {
+          this.$refs.timeline.redraw();
+        }
+      }, 1000);
+      return items;
+    }
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     this.$events.listen("filter-tasks", (name) => {
       this.filterName = name;
     });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      project: function() {
+      project() {
         return [this.projectId];
       }
     },
     project() {
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     },
     tasks: {
       params() {
@@ -196,93 +285,6 @@ export default {
     }
   },
   methods: {
-    getGroups() {
-      const lists = Lists.find({});
-      const groups = [];
-
-      groups.push({
-        id: 0,
-        content: "Projet"
-      });
-
-      lists.forEach((list) => {
-        const group = {
-          id: list._id,
-          content: list.name,
-          subgroupStack: true
-        };
-        groups.push(group);
-      });
-      return groups;
-    },
-
-    getItems() {
-      const items = [];
-      const { tasks } = this;
-
-      if (this.project.startDate) {
-        items.push({
-          id: "start",
-          content: this.getStartContent(),
-          start: moment(this.project.startDate).toDate(),
-          type: "box",
-          group: 0
-        });
-      }
-
-      if (this.project.endDate) {
-        items.push({
-          id: "end",
-          content: this.getEndContent(),
-          start: moment(this.project.endDate).toDate(),
-          type: "box",
-          group: 0
-        });
-      }
-
-      tasks.forEach((task) => {
-        let start = task.startDate ? moment(task.startDate).toDate() : null;
-        let end = task.dueDate ? moment(task.dueDate).toDate() : null;
-
-        const { completed, completedAt } = task;
-
-        if (completed && completedAt) {
-          end = moment(completedAt).toDate();
-        }
-
-        let type = "range";
-        if (!start || !end) {
-          type = "point";
-        }
-
-        if (!start) {
-          start = end;
-        }
-
-        if (!start && !end) {
-          return;
-        }
-
-        const item = {
-          id: task._id,
-          group: task.listId,
-          subgroup: task._id,
-          content: this.getTaskContent(task),
-          start: start,
-          end: end,
-          type: type
-        };
-        items.push(item);
-      });
-      setTimeout(() => {
-        if (this.$refs.timeline && this.$refs.timeline.redraw) {
-          this.$refs.timeline.redraw();
-        }
-      }, 1000);
-
-      return items;
-    },
-
     onSelectTask(data) {
       const { items } = data;
       if (items && items.length > 0) {
@@ -370,20 +372,6 @@ export default {
   overflow-y: auto;
 }
 
-.project-timeline {
-  background-color: white;
-}
-::-webkit-scrollbar {
-  -webkit-appearance: none;
-  width: 7px;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.5);
-  -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-  box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
-}
-
 .drawer-task-detail {
   box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0 1px 1px 0 rgba(0, 0, 0, 0.14),
     0 1px 3px 0 rgba(0, 0, 0, 0.12);
@@ -403,7 +391,7 @@ export default {
   letter-spacing: 0.02em;
   margin-top: 6px;
   padding: 0;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: Inter, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .timeline {

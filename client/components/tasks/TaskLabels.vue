@@ -16,19 +16,24 @@
     </v-chip>
     <v-chip
       v-show="labels.length == 0"
+      v-shortkey="['l']"
       tabindex="0"
-      @keyup.enter.native="$refs.selectLabel.open()"
-      @click="$refs.selectLabel.open()"
+      @keyup.enter.native="selectLabel()"
+      @click="selectLabel()"
+      @shortkey="selectLabel()"
     >
       {{ $t("Add label") }}
     </v-chip>
     <v-btn
       v-show="labels.length > 0"
+      class="add-label"
       fab
       x-small
       @click="$refs.selectLabel.open()"
     >
-      <v-icon>mdi-plus</v-icon>
+      <v-icon>
+        mdi-plus
+      </v-icon>
     </v-btn>
   </div>
 </template>
@@ -75,13 +80,24 @@ export default {
 
     removeLabel(label) {
       Meteor.call("tasks.removeLabel", this.task._id, label._id);
+    },
+
+    selectLabel() {
+      if (this.task?._id) {
+        this.$refs.selectLabel.open();
+      }
     }
   }
 };
 </script>
 
-<style scoped>
-.v-chip {
-  margin: 4px;
-}
+<style lang="scss" scoped>
+  .task-labels {
+    margin-bottom: 1rem;
+    .v-chip + .v-chip,
+    .v-chip + .add-label {
+      margin-left: 4px;
+    }
+    line-height: 2.5;
+  }
 </style>

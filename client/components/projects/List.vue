@@ -1,77 +1,54 @@
 <template>
   <div class="list" @drop="onDrop" @dragover="onDragOver">
-    <new-task
-      :project-id="list.projectId"
-      :list-id="list._id"
-      :active.sync="showNewTaskDialog"
-    />
+    <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog" />
     <div class="list-header">
       <div class="swimlane dragscroll">
-        <div v-show="!isListEdited(list, selectedList)" :style="getColor()">
-          <div :style="getColor()" class="flex-container-row list-name-wrapper">
-            <div
-              v-if="hiddenTaskCount == 0"
-              class="list-name flex1"
-              @click="editList(list)"
-            >
-              {{ list.name }} ({{ taskCount }})
-              {{ getEstimations(tasksForEstimation) }}
-            </div>
-            <div
-              v-if="hiddenTaskCount > 0"
-              class="list-name flex1"
-              @click="editList(list)"
-            >
-              {{ list.name }} ({{ hiddenTaskCount }}/{{ taskCount }})
-            </div>
-            <v-menu bottom left class="flex0">
-              <template v-slot:activator="{ on }">
-                <v-btn :dark="isDark()" small icon v-on="on">
-                  <v-icon>mdi-dots-vertical</v-icon>
-                </v-btn>
-              </template>
-              <v-list dense>
-                <v-list-item @click="newTaskInline(list._id)">
-                  <v-list-item-action>
-                    <v-icon>mdi-plus</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-title>
-                    {{ $t("Add new task") }}
-                  </v-list-item-title>
-                </v-list-item>
-                <v-list-item @click="deleteList(list._id)">
-                  <v-list-item-action>
-                    <v-icon>mdi-delete</v-icon>
-                  </v-list-item-action>
-                  <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
-                </v-list-item>
-                <v-divider />
-                <v-list-item @click="list.autoComplete = !list.autoComplete">
-                  <v-list-item-action>
-                    <v-checkbox color="accent" :input-value="list.autoComplete" />
-                  </v-list-item-action>
-                  <v-list-item-title>
-                    {{ $t("Automatically mark as completed") }}
-                  </v-list-item-title>
-                </v-list-item>
-                <v-list-item
-                  @click="list.catchCompleted = !list.catchCompleted"
-                >
-                  <v-list-item-action>
-                    <v-checkbox color="accent" :input-value="list.catchCompleted" />
-                  </v-list-item-action>
-                  <v-list-item-title>
-                    {{ $t("Catch completed tasks") }}
-                  </v-list-item-title>
-                </v-list-item>
-              </v-list>
-            </v-menu>
-          </div>
-        </div>
         <div
-          v-show="isListEdited(list, selectedList)"
-          class="list-edit flex-container-row"
+          v-show="!isListEdited(list, selectedList)"
+          :style="getColor"
+          class="flex-container-row list-name-wrapper"
         >
+          <div v-if="hiddenTaskCount == 0" class="list-name flex1" @click="editList(list)">
+            {{ list.name }} ({{ taskCount }})
+            {{ getEstimations(tasksForEstimation) }}
+          </div>
+          <div
+            v-if="hiddenTaskCount > 0"
+            class="list-name flex1"
+            @click="editList(list)"
+          >
+            {{ list.name }} ({{ hiddenTaskCount }}/{{ taskCount }})
+          </div>
+          <v-menu bottom left class="flex0">
+            <template v-slot:activator="{ on }">
+              <v-btn :dark="dark" small icon v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+              <v-list-item @click="list.autoComplete = !list.autoComplete">
+                <v-list-item-action>
+                  <v-checkbox color="accent" :input-value="list.autoComplete" />
+                </v-list-item-action>
+                <v-list-item-title>{{ $t("Automatically mark as completed") }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="list.catchCompleted = !list.catchCompleted">
+                <v-list-item-action>
+                  <v-checkbox color="accent" :input-value="list.catchCompleted" />
+                </v-list-item-action>
+                <v-list-item-title>{{ $t("Catch completed tasks") }}</v-list-item-title>
+              </v-list-item>
+              <v-divider />
+              <v-list-item @click="deleteList(list._id)">
+                <v-list-item-action>
+                  <v-icon>mdi-delete</v-icon>
+                </v-list-item-action>
+                <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </div>
+        <div v-show="isListEdited(list, selectedList)" class="list-edit flex-container-row">
           <input
             ref="name"
             v-model="list.name"
@@ -83,10 +60,14 @@
           <div class="flex0">
             <div class="flex-container-row">
               <v-btn text icon @click.native="updateName(list)">
-                <v-icon>mdi-check-circle</v-icon>
+                <v-icon color="green">
+                  mdi-check-circle
+                </v-icon>
               </v-btn>
               <v-btn text icon @click.native="cancelUpdate(list)">
-                <v-icon>mdi-close-circle</v-icon>
+                <v-icon color="red">
+                  mdi-close-circle
+                </v-icon>
               </v-btn>
             </div>
           </div>
@@ -94,7 +75,12 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
-      <v-btn small block class="dragscroll" @click="newTaskInline(list._id)">
+      <v-btn
+        small
+        block
+        class="add-new-task dragscroll"
+        @click="newTaskInline(list._id)"
+      >
         {{ $t("Add new task") }}
       </v-btn>
       <div
@@ -102,11 +88,8 @@
         class="task show-hidden"
         @click="showHiddenTasks = !showHiddenTasks"
       >
-        <div v-if="showHiddenTasks" class="list-title">
-          Masquer les {{ hiddenTaskCount }} tâches terminées
-        </div>
-        <div v-if="!showHiddenTasks" class="list-title">
-          Afficher les {{ hiddenTaskCount }} tâches terminées
+        <div class="list-title">
+          {{ showHiddenTasksText }}
         </div>
       </div>
       <tasks
@@ -123,7 +106,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 
 export default {
   props: {
@@ -142,15 +125,37 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentProjectId"]),
-    projectColor: {
-      get() {
-        const project = Projects.findOne({ _id: this.currentProjectId });
-        if (project && project.color) {
-          return project.color;
-        }
-        return null;
+    ...mapState("project", ["currentProjectId"]),
+    ...mapGetters("project", ["hasProjectFeature"]),
+    projectColor() {
+      const project = Projects.findOne({ _id: this.currentProjectId });
+      if (project && project.color) {
+        return project.color;
       }
+      return null;
+    },
+    showHiddenTasksText() {
+      return this.showHiddenTasks
+        ? `Masquer les ${this.hiddenTaskCount} tâches terminées`
+        : `Afficher les ${this.hiddenTaskCount} tâches terminées`;
+    },
+    getColor() {
+      if (this.projectColor) {
+        return `
+          background-color: ${this.projectColor};
+          color: ${colors.getLabelColor(this.projectColor)}
+        `;
+      }
+      return `
+          background-color: #2D6293;
+          color: white;
+        `;
+    },
+    dark() {
+      if (this.projectColor) {
+        return colors.isDark(this.projectColor);
+      }
+      return true;
     }
   },
   watch: {
@@ -172,11 +177,7 @@ export default {
       }
     });
     this.$events.listen("filter-tasks", (name) => {
-      if (name && name.length > 0) {
-        this.forceShowHiddenTask = true;
-      } else {
-        this.forceShowHiddenTask = false;
-      }
+      this.forceShowHiddenTask = Boolean(name && name.length > 0);
     });
   },
   beforeDestroy() {
@@ -206,9 +207,11 @@ export default {
 
     isListEdited(list, selectedList) {
       if (!list || !selectedList) {
+        this.$emit("is-edited", false);
         return false;
       }
       const edited = list._id === selectedList._id;
+      this.$emit("is-edited", edited);
       return edited;
     },
 
@@ -254,29 +257,8 @@ export default {
         data: list
       };
     },
-
-    getColor() {
-      if (this.projectColor) {
-        return `
-          background-color: ${this.projectColor};
-          color: ${colors.getLabelColor(this.projectColor)}
-        `;
-      }
-      return `
-          background-color: #2D6293;
-          color: white;
-        `;
-    },
-
-    isDark() {
-      if (this.projectColor) {
-        return colors.isDark(this.projectColor);
-      }
-      return true;
-    },
-
     getEstimations(tasks) {
-      if (!this.$store.getters.hasProjectFeature("estimation")) {
+      if (!this.hasProjectFeature("estimation")) {
         return null;
       }
 
@@ -364,7 +346,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "/imports/ui/styles/mixins/scrollbar";
+
+@include scrollbar;
+
 @media (max-width: 600px) {
   .swimlane {
     flex: 0 0 auto;
@@ -398,6 +384,10 @@ export default {
   }
 }
 
+.add-new-task {
+  margin-bottom: 12px;
+}
+
 .swimlane.new .list-title {
   border: 2px dashed #2d6293;
   background-color: white;
@@ -416,9 +406,7 @@ export default {
   color: white;
   font-weight: normal;
   font-size: 14px;
-  padding: 5px;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding: 12px 5px;
   margin-bottom: 0;
 }
 .swimlane input {
@@ -434,7 +422,7 @@ export default {
   color: #777;
   cursor: pointer;
   background-color: white;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
   border-radius: 4px;
   transition: box-shadow 0.5s ease, opacity 0.5s ease;
 }
@@ -446,7 +434,7 @@ export default {
 .task.show-hidden {
   font-size: 12px;
   padding: 4px;
-  margin-top: 4px;
+  margin-bottom: 12px;
   width: 100%;
   font-weight: normal;
   color: #777;
@@ -462,12 +450,9 @@ export default {
 }
 
 .list-name-wrapper {
-  padding: 5px;
-}
-
-.list-name {
-  display: inline-block;
-  margin-left: 4px;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-bottom: 12px;
 }
 
 @media (max-width: 600px) {
@@ -479,7 +464,6 @@ export default {
 }
 
 .list-name:hover {
-  /* background-color: #323742; */
   cursor: pointer;
 }
 

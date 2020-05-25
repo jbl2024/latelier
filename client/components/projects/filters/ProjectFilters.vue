@@ -1,5 +1,6 @@
 <template>
   <div>
+    <labels :project-id="projectId" mode="select" class="compact-form" />
     <v-autocomplete
       v-if="assignedUsers.length > 0"
       v-model="selectedAssignedTos"
@@ -46,7 +47,6 @@
         >(+{{ selectedUpdatedBy.length - 3 }} {{ $t('others') }})</span>
       </template>
     </v-autocomplete>
-    <labels :project-id="projectId" mode="select" class="compact-form" />
   </div>
 </template>
 
@@ -72,18 +72,18 @@ export default {
   computed: {
     selectedAssignedTos: {
       get() {
-        return this.$store.state.projectFilters.selectedAssignedTos;
+        return this.$store.state.project.filters.selectedAssignedTos;
       },
       set(value) {
-        this.$store.dispatch("projectFilters/selectAssignedTos", value);
+        this.$store.dispatch("project/filters/selectAssignedTos", value);
       }
     },
     selectedUpdatedBy: {
       get() {
-        return this.$store.state.projectFilters.selectedUpdatedBy;
+        return this.$store.state.project.filters.selectedUpdatedBy;
       },
       set(value) {
-        this.$store.dispatch("projectFilters/selectUpdatedBy", value);
+        this.$store.dispatch("project/filters/selectUpdatedBy", value);
       }
     }
   },

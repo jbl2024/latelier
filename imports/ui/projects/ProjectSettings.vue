@@ -1,34 +1,42 @@
 <template>
   <div class="project-settings">
-    <div v-if="!$subReady.project">
-      <v-progress-linear indeterminate />
-    </div>
-    <div v-if="$subReady.project" class="project-wrapper">
-      <v-tabs>
+    <v-progress-linear v-if="!currentProject" indeterminate />
+    <template v-else>
+      <v-tabs ref="tabs" v-resize="centerTabs" centered class="sticky-tabs">
+        <v-tabs-slider color="accent" />
         <v-tab id="tab-general">
           {{ $t("Settings") }}
         </v-tab>
         <v-tab id="tab-users">
           {{ $t("Users") }}
         </v-tab>
-        <v-tab-item>
+        <v-tab-item
+          class="project-settings-tab-item"
+          :transition="false"
+          :reverse-transition="false"
+        >
           <project-settings-general
-            :project="project"
+            :project="currentProject"
           />
         </v-tab-item>
-        <v-tab-item>
+        <v-tab-item
+          class="project-settings-tab-item"
+          :transition="false"
+          :reverse-transition="false"
+        >
           <project-settings-manage-users
-            :project="project"
+            :project="currentProject"
             class="users"
           />
         </v-tab-item>
       </v-tabs>
-    </div>
+    </template>
   </div>
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -39,93 +47,54 @@ export default {
   },
   data() {
     return {
-      savedProjectName: "",
-      editProjectName: false,
-      title() {
-        return this.$t("Settings");
-      }
+      title: this.$t("Settings")
     };
   },
+  computed: {
+    ...mapState("project", ["currentProject"])
+  },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
-      project: function() {
+      project() {
         return [this.projectId];
       }
     },
     project() {
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
-  methods: {}
+  methods: {
+    centerTabs() {
+      setTimeout(() => {
+        this.$refs.tabs.onResize();
+      }, 500);
+    }
+  }
 };
 </script>
 
 <style scoped>
-.toolbar {
-  background-color: white;
-}
 
 .search {
   max-width: 300px;
 }
 
 .project-settings {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+  height: 400px; /* fix sticky on webkit */
 }
 
 .users {
   overflow-y: scroll;
-}
-
-.edit-project-name input {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  margin-top: 6px;
-  padding: 0;
-  font-family: Roboto, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-@media (max-width: 600px) {
-  .container {
-    margin: 4px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-@media (min-width: 601px) {
-  .container {
-    margin: 4px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: scroll;
-    padding-left: 4px;
-  }
-}
-
-.container-wrapper {
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-}
-
-.absolute-right {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1000;
 }
 </style>

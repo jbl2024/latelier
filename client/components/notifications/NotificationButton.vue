@@ -2,7 +2,7 @@
   <div v-if="isConnected" class="notification-button">
     <notifications-dialog :active.sync="showDialog" />
     <v-btn icon @click="showDialog = true">
-      <v-badge color="red" :value="notificationsCount > 0">
+      <v-badge color="red" :value="notificationsCount > 0" overlap>
         <template v-slot:badge>
           <span>{{ notificationsCount }}</span>
         </template>

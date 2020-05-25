@@ -7,10 +7,14 @@
   "Update": "Update",
   "Canvas": "Canvas",
   "Weather": "Weather",
+  "Title": "Title",
+  "Home": "Home",
   "Description": "Description",
+  "Last update by": "Last update by",
   "Deletion is permanent": "Deletion is permanent",
   "Properties": "Properties",
   "Notes": "Notes",
+  "Checklist": "Checklist",
   "List": "List",
   "Completed on": "Completed on",
   "Created by": "Created by",
@@ -19,8 +23,10 @@
   "Convert": "Convert",
   "Email notifications": "Email notifications",
   "Dashboard": "Dashboard",
+  "Activity": "Activité",
   "Tasks": "Tasks",
   "No task": "No task",
+  "No organizations": "No organization",
   "Delete list?": "Delete list?",
   "Organizations": "Organizations",
   "Projects": "Projects",
@@ -53,6 +59,7 @@
   "Individuals": "Individuals",
   "Organizations & Projects": "Organizations & Projects",
   "Late": "Late",
+  "My tasks": "My tasks",
   "Assigned to me": "Assigned to me",
   "Recents": "Recents",
   "Access forbidden": "Access forbidden",
@@ -64,6 +71,7 @@
   "Close": "Close",
   "Do you really want to delete this task?": "Do you really want to delete this task?",
   "History": "History",
+  "Search project": "Rechercher un projet",
   "Search": "Search",
   "Attachments": "Attachments",
   "Leave project": "Leave project",
@@ -93,6 +101,7 @@
   "Password is too short": "Password is too short",
   "Welcome back!": "Welcome back!",
   "Empty": "Empty",
+  "Background": "Background",
   "Select background": "Select background",
   "Background updated": "Background updated",
   "Visibility": "Visibility",
@@ -178,6 +187,9 @@
   "Task deleted": "Task deleted",
   "Tasks deleted": "Tasks deleted",
   "Flush": "Flush",
+  "contentSelector": {
+    "search": "Project or organization"
+  },
   "history": {
     "tasks": {
       "create": "Creation",
@@ -241,5 +253,9 @@
     "1day": "1 day before",
     "2days": "2 days before",
     "1week": "1 week before"
+  },
+  "login": {
+    "logout": "Log out",
+    "logoutConfirm": "Do you want to log out?"
   }
 }

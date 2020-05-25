@@ -26,10 +26,14 @@
             @click-outside="updateContent"
           />
           <v-btn icon text @click.native.stop="updateContent">
-            <v-icon>mdi-check-circle</v-icon>
+            <v-icon color="green">
+              mdi-check-circle
+            </v-icon>
           </v-btn>
           <v-btn icon text @click.native.stop="cancelUpdateContent">
-            <v-icon>mdi-close-circle</v-icon>
+            <v-icon color="red">
+              mdi-close-circle
+            </v-icon>
           </v-btn>
         </div>
       </v-card-text>

@@ -1,40 +1,58 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import { Meteor } from "meteor/meteor";
+import { Permissions } from "/imports/api/permissions/permissions";
+import { UserUtils } from "/imports/api/users/utils";
 
 import get from "lodash/get";
-import { projectFilters } from "./projectFilters";
+import ui from "./modules/ui";
+import project from "./modules/project";
+import organization from "./modules/organization";
 
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
   modules: {
-    projectFilters
+    ui,
+    project,
+    organization
   },
   state: {
+    currentUserId: null,
+    currentUser: null,
+    isAdmin: false,
     selectedGroup: {},
     selectedTask: null,
     showSelectBackgroundDialog: false,
     showCategories: false,
+    showLeftDrawer: null,
     showTaskDetail: false,
     showTaskHistory: false,
     showTaskExport: false,
     showDashboardTitle: false,
     dashboardFilter: "",
-    currentOrganizationId: null,
-    currentProjectId: null,
-    projectFeatures: [],
     windowTitle: "",
     notifyMessage: "",
+    showMobileDrawer: false,
     showLabelText: false
   },
   getters: {
-    hasProjectFeature: (state) => (feature) => {
-      if (!state.projectFeatures) return false;
-      return state.projectFeatures.find((feat) => feat === feature);
-    }
+    isConnected: (state) => Boolean(state.currentUserId),
+    isAdmin: (state) => state.isAdmin,
+    currentUserEmail: (state) => state.currentUser ? UserUtils.getEmail(state.currentUser) : null,
+    hasAvatar: (state) => state.currentUser ? UserUtils.hasAvatar(state.currentUser) : false,
+    isTaskDetailShown: (state) => state.showTaskDetail === true
   },
   mutations: {
+    updateCurrentUserId(state, currentUserId) {
+      state.currentUserId = currentUserId;
+    },
+    updateCurrentUser(state, currentUser) {
+      state.currentUser = currentUser;
+    },
+    updateIsAdmin(state, isAdmin) {
+      state.isAdmin = isAdmin;
+    },
     updateSelectedGroup(state, selectedGroup) {
       state.selectedGroup = selectedGroup;
     },
@@ -46,6 +64,9 @@ const store = new Vuex.Store({
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
       state.showSelectBackgroundDialog = showSelectBackgroundDialog;
+    },
+    updateShowLeftDrawer(state, showLeftDrawer) {
+      state.showLeftDrawer = showLeftDrawer;
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -61,15 +82,6 @@ const store = new Vuex.Store({
     },
     updateDashboardFilter(state, dashboardFilter) {
       state.dashboardFilter = dashboardFilter;
-    },
-    updateCurrentProjectId(state, currentProjectId) {
-      state.currentProjectId = currentProjectId;
-    },
-    setProjectFeatures(state, features) {
-      state.projectFeatures = features;
-    },
-    updateCurrentOrganizationId(state, currentOrganizationId) {
-      state.currentOrganizationId = currentOrganizationId;
     },
     selectTask(state, selectedTask) {
       state.selectedTask = selectedTask;
@@ -91,9 +103,29 @@ const store = new Vuex.Store({
         fullTitle = `${fullTitle} - ${titleValue}`;
       }
       state.windowTitle = fullTitle;
+    },
+    updateShowMobileDrawer(state, showMobileDrawer) {
+      state.showMobileDrawer = showMobileDrawer;
     }
   },
   actions: {
+    setCurrentUserId(context, currentUserId) {
+      context.commit("updateCurrentUserId", currentUserId);
+    },
+    setCurrentUser(context, currentUser) {
+      try {
+        if (!currentUser) {
+          throw new Error("Invalid user");
+        }
+        context.commit("updateCurrentUser", currentUser);
+        context.commit("updateCurrentUserId", currentUser._id);
+        context.commit("updateIsAdmin", Permissions.isAdmin(currentUser._id));
+      } catch (error) {
+        context.commit("updateCurrentUser", null);
+        context.commit("updateCurrentUserId", null);
+        context.commit("updateIsAdmin", false);
+      }
+    },
     setSelectedGroup(context, selectedGroup) {
       if (!selectedGroup) {
         selectedGroup = {};
@@ -118,28 +150,11 @@ const store = new Vuex.Store({
         showSelectBackgroundDialog
       );
     },
-    setCurrentProjectId(context, projectId) {
-      context.commit("projectFilters/clearSelectedLabels");
-      if (projectId) {
-        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
-          context.commit("setProjectFeatures", result);
-        });
-      }
-      context.commit("updateCurrentProjectId", projectId);
-    },
-    reloadProjectFeatures(context, projectId) {
-      if (projectId) {
-        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
-          context.commit("setProjectFeatures", result);
-        });
-      }
-    },
-    setCurrentOrganizationId(context, organizationId) {
-      context.commit("clearSelectedGroup");
-      context.commit("updateCurrentOrganizationId", organizationId);
-    },
     selectTask(context, task) {
       context.commit("selectTask", task);
+    },
+    showLeftDrawer(context, showLeftDrawer) {
+      context.commit("updateShowLeftDrawer", showLeftDrawer);
     },
     showTaskDetail(context, showTaskDetail) {
       context.commit("updateShowTaskDetail", showTaskDetail);

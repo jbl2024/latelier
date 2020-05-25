@@ -16,7 +16,7 @@
       <v-tab>
         {{ $t("Projects") }} ({{ projectCount }})
       </v-tab>
-      <v-tab-item eager>
+      <v-tab-item eager :transition="false" :reverse-transition="false">
         <search-tasks
           :project-id="currentProjectId"
           :organization-id="currentOrganizationId"
@@ -25,7 +25,7 @@
           @select="onSelectTask"
         />
       </v-tab-item>
-      <v-tab-item eager>
+      <v-tab-item eager :transition="false" :reverse-transition="false">
         <search-projects
           :organization-id="currentOrganizationId"
           :filter="filterProjects"
@@ -63,7 +63,8 @@ export default {
     };
   },
   computed: {
-    ...mapState(["currentProjectId", "currentOrganizationId"])
+    ...mapState("project", ["currentProjectId"]),
+    ...mapState("organization", ["currentOrganizationId"])
   },
   watch: {
     page() {

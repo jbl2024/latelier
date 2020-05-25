@@ -83,7 +83,10 @@ export default [
     name: "organization-settings",
     beforeEnter: isBasicAuth,
     component: OrganizationSettings,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   {
     path: "/organizations/:organizationId",
@@ -97,84 +100,120 @@ export default [
     name: "projects-timeline",
     beforeEnter: isBasicAuth,
     component: async () => (await import("/imports/ui/projects/ProjectsTimeline.vue")).default,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   {
     path: "/projects/:projectId",
     name: "project",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-settings/:projectId",
     name: "project-settings",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectSettings,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-dashboard/:projectId",
     name: "project-dashboard",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectInfo,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-timeline/:projectId",
     name: "project-timeline",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: async () => (await import("/imports/ui/projects/ProjectTimeline.vue")).default,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-bpmn/:projectId",
     name: "project-bpmn",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectBPMN,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-bpmn/:projectId/:processDiagramId",
     name: "project-bpmn-process-diagram",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: async () => (await import("/imports/ui/projects/ProjectProcessDiagram.vue")).default,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-canvas/:projectId",
     name: "project-canvas",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectCanvas,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-weather/:projectId",
     name: "project-weather",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectWeather,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects-attachments/:projectId",
     name: "project-attachments-page",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectAttachmentsPage,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/projects/:projectId/:taskId",
     name: "project-task",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/tasks/:taskNumber",
     name: "project-task-number",
     beforeEnter: isBasicAuth,
     component: TaskRedirect,
-    props: true
+    props: true,
+    meta: {
+      isProject: true
+    }
   },
   {
     path: "/administration",
@@ -209,7 +248,10 @@ export default [
     name: "dashboard-organization-page",
     beforeEnter: isBasicAuth,
     component: DashboardPage,
-    props: true
+    props: true,
+    meta: {
+      isOrganization: true
+    }
   },
   { path: "*", name: "not-found", component: NotFound }
 ];

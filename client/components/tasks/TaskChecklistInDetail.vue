@@ -58,7 +58,9 @@
                 @keydown.shift.enter="updateCheckItem(checkItem)"
               />
               <v-btn icon text @click.native.stop="updateCheckItem(checkItem)">
-                <v-icon>mdi-check-circle</v-icon>
+                <v-icon color="green">
+                  mdi-check-circle
+                </v-icon>
               </v-btn>
 
               <v-btn
@@ -66,7 +68,9 @@
                 text
                 @click.native.stop="cancelUpdateCheckItem(checkItem)"
               >
-                <v-icon>mdi-close-circle</v-icon>
+                <v-icon color="red">
+                  mdi-close-circle
+                </v-icon>
               </v-btn>
             </template>
           </td>

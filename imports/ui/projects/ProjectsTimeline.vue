@@ -1,55 +1,32 @@
 <template>
   <div class="projects-timeline">
-    <template v-if="!$subReady.projectsForTimeline">
-      <v-progress-linear indeterminate />
-    </template>
-
-    <template v-if="$subReady.projectsForTimeline">
+    <v-progress-linear v-if="!isReady" indeterminate />
+    <template v-else>
+      <projects-timeline-toolbar
+        :organization-id="organizationId"
+        :show-categories="showCategories"
+        @go-to-today="gotoToday"
+        @zoom-reset="zoomReset"
+        @zoom-out="zoomOut"
+        @zoom-in="zoomIn"
+      />
       <empty-state
         v-show="count == 0"
         icon="mdi-chart-timeline-variant"
         :label="$t('No project')"
+        full-page
         :description="$t('Projects with start and end date are displayed here')"
       />
-
-      <v-toolbar dense class="toolbar flex0">
-        <tooltip-button
-          bottom
-          icon="mdi-calendar-today"
-          :tooltip="$t('Today')"
-          @on="gotoToday()"
-        />
-        <v-divider vertical />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify"
-          :tooltip="$t('Reset zoom')"
-          @on="zoomReset()"
-        />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify-minus"
-          :tooltip="$t('Zoom out')"
-          @on="zoomOut()"
-        />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify-plus"
-          :tooltip="$t('Zoom in')"
-          @on="zoomIn()"
-        />
-        <v-divider vertical />
-      </v-toolbar>
-
       <div
         ref="timelineContainer"
         v-resize="onResizeTimelineContainer"
         class="flex1"
       >
         <timeline
+          :key="organizationId"
           ref="timeline"
-          :items="getItems()"
-          :groups="getGroups()"
+          :items="items"
+          :groups="groups"
           :options="timeline.options"
           @select="onSelectProject"
         />
@@ -76,17 +53,18 @@
 
 <script>
 import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
-
+import { Organizations } from "/imports/api/organizations/organizations.js";
 import { colors } from "/imports/colors.js";
-
 import { mapState } from "vuex";
 import { Timeline } from "vue2vis";
 import debounce from "lodash/debounce";
 import moment from "moment";
+import ProjectsTimelineToolbar from "/imports/ui/projects/ProjectsTimelineToolbar";
 
 export default {
   components: {
-    Timeline
+    Timeline,
+    ProjectsTimelineToolbar
   },
   props: {
     organizationId: {
@@ -134,7 +112,40 @@ export default {
     };
   },
   computed: {
-    ...mapState(["selectedGroup"])
+    ...mapState([
+      "showCategories",
+      "selectedGroup"
+    ]),
+    isReady() {
+      return this.$subReady.projectsForTimeline;
+    },
+    items() {
+      if (!this.$subReady.projectsForTimeline || !this.organizationId) return [];
+      const defaultBefore = moment().subtract(1, "weeks");
+      const defaultAfter = moment().add(1, "weeks");
+      return this.projects.map((project) => {
+        return {
+          id: project._id,
+          group: project.state,
+          subgroup: project._id,
+          content: this.getProjectContent(project),
+          className: "item",
+          start: moment(project.startDate).toDate() || defaultBefore,
+          end: moment(project.endDate).toDate() || defaultAfter
+        };
+      });
+    },
+    groups() {
+      const states = [];
+      Object.keys(ProjectStates).forEach((state) => {
+        states.push({
+          id: ProjectStates[state],
+          subgroupStack: true,
+          content: this.$t(`projects.state.${state}`)
+        });
+      });
+      return states;
+    }
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -142,14 +153,15 @@ export default {
     }, 400);
   },
   mounted() {
-    this.$store.dispatch("setCurrentOrganizationId", this.organizationId);
+    this.$store.dispatch("project/setCurrentProject", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
     this.$store.dispatch("setShowCategories", true);
     this.$events.listen("close-project-detail", () => {
       this.showProjectDetail = false;
     });
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentOrganizationId", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", null);
     this.$store.dispatch("setShowCategories", false);
     this.$events.off("close-project-detail");
   },
@@ -165,64 +177,56 @@ export default {
       }
     }
   },
+
   meteor: {
     // Subscriptions
     $subscribe: {
-      projectsForTimeline: function() {
+      projectsForTimeline() {
         return [
           this.organizationId,
           this.filter,
           this.$store.state.selectedGroup._id
         ];
       },
-      organization: function() {
+      organization() {
         return [this.organizationId];
       },
-      projectGroups: function() {
+      projectGroups() {
         return [this.organizationId];
       }
     },
-    projects() {
-      return Projects.find(
-        { organizationId: this.organizationId },
-        { sort: { name: 1 } }
-      );
+    projects: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        return Projects.find(
+          { organizationId: organizationId },
+          { sort: { name: 1 } }
+        );
+      }
     },
-    count() {
-      return Projects.find({ organizationId: this.organizationId }).count();
+    count: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        return Projects.find({ organizationId: organizationId }).count();
+      }
+    },
+    organization() {
+      const organization = Organizations.findOne();
+      if (organization) {
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+      }
+      return organization;
     }
   },
   methods: {
-    getGroups() {
-      const states = [];
-      Object.keys(ProjectStates).forEach((state) => {
-        states.push({
-          id: ProjectStates[state],
-          subgroupStack: true,
-          content: this.$t(`projects.state.${state}`)
-        });
-      });
-      return states;
-    },
-    getItems() {
-      const defaultBefore = moment().subtract(1, "weeks");
-      const defaultAfter = moment().add(1, "weeks");
-      const items = [];
-      this.projects.forEach((project) => {
-        const item = {
-          id: project._id,
-          group: project.state,
-          subgroup: project._id,
-          content: this.getProjectContent(project),
-          className: "item",
-          start: moment(project.startDate).toDate() || defaultBefore,
-          end: moment(project.endDate).toDate() || defaultAfter
-        };
-        items.push(item);
-      });
-      return items;
-    },
-
     getProjectContent(project) {
       const { name } = project;
       const color = project.color || "";
@@ -311,10 +315,6 @@ export default {
   position: relative;
   flex: 1;
   background-color: white;
-}
-
-.flex0 {
-  flex: 0;
 }
 
 .flex1 {

@@ -1,5 +1,5 @@
 <template>
-  <div class="project-settings-general">
+  <div v-if="project" class="project-settings-general">
     <select-date
       v-model="showSelectStartDate"
       :disable-time="true"
@@ -26,53 +26,178 @@
     />
     <select-project v-model="showSelectProject" @select="importLabels" />
     <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-
-    <v-subheader>{{ $t("Description") }}</v-subheader>
-
-    <div class="elevation-1 settings">
-      <div class="description">
-        <div
-          v-show="
-            !editDescription &&
-              project.description &&
-              project.description.length > 0
-          "
-          @click="startEditDescription"
-        >
-          <div class="tiptap-editor-view" v-html="markDown(project.description)" />
-        </div>
-        <div
-          v-show="!project.description && !editDescription"
-          @click="startEditDescription"
-        >
-          {{ $t("No description") }}
-        </div>
-
-        <div v-show="editDescription">
-          <rich-editor
-            ref="description"
-            v-model="project.description"
-            @submit="updateDescription"
+    <div class="wrapper">
+      <v-subheader>{{ $t("Name") }}</v-subheader>
+      <div class="elevation-1 settings">
+        <div class="name headline">
+          <editable-text
+            v-model="project.name"
+            type="text-field"
+            :is-edited.sync="editName"
+            @update="updateProjectName"
+            @cancel="cancelUpdateProjectName"
           />
-          <v-btn icon @click="updateDescription">
-            <v-icon>mdi-check-circle</v-icon>
-          </v-btn>
-          <v-btn icon @click="cancelUpdateDescription">
-            <v-icon>mdi-close-circle</v-icon>
-          </v-btn>
         </div>
       </div>
-    </div>
 
-    <v-subheader>
-      {{ $t("Features") }}
-      <v-btn text icon @click="showSelectFeature = true">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-    </v-subheader>
-    <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-      <template v-for="feature in projectFeatures">
-        <v-list-item :key="feature._id">
+      <v-subheader>{{ $t("Color") }}</v-subheader>
+
+      <v-list class="elevation-1">
+        <v-list-item @click="showSelectColor = true">
+          <v-list-item-content>
+            <div ref="color" class="color" :style="getColor(project)" />
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="removeColor()">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
+      <v-subheader>{{ $t("Description") }}</v-subheader>
+      <div class="elevation-1 settings">
+        <div class="description">
+          <editable-text
+            v-model="project.description"
+            :is-edited.sync="editDescription"
+            :empty-text="$t('No description')"
+            :options="{ markdown: true }"
+            @update="updateDescription"
+            @cancel="cancelUpdateDescription"
+          />
+        </div>
+      </div>
+
+      <v-subheader>{{ $t("State") }}</v-subheader>
+      <div class="elevation-1 state">
+        <v-select
+          v-model="project.state"
+          :items="projectStates()"
+          item-text="label"
+          item-value="value"
+        />
+      </div>
+      <v-subheader>{{ $t("Access rights") }}</v-subheader>
+      <v-list class="elevation-1">
+        <v-list-item @click="toggleProjectVisibility(project)">
+          <v-list-item-avatar>
+            <v-icon>{{ getVisibilityIcon(project) }}</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ getVisibilityText(project) }}
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-switch
+              v-model="allowedOrganization"
+              color="accent"
+              @click="toggleProjectVisibility(project)"
+            />
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
+      <v-subheader>{{ $t("Dates") }}</v-subheader>
+      <v-list two-line class="elevation-1">
+        <v-list-item @click="showSelectStartDate = true">
+          <v-list-item-avatar>
+            <v-icon>mdi-calendar-today</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("Start date") }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <span v-show="project.startDate">{{
+                formatDate(project.startDate)
+              }}</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="onSelectStartDate(null)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+
+        <v-divider />
+
+        <v-list-item @click="showSelectEndDate = true">
+          <v-list-item-avatar>
+            <v-icon>mdi-alarm-check</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ $t("End date") }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <span v-show="project.endDate">{{
+                formatDate(project.endDate)
+              }}</span>
+            </v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="onSelectEndDate(null)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
+      <v-subheader>
+        {{ $t("Categories") }}
+        <v-btn text icon @click="showSelectGroup = true">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-subheader>
+      <v-list v-if="assignedGroups.length > 0" class="elevation-1">
+        <template v-for="group in assignedGroups">
+          <v-list-item :key="group._id">
+            <v-list-item-avatar>
+              <v-icon>mdi-folder</v-icon>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>{{ group.name }}</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
+              <v-btn text icon @click.stop="removeGroup(group)">
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </template>
+      </v-list>
+
+      <v-subheader>
+        {{ $t("Labels") }}
+        <v-btn text icon @click="showSelectProject = true">
+          <v-icon>mdi-cloud-upload</v-icon>
+        </v-btn>
+      </v-subheader>
+      <labels :project-id="project._id" mode="settings" />
+
+      <v-subheader>{{ $t("Organization") }}</v-subheader>
+      <v-list v-if="$subReady.organizations" class="elevation-1">
+        <v-list-item @click="showSelectOrganization = true">
+          <v-avatar>
+            <v-icon>mdi-folder</v-icon>
+          </v-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
+              <template v-if="organization">
+                {{ organization.name }}
+              </template>
+            </v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+
+      <v-subheader>
+        {{ $t("Features") }}
+        <v-btn text icon @click="showSelectFeature = true">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-subheader>
+      <v-list v-if="projectFeatures.length > 0" class="elevation-1">
+        <v-list-item v-for="feature in projectFeatures" :key="feature._id">
           <v-list-item-avatar>
             <v-icon>mdi-folder</v-icon>
           </v-list-item-avatar>
@@ -85,144 +210,8 @@
             </v-btn>
           </v-list-item-action>
         </v-list-item>
-      </template>
-    </v-list>
-
-    <v-subheader>{{ $t("State") }}</v-subheader>
-    <div class="elevation-1 state">
-      <v-select
-        v-model="project.state"
-        :items="projectStates()"
-        item-text="label"
-        item-value="value"
-      />
+      </v-list>
     </div>
-    <v-subheader>{{ $t("Access rights") }}</v-subheader>
-    <v-list class="elevation-1">
-      <v-list-item @click="toggleProjectVisibility(project)">
-        <v-list-item-avatar>
-          <v-icon>{{ getVisibilityIcon(project) }}</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ getVisibilityText(project) }}
-          </v-list-item-title>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-switch
-            v-model="allowedOrganization"
-            color="accent"
-            @click="toggleProjectVisibility(project)"
-          />
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-
-    <v-subheader>{{ $t("Dates") }}</v-subheader>
-    <v-list two-line class="elevation-1">
-      <v-list-item @click="showSelectStartDate = true">
-        <v-list-item-avatar>
-          <v-icon>mdi-calendar-today</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("Start date") }}</v-list-item-title>
-          <v-list-item-subtitle>
-            <span v-show="project.startDate">{{
-              formatDate(project.startDate)
-            }}</span>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn text icon @click.stop="onSelectStartDate(null)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-
-      <v-divider />
-
-      <v-list-item @click="showSelectEndDate = true">
-        <v-list-item-avatar>
-          <v-icon>mdi-alarm-check</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>{{ $t("End date") }}</v-list-item-title>
-          <v-list-item-subtitle>
-            <span v-show="project.endDate">{{
-              formatDate(project.endDate)
-            }}</span>
-          </v-list-item-subtitle>
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn text icon @click.stop="onSelectEndDate(null)">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-
-    <v-subheader>{{ $t("Color") }}</v-subheader>
-
-    <v-list class="elevation-1">
-      <v-list-item @click="showSelectColor = true">
-        <v-list-item-content>
-          <div ref="color" class="color" :style="getColor(project)" />
-        </v-list-item-content>
-        <v-list-item-action>
-          <v-btn text icon @click.stop="removeColor()">
-            <v-icon>mdi-delete</v-icon>
-          </v-btn>
-        </v-list-item-action>
-      </v-list-item>
-    </v-list>
-
-    <v-subheader>
-      {{ $t("Categories") }}
-      <v-btn text icon @click="showSelectGroup = true">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-    </v-subheader>
-    <v-list v-if="assignedGroups.length > 0" class="elevation-1">
-      <template v-for="group in assignedGroups">
-        <v-list-item :key="group._id">
-          <v-list-item-avatar>
-            <v-icon>mdi-folder</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ group.name }}</v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn text icon @click.stop="removeGroup(group)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </template>
-    </v-list>
-
-    <v-subheader>
-      {{ $t("Labels") }}
-      <v-btn text icon @click="showSelectProject = true">
-        <v-icon>mdi-cloud-upload</v-icon>
-      </v-btn>
-    </v-subheader>
-    <labels :project-id="project._id" mode="settings" />
-
-    <v-subheader>{{ $t("Organization") }}</v-subheader>
-    <v-list v-if="$subReady.organizations" class="elevation-1">
-      <v-list-item @click="showSelectOrganization = true">
-        <v-avatar>
-          <v-icon>mdi-folder</v-icon>
-        </v-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            <template v-if="organization">
-              {{ organization.name }}
-            </template>
-          </v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
   </div>
 </template>
 
@@ -234,17 +223,19 @@ import {
 } from "/imports/api/projects/projects.js";
 
 import { Organizations } from "/imports/api/organizations/organizations.js";
-
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import EditableText from "/imports/ui/widgets/EditableText";
 
 export default {
   name: "ProjectSettingsGeneral",
-  mixins: [DatesMixin, MarkdownMixin],
+  components: {
+    EditableText
+  },
+  mixins: [DatesMixin],
   props: {
     project: {
       type: Object,
-      default: () => {}
+      default: null
     }
   },
   data() {
@@ -256,6 +247,7 @@ export default {
       showSelectProject: false,
       showSelectColor: false,
       showSelectFeature: false,
+      editName: false,
       editDescription: false
     };
   },
@@ -271,11 +263,10 @@ export default {
         );
       },
       set(value) {
-        if (value) {
-          this.project.accessRights = ProjectAccessRights.ORGANIZATION;
-        } else {
-          this.project.accessRights = ProjectAccessRights.PRIVATE;
-        }
+        const accessRights = value
+          ? ProjectAccessRights.ORGANIZATION
+          : ProjectAccessRights.PRIVATE;
+        this.project.accessRights = accessRights;
       }
     }
   },
@@ -361,7 +352,6 @@ export default {
         }
       );
     },
-
     removeFeature(feature) {
       Meteor.call(
         "projects.removeFeature",
@@ -407,14 +397,27 @@ export default {
     importLabels(project) {
       Meteor.call("labels.import", { from: project._id, to: this.project._id });
     },
-
-    startEditDescription() {
-      this.savedDescription = this.project.description;
-      this.editDescription = true;
-      this.$nextTick(() => this.$refs.description.focus());
+    updateProjectName(name, savedName) {
+      this.editName = false;
+      Meteor.call(
+        "projects.updateName",
+        {
+          projectId: this.project._id,
+          name: this.project.name
+        },
+        (error) => {
+          if (error) {
+            this.$notifyError(error);
+            this.cancelUpdateProjectName(savedName);
+          }
+        }
+      );
     },
-
-    updateDescription() {
+    cancelUpdateProjectName(savedProjectName) {
+      this.editName = false;
+      this.project.name = savedProjectName;
+    },
+    updateDescription(description, savedDescription) {
       this.editDescription = false;
       Meteor.call(
         "projects.updateDescription",
@@ -425,15 +428,14 @@ export default {
         (error) => {
           if (error) {
             this.$notifyError(error);
-            this.cancelUpdateDescription();
+            this.cancelUpdateDescription(savedDescription);
           }
         }
       );
     },
-
-    cancelUpdateDescription() {
+    cancelUpdateDescription(savedDescription) {
       this.editDescription = false;
-      this.project.description = this.savedDescription;
+      this.project.description = savedDescription;
     },
 
     onSelectColor(color) {
@@ -453,42 +455,29 @@ export default {
         color: ""
       });
     },
-
     getColor(project) {
       return `background-color: ${project.color}`;
     },
-
     getVisibilityIcon(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return "mdi-eye";
-      }
-      return "mdi-eye-off";
+      return project.accessRights === ProjectAccessRights.ORGANIZATION
+        ? "mdi-eye"
+        : "mdi-eye-off";
     },
-
     getVisibilityText(project) {
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        return this.$t("Organization");
-      }
-      return this.$t("The project is private");
+      return this.$t(
+        project.accessRights === ProjectAccessRights.ORGANIZATION
+          ? "Organization"
+          : "The project is private"
+      );
     },
-
     toggleProjectVisibility(project) {
-      if (project.accessRights === "private") {
-        project.accessRights = "organization";
-      } else {
-        project.accessRights = "private";
-      }
+      project.accessRights = project.accessRights === "private" ? "organization" : "private";
       Meteor.call("projects.updateAccessRights", {
         projectId: project._id,
         accessRights: project.accessRights
       });
-      if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
-        this.$notify(this.$t("Organization"));
-      } else {
-        this.$notify(this.$t("The project is private"));
-      }
+      this.$notify(this.getVisibilityText(project));
     },
-
     projectStates() {
       const states = [];
       Object.keys(ProjectStates).forEach((state) => {
@@ -503,15 +492,27 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .project-settings-general {
+  background-color: #e5e5e5;
+}
+
+.wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  margin-top: 24px;
   margin-bottom: 24px;
+  background-color: white;
+  border-radius: 4px;
 }
 
 .groups {
   width: 100%;
 }
 
+.name,
 .description {
   margin-left: 24px;
   margin-right: 24px;

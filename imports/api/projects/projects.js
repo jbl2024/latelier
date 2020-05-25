@@ -561,7 +561,7 @@ Projects.methods.getHistory = new ValidatedMethod({
       "properties.task.projectId": projectId
     };
 
-    const perPage = 4;
+    const perPage = 10;
     let skip = 0;
     if (page) {
       skip = (page - 1) * perPage;

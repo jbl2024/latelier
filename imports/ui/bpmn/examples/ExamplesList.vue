@@ -9,12 +9,14 @@
             <v-toolbar dense dark color="primary">
               <span class="title">{{ $t("Examples") }}</span>
               <v-spacer />
-              <v-btn v-if="isAdmin()" icon @click="refresh()">
-                <v-icon>mdi-refresh</v-icon>
-              </v-btn>
-              <v-btn v-if="isAdmin()" icon @click="newExample()">
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
+              <template v-if="isAdmin">
+                <v-btn icon @click="refresh()">
+                  <v-icon>mdi-refresh</v-icon>
+                </v-btn>
+                <v-btn icon @click="newExample()">
+                  <v-icon>mdi-plus</v-icon>
+                </v-btn>
+              </template>
             </v-toolbar>
             <v-list two-line dense class="list">
               <v-text-field
@@ -44,7 +46,7 @@
                     </v-list-item-subtitle>
                   </v-list-item-content>
 
-                  <v-list-item-action v-if="isAdmin()">
+                  <v-list-item-action v-if="isAdmin">
                     <v-menu bottom left class="menu">
                       <template v-slot:activator="{ on }">
                         <v-btn
@@ -110,12 +112,11 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { Meteor } from "meteor/meteor";
-import { Permissions } from "/imports/api/permissions/permissions";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import * as htmlToText from "@mxiii/html-to-text";
 import debounce from "lodash/debounce";
-
 import NewExample from "./NewExample";
 import EditExample from "./EditExample";
 import ExampleEditor from "./ExampleEditor";
@@ -146,6 +147,9 @@ export default {
       mode: "view"
     };
   },
+  computed: {
+    ...mapState(["isAdmin"])
+  },
   watch: {
     page() {
       this.refresh();
@@ -165,13 +169,6 @@ export default {
     this.debouncedFilter = debounce((val) => {
       this.search = val;
     }, 400);
-  },
-  meteor: {
-    $subscribe: {
-      user() {
-        return [];
-      }
-    }
   },
   methods: {
     refresh() {
@@ -252,15 +249,9 @@ export default {
         }
       });
     },
-
     htmlToText(html) {
       return htmlToText.fromString(html);
-    },
-
-    isAdmin() {
-      return Permissions.isAdmin(Meteor.userId());
     }
-
   }
 };
 </script>

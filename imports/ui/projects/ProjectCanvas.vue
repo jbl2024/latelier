@@ -207,10 +207,10 @@ export default {
     }
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     // Subscriptions

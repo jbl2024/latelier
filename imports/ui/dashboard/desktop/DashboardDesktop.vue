@@ -1,23 +1,13 @@
 <template>
   <div class="dashboard-desktop">
     <new-organization ref="newOrganization" />
-    <new-project
-      ref="newProject"
-      :organization-id="selectedOrganizationId"
-    />
+    <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
 
-    <div
-      v-if="!$subReady.allProjects || !$subReady.organizations || !$subReady.user"
-      class="left"
-    >
+    <div v-if="!isReady">
       <v-progress-linear indeterminate />
     </div>
-
-    <div
-      v-if="$subReady.allProjects && $subReady.organizations && $subReady.user"
-      class="left"
-    >
+    <div v-else>
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
@@ -85,9 +75,7 @@
         </v-layout>
       </div>
       <v-divider />
-
       <template v-if="projects.length == 0 && organizations.length == 0">
-        <!-- eslint-disable -->
         <empty-state
           class="main-empty-state"
           :description="$t('noProjectYet')"
@@ -104,9 +92,7 @@
             }}
           </v-btn>
         </empty-state>
-        <!-- eslint-enable -->
       </template>
-
       <div class="projects-wrapper">
         <template v-if="favorites.length > 0">
           <div class="header">
@@ -122,15 +108,8 @@
             class="projects"
           >
             <v-layout row wrap>
-              <v-flex
-                v-for="project in favorites"
-                :key="project._id"
-                :class="cardClass"
-              >
-                <dashboard-project-card
-                  :project="project"
-                  :user="user"
-                />
+              <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
+                <dashboard-project-card :project="project" :user="user" />
               </v-flex>
             </v-layout>
           </v-container>
@@ -152,21 +131,14 @@
           </div>
           <v-list two-line class="list">
             <template v-for="project in individuals">
-              <dashboard-project-list
-                :key="project._id"
-                :project="project"
-                :user="user"
-              />
+              <dashboard-project-list :key="project._id" :project="project" :user="user" />
             </template>
           </v-list>
         </template>
 
         <template v-for="organization in organizations">
           <div :key="`header-${organization._id}`" class="header">
-            <div
-              class="header-title"
-              @click="openOrganization(organization._id)"
-            >
+            <div class="header-title">
               <router-link
                 v-if="!organizationId"
                 class="link"
@@ -228,12 +200,7 @@
               </v-tooltip>
             </div>
             <div class="header-action">
-              <v-btn
-                text
-                solo
-                class="action-button"
-                @click="newProject(organization._id)"
-              >
+              <v-btn text solo class="action-button" @click="newProject(organization._id)">
                 <v-icon left>
                   mdi-plus
                 </v-icon>
@@ -242,9 +209,7 @@
             </div>
           </div>
           <v-list
-            v-if="
-              projectsByOrganization(organization, dashboardFilter).length > 0
-            "
+            v-if="projectsByOrganization(organization, dashboardFilter).length > 0"
             :key="`projects-${organization._id}`"
             two-line
             class="list"
@@ -255,11 +220,7 @@
                 dashboardFilter
               )"
             >
-              <dashboard-project-list
-                :key="project._id"
-                :project="project"
-                :user="user"
-              />
+              <dashboard-project-list :key="project._id" :project="project" :user="user" />
             </template>
           </v-list>
 
@@ -282,49 +243,10 @@
         </template>
       </div>
     </div>
-    <div class="right">
-      <div v-if="$subReady.user" class="tasks">
-        <div class="tasks-title">
-          {{ $t("Tasks") }}
-        </div>
-        <v-divider />
-
-        <v-tabs v-model="tab" class="sticky-tabs">
-          <v-tabs-slider color="accent" />
-          <v-tab>{{ $t("Recents") }}</v-tab>
-          <v-tab>{{ $t("Assigned to me") }}</v-tab>
-          <v-tab>{{ $t("Late") }}</v-tab>
-
-          <v-tab-item>
-            <dashboard-task-list
-              :user="user"
-              type="recent"
-              :organization-id="organizationId"
-            />
-          </v-tab-item>
-          <v-tab-item>
-            <dashboard-task-list
-              :user="user"
-              type="assignedToMe"
-              :organization-id="organizationId"
-            />
-          </v-tab-item>
-          <v-tab-item>
-            <dashboard-task-list
-              :user="user"
-              type="late"
-              empty-illustration="celebration"
-              :organization-id="organizationId"
-            />
-          </v-tab-item>
-        </v-tabs>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
-import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
 import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
@@ -336,7 +258,6 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   components: {
-    DashboardTaskList,
     DashboardProjectCard,
     DashboardProjectList
   },
@@ -350,22 +271,25 @@ export default {
   data() {
     return {
       user: null,
-      tab: null,
       selectedOrganizationId: "",
       cardClass: "card1"
     };
   },
   computed: {
-    ...mapState(["dashboardFilter"])
+    ...mapState(["currentUser", "dashboardFilter"]),
+    isReady() {
+      return this.$subReady.allProjects
+      && this.$subReady.organizations && this.currentUser;
+    }
   },
   mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
-    Meteor.call("users.getEmailPreferences", (error, result) => {
+    Meteor.call("users.getEmailPreferences", (error, user) => {
       if (error) {
         this.$notifyError(error);
         return;
       }
-      this.user = result;
+      this.user = user;
     });
   },
   meteor: {
@@ -375,9 +299,6 @@ export default {
       },
       organizations: function() {
         return ["", this.organizationId];
-      },
-      user: function() {
-        return [];
       }
     },
     projects: {
@@ -400,8 +321,17 @@ export default {
     organizations() {
       return Organizations.find({}, { sort: { name: 1 } });
     },
-    organization() {
-      return Organizations.findOne();
+    organization: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        const organization = Organizations.findOne({ _id: organizationId });
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+        return organization;
+      }
     },
     favorites: {
       params() {
@@ -445,9 +375,6 @@ export default {
         }
         return Projects.find(query, { sort: { state: 1, name: 1 } });
       }
-    },
-    user() {
-      return Meteor.user();
     }
   },
   methods: {
@@ -455,9 +382,12 @@ export default {
       this.$refs.newOrganization.open();
     },
     toggleTaskAssignedTo() {
-      this.user.emailSettings.tasks.assignTo = !this.user.emailSettings.tasks
-        .assignTo;
-      Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
+      this.currentUser.emailSettings.tasks.assignTo = !this.currentUser
+        .emailSettings.tasks.assignTo;
+      Meteor.call(
+        "users.updateEmailPreferences",
+        this.currentUser.emailSettings
+      );
     },
     newProject(organizationId) {
       this.selectedOrganizationId = organizationId;
@@ -560,15 +490,11 @@ export default {
 }
 
 .dashboard-desktop {
+  padding: 2rem;
   display: flex;
-  flex-direction: row;
-  padding-left: 24px;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  height: 100%;
+  flex-direction: column;
+  position: relative;
+  flex: 1;
 }
 
 .header {
@@ -580,30 +506,11 @@ export default {
 .header-title {
   flex: 1;
   font-size: 20px;
-  font-weight: lighter;
+  font-weight: 300;
 }
 
 .header-action {
   flex: 0;
-}
-
-.left {
-  flex: 1;
-  flex-direction: column;
-  overflow-y: auto;
-  margin-right: 24px;
-  margin-top: 12px;
-  display: flex;
-}
-
-.right {
-  flex-direction: column;
-  overflow-y: auto;
-  width: 360px;
-  background-color: white;
-  border-left: 1px solid #ddd;
-  display: flex;
-  position: relative;
 }
 
 .action-button {
@@ -612,21 +519,9 @@ export default {
   font-size: 12px;
 }
 
-.tasks {
-  width: 100%;
-}
-
 .projects {
   padding-left: 0;
   padding-right: 12px;
-}
-
-.tasks-title {
-  margin: 15.5px;
-  text-transform: uppercase;
-  font-weight: bold;
-  letter-spacing: 0.08em;
-  flex: 0;
 }
 
 .projects-title {

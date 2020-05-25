@@ -124,14 +124,14 @@ export default {
     };
   },
   mounted() {
-    this.$store.dispatch("setCurrentProjectId", this.projectId);
+    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("setCurrentProjectId", null);
+    this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
     $subscribe: {
-      processDiagram: function() {
+      processDiagram() {
         return [this.processDiagramId];
       }
     },
@@ -139,7 +139,11 @@ export default {
       return ProcessDiagrams.findOne();
     },
     project() {
-      return Projects.findOne();
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
   methods: {

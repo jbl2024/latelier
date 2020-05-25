@@ -1,0 +1,27 @@
+@mixin tabs-menu {
+  // height:100%;
+  // padding: 0 0.5rem;
+  overflow: hidden;
+
+  .v-tabs .v-icon {
+    color: inherit;
+    padding-right: 0.5rem;
+  }
+
+  .v-tabs,
+  .v-tabs > .v-tabs-bar {
+    height: 48px;
+  }
+
+  .v-tabs .v-tab {
+    font-size: 0.8rem;
+    padding: 6px 1.2rem;
+  }
+
+  .radius {
+    border-radius: 40px;
+    overflow: hidden;
+    mask-image: -webkit-radial-gradient(white, black);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+}

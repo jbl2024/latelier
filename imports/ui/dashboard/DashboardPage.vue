@@ -1,12 +1,12 @@
 <template>
   <div class="dashboard-page">
     <dashboard-desktop
-      v-if="$vuetify.breakpoint.smAndUp"
+      v-if="organizationId || $vuetify.breakpoint.mdAndUp"
+      :key="organizationId ? organizationId : 'home'"
       :organization-id="organizationId"
     />
     <dashboard-mobile
-      v-if="$vuetify.breakpoint.xsOnly"
-      :organization-id="organizationId"
+      v-if="!organizationId && $vuetify.breakpoint.smAndDown"
     />
   </div>
 </template>
@@ -29,18 +29,19 @@ export default {
   watch: {
     organizationId: {
       immediate: true,
-      handler (id) {
-        this.$store.dispatch("setCurrentOrganizationId", id);
+      handler(organizationId) {
+        this.$store.dispatch("organization/setCurrentOrganizationId", organizationId);
       }
     }
   },
   mounted() {
+    this.$store.dispatch("project/setCurrentProject", null);
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
     this.$store.dispatch("setShowDashboardTitle", true);
   },
   beforeDestroy() {
     this.$store.dispatch("setShowDashboardTitle", false);
-    this.$store.dispatch("setCurrentOrganizationId", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", null);
   }
 };
 </script>
