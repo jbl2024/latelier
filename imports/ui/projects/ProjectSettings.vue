@@ -47,8 +47,6 @@ export default {
   },
   data() {
     return {
-      savedProjectName: "",
-      editProjectName: false,
       title: this.$t("Settings")
     };
   },
@@ -88,10 +86,6 @@ export default {
 
 <style scoped>
 
-.toolbar {
-  background-color: white;
-}
-
 .search {
   max-width: 300px;
 }
@@ -102,48 +96,5 @@ export default {
 
 .users {
   overflow-y: scroll;
-}
-
-.edit-project-name input {
-  font-size: 20px;
-  font-weight: 400;
-  letter-spacing: 0.02em;
-  margin-top: 6px;
-  padding: 0;
-  font-family: Inter, Noto Sans, -apple-system, BlinkMacSystemFont, sans-serif;
-}
-
-@media (max-width: 600px) {
-  .container {
-    margin: 4px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-}
-
-@media (min-width: 601px) {
-  .container {
-    margin: 4px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: scroll;
-    padding-left: 4px;
-  }
-}
-
-.container-wrapper {
-  overflow-y: scroll;
-  display: flex;
-  flex-direction: column;
-}
-
-.absolute-right {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1000;
 }
 </style>
