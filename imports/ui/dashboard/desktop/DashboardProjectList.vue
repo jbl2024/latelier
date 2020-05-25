@@ -22,7 +22,7 @@
       <v-list-item-action
         v-for="group in getProjectGroups(project)"
         :key="group._id"
-        class="show-desktop"
+        class="show-desktop project-group"
         @click.stop="selectGroup(group)"
       >
         <v-chip small color="primary" text-color="white">
@@ -409,4 +409,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+
+.project-group + .project-group {
+  margin-left: 4px;
+}
+</style>
