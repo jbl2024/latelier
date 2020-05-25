@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update UI layout 
+  - better looking ui
+  - no more left drawer on wide screens
+  - quick access with shortkeys:
+    - "/": open search tasks menu
+    - "p": open project selector
+    - "l": add label on task details
 - Display task description in assigned task email
 
 ### Removed
