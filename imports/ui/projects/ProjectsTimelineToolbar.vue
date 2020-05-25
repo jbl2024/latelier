@@ -46,10 +46,10 @@ export default {
       default: null
     }
   }
-}
+};
 </script>
 <style scoped>
-  .projects-timeline-toolbar {
-    flex: 0;
-  }
+.projects-timeline-toolbar {
+  flex: 0;
+}
 </style>

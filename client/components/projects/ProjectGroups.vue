@@ -10,8 +10,8 @@
     />
     <!-- Display as Autocomplete (eg: timeline filters -->
     <v-autocomplete
-      v-model="selectedGroup"
       v-if="display === 'autocomplete'"
+      v-model="selectedGroup"
       :label="$t('Categories')"
       class="compact-form auto-complete"
       dense
@@ -23,7 +23,8 @@
       hide-details
       menu-props="closeOnContentClick"
     >
-      <template v-slot:item="{ item }"
+      <template
+        v-slot:item="{ item }"
         @click="selectGroup(item)"
         @mouseover="showButtons = item._id"
         @mouseleave="showButtons = null"
@@ -39,11 +40,7 @@
           </v-list-item-title>
         </v-list-item-content>
         <v-list-item-action v-if="item._id">
-          <v-btn
-            icon
-            ripple
-            @click.stop="openMenu(item._id)"
-          >
+          <v-btn icon ripple @click.stop="openMenu(item._id)">
             <v-icon color="grey lighten-1">
               mdi-settings
             </v-icon>
@@ -119,7 +116,6 @@
 
 <script>
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
-import { mapState } from "vuex";
 
 export default {
   props: {
@@ -136,7 +132,7 @@ export default {
   data() {
     return {
       showButtons: "",
-      selectedProjectGroupId: "",
+      selectedProjectGroupId: ""
     };
   },
   computed: {
@@ -145,11 +141,14 @@ export default {
         return this.$store.state.selectedGroup;
       },
       set(newSelectedGroup) {
-        return this.$store.dispatch("setSelectedGroup", newSelectedGroup._id ? newSelectedGroup : null);
+        return this.$store.dispatch(
+          "setSelectedGroup",
+          newSelectedGroup._id ? newSelectedGroup : null
+        );
       }
     },
     items() {
-      return [{_id: null, name: this.$t("None")}].concat(this.groups);
+      return [{ _id: null, name: this.$t("None") }].concat(this.groups);
     }
   },
   meteor: {
@@ -162,13 +161,15 @@ export default {
       Meteor.call("projectGroups.remove", group._id);
     },
     selectGroup(group) {
-      this.selectedGroup = this.selectedGroup 
-      && this.selectedGroup._id === group._id ? null : group;
+      this.selectedGroup = this.selectedGroup && this.selectedGroup._id === group._id
+        ? null
+        : group;
     },
     getColor(group) {
-      return this.$store.state.selectedGroup 
-      && this.$store.state.selectedGroup._id === group._id
-      ? "selected" : "";
+      return this.$store.state.selectedGroup
+        && this.$store.state.selectedGroup._id === group._id
+        ? "selected"
+        : "";
     },
     openMenu(id) {
       this.selectedProjectGroupId = id;
@@ -178,5 +179,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

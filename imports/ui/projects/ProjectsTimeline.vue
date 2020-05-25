@@ -91,7 +91,9 @@ export default {
         ],
         options: {
           moment: (date) => {
-            if (moment.locale() !== this.$i18n.locale) { moment.locale(this.$i18n.locale); }
+            if (moment.locale() !== this.$i18n.locale) {
+              moment.locale(this.$i18n.locale);
+            }
             return moment(date);
           },
           orientation: "top",
@@ -112,10 +114,7 @@ export default {
     };
   },
   computed: {
-    ...mapState([
-      "showCategories",
-      "selectedGroup"
-    ]),
+    ...mapState(["showCategories", "selectedGroup"]),
     isReady() {
       return this.$subReady.projectsForTimeline;
     },
@@ -123,17 +122,15 @@ export default {
       if (!this.$subReady.projectsForTimeline || !this.organizationId) return [];
       const defaultBefore = moment().subtract(1, "weeks");
       const defaultAfter = moment().add(1, "weeks");
-      return this.projects.map((project) => {
-        return {
-          id: project._id,
-          group: project.state,
-          subgroup: project._id,
-          content: this.getProjectContent(project),
-          className: "item",
-          start: moment(project.startDate).toDate() || defaultBefore,
-          end: moment(project.endDate).toDate() || defaultAfter
-        };
-      });
+      return this.projects.map((project) => ({
+        id: project._id,
+        group: project.state,
+        subgroup: project._id,
+        content: this.getProjectContent(project),
+        className: "item",
+        start: moment(project.startDate).toDate() || defaultBefore,
+        end: moment(project.endDate).toDate() || defaultAfter
+      }));
     },
     groups() {
       const states = [];
@@ -154,7 +151,10 @@ export default {
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProject", null);
-    this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
+    this.$store.dispatch(
+      "organization/setCurrentOrganizationId",
+      this.organizationId
+    );
     this.$store.dispatch("setShowCategories", true);
     this.$events.listen("close-project-detail", () => {
       this.showProjectDetail = false;
@@ -221,7 +221,10 @@ export default {
     organization() {
       const organization = Organizations.findOne();
       if (organization) {
-        this.$store.dispatch("organization/setCurrentOrganization", organization);
+        this.$store.dispatch(
+          "organization/setCurrentOrganization",
+          organization
+        );
       }
       return organization;
     }
