@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   name: "DashboardTaskList",
   props: {
@@ -20,10 +21,6 @@ export default {
     projectId: {
       type: String,
       default: null
-    },
-    user: {
-      type: Object,
-      default: () => {}
     },
     type: {
       type: String,

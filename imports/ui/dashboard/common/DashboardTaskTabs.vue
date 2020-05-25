@@ -25,7 +25,6 @@
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :key="key('recent')"
-          :user="user"
           type="recent"
           :organization-id="organizationId"
           :project-id="projectId"
@@ -34,7 +33,6 @@
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :key="key('assignedToMe')"
-          :user="user"
           type="assignedToMe"
           :organization-id="organizationId"
           :project-id="projectId"
@@ -43,7 +41,6 @@
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
           :key="key('late')"
-          :user="user"
           type="late"
           empty-illustration="celebration"
           :organization-id="organizationId"
