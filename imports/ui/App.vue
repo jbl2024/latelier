@@ -32,12 +32,10 @@
         <top-bar :dense="false" />
         <v-navigation-drawer
           id="right-drawer"
-          v-model="rightDrawer"
+          v-model="showTaskDetail"
           class="elevation-16"
           fixed
           right
-          temporary
-          hide-overlay
           :width="rightDrawerWidth"
         >
           <task-detail
@@ -86,7 +84,6 @@ export default {
   },
   data() {
     return {
-      rightDrawer: false,
       rightDrawerWidth: 600,
       openMenu: false,
       showSnackbar: false,
@@ -166,19 +163,6 @@ export default {
     },
     windowTitle(title) {
       document.title = title;
-    },
-    isTaskDetailShown: {
-      immediate: true,
-      handler() {
-        this.rightDrawer = this.isTaskDetailShown;
-      }
-    },
-    rightDrawer: {
-      handler(newVal) {
-        if (newVal === false) {
-          this.showTaskDetail = false;
-        }
-      }
     },
     currentProjectColor: {
       immediate: true,
