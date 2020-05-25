@@ -35,11 +35,11 @@ Meteor.methods({
 
     if (!name) name = task.name;
     if (!projectId) projectId = task.projectId;
-    if (!listId) listId = task.listId;
 
     checkCanWriteProject(projectId);
 
     const cloneToAnotherProject = task.projectId !== projectId;
+
     if (cloneToAnotherProject && !listId) {
       const list = Lists.findOne({ projectId });
       if (list) {
@@ -48,6 +48,8 @@ Meteor.methods({
         listId = Meteor.call("lists.insert", projectId, "Sans nom")._id;
       }
     }
+
+    if (!listId) listId = task.listId;
 
     const notes = (task.notes || []).map((note) => ({
       _id: Random.id(),

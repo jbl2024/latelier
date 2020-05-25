@@ -171,6 +171,76 @@ if (Meteor.isServer) {
       expect(task2._id).to.not.be.null;
     });
 
+    it("clone task to another project has consistent list", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectAid = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectAid).to.not.be.null;
+
+      const listId1 = Lists.findOne({
+        projectId: projectAid,
+        name: "A planifier"
+      })._id;
+
+      const listId2 = Lists.findOne({
+        projectId: projectAid,
+        name: "En cours"
+      })._id;
+
+      const task1id = Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId1,
+        "task1"
+      )._id;
+
+      const task2id = Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId2,
+        "task2"
+      )._id;
+
+      const projectBid = Projects.methods.create._execute(context, {
+        name: "projectB",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectBid).to.not.be.null;
+
+      Meteor.call(
+        "tasks.clone",
+        task1id,
+        "task1",
+        projectBid
+      );
+
+      Meteor.call(
+        "tasks.clone",
+        task2id,
+        "task2",
+        projectBid
+      );
+
+      const task1 = Tasks.findOne({
+        projectId: projectBid
+      });
+      expect(task1).to.not.be.undefined;
+      expect(task1._id).to.not.be.null;
+
+      const task2 = Tasks.findOne({
+        projectId: projectBid
+      });
+      expect(task2).to.not.be.undefined;
+      expect(task2._id).to.not.be.null;
+
+      expect(Lists.findOne(task1.listId).projectId).to.be.equal(projectBid);
+      expect(Lists.findOne(task2.listId).projectId).to.be.equal(projectBid);
+    });
 
     it("delete forever should remove associated objects", async function() {
       const userId = Meteor.users.findOne()._id;
