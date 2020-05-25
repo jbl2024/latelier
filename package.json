@@ -23,6 +23,7 @@
     "fs-extra": "^7.0.1",
     "gm": "^1.23.1",
     "handlebars": "^4.7.6",
+    "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.13",

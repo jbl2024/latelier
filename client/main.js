@@ -28,6 +28,9 @@ import messages from "/imports/i18n/i18n";
 
 import confirm from "/imports/confirm/confirm";
 
+require("intersection-observer");
+
+
 if (Meteor.settings.public.devServerURL) {
   // HMR url for iOS
   /* eslint no-undef: "off" */
