@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix clone project (tasks were not dispatched in corresponding lists)
 - Update UI layout 
   - better looking ui
   - no more left drawer on wide screens

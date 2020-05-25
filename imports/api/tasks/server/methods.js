@@ -40,7 +40,7 @@ Meteor.methods({
     checkCanWriteProject(projectId);
 
     const cloneToAnotherProject = task.projectId !== projectId;
-    if (cloneToAnotherProject) {
+    if (cloneToAnotherProject && !listId) {
       const list = Lists.findOne({ projectId });
       if (list) {
         listId = list._id;

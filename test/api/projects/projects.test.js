@@ -3,6 +3,9 @@ import { expect } from "chai";
 import { initData } from "/test/fixtures/fixtures";
 import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Labels } from "/imports/api/labels/labels";
+import { Lists } from "/imports/api/lists/lists";
+import { Tasks } from "/imports/api/tasks/tasks";
+
 
 import { Permissions } from "/imports/api/permissions/permissions";
 import { createStubs, restoreStubs } from "/test/stubs";
@@ -107,6 +110,67 @@ if (Meteor.isServer) {
         .to.be.an("array")
         .that.include("estimation");
     });
+
+    it("clone project keep tasks in corresponding lists", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectAid = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectAid).to.not.be.null;
+
+      const listId1 = Lists.findOne({
+        projectId: projectAid,
+        name: "A planifier"
+      })._id;
+
+      const listId2 = Lists.findOne({
+        projectId: projectAid,
+        name: "En cours"
+      })._id;
+
+      Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId1,
+        "task1"
+      );
+
+      Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId2,
+        "task2"
+      );
+
+      const projectBid = Projects.methods.clone._execute(context, {
+        projectId: projectAid
+      });
+      expect(projectBid).to.not.be.null;
+
+      const task1 = Tasks.findOne({
+        projectId: projectBid,
+        listId: Lists.findOne({
+          projectId: projectBid,
+          name: "A planifier"
+        })._id
+      });
+      expect(task1).to.not.be.undefined;
+      expect(task1._id).to.not.be.null;
+
+      const task2 = Tasks.findOne({
+        projectId: projectBid,
+        listId: Lists.findOne({
+          projectId: projectBid,
+          name: "En cours"
+        })._id
+      });
+      expect(task2).to.not.be.undefined;
+      expect(task2._id).to.not.be.null;
+    });
+
 
     it("delete forever should remove associated objects", async function() {
       const userId = Meteor.users.findOne()._id;
