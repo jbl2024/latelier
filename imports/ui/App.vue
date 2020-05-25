@@ -36,8 +36,8 @@
           class="elevation-16"
           fixed
           right
-          :temporary="$vuetify.breakpoint.smAndDown"
-          :stateless="$vuetify.breakpoint.mdAndUp"
+          temporary
+          hide-overlay
           :width="rightDrawerWidth"
         >
           <task-detail
@@ -171,6 +171,13 @@ export default {
       immediate: true,
       handler() {
         this.rightDrawer = this.isTaskDetailShown;
+      }
+    },
+    rightDrawer: {
+      handler(newVal) {
+        if (newVal === false) {
+          this.showTaskDetail = false;
+        }
       }
     },
     currentProjectColor: {
