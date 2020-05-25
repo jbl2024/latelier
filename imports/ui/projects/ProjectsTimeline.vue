@@ -2,34 +2,14 @@
   <div class="projects-timeline">
     <v-progress-linear v-if="!isReady" indeterminate />
     <template v-else>
-      <v-toolbar dense class="toolbar flex0">
-        <tooltip-button
-          bottom
-          icon="mdi-calendar-today"
-          :tooltip="$t('Today')"
-          @on="gotoToday()"
-        />
-        <v-divider vertical />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify"
-          :tooltip="$t('Reset zoom')"
-          @on="zoomReset()"
-        />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify-minus"
-          :tooltip="$t('Zoom out')"
-          @on="zoomOut()"
-        />
-        <tooltip-button
-          bottom
-          icon="mdi-magnify-plus"
-          :tooltip="$t('Zoom in')"
-          @on="zoomIn()"
-        />
-        <v-divider vertical />
-      </v-toolbar>
+      <projects-timeline-toolbar
+        :organization-id="organizationId"
+        :show-categories="showCategories"
+        @go-to-today="gotoToday"
+        @zoom-reset="zoomReset"
+        @zoom-out="zoomOut"
+        @zoom-in="zoomIn"
+      />
       <empty-state
         v-show="count == 0"
         icon="mdi-chart-timeline-variant"
@@ -37,8 +17,6 @@
         full-page
         :description="$t('Projects with start and end date are displayed here')"
       />
-
-
       <div
         ref="timelineContainer"
         v-resize="onResizeTimelineContainer"
@@ -76,17 +54,17 @@
 <script>
 import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
-
 import { colors } from "/imports/colors.js";
-
 import { mapState } from "vuex";
 import { Timeline } from "vue2vis";
 import debounce from "lodash/debounce";
 import moment from "moment";
+import ProjectsTimelineToolbar from "/imports/ui/projects/ProjectsTimelineToolbar";
 
 export default {
   components: {
-    Timeline
+    Timeline,
+    ProjectsTimelineToolbar
   },
   props: {
     organizationId: {
@@ -134,7 +112,10 @@ export default {
     };
   },
   computed: {
-    ...mapState(["selectedGroup"]),
+    ...mapState([
+      "showCategories",
+      "selectedGroup"
+    ]),
     isReady() {
       return this.$subReady.projectsForTimeline;
     },
@@ -142,9 +123,8 @@ export default {
       if (!this.$subReady.projectsForTimeline || !this.organizationId) return [];
       const defaultBefore = moment().subtract(1, "weeks");
       const defaultAfter = moment().add(1, "weeks");
-      const items = [];
-      this.projects.forEach((project) => {
-        const item = {
+      return this.projects.map((project) => {
+        return {
           id: project._id,
           group: project.state,
           subgroup: project._id,
@@ -153,9 +133,7 @@ export default {
           start: moment(project.startDate).toDate() || defaultBefore,
           end: moment(project.endDate).toDate() || defaultAfter
         };
-        items.push(item);
       });
-      return items;
     },
     groups() {
       const states = [];
@@ -337,10 +315,6 @@ export default {
   position: relative;
   flex: 1;
   background-color: white;
-}
-
-.flex0 {
-  flex: 0;
 }
 
 .flex1 {
