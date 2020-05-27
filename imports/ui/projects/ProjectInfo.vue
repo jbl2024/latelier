@@ -105,16 +105,16 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import "/imports/ui/styles/mixins/breakpoint";
+
 .container-wrapper {
-  overflow-y: scroll;
-  height: 100%;
+  overflow-y: auto;
+  height: calc(100vh - 64px);
+  @include media-query("sm-and-down") {
+    height: calc(100vh - 112px);
+  }
   width: 100%;
-  position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
