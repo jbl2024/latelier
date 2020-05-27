@@ -7,36 +7,34 @@
     app
     clipped-left
   >
-    <v-row>
-      <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
-      <v-col v-show="!isFullSearchEnabled" cols="12" sm="12" md="8" lg="3">
-        <top-bar-title
-          :organization="currentOrganization"
-          :project="currentProject"
-        />
-      </v-col>
-      <!-- [ProjectMenu|OrganizationMenu] -->
-      <v-col v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" cols="4" sm="4" md="12" lg="6">
-        <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
-        <main-menu
-          v-show="!isSearchEnabled"
-          v-if="currentProject || currentOrganization"
-          display="tabs"
-          :dark="isContentDark"
-          :project="currentProject"
-          :only-icons="$vuetify.breakpoint.mdOnly"
-          :organization="currentOrganization"
-          radius
-        />
-        </v-col>
-        <!-- SearchBar, Notification and Profile -->
-        <v-col v-show="!isFullSearchEnabled && $vuetify.breakpoint.mdAndUp" cols="4" md="4" lg="3">
-          <top-bar-additional-menu
-            :is-search-enabled="isSearchEnabled"
-            @toggle-search="isSearchEnabled = $event"
-          />
-        </v-col>
-    </v-row>
+    <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
+    <top-bar-title
+      v-show="!isFullSearchEnabled"
+      class="top-bar-left"
+      :organization="currentOrganization"
+      :project="currentProject"
+    />
+    <!-- [ProjectMenu|OrganizationMenu] -->
+    <div v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" class="top-bar-center">
+      <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
+      <main-menu
+        v-show="!isSearchEnabled"
+        v-if="currentProject || currentOrganization"
+        display="tabs"
+        :dark="isContentDark"
+        :project="currentProject"
+        :only-icons="$vuetify.breakpoint.width <= 1368"
+        :organization="currentOrganization"
+        radius
+      />
+    </div>
+    <!-- SearchBar, Notification and Profile -->
+    <top-bar-additional-menu
+      v-show="!isFullSearchEnabled && $vuetify.breakpoint.mdAndUp"
+      class="top-bar-right"
+      :is-search-enabled="isSearchEnabled"
+      @toggle-search="isSearchEnabled = $event"
+    />
   </v-app-bar>
 </template>
 <script>
@@ -64,7 +62,7 @@ export default {
   },
   computed: {
     isFullSearchEnabled() {
-      return this.$vuetify.breakpoint.mdOnly && this.isSearchEnabled;
+      return this.$vuetify.breakpoint.mdAndDown && this.isSearchEnabled;
     },
     ...mapState("ui", ["navigationColor"]),
     ...mapGetters("ui", [
@@ -87,11 +85,19 @@ export default {
   transition: background-color 50ms linear;
   .v-toolbar__content {
     padding: 0 16px;
-    @include media-query("sm-and-down") {
+    @include media-query("md-and-down") {
       padding: 0 8px;
     }
     display: flex;
     justify-content: space-between;
+  }
+
+  .top-bar-left,
+  .top-bar-right {
+    flex: 1 1 25%;
+  }
+  .top-bar-center {
+    flex: 1 1 50%;
   }
 }
 </style>

@@ -6,7 +6,7 @@
       :light="!dark"
       :dark="dark"
       hide-slider
-      grow
+      centered
       :class="{ radius: radius }"
     >
       <v-tab v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
@@ -293,7 +293,7 @@ export default {
   }
   .v-item-group.v-bottom-navigation .v-btn {
     @include media-query("sm-and-down") {
-      min-width: 64px;
+      max-width: 56px;
     }
   }
 }

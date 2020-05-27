@@ -12,10 +12,10 @@
       <content-selector :key="contentSelectorKey">
         <template v-slot:activator="{ on }">
           <v-btn
-            class="button-selector"
             v-shortkey="['p']"
             text
             v-on="on"
+            class="button-selector"
             @shortkey="on.click($event)"
           >
             <span :class="['title', 'title-selector', tooLong ? 'too-long' : null]">
@@ -50,8 +50,8 @@ export default {
   },
   data() {
     return {
-      titleMaxLength: 44
-    }
+      titleMaxLength: 30
+    };
   },
   computed: {
     contentSelectorKey() {

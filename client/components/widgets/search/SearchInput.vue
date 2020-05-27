@@ -11,15 +11,15 @@
     <template v-slot:activator="{ on }">
       <div class="search-input radius">
         <v-text-field
-          v-model="text"
           ref="input"
+          v-model="text"
           solo
           :light="!isContentDark"
           :dark="isContentDark"
           hide-details
           prepend-inner-icon="mdi-magnify"
           :label="$t('Search') + '...'"
-          class="hidden-sm-and-down align-remaining"
+          class="align-remaining"
           v-on="on"
           @focus="onFocus"
           @input="debouncedFilter"
