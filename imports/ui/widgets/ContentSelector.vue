@@ -2,6 +2,7 @@
   <v-menu
     v-model="isMenuShown"
     :nudge-bottom="10"
+    :max-width="400"
     :close-on-content-click="false"
     offset-y
     @click-outside="isMenuShown = false"
