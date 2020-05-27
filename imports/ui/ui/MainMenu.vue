@@ -283,11 +283,17 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import "/imports/ui/styles/mixins/tabs-menu";
+@import "/imports/ui/styles/mixins/breakpoint";
 
 .main-menu {
   @include tabs-menu;
   .v-item-group.v-bottom-navigation--fixed {
     z-index: 8;
+  }
+  .v-item-group.v-bottom-navigation .v-btn {
+    @include media-query("sm-and-down") {
+      min-width: 64px;
+    }
   }
 }
 </style>
