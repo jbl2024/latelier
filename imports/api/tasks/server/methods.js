@@ -4,6 +4,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Labels } from "/imports/api/labels/labels.js";
 import * as htmlToText from "@mxiii/html-to-text";
 import carbone from "carbone";
 import moment from "moment";
@@ -68,6 +69,27 @@ Meteor.methods({
       checked: aChecklist.checked
     }));
 
+    const findLabelsInDestinationProject = () => {
+      const labels = [];
+      if (!task.labels) {
+        return labels;
+      }
+      task.labels.forEach((labelId) => {
+        const previousLabel = Labels.findOne({
+          _id: labelId
+        });
+        const labelInClonedProject = Labels.findOne({
+          name: previousLabel.name,
+          color: previousLabel.color,
+          projectId: projectId
+        });
+        if (labelInClonedProject) {
+          labels.push(labelInClonedProject._id);
+        }
+      });
+      return labels;
+    };
+
     const clonedTask = {
       projectId,
       listId,
@@ -80,7 +102,7 @@ Meteor.methods({
       updatedAt: !keepDates ? now : task.updatedAt,
       createdBy: !keepDates ? userId : task.createdBy,
       updatedBy: !keepDates ? userId : task.updatedBy,
-      labels: !cloneToAnotherProject ? task.labels : undefined,
+      labels: !cloneToAnotherProject ? task.labels : findLabelsInDestinationProject(),
       watchers: !cloneToAnotherProject ? task.watchers : undefined,
       notes,
       checklist,

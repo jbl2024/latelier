@@ -242,6 +242,71 @@ if (Meteor.isServer) {
       expect(Lists.findOne(task2.listId).projectId).to.be.equal(projectBid);
     });
 
+    it("clone project keeps labels on tasks", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectAid = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectAid).to.not.be.null;
+
+      const listId1 = Lists.findOne({
+        projectId: projectAid,
+        name: "A planifier"
+      })._id;
+
+      const listId2 = Lists.findOne({
+        projectId: projectAid,
+        name: "En cours"
+      })._id;
+
+      const task1id = Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId1,
+        "task1"
+      )._id;
+
+      Meteor.call(
+        "tasks.insert",
+        projectAid,
+        listId2,
+        "task2"
+      )._id;
+
+      const labelId = Meteor.call("labels.create", {
+        projectId: projectAid,
+        name: "label",
+        color: "black"
+      });
+      Meteor.call("tasks.addLabel", task1id, labelId);
+
+      const projectBid = Projects.methods.clone._execute(context, {
+        projectId: projectAid
+      });
+
+      const labels = Labels.find().fetch();
+      expect(labels).to.have.lengthOf(2);
+
+      const label = Labels.findOne({
+        projectId: projectBid
+      });
+
+      expect(label).to.not.be.undefined;
+      expect(label._id).to.not.be.null;
+
+      const clonedTaskWithLabel = Tasks.findOne({
+        name: "task1",
+        projectId: projectBid
+      });
+
+      expect(clonedTaskWithLabel).to.not.be.undefined;
+      expect(clonedTaskWithLabel.labels).to.not.be.undefined;
+      expect(clonedTaskWithLabel.labels).to.have.lengthOf(1);
+    });
+
     it("delete forever should remove associated objects", async function() {
       const userId = Meteor.users.findOne()._id;
       const context = { userId };
