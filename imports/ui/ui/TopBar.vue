@@ -7,29 +7,36 @@
     app
     clipped-left
   >
-    <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
-    <top-bar-title
-      :organization="currentOrganization"
-      :project="currentProject"
-    />
-    <!-- [ProjectMenu|OrganizationMenu] -->
-    <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
-
-    <main-menu
-      v-show="!isSearchEnabled"
-      v-if="$vuetify.breakpoint.lgAndUp && (currentProject || currentOrganization)"
-      display="tabs"
-      :dark="isContentDark"
-      :project="currentProject"
-      :organization="currentOrganization"
-      radius
-    />
-    <!-- SearchBar, Notification and Profile -->
-    <top-bar-additional-menu
-      v-if="$vuetify.breakpoint.mdAndUp"
-      :is-search-enabled="isSearchEnabled"
-      @toggle-search="isSearchEnabled = $event"
-    />
+    <v-row>
+      <!-- [ProjectTitle|OrganizationTitle|HomeTitle] -->
+      <v-col v-show="!isFullSearchEnabled" cols="12" sm="12" md="8" lg="3">
+        <top-bar-title
+          :organization="currentOrganization"
+          :project="currentProject"
+        />
+      </v-col>
+      <!-- [ProjectMenu|OrganizationMenu] -->
+      <v-col v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" cols="4" sm="4" md="12" lg="6">
+        <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
+        <main-menu
+          v-show="!isSearchEnabled"
+          v-if="currentProject || currentOrganization"
+          display="tabs"
+          :dark="isContentDark"
+          :project="currentProject"
+          :only-icons="$vuetify.breakpoint.mdOnly"
+          :organization="currentOrganization"
+          radius
+        />
+        </v-col>
+        <!-- SearchBar, Notification and Profile -->
+        <v-col v-show="!isFullSearchEnabled && $vuetify.breakpoint.mdAndUp" cols="4" md="4" lg="3">
+          <top-bar-additional-menu
+            :is-search-enabled="isSearchEnabled"
+            @toggle-search="isSearchEnabled = $event"
+          />
+        </v-col>
+    </v-row>
   </v-app-bar>
 </template>
 <script>
@@ -56,6 +63,9 @@ export default {
     };
   },
   computed: {
+    isFullSearchEnabled() {
+      return this.$vuetify.breakpoint.mdOnly && this.isSearchEnabled;
+    },
     ...mapState("ui", ["navigationColor"]),
     ...mapGetters("ui", [
       "isNavigationColorDark",
@@ -72,12 +82,16 @@ export default {
 };
 </script>
 <style lang="scss">
-  .top-bar {
-    transition: background-color 50ms linear;
-    .v-toolbar__content {
-      padding: 0 16px;
-      display: flex;
-      justify-content: space-between;
+@import "/imports/ui/styles/mixins/breakpoint";
+.top-bar {
+  transition: background-color 50ms linear;
+  .v-toolbar__content {
+    padding: 0 16px;
+    @include media-query("sm-and-down") {
+      padding: 0 8px;
     }
+    display: flex;
+    justify-content: space-between;
   }
+}
 </style>

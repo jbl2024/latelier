@@ -51,7 +51,7 @@
         </v-container>
       </v-content>
       <main-menu
-        v-if="$vuetify.breakpoint.smAndDown"
+        v-if="$vuetify.breakpoint.mdAndDown"
         display="bottom-navigation"
         :dark="isNavigationColorDark"
         :project="currentProject"

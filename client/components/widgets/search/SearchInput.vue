@@ -11,11 +11,11 @@
     <template v-slot:activator="{ on }">
       <div class="search-input radius">
         <v-text-field
+          v-model="text"
           ref="input"
           solo
           :light="!isContentDark"
           :dark="isContentDark"
-          clearable
           hide-details
           prepend-inner-icon="mdi-magnify"
           :label="$t('Search') + '...'"
@@ -25,7 +25,18 @@
           @input="debouncedFilter"
           @keyup.esc="isEnabled = false"
           @keyup.enter="showMenu = true"
-        />
+        >
+          <template slot="append">
+            <v-btn
+              icon
+              text
+              small
+              @click.stop="clearOrClose"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
+        </v-text-field>
       </div>
     </template>
     <search-results
@@ -53,6 +64,7 @@ export default {
   },
   data() {
     return {
+      text: "",
       debouncedFilter: "",
       filter: "",
       showMenu: false,
@@ -109,6 +121,13 @@ export default {
       this.$emit("blur");
       this.showMenu = false;
       return true;
+    },
+    clearOrClose() {
+      if (this.text && this.text.length > 0) {
+        this.text = "";
+      } else if (!this.text || !this.text.length) {
+        this.isEnabled = false;
+      }
     }
   }
 };
@@ -121,7 +140,6 @@ export default {
 }
 .search-input {
   width: 100%;
-  max-width: 35%;
   display: flex;
   letter-spacing: normal;
   text-align: left;
