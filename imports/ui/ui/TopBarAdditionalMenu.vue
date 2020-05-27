@@ -1,7 +1,7 @@
 <template>
   <div class="additional-menu">
     <v-btn
-      v-shortkey="{single: ['/'], multiple: ['shift', '/']}"
+      v-shortkey="{single: ['/'], altSingle: ['s'], multiple: ['shift', '/']}"
       class="prevent-search-blur"
       icon
       @shortkey="$emit('toggle-search', !isSearchEnabled)"
