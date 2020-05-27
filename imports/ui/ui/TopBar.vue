@@ -15,7 +15,7 @@
       :project="currentProject"
     />
     <!-- [ProjectMenu|OrganizationMenu] -->
-    <div v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" class="top-bar-center">
+    <div v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" :class="['top-bar-center', isSearchEnabled ? 'search-enabled' : null]">
       <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
       <main-menu
         v-show="!isSearchEnabled"
@@ -23,7 +23,7 @@
         display="tabs"
         :dark="isContentDark"
         :project="currentProject"
-        :only-icons="$vuetify.breakpoint.width <= 1368"
+        :only-icons="currentProject && $vuetify.breakpoint.width <= 1368"
         :organization="currentOrganization"
         radius
       />
@@ -96,7 +96,7 @@ export default {
   .top-bar-right {
     flex: 1 1 25%;
   }
-  .top-bar-center {
+  .top-bar-center.search-enabled {
     flex: 1 1 50%;
   }
 }

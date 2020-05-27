@@ -6,7 +6,6 @@
       :light="!dark"
       :dark="dark"
       hide-slider
-      centered
       :class="{ radius: radius }"
     >
       <v-tab v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
