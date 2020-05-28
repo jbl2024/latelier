@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Several UI fixes
 - Clone project keep labels on tasks
 - Open project on dashboard opens tasks view directly
 - Fix search shortkey (shift + / is mandatory on french keyboards)
