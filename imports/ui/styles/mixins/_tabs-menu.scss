@@ -4,8 +4,8 @@
   overflow: hidden;
 
 
-  .v-list-item:not(.v-list-item--active),
-  .v-list-item:not(.v-list-item--active) .v-icon {
+  &.theme--dark .v-list-item:not(.v-list-item--active),
+  &.theme--dark .v-list-item:not(.v-list-item--active) .v-icon {
     color: hsla(0,0%,100%,.6) !important;
   }
   .v-list-item {
