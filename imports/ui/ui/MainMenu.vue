@@ -1,18 +1,27 @@
 <template>
   <div v-if="display && menuItems && menuItems.length" class="main-menu">
-    <!-- Display as tabs for top bar navigation -->
-    <v-tabs
+    <!-- Display as custom tabs made from v-list for top bar navigation -->
+    <v-list 
       v-if="display === 'tabs'"
       :light="!dark"
       :dark="dark"
+      class="main-menu-tabs"
+      :class="tabsClasses"
       hide-slider
-      :class="{ radius: radius }"
     >
-      <v-tab v-for="menuItem in menuItems" :key="menuItem.id" :to="menuItem.to">
-        <v-icon>{{ menuItem.icon }}</v-icon>
-        <span v-if="!onlyIcons">{{ menuItem.title }}</span>
-      </v-tab>
-    </v-tabs>
+        <v-list-item
+          v-for="menuItem in menuItems"
+          :key="menuItem.id"
+          :to="menuItem.to"
+        >
+          <v-list-item-avatar class="tssz">
+            <v-icon>{{ menuItem.icon }}</v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+    </v-list>
     <!-- Display as list for drawer navigation or menu like ProjectDetail.vue -->
     <template v-else-if="display === 'list'">
       <v-list class="pt-0">
@@ -90,6 +99,12 @@ export default {
     }
   },
   computed: {
+    tabsClasses() {
+      return [
+        this.radius ? "radius": null,
+        this.$vuetify.breakpoint.width < 1368 ? "dense" : null
+      ];
+    },
     ...mapState("ui", ["navigationColor"]),
     organizationId() {
       if (!this.organization) return null;
@@ -281,12 +296,16 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+// Should not be scoped for overriding vuetify styles
 @import "/imports/ui/styles/mixins/tabs-menu";
 @import "/imports/ui/styles/mixins/breakpoint";
 
 .main-menu {
-  @include tabs-menu;
+  .main-menu-tabs {
+    
+    @include tabs-menu;
+  }
   .v-item-group.v-bottom-navigation--fixed {
     z-index: 8;
   }

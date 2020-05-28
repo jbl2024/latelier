@@ -1,25 +1,25 @@
 @mixin tabs-menu {
-  // height:100%;
-  // padding: 0 0.5rem;
+  padding: 0 !important;
+  display: flex;
   overflow: hidden;
 
-  .v-tabs .v-icon {
-    color: inherit;
-    padding-right: 0.5rem;
+  .v-list-item {
+    padding: 0px 12px;
   }
-
-  .v-tabs,
-  .v-tabs > .v-tabs-bar {
-    height: 48px;
+  &.dense .v-list-item {
+    padding: 0px 3px;
   }
-
-  .v-tabs .v-tab {
-    font-size: 0.8rem;
-    padding: 6px 1.2rem;
+  .v-list-item__content {
+    padding: 12px 2px;
   }
-
-  .radius {
-    border-radius: 40px;
+  & .v-list-item__avatar,
+  .v-application--is-ltr & .v-list-item__avatar {
+    margin-right: 0 !important;
+    margin-bottom: 0 !important;
+    margin-top: 0 !important;
+  }
+  &.radius {
+    border-radius: 40px !important;
     overflow: hidden;
     mask-image: -webkit-radial-gradient(white, black);
     -webkit-mask-image: -webkit-radial-gradient(white, black);
