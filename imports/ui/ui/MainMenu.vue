@@ -5,7 +5,7 @@
       v-if="display === 'tabs'"
       :light="!dark"
       :dark="dark"
-      class="main-menu-tabs tt"
+      class="main-menu-tabs"
       :class="tabsClasses"
       hide-slider
     >
@@ -14,12 +14,10 @@
         :key="menuItem.id"
         :to="menuItem.to"
       >
-        <v-list-item-avatar class="tssz">
-          <v-icon>{{ menuItem.icon }}</v-icon>
-        </v-list-item-avatar>
-        <v-list-item-content>
+        <div class="tabs__item-content">
+          <v-icon class="tabs__icon">{{ menuItem.icon }}</v-icon>
           <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
-        </v-list-item-content>
+        </div>
       </v-list-item>
     </v-list>
     <!-- Display as list for drawer navigation or menu like ProjectDetail.vue -->
