@@ -8,6 +8,10 @@
   &.theme--dark .v-list-item:not(.v-list-item--active) .v-icon {
     color: hsla(0,0%,100%,.6) !important;
   }
+  
+  &.theme--dark .v-list-item--active:before {
+    opacity: 0;
+  }
   .v-list-item {
     padding: 0px 12px;
   }
