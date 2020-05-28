@@ -118,7 +118,8 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+
 .top-bar-title .v-toolbar__title {
   display: flex;
   align-items: center;
@@ -126,9 +127,11 @@ export default {
 .v-application .title.title-selector {
   text-transform: none;
   &.too-long {
-    font-size: 0.9rem !important;
+    font-size: 0.85rem !important;
   }
 }
+
+.top-bar-title .v-btn:not(.v-btn--round).v-size--default,
 .button-selector {
   padding: 0 8px;
 }

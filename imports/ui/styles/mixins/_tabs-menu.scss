@@ -15,8 +15,18 @@
   .v-list-item {
     padding: 0px 12px;
   }
-  &.dense .v-list-item {
-    padding: 0px 3px;
+  &.dense {
+    .v-list-item {
+      padding: 0px 3px;
+    }
+    & .v-list-item:last-child {
+      padding-right: 10px;
+    }
+    .v-list-item__avatar,
+    .v-application--is-ltr & .v-list-item__avatar {
+      width: 32px;
+      min-width: 32px;
+    }
   }
 
   & .v-list-item:last-child {
