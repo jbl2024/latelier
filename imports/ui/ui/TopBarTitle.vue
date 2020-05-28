@@ -14,10 +14,11 @@
           <v-btn
             v-shortkey="['p']"
             text
+            class="button-selector"
             v-on="on"
             @shortkey="on.click($event)"
           >
-            <span class="title title-selector">
+            <span :class="['title', 'title-selector', tooLong ? 'too-long' : null]">
               {{ selectorTitle }}
             </span>
             <v-icon class="ml-1">
@@ -47,6 +48,11 @@ export default {
       default: null
     }
   },
+  data() {
+    return {
+      titleMaxLength: 30
+    };
+  },
   computed: {
     contentSelectorKey() {
       if (this.projectId) return this.projectId;
@@ -62,13 +68,16 @@ export default {
       return this.organization._id;
     },
     selectorTitle() {
-      if (this.project) return this.project?.name ? truncate(this.project.name, 30) : "";
+      if (this.project) return this.project?.name ? truncate(this.project.name, this.titleMaxLength) : "";
       if (this.organization) {
         return this.organization?.name
-          ? truncate(this.organization.name, 30)
+          ? truncate(this.organization.name, this.titleMaxLength)
           : "";
       }
       return "L'atelier";
+    },
+    tooLong() {
+      return this.selectorTitle.length > this.titleMaxLength;
     },
     showMobileDrawer: {
       set(showMobileDrawer) {
@@ -109,13 +118,21 @@ export default {
   }
 };
 </script>
-<style lang="scss" scoped>
+<style lang="scss">
+
 .top-bar-title .v-toolbar__title {
   display: flex;
   align-items: center;
 }
-
-.title-selector {
+.v-application .title.title-selector {
   text-transform: none;
+  &.too-long {
+    font-size: 0.85rem !important;
+  }
+}
+
+.top-bar-title .v-btn:not(.v-btn--round).v-size--default,
+.button-selector {
+  padding: 0 8px;
 }
 </style>

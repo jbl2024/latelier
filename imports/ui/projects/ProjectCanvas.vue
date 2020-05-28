@@ -1,9 +1,9 @@
 <template>
   <div class="project-canvas">
-    <div v-if="!canvas">
+    <div v-if="!isReady">
       <v-progress-linear indeterminate />
     </div>
-    <div v-if="$subReady.canvas && canvas && canvas.data" class="wrapper">
+    <div v-else class="wrapper">
       <v-toolbar dense class="toolbar">
         <span class="title">{{ $t('Canvas') }}</span>
         <tooltip-button
@@ -198,6 +198,8 @@
 <script>
 import { Canvas } from "/imports/api/canvas/canvas.js";
 import { saveAs } from "file-saver";
+import { Projects } from "/imports/api/projects/projects.js";
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -205,6 +207,15 @@ export default {
       type: String,
       default: null
     }
+  },
+  computed: {
+    isReady() {
+      return this.$subReady.canvas
+      && this.canvas
+      && this.canvas.data
+      && this.currentProject;
+    },
+    ...mapState("project", ["currentProject"])
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
@@ -215,12 +226,22 @@ export default {
   meteor: {
     // Subscriptions
     $subscribe: {
+      project() {
+        return [this.projectId];
+      },
       canvas: function() {
         return [this.projectId];
       }
     },
     canvas() {
       return Canvas.findOne();
+    },
+    project() {
+      const project = Projects.findOne();
+      if (project) {
+        this.$store.dispatch("project/setCurrentProject", project);
+      }
+      return project;
     }
   },
   methods: {
@@ -244,11 +265,6 @@ export default {
 
 <style scoped>
 .wrapper {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  right: 0;
   display: flex;
   flex-direction: column;
 }

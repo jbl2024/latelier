@@ -50,20 +50,21 @@
           <router-view />
         </v-container>
       </v-content>
-      <main-menu
-        v-if="$vuetify.breakpoint.smAndDown"
-        display="bottom-navigation"
-        :dark="isNavigationColorDark"
-        :project="currentProject"
-        :organization="currentOrganization"
-      />
-
-      <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
-        {{ notifyMessage }}
-        <v-btn dark icon text @click="showSnackbar = false">
-          <v-icon>mdi-close</v-icon>
-        </v-btn>
-      </v-snackbar>
+      <template v-if="isConnected">
+        <main-menu
+          v-if="$vuetify.breakpoint.mdAndDown"
+          display="bottom-navigation"
+          :dark="isNavigationColorDark"
+          :project="currentProject"
+          :organization="currentOrganization"
+        />
+        <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
+          {{ notifyMessage }}
+          <v-btn dark icon text @click="showSnackbar = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-snackbar>
+      </template>
     </v-app>
   </div>
 </template>
