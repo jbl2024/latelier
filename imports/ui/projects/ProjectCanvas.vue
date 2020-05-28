@@ -210,8 +210,8 @@ export default {
   },
   computed: {
     isReady() {
-      return this.$subReady.canvas 
-      && this.canvas 
+      return this.$subReady.canvas
+      && this.canvas
       && this.canvas.data
       && this.currentProject;
     },

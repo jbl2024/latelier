@@ -1,26 +1,26 @@
 <template>
   <div v-if="display && menuItems && menuItems.length" class="main-menu">
     <!-- Display as custom tabs made from v-list for top bar navigation -->
-    <v-list 
+    <v-list
       v-if="display === 'tabs'"
       :light="!dark"
       :dark="dark"
-      class="main-menu-tabs"
+      class="main-menu-tabs tt"
       :class="tabsClasses"
       hide-slider
     >
-        <v-list-item
-          v-for="menuItem in menuItems"
-          :key="menuItem.id"
-          :to="menuItem.to"
-        >
-          <v-list-item-avatar class="tssz">
-            <v-icon>{{ menuItem.icon }}</v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+      <v-list-item
+        v-for="menuItem in menuItems"
+        :key="menuItem.id"
+        :to="menuItem.to"
+      >
+        <v-list-item-avatar class="tssz">
+          <v-icon>{{ menuItem.icon }}</v-icon>
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <!-- Display as list for drawer navigation or menu like ProjectDetail.vue -->
     <template v-else-if="display === 'list'">
@@ -101,7 +101,7 @@ export default {
   computed: {
     tabsClasses() {
       return [
-        this.radius ? "radius": null,
+        this.radius ? "radius" : null,
         this.$vuetify.breakpoint.width < 1368 ? "dense" : null
       ];
     },
@@ -303,7 +303,6 @@ export default {
 
 .main-menu {
   .main-menu-tabs {
-    
     @include tabs-menu;
   }
   .v-item-group.v-bottom-navigation--fixed {

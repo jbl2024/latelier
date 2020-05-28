@@ -14,8 +14,8 @@
           <v-btn
             v-shortkey="['p']"
             text
-            v-on="on"
             class="button-selector"
+            v-on="on"
             @shortkey="on.click($event)"
           >
             <span :class="['title', 'title-selector', tooLong ? 'too-long' : null]">

@@ -15,7 +15,10 @@
       :project="currentProject"
     />
     <!-- [ProjectMenu|OrganizationMenu] -->
-    <div v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp" :class="['top-bar-center', isSearchEnabled ? 'search-enabled' : null]">
+    <div
+      v-show="isFullSearchEnabled || $vuetify.breakpoint.lgAndUp"
+      :class="['top-bar-center', isSearchEnabled ? 'search-enabled' : null]"
+    >
       <search-input v-model="isSearchEnabled" @blur="isSearchEnabled = false" />
       <main-menu
         v-show="!isSearchEnabled"
