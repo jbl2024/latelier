@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [v3.0.0-beta.1 2020-05-29]
+
+### Added
+
+### Changed
 - Several UI fixes
 - Clone project keep labels on tasks
 - Open project on dashboard opens tasks view directly
