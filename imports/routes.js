@@ -17,7 +17,6 @@ import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
 import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
-import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
 import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
 import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
 import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
@@ -149,7 +148,7 @@ export default [
     path: "/projects-bpmn/:projectId",
     name: "project-bpmn",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectBPMN,
+    component: async () => (await import("/imports/ui/projects/ProjectBPMN.vue")).default,
     props: true,
     meta: {
       isProject: true
