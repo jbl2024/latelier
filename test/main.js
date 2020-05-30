@@ -13,6 +13,7 @@ import "/test/api/healthReports/healthReports.test";
 import "/test/api/dashboards/dashboards.test";
 import "/test/api/search/search.test";
 import "/test/api/digests/digests.test";
+import "/test/api/meetings/meetings.test";
 
 describe("latelier", function() {
   it("package.json has correct name", async function() {
