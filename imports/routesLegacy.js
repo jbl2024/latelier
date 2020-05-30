@@ -5,6 +5,7 @@ import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
 import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
+import ProjectMeetings from "/imports/ui/projects/ProjectMeetings.vue";
 
 import modern from "./routes";
 
@@ -42,6 +43,16 @@ const legacy = [
     name: "project-bpmn",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: ProjectBPMN,
+    props: true,
+    meta: {
+      isProject: true
+    }
+  },
+  {
+    path: "/projects-meetings/:projectId",
+    name: "project-meetings",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: ProjectMeetings,
     props: true,
     meta: {
       isProject: true

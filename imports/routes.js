@@ -252,5 +252,15 @@ export default [
       isOrganization: true
     }
   },
+  {
+    path: "/projects-meetings/:projectId",
+    name: "project-meetings",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: async () => (await import("/imports/ui/projects/ProjectMeetings.vue")).default,
+    props: true,
+    meta: {
+      isProject: true
+    }
+  },
   { path: "*", name: "not-found", component: NotFound }
 ];

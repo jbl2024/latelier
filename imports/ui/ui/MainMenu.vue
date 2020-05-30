@@ -241,6 +241,15 @@ export default {
             name: "project-weather",
             params: { projectId: this.projectId }
           }
+        },
+        {
+          id: "meetings",
+          title: this.$t("Meetings"),
+          icon: "mdi-calendar-star",
+          to: {
+            name: "project-meetings",
+            params: { projectId: this.projectId }
+          }
         }
       ];
       if (this.project && this.project.organizationId) {
