@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix translation
 - Lazy load ProjectBPMN component to minimize final bundle
 
 
