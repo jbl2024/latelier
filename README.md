@@ -180,6 +180,8 @@ Default password for generated users is `password`.
 
 ### Screenshots
 
+![Dashboard](/docs/task.png)
+
 ![Dashboard](/docs/dashboard.png)
 
 ![Planning (organization)](/docs/planning1.png)
