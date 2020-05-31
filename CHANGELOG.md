@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update screenshots on README.md
 - Fix translation
 - Lazy load ProjectBPMN component to minimize final bundle
-
+- Fix task count in project activity
 
 ### Removed
 

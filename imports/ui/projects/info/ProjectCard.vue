@@ -39,7 +39,7 @@
                 mdi-format-list-bulleted
               </v-icon>
               <template v-if="!$vuetify.breakpoint.xsOnly">
-                {{ $t('Pending tasks') }}
+                {{ $t("Pending tasks") }}
               </template>
             </div>
             <div class="number">
@@ -54,7 +54,7 @@
                 mdi-check
               </v-icon>
               <template v-if="!$vuetify.breakpoint.xsOnly">
-                {{ $t('Completed tasks') }}
+                {{ $t("Completed tasks") }}
               </template>
             </div>
             <div class="number">
@@ -69,7 +69,7 @@
                 mdi-account-group
               </v-icon>
               <template v-if="!$vuetify.breakpoint.xsOnly">
-                {{ $t('Users') }}
+                {{ $t("Users") }}
               </template>
             </div>
             <div class="number">
@@ -84,11 +84,11 @@
                 mdi-attachment
               </v-icon>
               <template v-if="!$vuetify.breakpoint.xsOnly">
-                {{ $t('Attachments') }}
+                {{ $t("Attachments") }}
               </template>
             </div>
             <div class="number">
-              12
+              {{ attachmentCount(project) }}
             </div>
           </div>
         </v-col>
@@ -203,9 +203,10 @@
 <script>
 import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
+import { Attachments } from "/imports/api/attachments/attachments.js";
+
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-
 
 export default {
   name: "ProjectCard",
@@ -255,12 +256,16 @@ export default {
       return item.color;
     },
     getColorCardStyle(project) {
-      return project && project.color ? `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);` : "";
+      return project && project.color
+        ? `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`
+        : "";
     },
 
     formatProjectDates(project) {
       if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
+        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
+          project.endDate
+        )}`;
       }
       if (project.startDate) {
         return `A partir du ${this.formatDate(project.startDate)}`;
@@ -286,6 +291,10 @@ export default {
     userCount(project) {
       const members = project.members || [];
       return members.length;
+    },
+
+    attachmentCount(project) {
+      return Attachments.find({ "meta.projectId": project._id }).count();
     },
 
     canDeleteProject(project) {
