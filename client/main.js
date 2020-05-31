@@ -91,7 +91,7 @@ const vuetify = new Vuetify({
 });
 
 Vue.use(require("vue-shortkey"), {
-  prevent: ["input", "textarea", ".ProseMirror"]
+  prevent: ["input", "textarea", ".ProseMirror", ".djs-direct-editing-content"]
 });
 
 Vue.use(confirm, { vuetify });

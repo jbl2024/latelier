@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix translation
 - Lazy load ProjectBPMN component to minimize final bundle
 - Fix task count in project activity
+- Fix shortcuts messing with bpmn edition
 
 ### Removed
 
