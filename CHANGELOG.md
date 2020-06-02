@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [v3.0.0-beta.2 2020-06-02]
+
+### Added
+
+### Changed
 - Update screenshots on README.md
 - Fix translation
 - Lazy load ProjectBPMN component to minimize final bundle
