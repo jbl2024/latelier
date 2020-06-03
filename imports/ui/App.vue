@@ -275,6 +275,10 @@ html {
   width: 100%;
 }
 
+.v-list--dense .v-list-item .v-list-item__title {
+  font-size: 1rem;
+}
+
 
 .sticky-tabs .v-tabs-bar {
   position: sticky;
