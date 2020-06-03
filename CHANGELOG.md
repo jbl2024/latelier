@@ -12,6 +12,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Removed
 
+## [v3.0.0 2020-06-03]
+
+### Added
+
+### Changed
+- Update screenshots on README.md
+- Fix translation
+- Lazy load ProjectBPMN component to minimize final bundle
+- Fix task count in project activity
+- Fix shortcuts messing with bpmn edition
+- Several UI fixes
+- Clone project keep labels on tasks
+- Open project on dashboard opens tasks view directly
+- Fix search shortkey (shift + / is mandatory on french keyboards)
+- Fix clone project (tasks were not dispatched in corresponding lists)
+- Update UI layout 
+  - better looking ui
+  - no more left drawer on wide screens
+  - quick access with shortkeys:
+    - "/": open search tasks menu
+    - "p": open project selector
+    - "l": add label on task details
+- Display task description in assigned task email
+
+### Removed
+
 ## [v3.0.0-beta.2 2020-06-02]
 
 ### Added
