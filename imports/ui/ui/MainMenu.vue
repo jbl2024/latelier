@@ -15,7 +15,9 @@
         :to="menuItem.to"
       >
         <div class="tabs__item-content">
-          <v-icon class="tabs__icon">{{ menuItem.icon }}</v-icon>
+          <v-icon class="tabs__icon">
+            {{ menuItem.icon }}
+          </v-icon>
           <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
         </div>
       </v-list-item>
@@ -210,6 +212,15 @@ export default {
           }
         },
         {
+          id: "meetings",
+          title: this.$t("meetings.meetings"),
+          icon: "mdi-calendar-star",
+          to: {
+            name: "project-meetings",
+            params: { projectId: this.projectId }
+          }
+        },
+        {
           id: "attachments",
           title: this.$t("Attachments"),
           icon: "mdi-attachment",
@@ -239,15 +250,6 @@ export default {
           icon: "mdi-white-balance-sunny",
           to: {
             name: "project-weather",
-            params: { projectId: this.projectId }
-          }
-        },
-        {
-          id: "meetings",
-          title: this.$t("Meetings"),
-          icon: "mdi-calendar-star",
-          to: {
-            name: "project-meetings",
             params: { projectId: this.projectId }
           }
         }
