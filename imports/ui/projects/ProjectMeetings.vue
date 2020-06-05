@@ -8,7 +8,7 @@
       />
       <v-row>
         <!-- Side calendar with filters -->
-        <v-col 
+        <v-col
           v-show="$vuetify.breakpoint.mdAndUp"
           cols="12"
           sm="12"
@@ -21,12 +21,7 @@
           />
         </v-col>
         <!-- Main content -->
-        <v-col 
-          cols="12"
-          sm="12"
-          lg="9"
-          class="body"
-        >
+        <v-col cols="12" sm="12" lg="9" class="body">
           <meeting-calendar-toolbar
             :start.sync="start"
             :end.sync="end"
@@ -40,8 +35,8 @@
           />
           <!-- Calendar display type -->
           <meeting-calendar
-            ref="calendar"
             v-if="isCalendarActive"
+            ref="calendar"
             :start.sync="start"
             :end.sync="end"
             :display-type.sync="displayType"
@@ -124,7 +119,9 @@ export default {
   },
   computed: {
     isCalendarActive() {
-      const foundDisplayType = this.displayTypes.find((displayType) => displayType.value === this.displayType);
+      const foundDisplayType = this.displayTypes.find(
+        (displayType) => displayType.value === this.displayType
+      );
       return foundDisplayType && foundDisplayType.type === "calendar";
     },
     ...mapState(["currentLocale", "currentUser"]),
@@ -170,7 +167,6 @@ export default {
 </script>
 
 <style lang="scss">
-
 .project-meetings {
   display: flex;
   min-height: 0;
