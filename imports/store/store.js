@@ -18,6 +18,7 @@ const store = new Vuex.Store({
     organization
   },
   state: {
+    currentLocale: null,
     currentUserId: null,
     currentUser: null,
     isAdmin: false,
@@ -25,7 +26,6 @@ const store = new Vuex.Store({
     selectedTask: null,
     showSelectBackgroundDialog: false,
     showCategories: false,
-    showLeftDrawer: null,
     showTaskDetail: false,
     showTaskHistory: false,
     showTaskExport: false,
@@ -44,6 +44,9 @@ const store = new Vuex.Store({
     isTaskDetailShown: (state) => state.showTaskDetail === true
   },
   mutations: {
+    updateCurrentLocale(state, locale) {
+      state.currentLocale = locale;
+    },
     updateCurrentUserId(state, currentUserId) {
       state.currentUserId = currentUserId;
     },
@@ -64,9 +67,6 @@ const store = new Vuex.Store({
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
       state.showSelectBackgroundDialog = showSelectBackgroundDialog;
-    },
-    updateShowLeftDrawer(state, showLeftDrawer) {
-      state.showLeftDrawer = showLeftDrawer;
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -109,6 +109,9 @@ const store = new Vuex.Store({
     }
   },
   actions: {
+    setCurrentLocale(context, locale) {
+      context.commit("updateCurrentLocale", locale);
+    },
     setCurrentUserId(context, currentUserId) {
       context.commit("updateCurrentUserId", currentUserId);
     },
@@ -152,9 +155,6 @@ const store = new Vuex.Store({
     },
     selectTask(context, task) {
       context.commit("selectTask", task);
-    },
-    showLeftDrawer(context, showLeftDrawer) {
-      context.commit("updateShowLeftDrawer", showLeftDrawer);
     },
     showTaskDetail(context, showTaskDetail) {
       context.commit("updateShowTaskDetail", showTaskDetail);

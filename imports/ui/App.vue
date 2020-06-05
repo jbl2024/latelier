@@ -2,21 +2,7 @@
   <div>
     <v-app>
       <template v-if="isConnected">
-        <v-navigation-drawer
-          v-if="hasLeftDrawer"
-          id="left-drawer"
-          v-model="showLeftDrawer"
-          :width="leftDrawerWidth"
-          app
-          clipped
-        >
-          <dashboard-task-tabs
-            v-if="currentUser"
-            :user="currentUser"
-            :project-id="currentProjectId"
-            :organization-id="currentOrganizationId"
-          />
-        </v-navigation-drawer>
+        <left-drawer />
         <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
       </template>
       <select-background v-model="showSelectBackgroundDialog" />
@@ -73,14 +59,14 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
+import LeftDrawer from "./ui/LeftDrawer/LeftDrawer";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
     TopBar,
     NavDrawer,
-    DashboardTaskTabs,
+    LeftDrawer,
     MainMenu
   },
   data() {
@@ -92,9 +78,6 @@ export default {
     };
   },
   computed: {
-    leftDrawerWidth() {
-      return this.$vuetify.breakpoint.smAndDown ? "100%" : 360;
-    },
     ...mapState([
       "currentUser",
       "notifyMessage",
@@ -106,14 +89,6 @@ export default {
     ...mapGetters("project", ["currentProjectColor"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
     ...mapGetters("ui", ["isNavigationColorDark"]),
-    showLeftDrawer: {
-      get() {
-        return this.$store.state.showLeftDrawer;
-      },
-      set(value) {
-        this.$store.dispatch("showLeftDrawer", value);
-      }
-    },
     showTaskDetail: {
       get() {
         return this.$store.state.showTaskDetail;
@@ -145,10 +120,6 @@ export default {
       set(value) {
         this.$store.dispatch("showSelectBackgroundDialog", value);
       }
-    },
-    hasLeftDrawer() {
-      const routeName = this.$route?.name;
-      return Boolean(["home", "dashboard-page", "dashboard-organization-page", "project-dashboard"].includes(routeName));
     }
   },
   watch: {
@@ -177,6 +148,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch("setCurrentLocale", this.$i18n.locale);
     this.$store.dispatch("ui/setNavigationColor", this.$vuetify.theme.currentTheme.primary);
   },
   mounted() {
@@ -279,7 +251,7 @@ html {
   font-size: 1rem;
 }
 
-
+.sticky,
 .sticky-tabs .v-tabs-bar {
   position: sticky;
   position: -webkit-sticky;

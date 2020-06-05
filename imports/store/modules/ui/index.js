@@ -1,7 +1,11 @@
 import { colors } from "/imports/colors";
+import leftDrawer from "./leftDrawer";
 
 export default {
   namespaced: true,
+  modules: {
+    leftDrawer
+  },
   state: {
     defaultNavigationColor: "#363636",
     navigationColor: "#363636",

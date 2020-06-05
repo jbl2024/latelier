@@ -1,11 +1,13 @@
 <template>
-  <div class="dashboard-task-list">
-    <v-progress-linear v-if="loading" indeterminate />
-    <task-list
-      v-if="tasks && !loading"
-      :tasks="tasks"
-      :empty-illustration="emptyIllustration"
-    />
+  <v-progress-linear v-if="loading" indeterminate />
+  <div v-else-if="tasks && tasks.length" class="dashboard-task-list">
+    <slot name="tasks" :tasks="tasks" :loading="loading">
+      <task-list
+        v-if="tasks && !loading"
+        :tasks="tasks"
+        :empty-illustration="emptyIllustration"
+      />
+    </slot>
   </div>
 </template>
 

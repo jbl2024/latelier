@@ -227,6 +227,11 @@
       "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
     }
   },
+  "tasks": {
+    "recent": "Tâches récentes",
+    "assignedToMe": "Mes tâches",
+    "late": "Tâches en retard"
+  },
   "projects": {
     "state": {
       "PLANNED": "Planifié",
@@ -239,12 +244,26 @@
     "locale": "fr",
     "format": {
       "date": "DD/MM/YYYY",
-      "dateTime": "DD/MM/YYYY HH:mm"
+      "dateTime": "DD/MM/YYYY HH:mm",
+      "prettyDate": "DD MMMM YYYY",
+      "prettyMonthAndDate": "MMMM YYYY"
     },
     "duration": {
       "past": "il y a {duration}",
       "future": "dans {duration}",
       "by": "{duration} par {user}"
+    },
+    "interval": {
+      "date": "du {start} au {end}"
+    }
+  },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "types": {
+      "day": "Jour",
+      "5days": "Lundi/Vendredi",
+      "week": "Semaine",
+      "month": "Mois"
     }
   },
   "reminders": {
@@ -260,5 +279,25 @@
   "login": {
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
+  },
+  "meetings": {
+    "list": "Liste",
+    "meetings": "Réunions",
+    "scheduleMeeting": "Planifier une réunion",
+    "newMeeting": "Nouvelle réunion",
+    "fields": {
+      "name": "Nom",
+      "state": "Statut",
+      "description": "Description",
+      "subject": "Sujet de la réunion",
+      "agenda": "Ordre du jour"
+    },
+    "none": {
+      "name": "Aucun nom",
+      "state": "Aucun statut",
+      "description": "Aucune description",
+      "subject": "Sans sujet",
+      "agenda": "Aucun ordre du jour"
+    }
   }
 }
