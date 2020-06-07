@@ -1,10 +1,16 @@
 <template>
   <div class="project-meetings" :style="getBackgroundUrl(currentUser)">
+    <new-meeting
+      ref="newMeeting"
+      :project-id="projectId"
+      @created="refresh"
+    />
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
       <project-meetings-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
+        @add-meeting="newMeeting"
       />
       <v-row>
         <!-- Side calendar with filters -->
@@ -61,6 +67,7 @@ import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalenda
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingList from "/imports/ui/meetings/MeetingList";
+import NewMeeting from "/imports/ui/meetings/NewMeeting";
 
 export default {
   components: {
@@ -68,7 +75,8 @@ export default {
     MeetingCalendar,
     MeetingCalendarToolbar,
     MeetingCalendarDatePicker,
-    MeetingList
+    MeetingList,
+    NewMeeting
   },
   mixins: [DatesMixin, BackgroundMixin],
   props: {
@@ -161,6 +169,12 @@ export default {
       if (this.isCalendarActive) {
         this.$refs.calendar.prev();
       }
+    },
+    newMeeting() {
+      this.$refs.newMeeting.open();
+    },
+    refresh() {
+
     }
   }
 };
