@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { Meetings } from "/imports/api/meetings/meetings";
+import { MeetingState, Meetings } from "/imports/api/meetings/meetings";
 import {
   checkLoggedIn,
   checkCanReadProject,
@@ -11,18 +11,21 @@ Meetings.methods.create = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String },
     name: { type: String },
-    state: { type: String }
+    state: { type: String, optional: true },
+    description: { type: String, optional: true }
   }).validator(),
-  run({ projectId, name, state }) {
+  run({ projectId, name, state, description }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
     const author = Meteor.userId();
+    state = state || MeetingState.PENDING;
 
     const meetingId = Meetings.insert({
       projectId,
       name,
       state,
+      description,
       createdAt: now,
       createdBy: author,
       updatedAt: now,
@@ -38,10 +41,13 @@ Meetings.methods.update = new ValidatedMethod({
   validate: new SimpleSchema({
     id: { type: String },
     name: { type: String },
-    state: { type: String }
+    state: { type: String, optional: true },
+    description: { type: String, optional: true }
   }).validator(),
-  run({ id, name, state }) {
+  run({ id, name, state, description }) {
     checkLoggedIn();
+
+    state = state || MeetingState.PENDING;
 
     const meeting = Meetings.findOne({ _id: id });
     if (!meeting) {
@@ -57,6 +63,7 @@ Meetings.methods.update = new ValidatedMethod({
         $set: {
           name,
           state,
+          description,
           updatedAt: new Date(),
           updateddBy: Meteor.userId()
         }
