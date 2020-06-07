@@ -37,6 +37,7 @@
           </div>
         </v-col>
       </v-row>
+      <v-divider class="divider" />
     </v-container>
   </div>
 </template>
@@ -134,5 +135,9 @@ export default {
     background-color 0.5s ease;
    padding: 12px;
   font-size: 16px;
+}
+
+.divider {
+  margin-top: 50px;
 }
 </style>

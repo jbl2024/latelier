@@ -3,7 +3,7 @@
     <div v-if="!isReady">
       <v-progress-linear indeterminate />
     </div>
-    <div v-else class="wrapper">
+    <div v-else>
       <v-toolbar dense class="toolbar">
         <span class="title">{{ $t("Canvas") }}</span>
         <tooltip-button
@@ -29,7 +29,6 @@
               Comment ce projet va-t-il changer l'avenir ? et pour qui ?
             </template>
           </canvas-item>
-          <v-divider />
         </v-col>
 
         <v-col cols="12">
@@ -269,18 +268,4 @@ export default {
 </script>
 
 <style scoped>
-.wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
-.toolbar {
-  flex: 0;
-}
-
-.canvas {
-  flex: 1;
-  overflow-y: auto;
-  margin-top: 4px;
-}
 </style>
