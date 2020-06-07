@@ -2,7 +2,7 @@
   <v-card class="meeting-list">
     <v-list two-line>
       <template v-for="(day, dayIndex) in [`Aujourd'hui`, `Jeudi 4 juin 2020`]">
-        <v-subheader class="meeting-list__day-header" :key="`subheader-${dayIndex}`">
+        <v-subheader :key="`subheader-${dayIndex}`" class="meeting-list__day-header">
           {{ day }}
         </v-subheader>
         <v-list-item-group
@@ -15,9 +15,9 @@
             <v-list-item :key="index">
               <template v-slot:default="{ active, toggle }">
                 <v-list-item-content>
-                  <v-list-item-title v-text="item.title"></v-list-item-title>
-                  <v-list-item-subtitle class="text--primary" v-text="item.headline"></v-list-item-subtitle>
-                  <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle>
+                  <v-list-item-title v-text="item.title" />
+                  <v-list-item-subtitle class="text--primary" v-text="item.headline" />
+                  <v-list-item-subtitle v-text="item.subtitle" />
                 </v-list-item-content>
 
                 <v-list-item-action>
@@ -37,15 +37,15 @@
 </template>
 <script>
 export default {
-    data: () => ({
+  data: () => ({
     selected: null,
     item: {
-      title: 'Point de la semaine',
-      headline: 'Lorem ipsum fluctua nec mergitur',
-      subtitle: "Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur.",
+      title: "Point de la semaine",
+      headline: "Lorem ipsum fluctua nec mergitur",
+      subtitle: "Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur. Lorem ipsum fluctua nec mergitur."
     }
   })
-}
+};
 </script>
 <style lang="scss">
   .meeting-list {

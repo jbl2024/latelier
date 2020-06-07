@@ -5,7 +5,7 @@
         <div>
           <v-btn icon @click.native="expanded = !expanded">
             <v-icon>
-              {{ isExpanded ? "mdi-chevron-up" : "mdi-chevron-down"}}
+              {{ isExpanded ? "mdi-chevron-up" : "mdi-chevron-down" }}
             </v-icon>
           </v-btn>
           <span v-if="header">
@@ -13,12 +13,7 @@
           </span>
         </div>
         <div v-if="numberOfPages">
-          <v-btn
-            :disabled="page === 1"
-            icon
-            small
-            @click="prevPage"
-          >
+          <v-btn :disabled="page === 1" icon small @click="prevPage">
             <v-icon small>
               mdi-chevron-left
             </v-icon>
@@ -26,12 +21,7 @@
           <span>
             {{ `${page}/${numberOfPages}` }}
           </span>
-          <v-btn 
-            :disabled="page >= numberOfPages"
-            icon
-            small 
-            @click="nextPage"
-          >
+          <v-btn :disabled="page >= numberOfPages" icon small @click="nextPage">
             <v-icon small>
               mdi-chevron-right
             </v-icon>
@@ -46,8 +36,7 @@
           hide-default-footer
         >
           <template v-slot:default="props">
-            <slot name="items" :items="props.items">
-            </slot>
+            <slot name="items" :items="props.items" />
           </template>
         </v-data-iterator>
       </template>
@@ -92,7 +81,7 @@ export default {
   data() {
     return {
       page: 1
-    }
+    };
   },
   computed: {
     numberOfPages() {
@@ -122,19 +111,19 @@ export default {
       this.$emit("select-item", item);
     },
     nextPage() {
-      if (this.page + 1 <= this.numberOfPages) this.page += 1
+      if (this.page + 1 <= this.numberOfPages) this.page += 1;
     },
     prevPage() {
-      if (this.page - 1 >= 1) this.page -= 1
+      if (this.page - 1 >= 1) this.page -= 1;
     }
   }
 };
 </script>
 
 <style lang="scss">
-.drawer-mini-list {  
+.drawer-mini-list {
   .v-subheader.subheader {
-    display: flex; 
+    display: flex;
     justify-content: space-between;
   }
   .empty-state {

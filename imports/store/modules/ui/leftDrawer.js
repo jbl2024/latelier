@@ -20,4 +20,4 @@ export default {
       context.commit("updateCurrentCategory", category);
     }
   }
-}
+};

@@ -31,12 +31,12 @@ export default {
       }
     }
   }
-}
+};
 </script>
 <style lang="scss">
-  .meeting-calendar-date-picker {
-    &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
-      border-radius: 16px;
-    }
+.meeting-calendar-date-picker {
+  &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
+    border-radius: 16px;
   }
+}
 </style>

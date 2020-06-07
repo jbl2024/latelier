@@ -94,7 +94,7 @@ export default {
         (v) => !!v || this.$t("Name is mandatory"),
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
-      description: "",
+      description: ""
     };
   },
   methods: {

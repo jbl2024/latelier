@@ -2,7 +2,7 @@
   <div>
     <!-- Lists of task (Recent|AssignedToMe|Late) -->
     <dashboard-task-list
-      v-for="(taskList) in taskLists"
+      v-for="taskList in taskLists"
       :key="key(taskList.type)"
       :type="taskList.type"
       :organization-id="organizationId"
@@ -25,7 +25,6 @@
               :selected="selectedTaskId === task._id"
               :selected-color="selectedTaskColor"
               :task="task"
-
             />
           </template>
         </drawer-mini-list>
@@ -38,6 +37,7 @@ import DrawerMiniList from "/imports/ui/ui/DrawerMiniList";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import TaskDrawerListItem from "/imports/ui/tasks/TaskDrawer/TaskDrawerListItem";
 import { mapState } from "vuex";
+
 export default {
   components: {
     DashboardTaskList,
@@ -89,12 +89,15 @@ export default {
       return this.selectedTask?._id;
     },
     selectedTaskColor() {
-      return this.navigationColor 
-      ? this.navigationColor : this.$vuetify.theme.currentTheme.accent;
+      return this.navigationColor
+        ? this.navigationColor
+        : this.$vuetify.theme.currentTheme.accent;
     },
     key() {
-      return function(type) {
-        return [this.projectId, this.organizationId, type].filter((part) => part).join("-");
+      return function (type) {
+        return [this.projectId, this.organizationId, type]
+          .filter((part) => part)
+          .join("-");
       };
     }
   }

@@ -77,7 +77,7 @@ export default {
         default: {
           return this.weekdays;
         }
-      };
+      }
     },
     computedDisplayType() {
       switch (this.displayType) {
@@ -87,7 +87,7 @@ export default {
         default: {
           return this.displayType;
         }
-      };
+      }
     }
   },
   methods: {

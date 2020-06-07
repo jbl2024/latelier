@@ -27,30 +27,33 @@
           />
           <!-- Meetings -->
           <meeting-drawer-lists
-              v-show="currentCategory === 'meetings'"
-              :user="currentUser"
-              :project-id="currentProjectId"
-              :organization-id="currentOrganizationId"
-            />
+            v-show="currentCategory === 'meetings'"
+            :user="currentUser"
+            :project-id="currentProjectId"
+            :organization-id="currentOrganizationId"
+          />
           <!-- History -->
           <div v-show="currentCategory === 'history'">
-            <project-history v-if="currentProjectId" :key="currentProjectId" :project-id="currentProjectId" />
+            <project-history
+              v-if="currentProjectId"
+              :key="currentProjectId"
+              :project-id="currentProjectId"
+            />
           </div>
         </div>
       </div>
       <div v-show="!isMini" class="bottom">
-        <left-drawer-footer/>
+        <left-drawer-footer />
       </div>
     </div>
   </v-navigation-drawer>
 </template>
 <script>
-
+import { mapState } from "vuex";
 import LeftDrawerHeader from "./LeftDrawerHeader";
 import LeftDrawerFooter from "./LeftDrawerFooter";
 import TaskDrawerLists from "/imports/ui/tasks/TaskDrawer/TaskDrawerLists";
 import MeetingDrawerLists from "/imports/ui/meetings/MeetingDrawer/MeetingDrawerLists";
-import { mapState } from "vuex";
 
 export default {
   components: {
@@ -62,7 +65,7 @@ export default {
   data() {
     return {
       isMini: false
-    }
+    };
   },
   computed: {
     currentCategory: {
@@ -90,18 +93,19 @@ export default {
     hasLeftDrawer() {
       /*
       const routeName = this.$route?.name;
-      return Boolean(["home", "dashboard-page", "dashboard-organization-page", "project-dashboard", "project-meetings"].includes(routeName));
+      return Boolean(["home", "dashboard-page", "dashboard-organization-page", 
+      "project-dashboard", "project-meetings"].includes(routeName));
       */
       return true;
-    },
+    }
   }
 };
 </script>
 <style lang="scss">
-  .left-drawer-content {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
+.left-drawer-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 </style>

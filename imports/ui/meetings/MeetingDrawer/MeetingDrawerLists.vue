@@ -1,10 +1,12 @@
 <template>
   <div style="text-align: center; padding: 1rem;">
-    Same drawer lists (Active meetings, attending, today etc) logic for meetings (WIP)
+    Same drawer lists (Active meetings, attending, today etc) logic for meetings
+    (WIP)
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
+
 export default {
   components: {},
   props: {
@@ -22,7 +24,7 @@ export default {
     }
   },
   data() {
-    return {}
+    return {};
   }
 };
 </script>

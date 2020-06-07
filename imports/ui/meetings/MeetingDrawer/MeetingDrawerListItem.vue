@@ -1,8 +1,8 @@
 <template>
   <v-list-item
     v-if="meeting"
-    @click="openMeeting(meeting)"
     class="meeting-drawer-list-item"
+    @click="openMeeting(meeting)"
   >
     <v-list-item-content>
       <v-list-item-title class="no-wrap">

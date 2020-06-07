@@ -1,6 +1,5 @@
 <template>
-  <div class="left-drawer-footer">
-  </div>
+  <div class="left-drawer-footer" />
 </template>
 <style lang="scss">
   .left-drawer-footer {

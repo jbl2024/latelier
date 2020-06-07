@@ -1,10 +1,10 @@
 <template>
   <v-list-item
     v-if="task"
-    @click="openTask(task)"
     class="task-drawer-list-item"
     :class="selected ? 'v-list-item--active' : null"
     :style="selected ? selectedStyles : null"
+    @click="openTask(task)"
   >
     <v-list-item-content>
       <v-list-item-title class="no-wrap">
@@ -102,7 +102,7 @@ export default {
     },
     isLate(task) {
       return task.dueDate && task.dueDate <= new Date();
-    },
+    }
   }
 };
 </script>
