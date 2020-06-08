@@ -4,15 +4,14 @@
       ref="calendar"
       v-model="selectedDate"
       class="meeting-calendar"
-      :weekdays="computedWeekdays"
-      :type="computedDisplayType"
+      :weekdays="calendarDatas.weekdays"
+      :type="calendarDatas.displayType"
       :start="start"
       :min-weeks="minWeeks"
-      :max-days="maxDays"
+      :max-days="calendarDatas.maxDays"
       :now="now"
       :locale="locale"
       :color="color"
-      :events="events"
       :short-weekdays="false"
       :short-months="false"
       @change="changeCalendar"
@@ -21,11 +20,17 @@
 </template>
 <script>
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import moment from "moment";
 
 const weekdaysDefault = [1, 2, 3, 4, 5, 6, 0];
+const fiveWeekdays = [1, 2, 3, 4, 5];
 export default {
   mixins: [DatesMixin],
   props: {
+    value: {
+      type: String,
+      default: null
+    },
     start: {
       type: String,
       default: null
@@ -53,39 +58,52 @@ export default {
   },
   data() {
     return {
-      weekdays: weekdaysDefault,
       nowMenu: false,
-      minWeeks: 1,
-      events: [],
-      maxDays: 7
+      minWeeks: 1
     };
   },
   computed: {
     selectedDate: {
       get() {
-        return this.start;
+        return this.value;
       },
       set(newDate) {
-        this.$emit("update:start", newDate);
+        this.$emit("input", newDate);
       }
     },
-    computedWeekdays() {
-      switch (this.displayType) {
-        case "5days": {
-          return [1, 2, 3, 4, 5];
-        }
-        default: {
-          return this.weekdays;
-        }
+    selectedDisplayType: {
+      get() {
+        return this.displayType;
+      },
+      set(newDisplayType) {
+        this.$emit("update:display-type", newDisplayType);
       }
     },
-    computedDisplayType() {
-      switch (this.displayType) {
+    selectedDayNumber() {
+      return moment(this.selectedDate).format("d");
+    },
+    calendarDatas() {
+      switch (this.selectedDisplayType) {
         case "5days": {
-          return "week";
+          return {
+            displayType: "week",
+            maxDays: 5,
+            weekdays: fiveWeekdays
+          }
+        }
+        case "day": {
+          return {
+            displayType: this.selectedDisplayType,
+            maxDays: 1,
+            weekdays: weekdaysDefault
+          }
         }
         default: {
-          return this.displayType;
+          return {
+            displayType: this.selectedDisplayType,
+            maxDays: 7,
+            weekdays: weekdaysDefault
+          }
         }
       }
     }
@@ -100,6 +118,14 @@ export default {
     },
     prev() {
       this.$refs.calendar.prev();
+    }
+  },
+  watch: {
+    selectedDayNumber() {
+      if (this.displayType === "5days" 
+      && !fiveWeekdays.includes(parseInt(this.selectedDayNumber, 10))) {
+        this.selectedDisplayType = "week";
+      }
     }
   }
 };

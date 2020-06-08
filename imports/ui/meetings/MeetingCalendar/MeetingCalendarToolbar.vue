@@ -46,6 +46,10 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 export default {
   mixins: [DatesMixin],
   props: {
+    value: {
+      type: String,
+      default: null
+    },
     displayType: {
       type: String,
       default: null
@@ -87,6 +91,14 @@ export default {
           type: this.selectedDisplayType
         }
       );
+    },
+    selectedDate: {
+      get() {
+        return this.value;
+      },
+      set(newDate) {
+        this.$emit("input", newDate);
+      }
     },
     selectedDisplayType: {
       get() {

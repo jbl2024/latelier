@@ -5,7 +5,10 @@
       :max-width="maxWidth"
       :fullscreen="isFullscreen"
     >
-      <v-card class="flex-container">
+      <v-card 
+        class="flex-container"
+        :class="cssClasses"
+      >
         <v-toolbar
           v-if="isFullscreen"
           dark
@@ -68,6 +71,10 @@ export default {
       default: function () {
         return this.$t("Cancel");
       }
+    },
+    cssClasses: {
+      type: [Array, Object, String],
+      default: null
     }
   },
   computed: {

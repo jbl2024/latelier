@@ -1,16 +1,17 @@
 <template>
   <div class="project-meetings" :style="getBackgroundUrl(currentUser)">
-    <new-meeting
-      ref="newMeeting"
-      :project-id="projectId"
-      @created="refresh"
-    />
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
+      <new-meeting
+        ref="newMeeting"
+        :project-id="projectId"
+        :is-shown.sync="isNewMeetingShown"
+        @created="refresh"
+      />
       <project-meetings-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
-        @add-meeting="newMeeting"
+        @add-meeting="isNewMeetingShown = true"
       />
       <v-row>
         <!-- Side calendar with filters -->
@@ -22,13 +23,14 @@
           class="aside"
         >
           <meeting-calendar-date-picker
-            v-model="start"
+            v-model="selectedDate"
             :locale="currentLocale"
           />
         </v-col>
         <!-- Main content -->
         <v-col cols="12" sm="12" lg="9" class="body">
           <meeting-calendar-toolbar
+            v-model="selectedDate"
             :start.sync="start"
             :end.sync="end"
             :display-type.sync="displayType"
@@ -41,6 +43,7 @@
           />
           <!-- Calendar display type -->
           <meeting-calendar
+            v-model="selectedDate"
             v-if="isCalendarActive"
             ref="calendar"
             :start.sync="start"
@@ -67,7 +70,7 @@ import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalenda
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingList from "/imports/ui/meetings/MeetingList";
-import NewMeeting from "/imports/ui/meetings/NewMeeting";
+import NewMeeting from "/imports/ui/meetings/Meeting/NewMeeting";
 
 export default {
   components: {
@@ -89,8 +92,10 @@ export default {
     const now = this.nowDate();
     return {
       now: now,
+      selectedDate: now,
       start: now,
       end: null,
+      isNewMeetingShown: false,
       displayType: "5days",
       displayTypes: Object.freeze([
         {
@@ -169,9 +174,6 @@ export default {
       if (this.isCalendarActive) {
         this.$refs.calendar.prev();
       }
-    },
-    newMeeting() {
-      this.$refs.newMeeting.open();
     },
     refresh() {
 
