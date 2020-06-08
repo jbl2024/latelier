@@ -12,7 +12,7 @@
             {{ header }}
           </span>
         </div>
-        <div v-if="numberOfPages">
+        <div v-if="numberOfPages && numberOfPages > 1">
           <v-btn :disabled="page === 1" icon small @click="prevPage">
             <v-icon small>
               mdi-chevron-left
