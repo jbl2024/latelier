@@ -7,6 +7,10 @@
         :project-id="projectId"
         @created="fetch"
       />
+      <meeting
+        ref="meeting"
+        :meeting="currentMeeting"
+      />
       <project-meetings-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
@@ -52,6 +56,8 @@
             :display-type.sync="displayType"
             :display-types="displayTypes"
             :locale="currentLocale"
+            @select-event="selectEvent"
+            @add-meeting="addMeeting"
           />
           <!-- Streamline list of meetings -->
           <meeting-list v-else />
@@ -72,6 +78,7 @@ import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/Meeting
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import NewMeeting from "/imports/ui/meetings/Meeting/NewMeeting";
+import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 
 export default {
   components: {
@@ -80,6 +87,7 @@ export default {
     MeetingCalendarToolbar,
     MeetingCalendarDatePicker,
     MeetingList,
+    Meeting,
     NewMeeting
   },
   mixins: [DatesMixin, BackgroundMixin],
@@ -96,7 +104,6 @@ export default {
       selectedDate: now,
       start: now,
       end: null,
-      isNewMeetingShown: false,
       displayType: "5days",
       displayTypes: Object.freeze([
         {
@@ -140,6 +147,7 @@ export default {
     },
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
+    ...mapState("meeting", ["currentMeeting"]),
     ...mapGetters("meeting", ["meetingsEventsByProjectId"]),
     meetingsEvents() {
       return this.meetingsEventsByProjectId(this.currentProject._id);
@@ -149,6 +157,7 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
+    this.$store.dispatch("meeting/setCurrentMeeting", null);
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
@@ -167,7 +176,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("meeting", ["fetchMeetings"]),
+    ...mapActions("meeting", ["fetchMeetings", "fetchCurrentMeeting"]),
     setToday() {
       this.start = this.now;
     },
@@ -191,10 +200,21 @@ export default {
           page: 1
         });
       } catch (error) {
-        console.log(error);
         this.$notifyError(error);
       }
     },
+    async selectEvent(event) {
+      try {
+        this.$refs.meeting.close();
+        await this.fetchCurrentMeeting({
+          meetingId: event.id
+        });
+        this.$refs.meeting.open();
+      } catch (error) {
+        this.$refs.meeting.close();
+        this.$notifyError(error);
+      }
+    }
   },
   watch: {
     async currentProject() {

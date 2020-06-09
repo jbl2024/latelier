@@ -31,8 +31,6 @@
                 @reset-date="date = null"
               />
             </v-tab-item>
-            <v-tab-item :transition="false" :reverse-transition="false">
-            </v-tab-item>
           </v-tabs>
         </v-form>
       </template>
@@ -64,7 +62,7 @@ export default {
     return {
       sections: Object.freeze([
         {id: "infos", text: "Infos", icon: "mdi-information-outline"},
-        {id: "members", text: "Membres", icon: "mdi-account"}
+        // {id: "members", text: "Membres", icon: "mdi-account"}
       ]),
       showDialog: false,
       showSelectDate: false,

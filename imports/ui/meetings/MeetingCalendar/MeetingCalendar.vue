@@ -1,5 +1,18 @@
 <template>
   <div>
+    <meeting-calendar-contextual-menu
+      v-model="showContextualMenu"
+      :x="x"
+      :y="y"
+    >
+      <v-list>
+        <v-list-item @click="addMeetingOnTime">
+        <v-list-item-title>
+          {{ addMeetingText }}
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+    </meeting-calendar-contextual-menu>
     <v-calendar
       ref="calendar"
       v-model="selectedDate"
@@ -15,17 +28,24 @@
       :color="color"
       :short-weekdays="false"
       :short-months="false"
+      :first-interval="7"
+      @contextmenu:time="showContextMenu"
+      @click:event="selectEvent"
       @change="changeCalendar"
     />
   </div>
 </template>
 <script>
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import MeetingCalendarContextualMenu from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarContextualMenu";
 import moment from "moment";
 
 const weekdaysDefault = [1, 2, 3, 4, 5, 6, 0];
 const fiveWeekdays = [1, 2, 3, 4, 5];
 export default {
+  components: {
+    MeetingCalendarContextualMenu
+  },
   mixins: [DatesMixin],
   props: {
     value: {
@@ -64,6 +84,10 @@ export default {
   data() {
     return {
       nowMenu: false,
+      showContextualMenu: false,
+      clickedTime: null,
+      x: 0,
+      y: 0,
       minWeeks: 1
     };
   },
@@ -86,6 +110,10 @@ export default {
     },
     selectedDayNumber() {
       return moment(this.selectedDate).format("d");
+    },
+    addMeetingText() {
+      const hour = this.clickedTime?.time ? this.clickedTime.time.split(":")[0] : "";
+      return `Ajouter une réunion ${hour ? ("à " + hour + "h") : ""}`;
     },
     calendarDatas() {
       switch (this.selectedDisplayType) {
@@ -123,6 +151,22 @@ export default {
     },
     prev() {
       this.$refs.calendar.prev();
+    },
+    selectEvent(data) {
+      if (data?.event?.id) {
+        this.$emit("select-event", data.event);
+      }
+    },
+    showContextMenu(data) {
+      this.clickedTime = data;
+      this.showContextualMenu = true;
+    },
+    addMeetingOnTime() {
+      this.$emit("add-meeting", this.clickedTime);
+    },
+    clickHandler(event) {
+      this.x = event.clientX;
+      this.y = event.clientY;
     }
   },
   watch: {
@@ -132,6 +176,12 @@ export default {
         this.selectedDisplayType = "week";
       }
     }
+  },
+  mounted() {
+    this.$el.addEventListener('contextmenu', this.clickHandler);
+  },
+  beforeDestroy() {
+    this.$el.removeEventListener('contextmenu', this.clickHandler);
   }
 };
 </script>

@@ -1,8 +1,7 @@
 <template>
   <v-navigation-drawer
-    v-if="hasLeftDrawer"
     id="left-drawer"
-    v-model="showLeftDrawer"
+    :value="$vuetify.breakpoint.mdAndUp"
     :mini-variant.sync="isMini"
     :width="leftDrawerWidth"
     app
@@ -81,14 +80,6 @@ export default {
     ...mapState("project", ["currentProjectId"]),
     leftDrawerWidth() {
       return this.$vuetify.breakpoint.smAndDown ? "100%" : 304;
-    },
-    showLeftDrawer: {
-      get() {
-        return this.$store.state.ui.leftDrawer.showLeftDrawer;
-      },
-      set(value) {
-        this.$store.dispatch("ui/leftDrawer/showLeftDrawer", value);
-      }
     },
     hasLeftDrawer() {
       /*
