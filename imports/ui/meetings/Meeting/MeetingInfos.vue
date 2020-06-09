@@ -22,24 +22,26 @@
     </v-row>
     <v-row>
       <v-col>
-        <select-date
-          v-model="showSelectDate"
-          :disable-time="true"
-        />
         <v-list two-line class="elevation-1 date">
-          <v-list-item @click="showSelectDate = true">
+          <v-list-item @click="$emit('show-select-date')">
             <v-list-item-avatar>
-              <v-icon>mdi-calendar-today</v-icon>
+              <v-icon>
+                mdi-calendar-today
+              </v-icon>
             </v-list-item-avatar>
             <v-list-item-content>
               <v-list-item-title>{{ $t("Date") }}</v-list-item-title>
               <v-list-item-subtitle>
-                <span v-show="date">{{ formatDateTime(date) }}</span>
+                <span v-show="date">
+                  {{ formatDateTime(date) }}
+                </span>
               </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn text icon @click.stop="onSelectDate(null)">
-                <v-icon>mdi-delete</v-icon>
+              <v-btn text icon @click.stop="$emit('reset-date')">
+                <v-icon>
+                  mdi-delete
+                </v-icon>
               </v-btn>
             </v-list-item-action>
           </v-list-item>
@@ -69,11 +71,6 @@ export default {
     date: {
       type: String,
       default: null
-    }
-  },
-  data() {
-    return {
-      showSelectDate: false
     }
   }
 }

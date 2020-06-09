@@ -5,13 +5,12 @@
       <new-meeting
         ref="newMeeting"
         :project-id="projectId"
-        :is-shown.sync="isNewMeetingShown"
         @created="refresh"
       />
       <project-meetings-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
-        @add-meeting="isNewMeetingShown = true"
+        @add-meeting="addMeeting"
       />
       <v-row>
         <!-- Side calendar with filters -->
@@ -174,6 +173,9 @@ export default {
       if (this.isCalendarActive) {
         this.$refs.calendar.prev();
       }
+    },
+    addMeeting() {
+      this.$refs.newMeeting.open();
     },
     refresh() {
 

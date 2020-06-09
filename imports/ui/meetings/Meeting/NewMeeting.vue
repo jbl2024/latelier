@@ -7,6 +7,11 @@
       max-width="1000px"
     >
       <template v-slot:content>
+        <select-date
+          v-model="showSelectDate"
+          :disable-time="true"
+          @select="onSelectDate"
+        />
         <v-form v-model="valid" @submit.prevent>
           <v-tabs vertical>
             <v-tab class="new-meeting__tab" v-for="section in sections" :key="section.id">
@@ -15,12 +20,15 @@
               </v-icon>
               <span> {{ section.text }} </span>
             </v-tab>
+            <!-- Meeting Infos and selected date -->
             <v-tab-item :transition="false" :reverse-transition="false">
               <meeting-infos
                 :rules="rules"
                 :name="name"
                 :date="date"
                 :description="description"
+                @show-select-date="showSelectDate = true"
+                @reset-date="date = null"
               />
             </v-tab-item>
             <v-tab-item :transition="false" :reverse-transition="false">
@@ -50,10 +58,6 @@ export default {
     projectId: {
       type: String,
       default: null
-    },
-    isShown: {
-      type: Boolean,
-      default: false
     }
   },
   data() {
@@ -62,6 +66,8 @@ export default {
         {id: "infos", text: "Infos", icon: "mdi-information-outline"},
         {id: "members", text: "Membres", icon: "mdi-account"}
       ]),
+      showDialog: false,
+      showSelectDate: false,
       coherent: false,
       valid: false,
       name: "",
@@ -75,23 +81,15 @@ export default {
       }
     };
   },
-  computed: {
-    showDialog: {
-      get() {
-        return this.isShown;
-      },
-      set(isShown) {
-        this.$emit("update:is-shown", isShown);
-      }
-    }
-  },
   methods: {
     open() {
       this.showDialog = true;
-      this.name = this.$t("New meeting");
-      this.date = moment().format("YYYY-MM-DD");
-      this.description = "";
-      this.checkConsistency();
+      this.$nextTick(() => {
+        this.date = moment().format("YYYY-MM-DD");
+        this.description = "";
+        this.checkConsistency();
+        this.name = this.$t("New meeting");
+      })
     },
     close() {
       this.showDialog = false;
