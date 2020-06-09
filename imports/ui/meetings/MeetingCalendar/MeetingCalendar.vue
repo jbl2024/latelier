@@ -10,6 +10,7 @@
       :min-weeks="minWeeks"
       :max-days="calendarDatas.maxDays"
       :now="now"
+      :events="events"
       :locale="locale"
       :color="color"
       :short-weekdays="false"
@@ -41,6 +42,10 @@ export default {
     },
     now: {
       type: String,
+      default: null
+    },
+    events: {
+      type: Array,
       default: null
     },
     displayType: {

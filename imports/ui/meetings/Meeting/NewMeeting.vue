@@ -25,8 +25,8 @@
               <meeting-infos
                 :rules="rules"
                 :name="name"
+                :description.sync="description"
                 :date="date"
-                :description="description"
                 @show-select-date="showSelectDate = true"
                 @reset-date="date = null"
               />
@@ -111,13 +111,16 @@ export default {
         "meetings.create",
         {
           projectId: this.projectId,
+          schedule: this.date,
           name: this.name,
           description: this.description
         },
         (error) => {
-          this.$emit("created");
           if (error) {
             this.$notifyError(error);
+          } else {
+            this.$emit("created");
+            this.$notify("Meeting created");
           }
         }
       );

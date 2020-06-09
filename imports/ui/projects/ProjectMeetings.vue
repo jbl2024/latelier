@@ -5,7 +5,7 @@
       <new-meeting
         ref="newMeeting"
         :project-id="projectId"
-        @created="refresh"
+        @created="fetch"
       />
       <project-meetings-toolbar
         :display-type.sync="displayType"
@@ -24,6 +24,7 @@
           <meeting-calendar-date-picker
             v-model="selectedDate"
             :locale="currentLocale"
+            :events="meetingsEvents"
           />
         </v-col>
         <!-- Main content -->
@@ -47,6 +48,7 @@
             ref="calendar"
             :start.sync="start"
             :end.sync="end"
+            :events="meetingsEvents"
             :display-type.sync="displayType"
             :display-types="displayTypes"
             :locale="currentLocale"
@@ -63,7 +65,7 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
-import { mapState } from "vuex";
+import { mapState, mapGetters, mapActions } from "vuex";
 import ProjectMeetingsToolbar from "/imports/ui/projects/ProjectMeetingsToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
@@ -137,7 +139,11 @@ export default {
       return foundDisplayType && foundDisplayType.type === "calendar";
     },
     ...mapState(["currentLocale", "currentUser"]),
-    ...mapState("project", ["currentProject"])
+    ...mapState("project", ["currentProject"]),
+    ...mapGetters("meeting", ["meetingsEventsByProjectId"]),
+    meetingsEvents() {
+      return this.meetingsEventsByProjectId(this.currentProject._id);
+    }
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
@@ -161,6 +167,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions("meeting", ["fetchMeetings"]),
     setToday() {
       this.start = this.now;
     },
@@ -177,8 +184,21 @@ export default {
     addMeeting() {
       this.$refs.newMeeting.open();
     },
-    refresh() {
-
+    async fetch() {
+      try {
+        await this.fetchMeetings({
+          projectId: this.currentProject._id,
+          page: 1
+        });
+      } catch (error) {
+        console.log(error);
+        this.$notifyError(error);
+      }
+    },
+  },
+  watch: {
+    async currentProject() {
+      await this.fetch();
     }
   }
 };

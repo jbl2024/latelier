@@ -4,6 +4,7 @@
       v-model="selectedDate"
       ref="datepicker"
       class="meeting-calendar-date-picker"
+      :events="formattedEvents"
       :locale="locale"
       first-day-of-week="1"
       full-width
@@ -11,6 +12,8 @@
   </div>
 </template>
 <script>
+import moment from "moment";
+
 export default {
   props: {
     locale: {
@@ -19,6 +22,10 @@ export default {
     },
     value: {
       type: String,
+      default: null
+    },
+    events: {
+      type: Array,
       default: null
     }
   },
@@ -33,6 +40,12 @@ export default {
     },
     inDateMode() {
       return this.$refs.datepicker.activePicker === "DATE";
+    },
+    formattedEvents() {
+      if (!this.events) return null;
+      return this.events.map((event) => {
+        return moment(event.start).format("YYYY-MM-DD");
+      }) 
     }
   }
 };

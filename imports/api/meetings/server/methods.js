@@ -12,26 +12,26 @@ Meetings.methods.create = new ValidatedMethod({
     projectId: { type: String },
     name: { type: String },
     state: { type: String, optional: true },
-    description: { type: String, optional: true }
+    description: { type: String, optional: true },
+    schedule: { type: String }
   }).validator(),
-  run({ projectId, name, state, description }) {
+  run({ projectId, name, state, description, schedule }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
     const author = Meteor.userId();
     state = state || MeetingState.PENDING;
-
     const meetingId = Meetings.insert({
       projectId,
       name,
       state,
       description,
+      schedule,
       createdAt: now,
       createdBy: author,
       updatedAt: now,
       updatedBy: author
     });
-
     return meetingId;
   }
 });
@@ -97,20 +97,21 @@ Meetings.methods.findMeetings = new ValidatedMethod({
   name: "meetings.findMeetings",
   validate: new SimpleSchema({
     projectId: { type: String },
-    page: { type: Number }
+    page: { type: Number },
+    perPage: { type: Number, optional: true}
   }).validator(),
-  run({ projectId, page }) {
+  run({ projectId, page, perPage }) {
     checkLoggedIn();
     checkCanReadProject(projectId);
-
-    const perPage = 25;
     let skip = 0;
-    if (page) {
-      skip = (page - 1) * perPage;
-    }
-
-    if (!skip) {
-      skip = 0;
+    if (perPage) {
+      if (page) {
+        skip = (page - 1) * perPage;
+      }
+  
+      if (!skip) {
+        skip = 0;
+      }
     }
     const query = {
       projectId

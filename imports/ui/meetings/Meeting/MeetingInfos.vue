@@ -3,7 +3,7 @@
     <v-row>
       <v-col>
         <v-text-field
-          v-model="name"
+          v-model="meetingName"
           :rules="rules.name"
           :label="$t('Name')"
           required
@@ -15,7 +15,7 @@
         <label>{{ $t("Description") }}</label>
         <rich-editor
           ref="description"
-          v-model="description"
+          v-model="meetingDescription"
           :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
         />
       </v-col>
@@ -71,6 +71,24 @@ export default {
     date: {
       type: String,
       default: null
+    }
+  },
+  computed: {
+    meetingName: {
+      get() {
+        return this.name;
+      },
+      set(newName) {
+        this.$emit("update:name", newName);
+      }
+    },
+    meetingDescription: {
+      get() {
+        return this.description;
+      },
+      set(newDescription) {
+        this.$emit("update:description", newDescription);
+      }
     }
   }
 }
