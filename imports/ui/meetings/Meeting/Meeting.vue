@@ -7,9 +7,15 @@
       max-width="1000px"
     >
       <template v-slot:content>
-        <pre v-if="meeting">
-          {{ meeting }}
-        </pre>
+        <div v-if="meeting">
+          <v-card-text v-if="meeting.description" v-html="meeting.description">
+          </v-card-text>
+        </div>
+      </template>
+      <template v-slot:actions>
+        <v-btn :disabled="!valid" @click="openMeeting">
+          {{ $t("meetings.participate") }}
+        </v-btn>
       </template>
     </generic-dialog>
   </div>
@@ -24,7 +30,8 @@ export default {
   },
   data() {
     return {
-      showDialog: false
+      showDialog: false,
+      valid: true
     }
   },
   computed: {
@@ -38,6 +45,15 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    async openMeeting() {
+      await this.$router.push({
+        name: "meetings",
+        params: { 
+          meetingId: this.meeting._id,
+          projectId: this.meeting.projectId
+        }
+      });
     }
   }
 }

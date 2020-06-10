@@ -4,7 +4,9 @@ import { MeetingState, Meetings } from "/imports/api/meetings/meetings";
 import {
   checkLoggedIn,
   checkCanReadProject,
-  checkCanWriteProject
+  checkCanWriteProject,
+  checkCanReadMeeting,
+  checkCanWriteMeeting
 } from "/imports/api/permissions/permissions";
 
 Meetings.methods.create = new ValidatedMethod({
@@ -58,7 +60,7 @@ Meetings.methods.update = new ValidatedMethod({
     if (!meeting) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(meeting.projectId);
+    checkCanWriteMeeting(meeting._id);
 
     const meetingId = Meetings.update(
       {
@@ -151,7 +153,7 @@ Meetings.methods.get = new ValidatedMethod({
     checkLoggedIn();
     const meeting = Meetings.findOne({ _id: meetingId });
     if (meeting) {
-      checkCanReadProject(meeting.projectId);
+      checkCanReadMeeting(meeting._id);
     } else {
       throw new Meteor.Error("not-found");
     }

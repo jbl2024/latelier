@@ -229,6 +229,67 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
 
 /** Meetings **/
 
+
+Permissions.methods.canReadMeeting = new ValidatedMethod({
+  name: "permissions.canReadMeeting",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const meeting = Meetings.findOne({
+       _id: meetingId,
+       deleted: { $ne: true }
+    });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+
+    const project = Projects.findOne({
+      _id: meeting.projectId,
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    });
+    if (project) {
+      return true;
+    }
+    throw new Meteor.Error("not-authorized");
+  }
+});
+
+Permissions.methods.canWriteMeeting = new ValidatedMethod({
+  name: "permissions.canWriteMeeting",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const meeting = Meetings.findOne({
+       _id: meetingId,
+       deleted: { $ne: true }
+    });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+
+    const project = Projects.findOne({
+      _id: meeting.projectId,
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    });
+    if (project) {
+      return true;
+    }
+    throw new Meteor.Error("not-authorized");
+  }
+});
+
 Permissions.methods.canDeleteMeeting = new ValidatedMethod({
   name: "permissions.canDeleteMeeting",
   validate: new SimpleSchema({

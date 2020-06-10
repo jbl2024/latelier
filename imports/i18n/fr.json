@@ -287,9 +287,11 @@
   },
   "meetings": {
     "list": "Liste",
+    "meeting": "Réunion",
     "meetings": "Réunions",
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
+    "participate": "Participer à la réunion",
     "date": {
       "select": "Choisir une date",
       "start": "Le {date}"

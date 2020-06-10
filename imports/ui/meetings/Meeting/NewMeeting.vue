@@ -120,7 +120,7 @@ export default {
         this.endHour = this.selectedEndHour;
         this.description = "";
         this.checkConsistency();
-        this.name = this.$t("New meeting");
+        this.name = this.$t("meetings.meeting");
       })
     },
     close() {

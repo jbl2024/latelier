@@ -12,7 +12,7 @@
       />
       <meeting
         ref="meeting"
-        :meeting="currentMeeting"
+        :meeting="selectedMeeting"
       />
       <project-meetings-toolbar
         :display-type.sync="displayType"
@@ -161,7 +161,7 @@ export default {
     },
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["currentMeeting"]),
+    ...mapState("meeting", ["selectedMeeting"]),
     ...mapGetters("meeting", ["meetingsEventsByProjectId"]),
     meetingsEvents() {
       return this.meetingsEventsByProjectId(this.currentProject._id);
@@ -171,7 +171,7 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
   },
   beforeDestroy() {
-    this.$store.dispatch("meeting/setCurrentMeeting", null);
+    this.$store.dispatch("meeting/setSelectedMeeting", null);
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   meteor: {
@@ -190,7 +190,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions("meeting", ["fetchMeetings", "fetchCurrentMeeting"]),
+    ...mapActions("meeting", ["fetchMeetings", "fetchSelectedMeeting"]),
     setToday() {
       this.selectedDate = this.now;
     },
@@ -232,7 +232,7 @@ export default {
     async selectEvent(event) {
       try {
         this.$refs.meeting.close();
-        await this.fetchCurrentMeeting({
+        await this.fetchSelectedMeeting({
           meetingId: event.id
         });
         this.$refs.meeting.open();
