@@ -27,7 +27,7 @@
               </v-icon>
               <span> {{ section.text }} </span>
             </v-tab>
-            <!-- Meeting Infos and selected date -->
+            <!-- Infos and selected date -->
             <v-tab-item :transition="false" :reverse-transition="false">
               <meeting-infos
                 :rules="rules"
@@ -41,6 +41,10 @@
                 @show-select-hour-range="showSelectHourRange = true"
                 @reset-hour-range="resetHourRange"
               />
+            </v-tab-item>
+            <!-- Agenda -->
+            <v-tab-item :transition="false" :reverse-transition="false">
+
             </v-tab-item>
           </v-tabs>
         </v-form>
@@ -70,6 +74,10 @@ export default {
       type: String,
       default: null
     },
+    meeting: {
+      type: Object,
+      default: null
+    },
     selectedDate: {
       type: [Date, String],
       default() {
@@ -89,6 +97,7 @@ export default {
     return {
       sections: Object.freeze([
         {id: "infos", text: "Infos", icon: "mdi-information-outline"},
+        {id: "agenda", text: "Agenda", icon: "mdi-format-list-numbered"}
         // {id: "members", text: "Membres", icon: "mdi-account"}
       ]),
       allowedMinutes: Object.freeze([00, 10, 15, 30, 45]),

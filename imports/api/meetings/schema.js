@@ -15,7 +15,7 @@ export default new SimpleSchema({
   },
   state: {
     type: String,
-    allowedValues: ["pending", "running", "completed", "canceled"]
+    allowedValues: ["pending", "running", "stopped", "completed", "canceled"]
   },
   color: {
     type: String,

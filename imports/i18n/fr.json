@@ -292,6 +292,7 @@
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
     "participate": "Participer à la réunion",
+    "edit": "Editer",
     "date": {
       "select": "Choisir une date",
       "start": "Le {date}"

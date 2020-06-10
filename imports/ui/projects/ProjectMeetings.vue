@@ -2,7 +2,7 @@
   <div class="project-meetings" :style="getBackgroundUrl(currentUser)">
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
-      <new-meeting
+      <meeting-edit
         ref="newMeeting"
         :project-id="projectId"
         :selected-date="newMeetingDate"
@@ -86,7 +86,7 @@ import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalenda
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingList from "/imports/ui/meetings/MeetingList";
-import NewMeeting from "/imports/ui/meetings/Meeting/NewMeeting";
+import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import moment from "moment";
 
@@ -98,7 +98,7 @@ export default {
     MeetingCalendarDatePicker,
     MeetingList,
     Meeting,
-    NewMeeting
+    MeetingEdit
   },
   mixins: [DatesMixin, BackgroundMixin],
   props: {

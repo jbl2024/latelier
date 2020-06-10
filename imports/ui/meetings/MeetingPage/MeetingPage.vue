@@ -1,23 +1,18 @@
 <template>
   <div class="meeting-page" :style="getBackgroundUrl(currentUser)">
-    <div>
-      <meeting-page-toolbar
-        :flat="true"
-      />
-      <pre>
-        {{ currentMeeting }}
-      </pre>
+    <div v-if="currentMeeting">
+      <meeting-detail-card class="meeting-card" :meeting="currentMeeting" />
     </div>
   </div>
 </template>
 <script>
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState, mapActions } from "vuex";
-import MeetingPageToolbar from "/imports/ui/meetings/MeetingPage/MeetingPageToolbar";
+import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 
 export default {
   components: {
-    MeetingPageToolbar
+    MeetingDetailCard
   },
   mixins: [BackgroundMixin],
   props: {
@@ -55,5 +50,9 @@ export default {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
+
+    .meeting-card {
+      margin: 2rem;
+    }
   }
 </style>

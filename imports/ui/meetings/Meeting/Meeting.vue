@@ -13,7 +13,13 @@
         </div>
       </template>
       <template v-slot:actions>
-        <v-btn :disabled="!valid" @click="openMeeting">
+        <v-btn @click="editMeeting">
+          <v-icon>
+            mdi-pencil
+          </v-icon>
+          {{ $t("meetings.edit") }}
+        </v-btn>
+        <v-btn color="black" dark :disabled="!valid" @click="openMeeting">
           {{ $t("meetings.participate") }}
         </v-btn>
       </template>
@@ -45,6 +51,11 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    editMeeting() {
+      /*
+      this.close();
+      this.$emit("edit-meeting", this.meeting); */
     },
     async openMeeting() {
       await this.$router.push({
