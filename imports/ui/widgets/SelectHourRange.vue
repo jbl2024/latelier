@@ -76,28 +76,18 @@ export default {
       default: null
     }
   },
+  data() {
+    return {
+      selectedStart: this.start,
+      selectedEnd: this.end
+    }
+  },
   computed: {
     computedTitle() {
       if (this.selectedStart || this.selectedEnd) {
         return this.$t("hoursRange.range", {start: this.selectedStart, end: this.selectedEnd });
       } else {
         return this.$t("hoursRange.select");
-      }
-    },
-    selectedStart: {
-      get() {
-        return this.start;
-      },
-      set(newStart) {
-        this.$emit("update:start", newStart);
-      }
-    },
-    selectedEnd: {
-      get() {
-        return this.end;
-      },
-      set(newEnd) {
-        this.$emit("update:end", newEnd);
       }
     },
     showDialog: {

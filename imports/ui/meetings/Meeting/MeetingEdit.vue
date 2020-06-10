@@ -14,10 +14,11 @@
         />
         <select-hour-range
           v-model="showSelectHourRange"
+          :start="startHour"
+          :end="endHour"
           :allowed-minutes="allowedMinutes"
           :allowed-hours="allowedHours"
-          :start.sync="startHour"
-          :end.sync="endHour"
+          @select="onSelectHourRange"
         />
         <v-form v-model="valid" @submit.prevent>
           <v-tabs vertical>
@@ -138,6 +139,10 @@ export default {
     onSelectDate(date) {
       this.date = date;
       this.checkConsistency();
+    },
+    onSelectHourRange({start, end}) {
+      this.startHour = start;
+      this.endHour = end;
     },
     resetHourRange() {
       this.startHour = null;
