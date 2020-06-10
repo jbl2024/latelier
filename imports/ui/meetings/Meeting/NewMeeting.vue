@@ -29,7 +29,6 @@
             </v-tab>
             <!-- Meeting Infos and selected date -->
             <v-tab-item :transition="false" :reverse-transition="false">
-              <pre>{{ { startHour, endHour } }}</pre>
               <meeting-infos
                 :rules="rules"
                 :name="name"
