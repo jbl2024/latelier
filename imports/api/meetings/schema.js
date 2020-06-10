@@ -5,17 +5,23 @@ export default new SimpleSchema({
   projectId: {
     type: String
   },
-
   /* main attributes */
   name: {
     type: String
   },
-
+  deleted: {
+    type: Boolean,
+    defaultValue: false
+  },
   state: {
     type: String,
     allowedValues: ["pending", "running", "completed", "canceled"]
   },
-
+  color: {
+    type: String,
+    optional: true,
+    defaultValue: "#363636"
+  },
   /* attendees */
   attendees: {
     type: Array,
@@ -32,12 +38,12 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
-
-  schedule: {
-    type: Date,
-    optional: true
+  startDate: {
+    type: Date
   },
-
+  endDate: {
+    type: Date
+  },
   subject: {
     type: String,
     optional: true

@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { MeetingState, Meetings } from "/imports/api/meetings/meetings";
+// We use project rights for meeting rights
 import {
   checkLoggedIn,
   checkCanReadProject,
@@ -13,9 +14,10 @@ Meetings.methods.create = new ValidatedMethod({
     name: { type: String },
     state: { type: String, optional: true },
     description: { type: String, optional: true },
-    schedule: { type: String }
+    startDate: { type: String },
+    endDate: { type: String }
   }).validator(),
-  run({ projectId, name, state, description, schedule }) {
+  run({ projectId, name, state, description, startDate, endDate }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
@@ -26,7 +28,8 @@ Meetings.methods.create = new ValidatedMethod({
       name,
       state,
       description,
-      schedule,
+      startDate,
+      endDate,
       createdAt: now,
       createdBy: author,
       updatedAt: now,
@@ -42,9 +45,11 @@ Meetings.methods.update = new ValidatedMethod({
     id: { type: String },
     name: { type: String },
     state: { type: String, optional: true },
-    description: { type: String, optional: true }
+    description: { type: String, optional: true },
+    startDate: { type: String },
+    endDate: { type: String }
   }).validator(),
-  run({ id, name, state, description }) {
+  run({ id, name, state, description, startDate, endDate }) {
     checkLoggedIn();
 
     state = state || MeetingState.PENDING;
@@ -64,6 +69,8 @@ Meetings.methods.update = new ValidatedMethod({
           name,
           state,
           description,
+          startDate,
+          endDate,
           updatedAt: new Date(),
           updateddBy: Meteor.userId()
         }
@@ -114,7 +121,8 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }
     const query = {
-      projectId
+      projectId,
+      deleted: { $ne: true }
     };
 
     const count = Meetings.find(query).count();

@@ -3,6 +3,7 @@ import { Tasks } from "/imports/api/tasks/tasks";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
+import { Meetings } from "/imports/api/meetings/meetings";
 
 import {
   Permissions,
@@ -82,6 +83,10 @@ Projects.methods.info = new ValidatedMethod({
 
     const userCount = (project.members || []).length;
     const diagramCount = ProcessDiagrams.find({ projectId: projectId }).count();
+    const meetingCount = Meetings.find({
+      projectId: projectId,
+      deleted: { $ne: true }
+    }).count();
     const canvas = Canvas.findOne({ projectId: projectId });
     let canvasProgression = 0;
     if (canvas && canvas.data) {
@@ -110,6 +115,7 @@ Projects.methods.info = new ValidatedMethod({
     return {
       taskCount: taskCount,
       completedTaskCount: completedTaskCount,
+      meetingCount: meetingCount,
       userCount: userCount,
       diagramCount: diagramCount,
       canvasProgression: canvasProgression,

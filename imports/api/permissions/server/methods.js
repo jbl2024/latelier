@@ -3,6 +3,7 @@ import {
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Roles } from "meteor/alanning:roles";
@@ -226,6 +227,30 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
   }
 });
 
+/** Meetings **/
+
+Permissions.methods.canDeleteMeeting = new ValidatedMethod({
+  name: "permissions.canDeleteMeeting",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+
+    const meeting = Meetings.findOne({
+      _id: meetingId,
+      createdBy: userId
+    });
+    if (meeting) {
+      return true;
+    }
+    throw new Meteor.Error("not-authorized");
+  }
+});
 
 Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
   name: "permissions.setAdminIfNeeded",

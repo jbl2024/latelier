@@ -267,6 +267,10 @@
       "month": "Mois"
     }
   },
+  "hoursRange": {
+    "select": "Choisir l'heure de début/fin",
+    "range": "De {start} à {end}"
+  },
   "reminders": {
     "never": "Jamais",
     "onDueDate": "A la date d'échéance",
@@ -286,6 +290,14 @@
     "meetings": "Réunions",
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
+    "date": {
+      "select": "Choisir une date",
+      "start": "Le {date}"
+    },
+    "hoursRange": {
+      "select": "Choisir l'heure de début/fin",
+      "range": "De {start} à {end}"
+    },
     "fields": {
       "name": "Nom",
       "state": "Statut",

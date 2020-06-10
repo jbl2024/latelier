@@ -5,6 +5,9 @@
       <new-meeting
         ref="newMeeting"
         :project-id="projectId"
+        :selected-date="newMeetingDate"
+        :selected-start-hour="newMeetingStartHour"
+        :selected-end-hour="newMeetingEndHour"
         @created="fetch"
       />
       <meeting
@@ -85,6 +88,7 @@ import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/Meet
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import NewMeeting from "/imports/ui/meetings/Meeting/NewMeeting";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
+import moment from "moment";
 
 export default {
   components: {
@@ -112,6 +116,9 @@ export default {
       end: null,
       displayType: "5days",
       firstInterval: 7,
+      newMeetingDate: moment().format("YYYY-MM-DD HH:00"),
+      newMeetingStartHour: null,
+      newMeetingEndHour: null,
       displayTypes: Object.freeze([
         {
           text: this.$t("meetings.list"),
@@ -197,7 +204,19 @@ export default {
         this.$refs.calendar.prev();
       }
     },
-    addMeeting() {
+    resetNewMeeting() {
+      this.newMeetingDate = moment().format("YYYY-MM-DD HH:00");
+      this.newMeetingStartHour = null;
+      this.newMeetingEndHour = null;
+    },
+    addMeeting(selectedTime) {
+      if (selectedTime?.date && selectedTime?.hour) {
+        this.newMeetingDate = selectedTime.date;
+        this.newMeetingStartHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
+        this.newMeetingEndHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
+      } else {
+        this.resetNewMeeting();
+      }
       this.$refs.newMeeting.open();
     },
     async fetch() {

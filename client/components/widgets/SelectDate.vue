@@ -11,7 +11,7 @@
           <v-tab>
             Date
           </v-tab>
-          <v-tab>
+          <v-tab v-if="!disableTime">
             Heure
           </v-tab>
           <v-tab-item class="pt-2 text-center">
@@ -22,7 +22,7 @@
               @dblclick.native="checkDblClick"
             />
           </v-tab-item>
-          <v-tab-item class="pt-2 text-center">
+          <v-tab-item v-if="!disableTime" class="pt-2 text-center">
             <v-time-picker
               v-model="hour"
               :landscape="!$vuetify.breakpoint.xsOnly"

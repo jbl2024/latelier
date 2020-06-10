@@ -165,6 +165,14 @@ export const checkCanWriteTask = (taskId) => {
 export const checkCanDeleteTask = (taskId) => {
   Meteor.call("permissions.canDeleteTask", { taskId });
 };
+
+
+/** Meetings **/
+
+export const checkCanDeleteMeeting = (meetingId) => {
+  Meteor.call("permissions.canDeleteMeeting", { meetingId });
+}
+
 Permissions.methods = {};
 
 Permissions.methods.setAdmin = new ValidatedMethod({
