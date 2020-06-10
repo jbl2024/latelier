@@ -28,7 +28,7 @@
       :color="color"
       :short-weekdays="false"
       :short-months="false"
-      :first-interval="7"
+      :first-interval="firstInterval"
       @contextmenu:time="showContextMenu"
       @click:event="selectEvent"
       @change="changeCalendar"
@@ -75,6 +75,10 @@ export default {
     color: {
       type: String,
       default: "primary"
+    },
+    firstInterval: {
+      type: Number,
+      default: 7
     },
     locale: {
       type: String,

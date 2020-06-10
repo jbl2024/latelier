@@ -28,14 +28,15 @@
         {{ currentDateInterval }}
       </span>
     </div>
-    <!-- Go back to today -->
+    <!-- Switch between 24h and 7h start interval -->
     <div class="right-side">
       <v-btn
-        class="today-button"
-        outlined
-        @click.native="setToday"
+        class="first-interval-button"
+        :outlined="firstInterval !== 0"
+        :dark="firstInterval == 0"
+        @click.native="toggleFirstInterval"
       >
-        {{ $t("calendar.today") }}
+        {{ $t("calendar.24h") }}
       </v-btn>
     </div>
   </v-toolbar>
@@ -79,6 +80,10 @@ export default {
     dense: {
       type: Boolean,
       default: true
+    },
+    firstInterval: {
+      type: Number,
+      default: 0
     }
   },
   computed: {
@@ -111,8 +116,8 @@ export default {
     }
   },
   methods: {
-    setToday() {
-      return this.$emit("set-today");
+    toggleFirstInterval() {
+      this.$emit("update:first-interval", this.firstInterval === 7 ? 0 : 7);
     }
   }
 };
@@ -135,7 +140,7 @@ export default {
   .next-icon + .prev-icon {
     margin-left: 0.25rem;
   }
-  .today-button {
+  .first-interval-button {
     margin-left: 1rem;
   }
   .current-date-interval {

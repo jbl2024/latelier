@@ -2,8 +2,6 @@
   <div>
     <v-date-picker
       v-model="selectedDate"
-      header-color="white"
-      color="black"
       ref="datepicker"
       class="meeting-calendar-date-picker"
       :events="formattedEvents"
@@ -56,10 +54,6 @@ export default {
 .meeting-calendar-date-picker {
   &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
     border-radius: 16px;
-  }
-  & .v-picker__title {
-    border-bottom: solid 1px #e0e0e0 !important;
-    color: black;
   }
 }
 </style>

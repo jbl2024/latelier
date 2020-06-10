@@ -17,7 +17,7 @@
         @add-meeting="addMeeting"
       />
       <v-row>
-        <!-- Side calendar with filters -->
+        <!-- Side calendar -->
         <v-col
           v-show="$vuetify.breakpoint.mdAndUp"
           cols="12"
@@ -25,6 +25,11 @@
           lg="3"
           class="aside"
         >
+          <div>
+            <v-btn class="today-button" @click="setToday">
+              {{ $t("calendar.today") }}
+            </v-btn>
+          </div>
           <meeting-calendar-date-picker
             v-model="selectedDate"
             :locale="currentLocale"
@@ -40,8 +45,8 @@
             :display-type.sync="displayType"
             :display-types="displayTypes"
             :is-calendar-active="isCalendarActive"
+            :first-interval.sync="firstInterval"
             :flat="true"
-            @set-today="setToday"
             @next="next"
             @prev="prev"
           />
@@ -56,6 +61,7 @@
             :display-type.sync="displayType"
             :display-types="displayTypes"
             :locale="currentLocale"
+            :first-interval="firstInterval"
             @select-event="selectEvent"
             @add-meeting="addMeeting"
           />
@@ -105,6 +111,7 @@ export default {
       start: now,
       end: null,
       displayType: "5days",
+      firstInterval: 7,
       displayTypes: Object.freeze([
         {
           text: this.$t("meetings.list"),
@@ -178,7 +185,7 @@ export default {
   methods: {
     ...mapActions("meeting", ["fetchMeetings", "fetchCurrentMeeting"]),
     setToday() {
-      this.start = this.now;
+      this.selectedDate = this.now;
     },
     next() {
       if (this.isCalendarActive) {
@@ -251,9 +258,15 @@ export default {
     padding: 2rem;
     padding-bottom: 1rem;
   }
+
   .aside {
     padding-right: 0;
+    .today-button {
+      background-color: white;
+      margin-bottom: 1rem;
+    }
   }
+
 
   .project-meetings__picker {
     .v-picker__title {

@@ -12,16 +12,6 @@
     </v-row>
     <v-row>
       <v-col>
-        <label>{{ $t("Description") }}</label>
-        <rich-editor
-          ref="description"
-          v-model="meetingDescription"
-          :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
-        />
-      </v-col>
-    </v-row>
-    <v-row>
-      <v-col>
         <v-list two-line class="elevation-1 date">
           <v-list-item @click="$emit('show-select-date')">
             <v-list-item-avatar>
@@ -46,6 +36,16 @@
             </v-list-item-action>
           </v-list-item>
         </v-list>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col>
+        <label>{{ $t("Description") }}</label>
+        <rich-editor
+          ref="description"
+          v-model="meetingDescription"
+          :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+        />
       </v-col>
     </v-row>
   </v-container>
