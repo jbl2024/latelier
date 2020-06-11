@@ -249,9 +249,9 @@ export default {
     }
     .meeting-color-trigger {
       position: relative;
-      top: 6px;
-      border-radius: 50px;
-      min-height: 44px;
+      top: 10px;
+      border-radius: 65px;
+      min-height: 38px;
       cursor: pointer;
     }
     .date-title {
