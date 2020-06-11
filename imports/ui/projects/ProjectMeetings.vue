@@ -39,11 +39,6 @@
           lg="3"
           class="aside"
         >
-          <div>
-            <v-btn class="today-button" @click="setToday">
-              {{ $t("calendar.today") }}
-            </v-btn>
-          </div>
           <meeting-calendar-date-picker
             v-model="selectedDate"
             :locale="currentLocale"
@@ -66,6 +61,7 @@
             :is-calendar-active="isCalendarActive"
             :first-interval.sync="firstInterval"
             :flat="true"
+            @set-today="setToday"
             @next="next"
             @prev="prev"
           />

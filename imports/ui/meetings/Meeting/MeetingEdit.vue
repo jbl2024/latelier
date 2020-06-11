@@ -242,7 +242,7 @@ export default {
           if (error) {
             this.$notifyError(error);
           } else {
-            this.$emit("update");
+            this.$emit("updated");
             this.$notify(this.$t("meetings.updated"));
           }
         }
