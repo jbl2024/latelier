@@ -4,7 +4,7 @@
       :active.sync="showSelectColor"
       @select="onSelectColor"
     />
-    <v-container>
+    <v-container class="meeting-infos__container">
       <v-row>
         <v-col cols="1">
           <div
@@ -244,6 +244,9 @@ export default {
 </script>
 <style lang="scss">
   .meeting-infos {
+    .container {
+      padding: 2rem 3rem;
+    }
     .meeting-color-trigger {
       position: relative;
       top: 6px;

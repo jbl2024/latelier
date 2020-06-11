@@ -281,7 +281,7 @@ export default {
     margin-bottom: 24px;
   }
   .v-window-item {
-    min-height: 500px;
+    min-height: 600px;
   }
   .edit-meeting__tab.v-tab {
     justify-content: flex-start;

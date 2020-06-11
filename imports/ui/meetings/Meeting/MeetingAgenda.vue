@@ -1,13 +1,15 @@
 <template>
   <div class="meeting-agenda">
-    <editable-text
-      v-model="editedAgenda"
-      :is-edited.sync="isAgendaEdited"
-      :empty-text="$t('meetings.agenda.none')"
-      :options="{ markdown: true }"
-      @update="updateAgenda"
-      @cancel="cancelUpdateAgenda"
-    />
+    <v-container class="container">
+      <editable-text
+        v-model="editedAgenda"
+        :is-edited.sync="isAgendaEdited"
+        :empty-text="$t('meetings.agenda.none')"
+        :options="{ markdown: true }"
+        @update="updateAgenda"
+        @cancel="cancelUpdateAgenda"
+      />
+    </v-container>
   </div>
 </template>
 <script>
@@ -51,9 +53,11 @@ export default {
 </script>
 <style lang="scss">
   .meeting-agenda {
-    padding: 2rem;
+    .container {
+      padding: 2rem 3rem;
+    }
     .editor {
-      min-height: 200px;
+      min-height: 300px;
     }
   }
 </style>

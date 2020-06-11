@@ -44,7 +44,8 @@ export default {
     }
     background-color: white;
     .v-input--selection-controls {
-      padding: 8px;
+      margin-top: 0;
+      padding: 8px 4px;
     }
   }
 

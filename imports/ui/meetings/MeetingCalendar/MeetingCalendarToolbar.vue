@@ -31,20 +31,24 @@
       </v-btn>
     </div>
     <div class="center">
-      <span v-if="currentDateInterval" class="current-date-interval">
-        {{ currentDateInterval }}
-      </span>
+      <div v-if="currentDateInterval" class="current-date-interval">
+        <span>
+          {{ currentDateInterval }}
+        </span>
+      </div>
     </div>
     <!-- Switch between 24h and 7h start interval -->
     <div class="right-side">
-      <v-btn
-        class="first-interval-button"
-        :outlined="firstInterval !== 0"
-        :dark="firstInterval == 0"
-        @click.native="toggleFirstInterval"
-      >
-        {{ $t("calendar.24h") }}
-      </v-btn>
+      <div>
+        <v-btn
+          class="first-interval-button"
+          :outlined="firstInterval !== 0"
+          :dark="firstInterval == 0"
+          @click.native="toggleFirstInterval"
+        >
+          {{ $t("calendar.24h") }}
+        </v-btn>
+      </div>
     </div>
   </v-toolbar>
 </template>
@@ -134,8 +138,16 @@ export default {
   border-radius: 9px 9px 0 0;
   .right-side,
   .left-side {
+    flex: 1 1 25%;
     display: flex;
     align-items: center;
+  }
+  .right-side {
+    justify-content: flex-end;
+  }
+  .center {
+    justify-content: center;
+    flex: 1 1 50%;
   }
   flex: 0;
   & .v-toolbar__content {
@@ -151,6 +163,7 @@ export default {
     margin-left: 1rem;
   }
   .current-date-interval {
+    text-align: center;
     font-size: 1.2rem;
   }
 }
