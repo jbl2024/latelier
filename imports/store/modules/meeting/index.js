@@ -1,5 +1,24 @@
 import { Meteor } from "meteor/meteor";
-import calendarUtil from "/imports/ui/utils/calendar";
+import moment from "moment";
+
+
+const formatMeetingsAsEvents = (meetings) => {
+  const dateFormat = "YYYY-MM-DD HH:mm";
+  return meetings.filter((meeting) => {
+    return meeting.startDate && meeting.endDate;
+  }).map((meeting) => {
+    return {
+      id: meeting._id,
+      name: meeting.name,
+      description: meeting.description,
+      location: meeting.location,
+      type: meeting.type ? meeting.type : null,
+      start: moment(meeting.startDate).format(dateFormat),
+      end: moment(meeting.endDate).format(dateFormat),
+      color: meeting.color
+    }
+  });
+}
 
 
 const fetchMeetings = (params) => {
@@ -55,6 +74,7 @@ export default {
     meetingsResults: null,
     meetingTypes: null,
     selectedMeeting: null,
+    selectedMeetingTypes: [],
     currentMeeting: null
   },
   mutations: {
@@ -63,6 +83,9 @@ export default {
     },
     updateMeetingTypes(state, meetingTypes) {
       state.meetingTypes = meetingTypes
+    },
+    updateSelectedMeetingTypes(state, selectedMeetingTypes) {
+      state.selectedMeetingTypes = selectedMeetingTypes
     },
     updateSelectedMeeting(state, selectedMeeting) {
       state.selectedMeeting = selectedMeeting;
@@ -78,7 +101,14 @@ export default {
     },
     meetingsEventsByProjectId: (state, getters) => (projectId) => {
       const meetings = getters.meetingsByProjectId(projectId);
-      return calendarUtil.formatMeetingsAsEvents(meetings);
+      return formatMeetingsAsEvents(meetings);
+    },
+    filteredMeetingsEventsByProjectId: (state, getters) => (projectId) => {
+      const meetingsEvent = getters.meetingsEventsByProjectId(projectId);
+      return meetingsEvent.filter((meetingEvent) => {
+        if (!state.selectedMeetingTypes || !state.selectedMeetingTypes.length) return true;
+        return state.selectedMeetingTypes.includes(meetingEvent.type)
+      });
     }
   },
   actions: {
@@ -100,6 +130,9 @@ export default {
     },
     setSelectedMeeting(context, selectedMeeting) {
       context.commit("updateSelectedMeeting", selectedMeeting);
+    },
+    setSelectedMeetingTypes(context, selectedMeetingTypes) {
+      context.commit("updateSelectedMeetingTypes", selectedMeetingTypes);
     }
   }
 };

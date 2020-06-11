@@ -170,9 +170,9 @@ export default {
     },
     typesItems() {
       if (!this.types) return [];
-      return [{value: null, text: this.$t("meetings.noType")}].concat(Object.keys(this.types).map((key) => {
+      return Object.keys(this.types).map((key) => {
         return {value: this.types[key], text: this.$t(`meetings.types.${this.types[key]}`)}
-      }));
+      });
     },
     meetingType: {
       get() {

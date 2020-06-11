@@ -53,7 +53,7 @@ export default {
 <style lang="scss">
 .meeting-calendar-date-picker {
   &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
-    border-radius: 16px;
+    border-radius: 9px;
   }
 }
 </style>

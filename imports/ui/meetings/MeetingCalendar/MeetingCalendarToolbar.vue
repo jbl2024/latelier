@@ -124,7 +124,7 @@ export default {
 </script>
 <style lang="scss">
 .meeting-calendar-toolbar {
-  border-radius: 16px 16px 0 0;
+  border-radius: 9px 9px 0 0;
   .right-side,
   .left-side {
     display: flex;

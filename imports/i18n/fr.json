@@ -289,11 +289,14 @@
     "list": "Liste",
     "meeting": "Réunion",
     "meetings": "Réunions",
+    "allMeetings": "Toutes les réunions",
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
     "participate": "Participer à la réunion",
     "create": "Créer",
+    "created": "Réunion créée",
     "update": "Mettre à jour",
+    "updated": "Réunion mise à jour",
     "remove": "Supprimer",
     "remove?": "Supprimer la réunion ?",
     "meetingDeleted": "Réunion supprimée", 
@@ -302,6 +305,7 @@
     "type": "Type de réunion",
     "location": "Lieu",
     "types": {
+      "none": "Sans type",
       "weeklypoint": "Point hebdomadaire",
       "info": "Réunion d'information",
       "service": "Réunion de service"

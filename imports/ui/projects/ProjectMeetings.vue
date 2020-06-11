@@ -17,6 +17,7 @@
         :meeting="selectedMeeting"
         :types="meetingTypes"
         @created="fetch"
+        @updated="fetch"
         @removed="fetch"
       />
       <meeting
@@ -47,6 +48,11 @@
             v-model="selectedDate"
             :locale="currentLocale"
             :events="meetingsEvents"
+          />
+          <meeting-calendar-filters
+            class="filters"
+            :types="meetingTypes"
+            :selected-types.sync="selectedMeetingTypes"
           />
         </v-col>
         <!-- Main content -->
@@ -93,6 +99,7 @@ import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState, mapGetters, mapActions } from "vuex";
 import ProjectMeetingsToolbar from "/imports/ui/projects/ProjectMeetingsToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
+import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingList from "/imports/ui/meetings/MeetingList";
@@ -104,6 +111,7 @@ export default {
   components: {
     ProjectMeetingsToolbar,
     MeetingCalendar,
+    MeetingCalendarFilters,
     MeetingCalendarToolbar,
     MeetingCalendarDatePicker,
     MeetingList,
@@ -170,14 +178,23 @@ export default {
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
     ...mapState("meeting", ["selectedMeeting", "meetingTypes"]),
-    ...mapGetters("meeting", ["meetingsEventsByProjectId"]),
+    ...mapGetters("meeting", ["filteredMeetingsEventsByProjectId"]),
+    selectedMeetingTypes: {
+      get() {
+        return this.$store.state.meeting.selectedMeetingTypes;
+      },
+      set(selectedMeetingTypes) {
+        this.$store.dispatch("meeting/setSelectedMeetingTypes", selectedMeetingTypes);
+      }
+    },
     meetingsEvents() {
-      return this.meetingsEventsByProjectId(this.currentProject._id);
+      return this.filteredMeetingsEventsByProjectId(this.currentProject._id);
     }
   },
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     await this.$store.dispatch("meeting/fetchMeetingTypes");
+    await this.$store.dispatch("meeting/setSelectedMeetingTypes", Object.values(this.meetingTypes))
   },
   beforeDestroy() {
     this.$store.dispatch("meeting/setSelectedMeeting", null);
@@ -294,6 +311,11 @@ export default {
   background-repeat: no-repeat;
   background-position: center;
   background-attachment: fixed;
+
+
+  .filters {
+    margin-top: 2rem;
+  }
 
   .current-date {
     border-radius: 16px;

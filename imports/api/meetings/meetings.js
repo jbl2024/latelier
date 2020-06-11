@@ -10,6 +10,7 @@ export const MeetingState = Object.freeze({
 });
 
 export const MeetingTypes = Object.freeze({
+  NONE: "none",
   WEEKLYPOINT: "weeklypoint",
   INFO: "info",
   SERVICE: "service"

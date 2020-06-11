@@ -3,7 +3,7 @@
     <generic-dialog
       v-model="showDialog"
       :title="computedTitle"
-      :css-classes="['new-meeting']"
+      :css-classes="['edit-meeting']"
       max-width="1000px"
     >
       <template v-slot:content>
@@ -22,7 +22,7 @@
         />
         <v-form v-model="valid" @submit.prevent>
           <v-tabs v-model="currentTab" vertical>
-            <v-tab class="new-meeting__tab" v-for="section in sections" :key="section.id">
+            <v-tab class="edit-meeting__tab" v-for="section in sections" :key="section.id">
               <v-icon left>
                 {{ section.icon }}
               </v-icon>
@@ -214,28 +214,52 @@ export default {
         }
       });
     },
-    create() {
-      this.showDialog = false;
+    getParams() {
       const date = moment(this.date).format("YYYY-MM-DD");
-      const params = {
+      let params = {
         name: this.name,
         projectId: this.projectId,
         startDate: `${date} ${this.startHour}:00`,
         endDate: `${date} ${this.endHour}:00`,
         agenda: this.agenda,
+        type: this.type,
         description: this.description,
         location: this.location,
         color: this.color
       };
+      if (!this.isNew && this.meeting._id) {
+        delete params.projectId;
+        params.id = this.meeting._id;
+      }
+      return params;
+    },
+    update() {
+      this.showDialog = false;
+      Meteor.call(
+        "meetings.update",
+        this.getParams(),
+        (error) => {
+          if (error) {
+            this.$notifyError(error);
+          } else {
+            this.$emit("update");
+            this.$notify(this.$t("meetings.updated"));
+          }
+        }
+      );
+      this.showDialog = false;
+    },
+    create() {
+      this.showDialog = false;
       Meteor.call(
         "meetings.create",
-        params,
+        this.getParams(),
         (error) => {
           if (error) {
             this.$notifyError(error);
           } else {
             this.$emit("created");
-            this.$notify("Meeting created");
+            this.$notify(this.$t("meetings.created"));
           }
         }
       );
@@ -246,17 +270,20 @@ export default {
 </script>
 
 <style lang="scss">
-.v-dialog > .new-meeting.v-card > .v-card__text {
+.v-dialog > .edit-meeting.v-card > .v-card__text {
   padding: 0;
 }
-.new-meeting {
+.edit-meeting {
+  .v-slide-group__wrapper {
+    border-right: solid 1px #e0e0e0;
+  }
   .date {
     margin-bottom: 24px;
   }
   .v-window-item {
     min-height: 500px;
   }
-  &__tab.v-tab {
+  .edit-meeting__tab.v-tab {
     justify-content: flex-start;
   }
 }

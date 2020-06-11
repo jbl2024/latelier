@@ -52,7 +52,7 @@ export default {
     padding: 32pax;
     padding-top: 16px;
     &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
-      border-radius: 0 0 16px 16px;
+      border-radius: 0 0 9px 9px;
     }
     .meeting-list__day-header.v-subheader {
       font-size: 1.3rem;

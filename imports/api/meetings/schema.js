@@ -22,6 +22,11 @@ export default new SimpleSchema({
     optional: true,
     defaultValue: "#363636"
   },
+  type: {
+    type: String,
+    optional: true,
+    defaultValue: "none"
+  },
   /* attendees */
   attendees: {
     type: Array,
