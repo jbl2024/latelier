@@ -2,22 +2,32 @@
   <div class="project-meetings" :style="getBackgroundUrl(currentUser)">
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
+      <!-- New meeting -->
       <meeting-edit
         ref="newMeeting"
         :project-id="projectId"
-        :selected-date="newMeetingDate"
-        :selected-start-hour="newMeetingStartHour"
-        :selected-end-hour="newMeetingEndHour"
+        :meeting="newMeeting"
+        :types="meetingTypes"
         @created="fetch"
+      />
+      <!-- Edit existing meeting -->
+      <meeting-edit
+        ref="editMeeting"
+        :project-id="projectId"
+        :meeting="selectedMeeting"
+        :types="meetingTypes"
+        @created="fetch"
+        @removed="fetch"
       />
       <meeting
         ref="meeting"
         :meeting="selectedMeeting"
+        @edit-meeting="editMeeting"
       />
       <project-meetings-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
-        @add-meeting="addMeeting"
+        @add-new-meeting="addNewMeeting"
       />
       <v-row>
         <!-- Side calendar -->
@@ -66,7 +76,7 @@
             :locale="currentLocale"
             :first-interval="firstInterval"
             @select-event="selectEvent"
-            @add-meeting="addMeeting"
+            @add-new-meeting="addNewMeeting"
           />
           <!-- Streamline list of meetings -->
           <meeting-list v-else />
@@ -116,9 +126,7 @@ export default {
       end: null,
       displayType: "5days",
       firstInterval: 7,
-      newMeetingDate: moment().format("YYYY-MM-DD HH:00"),
-      newMeetingStartHour: null,
-      newMeetingEndHour: null,
+      newMeeting: null,
       displayTypes: Object.freeze([
         {
           text: this.$t("meetings.list"),
@@ -161,14 +169,15 @@ export default {
     },
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["selectedMeeting"]),
+    ...mapState("meeting", ["selectedMeeting", "meetingTypes"]),
     ...mapGetters("meeting", ["meetingsEventsByProjectId"]),
     meetingsEvents() {
       return this.meetingsEventsByProjectId(this.currentProject._id);
     }
   },
-  mounted() {
+  async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    await this.$store.dispatch("meeting/fetchMeetingTypes");
   },
   beforeDestroy() {
     this.$store.dispatch("meeting/setSelectedMeeting", null);
@@ -204,20 +213,40 @@ export default {
         this.$refs.calendar.prev();
       }
     },
-    resetNewMeeting() {
-      this.newMeetingDate = moment().format("YYYY-MM-DD HH:00");
-      this.newMeetingStartHour = null;
-      this.newMeetingEndHour = null;
+    createNewMeeting() {
+      return {
+        name: this.$t("meetings.meeting"),
+        description: "",
+        agenda: "",
+        type: "",
+        color: "#363636",
+        location: "",
+        startDate: moment().format("YYYY-MM-DD HH:00"),
+        endDate: null
+      };
     },
-    addMeeting(selectedTime) {
+    addNewMeeting(selectedTime) {
+      let newMeeting = this.createNewMeeting();
       if (selectedTime?.date && selectedTime?.hour) {
-        this.newMeetingDate = selectedTime.date;
-        this.newMeetingStartHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
-        this.newMeetingEndHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
-      } else {
-        this.resetNewMeeting();
+        let startHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
+        let endHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
+        newMeeting.startDate = `${selectedTime.date} ${startHour}`;
+        newMeeting.endDate = `${selectedTime.date} ${endHour}`;
       }
+      this.newMeeting = newMeeting;
       this.$refs.newMeeting.open();
+    },
+    async editMeeting(meeting) {
+      try {
+        this.$refs.editMeeting.close();
+        await this.fetchSelectedMeeting({
+          meetingId: meeting._id
+        });
+        this.$refs.editMeeting.open();
+      } catch (error) {
+        this.$refs.editMeeting.close();
+        this.$notifyError(error);
+      }
     },
     async fetch() {
       try {

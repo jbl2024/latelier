@@ -2,7 +2,7 @@
   <div>
     <generic-dialog
       v-model="showDialog"
-      :title="$t('meetings.newMeeting')"
+      :title="computedTitle"
       :css-classes="['new-meeting']"
       max-width="1000px"
     >
@@ -21,7 +21,7 @@
           @select="onSelectHourRange"
         />
         <v-form v-model="valid" @submit.prevent>
-          <v-tabs vertical>
+          <v-tabs v-model="currentTab" vertical>
             <v-tab class="new-meeting__tab" v-for="section in sections" :key="section.id">
               <v-icon left>
                 {{ section.icon }}
@@ -32,9 +32,13 @@
             <v-tab-item :transition="false" :reverse-transition="false">
               <meeting-infos
                 :rules="rules"
-                :name="name"
+                :types="types"
+                :name.sync="name"
+                :type.sync="type"
                 :description.sync="description"
                 :date="date"
+                :color.sync="color"
+                :location.sync="location"
                 :start-hour.sync="startHour"
                 :end-hour.sync="endHour"
                 @show-select-date="showSelectDate = true"
@@ -45,14 +49,27 @@
             </v-tab-item>
             <!-- Agenda -->
             <v-tab-item :transition="false" :reverse-transition="false">
-
+              <meeting-agenda
+                v-model="agenda"
+              />
+            </v-tab-item>
+            <!-- Attendees -->
+            <v-tab-item :transition="false" :reverse-transition="false">
+              <meeting-attendees
+              />
             </v-tab-item>
           </v-tabs>
         </v-form>
       </template>
       <template v-slot:actions>
-        <v-btn text :disabled="!valid || !coherent" @click="create">
-          {{ $t("Create") }}
+        <v-btn v-if="!isNew" @click="remove">
+          {{ $t("meetings.remove") }}
+        </v-btn>
+        <v-btn v-if="isNew" text :disabled="!valid || !coherent" @click="create">
+          {{ $t("meetings.create") }}
+        </v-btn>
+        <v-btn v-else text :disabled="!valid || !coherent" @click="update">
+          {{ $t("meetings.update") }}
         </v-btn>
       </template>
     </generic-dialog>
@@ -62,12 +79,16 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
+import MeetingAgenda from "./MeetingAgenda";
+import MeetingAttendees from "./MeetingAttendees";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 
 export default {
   components: {
     MeetingInfos,
+    MeetingAgenda,
+    MeetingAttendees,
     SelectHourRange
   },
   props: {
@@ -79,28 +100,19 @@ export default {
       type: Object,
       default: null
     },
-    selectedDate: {
-      type: [Date, String],
-      default() {
-        return moment().format("YYYY-MM-DD");
-      }
-    },
-    selectedStartHour: {
-      type: String,
-      default: null
-    },
-    selectedEndHour: {
-      type: String,
+    types: {
+      type: Object,
       default: null
     }
   },
   data() {
     return {
       sections: Object.freeze([
-        {id: "infos", text: "Infos", icon: "mdi-information-outline"},
-        {id: "agenda", text: "Agenda", icon: "mdi-format-list-numbered"}
-        // {id: "members", text: "Membres", icon: "mdi-account"}
+        {id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline"},
+        {id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered"},
+        // {id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account"},
       ]),
+      currentTab: null,
       allowedMinutes: Object.freeze([00, 10, 15, 30, 45]),
       allowedHours: Object.freeze([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
       showDialog: false,
@@ -108,8 +120,12 @@ export default {
       showSelectHourRange: false,
       coherent: false,
       valid: false,
-      name: "",
-      description: "",
+      agenda: null,
+      color: null,
+      location: null,
+      name: null,
+      type: null,
+      description: null,
       date: null,
       startHour: null,
       endHour: null,
@@ -121,16 +137,36 @@ export default {
       }
     };
   },
+  computed: {
+    isNew() {
+      return !this.meeting || !this.meeting._id;
+    },
+    computedTitle() {
+      const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
+      const currentName = (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
+      return `${currentName} ${(currentSection ? (" - " + currentSection) : "")}`;
+    }
+  },
   methods: {
     open() {
       this.showDialog = true;
       this.$nextTick(() => {
-        this.date = this.selectedDate;
-        this.startHour = this.selectedStartHour;
-        this.endHour = this.selectedEndHour;
-        this.description = "";
+        const endDate = this.meeting?.endDate ? moment(this.meeting.endDate).format("YYYY-MM-DD HH:mm") : null;
+        const startDate = this.meeting?.startDate ? moment(this.meeting.startDate).format("YYYY-MM-DD HH:mm") : null;
+        const startHour = startDate ? startDate.split(" ")[1] : null;
+        const endHour = endDate ? endDate.split(" ")[1] : null;
+
+        // Mass assignment
+        ["name", "type", "description", "agenda", "color", "location"].forEach((prop) => {
+          if (prop in this && this.meeting && this.meeting[prop] !== null) {
+            this[prop] = this.meeting[prop];
+          }
+        });
+        this.date = startDate;
+        this.startHour = startHour;
+        this.endHour = endHour;
+
         this.checkConsistency();
-        this.name = this.$t("meetings.meeting");
       })
     },
     close() {
@@ -155,14 +191,41 @@ export default {
       }
       this.coherent = true;
     },
+    remove() {
+      this.$confirm(this.$t("meetings.remove?"), {
+        title: this.meeting.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      }).then((res) => {
+        this.showDialog = false;
+        if (res) {
+          Meteor.call(
+            "meetings.remove",
+            { meetingId: this.meeting._id },
+            (error) => {
+              if (error) {
+                this.$notifyError(error);
+                return;
+              }
+              this.$notify(this.$t("meetings.meetingDeleted"));
+              this.$emit("removed");
+            }
+          );
+        }
+      });
+    },
     create() {
       this.showDialog = false;
+      const date = moment(this.date).format("YYYY-MM-DD");
       const params = {
         name: this.name,
         projectId: this.projectId,
-        startDate: `${this.date} ${this.startHour}:00`,
-        endDate: `${this.date} ${this.endHour}:00`,
-        description: this.description
+        startDate: `${date} ${this.startHour}:00`,
+        endDate: `${date} ${this.endHour}:00`,
+        agenda: this.agenda,
+        description: this.description,
+        location: this.location,
+        color: this.color
       };
       Meteor.call(
         "meetings.create",
@@ -190,9 +253,9 @@ export default {
   .date {
     margin-bottom: 24px;
   }
-
-  .v-dialog>.v-card>.v-card__text
-
+  .v-window-item {
+    min-height: 500px;
+  }
   &__tab.v-tab {
     justify-content: flex-start;
   }

@@ -78,14 +78,44 @@ export default {
   },
   data() {
     return {
-      selectedStart: this.start,
-      selectedEnd: this.end
+      startValue: null,
+      endValue: null
+    }
+  },
+  watch: {
+    start: {
+      immediate: true,
+      handler(val) {
+        return this.startValue = val;
+      }
+    },
+    end: {
+      immediate: true,
+      handler(val) {
+        return this.endValue = val;
+      }
     }
   },
   computed: {
+    selectedStart: {
+      get() {
+        return this.start;
+      },
+      set(newStart) {
+        this.startValue = newStart;
+      }
+    },
+    selectedEnd: {
+      get() {
+        return this.end;
+      },
+      set(newEnd) {
+        this.endValue = newEnd;
+      }
+    },
     computedTitle() {
-      if (this.selectedStart || this.selectedEnd) {
-        return this.$t("hoursRange.range", {start: this.selectedStart, end: this.selectedEnd });
+      if (this.startValue || this.endValue) {
+        return this.$t("hoursRange.range", {start: this.startValue, end: this.endValue });
       } else {
         return this.$t("hoursRange.select");
       }
@@ -102,7 +132,7 @@ export default {
   methods: {
     selectHourRange() {
       this.showDialog = false;
-      this.$emit("select", {start: this.selectedStart, end: this.selectedEnd});
+      this.$emit("select", {start: this.startValue, end: this.endValue});
     }
   }
 };

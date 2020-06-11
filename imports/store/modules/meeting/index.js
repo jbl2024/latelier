@@ -34,16 +34,35 @@ const fetchMeeting = (params) => {
   });
 };
 
+const fetchMeetingTypes = () => {
+  return new Promise((resolve, reject) => {
+    Meteor.call(
+      "meetings.getTypes",
+      null,
+      (error, types) => {
+        resolve(types);
+        if (error) {
+          reject(error);
+        }
+      }
+    );
+  });
+};
+
 export default {
   namespaced: true,
   state: {
-    meetingsResults: {},
+    meetingsResults: null,
+    meetingTypes: null,
     selectedMeeting: null,
     currentMeeting: null
   },
   mutations: {
     updateMeetingsResults(state, meetingsResults) {
       state.meetingsResults = meetingsResults;
+    },
+    updateMeetingTypes(state, meetingTypes) {
+      state.meetingTypes = meetingTypes
     },
     updateSelectedMeeting(state, selectedMeeting) {
       state.selectedMeeting = selectedMeeting;
@@ -74,6 +93,10 @@ export default {
     async fetchCurrentMeeting(context, params) {
       const meeting = await fetchMeeting(params);
       context.commit("updateCurrentMeeting", meeting);
+    },
+    async fetchMeetingTypes(context) {
+      const meetingTypes = await fetchMeetingTypes();
+      context.commit("updateMeetingTypes", meetingTypes);
     },
     setSelectedMeeting(context, selectedMeeting) {
       context.commit("updateSelectedMeeting", selectedMeeting);

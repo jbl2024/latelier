@@ -6,7 +6,7 @@
       :y="y"
     >
       <v-list>
-        <v-list-item @click="addMeetingOnTime">
+        <v-list-item @click="addNewMeetingOnTime">
         <v-list-item-title>
           {{ addMeetingText }}
         </v-list-item-title>
@@ -24,8 +24,8 @@
       :max-days="calendarDatas.maxDays"
       :now="now"
       :events="events"
+      :event-color="getEventColor"
       :locale="locale"
-      :color="color"
       :short-weekdays="false"
       :short-months="false"
       :first-interval="firstInterval"
@@ -161,12 +161,15 @@ export default {
         this.$emit("select-event", data.event);
       }
     },
+    getEventColor(event) {
+      return event.color;
+    },
     showContextMenu(data) {
       this.clickedTime = data;
       this.showContextualMenu = true;
     },
-    addMeetingOnTime() {
-      this.$emit("add-meeting", this.clickedTime);
+    addNewMeetingOnTime() {
+      this.$emit("add-new-meeting", this.clickedTime);
     },
     clickHandler(event) {
       this.x = event.clientX;

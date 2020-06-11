@@ -7,7 +7,7 @@
         :display-types="displayTypes"
       />
       <!-- Add new meeting -->
-      <v-btn dark @click="$emit('add-meeting')">
+      <v-btn dark @click="$emit('add-new-meeting')">
         <v-icon left>
           mdi-plus
         </v-icon>

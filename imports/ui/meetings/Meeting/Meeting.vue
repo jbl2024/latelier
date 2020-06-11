@@ -53,9 +53,8 @@ export default {
       this.showDialog = false;
     },
     editMeeting() {
-      /*
       this.close();
-      this.$emit("edit-meeting", this.meeting); */
+      this.$emit("edit-meeting", this.meeting);
     },
     async openMeeting() {
       await this.$router.push({

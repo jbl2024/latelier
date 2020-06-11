@@ -292,7 +292,28 @@
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
     "participate": "Participer à la réunion",
+    "create": "Créer",
+    "update": "Mettre à jour",
+    "remove": "Supprimer",
+    "remove?": "Supprimer la réunion ?",
+    "meetingDeleted": "Réunion supprimée", 
     "edit": "Editer",
+    "noType": "Aucun type",
+    "type": "Type de réunion",
+    "location": "Lieu",
+    "types": {
+      "weeklypoint": "Point hebdomadaire",
+      "info": "Réunion d'information",
+      "service": "Réunion de service"
+    },
+    "agenda": {
+      "none": "Aucun ordre du jour"
+    },
+    "sections": {
+      "infos": "Infos",
+      "agenda": "Ordre du jour",
+      "attendees": "Invitations"
+    },
     "date": {
       "select": "Choisir une date",
       "start": "Le {date}"

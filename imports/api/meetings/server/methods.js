@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { MeetingState, Meetings } from "/imports/api/meetings/meetings";
+import { MeetingState, MeetingTypes, Meetings } from "/imports/api/meetings/meetings";
 // We use project rights for meeting rights
 import {
   checkLoggedIn,
@@ -16,10 +16,25 @@ Meetings.methods.create = new ValidatedMethod({
     name: { type: String },
     state: { type: String, optional: true },
     description: { type: String, optional: true },
+    agenda: { type: String, optional: true },
+    color: { type: String, optional: true},
+    location: { type: String, optional: true },
+    type: { type: String, optional: true },
     startDate: { type: String },
     endDate: { type: String }
   }).validator(),
-  run({ projectId, name, state, description, startDate, endDate }) {
+  run({
+      projectId,
+      name,
+      state,
+      description,
+      agenda,
+      color,
+      location,
+      type,
+      startDate,
+      endDate
+    }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
@@ -30,6 +45,10 @@ Meetings.methods.create = new ValidatedMethod({
       name,
       state,
       description,
+      agenda,
+      color,
+      location,
+      type,
       startDate,
       endDate,
       createdAt: now,
@@ -48,10 +67,14 @@ Meetings.methods.update = new ValidatedMethod({
     name: { type: String },
     state: { type: String, optional: true },
     description: { type: String, optional: true },
+    agenda: { type: String, optional: true },
+    color: { type: String, optional: true},
+    location: { type: String, optional: true },
+    type: { type: String, optional: true },
     startDate: { type: String },
     endDate: { type: String }
   }).validator(),
-  run({ id, name, state, description, startDate, endDate }) {
+  run({ id, name, state, description, agenda, color, location, type, startDate, endDate }) {
     checkLoggedIn();
 
     state = state || MeetingState.PENDING;
@@ -71,6 +94,10 @@ Meetings.methods.update = new ValidatedMethod({
           name,
           state,
           description,
+          agenda,
+          color,
+          location,
+          type,
           startDate,
           endDate,
           updatedAt: new Date(),
@@ -87,17 +114,20 @@ Meetings.methods.update = new ValidatedMethod({
 Meetings.methods.remove = new ValidatedMethod({
   name: "meetings.remove",
   validate: new SimpleSchema({
-    id: { type: String }
+    meetingId: { type: String }
   }).validator(),
-  run({ id }) {
+  run({ meetingId }) {
     checkLoggedIn();
-
-    const meeting = Meetings.findOne({ _id: id });
-    if (!meeting) {
-      throw new Meteor.Error("not-found");
-    }
-    checkCanWriteProject(meeting.projectId);
-    Meetings.remove(id);
+    Meetings.update(
+      { _id: meetingId },
+      {
+        $set: {
+          deleted: true,
+          deletedBy: Meteor.userId(),
+          deletedAt: new Date()
+        }
+      }
+    );
   }
 });
 
@@ -158,5 +188,13 @@ Meetings.methods.get = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
     return meeting;
+  }
+});
+
+Meetings.methods.getTypes = new ValidatedMethod({
+  name: "meetings.getTypes",
+  validate: null,
+  run() {
+    return MeetingTypes;
   }
 });

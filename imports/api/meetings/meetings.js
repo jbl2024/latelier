@@ -9,6 +9,12 @@ export const MeetingState = Object.freeze({
   CANCELED: "canceled"
 });
 
+export const MeetingTypes = Object.freeze({
+  WEEKLYPOINT: "weeklypoint",
+  INFO: "info",
+  SERVICE: "service"
+});
+
 export const Meetings = new Mongo.Collection("meetings");
 Meetings.attachSchema(MeetingSchema);
 Meetings.methods = {};
