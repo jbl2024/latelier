@@ -1,5 +1,10 @@
 <template>
-  <div class="project-meetings" :style="getBackgroundUrl(currentUser)">
+  <div
+    ref="projectMeetings"
+    class="project-meetings"
+    :style="getBackgroundUrl(currentUser)"
+    v-resize="onResize"
+  >
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
       <!-- New meeting -->
@@ -36,22 +41,34 @@
           v-show="$vuetify.breakpoint.mdAndUp"
           cols="12"
           sm="12"
-          lg="3"
-          class="aside"
+          md="12"
+          :lg="cols.aside.lg"
+          :class="['aside', denseWidth ? 'lg-dense-width' : null]"
         >
-          <meeting-calendar-date-picker
-            v-model="selectedDate"
-            :locale="currentLocale"
-            :events="meetingsEvents"
-          />
-          <meeting-calendar-filters
-            class="filters"
-            :types="meetingTypes"
-            :selected-types.sync="selectedMeetingTypes"
-          />
+          <v-row :no-gutters="!denseWidth">
+            <v-col :lg="asideCols.datepicker.lg">
+              <meeting-calendar-date-picker
+                v-model="selectedDate"
+                :locale="currentLocale"
+                :events="meetingsEvents"
+              />
+            </v-col>
+            <v-col :lg="asideCols.filters.lg">
+              <meeting-calendar-filters
+                class="filters"
+                :types="meetingTypes"
+                :selected-types.sync="selectedMeetingTypes"
+              />
+            </v-col>
+          </v-row>
         </v-col>
         <!-- Main content -->
-        <v-col cols="12" sm="12" lg="9" class="body">
+        <v-col 
+          cols="12"
+          sm="12"
+          :lg="cols.body.lg"
+          class="body"
+        >
           <meeting-calendar-toolbar
             v-model="selectedDate"
             :start.sync="start"
@@ -124,6 +141,7 @@ export default {
   data() {
     const now = this.nowDate();
     return {
+      denseWidth: false,
       now: now,
       selectedDate: now,
       start: now,
@@ -185,6 +203,32 @@ export default {
     },
     meetingsEvents() {
       return this.filteredMeetingsEventsByProjectId(this.currentProject._id);
+    },
+    asideCols() {
+      if (this.denseWidth) {
+        return {
+          datepicker: {lg: 6},
+          filters: {lg: 6}
+        }
+      } else {
+        return {
+          datepicker: {lg: 12},
+          filters: {lg: 12}
+        }
+      }
+    },
+    cols() {
+      if (this.denseWidth) {
+        return {
+          aside: {lg: 12},
+          body: {lg: 12}
+        };
+      } else {
+        return {
+          aside: {lg: 3},
+          body: {lg: 9}
+        };
+      }
     }
   },
   async mounted() {
@@ -282,6 +326,10 @@ export default {
         this.$refs.meeting.close();
         this.$notifyError(error);
       }
+    },
+    onResize() {
+      const width = this.$refs.projectMeetings.offsetWidth;
+      this.denseWidth = width < 1400;
     }
   },
   watch: {
@@ -309,10 +357,6 @@ export default {
   background-attachment: fixed;
 
 
-  .filters {
-    margin-top: 2rem;
-  }
-
   .current-date {
     border-radius: 16px;
     background-color: white;
@@ -326,10 +370,11 @@ export default {
   }
 
   .aside {
-    padding-right: 0;
-    .today-button {
-      background-color: white;
-      margin-bottom: 1rem;
+    &:not(.lg-dense-width) {
+      padding-right: 0;
+      .filters {
+        margin-top: 2rem;
+      }
     }
   }
 

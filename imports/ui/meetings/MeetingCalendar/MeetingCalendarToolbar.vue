@@ -156,9 +156,6 @@ export default {
   .time-navigation {
     margin-right: 8px;
   }
-  .next-icon + .prev-icon {
-    margin-left: 0.25rem;
-  }
   .first-interval-button {
     margin-left: 1rem;
   }
