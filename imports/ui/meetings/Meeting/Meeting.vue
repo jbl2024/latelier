@@ -2,13 +2,35 @@
   <div>
     <generic-dialog
       v-model="showDialog"
-      :title="title"
-      :css-classes="['new-meeting']"
+      :css-classes="['meeting']"
       max-width="1000px"
     >
+      <template v-slot:title>
+        <div class="meeting__header">
+          <div class="meeting__title">
+            {{ title }}
+          </div>
+          <div class="meeting__chips">
+            <v-chip>
+              <v-icon class="mr-2">
+                mdi-clock
+              </v-icon>
+              {{ meetingInterval }}
+            </v-chip>
+            <v-chip 
+              v-if="meeting.type && meeting.type !== 'none'"
+              color="accent"
+            >
+              {{ $t(`meetings.types.${meeting.type}`) }}
+            </v-chip>
+          </div>
+        </div>
+      </template>
       <template v-slot:content>
         <div v-if="meeting">
-          <v-card-text v-if="meeting.description" v-html="meeting.description">
+          <v-card-text v-if="meeting.description" v-html="markDown(meeting.description)">
+          </v-card-text>
+          <v-card-text v-if="meeting.agenda" v-html="markDown(meeting.agenda)">
           </v-card-text>
         </div>
       </template>
@@ -27,7 +49,11 @@
   </div>
 </template>
 <script>
+import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
+
 export default {
+  mixins: [MarkdownMixin, DatesMixin],
   props: {
     meeting: {
       type: Object,
@@ -43,6 +69,13 @@ export default {
   computed: {
     title() {
       return this.meeting?.name;
+    },
+    meetingInterval() {
+      return this.displayDateInterval({
+        start: this.meeting.startDate,
+        end: this.meeting.endDate,
+        type: "dateWithHours"
+      })
     }
   },
   methods: {
@@ -68,3 +101,14 @@ export default {
   }
 }
 </script>
+<style lang="scss">
+.meeting {
+  .meeting__header {
+    display: flex;
+    flex-direction: column;
+  }
+  .meeting__title {
+    margin-bottom: 4px;
+  }
+}
+</style>

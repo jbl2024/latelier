@@ -254,7 +254,11 @@
       "by": "{duration} par {user}"
     },
     "interval": {
-      "date": "du {start} au {end}"
+      "date": "du {start} au {end}",
+      "dateWithHours": {
+        "sameDay": "Le {start} de {startHour} à {endHour}",
+        "differentDay": "Du {start} à {startHour} jusqu'au {end} à {endHour}"
+      } 
     }
   },
   "calendar": {

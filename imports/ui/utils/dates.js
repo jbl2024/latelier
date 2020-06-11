@@ -30,17 +30,30 @@ export default {
   },
   displayDateInterval({ start, end, dateFormat, type }) {
     const format = dateFormat || i18n.t("dates.format.prettyDate");
-    const endDate = moment(end).format(format);
-    const startDate = moment(start).format(format);
+    const dayFormat = "YYYY-MM-DD";
+    const endDate = moment(end);
+    const startDate = moment(start);
+    const sameDay = moment(start).format(dayFormat) === moment(end).format(dayFormat);
     switch (type) {
       case "month": {
-        return moment(start).format(i18n.t("dates.format.prettyMonthAndDate"));
+        return startDate.format(i18n.t("dates.format.prettyMonthAndDate"));
       }
       case "day": {
-        return startDate;
+        return startDate.format(format);
+      }
+      case "dateWithHours": {
+        const intervalText = `dates.interval.dateWithHours.${sameDay ? "sameDay" : "differentDay"}`;
+        return i18n.t(intervalText,
+          {
+            start: startDate.format(format),
+            startHour: startDate.format("HH:mm"),
+            end: endDate.format(format),
+            endHour: endDate.format("HH:mm")
+          }
+        );
       }
       default: {
-        return i18n.t("dates.interval.date", { start: startDate, end: endDate });
+        return i18n.t("dates.interval.date", { start: startDate.format(format), end: endDate.format(format) });
       }
     }
   }

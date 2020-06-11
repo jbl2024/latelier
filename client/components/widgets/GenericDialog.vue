@@ -19,6 +19,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
+            <slot name="title" />
             {{ title }}
           </v-toolbar-title>
           <v-spacer />
@@ -28,6 +29,7 @@
         </v-toolbar>
 
         <v-card-title v-if="!isFullscreen" class="headline flex0">
+          <slot name="title" />
           {{ title }}
         </v-card-title>
         <v-divider />
