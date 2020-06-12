@@ -84,7 +84,7 @@ export default {
     hasLeftDrawer() {
       /*
       const routeName = this.$route?.name;
-      return Boolean(["home", "dashboard-page", "dashboard-organization-page", 
+      return Boolean(["home", "dashboard-page", "dashboard-organization-page",
       "project-dashboard", "project-meetings"].includes(routeName));
       */
       return true;

@@ -167,7 +167,7 @@ export const checkCanDeleteTask = (taskId) => {
 };
 
 
-/** Meetings **/
+/** Meetings * */
 
 export const checkCanReadMeeting = (meetingId) => {
   Meteor.call("permissions.canReadMeeting", { meetingId });
@@ -179,7 +179,7 @@ export const checkCanWriteMeeting = (meetingId) => {
 
 export const checkCanDeleteMeeting = (meetingId) => {
   Meteor.call("permissions.canDeleteMeeting", { meetingId });
-}
+};
 
 Permissions.methods = {};
 

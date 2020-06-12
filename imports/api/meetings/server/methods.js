@@ -17,24 +17,24 @@ Meetings.methods.create = new ValidatedMethod({
     state: { type: String, optional: true },
     description: { type: String, optional: true },
     agenda: { type: String, optional: true },
-    color: { type: String, optional: true},
+    color: { type: String, optional: true },
     location: { type: String, optional: true },
     type: { type: String, optional: true },
     startDate: { type: String },
     endDate: { type: String }
   }).validator(),
   run({
-      projectId,
-      name,
-      state,
-      description,
-      agenda,
-      color,
-      location,
-      type,
-      startDate,
-      endDate
-    }) {
+    projectId,
+    name,
+    state,
+    description,
+    agenda,
+    color,
+    location,
+    type,
+    startDate,
+    endDate
+  }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
@@ -68,7 +68,7 @@ Meetings.methods.update = new ValidatedMethod({
     state: { type: String, optional: true },
     description: { type: String, optional: true },
     agenda: { type: String, optional: true },
-    color: { type: String, optional: true},
+    color: { type: String, optional: true },
     location: { type: String, optional: true },
     type: { type: String, optional: true },
     startDate: { type: String },
@@ -137,7 +137,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String },
     page: { type: Number },
-    perPage: { type: Number, optional: true}
+    perPage: { type: Number, optional: true }
   }).validator(),
   run({ projectId, page, perPage }) {
     checkLoggedIn();
@@ -147,7 +147,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       if (page) {
         skip = (page - 1) * perPage;
       }
-  
+
       if (!skip) {
         skip = 0;
       }

@@ -1,6 +1,6 @@
 <template>
   <div class="meeting-infos">
-    <select-color 
+    <select-color
       :active.sync="showSelectColor"
       @select="onSelectColor"
     />
@@ -8,10 +8,10 @@
       <v-row>
         <v-col cols="1">
           <div
-            @click="showSelectColor = true"
             ref="color"
             class="meeting-color-trigger"
             :style="colorStyles"
+            @click="showSelectColor = true"
           />
         </v-col>
         <v-col cols="11">
@@ -35,7 +35,7 @@
               <v-list-item-content>
                 <v-list-item-title class="date-title">
                   <span v-if="date">
-                  {{ $t("meetings.date.start", {date: formatDate(date)}) }}
+                    {{ $t("meetings.date.start", {date: formatDate(date)}) }}
                   </span>
                   <span v-else>
                     {{ $t("meetings.date.select") }}
@@ -155,7 +155,7 @@ export default {
   data() {
     return {
       showSelectColor: false
-    }
+    };
   },
   computed: {
     selectedHoursTitle() {
@@ -164,15 +164,12 @@ export default {
           start: this.selectedStartHour,
           end: this.selectedEndHour
         });
-      } else {
-        return this.$t("meetings.hoursRange.select");
       }
+      return this.$t("meetings.hoursRange.select");
     },
     typesItems() {
       if (!this.types) return [];
-      return Object.keys(this.types).map((key) => {
-        return {value: this.types[key], text: this.$t(`meetings.types.${this.types[key]}`)}
-      });
+      return Object.keys(this.types).map((key) => ({ value: this.types[key], text: this.$t(`meetings.types.${this.types[key]}`) }));
     },
     meetingType: {
       get() {
@@ -232,15 +229,15 @@ export default {
       set(newColor) {
         return this.$emit("update:color", newColor);
       }
-    },
+    }
   },
   methods: {
     onSelectColor(color) {
       const hex = color || this.meetingColor;
       this.meetingColor = hex;
-    },
+    }
   }
-}
+};
 </script>
 <style lang="scss">
   .meeting-infos {

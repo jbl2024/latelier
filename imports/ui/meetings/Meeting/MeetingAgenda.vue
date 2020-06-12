@@ -14,6 +14,7 @@
 </template>
 <script>
 import EditableText from "/imports/ui/widgets/EditableText";
+
 export default {
   components: {
     EditableText
@@ -27,7 +28,7 @@ export default {
   data() {
     return {
       isAgendaEdited: true
-    }
+    };
   },
   computed: {
     editedAgenda: {

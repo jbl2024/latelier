@@ -5,7 +5,7 @@
       :max-width="maxWidth"
       :fullscreen="isFullscreen"
     >
-      <v-card 
+      <v-card
         class="flex-container"
         :class="cssClasses"
       >

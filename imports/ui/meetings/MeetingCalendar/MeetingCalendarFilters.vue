@@ -1,7 +1,7 @@
 <template>
   <v-card class="meeting-calendar-filters">
     <v-card-text>
-      <v-checkbox 
+      <v-checkbox
         v-for="(type, key) in types"
         :key="key"
         v-model="selected"
@@ -27,7 +27,7 @@ export default {
   },
   computed: {
     selected: {
-      get() { 
+      get() {
         return this.selectedTypes;
       },
       set(newSelectedTypes) {
@@ -35,7 +35,7 @@ export default {
       }
     }
   }
-}
+};
 </script>
 <style lang="scss">
   .meeting-calendar-filters {

@@ -1,9 +1,9 @@
 <template>
   <div
     ref="projectMeetings"
+    v-resize="onResize"
     class="project-meetings"
     :style="getBackgroundUrl(currentUser)"
-    v-resize="onResize"
   >
     <v-progress-linear v-if="!currentProject" indeterminate />
     <div v-else>
@@ -63,7 +63,7 @@
           </v-row>
         </v-col>
         <!-- Main content -->
-        <v-col 
+        <v-col
           cols="12"
           sm="12"
           :lg="cols.body.lg"
@@ -84,9 +84,9 @@
           />
           <!-- Calendar display type -->
           <meeting-calendar
-            v-model="selectedDate"
             v-if="isCalendarActive"
             ref="calendar"
+            v-model="selectedDate"
             :start.sync="start"
             :end.sync="end"
             :events="meetingsEvents"
@@ -207,34 +207,32 @@ export default {
     asideCols() {
       if (this.denseWidth) {
         return {
-          datepicker: {lg: 6},
-          filters: {lg: 6}
-        }
-      } else {
-        return {
-          datepicker: {lg: 12},
-          filters: {lg: 12}
-        }
+          datepicker: { lg: 6 },
+          filters: { lg: 6 }
+        };
       }
+      return {
+        datepicker: { lg: 12 },
+        filters: { lg: 12 }
+      };
     },
     cols() {
       if (this.denseWidth) {
         return {
-          aside: {lg: 12},
-          body: {lg: 12}
-        };
-      } else {
-        return {
-          aside: {lg: 3},
-          body: {lg: 9}
+          aside: { lg: 12 },
+          body: { lg: 12 }
         };
       }
+      return {
+        aside: { lg: 3 },
+        body: { lg: 9 }
+      };
     }
   },
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     await this.$store.dispatch("meeting/fetchMeetingTypes");
-    await this.$store.dispatch("meeting/setSelectedMeetingTypes", Object.values(this.meetingTypes))
+    await this.$store.dispatch("meeting/setSelectedMeetingTypes", Object.values(this.meetingTypes));
   },
   beforeDestroy() {
     this.$store.dispatch("meeting/setSelectedMeeting", null);
@@ -283,10 +281,10 @@ export default {
       };
     },
     addNewMeeting(selectedTime) {
-      let newMeeting = this.createNewMeeting();
+      const newMeeting = this.createNewMeeting();
       if (selectedTime?.date && selectedTime?.hour) {
-        let startHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
-        let endHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
+        const startHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
+        const endHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
         newMeeting.startDate = `${selectedTime.date} ${startHour}`;
         newMeeting.endDate = `${selectedTime.date} ${endHour}`;
       }

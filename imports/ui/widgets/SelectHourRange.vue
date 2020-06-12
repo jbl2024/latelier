@@ -28,7 +28,7 @@
             />
           </v-tab-item>
           <!-- End hour -->
-          <v-tab-item 
+          <v-tab-item
             :transition="false" :reverse-transition="false"
             class="pt-2 text-center"
           >
@@ -80,21 +80,7 @@ export default {
     return {
       startValue: null,
       endValue: null
-    }
-  },
-  watch: {
-    start: {
-      immediate: true,
-      handler(val) {
-        return this.startValue = val;
-      }
-    },
-    end: {
-      immediate: true,
-      handler(val) {
-        return this.endValue = val;
-      }
-    }
+    };
   },
   computed: {
     selectedStart: {
@@ -115,10 +101,9 @@ export default {
     },
     computedTitle() {
       if (this.startValue || this.endValue) {
-        return this.$t("hoursRange.range", {start: this.startValue, end: this.endValue });
-      } else {
-        return this.$t("hoursRange.select");
+        return this.$t("hoursRange.range", { start: this.startValue, end: this.endValue });
       }
+      return this.$t("hoursRange.select");
     },
     showDialog: {
       get() {
@@ -129,10 +114,24 @@ export default {
       }
     }
   },
+  watch: {
+    start: {
+      immediate: true,
+      handler(val) {
+        return this.startValue = val;
+      }
+    },
+    end: {
+      immediate: true,
+      handler(val) {
+        return this.endValue = val;
+      }
+    }
+  },
   methods: {
     selectHourRange() {
       this.showDialog = false;
-      this.$emit("select", {start: this.startValue, end: this.endValue});
+      this.$emit("select", { start: this.startValue, end: this.endValue });
     }
   }
 };

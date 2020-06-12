@@ -227,7 +227,7 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
   }
 });
 
-/** Meetings **/
+/** Meetings * */
 
 
 Permissions.methods.canReadMeeting = new ValidatedMethod({
@@ -242,8 +242,8 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
       return true;
     }
     const meeting = Meetings.findOne({
-       _id: meetingId,
-       deleted: { $ne: true }
+      _id: meetingId,
+      deleted: { $ne: true }
     });
     if (!meeting) {
       throw new Meteor.Error("not-found");
@@ -272,8 +272,8 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
       return true;
     }
     const meeting = Meetings.findOne({
-       _id: meetingId,
-       deleted: { $ne: true }
+      _id: meetingId,
+      deleted: { $ne: true }
     });
     if (!meeting) {
       throw new Meteor.Error("not-found");

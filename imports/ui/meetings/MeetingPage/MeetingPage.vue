@@ -33,7 +33,7 @@ export default {
       meetingId: this.meetingId
     });
   }
-}
+};
 </script>
 <style lang="scss">
   .meeting-page {

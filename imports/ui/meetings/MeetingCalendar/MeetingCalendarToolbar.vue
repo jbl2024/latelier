@@ -22,7 +22,7 @@
           <v-icon>mdi-chevron-right</v-icon>
         </v-btn>
       </div>
-      <v-btn 
+      <v-btn
         outlined
         class="today-button"
         @click="$emit('set-today')"

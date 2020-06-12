@@ -10,12 +10,10 @@
         <v-list-item-title class="headline">
           {{ meeting.name }}
         </v-list-item-title>
-        <v-list-item-subtitle>
-        </v-list-item-subtitle>
+        <v-list-item-subtitle />
       </v-list-item-content>
     </v-list-item>
-    <v-card-text v-if="meeting.description" v-html="meeting.description">
-    </v-card-text>
+    <v-card-text v-if="meeting.description" v-html="meeting.description" />
   </v-card>
 </template>
 <script>

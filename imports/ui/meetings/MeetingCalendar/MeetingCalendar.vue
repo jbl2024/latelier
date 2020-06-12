@@ -7,11 +7,11 @@
     >
       <v-list>
         <v-list-item @click="addNewMeetingOnTime">
-        <v-list-item-title>
-          {{ addMeetingText }}
-        </v-list-item-title>
-      </v-list-item>
-    </v-list>
+          <v-list-item-title>
+            {{ addMeetingText }}
+          </v-list-item-title>
+        </v-list-item>
+      </v-list>
     </meeting-calendar-contextual-menu>
     <v-calendar
       ref="calendar"
@@ -117,7 +117,7 @@ export default {
     },
     addMeetingText() {
       const hour = this.clickedTime?.time ? this.clickedTime.time.split(":")[0] : "";
-      return `Ajouter une réunion ${hour ? ("à " + hour + "h") : ""}`;
+      return `Ajouter une réunion ${hour ? (`à ${hour}h`) : ""}`;
     },
     calendarDatas() {
       switch (this.selectedDisplayType) {
@@ -126,24 +126,38 @@ export default {
             displayType: "week",
             maxDays: 5,
             weekdays: fiveWeekdays
-          }
+          };
         }
         case "day": {
           return {
             displayType: this.selectedDisplayType,
             maxDays: 1,
             weekdays: weekdaysDefault
-          }
+          };
         }
         default: {
           return {
             displayType: this.selectedDisplayType,
             maxDays: 7,
             weekdays: weekdaysDefault
-          }
+          };
         }
       }
     }
+  },
+  watch: {
+    selectedDayNumber() {
+      if (this.displayType === "5days"
+      && !fiveWeekdays.includes(parseInt(this.selectedDayNumber, 10))) {
+        this.selectedDisplayType = "week";
+      }
+    }
+  },
+  mounted() {
+    this.$el.addEventListener("contextmenu", this.clickHandler);
+  },
+  beforeDestroy() {
+    this.$el.removeEventListener("contextmenu", this.clickHandler);
   },
   methods: {
     changeCalendar(data) {
@@ -175,20 +189,6 @@ export default {
       this.x = event.clientX;
       this.y = event.clientY;
     }
-  },
-  watch: {
-    selectedDayNumber() {
-      if (this.displayType === "5days" 
-      && !fiveWeekdays.includes(parseInt(this.selectedDayNumber, 10))) {
-        this.selectedDisplayType = "week";
-      }
-    }
-  },
-  mounted() {
-    this.$el.addEventListener('contextmenu', this.clickHandler);
-  },
-  beforeDestroy() {
-    this.$el.removeEventListener('contextmenu', this.clickHandler);
   }
 };
 </script>

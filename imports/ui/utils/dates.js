@@ -49,8 +49,7 @@ export default {
             startHour: startDate.format("HH:mm"),
             end: endDate.format(format),
             endHour: endDate.format("HH:mm")
-          }
-        );
+          });
       }
       default: {
         return i18n.t("dates.interval.date", { start: startDate.format(format), end: endDate.format(format) });

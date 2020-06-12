@@ -17,7 +17,7 @@
               </v-icon>
               {{ meetingInterval }}
             </v-chip>
-            <v-chip 
+            <v-chip
               v-if="meeting.type && meeting.type !== 'none'"
               color="accent"
             >
@@ -28,10 +28,8 @@
       </template>
       <template v-slot:content>
         <div v-if="meeting">
-          <v-card-text v-if="meeting.description" v-html="markDown(meeting.description)">
-          </v-card-text>
-          <v-card-text v-if="meeting.agenda" v-html="markDown(meeting.agenda)">
-          </v-card-text>
+          <v-card-text v-if="meeting.description" v-html="markDown(meeting.description)" />
+          <v-card-text v-if="meeting.agenda" v-html="markDown(meeting.agenda)" />
         </div>
       </template>
       <template v-slot:actions>
@@ -64,7 +62,7 @@ export default {
     return {
       showDialog: false,
       valid: true
-    }
+    };
   },
   computed: {
     title() {
@@ -75,7 +73,7 @@ export default {
         start: this.meeting.startDate,
         end: this.meeting.endDate,
         type: "dateWithHours"
-      })
+      });
     }
   },
   methods: {
@@ -92,14 +90,14 @@ export default {
     async openMeeting() {
       await this.$router.push({
         name: "meetings",
-        params: { 
+        params: {
           meetingId: this.meeting._id,
           projectId: this.meeting.projectId
         }
       });
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .meeting {

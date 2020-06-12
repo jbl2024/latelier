@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-date-picker
-      v-model="selectedDate"
       ref="datepicker"
+      v-model="selectedDate"
       class="meeting-calendar-date-picker"
       :events="formattedEvents"
       :locale="locale"
@@ -43,9 +43,7 @@ export default {
     },
     formattedEvents() {
       if (!this.events) return null;
-      return this.events.map((event) => {
-        return moment(event.start).format("YYYY-MM-DD");
-      }) 
+      return this.events.map((event) => moment(event.start).format("YYYY-MM-DD"));
     }
   }
 };
