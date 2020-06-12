@@ -6,7 +6,7 @@
       max-width="1000px"
     >
       <template v-slot:title>
-        <div class="meeting__header">
+        <div v-if="meeting" class="meeting__header">
           <div class="meeting__title">
             {{ title }}
           </div>
@@ -33,15 +33,17 @@
         </div>
       </template>
       <template v-slot:actions>
-        <v-btn @click="editMeeting">
-          <v-icon>
-            mdi-pencil
-          </v-icon>
-          {{ $t("meetings.edit") }}
-        </v-btn>
-        <v-btn color="black" dark :disabled="!valid" @click="openMeeting">
-          {{ $t("meetings.participate") }}
-        </v-btn>
+        <template v-if="meeting">
+          <v-btn @click="editMeeting">
+            <v-icon>
+              mdi-pencil
+            </v-icon>
+            {{ $t("meetings.edit") }}
+          </v-btn>
+          <v-btn color="black" dark :disabled="!valid" @click="openMeeting">
+            {{ $t("meetings.participate") }}
+          </v-btn>
+        </template>
       </template>
     </generic-dialog>
   </div>
