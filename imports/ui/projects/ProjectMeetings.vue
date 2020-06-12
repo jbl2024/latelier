@@ -229,6 +229,11 @@ export default {
       };
     }
   },
+  watch: {
+    async currentProject() {
+      await this.fetch();
+    }
+  },
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     await this.$store.dispatch("meeting/fetchMeetingTypes");
@@ -283,8 +288,8 @@ export default {
     addNewMeeting(selectedTime) {
       const newMeeting = this.createNewMeeting();
       if (selectedTime?.date && selectedTime?.hour) {
-        const startHour = `${new String(selectedTime.hour).padStart(2, "0")}:00`;
-        const endHour = `${new String(selectedTime.hour + 1).padStart(2, "0")}:00`;
+        const startHour = `${String(selectedTime.hour).padStart(2, "0")}:00`;
+        const endHour = `${String(selectedTime.hour + 1).padStart(2, "0")}:00`;
         newMeeting.startDate = `${selectedTime.date} ${startHour}`;
         newMeeting.endDate = `${selectedTime.date} ${endHour}`;
       }
@@ -328,11 +333,6 @@ export default {
     onResize() {
       const width = this.$refs.projectMeetings.offsetWidth;
       this.denseWidth = width < 1400;
-    }
-  },
-  watch: {
-    async currentProject() {
-      await this.fetch();
     }
   }
 };
