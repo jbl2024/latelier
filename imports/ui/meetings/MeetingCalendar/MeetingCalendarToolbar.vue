@@ -9,6 +9,7 @@
       <div class="time-navigation">
         <v-btn
           icon
+          small
           class="prev-icon"
           @click="$emit('prev')"
         >
@@ -16,6 +17,7 @@
         </v-btn>
         <v-btn
           icon
+          small
           class="next-icon"
           @click="$emit('next')"
         >
