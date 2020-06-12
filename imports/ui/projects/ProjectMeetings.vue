@@ -274,6 +274,9 @@ export default {
       }
     },
     createNewMeeting() {
+      const startDate = moment();
+      const endDate = startDate.clone().add(1, "hours");
+
       return {
         name: this.$t("meetings.meeting"),
         description: "",
@@ -281,8 +284,8 @@ export default {
         type: "",
         color: "#363636",
         location: "",
-        startDate: moment().format("YYYY-MM-DD HH:00"),
-        endDate: null
+        startDate: startDate.format("YYYY-MM-DD HH:00"),
+        endDate: endDate.format("YYYY-MM-DD HH:00")
       };
     },
     addNewMeeting(selectedTime) {
