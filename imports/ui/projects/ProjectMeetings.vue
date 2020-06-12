@@ -332,7 +332,7 @@ export default {
     },
     onResize() {
       const width = this.$refs.projectMeetings.offsetWidth;
-      this.denseWidth = width < 1400;
+      this.denseWidth = width < 1200;
     }
   }
 };
