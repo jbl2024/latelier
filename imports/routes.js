@@ -263,7 +263,7 @@ export default [
     }
   },
   {
-    path: "/meetings/:meetingId",
+    path: "/meetings/:projectId/:meetingId",
     name: "meetings",
     beforeEnter: multiguard([isBasicAuth, meetingAuth]),
     component: async () => (await import("/imports/ui/meetings/MeetingPage/MeetingPage.vue")).default,

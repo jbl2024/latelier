@@ -18,6 +18,7 @@
       <h2>{{ $t('meetings.sections.agenda') }}</h2>
       <rich-editor
         v-model="meeting.agenda"
+        class="editor"
         hide-toolbar
       />
     </v-card-text>
@@ -25,6 +26,7 @@
       <h2>{{ $t('meetings.sections.report') }}</h2>
       <rich-editor
         v-model="meeting.report"
+        class="editor"
         hide-toolbar
       />
     </v-card-text>
@@ -40,3 +42,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+
+.editor {
+  color: black;
+  font-size: 18px;
+}
+
+</style>
