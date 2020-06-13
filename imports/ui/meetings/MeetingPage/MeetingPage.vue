@@ -1,8 +1,8 @@
 <template>
   <div class="meeting-page" :style="getBackgroundUrl(currentUser)">
-    <div v-if="currentMeeting">
+    <template v-if="currentMeeting">
       <meeting-detail-card class="meeting-card" :meeting="currentMeeting" />
-    </div>
+    </template>
   </div>
 </template>
 <script>
@@ -78,9 +78,5 @@ export default {
     background-repeat: no-repeat;
     background-position: center;
     background-attachment: fixed;
-
-    .meeting-card {
-      margin: 2rem;
-    }
   }
 </style>
