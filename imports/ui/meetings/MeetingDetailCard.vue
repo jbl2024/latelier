@@ -19,6 +19,7 @@
       <rich-editor
         v-model="meeting.agenda"
         class="editor"
+        floating
         hide-toolbar
       />
     </v-card-text>
@@ -27,6 +28,7 @@
       <rich-editor
         v-model="meeting.report"
         class="editor"
+        floating
         hide-toolbar
       />
     </v-card-text>
