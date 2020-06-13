@@ -4,10 +4,187 @@
     :class="{
       'tiptap-editor-view': true,
       border: !noBorder,
-      'no-border': noBorder
+      'no-border': noBorder,
     }"
     @click="focus"
   >
+    <editor-menu-bubble
+      v-slot="{ commands, isActive, menu }"
+      keep-in-bounds
+      :editor="editor"
+    >
+      <div
+        class="editor__floating-menu"
+        :class="{ 'is-active': menu.isActive }"
+        :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`"
+      >
+        <button @click="commands.heading({ level: 1 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 1 }))"
+          >
+            mdi-format-header-1
+          </v-icon>
+        </button>
+        <button @click="commands.heading({ level: 2 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 2 }))"
+          >
+            mdi-format-header-2
+          </v-icon>
+        </button>
+        <button @click="commands.heading({ level: 3 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 3 }))"
+          >
+            mdi-format-header-3
+          </v-icon>
+        </button>
+        <button @click="commands.bold">
+          <v-icon class="small-medium" :color="iconColor(isActive.bold())">
+            mdi-format-bold
+          </v-icon>
+        </button>
+        <button @click="commands.italic">
+          <v-icon class="small-medium" :color="iconColor(isActive.italic())">
+            mdi-format-italic
+          </v-icon>
+        </button>
+        <button @click="commands.underline">
+          <v-icon class="small-medium" :color="iconColor(isActive.underline())">
+            mdi-format-underline
+          </v-icon>
+        </button>
+        <button @click="commands.strike">
+          <v-icon class="small-medium" :color="iconColor(isActive.strike())">
+            mdi-format-strikethrough
+          </v-icon>
+        </button>
+        <button @click="commands.ordered_list">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.ordered_list())"
+          >
+            mdi-format-list-numbered
+          </v-icon>
+        </button>
+        <button @click="commands.bullet_list">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.bullet_list())"
+          >
+            mdi-format-list-bulleted
+          </v-icon>
+        </button>
+        <button @click="commands.code_block">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.code_block())"
+          >
+            mdi-xml
+          </v-icon>
+        </button>
+        <button @click="commands.blockquote">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.blockquote())"
+          >
+            mdi-format-quote-close
+          </v-icon>
+        </button>
+      </div>
+    </editor-menu-bubble>
+
+    <editor-floating-menu
+      v-slot="{ commands, isActive, menu }"
+      :editor="editor"
+    >
+      <div
+        class="editor__floating-menu"
+        :class="{ 'is-active': menu.isActive }"
+        :style="`top: ${menu.top}px`"
+      >
+        <button @click="commands.heading({ level: 1 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 1 }))"
+          >
+            mdi-format-header-1
+          </v-icon>
+        </button>
+        <button @click="commands.heading({ level: 2 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 2 }))"
+          >
+            mdi-format-header-2
+          </v-icon>
+        </button>
+        <button @click="commands.heading({ level: 3 })">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.heading({ level: 3 }))"
+          >
+            mdi-format-header-3
+          </v-icon>
+        </button>
+        <button @click="commands.bold">
+          <v-icon class="small-medium" :color="iconColor(isActive.bold())">
+            mdi-format-bold
+          </v-icon>
+        </button>
+        <button @click="commands.italic">
+          <v-icon class="small-medium" :color="iconColor(isActive.italic())">
+            mdi-format-italic
+          </v-icon>
+        </button>
+        <button @click="commands.underline">
+          <v-icon class="small-medium" :color="iconColor(isActive.underline())">
+            mdi-format-underline
+          </v-icon>
+        </button>
+        <button @click="commands.strike">
+          <v-icon class="small-medium" :color="iconColor(isActive.strike())">
+            mdi-format-strikethrough
+          </v-icon>
+        </button>
+        <button @click="commands.ordered_list">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.ordered_list())"
+          >
+            mdi-format-list-numbered
+          </v-icon>
+        </button>
+        <button @click="commands.bullet_list">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.bullet_list())"
+          >
+            mdi-format-list-bulleted
+          </v-icon>
+        </button>
+        <button @click="commands.code_block">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.code_block())"
+          >
+            mdi-xml
+          </v-icon>
+        </button>
+        <button @click="commands.blockquote">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.blockquote())"
+          >
+            mdi-format-quote-close
+          </v-icon>
+        </button>
+      </div>
+    </editor-floating-menu>
+
     <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
       <div class="toolbar">
         <button @click="commands.bold">
@@ -92,7 +269,7 @@
       :editor="editor"
       :class="{
         editor: true,
-        dense: dense
+        dense: dense,
       }"
       :style="getStyle(maxHeight)"
       @keydown.shift.enter="submit"
@@ -101,7 +278,13 @@
 </template>
 
 <script>
-import { Editor, EditorContent, EditorMenuBar } from "tiptap";
+import {
+  Editor,
+  EditorContent,
+  EditorMenuBar,
+  EditorMenuBubble,
+  EditorFloatingMenu
+} from "tiptap";
 import {
   Blockquote,
   CodeBlock,
@@ -121,7 +304,9 @@ import {
 export default {
   components: {
     EditorContent,
-    EditorMenuBar
+    EditorMenuBar,
+    EditorMenuBubble,
+    EditorFloatingMenu
   },
   props: {
     value: {
@@ -236,7 +421,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .border {
   border: 1px solid #ccc;
 }
@@ -253,6 +438,18 @@ export default {
 .editor {
   padding: 8px;
   min-height: 120px;
+  &__floating-menu {
+    position: absolute;
+    z-index: 1;
+    margin-left: 12px;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.2s, visibility 0.2s;
+    &.is-active {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
 }
 
 .dense {

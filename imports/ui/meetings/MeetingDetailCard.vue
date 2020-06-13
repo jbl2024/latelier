@@ -14,6 +14,12 @@
       </v-list-item-content>
     </v-list-item>
     <v-card-text v-if="meeting.description" v-html="meeting.description" />
+    <v-card-text>
+      <rich-editor
+        v-model="meeting.agenda"
+        autofocus
+      />
+    </v-card-text>
   </v-card>
 </template>
 <script>
