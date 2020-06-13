@@ -13,88 +13,83 @@
       keep-in-bounds
       :editor="editor"
     >
-      <div
+      <v-toolbar
+        dark
+        dense
+        floating
         class="editor__floating-menu"
         :class="{ 'is-active': menu.isActive }"
-        :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`"
       >
         <button @click="commands.heading({ level: 1 })">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.heading({ level: 1 }))"
+            :color="iconColorDark(isActive.heading({ level: 1 }))"
           >
             mdi-format-header-1
           </v-icon>
         </button>
         <button @click="commands.heading({ level: 2 })">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.heading({ level: 2 }))"
+            :color="iconColorDark(isActive.heading({ level: 2 }))"
           >
             mdi-format-header-2
           </v-icon>
         </button>
         <button @click="commands.heading({ level: 3 })">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.heading({ level: 3 }))"
+            :color="iconColorDark(isActive.heading({ level: 3 }))"
           >
             mdi-format-header-3
           </v-icon>
         </button>
         <button @click="commands.bold">
-          <v-icon class="small-medium" :color="iconColor(isActive.bold())">
+          <v-icon :color="iconColorDark(isActive.bold())">
             mdi-format-bold
           </v-icon>
         </button>
         <button @click="commands.italic">
-          <v-icon class="small-medium" :color="iconColor(isActive.italic())">
+          <v-icon :color="iconColorDark(isActive.italic())">
             mdi-format-italic
           </v-icon>
         </button>
         <button @click="commands.underline">
-          <v-icon class="small-medium" :color="iconColor(isActive.underline())">
+          <v-icon :color="iconColorDark(isActive.underline())">
             mdi-format-underline
           </v-icon>
         </button>
         <button @click="commands.strike">
-          <v-icon class="small-medium" :color="iconColor(isActive.strike())">
+          <v-icon :color="iconColorDark(isActive.strike())">
             mdi-format-strikethrough
           </v-icon>
         </button>
         <button @click="commands.ordered_list">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.ordered_list())"
+            :color="iconColorDark(isActive.ordered_list())"
           >
             mdi-format-list-numbered
           </v-icon>
         </button>
         <button @click="commands.bullet_list">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.bullet_list())"
+            :color="iconColorDark(isActive.bullet_list())"
           >
             mdi-format-list-bulleted
           </v-icon>
         </button>
         <button @click="commands.code_block">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.code_block())"
+            :color="iconColorDark(isActive.code_block())"
           >
             mdi-xml
           </v-icon>
         </button>
         <button @click="commands.blockquote">
           <v-icon
-            class="small-medium"
-            :color="iconColor(isActive.blockquote())"
+            :color="iconColorDark(isActive.blockquote())"
           >
             mdi-format-quote-close
           </v-icon>
         </button>
-      </div>
+      </v-toolbar>
     </editor-menu-bubble>
 
     <editor-floating-menu
@@ -409,6 +404,13 @@ export default {
       return "primary";
     },
 
+    iconColorDark(activated) {
+      if (activated) {
+        return "blue";
+      }
+      return "white";
+    },
+
     getStyle(maxHeight) {
       if (!maxHeight) return "";
       const style = `
@@ -441,7 +443,7 @@ export default {
   &__floating-menu {
     position: absolute;
     z-index: 1;
-    margin-left: 12px;
+    margin-left: 24px;
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s, visibility 0.2s;
