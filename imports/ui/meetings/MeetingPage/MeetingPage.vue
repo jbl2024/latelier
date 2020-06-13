@@ -25,13 +25,13 @@ export default {
     ...mapState(["currentUser"]),
     ...mapState("meeting", ["currentMeeting"])
   },
-  methods: {
-    ...mapActions("meeting", ["fetchCurrentMeeting"])
-  },
   async mounted() {
     await this.fetchCurrentMeeting({
       meetingId: this.meetingId
     });
+  },
+  methods: {
+    ...mapActions("meeting", ["fetchCurrentMeeting"])
   }
 };
 </script>
