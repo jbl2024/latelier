@@ -19,7 +19,7 @@
         floating
         class="editor__bubble-menu"
         :class="{ 'is-active': menu.isActive }"
-        :style="`top: ${menu.top}px`"
+        :style="`left: ${menu.left}px; bottom: ${menu.bottom}px;`"
       >
         <button @click="commands.heading({ level: 1 })">
           <v-icon :color="iconColorDark(isActive.heading({ level: 1 }))">
@@ -482,7 +482,9 @@ export default {
   }
   &__bubble-menu {
     position: absolute;
-    z-index: 1;
+    display: flex;
+    z-index: 20;
+    transform: translateX(-50%);
     visibility: hidden;
     opacity: 0;
     transition: opacity 0.2s, visibility 0.2s;
