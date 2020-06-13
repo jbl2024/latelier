@@ -443,8 +443,6 @@ export default {
 }
 
 .editor {
-  font-size: 18px;
-  color: black;
   padding: 8px;
   min-height: 120px;
   &__floating-menu {
