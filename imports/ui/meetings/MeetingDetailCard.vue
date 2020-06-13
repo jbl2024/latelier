@@ -34,13 +34,47 @@
     </v-card-text>
   </v-card>
 </template>
+
 <script>
+import debounce from "lodash/debounce";
+
 export default {
   props: {
     meeting: {
       type: Object,
       default: null
     }
+  },
+  watch: {
+    "meeting.agenda"(agenda) {
+      this.updateAgenda(agenda);
+    },
+    "meeting.report"(report) {
+      this.updateReport(report);
+    }
+  },
+  methods: {
+    updateAgenda: debounce(function () {
+      Meteor.call("meetings.updateAgenda", {
+        meetingId: this.meeting._id,
+        agenda: this.meeting.agenda
+      }, (error) => {
+        if (error) {
+          this.$notifyError(error);
+        }
+      });
+    }, 1000),
+
+    updateReport: debounce(function () {
+      Meteor.call("meetings.updateReport", {
+        meetingId: this.meeting._id,
+        report: this.meeting.report
+      }, (error) => {
+        if (error) {
+          this.$notifyError(error);
+        }
+      });
+    }, 1000)
   }
 };
 </script>

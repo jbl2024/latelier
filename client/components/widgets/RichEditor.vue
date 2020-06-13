@@ -357,7 +357,8 @@ export default {
       content: this.value,
       ctrl: false,
       enter: false,
-      expandFloatingToolbar: false
+      expandFloatingToolbar: false,
+      updateEventEnabled: true
     };
   },
   computed: {
@@ -498,16 +499,16 @@ export default {
 .menubar {
   border-bottom: 1px solid #ccc;
   padding: 8px;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   transition: visibility 0.2s 0.4s, opacity 0.2s 0.4s;
 
   &.is-hidden {
-    visibility: hidden;
+    display: none;
     opacity: 0;
   }
 
   &.is-focused {
-    visibility: visible;
+    display: block;
     opacity: 1;
     transition: visibility 0.2s, opacity 0.2s;
   }

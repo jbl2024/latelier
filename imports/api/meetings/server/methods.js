@@ -110,6 +110,63 @@ Meetings.methods.update = new ValidatedMethod({
   }
 });
 
+Meetings.methods.updateAgenda = new ValidatedMethod({
+  name: "meetings.updateAgenda",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    agenda: { type: String, optional: true }
+  }).validator(),
+  run({ meetingId, agenda }) {
+    checkCanWriteMeeting(meetingId);
+
+    const meeting = Meetings.findOne({ _id: meetingId });
+    if (meeting.agenda === agenda) {
+      return;
+    }
+
+    Meetings.update(
+      {
+        _id: meetingId
+      },
+      {
+        $set: {
+          agenda,
+          updatedAt: new Date(),
+          updateddBy: Meteor.userId()
+        }
+      }
+    );
+  }
+});
+
+Meetings.methods.updateReport = new ValidatedMethod({
+  name: "meetings.updateReport",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    report: { type: String, optional: true }
+  }).validator(),
+  run({ meetingId, report }) {
+    checkCanWriteMeeting(meetingId);
+
+    const meeting = Meetings.findOne({ _id: meetingId });
+    if (meeting.report === report) {
+      return;
+    }
+
+    Meetings.update(
+      {
+        _id: meetingId
+      },
+      {
+        $set: {
+          report,
+          updatedAt: new Date(),
+          updateddBy: Meteor.userId()
+        }
+      }
+    );
+  }
+});
 
 Meetings.methods.remove = new ValidatedMethod({
   name: "meetings.remove",
