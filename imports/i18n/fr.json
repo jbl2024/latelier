@@ -320,6 +320,7 @@
     "sections": {
       "infos": "Infos",
       "agenda": "Ordre du jour",
+      "report": "Synthèse",
       "attendees": "Invitations"
     },
     "date": {

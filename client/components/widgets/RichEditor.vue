@@ -181,7 +181,7 @@
       </div>
     </editor-floating-menu>
 
-    <editor-menu-bar v-slot="{ commands, isActive }" :editor="editor">
+    <editor-menu-bar v-if="!hideToolbar" v-slot="{ commands, isActive }" :editor="editor">
       <div class="toolbar">
         <button @click="commands.bold">
           <v-icon class="small-medium" :color="iconColor(isActive.bold())">
@@ -318,6 +318,10 @@ export default {
       default: false
     },
     dense: {
+      type: Boolean,
+      default: false
+    },
+    hideToolbar: {
       type: Boolean,
       default: false
     },

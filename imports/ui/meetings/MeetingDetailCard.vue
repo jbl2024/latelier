@@ -15,9 +15,17 @@
     </v-list-item>
     <v-card-text v-if="meeting.description" v-html="meeting.description" />
     <v-card-text>
+      <h2>{{ $t('meetings.sections.agenda') }}</h2>
       <rich-editor
         v-model="meeting.agenda"
-        autofocus
+        hide-toolbar
+      />
+    </v-card-text>
+    <v-card-text>
+      <h2>{{ $t('meetings.sections.report') }}</h2>
+      <rich-editor
+        v-model="meeting.report"
+        hide-toolbar
       />
     </v-card-text>
   </v-card>
