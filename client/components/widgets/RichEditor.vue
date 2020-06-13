@@ -19,6 +19,7 @@
         floating
         class="editor__floating-menu"
         :class="{ 'is-active': menu.isActive }"
+        :style="`top: ${menu.top}px`"
       >
         <button @click="commands.heading({ level: 1 })">
           <v-icon
@@ -438,6 +439,8 @@ export default {
 }
 
 .editor {
+  font-size: 18px;
+  color: black;
   padding: 8px;
   min-height: 120px;
   &__floating-menu {
