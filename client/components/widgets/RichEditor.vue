@@ -196,10 +196,11 @@
     </editor-floating-menu>
 
     <editor-menu-bar
+      v-if="!hideToolbar"
       v-slot="{ commands, isActive, focused }"
       :editor="editor"
     >
-      <div class="menubar top-toolbar" :class="{ 'is-focused': focused, 'is-hidden': hideToolbar }">
+      <div class="menubar top-toolbar" :class="{ 'is-focused': focused }">
         <button @click="commands.bold">
           <v-icon class="small-medium" :color="iconColor(isActive.bold())">
             mdi-format-bold
@@ -402,6 +403,12 @@ export default {
       onUpdate: ({ getHTML }) => {
         const content = getHTML();
         this.$emit("input", content);
+      },
+      onFocus: () => {
+        this.$emit("on-focus", this);
+      },
+      onBlur: () => {
+        this.$emit("on-blur", this);
       }
     });
     if (this.autofocus) {
