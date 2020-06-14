@@ -10,7 +10,11 @@
   >
     <rich-editor-menu-bubble :editor="editor" />
     <rich-editor-floating-menu v-if="floating" menu :editor="editor" />
-    <rich-editor-menu-bar v-if="!hideToolbar" :editor="editor" />
+    <rich-editor-menu-bar
+      v-if="!hideToolbar"
+      :editor="editor"
+      class="menu-bar"
+    />
 
     <editor-content
       :editor="editor"
@@ -265,6 +269,14 @@ export default {
   height: 20px;
   width: 20px;
 }
+
+.menu-bar {
+  border-bottom: 1px solid #ccc;
+  padding: 8px;
+  margin-bottom: 0.5rem;
+  transition: visibility 0.2s 0.4s, opacity 0.2s 0.4s;
+}
+
 </style>
 
 <style>

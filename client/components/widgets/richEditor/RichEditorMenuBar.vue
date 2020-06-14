@@ -112,11 +112,6 @@ export default {
 
 <style lang="scss" scoped>
 .menubar {
-  border-bottom: 1px solid #ccc;
-  padding: 8px;
-  margin-bottom: 0.5rem;
-  transition: visibility 0.2s 0.4s, opacity 0.2s 0.4s;
-
   &.is-hidden {
     display: none;
     opacity: 0;
