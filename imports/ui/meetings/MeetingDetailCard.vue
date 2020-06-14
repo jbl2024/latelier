@@ -99,6 +99,7 @@
             v-model="meeting.agenda"
             class="editor"
             hide-toolbar
+            autofocus
             @on-focus="setCurrentEditor"
           />
         </template>
@@ -191,7 +192,7 @@ export default {
 <style scoped>
 .editor {
   color: black;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1.5;
 }
 
