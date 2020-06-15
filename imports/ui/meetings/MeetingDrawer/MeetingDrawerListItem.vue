@@ -20,9 +20,6 @@
 </template>
 
 <script>
-import UsersMixin from "/imports/ui/mixins/UsersMixin.js";
-import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { colors } from "/imports/colors.js";
 
 export default {
   name: "MeetingDrawerListItem",
@@ -34,7 +31,7 @@ export default {
   },
   methods: {
     openMeeting(meeting) {
-      alert("Meeting opened!");
+      alert(`${meeting.name} meeting opened!`);
     }
   }
 };

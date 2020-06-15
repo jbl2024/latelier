@@ -215,7 +215,7 @@ Projects.methods.findUsers = new ValidatedMethod({
     }
     const membersIds = findProjectMembersIds(project);
 
-    let query = { _id: { $in: membersIds } };
+    const query = { _id: { $in: membersIds } };
     if (filter && filter.length > 0) {
       const emails = {
         $elemMatch: {

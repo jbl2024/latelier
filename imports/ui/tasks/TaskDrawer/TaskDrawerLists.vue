@@ -36,7 +36,6 @@
 import DrawerMiniList from "/imports/ui/ui/DrawerMiniList";
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
 import TaskDrawerListItem from "/imports/ui/tasks/TaskDrawer/TaskDrawerListItem";
-import { mapState } from "vuex";
 
 export default {
   components: {

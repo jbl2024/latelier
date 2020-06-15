@@ -118,13 +118,13 @@ export default {
     start: {
       immediate: true,
       handler(val) {
-        return this.startValue = val;
+        this.startValue = val;
       }
     },
     end: {
       immediate: true,
       handler(val) {
-        return this.endValue = val;
+        this.endValue = val;
       }
     }
   },
