@@ -41,7 +41,7 @@ export default {
     }
   },
   methods: {
-    updateAgenda(agenda, savedAgenda) {
+    updateAgenda(agenda) {
       this.isAgendaEdited = false;
       this.editedAgenda = agenda;
     },

@@ -22,7 +22,7 @@
         />
         <v-form v-model="valid" @submit.prevent>
           <v-tabs v-model="currentTab" vertical>
-            <v-tab class="edit-meeting__tab" v-for="section in sections" :key="section.id">
+            <v-tab v-for="section in sections" :key="section.id" class="edit-meeting__tab">
               <v-icon left>
                 {{ section.icon }}
               </v-icon>
@@ -107,12 +107,12 @@ export default {
   data() {
     return {
       sections: Object.freeze([
-        {id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline"},
-        {id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered"},
-        {id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account"}
+        { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
+        { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
+        { id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account" }
       ]),
       currentTab: null,
-      allowedMinutes: Object.freeze([00, 10, 15, 30, 45]),
+      allowedMinutes: Object.freeze([0, 10, 15, 30, 45]),
       allowedHours: Object.freeze([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
       showDialog: false,
       showSelectDate: false,
@@ -143,7 +143,7 @@ export default {
     computedTitle() {
       const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
       const currentName = (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
-      return `${currentName} ${(currentSection ? (" - " + currentSection) : "")}`;
+      return `${currentName} ${(currentSection ? (` - ${currentSection}`) : "")}`;
     }
   },
   methods: {
@@ -166,7 +166,7 @@ export default {
         this.endHour = endHour;
 
         this.checkConsistency();
-      })
+      });
     },
     close() {
       this.showDialog = false;
@@ -175,7 +175,7 @@ export default {
       this.date = date;
       this.checkConsistency();
     },
-    onSelectHourRange({start, end}) {
+    onSelectHourRange({ start, end }) {
       this.startHour = start;
       this.endHour = end;
     },
@@ -215,7 +215,7 @@ export default {
     },
     getParams() {
       const date = moment(this.date).format("YYYY-MM-DD");
-      let params = {
+      const params = {
         name: this.name,
         projectId: this.projectId,
         startDate: `${date} ${this.startHour}:00`,
