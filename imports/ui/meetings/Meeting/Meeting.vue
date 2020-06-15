@@ -71,6 +71,7 @@ export default {
       return this.meeting?.name;
     },
     meetingInterval() {
+      if (!this.meeting) return "";
       return this.displayDateInterval({
         start: this.meeting.startDate,
         end: this.meeting.endDate,
