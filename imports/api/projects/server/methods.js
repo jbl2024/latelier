@@ -5,7 +5,7 @@ import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 
-import { findProjectUsers } from "/imports/api/projects/server/common";
+import { findProjectMembersIds } from "/imports/api/projects/server/common";
 
 import {
   Permissions,
@@ -213,7 +213,40 @@ Projects.methods.findUsers = new ValidatedMethod({
     if (!project) {
       throw new Meteor.Error("not-found");
     }
-    const users = findProjectUsers(project);
-    return users ? users.fetch() : [];
+    const membersIds = findProjectMembersIds(project);
+
+    let query = { _id: { $in: membersIds } };
+    if (filter && filter.length > 0) {
+      const emails = {
+        $elemMatch: {
+          address: { $regex: `.*${filter}.*`, $options: "i" }
+        }
+      };
+      query.$or = [
+        { emails },
+        {
+          "profile.email": { $regex: `.*${filter}.*`, $options: "i" }
+        },
+        {
+          "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
+        },
+        {
+          "profile.lastName": { $regex: `.*${filter}.*`, $options: "i" }
+        }
+      ];
+    }
+
+    return Meteor.users.find(
+      query,
+      {
+        fields: {
+          profile: 1,
+          status: 1,
+          statusDefault: 1,
+          statusConnection: 1,
+          emails: 1
+        }
+      }
+    ).fetch();
   }
 });

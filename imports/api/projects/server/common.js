@@ -2,7 +2,7 @@
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
 
-export const findProjectUsers = (project) => {
+export const findProjectMembersIds = (project) => {
   const members = Array.from(project.members || []);
   const tasks = Tasks.find(
     { projectId: project._id, deleted: { $ne: true } },
@@ -27,17 +27,5 @@ export const findProjectUsers = (project) => {
       });
     }
   }
-
-  return Meteor.users.find(
-    { _id: { $in: [...new Set(members)] } },
-    {
-      fields: {
-        profile: 1,
-        status: 1,
-        statusDefault: 1,
-        statusConnection: 1,
-        emails: 1
-      }
-    }
-  );
+  return [...new Set(members)];
 };

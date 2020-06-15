@@ -11,7 +11,7 @@ import { Labels } from "../../labels/labels";
 import { Attachments } from "../../attachments/attachments";
 import { Permissions } from "/imports/api/permissions/permissions";
 
-import { findProjectUsers } from "/imports/api/projects/server/common";
+import { findProjectMembersIds } from "/imports/api/projects/server/common";
 
 Meteor.publish("projects", function projectsPublication(
   organizationId,
@@ -209,7 +209,19 @@ publishComposite("project", function(projectId) {
       {
         // users
         find(project) {
-          return findProjectUsers(project);
+          const membersIds = findProjectMembersIds(project);
+          return Meteor.users.find(
+            { _id: { $in: membersIds } },
+            {
+              fields: {
+                profile: 1,
+                status: 1,
+                statusDefault: 1,
+                statusConnection: 1,
+                emails: 1
+              }
+            }
+          );
         }
       },
       {
