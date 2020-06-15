@@ -55,8 +55,7 @@
             </v-tab-item>
             <!-- Attendees -->
             <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-attendees
-              />
+              <meeting-attendees :project-id="projectId" />
             </v-tab-item>
           </v-tabs>
         </v-form>
@@ -110,7 +109,7 @@ export default {
       sections: Object.freeze([
         {id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline"},
         {id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered"},
-        // {id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account"},
+        {id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account"}
       ]),
       currentTab: null,
       allowedMinutes: Object.freeze([00, 10, 15, 30, 45]),

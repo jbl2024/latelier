@@ -308,6 +308,9 @@
     "noType": "Aucun type",
     "type": "Type de réunion",
     "location": "Lieu",
+    "attendees": {
+      "searchProjectUser": "Rechercher parmis les membres du projet"
+    },
     "types": {
       "none": "Sans type",
       "weeklypoint": "Point hebdomadaire",

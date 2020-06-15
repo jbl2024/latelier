@@ -1,13 +1,10 @@
 <template>
-  <div class="meeting-page" :style="getBackgroundUrl(currentUser)">
-    <template v-if="currentMeeting">
-      <meeting-detail-card class="meeting-card" :meeting="currentMeeting" />
-    </template>
+  <div class="meeting-page">
+    <meeting-detail-card v-if="currentMeeting" class="meeting-card" :meeting="currentMeeting" />
   </div>
 </template>
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState, mapActions } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 
@@ -15,7 +12,6 @@ export default {
   components: {
     MeetingDetailCard
   },
-  mixins: [BackgroundMixin],
   props: {
     projectId: {
       type: String,

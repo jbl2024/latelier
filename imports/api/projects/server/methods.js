@@ -5,6 +5,8 @@ import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 
+import { findProjectUsers } from "/imports/api/projects/server/common";
+
 import {
   Permissions,
   checkLoggedIn,
@@ -196,5 +198,22 @@ Projects.methods.adminFind = new ValidatedMethod({
       totalPages: totalPages,
       data
     };
+  }
+});
+
+Projects.methods.findUsers = new ValidatedMethod({
+  name: "projects.findUsers",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    filter: { type: String, optional: true }
+  }).validator(),
+  run({ projectId, filter }) {
+    checkLoggedIn();
+    const project = Projects.findOne({ _id: projectId });
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
+    const users = findProjectUsers(project);
+    return users ? users.fetch() : [];
   }
 });
