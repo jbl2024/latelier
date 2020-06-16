@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- All regular project member to access project history
 - Update canvas page layout
 
 ### Removed
