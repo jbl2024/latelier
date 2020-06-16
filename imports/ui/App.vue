@@ -2,7 +2,21 @@
   <div>
     <v-app>
       <template v-if="isConnected">
-        <left-drawer />
+        <v-navigation-drawer
+          v-if="hasLeftDrawer"
+          id="left-drawer"
+          v-model="showLeftDrawer"
+          :width="leftDrawerWidth"
+          app
+          clipped
+        >
+          <dashboard-task-tabs
+            v-if="currentUser"
+            :user="currentUser"
+            :project-id="currentProjectId"
+            :organization-id="currentOrganizationId"
+          />
+        </v-navigation-drawer>
         <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
       </template>
       <select-background v-model="showSelectBackgroundDialog" />
@@ -59,14 +73,14 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import LeftDrawer from "./ui/LeftDrawer/LeftDrawer";
+import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
     TopBar,
     NavDrawer,
-    LeftDrawer,
+    DashboardTaskTabs,
     MainMenu
   },
   data() {
@@ -78,6 +92,9 @@ export default {
     };
   },
   computed: {
+    leftDrawerWidth() {
+      return this.$vuetify.breakpoint.smAndDown ? "100%" : 360;
+    },
     ...mapState([
       "currentUser",
       "notifyMessage",
@@ -89,6 +106,14 @@ export default {
     ...mapGetters("project", ["currentProjectColor"]),
     ...mapGetters(["isTaskDetailShown", "isConnected"]),
     ...mapGetters("ui", ["isNavigationColorDark"]),
+    showLeftDrawer: {
+      get() {
+        return this.$store.state.ui.leftDrawer.showLeftDrawer;
+      },
+      set(value) {
+        this.$store.dispatch("ui/leftDrawer/showLeftDrawer", value);
+      }
+    },
     showTaskDetail: {
       get() {
         return this.$store.state.showTaskDetail;
@@ -120,6 +145,10 @@ export default {
       set(value) {
         this.$store.dispatch("showSelectBackgroundDialog", value);
       }
+    },
+    hasLeftDrawer() {
+      const routeName = this.$route?.name;
+      return Boolean(["home", "dashboard-page", "dashboard-organization-page", "project-dashboard"].includes(routeName));
     }
   },
   watch: {

@@ -1,16 +1,16 @@
 export default {
   namespaced: true,
   state: {
-    currentCategory: "tasks"
+    showLeftDrawer: null,
   },
   mutations: {
-    updateCurrentCategory(state, category) {
-      state.currentCategory = category;
+    updateShowLeftDrawer(state, showLeftDrawer) {
+      state.showLeftDrawer = showLeftDrawer;
     }
   },
   actions: {
-    setCurrentCategory(context, category) {
-      context.commit("updateCurrentCategory", category);
+    showLeftDrawer(context, showLeftDrawer) {
+      context.commit("updateShowLeftDrawer", showLeftDrawer);
     }
   }
 };
