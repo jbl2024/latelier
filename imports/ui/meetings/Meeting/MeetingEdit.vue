@@ -64,10 +64,10 @@
         </v-form>
       </template>
       <template v-slot:actions>
-        <v-btn v-if="!isNew" @click="remove">
+        <v-btn v-if="!isNewMeeting" @click="remove">
           {{ $t("meetings.remove") }}
         </v-btn>
-        <v-btn v-if="isNew" text :disabled="!valid || !coherent" @click="create">
+        <v-btn v-if="isNewMeeting" text :disabled="!valid || !coherent" @click="create">
           {{ $t("meetings.create") }}
         </v-btn>
         <v-btn v-else text :disabled="!valid || !coherent" @click="update">
@@ -85,8 +85,10 @@ import MeetingAgenda from "./MeetingAgenda";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
+  mixins: [usersMixin],
   components: {
     MeetingInfos,
     MeetingAgenda,
@@ -109,11 +111,6 @@ export default {
   },
   data() {
     return {
-      sections: Object.freeze([
-        { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
-        { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
-        { id: "attendees", text: this.$t("meetings.sections.attendees"), icon: "mdi-account" }
-      ]),
       currentTab: null,
       allowedMinutes: Object.freeze([0, 10, 15, 30, 45]),
       allowedHours: Object.freeze([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
@@ -141,8 +138,22 @@ export default {
     };
   },
   computed: {
-    isNew() {
+    sections() {
+      return [
+        { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
+        { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
+        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, {count: this.attendees.length}), icon: "mdi-account" }
+      ];
+    },
+    isNewMeeting() {
       return !this.meeting || !this.meeting._id;
+    },
+    sanitizedAttendees() {
+      return this.attendees.map((attendee) => {
+        const sanitzedAttendee = {...attendee};
+        delete sanitzedAttendee.avatar;
+        return sanitzedAttendee;
+      });
     },
     computedTitle() {
       const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
@@ -160,7 +171,7 @@ export default {
         const endHour = endDate ? endDate.split(" ")[1] : null;
 
         // Mass assignment
-        ["name", "type", "description", "agenda", "color", "location"].forEach((prop) => {
+        ["name", "attendees", "type", "description", "agenda", "color", "location"].forEach((prop) => {
           if (prop in this && this.meeting && this.meeting[prop] !== null) {
             this[prop] = this.meeting[prop];
           }
@@ -222,6 +233,7 @@ export default {
       const params = {
         name: this.name,
         projectId: this.projectId,
+        attendees: this.sanitizedAttendees,
         startDate: `${date} ${this.startHour}:00`,
         endDate: `${date} ${this.endHour}:00`,
         agenda: this.agenda,
@@ -230,10 +242,11 @@ export default {
         location: this.location,
         color: this.color
       };
-      if (!this.isNew && this.meeting._id) {
+      if (!this.isNewMeeting && this.meeting._id) {
         delete params.projectId;
         params.id = this.meeting._id;
       }
+      console.log(params);
       return params;
     },
     update() {

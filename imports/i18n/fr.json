@@ -310,7 +310,7 @@
     "location": "Lieu",
     "attendees": {
       "addAttendees": "Ajouter des participants",
-      "isCreatedAttendee": "Invité externe au projet",
+      "isExternalAttendee": "Invité externe au projet",
       "isProjectAttendee": "Membre du projet"
     },
     "types": {
@@ -326,7 +326,7 @@
       "infos": "Infos",
       "agenda": "Ordre du jour",
       "report": "Synthèse",
-      "attendees": "Invitations"
+      "attendees": "invitations | {count} invitation | {count} invitations"
     },
     "date": {
       "select": "Choisir une date",

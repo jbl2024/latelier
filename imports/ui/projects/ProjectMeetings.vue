@@ -18,6 +18,7 @@
       <!-- Edit existing meeting -->
       <meeting-edit
         ref="editMeeting"
+        :key="selectedMeeting ? selectedMeeting._id : null"
         :project-id="projectId"
         :meeting="selectedMeeting"
         :types="meetingTypes"
@@ -276,7 +277,6 @@ export default {
     createNewMeeting() {
       const startDate = moment();
       const endDate = startDate.clone().add(1, "hours");
-
       return {
         name: this.$t("meetings.meeting"),
         description: "",
@@ -284,6 +284,7 @@ export default {
         type: "",
         color: "#363636",
         location: "",
+        attendees: [],
         startDate: startDate.format("YYYY-MM-DD HH:00"),
         endDate: endDate.format("YYYY-MM-DD HH:00")
       };

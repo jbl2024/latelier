@@ -6,7 +6,7 @@
       chips
       :search-input.sync="searchInput"
       :label="label"
-      :item-text="showUserFullname"
+      :item-text="getAttendeeName"
       return-object
       multiple
     >
@@ -19,7 +19,7 @@
           small
         >
           <span class="pr-2">
-            {{ showUserFullname(item) }}
+            {{ getAttendeeName(item) }}
           </span>
           <v-icon
             small
@@ -30,32 +30,33 @@
         </v-chip>
       </template>
       <template v-slot:no-data>
-          <v-list-item @click="addCreatedAttendee(searchInput)">
-            <span class="mr-2">Ajouter</span>
-            <v-chip class="new-attendee" small>
-              {{ `"${searchInput}"` }}
-            </v-chip>
-            <span class="ml-2">
-              aux participants
-            </span>
-          </v-list-item>
+        <v-list-item>
+          <span class="mr-2">
+            Appuyer sur Entrée pour ajouter
+          </span>
+          <v-chip class="new-attendee" small>
+            {{ `"${searchInput}"` }}
+          </v-chip>
+          <span class="ml-2">
+            aux participants
+          </span>
+        </v-list-item>
       </template>
       <template v-slot:item="data">
         <template>
           <v-list-item-avatar>
-            <author-avatar
-              :title="getUserTitle(data.item)"
-              :user-letters="getUserLetters(data.item)"
-              :user-id="data.item"
+            <meeting-attendee-avatar
+              :letters="createAttendeeLetters(data.item)"
+              :avatar="data.item.avatar"
             />
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-                {{ showUserFullname(data.item) }}
+                {{ getAttendeeName(data.item) }}
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ `${isCreatedAttendee(data.item) ? 
-                $t("meetings.attendees.isCreatedAttendee") : $t("meetings.attendees.isProjectAttendee")}`
+              {{ `${isExternalAttendee(data.item) ? 
+                $t("meetings.attendees.isExternalAttendee") : $t("meetings.attendees.isProjectAttendee")}`
               }}
             </v-list-item-subtitle>
           </v-list-item-content>
@@ -65,9 +66,21 @@
   </div>
 </template>
 <script>
+import MeetingUtils from "/imports/api/meetings/utils";
+import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
+
 export default {
+  components: {
+    MeetingAttendeeAvatar
+  },
   props: {
     items: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    value: {
       type: Array,
       default() {
         return [];
@@ -82,18 +95,15 @@ export default {
       default: null
     }
   },
-  data() {
-    return {
-      value: []
-    }
-  },
   computed: {
     attendees: {
       get() {
         return this.value;
       },
       set(newAttendees) {
-        this.$emit("input", newAttendees);
+        this.$emit("input", newAttendees.filter(a => a).map((attendee) => {
+          return typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee;
+        }));
       }
     },
     searchInput: {
@@ -106,27 +116,14 @@ export default {
     }
   },
   methods: {
-    isCreatedAttendee(user) {
-      return user?.isNew === true;
+    isExternalAttendee(attendee) {
+      return attendee.userId == null;
     },
-    getUserTitle(user) {
-      return this.isCreatedAttendee(user) ? this.showUserFullname(user) : null;
+    getAttendeeName(attendee) {
+      return MeetingUtils.getAttendeeName(attendee);
     },
-    getUserLetters(user) {
-      return this.isCreatedAttendee(user) ? this.createUserLetters(user) : null;
-    },
-    createUserLetters(user) {
-      hasFirstName = user?.profile?.firstName != null && user?.profile?.firstName != "";
-      hasLastName = user?.profile?.lastName != null && user?.profile?.lastName != "";
-      return `${hasFirstName ? user.profile.firstName[0] : ""}
-      ${hasFirstName && hasLastName && user.profile.lastName[0] ? user.profile.lastName[0] : ""}`;
-    },
-    showUserFullname(user) {
-      if (!user?.profile) return "";
-      return `${user.profile.firstName} ${user.profile.lastName}`;
-    },
-    addCreatedAttendee(attendeeName) {
-      this.$emit("add-created-attendee", attendeeName);
+    createAttendeeLetters(attendee) {
+      return MeetingUtils.createAttendeeLetters(attendee);
     }
   }
 }

@@ -1,5 +1,40 @@
 import SimpleSchema from "simpl-schema";
 
+
+
+
+
+
+export const attendees = {
+  /* attendees */
+  attendees: {
+    type: Array,
+    optional: true
+  },
+  "attendees.$": {
+    type: Object
+  },
+  "attendees.$.userId": {
+    type: String,
+    optional: true
+  },
+  "attendees.$.firstName": {
+    type: String
+  },
+  "attendees.$.lastName": {
+    type: String,
+    optional: true
+  },
+  "attendees.$.email": {
+    type: String,
+    optional: true
+  },
+  "attendees.$.present": {
+    type: Boolean,
+    optional: true
+  }
+};
+
 export default new SimpleSchema({
   /* relations */
   projectId: {
@@ -27,18 +62,6 @@ export default new SimpleSchema({
     optional: true,
     defaultValue: "none"
   },
-  /* attendees */
-  attendees: {
-    type: Array,
-    optional: true
-  },
-  "attendees.$": Object,
-  "attendees.$.name": String,
-  "attendees.$.present": {
-    type: Boolean,
-    optional: true
-  },
-
   description: {
     type: String,
     optional: true
@@ -57,7 +80,7 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
-
+  ...attendees,
   report: {
     type: String,
     optional: true
