@@ -309,7 +309,9 @@
     "type": "Type de réunion",
     "location": "Lieu",
     "attendees": {
-      "searchProjectUser": "Rechercher parmis les membres du projet"
+      "addAttendees": "Ajouter des participants",
+      "isCreatedAttendee": "Invité externe au projet",
+      "isProjectAttendee": "Membre du projet"
     },
     "types": {
       "none": "Sans type",

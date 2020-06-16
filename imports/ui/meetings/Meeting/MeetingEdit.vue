@@ -55,7 +55,10 @@
             </v-tab-item>
             <!-- Attendees -->
             <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-attendees :project-id="projectId" />
+              <meeting-attendees
+                v-model="attendees"
+                :project-id="projectId"
+              />
             </v-tab-item>
           </v-tabs>
         </v-form>
@@ -79,7 +82,7 @@
 import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAgenda from "./MeetingAgenda";
-import MeetingAttendees from "./MeetingAttendees";
+import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 
@@ -128,6 +131,7 @@ export default {
       date: null,
       startHour: null,
       endHour: null,
+      attendees: [],
       rules: {
         names: [
           (v) => !!v || this.$t("Name is mandatory"),

@@ -2,13 +2,13 @@
   <v-avatar
     :size="size"
     :class="isOnline(userId)"
-    :title="getEmailForUser(userId)"
+    :title="computedTitle"
   >
     <template v-if="avatar">
-      <v-img :src="avatar" :alt="formatUserLetters(userId)" />
+      <v-img :src="avatar" :alt="computedUserLetters" />
     </template>
     <template v-if="!avatar">
-      <span>{{ formatUserLetters(userId) }}</span>
+      <span>{{ computedUserLetters }}</span>
     </template>
   </v-avatar>
 </template>
@@ -25,6 +25,14 @@ export default {
       type: [String, Object],
       default: null
     },
+    title: {
+      type: String,
+      default: null
+    },
+    userLetters: {
+      type: String,
+      default: null
+    },
     small: {
       type: Boolean,
       default: false
@@ -39,6 +47,14 @@ export default {
     }
   },
   computed: {
+    computedUserLetters() {
+      if (this.userLetters !== null) return this.userLetters;
+      return this.formatUserLetters(this.userId);
+    },
+    computedTitle() {
+      if (this.title) return this.title;
+      return this.getEmailForUser(this.userId);
+    },
     size() {
       if (this.big) {
         return 128;

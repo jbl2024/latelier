@@ -3,29 +3,14 @@
     <v-container class="container">
       <v-row>
         <v-col cols="12">
-          <v-text-field
-            v-model="filter"
-            :label="$t('meetings.attendees.searchProjectUser')"
+          <meeting-attendees-selector
+            v-model="attendees"
+            :items="availableUsers"
+            :label="$t('meetings.attendees.addAttendees')"
+            :search.sync="filter"
+            @add-created-attendee="addCreatedAttendee"
           />
         </v-col>
-        <template v-if="users">
-          <v-col v-for="user in users" :key="user._id" cols="3">
-            <div class="meeting-attendee" @click="toggleAttendee(user)">
-              <author-avatar
-                v-if="!isAttendee(user)"
-                :user-id="user"
-              />
-              <v-avatar v-else color="success">
-                <v-icon dark>
-                  mdi-check
-                </v-icon>
-              </v-avatar>
-              <div class="meeting-attendee__name">
-                {{ userFullname(user) }}
-              </div>
-            </div>
-          </v-col>
-        </template>
       </v-row>
     </v-container>
   </div>
@@ -33,26 +18,48 @@
 <script>
 import debounce from "lodash/debounce";
 import ApiProjects from "/imports/ui/api/projects/";
+import MeetingAttendeesSelector from "./MeetingAttendeesSelector";
 
 export default {
+  components: {
+    MeetingAttendeesSelector
+  },
   props: {
     projectId: {
       type: String,
       default: null
+    },
+    value: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
   data() {
     return {
       filter: "",
-      page: 1,
-      users: null,
-      attendees: []
+      createdAttendees: [],
+      users: []
     };
   },
   computed: {
-    userFullname: () => (user) => {
-      if (!user?.profile) return "";
-      return `${user.profile.firstName} ${user.profile.lastName}`;
+    attendees: {
+      get() {
+        return this.value;
+      },
+      set(newAttendees) {
+        this.$emit("input", newAttendees);
+      }
+    },
+    availableUsers() {
+      const availableUsers = this.users.concat(this.createdAttendees);
+      availableUsers.sort((a, b) => {
+        const aName = this.getUserFullname(a);
+        const bName = this.getUserFullname(b);
+        return aName.localeCompare(bName);
+      })
+      return availableUsers;
     }
   },
   watch: {
@@ -67,6 +74,22 @@ export default {
     }, 400)
   },
   methods: {
+    getUserFullname: (user) => `${user?.profile?.firstName} ${user?.profile?.lastName}`,
+    addCreatedAttendee(name) {
+      const splittedName = name.split(" ");
+
+      const attendeeUser = {
+        isNew: true,
+        _id: null,
+        emails: [""],
+        profile: {
+          firstName: splittedName[0],
+          lastName: splittedName[1] ? splittedName[1] : ""
+        }
+      };
+      this.createdAttendees.push(attendeeUser);
+      this.attendees.push(attendeeUser);
+    },
     isAttendee(user) {
       const existingIndex = this.attendees.findIndex((attendee) => attendee._id === user._id);
       return existingIndex !== -1;
@@ -90,11 +113,11 @@ export default {
     },
     async fetchUsers() {
       try {
-        const results = await ApiProjects.findUsers({
+        const projectUsers = await ApiProjects.findUsers({
           projectId: this.projectId,
           filter: this.filter
         });
-        this.users = results;
+        this.users = projectUsers;
       } catch (error) {
         this.$notify(error);
       }
@@ -109,17 +132,6 @@ export default {
     }
     .meeting-attendees__col {
       justify-content: center;
-    }
-    .meeting-attendee {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      cursor: pointer;
-      .meeting-attendee__name {
-        margin-top: 8px;
-        font-size: 1.2rem;
-      }
     }
   }
 </style>
