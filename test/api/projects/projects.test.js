@@ -460,5 +460,76 @@ if (Meteor.isServer) {
         .that.not.include(projectIds[0]);
       expect(Permissions.isAdmin(user, projectIds[0])).to.be.false;
     });
+
+    it("getHistory is available for members", async function() {
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectId = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectId).to.not.be.null;
+
+      const history = Projects.methods.getHistory._execute(context, {
+        projectId: projectId,
+        page: 1
+      });
+      expect(history).to.not.be.null;
+    });
+
+    it("getHistory is not available for anonymous users", async function() {
+      let errorCode;
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectId = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectId).to.not.be.null;
+
+      try {
+        Projects.methods.getHistory._execute({ }, {
+          projectId: projectId,
+          page: 1
+        });
+      } catch (error) {
+        errorCode = error.error;
+      }
+      expect(errorCode, "should throw not logged in").to.be.equal(
+        "not-authorized"
+      );
+    });
+
+    it("getHistory is available only for project members", async function() {
+      let errorCode;
+      const userId = Meteor.users.findOne()._id;
+      const context = { userId };
+      const projectId = Projects.methods.create._execute(context, {
+        name: "projectA",
+        projectType: "kanban",
+        state: ProjectStates.PRODUCTION
+      });
+      expect(projectId).to.not.be.null;
+
+      const anotherUserId = Meteor.users.findOne({
+        _id: { $ne: userId }
+      });
+
+      try {
+        Projects.methods.getHistory._execute({ userId: anotherUserId }, {
+          projectId: projectId,
+          page: 1
+        });
+      } catch (error) {
+        errorCode = error.error;
+      }
+      expect(errorCode, "should throw not authorized").to.be.equal(
+        "not-authorized"
+      );
+
+      restoreStubs();
+    });
   });
 }

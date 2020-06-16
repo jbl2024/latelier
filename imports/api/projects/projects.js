@@ -555,8 +555,7 @@ Projects.methods.getHistory = new ValidatedMethod({
     page: { type: Number }
   }).validator(),
   run({ projectId, page }) {
-    checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    checkCanReadProject(projectId);
     const query = {
       "properties.task.projectId": projectId
     };
