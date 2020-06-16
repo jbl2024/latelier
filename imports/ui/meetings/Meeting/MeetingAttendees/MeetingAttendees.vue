@@ -23,10 +23,10 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingUtils from "/imports/api/meetings/utils";
 
 export default {
-  mixins: [usersMixin],
   components: {
     MeetingAttendeesSelector
   },
+  mixins: [usersMixin],
   props: {
     projectId: {
       type: String,
@@ -61,7 +61,7 @@ export default {
         const aName = MeetingUtils.getAttendeeName(a);
         const bName = MeetingUtils.getAttendeeName(b);
         return aName.localeCompare(bName);
-      })
+      });
       return availableAttendees;
     }
   },

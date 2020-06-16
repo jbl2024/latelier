@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       filter: ""
-    }
+    };
   },
   computed: {
     selectedDocuments: {
@@ -64,18 +64,18 @@ export default {
           filter: this.filter
         };
       },
-      update({ projectId, filter}) {
+      update({ projectId, filter }) {
         const attachments = Attachments.find(
-          { 
+          {
             "meta.projectId": projectId,
-            name: {$regex: `.*${filter}.*`, $options: "i"}
-          },
+            name: { $regex: `.*${filter}.*`, $options: "i" }
+          }
         ).fetch();
         return attachments;
       }
     }
-  },
-}
+  }
+};
 </script>
 <style lang="scss">
   .meeting-documents {

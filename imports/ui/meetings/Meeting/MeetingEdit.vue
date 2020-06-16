@@ -96,7 +96,6 @@ import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 
 export default {
-  mixins: [usersMixin],
   components: {
     MeetingInfos,
     MeetingAgenda,
@@ -104,6 +103,7 @@ export default {
     MeetingDocuments,
     SelectHourRange
   },
+  mixins: [usersMixin],
   props: {
     projectId: {
       type: String,
@@ -152,8 +152,8 @@ export default {
       return [
         { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
         { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
-        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, {count: this.attendees.length}), icon: "mdi-account" },
-        { id: "documents", text: this.$tc("meetings.sections.documents", this.documents.length, {count: this.documents.length}), icon: "mdi-attachment" }
+        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, { count: this.attendees.length }), icon: "mdi-account" },
+        { id: "documents", text: this.$tc("meetings.sections.documents", this.documents.length, { count: this.documents.length }), icon: "mdi-attachment" }
       ];
     },
     isNewMeeting() {
@@ -161,7 +161,7 @@ export default {
     },
     sanitizedAttendees() {
       return this.attendees.map((attendee) => {
-        const sanitzedAttendee = {...attendee};
+        const sanitzedAttendee = { ...attendee };
         delete sanitzedAttendee.avatar;
         return sanitzedAttendee;
       });

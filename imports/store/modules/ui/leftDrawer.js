@@ -1,7 +1,7 @@
 export default {
   namespaced: true,
   state: {
-    showLeftDrawer: null,
+    showLeftDrawer: null
   },
   mutations: {
     updateShowLeftDrawer(state, showLeftDrawer) {

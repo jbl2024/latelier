@@ -2,10 +2,10 @@
   <v-list v-show="documents.length > 0" two-line subheader class="list">
     <v-list-item v-for="document in documents" :key="document._id">
       <v-list-item-avatar>
-        <v-checkbox 
-          :value="document"
-          v-model="selectedDocuments"
+        <v-checkbox
           :key="`checkbox-${document._id}`"
+          v-model="selectedDocuments"
+          :value="document"
         />
       </v-list-item-avatar>
       <v-list-item-content class="pointer">
@@ -63,5 +63,5 @@ export default {
       return Attachments.link(document);
     }
   }
-}
+};
 </script>

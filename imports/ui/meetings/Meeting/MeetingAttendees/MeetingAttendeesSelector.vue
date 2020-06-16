@@ -52,10 +52,10 @@
           </v-list-item-avatar>
           <v-list-item-content>
             <v-list-item-title>
-                {{ getAttendeeName(data.item) }}
+              {{ getAttendeeName(data.item) }}
             </v-list-item-title>
             <v-list-item-subtitle>
-              {{ `${isExternalAttendee(data.item) ? 
+              {{ `${isExternalAttendee(data.item) ?
                 $t("meetings.attendees.isExternalAttendee") : $t("meetings.attendees.isProjectAttendee")}`
               }}
             </v-list-item-subtitle>
@@ -101,9 +101,7 @@ export default {
         return this.value;
       },
       set(newAttendees) {
-        this.$emit("input", newAttendees.filter(a => a).map((attendee) => {
-          return typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee;
-        }));
+        this.$emit("input", newAttendees.filter((a) => a).map((attendee) => typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee));
       }
     },
     searchInput: {
@@ -126,7 +124,7 @@ export default {
       return MeetingUtils.createAttendeeLetters(attendee);
     }
   }
-}
+};
 </script>
 <style lang="scss">
 .meeting-attendees-selector {

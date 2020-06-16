@@ -10,7 +10,7 @@ export default {
       firstName: user?.profile?.firstName ? user.profile.firstName : "",
       lastName: user?.profile?.lastName ? user.profile.lastName : "",
       email: user?.emails && user.emails[0] && user.emails[0].address ? user.emails[0].address : null
-    }
+    };
   },
   createNewAttendee(name) {
     const splittedName = name.split(" ");
@@ -23,9 +23,7 @@ export default {
     };
   },
   formatUsersAsAttendees(users) {
-    return users.map((user) => {
-      return this.createUserAttendee(user)
-    })
+    return users.map((user) => this.createUserAttendee(user));
   },
   createAttendeeLetters(attendee) {
     hasFirstName = attendee?.firstName != null && attendee?.firstName != "";
@@ -33,4 +31,4 @@ export default {
     return `${hasFirstName ? attendee.firstName[0] : ""}
     ${hasFirstName && hasLastName && attendee.lastName[0] ? attendee.lastName[0] : ""}`;
   }
-}
+};
