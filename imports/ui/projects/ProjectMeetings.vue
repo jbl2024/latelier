@@ -285,6 +285,7 @@ export default {
         color: "#363636",
         location: "",
         attendees: [],
+        documents: [],
         startDate: startDate.format("YYYY-MM-DD HH:00"),
         endDate: endDate.format("YYYY-MM-DD HH:00")
       };

@@ -308,6 +308,9 @@
     "noType": "Aucun type",
     "type": "Type de réunion",
     "location": "Lieu",
+    "documents": {
+      "search": "Rechercher parmi les documents du projet"
+    },
     "attendees": {
       "addAttendees": "Ajouter des participants",
       "isExternalAttendee": "Invité externe au projet",
@@ -326,7 +329,8 @@
       "infos": "Infos",
       "agenda": "Ordre du jour",
       "report": "Synthèse",
-      "attendees": "invitations | {count} invitation | {count} invitations"
+      "attendees": "invitations | {count} invitation | {count} invitations",
+      "documents": "documents | {count} document | {count} documents"
     },
     "date": {
       "select": "Choisir une date",

@@ -60,6 +60,13 @@
                 :project-id="projectId"
               />
             </v-tab-item>
+            <!-- Documents -->
+            <v-tab-item :transition="false" :reverse-transition="false">
+              <meeting-documents
+                v-model="documents"
+                :project-id="projectId"
+              />
+            </v-tab-item>
           </v-tabs>
         </v-form>
       </template>
@@ -83,6 +90,7 @@ import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAgenda from "./MeetingAgenda";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
+import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
@@ -93,6 +101,7 @@ export default {
     MeetingInfos,
     MeetingAgenda,
     MeetingAttendees,
+    MeetingDocuments,
     SelectHourRange
   },
   props: {
@@ -129,6 +138,7 @@ export default {
       startHour: null,
       endHour: null,
       attendees: [],
+      documents: [],
       rules: {
         names: [
           (v) => !!v || this.$t("Name is mandatory"),
@@ -142,7 +152,8 @@ export default {
       return [
         { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
         { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
-        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, {count: this.attendees.length}), icon: "mdi-account" }
+        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, {count: this.attendees.length}), icon: "mdi-account" },
+        { id: "documents", text: this.$tc("meetings.sections.documents", this.documents.length, {count: this.documents.length}), icon: "mdi-attachment" }
       ];
     },
     isNewMeeting() {
@@ -171,8 +182,8 @@ export default {
         const endHour = endDate ? endDate.split(" ")[1] : null;
 
         // Mass assignment
-        ["name", "attendees", "type", "description", "agenda", "color", "location"].forEach((prop) => {
-          if (prop in this && this.meeting && this.meeting[prop] !== null) {
+        ["name", "attendees", "documents", "type", "description", "agenda", "color", "location"].forEach((prop) => {
+          if (prop in this && this.meeting && this.meeting[prop] != null) {
             this[prop] = this.meeting[prop];
           }
         });
@@ -246,7 +257,6 @@ export default {
         delete params.projectId;
         params.id = this.meeting._id;
       }
-      console.log(params);
       return params;
     },
     update() {
