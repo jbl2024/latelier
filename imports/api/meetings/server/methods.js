@@ -9,7 +9,7 @@ import {
   checkCanWriteMeeting
 } from "/imports/api/permissions/permissions";
 
-import { attendees } from "/imports/api/meetings/schema";
+import { AttendeeSchema } from "/imports/api/meetings/schema";
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
@@ -24,8 +24,13 @@ Meetings.methods.create = new ValidatedMethod({
     type: { type: String, optional: true },
     startDate: { type: String },
     endDate: { type: String },
-    /* attendees */
-    ...attendees
+    attendees: {
+      type: Array,
+      optional: true
+    },
+    "attendees.$": {
+      type: new SimpleSchema(AttendeeSchema)
+    }
   }).validator(),
   run({
     projectId,

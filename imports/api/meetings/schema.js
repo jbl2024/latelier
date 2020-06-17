@@ -1,31 +1,23 @@
 import SimpleSchema from "simpl-schema";
 
 
-export const attendees = {
-  /* attendees */
-  attendees: {
-    type: Array,
-    optional: true
-  },
-  "attendees.$": {
-    type: Object
-  },
-  "attendees.$.userId": {
+export const AttendeeSchema = {
+  userId: {
     type: String,
     optional: true
   },
-  "attendees.$.firstName": {
+  firstName: {
     type: String
   },
-  "attendees.$.lastName": {
+  lastName: {
     type: String,
     optional: true
   },
-  "attendees.$.email": {
+  email: {
     type: String,
     optional: true
   },
-  "attendees.$.present": {
+  present: {
     type: Boolean,
     optional: true
   }
@@ -76,7 +68,11 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
-  ...attendees,
+  attendees: {
+    type: Array,
+    optional: true
+  },
+  "attendees.$": new SimpleSchema(AttendeeSchema),
   report: {
     type: String,
     optional: true

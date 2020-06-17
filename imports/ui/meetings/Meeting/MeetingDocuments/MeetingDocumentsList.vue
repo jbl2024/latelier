@@ -1,19 +1,24 @@
 <template>
-  <v-list v-show="documents.length > 0" two-line subheader class="list">
-    <v-list-item v-for="document in documents" :key="document._id">
-      <v-list-item-avatar>
+  <v-list 
+    v-if="documents && documents.length > 0"
+    two-line
+    subheader
+    class="list"
+  >
+    <v-list-item v-for="document in documentsList" :key="document._id">
+      <v-list-item-action>
         <v-checkbox
           :key="`checkbox-${document._id}`"
           v-model="selectedDocuments"
-          :value="document"
+          :value="document._id"
         />
-      </v-list-item-avatar>
+      </v-list-item-action>
       <v-list-item-content class="pointer">
         <v-list-item-title>
           <v-icon class="mr-2">
             mdi-file-document
           </v-icon>
-          <a class="link" :href="link(document)" target="_blank">
+          <a class="link" :href="document.link" target="_blank">
             {{ document.name }}
           </a>
         </v-list-item-title>
@@ -39,12 +44,16 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      checked: []
-    };
-  },
   computed: {
+    documentsList() {
+      return this.documents.map((document) => {
+        return {
+          _id: document._id,
+          name: document.name,
+          link: Attachments.link(document)
+        };
+      });
+    },
     selectedDocuments: {
       get() {
         return this.value;
@@ -52,15 +61,6 @@ export default {
       set(newDocuments) {
         this.$emit("input", newDocuments);
       }
-    }
-  },
-  methods: {
-    isSelectedDocument(document) {
-      const foundSelectedDocumentIndex = this.selectedDocuments.findIndex((selectedDocument) => selectedDocument._id === document._id);
-      return foundSelectedDocumentIndex !== -1;
-    },
-    link(document) {
-      return Attachments.link(document);
     }
   }
 };

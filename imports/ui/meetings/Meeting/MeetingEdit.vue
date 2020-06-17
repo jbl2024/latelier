@@ -71,7 +71,7 @@
         </v-form>
       </template>
       <template v-slot:actions>
-        <v-btn v-if="!isNewMeeting" @click="remove">
+        <v-btn v-if="!isNewMeeting" color="error" @click="remove">
           {{ $t("meetings.remove") }}
         </v-btn>
         <v-btn v-if="isNewMeeting" text :disabled="!valid || !coherent" @click="create">
@@ -149,22 +149,41 @@ export default {
   },
   computed: {
     sections() {
+      const attendeesCount = this.attendees?.length ? this.attendees.length : 0;
+      const documentsCount = this.documents?.length ? this.documents.length : 0;
       return [
-        { id: "infos", text: this.$t("meetings.sections.infos"), icon: "mdi-information-outline" },
-        { id: "agenda", text: this.$t("meetings.sections.agenda"), icon: "mdi-format-list-numbered" },
-        { id: "attendees", text: this.$tc("meetings.sections.attendees", this.attendees.length, { count: this.attendees.length }), icon: "mdi-account" },
-        { id: "documents", text: this.$tc("meetings.sections.documents", this.documents.length, { count: this.documents.length }), icon: "mdi-attachment" }
+        { 
+          id: "infos", 
+          text: this.$t("meetings.sections.infos"),
+          icon: "mdi-information-outline"
+        },
+        {
+          id: "agenda",
+          text: this.$t("meetings.sections.agenda"),
+          icon: "mdi-format-list-numbered"
+        },
+        {
+          id: "attendees",
+          text: this.$tc(
+            "meetings.sections.attendees",
+            attendeesCount,
+            { count: attendeesCount}
+          ),
+          icon: "mdi-account"
+        },
+        {
+          id: "documents",
+          text: this.$tc(
+            "meetings.sections.documents",
+            documentsCount,
+            { count: documentsCount }
+          ),
+          icon: "mdi-attachment"
+        }
       ];
     },
     isNewMeeting() {
       return !this.meeting || !this.meeting._id;
-    },
-    sanitizedAttendees() {
-      return this.attendees.map((attendee) => {
-        const sanitzedAttendee = { ...attendee };
-        delete sanitzedAttendee.avatar;
-        return sanitzedAttendee;
-      });
     },
     computedTitle() {
       const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
@@ -244,14 +263,19 @@ export default {
       const params = {
         name: this.name,
         projectId: this.projectId,
-        attendees: this.sanitizedAttendees,
         startDate: `${date} ${this.startHour}:00`,
         endDate: `${date} ${this.endHour}:00`,
         agenda: this.agenda,
         type: this.type,
         description: this.description,
         location: this.location,
-        color: this.color
+        color: this.color,
+        // We removed unwanted schema fields
+        attendees: this.attendees.map((attendee) => {
+          const sanitzedAttendee = { ...attendee };
+          delete sanitzedAttendee.avatar;
+          return sanitzedAttendee;
+        })
       };
       if (!this.isNewMeeting && this.meeting._id) {
         delete params.projectId;
