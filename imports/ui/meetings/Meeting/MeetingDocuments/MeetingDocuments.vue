@@ -1,14 +1,17 @@
 <template>
   <div class="meeting-documents">
     <v-container class="container">
-      <v-progress-linear v-if="!$subReady.project" indeterminate />
+      <v-progress-linear v-if="!projectId" indeterminate />
       <div v-else>
         <v-text-field
           v-model="filter"
           :label="$t('meetings.documents.search')"
+          @input="changeFilter"
         />
         <meeting-documents-list
           v-model="selectedDocuments"
+          :page.sync="page"
+          :pagination.sync="pagination"
           :documents="attachments"
         />
       </div>
@@ -17,8 +20,9 @@
 </template>
 <script>
 
-import { Attachments } from "/imports/api/attachments/attachments.js";
+import { Meteor } from "meteor/meteor";
 import MeetingDocumentsList from "./MeetingDocumentsList";
+import debounce from "lodash/debounce";
 
 export default {
   components: {
@@ -38,7 +42,14 @@ export default {
   },
   data() {
     return {
-      filter: ""
+      filter: "",
+      page: 1,
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 10,
+        totalPages: 0
+      },
+      attachments: []
     };
   },
   computed: {
@@ -49,29 +60,56 @@ export default {
       set(newDocuments) {
         this.$emit("input", newDocuments);
       }
+    },
+    params() {
+      return {
+        meta: {
+          projectId: this.projectId
+        },
+        perPage: this.pagination.rowsPerPage,
+        page: this.page,
+        name: this.filter
+      };
     }
   },
-  meteor: {
-    $subscribe: {
-      project() {
-        return [this.projectId];
-      }
-    },
-    attachments: {
-      params() {
-        return {
-          projectId: this.projectId,
-          filter: this.filter
-        };
-      },
-      update({ projectId, filter }) {
-        const attachments = Attachments.find(
-          {
-            "meta.projectId": projectId,
-            name: { $regex: `.*${filter}.*`, $options: "i" }
+  methods: {
+    changeFilter: debounce(function() {
+      this.fetchAttachments();
+    }, 300),
+    fetchAttachments() {
+      Meteor.call(
+        "attachments.find",
+        this.params,
+        (error, result) => {
+          if (error || !result.data) {
+            this.$notifyError(error);
+            return false;
           }
-        ).fetch();
-        return attachments;
+          this.attachments = result.data;
+          this.page = result.totalPages;
+          this.pagination.totalItems = result.totalItems;
+          this.pagination.rowsPerPage = result.rowsPerPage;
+          this.pagination.totalPages = this.calculateTotalPages();
+        }
+      )
+    },
+    calculateTotalPages() {
+      if (
+        this.pagination.rowsPerPage == null
+        || this.pagination.totalItems == null
+      ) {
+        return 0;
+      }
+      return Math.ceil(
+        this.pagination.totalItems / this.pagination.rowsPerPage
+      );
+    },
+  },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.fetchAttachments();
       }
     }
   }

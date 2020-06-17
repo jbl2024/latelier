@@ -354,5 +354,11 @@
       "subject": "Sans sujet",
       "agenda": "Aucun ordre du jour"
     }
+  },
+  "attachments": {
+    "attachments": "Pièces jointes",
+    "addDescription": "Vous pouvez ajouter des pièces jointes ici ou sur une tâche",
+    "addAttachments": "Ajouter des pièces jointes",
+    "none": "Aucune pièce jointe"
   }
 }
