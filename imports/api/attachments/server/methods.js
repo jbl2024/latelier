@@ -127,7 +127,7 @@ const findAttachmentsSchema = (() => {
     }
   });
   return findSchema;
-})(); 
+})();
 
 Attachments.methods.find = new ValidatedMethod({
   name: "attachments.find",
@@ -167,7 +167,7 @@ Attachments.methods.find = new ValidatedMethod({
       }
     }).fetch();
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
-    
+
     return {
       rowsPerPage: perPage,
       totalItems: count,

@@ -4,7 +4,7 @@
     <v-list v-if="display === 'list'" two-line subheader class="list">
       <v-subheader>
         {{ $t('attachments.attachments') }}
-        <v-btn 
+        <v-btn
           icon
           dark
           small
@@ -213,8 +213,8 @@ export default {
         if (res) {
           Meteor.call(
             "attachments.remove",
-            {attachmentId: attachment._id},
-            (error, result) => {
+            { attachmentId: attachment._id },
+            (error) => {
               if (error) {
                 this.$notifyError(error);
               }
@@ -224,5 +224,5 @@ export default {
       });
     }
   }
-}
+};
 </script>

@@ -67,6 +67,14 @@ export default {
       };
     }
   },
+  watch: {
+    projectId: {
+      immediate: true,
+      handler() {
+        this.fetchAttachments();
+      }
+    }
+  },
   methods: {
     changeFilter: debounce(function() {
       this.fetchAttachments();
@@ -78,7 +86,7 @@ export default {
         (error, result) => {
           if (error || !result.data) {
             this.$notifyError(error);
-            return false;
+            return;
           }
           this.attachments = result.data;
           this.page = result.totalPages;
@@ -86,7 +94,7 @@ export default {
           this.pagination.rowsPerPage = result.rowsPerPage;
           this.pagination.totalPages = this.calculateTotalPages();
         }
-      )
+      );
     },
     calculateTotalPages() {
       if (
@@ -98,14 +106,6 @@ export default {
       return Math.ceil(
         this.pagination.totalItems / this.pagination.rowsPerPage
       );
-    },
-  },
-  watch: {
-    projectId: {
-      immediate: true,
-      handler() {
-        this.fetchAttachments();
-      }
     }
   }
 };

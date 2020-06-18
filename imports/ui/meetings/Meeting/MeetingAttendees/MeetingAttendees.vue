@@ -56,7 +56,9 @@ export default {
       }
     },
     availableAttendees() {
-      const availableAttendees = MeetingUtils.formatUsersAsAttendees(this.users).concat(this.createdAttendees);
+      const availableAttendees = MeetingUtils
+        .formatUsersAsAttendees(this.users)
+        .concat(this.createdAttendees);
       availableAttendees.sort((a, b) => {
         const aName = MeetingUtils.getAttendeeName(a);
         const bName = MeetingUtils.getAttendeeName(b);

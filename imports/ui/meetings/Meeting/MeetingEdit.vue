@@ -50,7 +50,7 @@
           :allowed-hours="allowedHours"
           @select="onSelectHourRange"
         />
-        <v-form 
+        <v-form
           v-model="valid"
           class="meeting-edit__form"
           @submit.prevent
@@ -73,8 +73,8 @@
           />
           <!-- Attendees -->
           <meeting-attendees
-            class="pt-3"
             v-model="attendees"
+            class="pt-3"
             :project-id="projectId"
           />
           <!-- Documents -->
@@ -102,7 +102,6 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
-import MeetingAgenda from "./MeetingAgenda";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
 import moment from "moment";
@@ -112,7 +111,6 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 export default {
   components: {
     MeetingInfos,
-    MeetingAgenda,
     MeetingAttendees,
     MeetingDocuments,
     SelectHourRange

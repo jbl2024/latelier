@@ -1,6 +1,6 @@
 <template>
   <div class="meeting-infos">
-    <v-container 
+    <v-container
       fluid
       class="meeting-infos__container"
     >

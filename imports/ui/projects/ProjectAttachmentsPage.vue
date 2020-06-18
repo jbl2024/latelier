@@ -18,9 +18,9 @@
       </empty-state>
 
       <input
-        style="display: none;"
-        ref="uploadInput"
         v-if="!isUploading"
+        ref="uploadInput"
+        style="display: none;"
         type="file"
         multiple
         :disabled="isUploading"
@@ -38,7 +38,6 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { mapState } from "vuex";
 import AttachmentList from "/imports/ui/attachments/AttachmentList";
@@ -57,7 +56,7 @@ export default {
     return {
       file: null,
       isUploading: false
-    }
+    };
   },
   computed: {
     ...mapState("project", ["currentProject"])

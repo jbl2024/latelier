@@ -59,7 +59,8 @@
             </v-list-item-title>
             <v-list-item-subtitle>
               {{ `${isExternalAttendee(data.item) ?
-                $t("meetings.attendees.isExternalAttendee") : $t("meetings.attendees.isProjectAttendee")}`
+                $t("meetings.attendees.isExternalAttendee") :
+                $t("meetings.attendees.isProjectAttendee")}`
               }}
             </v-list-item-subtitle>
           </v-list-item-content>

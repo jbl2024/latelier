@@ -9,7 +9,9 @@ export default {
       avatar: user?.profile?.avatar,
       firstName: user?.profile?.firstName ? user.profile.firstName : "",
       lastName: user?.profile?.lastName ? user.profile.lastName : "",
-      email: user?.emails && user.emails[0] && user.emails[0].address ? user.emails[0].address : null
+      email: Array.isArray(user?.emails)
+      && user.emails[0]
+      && user.emails[0].address ? user.emails[0].address : null
     };
   },
   createNewAttendee(name) {
@@ -26,8 +28,8 @@ export default {
     return users.map((user) => this.createUserAttendee(user));
   },
   createAttendeeLetters(attendee) {
-    hasFirstName = attendee?.firstName != null && attendee?.firstName != "";
-    hasLastName = attendee?.lastName != null && attendee?.lastName != "";
+    hasFirstName = Boolean(attendee?.firstName);
+    hasLastName = Boolean(attendee?.lastName);
     return `${hasFirstName ? attendee.firstName[0] : ""}
     ${hasFirstName && hasLastName && attendee.lastName[0] ? attendee.lastName[0] : ""}`;
   }
