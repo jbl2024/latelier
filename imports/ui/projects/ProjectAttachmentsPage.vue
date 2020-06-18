@@ -29,6 +29,7 @@
       <v-progress-linear v-show="isUploading" indeterminate />
       <attachment-list
         :attachments="attachments"
+        class="list"
         @add-attachment="beginUpload"
       />
     </div>

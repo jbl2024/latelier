@@ -1,6 +1,6 @@
 <template>
   <div v-if="projectId" class="meeting-attendees">
-    <v-container class="container">
+    <v-container fluid class="meeting-attendees__container">
       <v-row>
         <v-col cols="12">
           <meeting-attendees-selector
@@ -98,8 +98,8 @@ export default {
 </script>
 <style lang="scss">
   .meeting-attendees {
-    .container {
-      padding: 2rem 3rem;
+    .container.meeting-attendees__container {
+      padding: 0;
     }
     .meeting-attendees__col {
       justify-content: center;

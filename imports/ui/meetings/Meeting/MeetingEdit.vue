@@ -1,11 +1,41 @@
 <template>
   <div>
+    <select-color
+      :active.sync="showSelectColor"
+      @select="onSelectColor"
+    />
     <generic-dialog
       v-model="showDialog"
-      :title="computedTitle"
-      :css-classes="['edit-meeting']"
-      max-width="1000px"
+      :css-classes="['meeting-edit']"
+      max-width="600px"
     >
+      <template #title>
+        <div class="meeting-edit__title">
+          <div class="meeting-edit__main-title">
+            <div
+              ref="color"
+              class="meeting-color-trigger"
+              :style="colorStyles"
+              @click="showSelectColor = true"
+            />
+            <div>{{ computedTitle }}</div>
+          </div>
+          <div class="meeting-edit__counts">
+            <div class="mr-2">
+              <v-icon>
+                mdi-attachment
+              </v-icon>
+              {{ documents.length }}
+            </div>
+            <div>
+              <v-icon>
+                mdi-account-multiple
+              </v-icon>
+              {{ attendees.length }}
+            </div>
+          </div>
+        </div>
+      </template>
       <template v-slot:content>
         <select-date
           v-model="showSelectDate"
@@ -20,54 +50,38 @@
           :allowed-hours="allowedHours"
           @select="onSelectHourRange"
         />
-        <v-form v-model="valid" @submit.prevent>
-          <v-tabs v-model="currentTab" vertical>
-            <v-tab v-for="section in sections" :key="section.id" class="edit-meeting__tab">
-              <v-icon left>
-                {{ section.icon }}
-              </v-icon>
-              <span> {{ section.text }} </span>
-            </v-tab>
-            <!-- Infos and selected date -->
-            <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-infos
-                :rules="rules"
-                :types="types"
-                :name.sync="name"
-                :type.sync="type"
-                :description.sync="description"
-                :date="date"
-                :color.sync="color"
-                :location.sync="location"
-                :start-hour.sync="startHour"
-                :end-hour.sync="endHour"
-                @show-select-date="showSelectDate = true"
-                @reset-date="date = null"
-                @show-select-hour-range="showSelectHourRange = true"
-                @reset-hour-range="resetHourRange"
-              />
-            </v-tab-item>
-            <!-- Agenda -->
-            <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-agenda
-                v-model="agenda"
-              />
-            </v-tab-item>
-            <!-- Attendees -->
-            <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-attendees
-                v-model="attendees"
-                :project-id="projectId"
-              />
-            </v-tab-item>
-            <!-- Documents -->
-            <v-tab-item :transition="false" :reverse-transition="false">
-              <meeting-documents
-                v-model="documents"
-                :project-id="projectId"
-              />
-            </v-tab-item>
-          </v-tabs>
+        <v-form 
+          v-model="valid"
+          class="meeting-edit__form"
+          @submit.prevent
+        >
+          <!-- Main infos and dates -->
+          <meeting-infos
+            :rules="rules"
+            :types="types"
+            :name.sync="name"
+            :type.sync="type"
+            :description.sync="description"
+            :date="date"
+            :location.sync="location"
+            :start-hour.sync="startHour"
+            :end-hour.sync="endHour"
+            @show-select-date="showSelectDate = true"
+            @reset-date="date = null"
+            @show-select-hour-range="showSelectHourRange = true"
+            @reset-hour-range="resetHourRange"
+          />
+          <!-- Attendees -->
+          <meeting-attendees
+            class="pt-3"
+            v-model="attendees"
+            :project-id="projectId"
+          />
+          <!-- Documents -->
+          <meeting-documents
+            v-model="documents"
+            :project-id="projectId"
+          />
         </v-form>
       </template>
       <template v-slot:actions>
@@ -126,6 +140,7 @@ export default {
       showDialog: false,
       showSelectDate: false,
       showSelectHourRange: false,
+      showSelectColor: false,
       coherent: false,
       valid: false,
       agenda: null,
@@ -189,6 +204,9 @@ export default {
       const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
       const currentName = (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
       return `${currentName} ${(currentSection ? (` - ${currentSection}`) : "")}`;
+    },
+    colorStyles() {
+      return `background-color: ${this.color}`;
     }
   },
   methods: {
@@ -234,6 +252,10 @@ export default {
         return;
       }
       this.coherent = true;
+    },
+    onSelectColor(color) {
+      const hex = color || this.color;
+      this.color = hex;
     },
     remove() {
       this.$confirm(this.$t("meetings.remove?"), {
@@ -320,10 +342,24 @@ export default {
 </script>
 
 <style lang="scss">
-.v-dialog > .edit-meeting.v-card > .v-card__text {
+.v-dialog > .meeting-edit.v-card > .v-card__text {
   padding: 0;
 }
-.edit-meeting {
+.meeting-edit {
+  .meeting-edit__title {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: center;
+    .meeting-edit__counts,
+    .meeting-edit__main-title {
+      display: flex;
+      align-items: center;
+    }
+  }
+  .meeting-edit__form {
+    padding: 2rem;
+  }
   .v-slide-group__wrapper {
     border-right: solid 1px #e0e0e0;
   }
@@ -333,8 +369,17 @@ export default {
   .v-window-item {
     min-height: 600px;
   }
-  .edit-meeting__tab.v-tab {
+  .meeting-edit__tab.v-tab {
     justify-content: flex-start;
+  }
+  .meeting-color-trigger {
+    position: relative;
+    border-radius: 50px;
+    min-height: 40px;
+    cursor: pointer;
+    display: flex;
+    min-width: 40px;
+    margin-right: 16px;
   }
 }
 </style>

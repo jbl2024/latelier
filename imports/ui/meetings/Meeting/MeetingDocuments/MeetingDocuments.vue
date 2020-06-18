@@ -1,18 +1,13 @@
 <template>
   <div class="meeting-documents">
-    <v-container class="container">
+    <v-container class="meeting-documents__container">
       <v-progress-linear v-if="!projectId" indeterminate />
       <div v-else>
-        <v-text-field
-          v-model="filter"
-          :label="$t('meetings.documents.search')"
-          @input="changeFilter"
-        />
-        <meeting-documents-list
+        <attachment-list
           v-model="selectedDocuments"
-          :page.sync="page"
-          :pagination.sync="pagination"
-          :documents="attachments"
+          display="combobox"
+          :label="$t('attachments.addAttachments')"
+          :attachments="attachments"
         />
       </div>
     </v-container>
@@ -21,12 +16,12 @@
 <script>
 
 import { Meteor } from "meteor/meteor";
-import MeetingDocumentsList from "./MeetingDocumentsList";
 import debounce from "lodash/debounce";
+import AttachmentList from "/imports/ui/attachments/AttachmentList";
 
 export default {
   components: {
-    MeetingDocumentsList
+    AttachmentList
   },
   props: {
     value: {
@@ -117,8 +112,8 @@ export default {
 </script>
 <style lang="scss">
   .meeting-documents {
-    .container {
-      padding: 2rem 3rem;
+    .container.meeting-documents__container {
+      padding: 0;
     }
   }
 </style>

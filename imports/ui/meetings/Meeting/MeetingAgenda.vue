@@ -54,9 +54,6 @@ export default {
 </script>
 <style lang="scss">
   .meeting-agenda {
-    .container {
-      padding: 2rem 3rem;
-    }
     .editor {
       min-height: 300px;
     }

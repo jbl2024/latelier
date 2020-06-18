@@ -3,9 +3,12 @@
     <v-combobox
       v-model="attendees"
       :items="items"
-      chips
+      small-chips
+      outlined
+      :hide-selected="hideSelected"
       :search-input.sync="searchInput"
       :label="label"
+      hide-details="auto"
       :item-text="getAttendeeName"
       return-object
       multiple
@@ -93,6 +96,10 @@ export default {
     search: {
       type: String,
       default: null
+    },
+    hideSelected: {
+      type: Boolean,
+      default: true
     }
   },
   computed: {

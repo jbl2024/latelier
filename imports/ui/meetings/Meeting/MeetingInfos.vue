@@ -1,20 +1,11 @@
 <template>
   <div class="meeting-infos">
-    <select-color
-      :active.sync="showSelectColor"
-      @select="onSelectColor"
-    />
-    <v-container class="meeting-infos__container">
+    <v-container 
+      fluid
+      class="meeting-infos__container"
+    >
       <v-row>
-        <v-col cols="1">
-          <div
-            ref="color"
-            class="meeting-color-trigger"
-            :style="colorStyles"
-            @click="showSelectColor = true"
-          />
-        </v-col>
-        <v-col cols="11">
+        <v-col cols="12" class="py-0">
           <v-text-field
             v-model="meetingName"
             :rules="rules.name"
@@ -24,82 +15,41 @@
         </v-col>
       </v-row>
       <v-row>
-        <v-col cols="6">
-          <v-list two-line class="elevation-1 date">
-            <v-list-item @click="$emit('show-select-date')">
-              <v-list-item-avatar>
-                <v-icon>
-                  mdi-calendar-today
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title class="date-title">
-                  <span v-if="date">
-                    {{ $t("meetings.date.start", {date: formatDate(date)}) }}
-                  </span>
-                  <span v-else>
-                    {{ $t("meetings.date.select") }}
-                  </span>
-                </v-list-item-title>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn text icon @click.stop="$emit('reset-date')">
-                  <v-icon>
-                    mdi-delete
-                  </v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-col>
-        <v-col cols="6">
-          <v-list two-line class="elevation-1 date">
-            <v-list-item @click="$emit('show-select-hour-range')">
-              <v-list-item-avatar>
-                <v-icon>
-                  mdi-clock
-                </v-icon>
-              </v-list-item-avatar>
-              <v-list-item-content>
-                <v-list-item-title class="date-title">
-                  {{ selectedHoursTitle }}
-                </v-list-item-title>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-btn text icon @click.stop="$emit('reset-hour-range')">
-                  <v-icon>
-                    mdi-delete
-                  </v-icon>
-                </v-btn>
-              </v-list-item-action>
-            </v-list-item>
-          </v-list>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-col cols>
-          <v-select
-            v-model="meetingType"
-            :items="typesItems"
-            :label="$t('meetings.type')"
-          />
-        </v-col>
-        <v-col>
+        <v-col cols="12" class="py-0">
           <v-text-field
-            v-model="meetingLocation"
-            :label="$t('meetings.location')"
-            required
+            v-model="meetingDescription"
+            :label="$t('Description')"
           />
         </v-col>
       </v-row>
       <v-row>
-        <v-col>
-          <label>{{ $t("Description") }}</label>
-          <rich-editor
-            ref="description"
-            v-model="meetingDescription"
-            :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
-          />
+        <v-col cols="12">
+          <!-- Selected Date -->
+          <v-chip class="mr-2" @click="$emit('show-select-date')">
+            <v-icon class="mr-2">
+              mdi-calendar-today
+            </v-icon>
+            <span v-if="date">
+              {{ $t("meetings.date.start", {date: formatDate(date)}) }}
+            </span>
+            <span v-else>
+              {{ $t("meetings.date.select") }}
+            </span>
+          </v-chip>
+          <!-- Selected hours -->
+          <v-chip @click="$emit('show-select-hour-range')">
+            <v-icon class="mr-2">
+              mdi-clock
+            </v-icon>
+            <span>
+              {{ selectedHoursTitle }}
+            </span>
+          </v-chip>
+          <v-btn text icon @click.stop="resetDateAndHours">
+            <v-icon>
+              mdi-delete
+            </v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -135,10 +85,6 @@ export default {
       type: String,
       default: null
     },
-    color: {
-      type: String,
-      default: null
-    },
     location: {
       type: String,
       default: null
@@ -151,11 +97,6 @@ export default {
       type: String,
       default: null
     }
-  },
-  data() {
-    return {
-      showSelectColor: false
-    };
   },
   computed: {
     selectedHoursTitle() {
@@ -218,38 +159,20 @@ export default {
       set(newLocation) {
         return this.$emit("update:location", newLocation);
       }
-    },
-    colorStyles() {
-      return `background-color: ${this.meetingColor}`;
-    },
-    meetingColor: {
-      get() {
-        return this.color;
-      },
-      set(newColor) {
-        return this.$emit("update:color", newColor);
-      }
     }
   },
   methods: {
-    onSelectColor(color) {
-      const hex = color || this.meetingColor;
-      this.meetingColor = hex;
+    resetDateAndHours() {
+      this.$emit("reset-date");
+      this.$emit("reset-hour-range");
     }
   }
 };
 </script>
 <style lang="scss">
   .meeting-infos {
-    .container {
-      padding: 2rem 3rem;
-    }
-    .meeting-color-trigger {
-      position: relative;
-      top: 10px;
-      border-radius: 65px;
-      min-height: 38px;
-      cursor: pointer;
+    .container.meeting-infos__container {
+      padding: 0;
     }
     .date-title {
       font-size: 1.3rem;
