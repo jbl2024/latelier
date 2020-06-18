@@ -1,3 +1,6 @@
+import { Meteor } from "meteor/meteor";
+import moment from "moment";
+
 export default {
   getAttendeeName(attendee) {
     return `${attendee?.firstName} ${attendee?.lastName}`;
@@ -32,5 +35,56 @@ export default {
     hasLastName = Boolean(attendee?.lastName);
     return `${hasFirstName ? attendee.firstName[0] : ""}
     ${hasFirstName && hasLastName && attendee.lastName[0] ? attendee.lastName[0] : ""}`;
-  }
+  },
+  formatMeetingsAsEvents: (meetings) => {
+    const dateFormat = "YYYY-MM-DD HH:mm";
+    return meetings.filter((meeting) => meeting.startDate && meeting.endDate).map((meeting) => ({
+      id: meeting._id,
+      name: meeting.name,
+      description: meeting.description,
+      location: meeting.location,
+      type: meeting.type ? meeting.type : null,
+      start: moment(meeting.startDate).format(dateFormat),
+      end: moment(meeting.endDate).format(dateFormat),
+      color: meeting.color
+    }));
+  },
+  fetchMeetings: (params) => new Promise((resolve, reject) => {
+    if (!params || !params.projectId) reject(new Error("Invalid project"));
+    Meteor.call(
+      "meetings.findMeetings",
+      params,
+      (error, datas) => {
+        resolve(datas);
+        if (error) {
+          reject(error);
+        }
+      }
+    );
+  }),
+  fetchMeeting: (params) => new Promise((resolve, reject) => {
+    if (!params || !params.meetingId) reject(new Error("Invalid meeting"));
+    Meteor.call(
+      "meetings.get",
+      params,
+      (error, meeting) => {
+        resolve(meeting);
+        if (error) {
+          reject(error);
+        }
+      }
+    );
+  }),
+  fetchMeetingTypes: () => new Promise((resolve, reject) => {
+    Meteor.call(
+      "meetings.getTypes",
+      null,
+      (error, types) => {
+        resolve(types);
+        if (error) {
+          reject(error);
+        }
+      }
+    );
+  })
 };

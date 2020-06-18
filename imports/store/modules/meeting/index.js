@@ -1,62 +1,4 @@
-import { Meteor } from "meteor/meteor";
-import moment from "moment";
-
-
-const formatMeetingsAsEvents = (meetings) => {
-  const dateFormat = "YYYY-MM-DD HH:mm";
-  return meetings.filter((meeting) => meeting.startDate && meeting.endDate).map((meeting) => ({
-    id: meeting._id,
-    name: meeting.name,
-    description: meeting.description,
-    location: meeting.location,
-    type: meeting.type ? meeting.type : null,
-    start: moment(meeting.startDate).format(dateFormat),
-    end: moment(meeting.endDate).format(dateFormat),
-    color: meeting.color
-  }));
-};
-
-
-const fetchMeetings = (params) => new Promise((resolve, reject) => {
-  if (!params || !params.projectId) reject(new Error("Invalid project"));
-  Meteor.call(
-    "meetings.findMeetings",
-    params,
-    (error, datas) => {
-      resolve(datas);
-      if (error) {
-        reject(error);
-      }
-    }
-  );
-});
-
-const fetchMeeting = (params) => new Promise((resolve, reject) => {
-  if (!params || !params.meetingId) reject(new Error("Invalid meeting"));
-  Meteor.call(
-    "meetings.get",
-    params,
-    (error, meeting) => {
-      resolve(meeting);
-      if (error) {
-        reject(error);
-      }
-    }
-  );
-});
-
-const fetchMeetingTypes = () => new Promise((resolve, reject) => {
-  Meteor.call(
-    "meetings.getTypes",
-    null,
-    (error, types) => {
-      resolve(types);
-      if (error) {
-        reject(error);
-      }
-    }
-  );
-});
+import MeetingUtils from "/imports/api/meetings/utils";
 
 export default {
   namespaced: true,
@@ -91,7 +33,7 @@ export default {
     },
     meetingsEventsByProjectId: (state, getters) => (projectId) => {
       const meetings = getters.meetingsByProjectId(projectId);
-      return formatMeetingsAsEvents(meetings);
+      return MeetingUtils.formatMeetingsAsEvents(meetings);
     },
     filteredMeetingsEventsByProjectId: (state, getters) => (projectId) => {
       const meetingsEvent = getters.meetingsEventsByProjectId(projectId);
@@ -103,19 +45,19 @@ export default {
   },
   actions: {
     async fetchMeetings(context, params) {
-      const datas = await fetchMeetings(params);
+      const datas = await MeetingUtils.fetchMeetings(params);
       context.commit("updateMeetingsResults", datas);
     },
     async fetchSelectedMeeting(context, params) {
-      const meeting = await fetchMeeting(params);
+      const meeting = await MeetingUtils.fetchMeeting(params);
       context.commit("updateSelectedMeeting", meeting);
     },
     async fetchCurrentMeeting(context, params) {
-      const meeting = await fetchMeeting(params);
+      const meeting = await MeetingUtils.fetchMeeting(params);
       context.commit("updateCurrentMeeting", meeting);
     },
     async fetchMeetingTypes(context) {
-      const meetingTypes = await fetchMeetingTypes();
+      const meetingTypes = await MeetingUtils.fetchMeetingTypes();
       context.commit("updateMeetingTypes", meetingTypes);
     },
     setSelectedMeeting(context, selectedMeeting) {
