@@ -163,40 +163,6 @@ export default {
     };
   },
   computed: {
-    sections() {
-      const attendeesCount = this.attendees?.length ? this.attendees.length : 0;
-      const documentsCount = this.documents?.length ? this.documents.length : 0;
-      return [
-        { 
-          id: "infos", 
-          text: this.$t("meetings.sections.infos"),
-          icon: "mdi-information-outline"
-        },
-        {
-          id: "agenda",
-          text: this.$t("meetings.sections.agenda"),
-          icon: "mdi-format-list-numbered"
-        },
-        {
-          id: "attendees",
-          text: this.$tc(
-            "meetings.sections.attendees",
-            attendeesCount,
-            { count: attendeesCount}
-          ),
-          icon: "mdi-account"
-        },
-        {
-          id: "documents",
-          text: this.$tc(
-            "meetings.sections.documents",
-            documentsCount,
-            { count: documentsCount }
-          ),
-          icon: "mdi-attachment"
-        }
-      ];
-    },
     isNewMeeting() {
       return !this.meeting || !this.meeting._id;
     },

@@ -325,13 +325,6 @@
     "agenda": {
       "none": "Aucun ordre du jour"
     },
-    "sections": {
-      "infos": "Infos",
-      "agenda": "Ordre du jour",
-      "report": "Synthèse",
-      "attendees": "invitations | {count} invitation | {count} invitations",
-      "documents": "documents | {count} document | {count} documents"
-    },
     "date": {
       "select": "Choisir une date",
       "start": "{date}"
