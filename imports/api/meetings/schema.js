@@ -77,15 +77,6 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
-
-  scheduleSlots: {
-    type: Array,
-    optional: true
-  },
-  "scheduleSlots.$": Object,
-  "scheduleSlots.$.start": Date,
-  "scheduleSlots.$.end": Date,
-
   /* creation dates */
   createdAt: Date,
   createdBy: String,
