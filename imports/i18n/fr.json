@@ -264,6 +264,7 @@
   "calendar": {
     "today": "Aujourd'hui",
     "24h": "24h",
+    "weekNumber": "Semaine {weekNumber}",
     "types": {
       "day": "Jour",
       "5days": "Lundi/Vendredi",
