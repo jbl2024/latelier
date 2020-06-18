@@ -56,7 +56,7 @@
   "No favorite": "Aucun favori",
   "All": "Tous",
   "Favorites": "Favoris",
-  "Delete attachment?": "Supprimer la pièce jointe ?",
+  "Delete attachment?": "Supprimer le document?",
   "Individuals": "Sans organisation",
   "Organizations & Projects": "Organisations & Projets",
   "Late": "En retard",
@@ -74,7 +74,7 @@
   "History": "Historique",
   "Search project": "Rechercher un projet",
   "Search": "Rechercher",
-  "Attachments": "Pièces jointes",
+  "Attachments": "Documents",
   "Leave project": "Quitter le projet",
   "Leave project?": "Quitter le projet ?",
   "Project": "Projet",
@@ -206,8 +206,8 @@
       "toggleCheckItem": "Modification d'un item",
       "convertItemToTask": "Conversion d'un item en tache",
       "move": "Déplacement",
-      "addAttachment": "Ajout d'une pièce jointe",
-      "removeAttachment": "Suppression d'un pièce jointe",
+      "addAttachment": "Ajout d'un document",
+      "removeAttachment": "Suppression d'un document",
       "remove": "Suppression",
       "setDueDate": "Date d'échéance",
       "complete": "Complétée",
@@ -334,11 +334,11 @@
     },
     "date": {
       "select": "Choisir une date",
-      "start": "Le {date}"
+      "start": "{date}"
     },
     "hoursRange": {
       "select": "Choisir l'heure de début/fin",
-      "range": "De {start} à {end}"
+      "range": "{start} - {end}"
     },
     "fields": {
       "name": "Nom",
@@ -356,9 +356,9 @@
     }
   },
   "attachments": {
-    "attachments": "Pièces jointes",
-    "addDescription": "Vous pouvez ajouter des pièces jointes ici ou sur une tâche",
-    "addAttachments": "Ajouter des pièces jointes",
-    "none": "Aucune pièce jointe"
+    "attachments": "Documents",
+    "addDescription": "Vous pouvez ajouter des documents ici ou sur une tâche",
+    "addAttachments": "Ajouter des documents",
+    "none": "Aucun document"
   }
 }
