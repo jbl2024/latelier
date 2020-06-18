@@ -8,7 +8,7 @@
         <h1>{{ meeting.name }}</h1>
         <div v-if="meeting.description" v-html="meeting.description" />
         <template>
-          <h2>{{ $t("meetings.sections.agenda") }}</h2>
+          <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
             ref="editor1"
             v-model="meeting.agenda"
@@ -19,7 +19,7 @@
           />
         </template>
         <template>
-          <h2>{{ $t("meetings.sections.report") }}</h2>
+          <h2>{{ $t("meetings.report.report") }}</h2>
           <rich-editor
             v-model="meeting.report"
             class="editor"

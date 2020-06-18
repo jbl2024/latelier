@@ -324,7 +324,11 @@
       "service": "Réunion de service"
     },
     "agenda": {
+      "agenda": "Ordre du jour",
       "none": "Aucun ordre du jour"
+    },
+    "report": {
+      "report": "Compte-rendu"
     },
     "date": {
       "select": "Choisir une date",
