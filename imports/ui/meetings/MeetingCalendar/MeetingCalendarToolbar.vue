@@ -39,9 +39,13 @@
         </span>
       </div>
     </div>
-    <!-- Switch between 24h and 7h start interval -->
     <div class="right-side">
       <div>
+        <!-- Corporate week number -->
+        <v-chip label>
+          {{ $t("calendar.weekNumber", {weekNumber: weekNumber}) }}
+        </v-chip>
+        <!-- Switch between 24h and 7h start interval -->
         <v-btn
           class="first-interval-button"
           :outlined="firstInterval !== 0"
@@ -100,6 +104,9 @@ export default {
     }
   },
   computed: {
+    weekNumber() {
+      return this.getWeekNumber(this.start);
+    },
     currentDateInterval() {
       if (!this.start || !this.end) return false;
       return this.displayDateInterval(

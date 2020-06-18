@@ -5,6 +5,9 @@ export default {
   nowDate(format) {
     return moment().format(format || "YYYY-MM-DD");
   },
+  getWeekNumber(date) {
+    return moment(date).format("w");
+  },
   formatDate(date, format = null) {
     if (!date) return null;
     return moment(date).format(format || i18n.t("dates.format.date"));
