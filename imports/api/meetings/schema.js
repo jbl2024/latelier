@@ -28,7 +28,8 @@ export const AttendeeSchema = {
     optional: true
   },
   firstName: {
-    type: String
+    type: String,
+    optional: true
   },
   lastName: {
     type: String,

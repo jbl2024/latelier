@@ -1,10 +1,17 @@
 import { Meteor } from "meteor/meteor";
 import moment from "moment";
 import i18n from "/imports/i18n/";
+import { UserUtils } from "../users/utils";
 
 export default {
   getAttendeeName(attendee) {
-    return `${attendee?.firstName} ${attendee?.lastName}`;
+    if (!attendee) {
+      return "";
+    }
+    if (attendee.firstName && attendee.lastName) {
+      return `${attendee.firstName} ${attendee.lastName}`;
+    }
+    return attendee.email;
   },
   createUserAttendee(user) {
     return {
@@ -13,9 +20,7 @@ export default {
       avatar: user?.profile?.avatar,
       firstName: user?.profile?.firstName ? user.profile.firstName : "",
       lastName: user?.profile?.lastName ? user.profile.lastName : "",
-      email: Array.isArray(user?.emails)
-      && user.emails[0]
-      && user.emails[0].address ? user.emails[0].address : null
+      email: UserUtils.getEmail(user)
     };
   },
   createNewAttendee(name) {
