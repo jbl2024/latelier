@@ -92,7 +92,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
-import ApiProjects from "/imports/ui/api/projects/";
+import Api from "/imports/ui/api/Api";
 
 export default {
   name: "ProjectSettingsManageUsers",
@@ -181,9 +181,10 @@ export default {
     },
     async fetchUsers() {
       try {
-        const users = await ApiProjects.findUsers({
-          projectId: this.project._id
-        });
+        const users = await Api.call(
+          "projects.findUsers",
+          { projectId: this.project._id }
+        );
         this.projectUsers = users;
       } catch (error) {
         this.$notifyError(error);

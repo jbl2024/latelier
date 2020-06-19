@@ -17,7 +17,7 @@
 </template>
 <script>
 import debounce from "lodash/debounce";
-import ApiProjects from "/imports/ui/api/projects/";
+import Api from "/imports/ui/api/Api";
 import MeetingAttendeesSelector from "./MeetingAttendeesSelector";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingUtils from "/imports/api/meetings/utils";
@@ -86,10 +86,13 @@ export default {
     },
     async fetchUsers() {
       try {
-        const projectUsers = await ApiProjects.findUsers({
-          projectId: this.projectId,
-          filter: this.filter
-        });
+        const projectUsers = await Api.call(
+          "projects.findUsers",
+          {
+            projectId: this.projectId,
+            filter: this.filter
+          }
+        );
         this.users = projectUsers;
       } catch (error) {
         this.$notify(error);

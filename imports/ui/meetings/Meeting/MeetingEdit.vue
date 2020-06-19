@@ -101,7 +101,6 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import MeetingUtils from "/imports/api/meetings/utils";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
@@ -232,7 +231,8 @@ export default {
         });
         if (res === null || res === false) return;
         this.showDialog = false;
-        await MeetingUtils.removeMeeting(
+        await Api.call(
+          "meetings.remove",
           { meetingId: this.meeting._id }
         );
         this.$notify(this.$t("meetings.meetingDeleted"));
@@ -270,7 +270,7 @@ export default {
     async update() {
       try {
         this.showDialog = false;
-        await MeetingUtils.updateMeeting(this.getParams());
+        await Api.call("meetings.update", this.getParams());
         this.$emit("updated");
         this.$notify(this.$t("meetings.updated"));
       } catch (error) {
@@ -280,19 +280,7 @@ export default {
     async create() {
       try {
         this.showDialog = false;
-        await MeetingUtils.createMeeting(this.getParams());
-        /*
-        if (this.documents && this.documents.length) {
-          const attachments = await Api.call("attachments.updateMany", {
-            attachments : this.documents.map((doc) => {
-              return {
-                _id: doc._id,
-                meta: doc.meta
-              };
-            })
-          });
-          console.log(attachments);
-        } */
+        await Api.call("meetings.create", this.getParams());
         this.$emit("created");
         this.$notify(this.$t("meetings.created"));
       } catch (error) {

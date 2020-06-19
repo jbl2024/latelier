@@ -1,4 +1,5 @@
 import MeetingUtils from "/imports/api/meetings/utils";
+import Api from "/imports/ui/api/Api";
 
 export default {
   namespaced: true,
@@ -45,19 +46,19 @@ export default {
   },
   actions: {
     async fetchMeetings(context, params) {
-      const datas = await MeetingUtils.findMeetings(params);
+      const datas = await Api.call("meetings.findMeetings", params);
       context.commit("updateMeetingsResults", datas);
     },
     async fetchSelectedMeeting(context, params) {
-      const meeting = await MeetingUtils.getMeeting(params);
+      const meeting = await Api.call("meetings.get", params);
       context.commit("updateSelectedMeeting", meeting);
     },
     async fetchCurrentMeeting(context, params) {
-      const meeting = await MeetingUtils.getMeeting(params);
+      const meeting = await Api.call("meetings.get", params);
       context.commit("updateCurrentMeeting", meeting);
     },
     async fetchMeetingTypes(context) {
-      const meetingTypes = await MeetingUtils.getMeetingTypes();
+      const meetingTypes = await Api.call("meetings.getTypes");
       context.commit("updateMeetingTypes", meetingTypes);
     },
     setSelectedMeeting(context, selectedMeeting) {

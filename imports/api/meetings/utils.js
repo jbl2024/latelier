@@ -2,21 +2,6 @@ import { Meteor } from "meteor/meteor";
 import moment from "moment";
 import i18n from "/imports/i18n/";
 
-
-
-const apiCall = (methodName, params = null) => new Promise((resolve, reject) => {
-  Meteor.call(
-    methodName,
-    params,
-    (error, datas) => {
-      resolve(datas);
-      if (error) {
-        reject(error);
-      }
-    }
-  );
-});
-
 export default {
   getAttendeeName(attendee) {
     return `${attendee?.firstName} ${attendee?.lastName}`;
@@ -80,26 +65,5 @@ export default {
       startDate: startDate.format("YYYY-MM-DD HH:00"),
       endDate: endDate.format("YYYY-MM-DD HH:00")
     };
-  },
-  createMeeting: (params) => {
-    return apiCall("meetings.create", params);
-  },
-  updateMeeting: (params) => {
-    return apiCall("meetings.update", params);
-  },
-  removeMeeting: (params) => {
-    if (!params || !params.meetingId) throw new Error("Invalid meeting");
-    return apiCall("meetings.remove", params);
-  },
-  findMeetings: (params) => {
-    if (!params || !params.projectId) throw new Error("Invalid project");
-    return apiCall("meetings.findMeetings", params);
-  },
-  getMeeting: (params) => {
-    if (!params || !params.meetingId) throw new Error("Invalid meeting");
-    return apiCall("meetings.get", params);
-  },
-  getMeetingTypes: () => {
-    return apiCall("meetings.getTypes");
   }
 };
