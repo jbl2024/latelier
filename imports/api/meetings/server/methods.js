@@ -84,9 +84,28 @@ Meetings.methods.update = new ValidatedMethod({
     location: { type: String, optional: true },
     type: { type: String, optional: true },
     startDate: { type: String },
-    endDate: { type: String }
+    endDate: { type: String },
+    attendees: {
+      type: Array,
+      optional: true
+    },
+    "attendees.$": {
+      type: new SimpleSchema(AttendeeSchema)
+    }
   }).validator(),
-  run({ id, name, state, description, agenda, color, location, type, startDate, endDate }) {
+  run({
+    id,
+    name,
+    state,
+    description,
+    agenda,
+    color,
+    location,
+    type,
+    startDate,
+    endDate,
+    attendees
+  }) {
     checkLoggedIn();
 
     state = state || MeetingState.PENDING;
@@ -112,6 +131,7 @@ Meetings.methods.update = new ValidatedMethod({
           type,
           startDate,
           endDate,
+          attendees,
           updatedAt: new Date(),
           updateddBy: Meteor.userId()
         }
