@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import SimpleSchema from "simpl-schema";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { checkLoggedIn, checkCanWriteTask } from "/imports/api/permissions/permissions";
-import { AttachmentSchema } from "/imports/api/attachments/schema";
+import { AttachmentsFindSchema } from "/imports/api/attachments/schema";
 import fs from "fs";
 
 const bound = Meteor.bindEnvironment((callback) => callback());
@@ -112,26 +112,10 @@ Attachments.methods.clone = new ValidatedMethod({
 });
 
 
-// We use Attachment schema and we add page and perPage field to it
-const findAttachmentsSchema = (() => {
-  const attachmentSchema = new SimpleSchema(AttachmentSchema);
-  const findSchema = attachmentSchema.pick("meta", "name", "userId");
-  findSchema.extend({
-    page: {
-      type: Number,
-      optional: true
-    },
-    perPage: {
-      type: Number,
-      optional: true
-    }
-  });
-  return findSchema;
-})();
 
 Attachments.methods.find = new ValidatedMethod({
   name: "attachments.find",
-  validate: findAttachmentsSchema.validator(),
+  validate: AttachmentsFindSchema.validator(),
   run({ meta, name, userId, page, perPage }) {
     checkLoggedIn();
     page = page || 1;
