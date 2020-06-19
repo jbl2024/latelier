@@ -168,7 +168,6 @@ const store = new Vuex.Store({
       context.commit("notify", message);
     },
     notifyError(context, error) {
-      console.error(error);
       if (error && error.reason) {
         context.commit("notify", error.reason);
       } else {
