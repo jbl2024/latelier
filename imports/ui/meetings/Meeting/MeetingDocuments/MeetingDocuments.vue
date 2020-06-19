@@ -6,6 +6,7 @@
         <attachment-list
           v-model="selectedDocuments"
           display="combobox"
+          :item-options="{color: 'indigo', dark: true}"
           :label="$t('attachments.addAttachments')"
           :attachments="attachments"
         />

@@ -73,16 +73,17 @@
         <v-chip
           v-if="item === Object(item)"
           v-bind="attrs"
-          color="success"
+          :color="itemOptions.color"
           :input-value="selected"
           small
+          :dark="itemOptions.dark"
         >
           <span class="pr-2">
             {{ getAttachmentName(item) }}
           </span>
           <v-icon
             small
-            @click="parent.selectItem(item)"
+            @click.stop="parent.selectItem(item)"
           >
             mdi-close
           </v-icon>
@@ -152,6 +153,15 @@ export default {
     search: {
       type: String,
       default: ""
+    },
+    itemOptions: {
+      type: Object,
+      default() {
+        return {
+          color: null,
+          dark: false
+        };
+      }
     },
     label: {
       type: String,
