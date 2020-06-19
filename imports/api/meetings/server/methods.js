@@ -10,29 +10,11 @@ import {
   checkCanWriteMeeting
 } from "/imports/api/permissions/permissions";
 
-import { AttendeeSchema } from "/imports/api/meetings/schema";
+import { MeetingCreateSchema, MeetingUpdateSchema } from "/imports/api/meetings/schema";
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
-  validate: new SimpleSchema({
-    projectId: { type: String },
-    name: { type: String },
-    state: { type: String, optional: true },
-    description: { type: String, optional: true },
-    agenda: { type: String, optional: true },
-    color: { type: String, optional: true },
-    location: { type: String, optional: true },
-    type: { type: String, optional: true },
-    startDate: { type: String },
-    endDate: { type: String },
-    attendees: {
-      type: Array,
-      optional: true
-    },
-    "attendees.$": {
-      type: new SimpleSchema(AttendeeSchema)
-    }
-  }).validator(),
+  validate: MeetingCreateSchema.validator(),
   run({
     projectId,
     name,
@@ -74,25 +56,7 @@ Meetings.methods.create = new ValidatedMethod({
 
 Meetings.methods.update = new ValidatedMethod({
   name: "meetings.update",
-  validate: new SimpleSchema({
-    id: { type: String },
-    name: { type: String },
-    state: { type: String, optional: true },
-    description: { type: String, optional: true },
-    agenda: { type: String, optional: true },
-    color: { type: String, optional: true },
-    location: { type: String, optional: true },
-    type: { type: String, optional: true },
-    startDate: { type: String },
-    endDate: { type: String },
-    attendees: {
-      type: Array,
-      optional: true
-    },
-    "attendees.$": {
-      type: new SimpleSchema(AttendeeSchema)
-    }
-  }).validator(),
+  validate: MeetingUpdateSchema.validator(),
   run({
     id,
     name,
@@ -269,7 +233,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       skip,
       limit: perPage,
       sort: {
-        date: -1
+        startDate: -1
       }
     }).fetch();
     return {
