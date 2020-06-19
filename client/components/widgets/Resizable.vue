@@ -299,7 +299,7 @@ export default {
 .resizable-component > .resizable-r {
   display: block;
   position: absolute;
-  z-index: 90;
+  z-index: 7;
   touch-action: none;
   user-select: none;
   -moz-user-select: none;
@@ -322,12 +322,12 @@ export default {
   height: 12px;
   right: -6px;
   bottom: -6px;
-  z-index: 91;
+  z-index: 8;
 }
 .resizable-component > .resizable-b {
   display: block;
   position: absolute;
-  z-index: 90;
+  z-index: 7;
   touch-action: none;
   user-select: none;
   -moz-user-select: none;
@@ -350,12 +350,12 @@ export default {
   height: 12px;
   left: -6px;
   bottom: -6px;
-  z-index: 91;
+  z-index: 8;
 }
 .resizable-component > .resizable-l {
   display: block;
   position: absolute;
-  z-index: 90;
+  z-index: 7;
   touch-action: none;
   user-select: none;
   -moz-user-select: none;
@@ -378,12 +378,12 @@ export default {
   height: 12px;
   left: -6px;
   top: -6px;
-  z-index: 91;
+  z-index: 8;
 }
 .resizable-component > .resizable-t {
   display: block;
   position: absolute;
-  z-index: 90;
+  z-index: 7;
   touch-action: none;
   user-select: none;
   -moz-user-select: none;
@@ -406,6 +406,6 @@ export default {
   height: 12px;
   right: -6px;
   top: -6px;
-  z-index: 91;
+  z-index: 8;
 }
 </style>
