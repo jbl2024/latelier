@@ -11,6 +11,9 @@ export default {
     if (attendee.firstName && attendee.lastName) {
       return `${attendee.firstName} ${attendee.lastName}`;
     }
+    if (attendee.lastName) {
+      return attendee.lastName;
+    }
     return attendee.email;
   },
   createUserAttendee(user) {
@@ -24,12 +27,23 @@ export default {
     };
   },
   createNewAttendee(name) {
-    const splittedName = name.split(" ");
+    const splittedName = name.split(/\s+/);
+    let firstName;
+    let lastName;
+    if (splittedName.length === 1) {
+      firstName = "";
+      /* eslint prefer-destructuring: off */
+      lastName = splittedName[0];
+    } else {
+      firstName = splittedName.slice(0, -1).join(" ");
+      lastName = splittedName.pop();
+    }
+
     return {
       userId: null,
       present: false,
-      firstName: splittedName[0] ? splittedName[0] : "",
-      lastName: splittedName[1] ? splittedName[1] : "",
+      firstName,
+      lastName,
       email: null
     };
   },
