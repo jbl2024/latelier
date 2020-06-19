@@ -100,7 +100,6 @@
 </template>
 
 <script>
-import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
@@ -237,7 +236,6 @@ export default {
         this.$emit("removed");
       } catch (error) {
         this.$notifyError(error);
-        return;
       }
     },
     getParams() {
@@ -258,15 +256,13 @@ export default {
           delete sanitzedAttendee.avatar;
           return sanitzedAttendee;
         }),
-        documents: this.documents.map((document) => {
-          return {
-            documentId: document._id,
-            name: document.name,
-            type: document.type,
-            userId: document.userId,
-            storageType: "attachments"
-          }
-        })
+        documents: this.documents.map((document) => ({
+          documentId: document._id,
+          name: document.name,
+          type: document.type,
+          userId: document.userId,
+          storageType: "attachments"
+        }))
       };
       if (!this.isNewMeeting && this.meeting._id) {
         delete params.projectId;
