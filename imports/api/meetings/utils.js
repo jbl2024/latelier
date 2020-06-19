@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import moment from "moment";
+import i18n from "/imports/i18n/";
 
 export default {
   getAttendeeName(attendee) {
@@ -48,6 +49,22 @@ export default {
       end: moment(meeting.endDate).format(dateFormat),
       color: meeting.color
     }));
+  },
+  createNewMeeting() {
+    const startDate = moment();
+    const endDate = startDate.clone().add(1, "hours");
+    return {
+      name: i18n.t("meetings.meeting"),
+      description: "",
+      agenda: "",
+      type: "",
+      color: "#363636",
+      location: "",
+      attendees: [],
+      documents: [],
+      startDate: startDate.format("YYYY-MM-DD HH:00"),
+      endDate: endDate.format("YYYY-MM-DD HH:00")
+    };
   },
   fetchMeetings: (params) => new Promise((resolve, reject) => {
     if (!params || !params.projectId) reject(new Error("Invalid project"));

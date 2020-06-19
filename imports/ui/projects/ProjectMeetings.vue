@@ -111,6 +111,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState, mapGetters, mapActions } from "vuex";
+import MeetingUtils from "/imports/api/meetings/utils";
 import ProjectMeetingsToolbar from "/imports/ui/projects/ProjectMeetingsToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
 import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
@@ -302,24 +303,8 @@ export default {
         this.$refs.calendar.prev();
       }
     },
-    createNewMeeting() {
-      const startDate = moment();
-      const endDate = startDate.clone().add(1, "hours");
-      return {
-        name: this.$t("meetings.meeting"),
-        description: "",
-        agenda: "",
-        type: "",
-        color: "#363636",
-        location: "",
-        attendees: [],
-        documents: [],
-        startDate: startDate.format("YYYY-MM-DD HH:00"),
-        endDate: endDate.format("YYYY-MM-DD HH:00")
-      };
-    },
     addNewMeeting(selectedTime) {
-      const newMeeting = this.createNewMeeting();
+      const newMeeting = MeetingUtils.createNewMeeting();
       if (selectedTime?.date && selectedTime?.hour) {
         const startHour = `${String(selectedTime.hour).padStart(2, "0")}:00`;
         const endHour = `${String(selectedTime.hour + 1).padStart(2, "0")}:00`;
