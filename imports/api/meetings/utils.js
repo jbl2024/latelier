@@ -1,4 +1,3 @@
-import { Meteor } from "meteor/meteor";
 import moment from "moment";
 import i18n from "/imports/i18n/";
 import { UserUtils } from "../users/utils";

@@ -1,6 +1,5 @@
 import SimpleSchema from "simpl-schema";
 
-
 export const DocumentSchema = {
   documentId: {
     type: String
@@ -113,38 +112,36 @@ export default new SimpleSchema({
   updatedBy: String
 });
 
-export const MeetingCreateSchema = (() => {
-  return new SimpleSchema({
-    projectId: { type: String },
-    name: { type: String },
-    state: { type: String, optional: true },
-    description: { type: String, optional: true },
-    agenda: { type: String, optional: true },
-    color: { type: String, optional: true },
-    location: { type: String, optional: true },
-    type: { type: String, optional: true },
-    startDate: { type: String },
-    endDate: { type: String },
-    attendees: {
-      type: Array,
-      optional: true
-    },
-    "attendees.$": {
-      type: new SimpleSchema(AttendeeSchema)
-    },
-    documents: {
-      type: Array,
-      optional: true
-    },
-    "documents.$": new SimpleSchema(DocumentSchema)
-  });
-})();
+export const MeetingCreateSchema = (() => new SimpleSchema({
+  projectId: { type: String },
+  name: { type: String },
+  state: { type: String, optional: true },
+  description: { type: String, optional: true },
+  agenda: { type: String, optional: true },
+  color: { type: String, optional: true },
+  location: { type: String, optional: true },
+  type: { type: String, optional: true },
+  startDate: { type: String },
+  endDate: { type: String },
+  attendees: {
+    type: Array,
+    optional: true
+  },
+  "attendees.$": {
+    type: new SimpleSchema(AttendeeSchema)
+  },
+  documents: {
+    type: Array,
+    optional: true
+  },
+  "documents.$": new SimpleSchema(DocumentSchema)
+}))();
 
 
 export const MeetingUpdateSchema = (() => {
   const updateSchema = MeetingCreateSchema.omit("projectId");
   updateSchema.extend({
     id: { type: String }
-  })
+  });
   return updateSchema;
 })();
