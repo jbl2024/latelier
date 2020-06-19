@@ -2,6 +2,21 @@ import { Meteor } from "meteor/meteor";
 import moment from "moment";
 import i18n from "/imports/i18n/";
 
+
+
+const apiCall = (methodName, params = null) => new Promise((resolve, reject) => {
+  Meteor.call(
+    methodName,
+    params,
+    (error, datas) => {
+      resolve(datas);
+      if (error) {
+        reject(error);
+      }
+    }
+  );
+});
+
 export default {
   getAttendeeName(attendee) {
     return `${attendee?.firstName} ${attendee?.lastName}`;
@@ -50,7 +65,7 @@ export default {
       color: meeting.color
     }));
   },
-  createNewMeeting() {
+  makeNewMeeting() {
     const startDate = moment();
     const endDate = startDate.clone().add(1, "hours");
     return {
@@ -66,42 +81,25 @@ export default {
       endDate: endDate.format("YYYY-MM-DD HH:00")
     };
   },
-  fetchMeetings: (params) => new Promise((resolve, reject) => {
-    if (!params || !params.projectId) reject(new Error("Invalid project"));
-    Meteor.call(
-      "meetings.findMeetings",
-      params,
-      (error, datas) => {
-        resolve(datas);
-        if (error) {
-          reject(error);
-        }
-      }
-    );
-  }),
-  fetchMeeting: (params) => new Promise((resolve, reject) => {
-    if (!params || !params.meetingId) reject(new Error("Invalid meeting"));
-    Meteor.call(
-      "meetings.get",
-      params,
-      (error, meeting) => {
-        resolve(meeting);
-        if (error) {
-          reject(error);
-        }
-      }
-    );
-  }),
-  fetchMeetingTypes: () => new Promise((resolve, reject) => {
-    Meteor.call(
-      "meetings.getTypes",
-      null,
-      (error, types) => {
-        resolve(types);
-        if (error) {
-          reject(error);
-        }
-      }
-    );
-  })
+  createMeeting: (params) => {
+    return apiCall("meetings.create", params);
+  },
+  updateMeeting: (params) => {
+    return apiCall("meetings.update", params);
+  },
+  removeMeeting: (params) => {
+    if (!params || !params.meetingId) throw new Error("Invalid meeting");
+    return apiCall("meetings.remove", params);
+  },
+  findMeetings: (params) => {
+    if (!params || !params.projectId) throw new Error("Invalid project");
+    return apiCall("meetings.findMeetings", params);
+  },
+  getMeeting: (params) => {
+    if (!params || !params.meetingId) throw new Error("Invalid meeting");
+    return apiCall("meetings.get", params);
+  },
+  getMeetingTypes: () => {
+    return apiCall("meetings.getTypes");
+  }
 };

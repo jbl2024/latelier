@@ -304,7 +304,7 @@ export default {
       }
     },
     addNewMeeting(selectedTime) {
-      const newMeeting = MeetingUtils.createNewMeeting();
+      const newMeeting = MeetingUtils.makeNewMeeting();
       if (selectedTime?.date && selectedTime?.hour) {
         const startHour = `${String(selectedTime.hour).padStart(2, "0")}:00`;
         const endHour = `${String(selectedTime.hour + 1).padStart(2, "0")}:00`;

@@ -101,6 +101,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import MeetingUtils from "/imports/api/meetings/utils";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
@@ -221,28 +222,26 @@ export default {
       const hex = color || this.color;
       this.color = hex;
     },
-    remove() {
-      this.$confirm(this.$t("meetings.remove?"), {
-        title: this.meeting.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async remove() {
+      try {
+        const res = await this.$confirm(this.$t("meetings.remove?"), {
+          title: this.meeting.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+        if (res === null || res === false) return;
+
+        console.log("test");
         this.showDialog = false;
-        if (res) {
-          Meteor.call(
-            "meetings.remove",
-            { meetingId: this.meeting._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("meetings.meetingDeleted"));
-              this.$emit("removed");
-            }
-          );
-        }
-      });
+        await MeetingUtils.removeMeeting(
+          { meetingId: this.meeting._id }
+        );
+        this.$notify(this.$t("meetings.meetingDeleted"));
+        this.$emit("removed");
+      } catch (error) {
+        this.$notifyError(error);
+        return;
+      }
     },
     getParams() {
       const date = moment(this.date).format("YYYY-MM-DD");
@@ -269,37 +268,25 @@ export default {
       }
       return params;
     },
-    update() {
-      this.showDialog = false;
-      Meteor.call(
-        "meetings.update",
-        this.getParams(),
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          } else {
-            this.$emit("updated");
-            this.$notify(this.$t("meetings.updated"));
-          }
-        }
-      );
-      this.showDialog = false;
+    async update() {
+      try {
+        this.showDialog = false;
+        await MeetingUtils.updateMeeting(this.getParams());
+        this.$emit("updated");
+        this.$notify(this.$t("meetings.updated"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
-    create() {
-      this.showDialog = false;
-      Meteor.call(
-        "meetings.create",
-        this.getParams(),
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          } else {
-            this.$emit("created");
-            this.$notify(this.$t("meetings.created"));
-          }
-        }
-      );
-      this.showDialog = false;
+    async create() {
+      try {
+        this.showDialog = false;
+        await MeetingUtils.createMeeting(this.getParams());
+        this.$emit("created");
+        this.$notify(this.$t("meetings.created"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

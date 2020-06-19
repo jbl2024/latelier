@@ -45,19 +45,19 @@ export default {
   },
   actions: {
     async fetchMeetings(context, params) {
-      const datas = await MeetingUtils.fetchMeetings(params);
+      const datas = await MeetingUtils.findMeetings(params);
       context.commit("updateMeetingsResults", datas);
     },
     async fetchSelectedMeeting(context, params) {
-      const meeting = await MeetingUtils.fetchMeeting(params);
+      const meeting = await MeetingUtils.getMeeting(params);
       context.commit("updateSelectedMeeting", meeting);
     },
     async fetchCurrentMeeting(context, params) {
-      const meeting = await MeetingUtils.fetchMeeting(params);
+      const meeting = await MeetingUtils.getMeeting(params);
       context.commit("updateCurrentMeeting", meeting);
     },
     async fetchMeetingTypes(context) {
-      const meetingTypes = await MeetingUtils.fetchMeetingTypes();
+      const meetingTypes = await MeetingUtils.getMeetingTypes();
       context.commit("updateMeetingTypes", meetingTypes);
     },
     setSelectedMeeting(context, selectedMeeting) {
