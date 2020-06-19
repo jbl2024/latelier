@@ -86,10 +86,6 @@ export default {
       type: String,
       default: null
     },
-    isCalendarActive: {
-      type: Boolean,
-      default: null
-    },
     flat: {
       type: Boolean,
       default: false

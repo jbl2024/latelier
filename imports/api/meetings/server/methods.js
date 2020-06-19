@@ -1,5 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingTypes, Meetings } from "/imports/api/meetings/meetings";
+import moment from "moment";
 // We use project rights for meeting rights
 import {
   checkLoggedIn,
@@ -204,10 +205,20 @@ Meetings.methods.findMeetings = new ValidatedMethod({
   name: "meetings.findMeetings",
   validate: new SimpleSchema({
     projectId: { type: String },
+    dates: {
+      type: Array,
+      optional: true
+    },
+    "dates.$": {
+      type: Object
+    },
+    "dates.$.start": { type: String },
+    "dates.$.end": { type: String },
     page: { type: Number },
     perPage: { type: Number, optional: true }
   }).validator(),
-  run({ projectId, page, perPage }) {
+  run({ projectId, dates, page, perPage }) {
+    page = page || 1;
     checkLoggedIn();
     checkCanReadProject(projectId);
     let skip = 0;
@@ -225,6 +236,16 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       deleted: { $ne: true }
     };
 
+    if (Array.isArray(dates) && dates.length) {
+      query.$or = dates.map((d) => {
+        return {
+          $and: [
+            { startDate: { $gte : moment.utc(d.start).toDate() } },
+            { endDate: { $lte : moment.utc(d.end).toDate() } }
+          ]
+        };
+      })
+    }
     const count = Meetings.find(query).count();
     const data = Meetings.find(query, {
       skip,
@@ -233,7 +254,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         date: -1
       }
     }).fetch();
-
+    console.log(JSON.stringify(data, null, 2));
     return {
       rowsPerPage: perPage,
       totalItems: count,

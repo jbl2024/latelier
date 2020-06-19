@@ -50,6 +50,7 @@
             <v-col :lg="asideCols.datepicker.lg">
               <meeting-calendar-date-picker
                 v-model="selectedDate"
+                :picker-date.sync="pickerDate"
                 :locale="currentLocale"
                 :events="meetingsEvents"
               />
@@ -76,7 +77,6 @@
             :end.sync="end"
             :display-type.sync="displayType"
             :display-types="displayTypes"
-            :is-calendar-active="isCalendarActive"
             :first-interval.sync="firstInterval"
             :flat="true"
             @set-today="setToday"
@@ -85,7 +85,7 @@
           />
           <!-- Calendar display type -->
           <meeting-calendar
-            v-if="isCalendarActive"
+            v-if="isCalendarDisplay"
             ref="calendar"
             v-model="selectedDate"
             :start.sync="start"
@@ -145,6 +145,7 @@ export default {
       denseWidth: false,
       now: now,
       selectedDate: now,
+      pickerDate: moment(now).format("YYYY-MM"),
       start: now,
       end: null,
       displayType: "5days",
@@ -184,7 +185,29 @@ export default {
     };
   },
   computed: {
-    isCalendarActive() {
+    active() {
+      return Boolean(
+        this.pickerDate 
+        && this.start 
+        && this.end 
+        && this.currentProject == Object(this.currentProject)
+      );
+    },
+    dateRanges() {
+      const startFormat = "YYYY-MM-DD 00:00:00";
+      const endFormat = "YYYY-MM-DD 23:59:59";
+      return [
+        {
+          start: moment(this.start).format(startFormat),
+          end: moment(this.end).format(endFormat)
+        },
+        {
+          start: moment(this.pickerDate).startOf("month").format(startFormat),
+          end: moment(this.pickerDate).endOf("month").format(endFormat)
+        }
+      ];
+    },
+    isCalendarDisplay() {
       const foundDisplayType = this.displayTypes.find(
         (displayType) => displayType.value === this.displayType
       );
@@ -231,8 +254,13 @@ export default {
     }
   },
   watch: {
-    async currentProject() {
-      await this.fetch();
+    dateRanges: {
+      immediate: true,
+      async handler() {
+        if (this.active) {
+          await this.fetch();
+        }
+      }
     }
   },
   async mounted() {
@@ -265,12 +293,12 @@ export default {
       this.selectedDate = this.now;
     },
     next() {
-      if (this.isCalendarActive) {
+      if (this.isCalendarDisplay) {
         this.$refs.calendar.next();
       }
     },
     prev() {
-      if (this.isCalendarActive) {
+      if (this.isCalendarDisplay) {
         this.$refs.calendar.prev();
       }
     },
@@ -317,7 +345,8 @@ export default {
       try {
         await this.fetchMeetings({
           projectId: this.currentProject._id,
-          page: 1
+          page: 1,
+          dates: this.dateRanges
         });
       } catch (error) {
         this.$notifyError(error);

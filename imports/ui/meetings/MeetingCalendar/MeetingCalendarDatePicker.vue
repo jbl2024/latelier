@@ -6,6 +6,7 @@
       class="meeting-calendar-date-picker"
       :events="formattedEvents"
       :locale="locale"
+      :picker-date.sync="selectedPickerDate"
       first-day-of-week="1"
       full-width
     />
@@ -27,6 +28,10 @@ export default {
     events: {
       type: Array,
       default: null
+    },
+    pickerDate: {
+      type: String,
+      default: null
     }
   },
   computed: {
@@ -36,6 +41,14 @@ export default {
       },
       set(newDate) {
         this.$emit("input", newDate);
+      }
+    },
+    selectedPickerDate: {
+      get() {
+        return this.pickerDate;
+      },
+      set(newPickerDate) {
+        this.$emit("update:picker-date", newPickerDate);
       }
     },
     inDateMode() {
