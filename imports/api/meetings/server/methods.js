@@ -237,14 +237,12 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     };
 
     if (Array.isArray(dates) && dates.length) {
-      query.$or = dates.map((d) => {
-        return {
-          $and: [
-            { startDate: { $gte : moment.utc(d.start).toDate() } },
-            { endDate: { $lte : moment.utc(d.end).toDate() } }
-          ]
-        };
-      })
+      query.$or = dates.map((d) => ({
+        $and: [
+          { startDate: { $gte: moment.utc(d.start).toDate() } },
+          { endDate: { $lte: moment.utc(d.end).toDate() } }
+        ]
+      }));
     }
     const count = Meetings.find(query).count();
     const data = Meetings.find(query, {
@@ -254,7 +252,6 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         date: -1
       }
     }).fetch();
-    console.log(JSON.stringify(data, null, 2));
     return {
       rowsPerPage: perPage,
       totalItems: count,

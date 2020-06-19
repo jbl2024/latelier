@@ -187,10 +187,10 @@ export default {
   computed: {
     active() {
       return Boolean(
-        this.pickerDate 
-        && this.start 
-        && this.end 
-        && this.currentProject == Object(this.currentProject)
+        this.pickerDate
+        && this.start
+        && this.end
+        && this.currentProject === Object(this.currentProject)
       );
     },
     dateRanges() {
