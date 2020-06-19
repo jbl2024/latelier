@@ -92,13 +92,7 @@
       <template v-slot:no-data>
         <v-list-item>
           <span class="mr-2">
-            Appuyer sur Entrée pour ajouter
-          </span>
-          <v-chip class="new-attachment" small>
-            {{ `"${searchInput}"` }}
-          </v-chip>
-          <span class="ml-2">
-            aux participants
+            Ajouter des fichiers
           </span>
         </v-list-item>
       </template>

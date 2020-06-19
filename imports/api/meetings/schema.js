@@ -1,6 +1,27 @@
 import SimpleSchema from "simpl-schema";
 
 
+export const DocumentSchema = {
+  documentId: {
+    type: String
+  },
+  name: {
+    type: String
+  },
+  type: {
+    type: String
+  },
+  userId: {
+    type: String,
+    optional: true
+  },
+  storageType: {
+    type: String,
+    optional: true,
+    defaultValue: "attachments"
+  }
+};
+
 export const AttendeeSchema = {
   userId: {
     type: String,
@@ -73,6 +94,11 @@ export default new SimpleSchema({
     optional: true
   },
   "attendees.$": new SimpleSchema(AttendeeSchema),
+  documents: {
+    type: Array,
+    optional: true
+  },
+  "documents.$": new SimpleSchema(DocumentSchema),
   report: {
     type: String,
     optional: true
@@ -104,7 +130,12 @@ export const MeetingCreateSchema = (() => {
     },
     "attendees.$": {
       type: new SimpleSchema(AttendeeSchema)
-    }
+    },
+    documents: {
+      type: Array,
+      optional: true
+    },
+    "documents.$": new SimpleSchema(DocumentSchema)
   });
 })();
 

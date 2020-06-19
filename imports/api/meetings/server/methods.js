@@ -26,7 +26,8 @@ Meetings.methods.create = new ValidatedMethod({
     type,
     startDate,
     endDate,
-    attendees
+    attendees,
+    documents
   }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
@@ -45,6 +46,7 @@ Meetings.methods.create = new ValidatedMethod({
       startDate,
       endDate,
       attendees,
+      documents,
       createdAt: now,
       createdBy: author,
       updatedAt: now,
@@ -68,7 +70,8 @@ Meetings.methods.update = new ValidatedMethod({
     type,
     startDate,
     endDate,
-    attendees
+    attendees,
+    documents
   }) {
     checkLoggedIn();
 
@@ -79,7 +82,7 @@ Meetings.methods.update = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
     checkCanWriteMeeting(meeting._id);
-
+    console.log(JSON.stringify(documents, null, 2));
     const meetingId = Meetings.update(
       {
         _id: id
@@ -96,6 +99,7 @@ Meetings.methods.update = new ValidatedMethod({
           startDate,
           endDate,
           attendees,
+          documents,
           updatedAt: new Date(),
           updateddBy: Meteor.userId()
         }

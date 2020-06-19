@@ -166,9 +166,7 @@ export default {
       return !this.meeting || !this.meeting._id;
     },
     computedTitle() {
-      const currentSection = this.currentTab !== null ? this.sections[this.currentTab]?.text : null;
-      const currentName = (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
-      return `${currentName} ${(currentSection ? (` - ${currentSection}`) : "")}`;
+      return (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
     },
     colorStyles() {
       return `background-color: ${this.color}`;
@@ -254,11 +252,20 @@ export default {
         description: this.description,
         location: this.location,
         color: this.color,
-        // We removed unwanted schema fields
+        // We remove avatar picture (unwanted schema fields)
         attendees: this.attendees.map((attendee) => {
           const sanitzedAttendee = { ...attendee };
           delete sanitzedAttendee.avatar;
           return sanitzedAttendee;
+        }),
+        documents: this.documents.map((document) => {
+          return {
+            documentId: document._id,
+            name: document.name,
+            type: document.type,
+            userId: document.userId,
+            storageType: "attachments"
+          }
         })
       };
       if (!this.isNewMeeting && this.meeting._id) {
