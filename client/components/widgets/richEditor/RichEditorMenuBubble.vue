@@ -107,6 +107,12 @@
           mdi-link
         </v-icon>
       </v-btn>
+
+      <v-btn icon @click="commands.todo_list">
+        <v-icon :color="iconColorDark(isActive.todo_list())">
+          mdi-checkbox-marked
+        </v-icon>
+      </v-btn>
     </v-toolbar>
   </editor-menu-bubble>
 </template>

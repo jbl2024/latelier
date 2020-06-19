@@ -107,6 +107,15 @@
             mdi-format-quote-close
           </v-icon>
         </button>
+
+        <button @click="commands.todo_list">
+          <v-icon
+            class="small-medium"
+            :color="iconColor(isActive.todo_list())"
+          >
+            mdi-checkbox-marked
+          </v-icon>
+        </button>
       </template>
     </div>
   </editor-floating-menu>
