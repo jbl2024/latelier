@@ -76,8 +76,8 @@
       <button
         @click="
           commands.createTable({
-            rowsCount: 3,
-            colsCount: 3,
+            rowsCount: 2,
+            colsCount: 2,
             withHeaderRow: false,
           })
         "
