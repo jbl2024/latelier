@@ -22,6 +22,9 @@ export const DocumentSchema = {
 };
 
 export const AttendeeSchema = {
+  attendeeId: {
+    type: String
+  },
   userId: {
     type: String,
     optional: true
@@ -33,6 +36,11 @@ export const AttendeeSchema = {
   lastName: {
     type: String,
     optional: true
+  },
+  role: {
+    type: String,
+    optional: true,
+    defaultValue: "attendee"
   },
   email: {
     type: String,

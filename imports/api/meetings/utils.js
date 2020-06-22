@@ -17,8 +17,10 @@ export default {
   },
   createUserAttendee(user) {
     return {
+      attendeeId: Random.id(),
       userId: user._id,
       present: false,
+      role: "attendee",
       avatar: user?.profile?.avatar,
       firstName: user?.profile?.firstName ? user.profile.firstName : "",
       lastName: user?.profile?.lastName ? user.profile.lastName : "",
@@ -39,8 +41,10 @@ export default {
     }
 
     return {
+      attendeeId: Random.id(),
       userId: null,
       present: false,
+      role: "attendee",
       firstName,
       lastName,
       email: null

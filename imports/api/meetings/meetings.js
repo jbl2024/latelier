@@ -5,6 +5,7 @@ import MeetingSchema from "./schema";
 export const MeetingState = Object.freeze({
   PENDING: "pending",
   RUNNING: "running",
+  STOPPED: "stopped",
   COMPLETED: "completed",
   CANCELED: "canceled"
 });
@@ -14,6 +15,11 @@ export const MeetingTypes = Object.freeze({
   WEEKLYPOINT: "weeklypoint",
   INFO: "info",
   SERVICE: "service"
+});
+
+export const MeetingRoles = Object.freeze({
+  ORGANIZER: "organizer",
+  ATTENDEE: "attendee"
 });
 
 export const Meetings = new Mongo.Collection("meetings");

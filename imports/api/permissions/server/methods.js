@@ -283,9 +283,22 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
       _id: meeting.projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
     });
-    if (project) {
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
+
+    if (meeting.createdBy === userId) {
       return true;
     }
+
+    const meetingOrganizersUserIds = meetings.attendees.filter((attendee) => {
+      return attendee.role === "organizer";
+    }).map((attendee) => attendee.userId);
+
+    if (meetingOrganizersUserIds.includes(userId)) {
+      return true;
+    }
+
     throw new Meteor.Error("not-authorized");
   }
 });

@@ -6,6 +6,7 @@ export default {
   state: {
     meetingsResults: null,
     meetingTypes: null,
+    meetingRoles: null,
     selectedMeeting: null,
     selectedMeetingTypes: [],
     currentMeeting: null
@@ -16,6 +17,9 @@ export default {
     },
     updateMeetingTypes(state, meetingTypes) {
       state.meetingTypes = meetingTypes;
+    },
+    updateMeetingRoles(state, meetingRoles) {
+      state.meetingRoles = meetingRoles;
     },
     updateSelectedMeetingTypes(state, selectedMeetingTypes) {
       state.selectedMeetingTypes = selectedMeetingTypes;
@@ -60,6 +64,10 @@ export default {
     async fetchMeetingTypes(context) {
       const meetingTypes = await Api.call("meetings.getTypes");
       context.commit("updateMeetingTypes", meetingTypes);
+    },
+    async fetchMeetingRoles(context) {
+      const meetingRoles = await Api.call("meetings.getRoles");
+      context.commit("updateMeetingRoles", meetingRoles);
     },
     setSelectedMeeting(context, selectedMeeting) {
       context.commit("updateSelectedMeeting", selectedMeeting);

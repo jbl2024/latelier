@@ -297,6 +297,7 @@
     "allMeetings": "Toutes les réunions",
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
+    "prepare": "Préparer la réunion",
     "participate": "Participer à la réunion",
     "create": "Créer",
     "created": "Réunion créée",
@@ -313,9 +314,18 @@
       "search": "Rechercher parmi les documents du projet"
     },
     "attendees": {
+      "attendees": "Participants",
+      "meetingAttendees": "Participants de la réunion",
       "addAttendees": "Ajouter des participants",
       "isExternalAttendee": "Invité externe au projet",
       "isProjectAttendee": "Membre du projet"
+    },
+    "attachments": {
+      "meetingAttachments": "Documents de la réunion"
+    },
+    "roles": {
+      "attendee": "Participant",
+      "organizer": "Organisateur"
     },
     "types": {
       "none": "Sans type",
@@ -357,6 +367,7 @@
     "attachments": "Documents",
     "addDescription": "Vous pouvez ajouter des documents ici ou sur une tâche",
     "addAttachments": "Ajouter des documents",
-    "none": "Aucun document"
+    "none": "Aucun document",
+    "noneFound": "Aucun document trouvé"
   }
 }

@@ -9,6 +9,7 @@
       :search-input.sync="searchInput"
       :label="label"
       hide-details="auto"
+      item-value="attendeeId"
       :item-text="getAttendeeName"
       return-object
       multiple
@@ -21,6 +22,11 @@
           :input-value="selected"
           small
         >
+          <v-avatar v-if="item.role === 'organizer'" left>
+            <v-icon>
+              mdi-chef-hat
+            </v-icon>
+          </v-avatar>
           <span class="pr-2">
             {{ getAttendeeName(item) }}
           </span>
@@ -46,25 +52,29 @@
         </v-list-item>
       </template>
       <template v-slot:item="data">
-        <template>
-          <v-list-item-avatar>
-            <meeting-attendee-avatar
-              :letters="createAttendeeLetters(data.item)"
-              :avatar="data.item.avatar"
-            />
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ getAttendeeName(data.item) }}
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              {{ `${isExternalAttendee(data.item) ?
-                $t("meetings.attendees.isExternalAttendee") :
-                $t("meetings.attendees.isProjectAttendee")}`
-              }}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-        </template>
+        <v-list-item-avatar>
+          <meeting-attendee-avatar
+            :letters="createAttendeeLetters(data.item)"
+            :avatar="data.item.avatar"
+          />
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ getAttendeeName(data.item) }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ `${isExternalAttendee(data.item) ?
+              $t("meetings.attendees.isExternalAttendee") :
+              $t("meetings.attendees.isProjectAttendee")}`
+            }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action @click.stop>
+          <meeting-attendee-role-selector
+            v-model="data.item.role"
+            :roles="roles"
+          />
+        </v-list-item-action>
       </template>
     </v-combobox>
   </div>
@@ -72,10 +82,13 @@
 <script>
 import MeetingUtils from "/imports/api/meetings/utils";
 import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
+import MeetingAttendeeRoleSelector from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeRoleSelector";
+import { mapState } from "vuex";
 
 export default {
   components: {
-    MeetingAttendeeAvatar
+    MeetingAttendeeAvatar,
+    MeetingAttendeeRoleSelector
   },
   props: {
     items: {
@@ -103,13 +116,33 @@ export default {
       default: true
     }
   },
+  data() {
+    return {
+      editing: null,
+      index: -1
+    }
+  },
   computed: {
+    ...mapState("meeting", {
+      roles(state) {
+        return Object.values(state.meetingRoles).map((role) => {
+          return {
+            value: role,
+            text: this.$t(`meetings.roles.${role}`)
+          };
+        })
+      }
+    }),
     attendees: {
       get() {
         return this.value;
       },
       set(newAttendees) {
-        this.$emit("input", newAttendees.filter((a) => a).map((attendee) => typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee));
+        this.$emit("input", 
+        newAttendees
+          .filter((a) => a)
+          .map((attendee) => typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee)
+        );
       }
     },
     searchInput: {

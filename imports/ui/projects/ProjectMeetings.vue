@@ -267,6 +267,7 @@ export default {
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     await this.$store.dispatch("meeting/fetchMeetingTypes");
+    await this.$store.dispatch("meeting/fetchMeetingRoles");
     await this.$store.dispatch("meeting/setSelectedMeetingTypes", Object.values(this.meetingTypes));
   },
   beforeDestroy() {

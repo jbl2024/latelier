@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { MeetingState, MeetingTypes, Meetings } from "/imports/api/meetings/meetings";
+import { MeetingState, MeetingTypes, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import moment from "moment";
 // We use project rights for meeting rights
 import {
@@ -269,5 +269,13 @@ Meetings.methods.getTypes = new ValidatedMethod({
   validate: null,
   run() {
     return MeetingTypes;
+  }
+});
+
+Meetings.methods.getTypes = new ValidatedMethod({
+  name: "meetings.getRoles",
+  validate: null,
+  run() {
+    return MeetingRoles;
   }
 });
