@@ -6,7 +6,7 @@
           <meeting-attendees-selector
             v-model="attendees"
             :items="availableAttendees"
-            :label="$t('meetings.attendees.addAttendees')"
+            :label="$t('meetings.attendees.meetingAttendees')"
             :search.sync="filter"
             @add-new-attendee="addNewAttendee"
           />
