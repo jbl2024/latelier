@@ -1,5 +1,5 @@
 <template>
-  <div v-if="hasAttachments">
+  <div>
     <!-- As list -->
     <v-list v-if="display === 'list'" two-line subheader class="list">
       <v-subheader>
@@ -54,9 +54,9 @@
         </v-list-item-action>
       </v-list-item>
     </v-list>
-    <!-- As combobox -->
-    <v-combobox
-      v-else-if="display === 'combobox'"
+    <!-- As autocomplete -->
+    <v-autocomplete
+      v-else-if="display === 'autocomplete'"
       v-model="selectedAttachments"
       :items="attachments"
       small-chips
@@ -65,8 +65,10 @@
       :search-input.sync="searchInput"
       :label="label"
       hide-details="auto"
+      :item-value="getAttachmentId"
       :item-text="getAttachmentName"
       return-object
+      :no-data-text="$t('attachments.noneFound')"
       multiple
     >
       <template v-slot:selection="{ attrs, item, parent, selected }">
@@ -88,13 +90,6 @@
             mdi-close
           </v-icon>
         </v-chip>
-      </template>
-      <template v-slot:no-data>
-        <v-list-item>
-          <span class="mr-2">
-            Ajouter des fichiers
-          </span>
-        </v-list-item>
       </template>
       <template v-slot:item="data">
         <template>
@@ -123,7 +118,7 @@
           </v-list-item-content>
         </template>
       </template>
-    </v-combobox>
+    </v-autocomplete>
   </div>
 </template>
 <script>
@@ -164,7 +159,7 @@ export default {
     display: {
       type: String,
       default: "list",
-      validator: (display) => ["list", "combobox"].includes(display)
+      validator: (display) => ["list", "autocomplete"].includes(display)
     },
     hideSelected: {
       type: Boolean,
@@ -172,9 +167,6 @@ export default {
     }
   },
   computed: {
-    hasAttachments() {
-      return this.attachments && this.attachments.length > 0;
-    },
     searchInput: {
       get() {
         return this.search;
@@ -198,6 +190,9 @@ export default {
     },
     getAttachmentName(attachment) {
       return attachment.name;
+    },
+    getAttachmentId(attachment) {
+      return attachment._id;
     },
     link(attachment) {
       return Attachments.link(attachment);
