@@ -6,10 +6,16 @@
       max-width="1000px"
     >
       <template v-slot:title>
-        <div v-if="meeting" class="meeting__header">
-          <div class="meeting__title">
-            {{ title }}
-          </div>
+        <meeting-title
+          v-if="meeting"
+          :title="meeting.name"
+          :color="meeting.color"
+          :documents-count="documentsCount"
+          :attendees-count="attendeesCount"
+        />
+      </template>
+      <template v-slot:content>
+        <div v-if="meeting" class="meeting__content">
           <div class="meeting__chips">
             <v-chip>
               <v-icon class="mr-2">
@@ -24,24 +30,56 @@
               {{ $t(`meetings.types.${meeting.type}`) }}
             </v-chip>
           </div>
-        </div>
-      </template>
-      <template v-slot:content>
-        <div v-if="meeting">
-          <v-card-text v-if="meeting.description" v-html="markDown(meeting.description)" />
-          <v-card-text v-if="meeting.agenda" v-html="markDown(meeting.agenda)" />
+          <v-expansion-panels
+            class="meeting__panels"
+            v-model="panel"
+            tile
+            accordion
+            multiple
+          >
+            <!-- Meeting summary -->
+            <v-expansion-panel>
+              <v-expansion-panel-header class="meeting__panel-header">
+                Description et ordre du jour
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <div v-if="meeting.description" v-html="markDown(meeting.description)" />
+                <div v-if="meeting.agenda" v-html="markDown(meeting.agenda)" />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <!-- Documents -->
+            <v-expansion-panel v-if="meeting && meeting.documents">
+              <v-expansion-panel-header class="meeting__panel-header">
+                Documents {{ `(${documentsCount})` }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <pre>{{ meeting.documents.map(doc => doc.name) }}</pre>
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+            <!-- Attendees -->
+            <v-expansion-panel v-if="meeting && meeting.attendees">
+              <v-expansion-panel-header class="meeting__panel-header">
+                Participants {{ `(${attendeesCount})` }}
+              </v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <meeting-attendees
+                  :project-id="meeting.projectId"
+                  :value="meeting.attendees"
+                />
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </div>
       </template>
       <template v-slot:actions>
         <template v-if="meeting">
-          <v-btn @click="editMeeting">
-            <v-icon>
-              mdi-pencil
-            </v-icon>
-            {{ $t("meetings.edit") }}
-          </v-btn>
-          <v-btn color="black" dark :disabled="!valid" @click="openMeeting">
-            {{ $t("meetings.participate") }}
+          <v-btn
+            v-if="canWriteMeeting !== null"
+            color="black"
+            dark
+            @click="openMeeting"
+          >
+            {{ $t(`meetings.${canWriteMeeting === true ? "prepareEdit" : "participate"}`) }}
           </v-btn>
         </template>
       </template>
@@ -51,8 +89,15 @@
 <script>
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
+import MeetingAttendees from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendees";
+import MeetingTitle from "/imports/ui/meetings/Meeting/MeetingTitle";
+import Api from "/imports/ui/api/Api";
 
 export default {
+  components: {
+    MeetingAttendees,
+    MeetingTitle
+  },
   mixins: [MarkdownMixin, DatesMixin],
   props: {
     meeting: {
@@ -62,13 +107,24 @@ export default {
   },
   data() {
     return {
+      panel: [0, 1],
       showDialog: false,
-      valid: true
+      canWriteMeeting: null
     };
   },
   computed: {
     title() {
       return this.meeting?.name;
+    },
+    documentsCount() {
+      if (!this.meeting) return 0;
+      return this.meeting.documents && this.meeting.documents.length 
+      ? this.meeting.documents.length : 0;
+    },
+    attendeesCount() {
+      if (!this.meeting) return 0;
+      return this.meeting.attendees && this.meeting.attendees.length 
+      ? this.meeting.attendees.length : 0;
     },
     meetingInterval() {
       if (!this.meeting) return "";
@@ -79,16 +135,21 @@ export default {
       });
     }
   },
+  watch: {
+    meeting: {
+      immediate: true,
+      async handler() {
+        if (!this.meeting) return;
+        this.canWriteMeeting = await Api.call("permissions.canWriteMeeting", {meetingId: this.meeting._id});
+      }
+    }
+  },
   methods: {
     open() {
       this.showDialog = true;
     },
     close() {
       this.showDialog = false;
-    },
-    editMeeting() {
-      this.close();
-      this.$emit("edit-meeting", this.meeting);
     },
     async openMeeting() {
       await this.$router.push({
@@ -104,12 +165,24 @@ export default {
 </script>
 <style lang="scss">
 .meeting {
+  .meeting__panels,
+  .meeting__content {
+    margin-top: 1rem;
+  }
   .meeting__header {
     display: flex;
     flex-direction: column;
   }
   .meeting__title {
     margin-bottom: 4px;
+  }
+  .meeting__panel-header {
+    padding: 0 1rem;
+    font-size: 1.2rem;
+  }
+  .v-expansion-panel-content__wrap {
+    padding: 1rem;
+    padding-top: 0;
   }
 }
 </style>

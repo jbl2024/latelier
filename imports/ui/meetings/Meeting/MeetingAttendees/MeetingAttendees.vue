@@ -1,6 +1,27 @@
 <template>
   <div v-if="projectId" class="meeting-attendees">
-    <v-container fluid class="meeting-attendees__container">
+    <v-list v-if="display === 'list'">
+      <v-list-item v-for="attendee in attendees" :key="attendee.attendeeId">
+        <v-list-item-avatar>
+        <meeting-attendee-avatar
+          :letters="createAttendeeLetters(attendee)"
+          :avatar="attendee.avatar"
+        />
+      </v-list-item-avatar>
+      <v-list-item-content>
+        <v-list-item-title>
+          {{ getAttendeeName(attendee) }}
+        </v-list-item-title>
+        <v-list-item-subtitle>
+          {{ `${isExternalAttendee(attendee) ?
+            $t("meetings.attendees.isExternalAttendee") :
+            $t("meetings.attendees.isProjectAttendee")}`
+          }}
+        </v-list-item-subtitle>
+      </v-list-item-content>
+      </v-list-item>
+    </v-list>
+    <v-container v-else-if="display === 'selector'" fluid class="meeting-attendees__container">
       <v-row>
         <v-col cols="12">
           <meeting-attendees-selector
@@ -18,12 +39,14 @@
 <script>
 import debounce from "lodash/debounce";
 import Api from "/imports/ui/api/Api";
+import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
 import MeetingAttendeesSelector from "./MeetingAttendeesSelector";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingUtils from "/imports/api/meetings/utils";
 
 export default {
   components: {
+    MeetingAttendeeAvatar,
     MeetingAttendeesSelector
   },
   mixins: [usersMixin],
@@ -37,7 +60,12 @@ export default {
       default() {
         return [];
       }
-    }
+    },
+    display: {
+      type: String,
+      default: "list",
+      validator: (display) => ["list", "selector"].includes(display)
+    },
   },
   data() {
     return {
@@ -79,6 +107,15 @@ export default {
     }, 400)
   },
   methods: {
+    isExternalAttendee(attendee) {
+      return attendee.userId == null;
+    },
+    getAttendeeName(attendee) {
+      return MeetingUtils.getAttendeeName(attendee);
+    },
+    createAttendeeLetters(attendee) {
+      return MeetingUtils.createAttendeeLetters(attendee);
+    },
     addNewAttendee(name) {
       const attendee = MeetingUtils.createNewAttendee(name);
       this.createdAttendees.push(attendee);

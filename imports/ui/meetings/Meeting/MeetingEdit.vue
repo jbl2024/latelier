@@ -10,31 +10,13 @@
       max-width="600px"
     >
       <template #title>
-        <div class="meeting-edit__title">
-          <div class="meeting-edit__main-title">
-            <div
-              ref="color"
-              class="meeting-color-trigger"
-              :style="colorStyles"
-              @click="showSelectColor = true"
-            />
-            <div>{{ computedTitle }}</div>
-          </div>
-          <div class="meeting-edit__counts">
-            <div class="mr-2">
-              <v-icon>
-                mdi-attachment
-              </v-icon>
-              {{ documents.length }}
-            </div>
-            <div>
-              <v-icon>
-                mdi-account-multiple
-              </v-icon>
-              {{ attendees.length }}
-            </div>
-          </div>
-        </div>
+        <meeting-title
+          :title="computedTitle"
+          :color="color"
+          @click-color="showSelectColor = true"
+          :documents-count="documents.length"
+          :attendees-count="attendees.length"
+        />
       </template>
       <template v-slot:content>
         <select-date
@@ -74,6 +56,7 @@
           <!-- Attendees -->
           <meeting-attendees
             v-model="attendees"
+            display="selector"
             class="pt-3"
             :project-id="projectId"
           />
@@ -103,6 +86,7 @@
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
 import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
+import MeetingTitle from "./MeetingTitle";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
@@ -113,6 +97,7 @@ export default {
     MeetingInfos,
     MeetingAttendees,
     MeetingDocuments,
+    MeetingTitle,
     SelectHourRange
   },
   mixins: [usersMixin],
@@ -166,9 +151,6 @@ export default {
     },
     computedTitle() {
       return (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
-    },
-    colorStyles() {
-      return `background-color: ${this.color}`;
     }
   },
   methods: {
@@ -299,17 +281,6 @@ export default {
   padding: 0;
 }
 .meeting-edit {
-  .meeting-edit__title {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    align-items: center;
-    .meeting-edit__counts,
-    .meeting-edit__main-title {
-      display: flex;
-      align-items: center;
-    }
-  }
   .meeting-edit__form {
     padding: 2rem;
   }
@@ -324,15 +295,6 @@ export default {
   }
   .meeting-edit__tab.v-tab {
     justify-content: flex-start;
-  }
-  .meeting-color-trigger {
-    position: relative;
-    border-radius: 50px;
-    min-height: 40px;
-    cursor: pointer;
-    display: flex;
-    min-width: 40px;
-    margin-right: 16px;
   }
 }
 </style>
