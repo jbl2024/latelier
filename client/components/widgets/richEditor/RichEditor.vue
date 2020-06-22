@@ -439,7 +439,7 @@ li[data-type="todo_item"] {
 li[data-done="true"] {
   > .todo-content {
     > p {
-      text-decoration: line-through;
+      text-decoration: none;
     }
   }
   > .todo-checkbox {
