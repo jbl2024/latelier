@@ -45,7 +45,11 @@ import {
   Underline,
   History,
   TodoItem,
-  TodoList
+  TodoList,
+  Table,
+  TableHeader,
+  TableCell,
+  TableRow
 } from "tiptap-extensions";
 
 import {
@@ -240,7 +244,13 @@ export default {
         new TodoItemFix({
           nested: true
         }),
-        new TodoList()
+        new TodoList(),
+        new Table({
+          resizable: true
+        }),
+        new TableHeader(),
+        new TableCell(),
+        new TableRow()
       ],
       editorProps: {
         handleKeyDown: (view, event) => {
@@ -448,5 +458,66 @@ li[data-done="true"] {
 }
 li[data-done="false"] {
   text-decoration: none;
+}
+
+.editor {
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
+    overflow: hidden;
+
+    td,
+    th {
+      min-width: 1em;
+      border: 2px solid #ddd;
+      padding: 3px 5px;
+      vertical-align: top;
+      box-sizing: border-box;
+      position: relative;
+      > * {
+        margin-bottom: 0;
+      }
+    }
+
+    th {
+      font-weight: bold;
+      text-align: left;
+    }
+
+    .selectedCell:after {
+      z-index: 2;
+      position: absolute;
+      content: "";
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: rgba(200, 200, 255, 0.4);
+      pointer-events: none;
+    }
+
+    .column-resize-handle {
+      position: absolute;
+      right: -2px;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      z-index: 20;
+      background-color: #adf;
+      pointer-events: none;
+    }
+  }
+
+  .tableWrapper {
+    margin: 1em 0;
+    overflow-x: auto;
+  }
+
+  .resize-cursor {
+    cursor: ew-resize;
+    cursor: col-resize;
+  }
 }
 </style>

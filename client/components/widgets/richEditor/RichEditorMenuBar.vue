@@ -1,8 +1,5 @@
 <template>
-  <editor-menu-bar
-    v-slot="{ commands, isActive, focused }"
-    :editor="editor"
-  >
+  <editor-menu-bar v-slot="{ commands, isActive, focused }" :editor="editor">
     <div class="menubar top-toolbar" :class="{ 'is-focused': focused }">
       <button @click="commands.bold">
         <v-icon class="small-medium" :color="iconColor(isActive.bold())">
@@ -72,13 +69,66 @@
         </v-icon>
       </button>
       <button @click="commands.todo_list">
-        <v-icon
-          class="small-medium"
-          :color="iconColor(isActive.todo_list())"
-        >
+        <v-icon class="small-medium" :color="iconColor(isActive.todo_list())">
           mdi-checkbox-marked
         </v-icon>
       </button>
+      <button
+        @click="
+          commands.createTable({
+            rowsCount: 3,
+            colsCount: 3,
+            withHeaderRow: false,
+          })
+        "
+      >
+        <v-icon class="small-medium">
+          mdi-table
+        </v-icon>
+      </button>
+
+      <span v-if="isActive.table()">
+        <button @click="commands.deleteTable">
+          <v-icon class="small-medium">
+            mdi-table-remove
+          </v-icon>
+        </button>
+        <button @click="commands.addColumnBefore">
+          <v-icon class="small-medium">
+            mdi-table-column-plus-before
+          </v-icon>
+        </button>
+        <button @click="commands.addColumnAfter">
+          <v-icon class="small-medium">
+            mdi-table-column-plus-after
+          </v-icon>
+        </button>
+        <button @click="commands.deleteColumn">
+          <v-icon class="small-medium">
+            mdi-table-column-remove
+          </v-icon>
+        </button>
+        <button @click="commands.addRowBefore">
+          <v-icon class="small-medium">
+            mdi-table-row-plus-before
+          </v-icon>
+        </button>
+        <button @click="commands.addRowAfter">
+          <v-icon class="small-medium">
+            mdi-table-row-plus-after
+          </v-icon>
+        </button>
+        <button @click="commands.deleteRow">
+          <v-icon class="small-medium">
+            mdi-table-row-plus-remove
+          </v-icon>
+        </button>
+        <button @click="commands.toggleCellMerge">
+          <v-icon class="small-medium">
+            mdi-table-merge-cells
+          </v-icon>
+        </button>
+      </span>
     </div>
   </editor-menu-bar>
 </template>
