@@ -72,7 +72,7 @@
       </div>
       <div class="action">
         <v-btn color="primary" :disabled="!note" @click="addNote">
-          {{ $t("Send") }} (⇧ + ⏎)
+          {{ $t("Send") }} (Ctrl + ⏎)
           <v-icon small right>
             mdi-send
           </v-icon>

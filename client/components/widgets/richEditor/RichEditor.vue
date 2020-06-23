@@ -23,7 +23,6 @@
         dense: dense,
       }"
       :style="getStyle(maxHeight)"
-      @keydown.shift.enter="submit"
     />
   </div>
 </template>
@@ -31,6 +30,7 @@
 <script>
 import { Editor, EditorContent } from "tiptap";
 import {
+  HardBreak,
   Blockquote,
   CodeBlock,
   Heading,
@@ -232,6 +232,7 @@ export default {
     this.editor = new Editor({
       content: this.content,
       extensions: [
+        new HardBreak(),
         new Blockquote(),
         new CodeBlock(),
         new Heading({ levels: [1, 2, 3] }),
@@ -258,7 +259,7 @@ export default {
       ],
       editorProps: {
         handleKeyDown: (view, event) => {
-          if (event.key === "Enter" && event.shiftKey) {
+          if (event.key === "Enter" && event.ctrlKey) {
             this.submit();
           }
         }
