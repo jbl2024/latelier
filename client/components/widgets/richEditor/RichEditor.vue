@@ -8,7 +8,7 @@
     }"
     @click="focus"
   >
-    <rich-editor-menu-bubble :editor="editor" />
+    <rich-editor-menu-bubble v-if="bubble" :editor="editor" />
     <rich-editor-floating-menu v-if="floating" menu :editor="editor" />
     <rich-editor-menu-bar
       v-if="!hideToolbar"
@@ -195,6 +195,10 @@ export default {
       default: false
     },
     floating: {
+      type: Boolean,
+      default: false
+    },
+    bubble: {
       type: Boolean,
       default: false
     },
