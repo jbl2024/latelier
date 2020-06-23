@@ -119,7 +119,6 @@ export default {
         this.pagination.totalPages = this.calculateTotalPages();
       } catch (error) {
         this.$notifyError(error);
-        return;
       }
     },
     calculateTotalPages() {

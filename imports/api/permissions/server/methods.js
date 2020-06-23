@@ -291,9 +291,7 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
       return true;
     }
 
-    const meetingOrganizersUserIds = meetings.attendees.filter((attendee) => {
-      return attendee.role === "organizer";
-    }).map((attendee) => attendee.userId);
+    const meetingOrganizersUserIds = meetings.attendees.filter((attendee) => attendee.role === "organizer").map((attendee) => attendee.userId);
 
     if (meetingOrganizersUserIds.includes(userId)) {
       return true;

@@ -55,7 +55,7 @@ export default {
       return `background-color: ${this.color}`;
     }
   }
-}
+};
 </script>
 <style lang="scss">
   .meeting-title {

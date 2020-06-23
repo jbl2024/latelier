@@ -3,22 +3,22 @@
     <v-list v-if="display === 'list'">
       <v-list-item v-for="attendee in attendees" :key="attendee.attendeeId">
         <v-list-item-avatar>
-        <meeting-attendee-avatar
-          :letters="createAttendeeLetters(attendee)"
-          :avatar="attendee.avatar"
-        />
-      </v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title>
-          {{ getAttendeeName(attendee) }}
-        </v-list-item-title>
-        <v-list-item-subtitle>
-          {{ `${isExternalAttendee(attendee) ?
-            $t("meetings.attendees.isExternalAttendee") :
-            $t("meetings.attendees.isProjectAttendee")}`
-          }}
-        </v-list-item-subtitle>
-      </v-list-item-content>
+          <meeting-attendee-avatar
+            :letters="createAttendeeLetters(attendee)"
+            :avatar="attendee.avatar"
+          />
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title>
+            {{ getAttendeeName(attendee) }}
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ `${isExternalAttendee(attendee) ?
+              $t("meetings.attendees.isExternalAttendee") :
+              $t("meetings.attendees.isProjectAttendee")}`
+            }}
+          </v-list-item-subtitle>
+        </v-list-item-content>
       </v-list-item>
     </v-list>
     <v-container v-else-if="display === 'selector'" fluid class="meeting-attendees__container">
@@ -65,7 +65,7 @@ export default {
       type: String,
       default: "list",
       validator: (display) => ["list", "selector"].includes(display)
-    },
+    }
   },
   data() {
     return {

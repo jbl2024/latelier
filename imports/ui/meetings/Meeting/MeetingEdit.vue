@@ -13,9 +13,9 @@
         <meeting-title
           :title="computedTitle"
           :color="color"
-          @click-color="showSelectColor = true"
           :documents-count="documents.length"
           :attendees-count="attendees.length"
+          @click-color="showSelectColor = true"
         />
       </template>
       <template v-slot:content>

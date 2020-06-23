@@ -31,8 +31,8 @@
             </v-chip>
           </div>
           <v-expansion-panels
-            class="meeting__panels"
             v-model="panel"
+            class="meeting__panels"
             tile
             accordion
             multiple
@@ -118,13 +118,13 @@ export default {
     },
     documentsCount() {
       if (!this.meeting) return 0;
-      return this.meeting.documents && this.meeting.documents.length 
-      ? this.meeting.documents.length : 0;
+      return this.meeting.documents && this.meeting.documents.length
+        ? this.meeting.documents.length : 0;
     },
     attendeesCount() {
       if (!this.meeting) return 0;
-      return this.meeting.attendees && this.meeting.attendees.length 
-      ? this.meeting.attendees.length : 0;
+      return this.meeting.attendees && this.meeting.attendees.length
+        ? this.meeting.attendees.length : 0;
     },
     meetingInterval() {
       if (!this.meeting) return "";
@@ -140,7 +140,7 @@ export default {
       immediate: true,
       async handler() {
         if (!this.meeting) return;
-        this.canWriteMeeting = await Api.call("permissions.canWriteMeeting", {meetingId: this.meeting._id});
+        this.canWriteMeeting = await Api.call("permissions.canWriteMeeting", { meetingId: this.meeting._id });
       }
     }
   },

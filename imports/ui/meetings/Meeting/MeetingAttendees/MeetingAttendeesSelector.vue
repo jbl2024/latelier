@@ -120,17 +120,15 @@ export default {
     return {
       editing: null,
       index: -1
-    }
+    };
   },
   computed: {
     ...mapState("meeting", {
       roles(state) {
-        return Object.values(state.meetingRoles).map((role) => {
-          return {
-            value: role,
-            text: this.$t(`meetings.roles.${role}`)
-          };
-        })
+        return Object.values(state.meetingRoles).map((role) => ({
+          value: role,
+          text: this.$t(`meetings.roles.${role}`)
+        }));
       }
     }),
     attendees: {
@@ -138,11 +136,10 @@ export default {
         return this.value;
       },
       set(newAttendees) {
-        this.$emit("input", 
-        newAttendees
-          .filter((a) => a)
-          .map((attendee) => typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee)
-        );
+        this.$emit("input",
+          newAttendees
+            .filter((a) => a)
+            .map((attendee) => typeof attendee === "string" ? MeetingUtils.createNewAttendee(attendee) : attendee));
       }
     },
     searchInput: {
