@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { Editor, EditorContent } from "tiptap";
+import { Editor, EditorContent, Node } from "tiptap";
 import {
   HardBreak,
   Blockquote,
@@ -44,7 +44,6 @@ import {
   Strike,
   Underline,
   History,
-  TodoItem,
   TodoList,
   Table,
   TableHeader,
@@ -59,7 +58,7 @@ import {
 } from "tiptap-commands";
 
 /* eslint class-methods-use-this: off */
-class TodoItemFix extends TodoItem {
+class TodoItem extends Node {
   get name() {
     return "todo_item";
   }
@@ -246,7 +245,7 @@ export default {
         new Strike(),
         new Underline(),
         new History(),
-        new TodoItemFix({
+        new TodoItem({
           nested: true
         }),
         new TodoList(),
