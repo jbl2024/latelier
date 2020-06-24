@@ -205,15 +205,22 @@ Projects.methods.findUsers = new ValidatedMethod({
   name: "projects.findUsers",
   validate: new SimpleSchema({
     projectId: { type: String },
-    filter: { type: String, optional: true }
+    filter: { type: String, optional: true },
+    usersIds: { type: Array, optional: true },
+    "usersIds.$": {
+      type: String
+    }
   }).validator(),
-  run({ projectId, filter }) {
+  run({ projectId, filter, usersIds }) {
     checkLoggedIn();
     const project = Projects.findOne({ _id: projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
-    const membersIds = findProjectMembersIds(project);
+    let membersIds = findProjectMembersIds(project);
+    if (usersIds && Array.isArray(usersIds) && usersIds.length) {
+      membersIds = membersIds.filter((memberId) => usersIds.includes(memberId));
+    }
 
     const query = { _id: { $in: membersIds } };
     if (filter && filter.length > 0) {

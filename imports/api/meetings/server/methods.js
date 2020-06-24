@@ -10,7 +10,8 @@ import {
   checkCanWriteMeeting
 } from "/imports/api/permissions/permissions";
 
-import { MeetingCreateSchema, MeetingUpdateSchema } from "/imports/api/meetings/schema";
+import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
+import SimpleSchema from "simpl-schema";
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
@@ -27,13 +28,19 @@ Meetings.methods.create = new ValidatedMethod({
     startDate,
     endDate,
     attendees,
-    documents
+    documents,
+    actions
   }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
     const now = new Date();
     const author = Meteor.userId();
     state = state || MeetingState.PENDING;
+
+    attendees = Array.isArray(attendees) ? attendees : [];
+    documents = Array.isArray(documents) ? documents : [];
+    actions = Array.isArray(actions) ? actions : [];
+
     const meetingId = Meetings.insert({
       projectId,
       name,
@@ -47,6 +54,7 @@ Meetings.methods.create = new ValidatedMethod({
       endDate,
       attendees,
       documents,
+      actions,
       createdAt: now,
       createdBy: author,
       updatedAt: now,
@@ -71,7 +79,8 @@ Meetings.methods.update = new ValidatedMethod({
     startDate,
     endDate,
     attendees,
-    documents
+    documents,
+    actions
   }) {
     checkLoggedIn();
 
@@ -99,6 +108,7 @@ Meetings.methods.update = new ValidatedMethod({
           endDate,
           attendees,
           documents,
+          actions,
           updatedAt: new Date(),
           updateddBy: Meteor.userId()
         }
@@ -174,6 +184,7 @@ Meetings.methods.remove = new ValidatedMethod({
   }).validator(),
   run({ meetingId }) {
     checkLoggedIn();
+    // @todo check can write
     Meetings.update(
       { _id: meetingId },
       {
@@ -277,5 +288,110 @@ Meetings.methods.getTypes = new ValidatedMethod({
   validate: null,
   run() {
     return MeetingRoles;
+  }
+});
+
+Meetings.methods.getActions = new ValidatedMethod({
+  name: "meetings.getActions",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    const meeting = Meetings.findOne({ _id: meetingId });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+    return meeting.actions && Array.isArray(meeting.actions) ? meeting.actions : [];
+  }
+});
+
+Meetings.methods.createAction = new ValidatedMethod({
+  name: "meetings.createAction",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    action: {
+      type: new SimpleSchema(ActionCreateUpdateSchema)
+    }
+  }).validator(),
+  run({
+    meetingId,
+    action
+  }) {
+    const meeting = Meetings.findOne({ _id: meetingId });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+
+    if (action.dueDate) {
+      action.dueDate = moment.utc(action.dueDate).toDate();
+    }
+    const returnedId = Meetings.update(
+      { _id: meetingId },
+      {
+        $push: { actions: action }
+      }
+    );
+    if (!returnedId) {
+      throw new Meteor.Error("not-found");
+    }
+  }
+});
+
+Meetings.methods.updateAction = new ValidatedMethod({
+  name: "meetings.updateAction",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    action: {
+      type: new SimpleSchema(ActionCreateUpdateSchema)
+    }
+  }).validator(),
+  run({
+    meetingId,
+    action
+  }) {
+    if (action.dueDate) {
+      action.dueDate = moment.utc(action.dueDate).toDate();
+    }
+    const returnedId = Meetings.update(
+      {
+        _id: meetingId,
+        "actions.actionId": action.actionId
+      },
+      { $set: { "actions.$": action } }
+    );
+    if (!returnedId) {
+      throw new Meteor.Error("not-found");
+    }
+    return returnedId;
+  }
+});
+
+Meetings.methods.deleteActions = new ValidatedMethod({
+  name: "meetings.deleteActions",
+  validate: new SimpleSchema({
+    meetingId: {
+      type: String
+    },
+    actionsIds: {
+      type: Array,
+      min: 1
+    },
+    "actionsIds.$": {
+      type: String
+    }
+  }).validator(),
+  run({ meetingId, actionsIds }) {
+    if (!Array.isArray(actionsIds) || !actionsIds.length) return false;
+    const ids = Meetings.update(
+      { _id: meetingId },
+      {
+        $pull: {
+          actions: {
+            actionId: { $in: actionsIds }
+          }
+        }
+      }
+    );
+    return ids;
   }
 });

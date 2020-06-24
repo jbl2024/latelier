@@ -311,6 +311,20 @@
     "noType": "Aucun type",
     "type": "Type de réunion",
     "location": "Lieu",
+    "actions": {
+      "none": "Aucune action ou décision",
+      "addAction": "Ajouter une action ou une décision",
+      "deleteAction?": "Supprimer l'action",
+      "deleteActionSuccess": "Action supprimée avec succès",
+      "createActionSuccess": "Action créée avec succès",
+      "updateActionSuccess": "Action mise à jour avec succès",
+      "selectAssignedTo": "Sélectionner un responsable",
+      "types": {
+        "decision": "Décision",
+        "action": "Action",
+        "information": "Information"
+      }
+    },
     "documents": {
       "search": "Rechercher parmi les documents du projet"
     },

@@ -56,9 +56,9 @@
           <!-- Attendees -->
           <meeting-attendees
             v-model="attendees"
-            display="selector"
-            class="pt-3"
             :project-id="projectId"
+            display="combobox"
+            class="meeting-edit__attendees"
           />
           <!-- Documents -->
           <meeting-documents
@@ -90,6 +90,7 @@ import MeetingTitle from "./MeetingTitle";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin";
 import Api from "/imports/ui/api/Api";
 
 export default {
@@ -100,7 +101,7 @@ export default {
     MeetingTitle,
     SelectHourRange
   },
-  mixins: [usersMixin],
+  mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
     projectId: {
       type: String,
@@ -233,11 +234,7 @@ export default {
         location: this.location,
         color: this.color,
         // We remove avatar picture (unwanted schema fields)
-        attendees: this.attendees.map((attendee) => {
-          const sanitzedAttendee = { ...attendee };
-          delete sanitzedAttendee.avatar;
-          return sanitzedAttendee;
-        }),
+        attendees: this.attendees.map((attendee) => this.sanitizeAttendee(attendee)),
         documents: this.documents.map((document) => ({
           documentId: document._id,
           name: document.name,
@@ -295,6 +292,10 @@ export default {
   }
   .meeting-edit__tab.v-tab {
     justify-content: flex-start;
+  }
+  .meeting-edit__attendees {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
   }
 }
 </style>

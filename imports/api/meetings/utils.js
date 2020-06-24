@@ -50,6 +50,11 @@ export default {
       email: null
     };
   },
+  sanitizeAttendee(attendee) {
+    const sanitizedAttendee = { ...attendee };
+    delete sanitizedAttendee.avatar;
+    return sanitizedAttendee;
+  },
   formatUsersAsAttendees(users) {
     return users.map((user) => this.createUserAttendee(user));
   },
@@ -86,6 +91,15 @@ export default {
       documents: [],
       startDate: startDate.format("YYYY-MM-DD HH:00"),
       endDate: endDate.format("YYYY-MM-DD HH:00")
+    };
+  },
+  makeNewMeetingAction() {
+    return {
+      actionId: Random.id(),
+      type: "action",
+      description: "",
+      dueDate: null,
+      assignedTo: null
     };
   }
 };

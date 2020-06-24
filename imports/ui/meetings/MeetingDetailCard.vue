@@ -1,13 +1,29 @@
 <template>
-  <v-card v-if="meeting" class="flex-container">
-    <v-toolbar class="flex0" dense>
-      <rich-editor-menu-bar :editor="currentEditor" />
-    </v-toolbar>
-    <v-card-text class="flex1">
-      <div class="list">
-        <h1>{{ meeting.name }}</h1>
-        <div v-if="meeting.description" v-html="meeting.description" />
-        <template>
+  <div v-if="meeting">
+    <select-date
+      v-model="showSelectDate"
+      :disable-time="true"
+      @select="selectActionDueDate"
+    />
+    <meeting-attendees-dialog
+      ref="assignedToDialog"
+      :attendees="meeting.attendees"
+      :project-id="meeting.projectId"
+      :multiple="false"
+      @select-attendees="selectActionAssignedTo"
+    >
+      <template #title>
+        {{ $t(`meetings.actions.selectAssignedTo`) }}
+      </template>
+    </meeting-attendees-dialog>
+    <v-card class="flex-container">
+      <v-toolbar class="flex0" dense>
+        <rich-editor-menu-bar :editor="currentEditor" />
+      </v-toolbar>
+      <v-card-text class="flex1">
+        <div class="list">
+          <h1>{{ meeting.name }}</h1>
+          <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
             ref="editor1"
@@ -17,25 +33,44 @@
             autofocus
             @on-focus="setCurrentEditor"
           />
-        </template>
-        <template>
-          <h2>{{ $t("meetings.report.report") }}</h2>
+          <h2>
+            {{ $t("meetings.report.report") }}
+          </h2>
           <rich-editor
             v-model="meeting.report"
             class="editor"
             hide-toolbar
             @on-focus="setCurrentEditor"
           />
-        </template>
-      </div>
-    </v-card-text>
-  </v-card>
+          <div class="actions">
+            <meeting-actions-table
+              :actions="actions"
+              @add-new-action="addNewAction"
+              @save-action="saveAction"
+              @delete-action="deleteAction"
+              @choose-action-assigned-to="chooseActionAssignedTo"
+              @choose-action-due-date="chooseActionDueDate"
+            />
+          </div>
+        </div>
+      </v-card-text>
+    </v-card>
+  </div>
 </template>
 
 <script>
 import debounce from "lodash/debounce";
+import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
+import MeetingAttendeesDialog from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesDialog";
+import MeetingUtils from "/imports/api/meetings/utils";
+import deepCopy from "/imports/ui/utils/deepCopy";
+import Api from "/imports/ui/api/Api";
 
 export default {
+  components: {
+    MeetingActionsTable,
+    MeetingAttendeesDialog
+  },
   props: {
     meeting: {
       type: Object,
@@ -44,8 +79,17 @@ export default {
   },
   data() {
     return {
-      currentEditor: null
+      currentEditor: null,
+      selectedAction: null,
+      showSelectDate: false,
+      savedActions: [],
+      draftActions: []
     };
+  },
+  computed: {
+    actions() {
+      return this.savedActions.concat(this.draftActions);
+    }
   },
   watch: {
     "meeting.agenda"(agenda) {
@@ -53,6 +97,18 @@ export default {
     },
     "meeting.report"(report) {
       this.updateReport(report);
+    },
+    "meeting.actions": {
+      immediate: true,
+      handler() {
+        this.savedActions = deepCopy(this.meeting?.actions ? this.meeting.actions : []);
+      }
+    },
+    savedActions: {
+      handler() {
+        const savedActionsIds = this.savedActions.map((action) => action.actionId);
+        this.draftActions = this.draftActions.filter((a) => !savedActionsIds.includes(a.actionId));
+      }
     }
   },
   methods: {
@@ -85,7 +141,97 @@ export default {
         }
       );
     }, 1000),
+    async deleteAction(action) {
+      const res = await this.$confirm(this.$t("Confirm"), {
+        title: this.$t("meetings.actions.deleteAction?"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      });
+      if (!res || res === false);
 
+      // Draft
+      const draftActionIndex = this.getActionIndex(action, this.draftActions);
+      if (draftActionIndex > -1) {
+        this.draftActions.splice(draftActionIndex, 1);
+        return;
+      }
+
+      // Saved
+      const savedActionIndex = this.getActionIndex(action, this.savedActions);
+      if (savedActionIndex === -1) return;
+      await Api.call("meetings.deleteActions", {
+        meetingId: this.meeting._id,
+        actionsIds: [action.actionId]
+      });
+      this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
+    },
+    async saveAction(action) {
+      try {
+        const draftActionIndex = this.getActionIndex(action, this.draftActions);
+        // Create draft
+        if (draftActionIndex > -1) {
+          await Api.call("meetings.createAction", {
+            meetingId: this.meeting._id,
+            action: action
+          });
+          this.$notify(this.$t("meetings.actions.createActionSuccess"));
+        // Update existing
+        } else {
+          savedActionIndex = this.getActionIndex(action, this.savedActions);
+          if (savedActionIndex > -1) {
+            await Api.call("meetings.updateAction", {
+              meetingId: this.meeting._id,
+              action: action
+            });
+            this.$notify(this.$t("meetings.actions.updateActionSuccess"));
+          }
+        }
+        await this.fetchSavedActions();
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+    chooseActionAssignedTo(action) {
+      this.selectedAction = action;
+      this.$refs.assignedToDialog.open();
+    },
+    async selectActionDueDate(date) {
+      const action = { ...this.selectedAction, dueDate: date };
+      await this.saveAction(action);
+      this.selectedAction = null;
+      this.showSelectDate = false;
+    },
+    chooseActionDueDate(action) {
+      this.selectedAction = action;
+      this.showSelectDate = true;
+    },
+    async selectActionAssignedTo(attendees) {
+      if (!Array.isArray(attendees) || !attendees.length) return;
+      const action = {
+        ...this.selectedAction,
+        assignedTo: MeetingUtils.sanitizeAttendee(attendees[0])
+      };
+      await this.saveAction(action);
+      this.selectedAction = null;
+      this.$refs.assignedToDialog.close();
+    },
+    getActionIndex(action, stack) {
+      return stack.findIndex((stackAction) => stackAction.actionId === action.actionId);
+    },
+    addNewAction() {
+      this.draftActions.push(MeetingUtils.makeNewMeetingAction());
+    },
+    async fetchSavedActions() {
+      try {
+        const meetingActions = await Api.call("meetings.getActions", {
+          meetingId: this.meeting._id
+        });
+        this.savedActions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
+      } catch (error) {
+        this.$notifyError(error);
+        this.savedActions = [];
+      }
+    },
     setCurrentEditor(editor) {
       this.currentEditor = editor.editor;
     }
@@ -107,6 +253,10 @@ export default {
   height: 100%;
   width: 100%;
   background-color: white;
+}
+
+.actions {
+  margin-top: 1rem;
 }
 
 .flex0 {

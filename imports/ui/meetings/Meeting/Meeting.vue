@@ -53,7 +53,14 @@
                 Documents {{ `(${documentsCount})` }}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <pre>{{ meeting.documents.map(doc => doc.name) }}</pre>
+                <v-chip-group
+                  column
+                  active-class="primary--text"
+                >
+                  <v-chip v-for="document in meeting.documents" :key="document.documentId">
+                    {{ document.name }}
+                  </v-chip>
+                </v-chip-group>
               </v-expansion-panel-content>
             </v-expansion-panel>
             <!-- Attendees -->
@@ -63,8 +70,11 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <meeting-attendees
+                  :key="meeting._id"
                   :project-id="meeting.projectId"
-                  :value="meeting.attendees"
+                  :attendees="meeting.attendees"
+                  search-attendees-only
+                  display="list"
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>

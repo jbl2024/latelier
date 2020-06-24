@@ -52,6 +52,40 @@ export const AttendeeSchema = {
   }
 };
 
+export const ActionSchema = {
+  actionId: {
+    type: String
+  },
+  type: {
+    type: String,
+    optional: true,
+    defaultValue: "action"
+  },
+  description: {
+    type: String
+  },
+  dueDate: {
+    type: String,
+    optional: true
+  },
+  assignedTo: {
+    type: new SimpleSchema(AttendeeSchema),
+    optional: true
+  }
+};
+
+export const ActionCreateUpdateSchema = (() => {
+  let actionSchema = new SimpleSchema(ActionSchema);
+  actionSchema = actionSchema.omit("dueDate");
+  actionSchema.extend({
+    dueDate: {
+      type: String,
+      optional: true
+    }
+  });
+  return actionSchema;
+})();
+
 export default new SimpleSchema({
   /* relations */
   projectId: {
@@ -111,6 +145,11 @@ export default new SimpleSchema({
     type: String,
     optional: true
   },
+  actions: {
+    type: Array,
+    optional: true
+  },
+  "actions.$": new SimpleSchema(ActionSchema),
   /* creation dates */
   createdAt: Date,
   createdBy: String,
@@ -142,7 +181,12 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
     type: Array,
     optional: true
   },
-  "documents.$": new SimpleSchema(DocumentSchema)
+  "documents.$": new SimpleSchema(DocumentSchema),
+  actions: {
+    type: Array,
+    optional: true
+  },
+  "actions.$": new SimpleSchema(ActionCreateUpdateSchema)
 }))();
 
 

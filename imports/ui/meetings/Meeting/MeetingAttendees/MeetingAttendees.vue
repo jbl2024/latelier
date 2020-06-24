@@ -1,55 +1,38 @@
 <template>
   <div v-if="projectId" class="meeting-attendees">
-    <v-list v-if="display === 'list'">
-      <v-list-item v-for="attendee in attendees" :key="attendee.attendeeId">
-        <v-list-item-avatar>
-          <meeting-attendee-avatar
-            :letters="createAttendeeLetters(attendee)"
-            :avatar="attendee.avatar"
-          />
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title>
-            {{ getAttendeeName(attendee) }}
-          </v-list-item-title>
-          <v-list-item-subtitle>
-            {{ `${isExternalAttendee(attendee) ?
-              $t("meetings.attendees.isExternalAttendee") :
-              $t("meetings.attendees.isProjectAttendee")}`
-            }}
-          </v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-    </v-list>
-    <v-container v-else-if="display === 'selector'" fluid class="meeting-attendees__container">
-      <v-row>
-        <v-col cols="12">
-          <meeting-attendees-selector
-            v-model="attendees"
-            :items="availableAttendees"
-            :label="$t('meetings.attendees.meetingAttendees')"
-            :search.sync="filter"
-            @add-new-attendee="addNewAttendee"
-          />
-        </v-col>
-      </v-row>
-    </v-container>
+    <!-- List -->
+    <meeting-attendees-list
+      v-if="display === 'list'"
+      v-model="selectedAttendees"
+      :attendees="availableAttendees"
+      :multiple="multiple"
+    />
+    <!-- Combobox -->
+    <meeting-attendees-combobox
+      v-else-if="display === 'combobox'"
+      v-model="selectedAttendees"
+      :items="availableAttendees"
+      :label="$t('meetings.attendees.meetingAttendees')"
+      :search.sync="filter"
+      @add-new-attendee="addNewAttendee"
+    />
   </div>
 </template>
 <script>
 import debounce from "lodash/debounce";
 import Api from "/imports/ui/api/Api";
-import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
-import MeetingAttendeesSelector from "./MeetingAttendeesSelector";
+import MeetingAttendeesCombobox from "./MeetingAttendeesCombobox";
+import MeetingAttendeesList from "./MeetingAttendeesList";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
+import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin.js";
 import MeetingUtils from "/imports/api/meetings/utils";
 
 export default {
   components: {
-    MeetingAttendeeAvatar,
-    MeetingAttendeesSelector
+    MeetingAttendeesCombobox,
+    MeetingAttendeesList
   },
-  mixins: [usersMixin],
+  mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
     projectId: {
       type: String,
@@ -61,10 +44,24 @@ export default {
         return [];
       }
     },
+    attendees: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    searchAttendeesOnly: {
+      type: Boolean,
+      default: false
+    },
+    multiple: {
+      type: Boolean,
+      default: true
+    },
     display: {
       type: String,
       default: "list",
-      validator: (display) => ["list", "selector"].includes(display)
+      validator: (display) => ["list", "combobox"].includes(display)
     }
   },
   data() {
@@ -75,7 +72,7 @@ export default {
     };
   },
   computed: {
-    attendees: {
+    selectedAttendees: {
       get() {
         return this.value;
       },
@@ -93,6 +90,18 @@ export default {
         return aName.localeCompare(bName);
       });
       return availableAttendees;
+    },
+    usersParams() {
+      const params = {
+        projectId: this.projectId,
+        filter: this.filter
+      };
+      if (this.searchAttendeesOnly === true
+        && Array.isArray(this.attendees) && this.attendees.length
+      ) {
+        params.usersIds = this.attendees.map((attendee) => attendee.userId);
+      }
+      return params;
     }
   },
   watch: {
@@ -106,15 +115,12 @@ export default {
       await this.fetchUsers();
     }, 400)
   },
+  beforeDestroy() {
+    this.users = [];
+  },
   methods: {
-    isExternalAttendee(attendee) {
-      return attendee.userId == null;
-    },
     getAttendeeName(attendee) {
       return MeetingUtils.getAttendeeName(attendee);
-    },
-    createAttendeeLetters(attendee) {
-      return MeetingUtils.createAttendeeLetters(attendee);
     },
     addNewAttendee(name) {
       const attendee = MeetingUtils.createNewAttendee(name);
@@ -125,10 +131,7 @@ export default {
       try {
         const projectUsers = await Api.call(
           "projects.findUsers",
-          {
-            projectId: this.projectId,
-            filter: this.filter
-          }
+          this.usersParams
         );
         this.users = projectUsers;
       } catch (error) {
@@ -138,13 +141,3 @@ export default {
   }
 };
 </script>
-<style lang="scss">
-  .meeting-attendees {
-    .container.meeting-attendees__container {
-      padding: 0;
-    }
-    .meeting-attendees__col {
-      justify-content: center;
-    }
-  }
-</style>
