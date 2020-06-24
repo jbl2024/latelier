@@ -99,7 +99,9 @@
             @add-new-meeting="addNewMeeting"
           />
           <!-- Streamline list of meetings -->
-          <meeting-list v-else />
+          <meeting-list v-else
+            :meetings="meetings"
+          />
         </v-col>
       </v-row>
     </div>
@@ -217,7 +219,7 @@ export default {
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
     ...mapState("meeting", ["selectedMeeting", "meetingTypes"]),
-    ...mapGetters("meeting", ["filteredMeetingsEventsByProjectId"]),
+    ...mapGetters("meeting", ["filteredMeetingsByProjectId"]),
     selectedMeetingTypes: {
       get() {
         return this.$store.state.meeting.selectedMeetingTypes;
@@ -226,8 +228,11 @@ export default {
         this.$store.dispatch("meeting/setSelectedMeetingTypes", selectedMeetingTypes);
       }
     },
+    meetings() {
+      return this.filteredMeetingsByProjectId(this.currentProject._id);
+    },
     meetingsEvents() {
-      return this.filteredMeetingsEventsByProjectId(this.currentProject._id);
+      return MeetingUtils.formatMeetingsAsEvents(this.meetings);
     },
     asideCols() {
       if (this.denseWidth) {

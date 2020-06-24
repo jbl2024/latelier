@@ -1,4 +1,3 @@
-import MeetingUtils from "/imports/api/meetings/utils";
 import Api from "/imports/ui/api/Api";
 
 export default {
@@ -36,15 +35,11 @@ export default {
       if (!Array.isArray(state?.meetingsResults?.data)) return [];
       return state.meetingsResults.data.filter((meeting) => meeting.projectId === projectId);
     },
-    meetingsEventsByProjectId: (state, getters) => (projectId) => {
+    filteredMeetingsByProjectId: (state, getters) => (projectId) => {
       const meetings = getters.meetingsByProjectId(projectId);
-      return MeetingUtils.formatMeetingsAsEvents(meetings);
-    },
-    filteredMeetingsEventsByProjectId: (state, getters) => (projectId) => {
-      const meetingsEvent = getters.meetingsEventsByProjectId(projectId);
-      return meetingsEvent.filter((meetingEvent) => {
+      return meetings.filter((meeting) => {
         if (!state.selectedMeetingTypes || !state.selectedMeetingTypes.length) return true;
-        return state.selectedMeetingTypes.includes(meetingEvent.type);
+        return state.selectedMeetingTypes.includes(meeting.type);
       });
     }
   },
