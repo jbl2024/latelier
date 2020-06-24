@@ -9,7 +9,7 @@
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>
-            Actions et décisions
+            {{ $t("meetings.actions.title") }}
             <v-btn
               dark
               color="primary"
@@ -88,7 +88,7 @@
               <v-icon left>
                 mdi-text-subject
               </v-icon>
-              Ajouter une description
+              {{ $t("meetings.actions.addDescription")}}
             </v-chip>
           </div>
         </div>
@@ -100,7 +100,7 @@
             <v-icon left>
               mdi-account
             </v-icon>
-            Ajouter un responsable
+            {{ $t("meetings.actions.addAssignedTo")}}
           </v-chip>
           <div v-else>
             <v-chip color="success">
@@ -116,7 +116,7 @@
             <v-icon left>
               mdi-calendar
             </v-icon>
-            Ajouter une date
+            {{ $t("meetings.actions.addDueDate")}}
           </v-chip>
           <v-chip v-else color="success" @click="chooseActionDueDate(item)">
             {{ formatDate(item.dueDate) }}

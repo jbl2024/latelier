@@ -7,6 +7,7 @@
     />
     <meeting-attendees-dialog
       ref="assignedToDialog"
+      :key="selectedAction && selectedAction.actionId"
       :attendees="meeting.attendees"
       :project-id="meeting.projectId"
       :multiple="false"
@@ -19,6 +20,10 @@
     <v-card class="flex-container">
       <v-toolbar class="flex0" dense>
         <rich-editor-menu-bar :editor="currentEditor" />
+        <v-spacer />
+        <v-btn>
+          Editer la réunion
+        </v-btn>
       </v-toolbar>
       <v-card-text class="flex1">
         <div class="list">
@@ -142,28 +147,33 @@ export default {
       );
     }, 1000),
     async deleteAction(action) {
-      const res = await this.$confirm(this.$t("Confirm"), {
-        title: this.$t("meetings.actions.deleteAction?"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      });
-      if (!res || res === false);
-
-      // Draft
-      const draftActionIndex = this.getActionIndex(action, this.draftActions);
-      if (draftActionIndex > -1) {
-        this.draftActions.splice(draftActionIndex, 1);
-        return;
+      try {
+        const res = await this.$confirm(this.$t("Confirm"), {
+          title: this.$t("meetings.actions.deleteAction?"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+        if (!res || res === false);
+  
+        // Draft
+        const draftActionIndex = this.getActionIndex(action, this.draftActions);
+        if (draftActionIndex > -1) {
+          this.draftActions.splice(draftActionIndex, 1);
+          return;
+        }
+  
+        // Saved
+        const savedActionIndex = this.getActionIndex(action, this.savedActions);
+        if (savedActionIndex === -1) return;
+        await Api.call("meetings.deleteActions", {
+          meetingId: this.meeting._id,
+          actionsIds: [action.actionId]
+        });
+        this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
+        await this.fetchSavedActions();
+      } catch (error) {
+        this.$notifyError(error);
       }
-
-      // Saved
-      const savedActionIndex = this.getActionIndex(action, this.savedActions);
-      if (savedActionIndex === -1) return;
-      await Api.call("meetings.deleteActions", {
-        meetingId: this.meeting._id,
-        actionsIds: [action.actionId]
-      });
-      this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
     },
     async saveAction(action) {
       try {
@@ -183,7 +193,6 @@ export default {
               meetingId: this.meeting._id,
               action: action
             });
-            this.$notify(this.$t("meetings.actions.updateActionSuccess"));
           }
         }
         await this.fetchSavedActions();

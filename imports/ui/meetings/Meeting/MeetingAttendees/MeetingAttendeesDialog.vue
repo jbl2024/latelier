@@ -63,7 +63,6 @@ export default {
     },
     selectAttendees() {
       this.$emit("select-attendees", this.selectedAttendees);
-      this.close();
     }
   }
 };
