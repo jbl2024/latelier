@@ -6,10 +6,10 @@ export default {
       methodName,
       params,
       (error, datas) => {
-        resolve(datas);
         if (error) {
           reject(error);
         }
+        resolve(datas);
       }
     );
   })
