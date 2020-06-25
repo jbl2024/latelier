@@ -29,8 +29,7 @@
                 </v-subheader>
                 <template v-for="meeting in meetings">
                   <v-list-item :key="meeting._id" @click="openDetail(meeting)">
-                    <v-list-item-avatar :color="getColor(meeting)">
-                    </v-list-item-avatar>
+                    <v-list-item-avatar :color="getColor(meeting)" />
                     <v-list-item-content>
                       <v-list-item-title :class="getClass(meeting)">
                         {{ meeting.name }}
