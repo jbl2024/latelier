@@ -3,6 +3,7 @@ import { MeetingState, MeetingTypes, MeetingRoles, Meetings } from "/imports/api
 import moment from "moment";
 // We use project rights for meeting rights
 import {
+  Permissions,
   checkLoggedIn,
   checkCanReadProject,
   checkCanWriteProject,
@@ -192,6 +193,39 @@ Meetings.methods.remove = new ValidatedMethod({
           deleted: true,
           deletedBy: Meteor.userId(),
           deletedAt: new Date()
+        }
+      }
+    );
+  }
+});
+
+Meetings.methods.deleteForever = new ValidatedMethod({
+  name: "meetings.deleteForever",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    // @todo check can delete forever !!
+    checkLoggedIn();
+    // @todo remove only if it has exclusively meetingId as meta ?
+    // Attachments.remove({ "meta.projectId": projectId });
+    Meetings.remove(meetingId);
+  }
+});
+
+Meetings.methods.restore = new ValidatedMethod({
+  name: "meetings.restore",
+  validate: new SimpleSchema({
+    meetingId: { type: String }
+  }).validator(),
+  run({ meetingId }) {
+    checkLoggedIn();
+    checkCanWriteMeeting(meetingId);
+    Meetings.update(
+      { _id: meetingId },
+      {
+        $set: {
+          deleted: false
         }
       }
     );
@@ -393,5 +427,80 @@ Meetings.methods.deleteActions = new ValidatedMethod({
       }
     );
     return ids;
+  }
+});
+
+Meetings.methods.adminFind = new ValidatedMethod({
+  name: "admin.findMeetings",
+  validate: new SimpleSchema({
+    page: { type: Number },
+    filter: { type: String, optional: true },
+    isDeleted: { type: Boolean, optional: true }
+  }).validator(),
+  run({ page, filter, isDeleted }) {
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    const perPage = 10;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+    const query = {};
+    if (filter && filter.length > 0) {
+      query.name = {
+        $regex: `.*${filter}.*`,
+        $options: "i"
+      };
+    }
+    if (isDeleted) {
+      query.deleted = true;
+    }
+    const count = Meetings.find(query).count();
+
+    const data = Meetings
+      .find(query, {
+        skip,
+        limit: perPage,
+        sort: {
+          name: 1
+        }
+      })
+      .fetch();
+
+    const loadUser = (aUserId) => {
+      if (!aUserId) return {};
+      return Meteor.users.findOne(
+        { _id: aUserId },
+        {
+          fields: {
+            profile: 1,
+            status: 1,
+            statusDefault: 1,
+            statusConnection: 1,
+            emails: 1,
+            roles: 1
+          }
+        }
+      );
+    };
+
+    data.forEach((meeting) => {
+      meeting.createdBy = loadUser(meeting.createdBy);
+    });
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
   }
 });
