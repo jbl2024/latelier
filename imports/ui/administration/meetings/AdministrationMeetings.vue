@@ -28,7 +28,7 @@
                   {{ pagination.totalItems }} {{ $t("meetings.meetings") }}
                 </v-subheader>
                 <template v-for="meeting in meetings">
-                  <v-list-item :key="meeting._id" @click="openDetail(meeting)">
+                  <v-list-item :key="meeting._id" @click="openMeeting(meeting)">
                     <v-list-item-avatar :color="getColor(meeting)" />
                     <v-list-item-content>
                       <v-list-item-title :class="getClass(meeting)">
@@ -208,10 +208,15 @@ export default {
         }
       );
     },
-
-    openDetail(meeting) {
+    async openMeeting(meeting) {
+      await this.$router.push({
+        name: "meetings",
+        params: {
+          meetingId: meeting._id,
+          projectId: meeting.projectId
+        }
+      });
     },
-
     getClass(meeting) {
       if (meeting.deleted) {
         return "deleted";
