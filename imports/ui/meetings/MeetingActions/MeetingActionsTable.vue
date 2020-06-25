@@ -10,12 +10,7 @@
         <v-toolbar flat color="white">
           <v-toolbar-title>
             {{ $t("meetings.actions.title") }}
-            <v-btn
-              dark
-              color="primary"
-              icon
-              @click="addNewAction"
-            >
+            <v-btn dark color="primary" icon @click="addNewAction">
               <v-icon>
                 mdi-plus
               </v-icon>
@@ -29,10 +24,7 @@
       </template>
       <!-- Type -->
       <template v-slot:item.type="{ item }">
-        <v-menu
-          offset-y
-          :nudge-bottom="10"
-        >
+        <v-menu offset-y :nudge-bottom="10">
           <template v-slot:activator="{ on, attrs }">
             <v-chip
               :color="getTypeColor(item.type)"
@@ -56,7 +48,12 @@
       </template>
       <!-- Description -->
       <template v-slot:item.description="{ item }">
-        <div :class="['description-cell', isEditingAction(item) ? 'is-editing' : null]">
+        <div
+          :class="[
+            'description-cell',
+            isEditingAction(item) ? 'is-editing' : null,
+          ]"
+        >
           <div v-if="isEditingAction(item)">
             <v-textarea
               v-model="editedAction.description"
@@ -88,7 +85,7 @@
               <v-icon left>
                 mdi-text-subject
               </v-icon>
-              {{ $t("meetings.actions.addDescription")}}
+              {{ $t("meetings.actions.addDescription") }}
             </v-chip>
           </div>
         </div>
@@ -100,7 +97,7 @@
             <v-icon left>
               mdi-account
             </v-icon>
-            {{ $t("meetings.actions.addAssignedTo")}}
+            {{ $t("meetings.actions.addAssignedTo") }}
           </v-chip>
           <div v-else>
             <v-chip color="success">
@@ -112,11 +109,14 @@
       <!-- Due date -->
       <template v-slot:item.dueDate="{ item }">
         <div>
-          <v-chip v-if="item.dueDate == null" @click="chooseActionDueDate(item)">
+          <v-chip
+            v-if="item.dueDate == null"
+            @click="chooseActionDueDate(item)"
+          >
             <v-icon left>
               mdi-calendar
             </v-icon>
-            {{ $t("meetings.actions.addDueDate")}}
+            {{ $t("meetings.actions.addDueDate") }}
           </v-chip>
           <v-chip v-else color="success" @click="chooseActionDueDate(item)">
             {{ formatDate(item.dueDate) }}
@@ -125,10 +125,7 @@
       </template>
       <!-- Actions on row -->
       <template v-slot:item.actions="{ item }">
-        <v-icon
-          small
-          @click="deleteAction(item)"
-        >
+        <v-icon small @click="deleteAction(item)">
           mdi-close
         </v-icon>
       </template>
@@ -226,23 +223,24 @@ export default {
 };
 </script>
 <style lang="scss">
-  .meeting-actions-table {
-    .v-data-table td, .v-data-table th {
-      padding: 0 16px;
+.meeting-actions-table {
+  .v-data-table td,
+  .v-data-table th {
+    padding: 0 16px;
+  }
+  .v-data-table td {
+    font-size: 1rem;
+  }
+  .description-cell {
+    width: 100%;
+    &.is-editing {
+      margin-top: 1rem;
     }
-    .v-data-table td {
-      font-size: 1rem;
-    }
-    .description-cell {
-      width: 100%;
-      &.is-editing {
-        margin-top: 1rem;
-      }
-      .description-display {
-        min-height: 30px;
-        display: flex;
-        align-items: center;
-      }
+    .description-display {
+      min-height: 30px;
+      display: flex;
+      align-items: center;
     }
   }
+}
 </style>
