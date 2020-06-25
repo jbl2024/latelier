@@ -5,14 +5,13 @@
       :items="items"
       small-chips
       outlined
-      :hide-selected="hideSelected"
+      multiple
       :search-input.sync="searchInput"
       :label="label"
       hide-details="auto"
       item-value="attendeeId"
       :item-text="getAttendeeName"
       return-object
-      multiple
     >
       <template v-slot:selection="{ attrs, item, parent, selected }">
         <v-chip
@@ -51,6 +50,7 @@
           </span>
         </v-list-item>
       </template>
+      <!--
       <template v-slot:item="data">
         <v-list-item-avatar>
           <meeting-attendee-avatar
@@ -76,20 +76,15 @@
           />
         </v-list-item-action>
       </template>
+      -->
     </v-combobox>
   </div>
 </template>
 <script>
 import MeetingUtils from "/imports/api/meetings/utils";
-import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
-import MeetingAttendeeRoleSelector from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeRoleSelector";
 import { mapState } from "vuex";
 
 export default {
-  components: {
-    MeetingAttendeeAvatar,
-    MeetingAttendeeRoleSelector
-  },
   props: {
     items: {
       type: Array,

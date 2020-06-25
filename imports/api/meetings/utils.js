@@ -64,9 +64,14 @@ export default {
     return `${hasFirstName ? attendee.firstName[0] : ""}
     ${hasFirstName && hasLastName && attendee.lastName[0] ? attendee.lastName[0] : ""}`;
   },
-  formatMeetingsAsEvents: (meetings) => {
+  formatMeetingsAsEvents(meetings) {
+    return meetings
+      .filter((meeting) => meeting.startDate && meeting.endDate)
+      .map(this.formatMeetingAsEvent);
+  },
+  formatMeetingAsEvent: (meeting) => {
     const dateFormat = "YYYY-MM-DD HH:mm";
-    return meetings.filter((meeting) => meeting.startDate && meeting.endDate).map((meeting) => ({
+    return {
       id: meeting._id,
       name: meeting.name,
       description: meeting.description,
@@ -75,8 +80,21 @@ export default {
       start: moment(meeting.startDate).format(dateFormat),
       end: moment(meeting.endDate).format(dateFormat),
       color: meeting.color
-    }));
+    };
   },
+  formatAttachmentAsDocument: (attachment) => ({
+    documentId: attachment._id,
+    name: attachment.name,
+    type: attachment.type,
+    userId: attachment.userId,
+    storageType: "attachments"
+  }),
+  formatDocumentAsAttachment: (document) => ({
+    _id: document.documentId,
+    name: document.name,
+    type: document.type,
+    userId: document.userId
+  }),
   makeNewMeeting() {
     const startDate = moment();
     const endDate = startDate.clone().add(1, "hours");

@@ -47,7 +47,7 @@ export default {
       type: Boolean,
       default: true
     },
-    show: {
+    isShown: {
       type: Boolean,
       default: false
     }
@@ -60,10 +60,10 @@ export default {
   computed: {
     showDialog: {
       get() {
-        return this.show;
+        return this.isShown;
       },
-      set(show) {
-        this.$emit("update:show", show);
+      set(isShown) {
+        this.$emit("update:is-shown", isShown);
       }
     }
   },

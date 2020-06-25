@@ -83,13 +83,26 @@
       </template>
       <template v-slot:actions>
         <template v-if="meeting">
+          <!-- Edit meeting -->
+          <v-btn
+            v-if="canWriteMeeting === true"
+            color="black"
+            dark
+            @click="editMeeting"
+          >
+            <v-icon left>
+              mdi-pencil
+            </v-icon>
+            {{ $t(`meetings.edit`) }}
+          </v-btn>
+          <!-- Prepare / participate meeting -->
           <v-btn
             v-if="canWriteMeeting !== null"
             color="black"
             dark
             @click="openMeeting"
           >
-            {{ $t(`meetings.${canWriteMeeting === true ? "prepareEdit" : "participate"}`) }}
+            {{ $t(`meetings.${canWriteMeeting === true ? "prepare" : "participate"}`) }}
           </v-btn>
         </template>
       </template>
@@ -160,6 +173,9 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    editMeeting() {
+      this.$emit("edit-meeting", this.meeting);
     },
     async openMeeting() {
       await this.$router.push({

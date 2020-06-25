@@ -21,6 +21,14 @@ export const AttachmentsFindSchema = (() => {
     perPage: {
       type: Number,
       optional: true
+    },
+    attachmentsIds: {
+      type: Array,
+      optional: true,
+      min: 1
+    },
+    "attachmentsIds.$": {
+      type: String
     }
   });
   return findSchema;

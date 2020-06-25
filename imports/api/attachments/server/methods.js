@@ -115,7 +115,7 @@ Attachments.methods.clone = new ValidatedMethod({
 Attachments.methods.find = new ValidatedMethod({
   name: "attachments.find",
   validate: AttachmentsFindSchema.validator(),
-  run({ meta, name, userId, page, perPage }) {
+  run({ meta, name, userId, page, perPage, attachmentsIds }) {
     checkLoggedIn();
     page = page || 1;
     perPage = perPage || 10;
@@ -139,6 +139,10 @@ Attachments.methods.find = new ValidatedMethod({
     }
     if (userId) {
       query.userId = userId;
+    }
+
+    if (attachmentsIds && Array.isArray(attachmentsIds) && attachmentsIds.length) {
+      query._id = { $in: attachmentsIds };
     }
 
     const count = Attachments.find(query).count();

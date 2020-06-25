@@ -91,6 +91,7 @@ import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin";
+import MeetingUtils from "/imports/api/meetings/utils";
 import Api from "/imports/ui/api/Api";
 
 export default {
@@ -114,6 +115,10 @@ export default {
     types: {
       type: Object,
       default: null
+    },
+    isShown: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -121,7 +126,6 @@ export default {
       currentTab: null,
       allowedMinutes: Object.freeze([0, 10, 15, 30, 45]),
       allowedHours: Object.freeze([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
-      showDialog: false,
       showSelectDate: false,
       showSelectHourRange: false,
       showSelectColor: false,
@@ -147,6 +151,14 @@ export default {
     };
   },
   computed: {
+    showDialog: {
+      get() {
+        return this.isShown;
+      },
+      set(isShown) {
+        this.$emit("update:is-shown", isShown);
+      }
+    },
     isNewMeeting() {
       return !this.meeting || !this.meeting._id;
     },
@@ -154,27 +166,48 @@ export default {
       return (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
     }
   },
+  watch: {
+    meeting: {
+      immediate: true,
+      async handler() {
+        this.assignMeetingProps();
+        await this.fetchSelectedDocuments();
+      }
+    }
+  },
   methods: {
+    assignMeetingProps() {
+      const endDate = this.meeting?.endDate ? moment(this.meeting.endDate).format("YYYY-MM-DD HH:mm") : null;
+      const startDate = this.meeting?.startDate ? moment(this.meeting.startDate).format("YYYY-MM-DD HH:mm") : null;
+      const startHour = startDate ? startDate.split(" ")[1] : null;
+      const endHour = endDate ? endDate.split(" ")[1] : null;
+
+      // Mass assignment
+      ["name", "attendees", "documents", "type", "description", "agenda", "color", "location"].forEach((prop) => {
+        if (prop in this && this.meeting && this.meeting[prop] != null) {
+          this[prop] = this.meeting[prop];
+        }
+      });
+      this.date = startDate;
+      this.startHour = startHour;
+      this.endHour = endHour;
+      this.checkConsistency();
+    },
+    async fetchSelectedDocuments() {
+      try {
+        if (this.isNewMeeting) return;
+        if (!this.documents || !this.documents.length) return;
+        const selectedDocumentsIds = this.documents.map((doc) => doc.documentId);
+        const result = await Api.call("attachments.find", {
+          attachmentsIds: selectedDocumentsIds
+        });
+        this.documents = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
     open() {
       this.showDialog = true;
-      this.$nextTick(() => {
-        const endDate = this.meeting?.endDate ? moment(this.meeting.endDate).format("YYYY-MM-DD HH:mm") : null;
-        const startDate = this.meeting?.startDate ? moment(this.meeting.startDate).format("YYYY-MM-DD HH:mm") : null;
-        const startHour = startDate ? startDate.split(" ")[1] : null;
-        const endHour = endDate ? endDate.split(" ")[1] : null;
-
-        // Mass assignment
-        ["name", "attendees", "documents", "type", "description", "agenda", "color", "location"].forEach((prop) => {
-          if (prop in this && this.meeting && this.meeting[prop] != null) {
-            this[prop] = this.meeting[prop];
-          }
-        });
-        this.date = startDate;
-        this.startHour = startHour;
-        this.endHour = endHour;
-
-        this.checkConsistency();
-      });
     },
     close() {
       this.showDialog = false;
@@ -235,13 +268,7 @@ export default {
         color: this.color,
         // We remove avatar picture (unwanted schema fields)
         attendees: this.attendees.map((attendee) => this.sanitizeAttendee(attendee)),
-        documents: this.documents.map((document) => ({
-          documentId: document._id,
-          name: document.name,
-          type: document.type,
-          userId: document.userId,
-          storageType: "attachments"
-        }))
+        documents: this.documents.map(MeetingUtils.formatAttachmentAsDocument)
       };
       if (!this.isNewMeeting && this.meeting._id) {
         delete params.projectId;

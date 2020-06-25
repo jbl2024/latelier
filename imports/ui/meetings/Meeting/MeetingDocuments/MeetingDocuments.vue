@@ -3,30 +3,18 @@
     <v-container class="meeting-documents__container">
       <v-progress-linear v-if="!projectId" indeterminate />
       <div v-else>
-        <attachment-list
+        <attachments
           v-model="selectedDocuments"
           display="autocomplete"
           :search.sync="filter"
-          :item-options="{color: 'indigo', dark: true}"
           :label="$t('meetings.attachments.meetingAttachments')"
           :attachments="attachments"
         />
         <div class="meeting-documents__add-documents">
-          <v-btn dark @click="beginUpload">
-            <v-icon left color="white">
-              mdi-plus
-            </v-icon>
-            {{ $t("attachments.addAttachments") }}
-          </v-btn>
-          <input
-            v-if="!isUploading"
-            ref="uploadInput"
-            style="display: none;"
-            type="file"
-            multiple
-            :disabled="isUploading"
-            @change="onUpload"
-          >
+          <upload-button
+            :is-uploading="isUploading"
+            @on-upload="uploadFile"
+          />
         </div>
       </div>
     </v-container>
@@ -36,13 +24,15 @@
 
 import { Meteor } from "meteor/meteor";
 import debounce from "lodash/debounce";
-import { Attachments } from "/imports/api/attachments/attachments.js";
-import AttachmentList from "/imports/ui/attachments/AttachmentList";
+import AttachmentUtils from "/imports/api/attachments/utils";
+import Attachments from "/imports/ui/attachments/Attachments";
 import Api from "/imports/ui/api/Api";
+import UploadButton from "/imports/ui/widgets/UploadButton";
 
 export default {
   components: {
-    AttachmentList
+    Attachments,
+    UploadButton
   },
   props: {
     value: {
@@ -58,7 +48,6 @@ export default {
   },
   data() {
     return {
-      file: null,
       isUploading: false,
       filter: "",
       page: 1,
@@ -132,34 +121,19 @@ export default {
         this.pagination.totalItems / this.pagination.rowsPerPage
       );
     },
-    onUpload(e) {
-      const files = e.target.files || [];
-      for (let i = 0; i < files.length; i++) {
-        this.uploadFile(files[i]);
-      }
-    },
-    beginUpload() {
-      this.$refs.uploadInput.click();
-    },
     uploadFile(file) {
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-      const upload = Attachments.insert(
+      const upload = AttachmentUtils.uploadFile(
+        file,
         {
-          file: file,
-          streams: "dynamic",
-          chunkSize: "dynamic",
-          transport: transport,
           meta: {
             projectId: this.projectId,
             createdBy: Meteor.userId()
           }
-        },
-        false
+        }
       );
       upload.on("start", () => {
         this.isUploading = true;
       });
-
       upload.on("end", async (error, uploadedFile) => {
         this.isUploading = false;
         if (error) {
@@ -167,9 +141,9 @@ export default {
           this.$emit("upload-document-error", error);
         } else {
           this.$emit("upload-document-finished");
-          this.file = null;
           await this.fetchAttachments();
           this.selectedDocuments.push(uploadedFile);
+          this.$notify("meetings.documents.documentAddedSuccess");
         }
       });
       upload.start();

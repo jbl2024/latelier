@@ -27,8 +27,9 @@
         @change="onUpload"
       >
       <v-progress-linear v-show="isUploading" indeterminate />
-      <attachment-list
+      <attachments
         :attachments="attachments"
+        display="list"
         class="list"
         @add-attachment="beginUpload"
       />
@@ -40,11 +41,11 @@
 import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { mapState } from "vuex";
-import AttachmentList from "/imports/ui/attachments/AttachmentList";
+import AttachmentsComponent from "/imports/ui/attachments/Attachments";
 
 export default {
   components: {
-    AttachmentList
+    attachments: AttachmentsComponent
   },
   props: {
     projectId: {

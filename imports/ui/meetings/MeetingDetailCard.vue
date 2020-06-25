@@ -8,7 +8,7 @@
     <meeting-attendees-dialog
       ref="assignedToDialog"
       :key="selectedActionId"
-      :show.sync="showAssignedToDialog"
+      :is-shown.sync="showAssignedToDialog"
       :attendees="meeting.attendees"
       :project-id="meeting.projectId"
       :multiple="false"
@@ -22,7 +22,10 @@
       <v-toolbar class="flex0" dense>
         <rich-editor-menu-bar :editor="currentEditor" />
         <v-spacer />
-        <v-btn>
+        <v-btn color="primary" dark @click="editMeeting">
+          <v-icon left>
+            mdi-pencil
+          </v-icon>
           Editer la réunion
         </v-btn>
       </v-toolbar>
@@ -259,6 +262,9 @@ export default {
     },
     setCurrentEditor(editor) {
       this.currentEditor = editor.editor;
+    },
+    editMeeting() {
+      this.$emit("edit-meeting", this.meeting);
     }
   }
 };

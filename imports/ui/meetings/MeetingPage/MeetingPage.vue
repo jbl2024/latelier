@@ -1,15 +1,34 @@
 <template>
   <div class="meeting-page">
-    <meeting-detail-card v-if="currentMeeting" class="meeting-card" :meeting="currentMeeting" />
+    <!-- Edit existing meeting -->
+    <meeting-edit
+      ref="editMeeting"
+      :key="currentMeeting ? currentMeeting._id : null"
+      :is-shown.sync="showEditMeeting"
+      :project-id="projectId"
+      :meeting="currentMeeting"
+      :types="meetingTypes"
+      @created="fetch"
+      @updated="fetch"
+      @removed="fetch"
+    />
+    <meeting-detail-card
+      v-if="currentMeeting"
+      class="meeting-card"
+      :meeting="currentMeeting"
+      @edit-meeting="showEditMeeting = true"
+    />
   </div>
 </template>
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { mapState, mapActions } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
+import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 
 export default {
   components: {
+    MeetingEdit,
     MeetingDetailCard
   },
   props: {
@@ -22,10 +41,15 @@ export default {
       required: true
     }
   },
+  data() {
+    return {
+      showEditMeeting: false
+    };
+  },
   computed: {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["currentMeeting"])
+    ...mapState("meeting", ["currentMeeting", "meetingTypes"])
   },
   meteor: {
     $subscribe: {
@@ -47,15 +71,24 @@ export default {
   },
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    await this.fetchCurrentMeeting({
-      meetingId: this.meetingId
-    });
+    await this.$store.dispatch("meeting/fetchMeetingTypes");
+    await this.$store.dispatch("meeting/fetchMeetingRoles");
+    await this.fetch();
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
-    ...mapActions("meeting", ["fetchCurrentMeeting"])
+    ...mapActions("meeting", ["fetchCurrentMeeting"]),
+    async fetch() {
+      try {
+        await this.fetchCurrentMeeting({
+          meetingId: this.meetingId
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    }
   }
 };
 </script>

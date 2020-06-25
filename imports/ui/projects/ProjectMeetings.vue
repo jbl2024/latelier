@@ -10,6 +10,7 @@
       <!-- New meeting -->
       <meeting-edit
         ref="newMeeting"
+        :is-shown.sync="showNewMeeting"
         :project-id="projectId"
         :meeting="newMeeting"
         :types="meetingTypes"
@@ -18,7 +19,8 @@
       <!-- Edit existing meeting -->
       <meeting-edit
         ref="editMeeting"
-        :key="selectedMeeting ? selectedMeeting._id : null"
+        :key="selectedMeetingId"
+        :is-shown.sync="showEditMeeting"
         :project-id="projectId"
         :meeting="selectedMeeting"
         :types="meetingTypes"
@@ -100,7 +102,7 @@
           />
           <!-- Streamline list of meetings -->
           <meeting-list v-else
-            :meetings="meetings"
+                        :meetings="meetings"
           />
         </v-col>
       </v-row>
@@ -153,6 +155,8 @@ export default {
       end: null,
       displayType: "5days",
       firstInterval: 7,
+      showNewMeeting: false,
+      showEditMeeting: false,
       newMeeting: null,
       displayTypes: Object.freeze([
         {
@@ -195,6 +199,10 @@ export default {
         && this.end
         && this.currentProject === Object(this.currentProject)
       );
+    },
+    selectedMeetingId() {
+      if (!this.selectedMeeting?._id) return null;
+      return this.selectedMeeting._id;
     },
     dateRanges() {
       const startFormat = "YYYY-MM-DD 00:00:00";
@@ -318,17 +326,16 @@ export default {
         newMeeting.endDate = `${selectedTime.date} ${endHour}`;
       }
       this.newMeeting = newMeeting;
-      this.$refs.newMeeting.open();
+      this.showNewMeeting = true;
     },
     async editMeeting(meeting) {
       try {
-        this.$refs.editMeeting.close();
         await this.fetchSelectedMeeting({
           meetingId: meeting._id
         });
-        this.$refs.editMeeting.open();
+        this.showEditMeeting = true;
       } catch (error) {
-        this.$refs.editMeeting.close();
+        this.showEditMeeting = false;
         this.$notifyError(error);
       }
     },
