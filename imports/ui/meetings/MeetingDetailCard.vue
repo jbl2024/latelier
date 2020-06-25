@@ -7,7 +7,8 @@
     />
     <meeting-attendees-dialog
       ref="assignedToDialog"
-      :key="selectedAction && selectedAction.actionId"
+      :show.sync="showAssignedToDialog"
+      :key="selectedActionId"
       :attendees="meeting.attendees"
       :project-id="meeting.projectId"
       :multiple="false"
@@ -87,6 +88,7 @@ export default {
       currentEditor: null,
       selectedAction: null,
       showSelectDate: false,
+      showAssignedToDialog: false,
       savedActions: [],
       draftActions: []
     };
@@ -94,6 +96,10 @@ export default {
   computed: {
     actions() {
       return this.savedActions.concat(this.draftActions);
+    },
+    selectedActionId() {
+      if (!this.selectedAction?.actionId) return null;
+      return this.selectedAction.actionId;
     }
   },
   watch: {
@@ -208,7 +214,19 @@ export default {
     },
     chooseActionAssignedTo(action) {
       this.selectedAction = action;
-      this.$refs.assignedToDialog.open();
+      this.$nextTick(() => {
+        this.showAssignedToDialog = true;
+      });
+    },
+    async selectActionAssignedTo(attendees) {
+      if (!Array.isArray(attendees) || !attendees.length) return;
+      const action = {
+        ...this.selectedAction,
+        assignedTo: MeetingUtils.sanitizeAttendee(attendees[0])
+      };
+      await this.saveAction(action);
+      this.selectedAction = null;
+      this.showAssignedToDialog = false;
     },
     async selectActionDueDate(date) {
       const action = { ...this.selectedAction, dueDate: date };
@@ -219,16 +237,6 @@ export default {
     chooseActionDueDate(action) {
       this.selectedAction = action;
       this.showSelectDate = true;
-    },
-    async selectActionAssignedTo(attendees) {
-      if (!Array.isArray(attendees) || !attendees.length) return;
-      const action = {
-        ...this.selectedAction,
-        assignedTo: MeetingUtils.sanitizeAttendee(attendees[0])
-      };
-      await this.saveAction(action);
-      this.selectedAction = null;
-      this.$refs.assignedToDialog.close();
     },
     getActionIndex(action, stack) {
       return stack.findIndex(

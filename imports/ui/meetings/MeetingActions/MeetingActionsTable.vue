@@ -92,19 +92,21 @@
       </template>
       <!-- Assigned to -->
       <template v-slot:item.assignedTo="{ item }">
-        <div @click="chooseActionAssignedTo(item)">
-          <v-chip v-if="item.assignedTo == null">
-            <v-icon left>
-              mdi-account
-            </v-icon>
-            {{ $t("meetings.actions.addAssignedTo") }}
-          </v-chip>
-          <div v-else>
-            <v-chip color="success">
-              {{ getAttendeeName(item.assignedTo) }}
-            </v-chip>
-          </div>
-        </div>
+        <v-chip 
+          :color="item.assignedTo == null ? null : 'success'"
+          @click="chooseActionAssignedTo(item)"
+          :close="Boolean(item.assignedTo)"
+          @click:close="clearAssignedTo(item)"
+        >
+          <v-icon left>
+            mdi-account
+          </v-icon>
+          <span>
+            {{ item.assignedTo == null 
+              ? $t("meetings.actions.addAssignedTo") : getAttendeeName(item.assignedTo)
+            }}
+          </span>
+        </v-chip>
       </template>
       <!-- Due date -->
       <template v-slot:item.dueDate="{ item }">
@@ -183,6 +185,11 @@ export default {
     editAction(action) {
       this.originalAction = deepCopy(action);
       this.editedAction = deepCopy(action);
+    },
+    clearAssignedTo(action) {
+      this.editAction(action);
+      this.editedAction.assignedTo = null;
+      this.saveEditedAction();
     },
     selectActionType(action, type) {
       this.editAction(action);

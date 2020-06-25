@@ -46,13 +46,26 @@ export default {
     multiple: {
       type: Boolean,
       default: true
+    },
+    show: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      showDialog: false,
       selectedAttendees: []
     };
+  },
+  computed: {
+    showDialog: {
+      get() {
+        return this.show;
+      },
+      set(show) {
+        this.$emit("update:show", show);
+      }
+    }
   },
   methods: {
     open() {
