@@ -7,8 +7,8 @@
     />
     <meeting-attendees-dialog
       ref="assignedToDialog"
-      :show.sync="showAssignedToDialog"
       :key="selectedActionId"
+      :show.sync="showAssignedToDialog"
       :attendees="meeting.attendees"
       :project-id="meeting.projectId"
       :multiple="false"

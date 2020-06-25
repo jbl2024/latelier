@@ -92,17 +92,17 @@
       </template>
       <!-- Assigned to -->
       <template v-slot:item.assignedTo="{ item }">
-        <v-chip 
+        <v-chip
           :color="item.assignedTo == null ? null : 'success'"
-          @click="chooseActionAssignedTo(item)"
           :close="Boolean(item.assignedTo)"
+          @click="chooseActionAssignedTo(item)"
           @click:close="clearAssignedTo(item)"
         >
           <v-icon left>
             mdi-account
           </v-icon>
           <span>
-            {{ item.assignedTo == null 
+            {{ item.assignedTo == null
               ? $t("meetings.actions.addAssignedTo") : getAttendeeName(item.assignedTo)
             }}
           </span>
