@@ -106,13 +106,19 @@ export default {
     "meeting.actions": {
       immediate: true,
       handler() {
-        this.savedActions = deepCopy(this.meeting?.actions ? this.meeting.actions : []);
+        this.savedActions = deepCopy(
+          this.meeting?.actions ? this.meeting.actions : []
+        );
       }
     },
     savedActions: {
       handler() {
-        const savedActionsIds = this.savedActions.map((action) => action.actionId);
-        this.draftActions = this.draftActions.filter((a) => !savedActionsIds.includes(a.actionId));
+        const savedActionsIds = this.savedActions.map(
+          (action) => action.actionId
+        );
+        this.draftActions = this.draftActions.filter(
+          (a) => !savedActionsIds.includes(a.actionId)
+        );
       }
     }
   },
@@ -154,14 +160,14 @@ export default {
           confirmText: this.$t("Delete")
         });
         if (!res || res === false);
-  
+
         // Draft
         const draftActionIndex = this.getActionIndex(action, this.draftActions);
         if (draftActionIndex > -1) {
           this.draftActions.splice(draftActionIndex, 1);
           return;
         }
-  
+
         // Saved
         const savedActionIndex = this.getActionIndex(action, this.savedActions);
         if (savedActionIndex === -1) return;
@@ -185,7 +191,7 @@ export default {
             action: action
           });
           this.$notify(this.$t("meetings.actions.createActionSuccess"));
-        // Update existing
+          // Update existing
         } else {
           savedActionIndex = this.getActionIndex(action, this.savedActions);
           if (savedActionIndex > -1) {
@@ -225,7 +231,9 @@ export default {
       this.$refs.assignedToDialog.close();
     },
     getActionIndex(action, stack) {
-      return stack.findIndex((stackAction) => stackAction.actionId === action.actionId);
+      return stack.findIndex(
+        (stackAction) => stackAction.actionId === action.actionId
+      );
     },
     addNewAction() {
       this.draftActions.push(MeetingUtils.makeNewMeetingAction());
@@ -253,6 +261,9 @@ export default {
   color: black;
   font-size: 16px;
   line-height: 1.5;
+  background-color: white;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
 
 .flex-container {
@@ -261,11 +272,12 @@ export default {
   position: absolute;
   height: 100%;
   width: 100%;
-  background-color: white;
+  background-color: #e5e5e5;
 }
 
 .actions {
   margin-top: 1rem;
+  margin-bottom: 6rem;
 }
 
 .flex0 {
