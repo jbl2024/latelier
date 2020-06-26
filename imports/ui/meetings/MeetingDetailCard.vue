@@ -95,14 +95,10 @@ export default {
       selectedAction: null,
       showSelectDate: false,
       showAssignedToDialog: false,
-      savedActions: [],
-      draftActions: []
+      actions: []
     };
   },
   computed: {
-    actions() {
-      return this.savedActions.concat(this.draftActions);
-    },
     selectedActionId() {
       if (!this.selectedAction?.actionId) return null;
       return this.selectedAction.actionId;
@@ -118,18 +114,8 @@ export default {
     "meeting.actions": {
       immediate: true,
       handler() {
-        this.savedActions = deepCopy(
+        this.actions = deepCopy(
           this.meeting?.actions ? this.meeting.actions : []
-        );
-      }
-    },
-    savedActions: {
-      handler() {
-        const savedActionsIds = this.savedActions.map(
-          (action) => action.actionId
-        );
-        this.draftActions = this.draftActions.filter(
-          (a) => !savedActionsIds.includes(a.actionId)
         );
       }
     }
@@ -173,15 +159,7 @@ export default {
         });
         if (!res || res === false) return;
 
-        // Draft
-        const draftActionIndex = this.getActionIndex(action, this.draftActions);
-        if (draftActionIndex > -1) {
-          this.draftActions.splice(draftActionIndex, 1);
-          return;
-        }
-
-        // Saved
-        const savedActionIndex = this.getActionIndex(action, this.savedActions);
+        const savedActionIndex = this.getActionIndex(action, this.actions);
         if (savedActionIndex === -1) return;
         await Api.call("meetings.deleteActions", {
           meetingId: this.meeting._id,
@@ -195,24 +173,10 @@ export default {
     },
     async saveAction(action) {
       try {
-        const draftActionIndex = this.getActionIndex(action, this.draftActions);
-        // Create draft
-        if (draftActionIndex > -1) {
-          await Api.call("meetings.createAction", {
-            meetingId: this.meeting._id,
-            action: action
-          });
-          this.$notify(this.$t("meetings.actions.createActionSuccess"));
-          // Update existing
-        } else {
-          savedActionIndex = this.getActionIndex(action, this.savedActions);
-          if (savedActionIndex > -1) {
-            await Api.call("meetings.updateAction", {
-              meetingId: this.meeting._id,
-              action: action
-            });
-          }
-        }
+        await Api.call("meetings.updateAction", {
+          meetingId: this.meeting._id,
+          action: action
+        });
         await this.fetchSavedActions();
       } catch (error) {
         this.$notifyError(error);
@@ -250,17 +214,25 @@ export default {
       );
     },
     addNewAction() {
-      this.draftActions.push(MeetingUtils.makeNewMeetingAction());
+      Api.call("meetings.createAction", {
+        meetingId: this.meeting._id,
+        action: MeetingUtils.makeNewMeetingAction()
+      }).then(() => {
+        this.fetchSavedActions();
+      }, (error) => {
+        this.$notifyError(error);
+      });
     },
+
     async fetchSavedActions() {
       try {
         const meetingActions = await Api.call("meetings.getActions", {
           meetingId: this.meeting._id
         });
-        this.savedActions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
+        this.actions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
       } catch (error) {
         this.$notifyError(error);
-        this.savedActions = [];
+        this.actions = [];
       }
     },
     setCurrentEditor(editor) {
