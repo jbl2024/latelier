@@ -168,7 +168,7 @@ export default {
           cancelText: this.$t("Cancel"),
           confirmText: this.$t("Delete")
         });
-        if (!res || res === false);
+        if (!res || res === false) return;
 
         // Draft
         const draftActionIndex = this.getActionIndex(action, this.draftActions);

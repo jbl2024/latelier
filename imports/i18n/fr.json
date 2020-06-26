@@ -317,7 +317,7 @@
       "title": "Relevé de conclusions",
       "none": "Aucune conclusion",
       "addAction": "Ajouter une conclusion",
-      "deleteAction?": "Supprimer l'action",
+      "deleteAction?": "Supprimer la conclusion",
       "deleteActionSuccess": "Conclusion supprimée avec succès",
       "createActionSuccess": "Conclusion créée avec succès",
       "updateActionSuccess": "Conclusion mise à jour avec succès",
