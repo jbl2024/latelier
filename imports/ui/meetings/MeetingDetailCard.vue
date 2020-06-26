@@ -178,7 +178,7 @@ export default {
       if (actionIndex > -1) {
         this.$set(this.actions, actionIndex, deepCopy(action));
       }
- 
+
       await Api.call("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action
