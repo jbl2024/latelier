@@ -121,7 +121,6 @@ import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalenda
 import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
-import MeetingList from "/imports/ui/meetings/MeetingList";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import moment from "moment";
@@ -133,7 +132,6 @@ export default {
     MeetingCalendarFilters,
     MeetingCalendarToolbar,
     MeetingCalendarDatePicker,
-    MeetingList,
     Meeting,
     MeetingEdit
   },
@@ -159,11 +157,6 @@ export default {
       showEditMeeting: false,
       newMeeting: null,
       displayTypes: Object.freeze([
-        {
-          text: this.$t("meetings.list"),
-          value: "list",
-          icon: "mdi-view-sequential"
-        },
         {
           text: this.$t("calendar.types.day"),
           value: "day",
