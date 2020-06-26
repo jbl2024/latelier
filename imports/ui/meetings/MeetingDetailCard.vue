@@ -169,7 +169,9 @@ export default {
       await this.fetchSavedActions();
     },
     async saveAction(action) {
-      action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
+      if (action.dueDate) {
+        action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
+      }
       await Api.call("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action

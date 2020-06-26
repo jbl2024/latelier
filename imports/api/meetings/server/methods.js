@@ -384,7 +384,7 @@ Meetings.methods.updateAction = new ValidatedMethod({
     action
   }) {
     if (action.dueDate) {
-      action.dueDate = moment.utc(action.dueDate).toDate();
+      action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
     }
     const returnedId = Meetings.update(
       {

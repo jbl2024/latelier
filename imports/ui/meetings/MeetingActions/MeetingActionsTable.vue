@@ -63,6 +63,7 @@
               auto-grow
               autofocus
               hide-details
+              @keydown.shift.enter="saveEditedAction"
             />
             <v-btn text icon @click="saveEditedAction">
               <v-icon color="green">
