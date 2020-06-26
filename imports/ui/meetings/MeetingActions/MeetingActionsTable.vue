@@ -60,6 +60,7 @@
             <v-textarea
               v-model="editedAction.description"
               solo
+              outlined
               auto-grow
               autofocus
               hide-details
