@@ -62,7 +62,8 @@ export const ActionSchema = {
     defaultValue: "action"
   },
   description: {
-    type: String
+    type: String,
+    optional: true
   },
   dueDate: {
     type: String,
