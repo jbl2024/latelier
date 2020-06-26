@@ -15,7 +15,7 @@
               <v-icon left>
                 mdi-plus
               </v-icon>
-              Ajouter une décision
+              {{ $t('meetings.actions.addAction') }}
             </v-btn>
           </v-toolbar-title>
           <v-spacer />
