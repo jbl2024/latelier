@@ -194,17 +194,13 @@ export default {
       this.checkConsistency();
     },
     async fetchSelectedDocuments() {
-      try {
-        if (this.isNewMeeting) return;
-        if (!this.documents || !this.documents.length) return;
-        const selectedDocumentsIds = this.documents.map((doc) => doc.documentId);
-        const result = await Api.call("attachments.find", {
-          attachmentsIds: selectedDocumentsIds
-        });
-        this.documents = result.data;
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      if (this.isNewMeeting) return;
+      if (!this.documents || !this.documents.length) return;
+      const selectedDocumentsIds = this.documents.map((doc) => doc.documentId);
+      const result = await Api.call("attachments.find", {
+        attachmentsIds: selectedDocumentsIds
+      });
+      this.documents = result.data;
     },
     open() {
       this.showDialog = true;
@@ -277,24 +273,16 @@ export default {
       return params;
     },
     async update() {
-      try {
-        this.showDialog = false;
-        await Api.call("meetings.update", this.getParams());
-        this.$emit("updated");
-        this.$notify(this.$t("meetings.updated"));
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      this.showDialog = false;
+      await Api.call("meetings.update", this.getParams());
+      this.$emit("updated");
+      this.$notify(this.$t("meetings.updated"));
     },
     async create() {
-      try {
-        this.showDialog = false;
-        await Api.call("meetings.create", this.getParams());
-        this.$emit("created");
-        this.$notify(this.$t("meetings.created"));
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      this.showDialog = false;
+      await Api.call("meetings.create", this.getParams());
+      this.$emit("created");
+      this.$notify(this.$t("meetings.created"));
     }
   }
 };

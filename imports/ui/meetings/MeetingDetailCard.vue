@@ -77,6 +77,7 @@ import MeetingAttendeesDialog from "/imports/ui/meetings/Meeting/MeetingAttendee
 import MeetingUtils from "/imports/api/meetings/utils";
 import deepCopy from "/imports/ui/utils/deepCopy";
 import Api from "/imports/ui/api/Api";
+import moment from "moment";
 
 export default {
   components: {
@@ -151,36 +152,29 @@ export default {
       );
     }, 1000),
     async deleteAction(action) {
-      try {
-        const res = await this.$confirm(this.$t("Confirm"), {
-          title: this.$t("meetings.actions.deleteAction?"),
-          cancelText: this.$t("Cancel"),
-          confirmText: this.$t("Delete")
-        });
-        if (!res || res === false) return;
+      const res = await this.$confirm(this.$t("Confirm"), {
+        title: this.$t("meetings.actions.deleteAction?"),
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      });
+      if (!res || res === false) return;
 
-        const savedActionIndex = this.getActionIndex(action, this.actions);
-        if (savedActionIndex === -1) return;
-        await Api.call("meetings.deleteActions", {
-          meetingId: this.meeting._id,
-          actionsIds: [action.actionId]
-        });
-        this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
-        await this.fetchSavedActions();
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      const savedActionIndex = this.getActionIndex(action, this.actions);
+      if (savedActionIndex === -1) return;
+      await Api.call("meetings.deleteActions", {
+        meetingId: this.meeting._id,
+        actionsIds: [action.actionId]
+      });
+      this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
+      await this.fetchSavedActions();
     },
     async saveAction(action) {
-      try {
-        await Api.call("meetings.updateAction", {
-          meetingId: this.meeting._id,
-          action: action
-        });
-        await this.fetchSavedActions();
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
+      await Api.call("meetings.updateAction", {
+        meetingId: this.meeting._id,
+        action: action
+      });
+      await this.fetchSavedActions();
     },
     chooseActionAssignedTo(action) {
       this.selectedAction = action;
@@ -230,8 +224,7 @@ export default {
           meetingId: this.meeting._id
         });
         this.actions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
-      } catch (error) {
-        this.$notifyError(error);
+      } catch {
         this.actions = [];
       }
     },

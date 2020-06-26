@@ -180,15 +180,10 @@ export default {
       }
     },
     async fetchUsers() {
-      try {
-        const users = await Api.call(
-          "projects.findUsers",
-          { projectId: this.project._id }
-        );
-        this.projectUsers = users;
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      this.projectUsers = await Api.call(
+        "projects.findUsers",
+        { projectId: this.project._id }
+      );
     }
   }
 };

@@ -98,17 +98,13 @@ export default {
   },
   methods: {
     async fetchAttachments() {
-      try {
-        const result = await Api.call("attachments.find", this.params);
-        if (!result || !result.data) return;
-        this.attachments = result.data;
-        this.page = result.totalPages;
-        this.pagination.totalItems = result.totalItems;
-        this.pagination.rowsPerPage = result.rowsPerPage;
-        this.pagination.totalPages = this.calculateTotalPages();
-      } catch (error) {
-        this.$notifyError(error);
-      }
+      const result = await Api.call("attachments.find", this.params);
+      if (!result || !result.data) return;
+      this.attachments = result.data;
+      this.page = result.totalPages;
+      this.pagination.totalItems = result.totalItems;
+      this.pagination.rowsPerPage = result.rowsPerPage;
+      this.pagination.totalPages = this.calculateTotalPages();
     },
     calculateTotalPages() {
       if (
