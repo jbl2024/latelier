@@ -15,7 +15,7 @@
               <v-icon left>
                 mdi-plus
               </v-icon>
-              Ajouter une conclusion
+              Ajouter une décision
             </v-btn>
           </v-toolbar-title>
           <v-spacer />
