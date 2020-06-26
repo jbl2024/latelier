@@ -65,6 +65,7 @@
               autofocus
               hide-details
               @keydown.shift.enter="saveEditedAction"
+              @keyup.esc="cancelEdit(item)"
             />
             <v-btn text icon @click="saveEditedAction">
               <v-icon color="green">
