@@ -203,7 +203,6 @@ export default {
       this.clearEdit();
     },
     cancelEdit() {
-      this.saveAction(this.originalAction);
       this.clearEdit();
     },
     saveAction(action) {
