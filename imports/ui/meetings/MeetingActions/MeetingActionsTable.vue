@@ -1,19 +1,21 @@
 <template>
   <div class="meeting-actions-table">
     <v-data-table
+      v-model="selectedActions"
       :headers="headers"
       :items="actions"
       item-key="actionId"
+      show-select
       :no-data-text="$t('meetings.actions.none')"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
           <v-toolbar-title>
-            {{ $t("meetings.actions.title") }}
-            <v-btn dark color="primary" icon @click="addNewAction">
-              <v-icon>
+            <v-btn dark color="primary" @click="addNewAction">
+              <v-icon left>
                 mdi-plus
               </v-icon>
+              Ajouter une conclusion
             </v-btn>
           </v-toolbar-title>
           <v-spacer />
@@ -151,6 +153,7 @@ export default {
   },
   data() {
     return {
+      selectedActions: [],
       types: [
         {
           text: this.$t("meetings.actions.types.action"),
@@ -166,7 +169,6 @@ export default {
         }
       ],
       headers: [
-        { text: "N°", value: "number" },
         { text: "Type", value: "type" },
         { text: "Description", value: "description" },
         { text: "Responsable", value: "assignedTo" },

@@ -21,17 +21,17 @@
     <v-card class="flex-container">
       <v-toolbar class="flex0" dense>
         <rich-editor-menu-bar :editor="currentEditor" />
-        <v-spacer />
-        <v-btn color="primary" dark @click="editMeeting">
-          <v-icon left>
-            mdi-pencil
-          </v-icon>
-          Editer la réunion
-        </v-btn>
       </v-toolbar>
       <v-card-text class="flex1">
         <div class="list">
-          <h1>{{ meeting.name }}</h1>
+          <h1>
+            {{ meeting.name }}
+            <v-btn color="primary" icon @click="editMeeting">
+              <v-icon>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </h1>
           <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
@@ -51,6 +51,9 @@
             hide-toolbar
             @on-focus="setCurrentEditor"
           />
+          <h2>
+            {{ $t("meetings.actions.title") }}
+          </h2>
           <div class="actions">
             <meeting-actions-table
               :actions="actions"
@@ -290,8 +293,9 @@ export default {
 }
 
 .actions {
-  margin-top: 1rem;
+  margin-top: 24px;
   margin-bottom: 6rem;
+  border: 1px solid #ccc;
 }
 
 .flex0 {
