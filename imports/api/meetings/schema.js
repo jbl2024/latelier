@@ -66,7 +66,7 @@ export const ActionSchema = {
     optional: true
   },
   dueDate: {
-    type: String,
+    type: Date,
     optional: true
   },
   assignedTo: {
