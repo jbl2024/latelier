@@ -172,6 +172,13 @@ export default {
       if (action.dueDate) {
         action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
       }
+
+      // update list before loading from server to avoid flickering
+      const actionIndex = this.actions.findIndex((a) => a.actionId === action.actionId);
+      if (actionIndex > -1) {
+        this.$set(this.actions, actionIndex, deepCopy(action));
+      }
+ 
       await Api.call("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action

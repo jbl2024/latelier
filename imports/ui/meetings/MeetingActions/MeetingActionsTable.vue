@@ -204,6 +204,7 @@ export default {
       this.clearEdit();
     },
     cancelEdit() {
+      this.editedAction = deepCopy(this.originalAction);
       this.clearEdit();
     },
     saveAction(action) {
