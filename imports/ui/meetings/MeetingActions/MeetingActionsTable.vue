@@ -15,7 +15,7 @@
               <v-icon left>
                 mdi-plus
               </v-icon>
-              {{ $t('meetings.actions.addAction') }}
+              {{ $t("meetings.actions.addAction") }}
             </v-btn>
           </v-toolbar-title>
           <v-spacer />
@@ -107,8 +107,10 @@
             mdi-account
           </v-icon>
           <span>
-            {{ item.assignedTo == null
-              ? $t("meetings.actions.addAssignedTo") : getAttendeeName(item.assignedTo)
+            {{
+              item.assignedTo == null
+                ? $t("meetings.actions.addAssignedTo")
+                : getAttendeeName(item.assignedTo)
             }}
           </span>
         </v-chip>
@@ -125,7 +127,13 @@
             </v-icon>
             {{ $t("meetings.actions.addDueDate") }}
           </v-chip>
-          <v-chip v-else color="success" @click="chooseActionDueDate(item)">
+          <v-chip
+            v-else
+            color="success"
+            close
+            @click="chooseActionDueDate(item)"
+            @click:close="clearActionDueDate(item)"
+          >
             {{ formatDate(item.dueDate) }}
           </v-chip>
         </div>
@@ -220,6 +228,11 @@ export default {
     },
     chooseActionDueDate(action) {
       this.$emit("choose-action-due-date", action);
+    },
+    clearActionDueDate(action) {
+      this.editAction(action);
+      this.editedAction.dueDate = null;
+      this.saveEditedAction();
     },
     addNewAction() {
       this.$emit("add-new-action");
