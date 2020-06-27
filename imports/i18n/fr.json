@@ -315,7 +315,7 @@
     "meetingRestored": "Réunion restaurée",
     "actions": {
       "title": "Relevé de décisions",
-      "none": "Aucune conclusion",
+      "none": "Aucune décision",
       "addAction": "Ajouter une décision",
       "deleteAction?": "Supprimer la décision",
       "deleteActionSuccess": "Décision supprimée avec succès",

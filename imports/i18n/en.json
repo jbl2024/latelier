@@ -257,5 +257,107 @@
   "login": {
     "logout": "Log out",
     "logoutConfirm": "Do you want to log out?"
-  }
+  },
+  "meetings": {
+    "list": "List",
+    "meeting": "Meeting",
+    "meetings": "Meetings",
+    "allMeetings": "All meetings",
+    "scheduleMeeting": "Schedule a meeting",
+    "newMeeting": "New meeting",
+    "prepare": "Setup meeting",
+    "prepareEdit": "Setup/Edit meeting",
+    "participate": "Join meeting",
+    "create": "Create",
+    "created": "Meeting created",
+    "update": "Update",
+    "updated": "Meeting updated",
+    "remove": "Delete",
+    "remove?": "Delete meeting ?",
+    "edit": "Edit",
+    "noType": "No type",
+    "type": "Meeting type",
+    "location": "Location",
+    "meetingDelete?": "Delete meeting?",
+    "meetingDeleted": "Meeting deleted", 
+    "meetingRestored": "Meeting restored",
+    "actions": {
+      "title": "Actuins",
+      "none": "No action",
+      "addAction": "Add action",
+      "deleteAction?": "Delete action",
+      "deleteActionSuccess": "Action deleted successfully",
+      "createActionSuccess": "Action created successfully",
+      "updateActionSuccess": "Action updated successfully",
+      "selectAssignedTo": "Select assignee",
+      "addAssignedTo": "Add assignee",
+      "addDueDate": "Add due date",
+      "addDescription": "Add description",
+      "types": {
+        "decision": "Decision",
+        "action": "Action",
+        "information": "Information"
+      }
+    },
+    "documents": {
+      "documentAddedSuccess": "Document added successfully",
+      "search": "Search within project documents"
+    },
+    "attendees": {
+      "attendees": "Attendees",
+      "meetingAttendees": "Meeting attendees",
+      "addAttendees": "Add attendees",
+      "isExternalAttendee": "External project attendee",
+      "isProjectAttendee": "Project attendee"
+    },
+    "attachments": {
+      "meetingAttachments": "Meeting documents"
+    },
+    "roles": {
+      "attendee": "Attendee",
+      "organizer": "Organizer"
+    },
+    "types": {
+      "none": "No type",
+      "weeklypoint": "Weekyl point",
+      "info": "Information meeting",
+      "service": "Departement meeting"
+    },
+    "agenda": {
+      "agenda": "Agenda",
+      "none": "No agenda"
+    },
+    "report": {
+      "report": "Report"
+    },
+    "date": {
+      "select": "Choose a date",
+      "start": "{date}"
+    },
+    "hoursRange": {
+      "select": "Select range time",
+      "range": "{start} - {end}"
+    },
+    "fields": {
+      "name": "Nom",
+      "state": "Status",
+      "description": "Description",
+      "subject": "Meeting subject",
+      "agenda": "Agenda"
+    },
+    "none": {
+      "name": "No name",
+      "state": "No statut",
+      "description": "No description",
+      "subject": "No subject",
+      "agenda": "No agenda"
+    }
+  },
+  "attachments": {
+    "attachments": "Documents",
+    "addDescription": "You can add documents here or in a task",
+    "addAttachments": "Ajouter des documents",
+    "none": "No document",
+    "noneFound": "No document found"
+  }  
 }
