@@ -4,7 +4,6 @@ import moment from "moment";
 // We use project rights for meeting rights
 import {
   Permissions,
-  checkLoggedIn,
   checkCanReadProject,
   checkCanWriteProject,
   checkCanReadMeeting,
@@ -32,8 +31,8 @@ Meetings.methods.create = new ValidatedMethod({
     documents,
     actions
   }) {
-    checkLoggedIn();
     checkCanWriteProject(projectId);
+
     const now = new Date();
     const author = Meteor.userId();
     state = state || MeetingState.PENDING;
@@ -83,15 +82,9 @@ Meetings.methods.update = new ValidatedMethod({
     documents,
     actions
   }) {
-    checkLoggedIn();
+    checkCanWriteMeeting(id);
 
     state = state || MeetingState.PENDING;
-
-    const meeting = Meetings.findOne({ _id: id });
-    if (!meeting) {
-      throw new Meteor.Error("not-found");
-    }
-    checkCanWriteMeeting(meeting._id);
     const meetingId = Meetings.update(
       {
         _id: id
@@ -184,7 +177,7 @@ Meetings.methods.remove = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   run({ meetingId }) {
-    checkLoggedIn();
+    checkCanDeleteMeeting(meetingId);
     // @todo check can write
     Meetings.update(
       { _id: meetingId },
@@ -205,8 +198,7 @@ Meetings.methods.deleteForever = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   run({ meetingId }) {
-    // @todo check can delete forever !!
-    checkLoggedIn();
+    checkCanDeleteMeeting(meetingId);
     // @todo remove only if it has exclusively meetingId as meta ?
     // Attachments.remove({ "meta.projectId": projectId });
     Meetings.remove(meetingId);
@@ -219,7 +211,6 @@ Meetings.methods.restore = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   run({ meetingId }) {
-    checkLoggedIn();
     checkCanWriteMeeting(meetingId);
     Meetings.update(
       { _id: meetingId },
@@ -250,9 +241,8 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     perPage: { type: Number, optional: true }
   }).validator(),
   run({ projectId, dates, page, perPage }) {
-    page = page || 1;
-    checkLoggedIn();
     checkCanReadProject(projectId);
+    page = page || 1;
     let skip = 0;
     if (perPage) {
       if (page) {
@@ -298,13 +288,8 @@ Meetings.methods.get = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   run({ meetingId }) {
-    checkLoggedIn();
+    checkCanReadMeeting(meetingId);
     const meeting = Meetings.findOne({ _id: meetingId });
-    if (meeting) {
-      checkCanReadMeeting(meeting._id);
-    } else {
-      throw new Meteor.Error("not-found");
-    }
     return meeting;
   }
 });
@@ -331,10 +316,8 @@ Meetings.methods.getActions = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   run({ meetingId }) {
+    checkCanReadMeeting(meetingId);
     const meeting = Meetings.findOne({ _id: meetingId });
-    if (!meeting) {
-      throw new Meteor.Error("not-found");
-    }
     return meeting.actions && Array.isArray(meeting.actions) ? meeting.actions : [];
   }
 });
@@ -351,11 +334,7 @@ Meetings.methods.createAction = new ValidatedMethod({
     meetingId,
     action
   }) {
-    const meeting = Meetings.findOne({ _id: meetingId });
-    if (!meeting) {
-      throw new Meteor.Error("not-found");
-    }
-
+    checkCanWriteMeeting(meetingId);
     if (action.dueDate) {
       action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
     }
@@ -383,6 +362,7 @@ Meetings.methods.updateAction = new ValidatedMethod({
     meetingId,
     action
   }) {
+    checkCanReadMeeting(meetingId);
     if (action.dueDate) {
       action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
     }
@@ -415,6 +395,7 @@ Meetings.methods.deleteActions = new ValidatedMethod({
     }
   }).validator(),
   run({ meetingId, actionsIds }) {
+    checkCanWriteMeeting(meetingId);
     if (!Array.isArray(actionsIds) || !actionsIds.length) return false;
     const ids = Meetings.update(
       { _id: meetingId },

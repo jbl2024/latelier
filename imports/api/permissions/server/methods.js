@@ -249,14 +249,7 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
 
-    const project = Projects.findOne({
-      _id: meeting.projectId,
-      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
-    });
-    if (project) {
-      return true;
-    }
-    throw new Meteor.Error("not-authorized");
+    return Meteor.call("permissions.canReadProject", { projectId: meeting.projectId });
   }
 });
 
@@ -278,26 +271,7 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
     if (!meeting) {
       throw new Meteor.Error("not-found");
     }
-
-    const project = Projects.findOne({
-      _id: meeting.projectId,
-      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
-    });
-    if (!project) {
-      throw new Meteor.Error("not-found");
-    }
-
-    if (meeting.createdBy === userId) {
-      return true;
-    }
-
-    const meetingOrganizersUserIds = meetings.attendees.filter((attendee) => attendee.role === "organizer").map((attendee) => attendee.userId);
-
-    if (meetingOrganizersUserIds.includes(userId)) {
-      return true;
-    }
-
-    throw new Meteor.Error("not-authorized");
+    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 
@@ -317,10 +291,10 @@ Permissions.methods.canDeleteMeeting = new ValidatedMethod({
       _id: meetingId,
       createdBy: userId
     });
-    if (meeting) {
-      return true;
+    if (!meeting) {
+      throw new Meteor.Error("not-authorized");
     }
-    throw new Meteor.Error("not-authorized");
+    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 
