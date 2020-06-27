@@ -57,13 +57,6 @@
                 :events="meetingsEvents"
               />
             </v-col>
-            <v-col :lg="asideCols.filters.lg">
-              <meeting-calendar-filters
-                class="filters"
-                :types="meetingTypes"
-                :selected-types.sync="selectedMeetingTypes"
-              />
-            </v-col>
           </v-row>
         </v-col>
         <!-- Main content -->
@@ -118,7 +111,6 @@ import { mapState, mapGetters, mapActions } from "vuex";
 import MeetingUtils from "/imports/api/meetings/utils";
 import ProjectMeetingsToolbar from "/imports/ui/projects/ProjectMeetingsToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
-import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
@@ -129,7 +121,6 @@ export default {
   components: {
     ProjectMeetingsToolbar,
     MeetingCalendar,
-    MeetingCalendarFilters,
     MeetingCalendarToolbar,
     MeetingCalendarDatePicker,
     Meeting,
