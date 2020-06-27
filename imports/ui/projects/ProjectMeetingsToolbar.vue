@@ -11,7 +11,7 @@
         <v-icon left>
           mdi-plus
         </v-icon>
-        Réunion
+        {{ $t('Meeting') }}
       </v-btn>
     </div>
   </v-toolbar>

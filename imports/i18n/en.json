@@ -236,13 +236,37 @@
     "locale": "en",
     "format": {
       "date": "MM/DD/YYYY",
-      "dateTime": "MM/DD/YYYY HH:mm"
+      "dateTime": "MM/DD/YYYY HH:mm",
+      "prettyDate": "MMMM DD YYYY",
+      "prettyMonthAndDate": "MMMM YYYY"
     },
     "duration": {
       "past": "{duration} ago",
       "future": "in {duration}",
       "by": "{duration} by {user}"
+    },
+    "interval": {
+      "date": "from {start} to {end}",
+      "dateWithHours": {
+        "sameDay": "On {start} from {startHour} to {endHour}",
+        "differentDay": "On {start} from {startHour} until {end} at {endHour}"
+      } 
     }
+  },
+  "calendar": {
+    "today": "Today",
+    "24h": "24h",
+    "weekNumber": "Week {weekNumber}",
+    "types": {
+      "day": "Day",
+      "5days": "Monday/Friday",
+      "week": "Week",
+      "month": "Month"
+    }
+  },
+  "hoursRange": {
+    "select": "Choose start/end time",
+    "range": "From {start} to {end}"
   },
   "reminders": {
     "never": "Never",
@@ -319,7 +343,7 @@
     },
     "types": {
       "none": "No type",
-      "weeklypoint": "Weekyl point",
+      "weeklypoint": "Weekly point",
       "info": "Information meeting",
       "service": "Departement meeting"
     },
@@ -356,7 +380,7 @@
   "attachments": {
     "attachments": "Documents",
     "addDescription": "You can add documents here or in a task",
-    "addAttachments": "Ajouter des documents",
+    "addAttachments": "Add documents",
     "none": "No document",
     "noneFound": "No document found"
   }  

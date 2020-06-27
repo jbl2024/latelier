@@ -40,7 +40,7 @@
             <!-- Meeting summary -->
             <v-expansion-panel>
               <v-expansion-panel-header class="meeting__panel-header">
-                Description et ordre du jour
+                {{ $t('Informations' )}}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <div v-if="meeting.description" v-html="markDown(meeting.description)" />
