@@ -2,23 +2,12 @@
   <div class="select-hour-range">
     <generic-dialog
       v-model="showDialog"
-      max-width="520"
+      max-width="620"
       :title="computedTitle"
     >
       <template v-slot:content>
-        <v-tabs v-if="showDialog" fixed-tabs>
-          <v-tabs-slider color="accent" />
-          <v-tab>
-            Début
-          </v-tab>
-          <v-tab>
-            Fin
-          </v-tab>
-          <!-- Start hour -->
-          <v-tab-item
-            :transition="false" :reverse-transition="false"
-            class="pt-2 text-center"
-          >
+        <v-row justify="space-around" align="center">
+          <v-col style="width: 290px; flex: 0 1 auto;">
             <v-time-picker
               v-model="selectedStart"
               :allowed-minutes="allowedMinutes"
@@ -26,12 +15,8 @@
               class="select-hour-range__picker"
               format="24hr"
             />
-          </v-tab-item>
-          <!-- End hour -->
-          <v-tab-item
-            :transition="false" :reverse-transition="false"
-            class="pt-2 text-center"
-          >
+          </v-col>
+          <v-col style="width: 290px; flex: 0 1 auto;">
             <v-time-picker
               v-model="selectedEnd"
               :allowed-minutes="allowedMinutes"
@@ -40,8 +25,8 @@
               class="select-hour-range__picker"
               format="24hr"
             />
-          </v-tab-item>
-        </v-tabs>
+          </v-col>
+        </v-row>
       </template>
       <template v-slot:actions>
         <v-btn text @click="selectHourRange">
@@ -53,6 +38,8 @@
 </template>
 
 <script>
+import moment from "moment";
+
 export default {
   props: {
     value: {
@@ -78,22 +65,23 @@ export default {
   },
   data() {
     return {
-      startValue: null,
-      endValue: null
+      startValue: this.start,
+      endValue: this.end
     };
   },
   computed: {
     selectedStart: {
       get() {
-        return this.start;
+        return this.startValue;
       },
       set(newStart) {
         this.startValue = newStart;
+        this.endValue = moment(this.startValue, "HH:mm").add(1, "hours").format("HH:mm");
       }
     },
     selectedEnd: {
       get() {
-        return this.end;
+        return this.endValue;
       },
       set(newEnd) {
         this.endValue = newEnd;
