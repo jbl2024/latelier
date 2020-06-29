@@ -259,6 +259,13 @@ export default {
           await this.fetch();
         }
       }
+    },
+    currentProject: {
+      async handler() {
+        if (this.active) {
+          await this.fetch();
+        }
+      }
     }
   },
   async mounted() {
