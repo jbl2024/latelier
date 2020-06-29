@@ -29,20 +29,28 @@
         <v-menu offset-y :nudge-bottom="10">
           <template v-slot:activator="{ on, attrs }">
             <v-chip
-              :color="getTypeColor(item.type)"
+              :color="types[item.type].color"
               dark
               v-bind="attrs"
               v-on="on"
             >
-              {{ $t(`meetings.actions.types.${item.type}`) }}
+              <v-icon left>
+                {{ types[item.type].icon }}
+              </v-icon>
+              {{ types[item.type].text }}
             </v-chip>
           </template>
-          <v-list>
+          <v-list dense>
             <v-list-item
               v-for="(type, index) in types"
               :key="index"
               @click="selectActionType(item, type.value)"
             >
+              <v-list-item-icon>
+                <v-icon :color="type.color">
+                  {{ type.icon }}
+                </v-icon>
+              </v-list-item-icon>
               <v-list-item-title>{{ type.text }}</v-list-item-title>
             </v-list-item>
           </v-list>
@@ -165,27 +173,33 @@ export default {
   data() {
     return {
       selectedActions: [],
-      types: [
-        {
+      types: Object.freeze({
+        action: {
           text: this.$t("meetings.actions.types.action"),
+          icon: "mdi-play-circle",
+          color: "success",
           value: "action"
         },
-        {
+        information: {
           text: this.$t("meetings.actions.types.information"),
+          icon: "mdi-information-outline",
+          color: "indigo",
           value: "information"
         },
-        {
+        decision: {
           text: this.$t("meetings.actions.types.decision"),
+          icon: "mdi-bullseye-arrow",
+          color: "accent",
           value: "decision"
         }
-      ],
-      headers: [
+      }),
+      headers: Object.freeze([
         { text: "Type", value: "type" },
         { text: "Description", value: "description" },
         { text: "Responsable", value: "assignedTo" },
         { text: "Pour le", value: "dueDate", width: 50 },
         { text: "Actions", value: "actions", sortable: false, width: 80 }
-      ],
+      ]),
       editedAction: null,
       originalAction: null
     };
@@ -240,9 +254,6 @@ export default {
     clearEdit() {
       this.editedAction = null;
       this.originalAction = null;
-    },
-    getTypeColor() {
-      return "success";
     }
   }
 };
