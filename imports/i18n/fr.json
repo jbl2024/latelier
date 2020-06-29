@@ -332,6 +332,7 @@
       }
     },
     "documents": {
+      "documents": "Documents",
       "documentAddedSuccess": "Document ajouté avec succès",
       "search": "Rechercher parmi les documents du projet"
     },

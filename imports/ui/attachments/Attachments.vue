@@ -6,6 +6,8 @@
       :search.sync="searchInput"
       :label="label"
       :attachments="attachments"
+      :no-list-header="noListHeader"
+      :read-only="readOnly"
       @add-attachment="addAttachment"
     />
     <!-- Autocomplete -->
@@ -52,6 +54,14 @@ export default {
     label: {
       type: String,
       default: null
+    },
+    noListHeader: {
+      type: Boolean,
+      default: false
+    },
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {

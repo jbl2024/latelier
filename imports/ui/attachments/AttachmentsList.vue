@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="attachments-list">
     <v-list two-line subheader class="list">
-      <slot name="list-header">
+      <slot v-if="!noListHeader" name="list-header">
         <v-subheader>
           {{ $t('attachments.attachments') }}
           <v-btn
@@ -45,16 +45,18 @@
               </v-list-item-subtitle>
             </v-list-item-content>
 
-            <v-list-item-action>
-              <v-btn
-                icon
-                text
-                color="grey darken-1"
-                @click.stop="deleteAttachment(attachment)"
-              >
-                <v-icon>mdi-delete</v-icon>
-              </v-btn>
-            </v-list-item-action>
+            <template v-if="!readOnly">
+              <v-list-item-action>
+                <v-btn
+                  icon
+                  text
+                  color="grey darken-1"
+                  @click.stop="deleteAttachment(attachment)"
+                >
+                  <v-icon>mdi-delete</v-icon>
+                </v-btn>
+              </v-list-item-action>
+            </template>
           </v-list-item>
         </slot>
       </template>
@@ -86,6 +88,14 @@ export default {
     label: {
       type: String,
       default: ""
+    },
+    noListHeader: {
+      type: Boolean,
+      default: false
+    },
+    readOnly: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -108,3 +118,8 @@ export default {
   }
 };
 </script>
+<style lang="scss">
+.attachments-list .v-list {
+  padding: 0;
+}
+</style>

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="meeting">
+  <div v-if="meeting" class="meeting-detail-card">
     <select-date
       v-model="showSelectDate"
       :disable-time="true"
@@ -51,10 +51,28 @@
             hide-toolbar
             @on-focus="setCurrentEditor"
           />
+          <h2
+            class="documents-title"
+            @click="showDocuments = !showDocuments"
+          >
+            {{ $t("meetings.documents.documents") }}
+            <v-icon :class="['documents-chevron', showDocuments ? 'active' : null]">
+              mdi-chevron-down
+            </v-icon>
+          </h2>
+          <div v-show="showDocuments" class="content documents">
+            <attachments
+              display="list"
+              :label="$t('meetings.attachments.meetingAttachments')"
+              :attachments="attachments"
+              no-list-header
+              read-only
+            />
+          </div>
           <h2>
             {{ $t("meetings.actions.title") }}
           </h2>
-          <div class="actions">
+          <div class="content actions">
             <meeting-actions-table
               :actions="actions"
               @add-new-action="addNewAction"
@@ -75,6 +93,7 @@ import debounce from "lodash/debounce";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
 import MeetingAttendeesDialog from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesDialog";
 import MeetingUtils from "/imports/api/meetings/utils";
+import Attachments from "/imports/ui/attachments/Attachments";
 import deepCopy from "/imports/ui/utils/deepCopy";
 import Api from "/imports/ui/api/Api";
 import moment from "moment";
@@ -82,7 +101,8 @@ import moment from "moment";
 export default {
   components: {
     MeetingActionsTable,
-    MeetingAttendeesDialog
+    MeetingAttendeesDialog,
+    Attachments
   },
   props: {
     meeting: {
@@ -96,7 +116,9 @@ export default {
       selectedAction: null,
       showSelectDate: false,
       showAssignedToDialog: false,
-      actions: []
+      showDocuments: false,
+      actions: [],
+      attachments: []
     };
   },
   computed: {
@@ -118,6 +140,19 @@ export default {
         this.actions = deepCopy(
           this.meeting?.actions ? this.meeting.actions : []
         );
+      }
+    },
+    "meeting.documents": {
+      immediate: true,
+      handler() {
+        if (!Array.isArray(this.meeting?.documents) || !this.meeting.documents.length) return;
+        Api.call("attachments.find", {
+          attachmentsIds: this.meeting.documents.map((document) => document.documentId)
+        }).then((result) => {
+          this.attachments = result.data;
+        }, (error) => {
+          this.$notifyError(error);
+        });
       }
     }
   },
@@ -248,12 +283,15 @@ export default {
 </script>
 
 <style scoped>
+.meeting-detail-card h2 {
+  margin-bottom: 24px;
+}
+
 .editor {
   color: black;
   font-size: 16px;
   line-height: 1.5;
   background-color: white;
-  margin-top: 24px;
   margin-bottom: 24px;
 }
 
@@ -266,10 +304,21 @@ export default {
   background-color: #e5e5e5;
 }
 
-.actions {
-  margin-top: 24px;
-  margin-bottom: 6rem;
+.content {
   border: 1px solid #ccc;
+  margin-bottom: 24px;
+}
+
+.actions {
+  margin-bottom: 6rem;
+}
+
+.documents-title {
+  cursor: pointer;
+}
+
+.documents-chevron.active.v-icon {
+  transform: rotate(-180deg);
 }
 
 .flex0 {
