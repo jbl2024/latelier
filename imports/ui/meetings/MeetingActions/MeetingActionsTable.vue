@@ -10,17 +10,36 @@
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <v-toolbar-title>
-            <v-btn dark color="primary" @click="addNewAction">
+          <template v-if="selectedActions && selectedActions.length">
+            <v-btn
+              v-if="selectedActionsWithoutTasks.length > 0"
+              color="primary"
+              class="mr-4"
+              dark
+              @click="createTasks(selectedActions)"
+            >
               <v-icon left>
-                mdi-plus
+                mdi-format-list-bulleted
               </v-icon>
-              {{ $t("meetings.actions.addAction") }}
+              {{ $t("meetings.actions.createTasks") }}
             </v-btn>
-          </v-toolbar-title>
+            <v-btn
+              color="error"
+              dark
+              @click="deleteActions(selectedActions)"
+            >
+              <v-icon left>
+                mdi-delete
+              </v-icon>
+              {{ $t("meetings.actions.deleteSelected") }}
+            </v-btn>
+          </template>
           <v-spacer />
-          <v-btn icon>
-            <v-icon>mdi-dots-vertical</v-icon>
+          <v-btn outlined color="primary" @click="addNewAction">
+            <v-icon left>
+              mdi-plus
+            </v-icon>
+            {{ $t("meetings.actions.addAction") }}
           </v-btn>
         </v-toolbar>
       </template>
@@ -118,7 +137,7 @@
             {{
               item.assignedTo == null
                 ? $t("meetings.actions.addAssignedTo")
-                : getAttendeeName(item.assignedTo)
+                : item.assignedTo
             }}
           </span>
         </v-chip>
@@ -146,11 +165,13 @@
           </v-chip>
         </div>
       </template>
-      <!-- Actions on row -->
-      <template v-slot:item.actions="{ item }">
-        <v-icon small @click="deleteAction(item)">
-          mdi-close
-        </v-icon>
+      <template v-slot:item.taskId="{ item }">
+        <button v-if="findActionTask(item)" text @click="selectTask(findActionTask(item))">
+          <span class="action-task">
+            <v-icon v-if="findActionTask(item).completed" small>mdi-check-box-outline</v-icon>
+            {{ findActionTask(item).name }}
+          </span>
+        </button>
       </template>
     </v-data-table>
   </div>
@@ -164,6 +185,12 @@ export default {
   mixins: [MeetingAttendeeMixin, DatesMixin],
   props: {
     actions: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    tasks: {
       type: Array,
       default() {
         return [];
@@ -195,16 +222,40 @@ export default {
       }),
       headers: Object.freeze([
         { text: "Type", value: "type" },
+        { text: "Tâche", value: "taskId", width: 200 },
         { text: "Description", value: "description" },
         { text: "Responsable", value: "assignedTo" },
-        { text: "Pour le", value: "dueDate", width: 50 },
-        { text: "Actions", value: "actions", sortable: false, width: 80 }
+        { text: "Pour le", value: "dueDate", width: 50 }
       ]),
       editedAction: null,
       originalAction: null
     };
   },
+  computed: {
+    selectedActionsWithoutTasks() {
+      return this.selectedActions.filter((a) => !a.taskId);
+    },
+    actionsIds() {
+      return this.actions.map((a) => a.actionId);
+    }
+  },
+  watch: {
+    actions: {
+      immediate: true,
+      handler() {
+        this.selectedActions = this.selectedActions
+          .filter((sel) => this.actionsIds.includes(sel.actionId))
+          .map((sel) => this.actions.find((a) => a.actionId === sel.actionId));
+      }
+    }
+  },
   methods: {
+    selectTask(task) {
+      this.$emit("select-task", task);
+    },
+    findActionTask(action) {
+      return this.tasks.find((task) => task._id === action.taskId);
+    },
     isEditingAction(action) {
       if (this.editedAction == null) return false;
       return this.editedAction?.actionId === action.actionId;
@@ -234,8 +285,11 @@ export default {
     saveAction(action) {
       this.$emit("save-action", action);
     },
-    deleteAction(action) {
-      this.$emit("delete-action", action);
+    deleteActions(actions) {
+      this.$emit("delete-actions", actions);
+    },
+    createTasks(actions) {
+      this.$emit("create-tasks", actions);
     },
     chooseActionAssignedTo(action) {
       this.$emit("choose-action-assigned-to", action);
@@ -277,6 +331,9 @@ export default {
       display: flex;
       align-items: center;
     }
+  }
+  .action-task {
+    text-decoration: underline;
   }
 }
 </style>

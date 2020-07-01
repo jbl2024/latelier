@@ -69,11 +69,13 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
 });
 
 Meteor.methods({
-  "tasks.insert"(projectId, listId, name, labelIds) {
+  "tasks.insert"(projectId, listId, name, labelIds, assignedTo, dueDate) {
     check(projectId, String);
     check(listId, String);
     check(name, String);
     check(labelIds, Match.Maybe([String]));
+    check(assignedTo, Match.Maybe(String));
+    check(dueDate, Match.Maybe(String));
     checkCanWriteProject(projectId);
 
     const userId = Meteor.userId();
@@ -118,6 +120,8 @@ Meteor.methods({
       updatedBy: userId,
       watchers: [userId],
       number,
+      assignedTo,
+      dueDate,
       labels: labelIds || []
     });
 

@@ -6,6 +6,7 @@ import {
   Permissions,
   checkCanReadProject,
   checkCanWriteProject,
+  checkCanDeleteMeeting,
   checkCanReadMeeting,
   checkCanWriteMeeting
 } from "/imports/api/permissions/permissions";

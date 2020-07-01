@@ -70,7 +70,11 @@ export const ActionSchema = {
     optional: true
   },
   assignedTo: {
-    type: new SimpleSchema(AttendeeSchema),
+    type: String,
+    optional: true
+  },
+  taskId: {
+    type: String,
     optional: true
   }
 };

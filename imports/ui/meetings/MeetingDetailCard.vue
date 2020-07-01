@@ -51,33 +51,38 @@
             hide-toolbar
             @on-focus="setCurrentEditor"
           />
-          <h2
-            class="documents-title"
-            @click="showDocuments = !showDocuments"
-          >
-            {{ $t("meetings.documents.documents") }}
-            <v-icon :class="['documents-chevron', showDocuments ? 'active' : null]">
-              mdi-chevron-down
-            </v-icon>
-          </h2>
-          <div v-show="showDocuments" class="content documents">
-            <attachments
-              display="list"
-              :label="$t('meetings.attachments.meetingAttachments')"
-              :attachments="attachments"
-              no-list-header
-              read-only
-            />
-          </div>
+          <template v-if="hasDocuments">
+            <h2
+              class="documents-title"
+              @click="showDocuments = !showDocuments"
+            >
+              {{ $t("meetings.documents.documents") }}
+              <v-icon :class="['documents-chevron', showDocuments ? 'active' : null]">
+                mdi-chevron-down
+              </v-icon>
+            </h2>
+            <div v-show="showDocuments" class="content documents">
+              <attachments
+                display="list"
+                :label="$t('meetings.attachments.meetingAttachments')"
+                :attachments="attachments"
+                no-list-header
+                read-only
+              />
+            </div>
+          </template>
           <h2>
             {{ $t("meetings.actions.title") }}
           </h2>
           <div class="content actions">
             <meeting-actions-table
               :actions="actions"
+              :tasks="tasks"
+              @select-task="selectTask"
               @add-new-action="addNewAction"
               @save-action="saveAction"
-              @delete-action="deleteAction"
+              @create-tasks="createTasks"
+              @delete-actions="deleteActions"
               @choose-action-assigned-to="chooseActionAssignedTo"
               @choose-action-due-date="chooseActionDueDate"
             />
@@ -89,6 +94,8 @@
 </template>
 
 <script>
+import { Lists } from "/imports/api/lists/lists.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 import debounce from "lodash/debounce";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
 import MeetingAttendeesDialog from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesDialog";
@@ -125,6 +132,10 @@ export default {
     selectedActionId() {
       if (!this.selectedAction?.actionId) return null;
       return this.selectedAction.actionId;
+    },
+    hasDocuments() {
+      if (!this.meeting) return false;
+      return Array.isArray(this.meeting?.documents) && this.meeting.documents.length > 0;
     }
   },
   watch: {
@@ -153,6 +164,28 @@ export default {
         }, (error) => {
           this.$notifyError(error);
         });
+      }
+    }
+  },
+  meteor: {
+    tasks: {
+      params() {
+        return {
+          tasksIds: this.actions.map((action) => action.taskId)
+        };
+      },
+      update({ tasksIds }) {
+        return Tasks.find({ _id: { $in: tasksIds } });
+      }
+    },
+    firstList: {
+      params() {
+        return {
+          projectId: this.meeting.projectId
+        };
+      },
+      update({ projectId }) {
+        return Lists.findOne({ projectId }, { sort: { order: 1 } });
       }
     }
   },
@@ -186,24 +219,22 @@ export default {
         }
       );
     }, 1000),
-    async deleteAction(action) {
+    async deleteActions(actions) {
+      if (!actions || !Array.isArray(actions) || !actions.length) return;
       const res = await this.$confirm(this.$t("Confirm"), {
-        title: this.$t("meetings.actions.deleteAction?"),
+        title: this.$t("meetings.actions.deleteSelectedActions?"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       });
       if (!res || res === false) return;
-
-      const savedActionIndex = this.getActionIndex(action, this.actions);
-      if (savedActionIndex === -1) return;
       await Api.call("meetings.deleteActions", {
         meetingId: this.meeting._id,
-        actionsIds: [action.actionId]
+        actionsIds: actions.map((a) => a.actionId)
       });
-      this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
-      await this.fetchSavedActions();
+      this.$notify(this.$t("meetings.actions.deleteActionsSuccess"));
+      await this.fetch();
     },
-    async saveAction(action) {
+    async saveAction(action, refresh = true) {
       if (action.dueDate) {
         action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
       }
@@ -218,7 +249,10 @@ export default {
         meetingId: this.meeting._id,
         action: action
       });
-      await this.fetchSavedActions();
+
+      if (refresh) {
+        await this.fetch();
+      }
     },
     chooseActionAssignedTo(action) {
       this.selectedAction = action;
@@ -230,7 +264,7 @@ export default {
       if (!Array.isArray(attendees) || !attendees.length) return;
       const action = {
         ...this.selectedAction,
-        assignedTo: MeetingUtils.sanitizeAttendee(attendees[0])
+        assignedTo: attendees[0].userId
       };
       await this.saveAction(action);
       this.selectedAction = null;
@@ -256,13 +290,13 @@ export default {
         meetingId: this.meeting._id,
         action: MeetingUtils.makeNewMeetingAction()
       }).then(() => {
-        this.fetchSavedActions();
+        this.fetch();
       }, (error) => {
         this.$notifyError(error);
       });
     },
 
-    async fetchSavedActions() {
+    async fetch() {
       try {
         const meetingActions = await Api.call("meetings.getActions", {
           meetingId: this.meeting._id
@@ -271,6 +305,40 @@ export default {
       } catch {
         this.actions = [];
       }
+    },
+    async createTasks(actions) {
+      if (!this.firstList?._id) {
+        this.$notifyError(this.$t("meetings.actions.noTaskList"));
+        return;
+      }
+      const insertActionsAsTasks = async (acts) => {
+        acts.forEach(async (action) => {
+          /* eslint-disable-next-line */
+          const createdTask = await Api.call(
+            "tasks.insert",
+            this.meeting.projectId,
+            this.firstList._id,
+            action.description,
+            [],
+            action?.assignedTo ? action.assignedTo : null,
+            action?.dueDate ? action.dueDate : null
+          );
+          await this.saveAction({ ...action, taskId: createdTask._id }, false);
+        });
+      };
+
+      try {
+        const actionsWithoutTasks = actions.filter((action) => !action.taskId);
+        if (!actionsWithoutTasks.length) return;
+        await insertActionsAsTasks(actionsWithoutTasks);
+        await this.fetch();
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+    selectTask(task) {
+      this.$store.dispatch("selectTask", task);
+      this.$store.dispatch("showTaskDetail", true);
     },
     setCurrentEditor(editor) {
       this.currentEditor = editor.editor;
