@@ -326,7 +326,7 @@ export default {
         action.description,
         [],
         action?.assignedTo ? action.assignedTo : null,
-        action?.dueDate ? action.dueDate : null
+        action?.dueDate ? moment(action.dueDate).format("YYYY-MM-DD HH:mm") : null
       ).catch(() => {
         this.$notifyError(this.$t("meetings.actions.createTaskFailed"));
       });

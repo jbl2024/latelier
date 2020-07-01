@@ -261,13 +261,14 @@ export default {
         return action;
       });
     },
-    meetinActionsIds() {
+    meetingActionsIds() {
       return this.meetingActions.map((a) => a.actionId);
     },
     selectedActionsWithoutTasks() {
       return this.selectedActions.filter((a) => !a.taskId);
     },
     tasksByIds() {
+      if (!this.tasks || !Array.isArray(this.tasks) || !this.tasks.length) return {};
       return this.tasks.reduce((tasksByIds, task) => {
         if (!tasksByIds[task._id]) {
           tasksByIds[task._id] = task;
