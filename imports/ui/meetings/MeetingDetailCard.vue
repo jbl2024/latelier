@@ -2,7 +2,6 @@
   <div v-if="meeting" class="meeting-detail-card">
     <select-date
       v-model="showSelectDate"
-      :disable-time="true"
       @select="selectActionDueDate"
     />
     <meeting-attendees-dialog
@@ -236,7 +235,7 @@ export default {
     },
     async saveAction(action) {
       if (action.dueDate) {
-        action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
+        action.dueDate = moment(action.dueDate).format("YYYY-MM-DD HH:mm");
       }
 
       // update list before loading from server to avoid flickering

@@ -113,7 +113,7 @@
       <template v-slot:item.assignedTo="{ item }">
         <v-chip
           :color="item.assignedTo == null ? null : 'success'"
-          :close="Boolean(item.assignedTo)"
+          :close="!item.taskId && Boolean(item.assignedTo)"
           @click="chooseActionAssignedTo(item)"
           @click:close="clearAssignedTo(item)"
         >
@@ -144,11 +144,11 @@
           <v-chip
             v-else
             color="success"
-            close
+            :close="!item.taskId"
             @click="chooseActionDueDate(item)"
             @click:close="clearActionDueDate(item)"
           >
-            {{ formatDate(item.dueDate) }}
+            {{ formatDateTime(item.dueDate) }}
           </v-chip>
         </div>
       </template>
