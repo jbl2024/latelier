@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [v3.0.1 2020-07-01]
+
+### Added
+
+### Changed
 - Fix resize column behavior when task detail is displayed
 - All regular project member to access project history
 - Update canvas page layout
