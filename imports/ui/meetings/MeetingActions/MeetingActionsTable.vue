@@ -3,38 +3,12 @@
     <v-data-table
       v-model="selectedActions"
       :headers="headers"
-      :items="actions"
+      :items="meetingActions"
       item-key="actionId"
-      show-select
       :no-data-text="$t('meetings.actions.none')"
     >
       <template v-slot:top>
         <v-toolbar flat color="white">
-          <template v-if="selectedActions && selectedActions.length">
-            <v-btn
-              v-if="selectedActionsWithoutTasks.length > 0"
-              color="primary"
-              class="mr-4"
-              dark
-              @click="createTasks(selectedActions)"
-            >
-              <v-icon left>
-                mdi-format-list-bulleted
-              </v-icon>
-              {{ $t("meetings.actions.createTasks") }}
-            </v-btn>
-            <v-btn
-              color="error"
-              dark
-              @click="deleteActions(selectedActions)"
-            >
-              <v-icon left>
-                mdi-delete
-              </v-icon>
-              {{ $t("meetings.actions.deleteSelected") }}
-            </v-btn>
-          </template>
-          <v-spacer />
           <v-btn outlined color="primary" @click="addNewAction">
             <v-icon left>
               mdi-plus
@@ -77,7 +51,20 @@
       </template>
       <!-- Description -->
       <template v-slot:item.description="{ item }">
+        <button
+          v-if="item.taskId && tasksByIds[item.taskId]"
+          text
+          @click="selectTask(tasksByIds[item.taskId])"
+        >
+          <span class="action-task">
+            <v-icon v-if="tasksByIds[item.taskId].completed" small>
+              mdi-check-box-outline
+            </v-icon>
+            {{ tasksByIds[item.taskId].name }}
+          </span>
+        </button>
         <div
+          v-else
           :class="[
             'description-cell',
             isEditingAction(item) ? 'is-editing' : null,
@@ -165,13 +152,44 @@
           </v-chip>
         </div>
       </template>
-      <template v-slot:item.taskId="{ item }">
-        <button v-if="findActionTask(item)" text @click="selectTask(findActionTask(item))">
-          <span class="action-task">
-            <v-icon v-if="findActionTask(item).completed" small>mdi-check-box-outline</v-icon>
-            {{ findActionTask(item).name }}
-          </span>
-        </button>
+      <!-- Actions on row -->
+      <template v-slot:item.actions="{ item }">
+        <div class="actions">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                fab
+                x-small
+                color="success"
+                dark
+                class="mr-2"
+                v-on="on"
+                @click.stop="createTask(item)"
+              >
+                <v-icon>
+                  mdi-format-list-bulleted
+                </v-icon>
+              </v-btn>
+            </template>
+            <span v-if="item.taskId && tasksByIds[item.taskId]">
+              {{ $t("meetings.actions.consultTask") }}
+            </span>
+            <span v-else>
+              {{ $t("meetings.actions.createAssociatedTask") }}
+            </span>
+          </v-tooltip>
+          <v-btn
+            fab
+            x-small
+            color="error"
+            dark
+            @click="deleteAction(item)"
+          >
+            <v-icon>
+              mdi-close
+            </v-icon>
+          </v-btn>
+        </div>
       </template>
     </v-data-table>
   </div>
@@ -222,21 +240,40 @@ export default {
       }),
       headers: Object.freeze([
         { text: "Type", value: "type" },
-        { text: "Tâche", value: "taskId", width: 200 },
         { text: "Description", value: "description" },
         { text: "Responsable", value: "assignedTo" },
-        { text: "Pour le", value: "dueDate", width: 50 }
+        { text: "Pour le", value: "dueDate", width: 50 },
+        { text: "Actions", value: "actions", sortable: false, width: 80 }
       ]),
       editedAction: null,
       originalAction: null
     };
   },
   computed: {
+    meetingActions() {
+      return this.actions.map((action) => {
+        if (action.taskId && this.tasksByIds[action.taskId]) {
+          const task = this.tasksByIds[action.taskId];
+          action.dueDate = task.dueDate;
+          action.assignedTo = task.assignedTo;
+          action.description = task.name;
+        }
+        return action;
+      });
+    },
+    meetinActionsIds() {
+      return this.meetingActions.map((a) => a.actionId);
+    },
     selectedActionsWithoutTasks() {
       return this.selectedActions.filter((a) => !a.taskId);
     },
-    actionsIds() {
-      return this.actions.map((a) => a.actionId);
+    tasksByIds() {
+      return this.tasks.reduce((tasksByIds, task) => {
+        if (!tasksByIds[task._id]) {
+          tasksByIds[task._id] = task;
+        }
+        return tasksByIds;
+      }, {});
     }
   },
   watch: {
@@ -244,17 +281,14 @@ export default {
       immediate: true,
       handler() {
         this.selectedActions = this.selectedActions
-          .filter((sel) => this.actionsIds.includes(sel.actionId))
-          .map((sel) => this.actions.find((a) => a.actionId === sel.actionId));
+          .filter((sel) => this.meetingActionsIds.includes(sel.actionId))
+          .map((sel) => this.meetingActions.find((a) => a.actionId === sel.actionId));
       }
     }
   },
   methods: {
     selectTask(task) {
       this.$emit("select-task", task);
-    },
-    findActionTask(action) {
-      return this.tasks.find((task) => task._id === action.taskId);
     },
     isEditingAction(action) {
       if (this.editedAction == null) return false;
@@ -285,17 +319,29 @@ export default {
     saveAction(action) {
       this.$emit("save-action", action);
     },
-    deleteActions(actions) {
-      this.$emit("delete-actions", actions);
+    deleteAction(action) {
+      this.$emit("delete-action", action);
     },
-    createTasks(actions) {
-      this.$emit("create-tasks", actions);
+    createTask(action) {
+      if (action.taskId && this.tasksByIds[action.taskId]) {
+        this.selectTask(this.tasksByIds[action.taskId]);
+      } else {
+        this.$emit("create-task", action);
+      }
     },
     chooseActionAssignedTo(action) {
-      this.$emit("choose-action-assigned-to", action);
+      if (action.taskId && this.tasksByIds[action.taskId]) {
+        this.selectTask(this.tasksByIds[action.taskId]);
+      } else {
+        this.$emit("choose-action-assigned-to", action);
+      }
     },
     chooseActionDueDate(action) {
-      this.$emit("choose-action-due-date", action);
+      if (action.taskId && this.tasksByIds[action.taskId]) {
+        this.selectTask(this.tasksByIds[action.taskId]);
+      } else {
+        this.$emit("choose-action-due-date", action);
+      }
     },
     clearActionDueDate(action) {
       this.editAction(action);
@@ -331,6 +377,9 @@ export default {
       display: flex;
       align-items: center;
     }
+  }
+  .actions {
+    display: flex;
   }
   .action-task {
     text-decoration: underline;

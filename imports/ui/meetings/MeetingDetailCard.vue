@@ -81,8 +81,8 @@
               @select-task="selectTask"
               @add-new-action="addNewAction"
               @save-action="saveAction"
-              @create-tasks="createTasks"
-              @delete-actions="deleteActions"
+              @create-task="createTask"
+              @delete-action="deleteAction"
               @choose-action-assigned-to="chooseActionAssignedTo"
               @choose-action-due-date="chooseActionDueDate"
             />
@@ -219,22 +219,22 @@ export default {
         }
       );
     }, 1000),
-    async deleteActions(actions) {
-      if (!actions || !Array.isArray(actions) || !actions.length) return;
+    async deleteAction(action) {
+      if (!action) return;
       const res = await this.$confirm(this.$t("Confirm"), {
-        title: this.$t("meetings.actions.deleteSelectedActions?"),
+        title: this.$t("meetings.actions.deleteAction?"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
       });
       if (!res || res === false) return;
       await Api.call("meetings.deleteActions", {
         meetingId: this.meeting._id,
-        actionsIds: actions.map((a) => a.actionId)
+        actionsIds: [action.actionId]
       });
-      this.$notify(this.$t("meetings.actions.deleteActionsSuccess"));
+      this.$notify(this.$t("meetings.actions.deleteActionSuccess"));
       await this.fetch();
     },
-    async saveAction(action, refresh = true) {
+    async saveAction(action) {
       if (action.dueDate) {
         action.dueDate = moment(action.dueDate).format("YYYY-MM-DD");
       }
@@ -250,9 +250,7 @@ export default {
         action: action
       });
 
-      if (refresh) {
-        await this.fetch();
-      }
+      await this.fetch();
     },
     chooseActionAssignedTo(action) {
       this.selectedAction = action;
@@ -306,35 +304,37 @@ export default {
         this.actions = [];
       }
     },
-    async createTasks(actions) {
+    async createTask(action) {
       if (!this.firstList?._id) {
-        this.$notifyError(this.$t("meetings.actions.noTaskList"));
+        this.$notify(this.$t("meetings.actions.noTaskList"));
         return;
       }
-      const insertActionsAsTasks = async (acts) => {
-        acts.forEach(async (action) => {
-          /* eslint-disable-next-line */
-          const createdTask = await Api.call(
-            "tasks.insert",
-            this.meeting.projectId,
-            this.firstList._id,
-            action.description,
-            [],
-            action?.assignedTo ? action.assignedTo : null,
-            action?.dueDate ? action.dueDate : null
-          );
-          await this.saveAction({ ...action, taskId: createdTask._id }, false);
-        });
-      };
-
-      try {
-        const actionsWithoutTasks = actions.filter((action) => !action.taskId);
-        if (!actionsWithoutTasks.length) return;
-        await insertActionsAsTasks(actionsWithoutTasks);
-        await this.fetch();
-      } catch (error) {
-        this.$notifyError(error);
+      if (action.taskId) {
+        this.$notify(this.$t("meetings.actions.alreadyHasTask"));
+        return;
       }
+
+      if (!action.description) {
+        this.$notify(this.$t("meetings.actions.noDescription"));
+        return;
+      }
+
+      const createdTask = await Api.call(
+        "tasks.insert",
+        this.meeting.projectId,
+        this.firstList._id,
+        action.description,
+        [],
+        action?.assignedTo ? action.assignedTo : null,
+        action?.dueDate ? action.dueDate : null
+      ).catch(() => {
+        this.$notifyError(this.$t("meetings.actions.createTaskFailed"));
+      });
+
+      await this.saveAction({ ...action, taskId: createdTask._id }).catch(() => {
+        this.$notifyError(this.$t("meetings.actions.saveActionFailed"));
+      });
+      this.$notify(this.$t("meetings.actions.createTaskSuccess"));
     },
     selectTask(task) {
       this.$store.dispatch("selectTask", task);

@@ -4,6 +4,7 @@ import { check, Match } from "meteor/check";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Events } from "/imports/api/events/events.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
 
 import { Random } from "meteor/random";
 import moment from "moment";
@@ -27,6 +28,24 @@ const Counter = new Mongo.Collection("counters");
 
 const incNumber = function() {
   return incrementCounter(Counter, "taskNumber");
+};
+
+const removeLinkWithMeetingAction = (taskId) => {
+  const meeting = Meetings.findOne({
+    "actions.taskId": taskId
+  });
+  if (!meeting || !meeting.actions || !Array.isArray(meeting.actions) || !meeting.actions.length) {
+    return;
+  }
+  linkedAction = meeting.actions.find((action) => action.taskId === taskId);
+  if (!linkedAction) {
+    return;
+  }
+  linkedAction.taskId = null;
+  Meteor.call("meetings.updateAction", {
+    meetingId: meeting._id,
+    action: linkedAction
+  });
 };
 
 if (Meteor.isServer) {
@@ -158,6 +177,8 @@ Meteor.methods({
       }
     );
 
+    removeLinkWithMeetingAction(taskId);
+
     Meteor.call("tasks.track", {
       type: "tasks.remove",
       taskId
@@ -176,6 +197,7 @@ Meteor.methods({
     });
 
     Tasks.remove(taskId);
+    removeLinkWithMeetingAction(taskId);
   },
 
   "tasks.restore"(taskId) {
