@@ -4,19 +4,13 @@
       v-model="showSelectDate"
       @select="selectActionDueDate"
     />
-    <meeting-attendees-dialog
-      ref="assignedToDialog"
+    <select-user
       :key="selectedActionId"
-      :is-shown.sync="showAssignedToDialog"
-      :attendees="meeting.attendees"
-      :project-id="meeting.projectId"
-      :multiple="false"
-      @select-attendees="selectActionAssignedTo"
-    >
-      <template #title>
-        {{ $t(`meetings.actions.selectAssignedTo`) }}
-      </template>
-    </meeting-attendees-dialog>
+      :project="project"
+      :active.sync="showSelectUser"
+      :is-admin="canManageProject()"
+      @select="selectActionAssignedTo"
+    />
     <v-card class="flex-container">
       <v-toolbar class="flex0" dense>
         <rich-editor-menu-bar :editor="currentEditor" />
@@ -97,21 +91,24 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import debounce from "lodash/debounce";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
-import MeetingAttendeesDialog from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesDialog";
 import MeetingUtils from "/imports/api/meetings/utils";
 import Attachments from "/imports/ui/attachments/Attachments";
 import deepCopy from "/imports/ui/utils/deepCopy";
 import Api from "/imports/ui/api/Api";
+import { Permissions } from "/imports/api/permissions/permissions";
 import moment from "moment";
 
 export default {
   components: {
     MeetingActionsTable,
-    MeetingAttendeesDialog,
     Attachments
   },
   props: {
     meeting: {
+      type: Object,
+      default: null
+    },
+    project: {
       type: Object,
       default: null
     }
@@ -121,7 +118,7 @@ export default {
       currentEditor: null,
       selectedAction: null,
       showSelectDate: false,
-      showAssignedToDialog: false,
+      showSelectUser: false,
       showDocuments: false,
       actions: [],
       attachments: []
@@ -254,18 +251,18 @@ export default {
     chooseActionAssignedTo(action) {
       this.selectedAction = action;
       this.$nextTick(() => {
-        this.showAssignedToDialog = true;
+        this.showSelectUser = true;
       });
     },
-    async selectActionAssignedTo(attendees) {
-      if (!Array.isArray(attendees) || !attendees.length) return;
+    async selectActionAssignedTo(user) {
+      if (!user) return;
       const action = {
         ...this.selectedAction,
-        assignedTo: attendees[0].userId
+        assignedTo: user._id
       };
       await this.saveAction(action);
       this.selectedAction = null;
-      this.showAssignedToDialog = false;
+      this.showSelectUser = false;
     },
     async selectActionDueDate(date) {
       const action = { ...this.selectedAction, dueDate: date };
@@ -344,6 +341,12 @@ export default {
     },
     editMeeting() {
       this.$emit("edit-meeting", this.meeting);
+    },
+    canManageProject() {
+      return (
+        Permissions.isAdmin(Meteor.userId(), this.meeting.projectId)
+        || Permissions.isAdmin(Meteor.userId())
+      );
     }
   }
 };

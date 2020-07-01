@@ -16,6 +16,7 @@
       v-if="currentMeeting"
       class="meeting-card"
       :meeting="currentMeeting"
+      :project="currentProject"
       @edit-meeting="showEditMeeting = true"
     />
   </div>
