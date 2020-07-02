@@ -312,6 +312,8 @@ export default {
     async onCreateMeeting(meetingId) {
       const createdMeeting = await Api.call("meetings.get", {
         meetingId
+      }).catch((error) => {
+        this.$notifyError(error);
       });
       await this.$router.push({
         name: "meetings",

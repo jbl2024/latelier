@@ -74,6 +74,7 @@
               @select-task="selectTask"
               @add-new-action="addNewAction"
               @save-action="saveAction"
+              @unlink-task="saveAction"
               @create-task="createTask"
               @delete-action="deleteAction"
               @choose-action-assigned-to="chooseActionAssignedTo"
@@ -244,6 +245,8 @@ export default {
       await Api.call("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action
+      }).catch((error) => {
+        this.$notifyError(error);
       });
 
       await this.fetch();

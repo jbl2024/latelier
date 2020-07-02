@@ -178,17 +178,47 @@
               {{ $t("meetings.actions.createAssociatedTask") }}
             </span>
           </v-tooltip>
-          <v-btn
-            fab
-            x-small
-            color="error"
-            dark
-            @click="deleteAction(item)"
+          <v-tooltip
+            v-if="item.taskId && tasksByIds[item.taskId]"
+            bottom
           >
-            <v-icon>
-              mdi-close
-            </v-icon>
-          </v-btn>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                fab
+                x-small
+                color="error"
+                dark
+                v-on="on"
+                @click="unlinkTask(item)"
+              >
+                <v-icon>
+                  mdi-link-variant-off
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>
+              {{ $t("meetings.actions.unlinkTask") }}
+            </span>
+          </v-tooltip>
+          <v-tooltip v-else bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                fab
+                x-small
+                color="error"
+                dark
+                v-on="on"
+                @click="deleteAction(item)"
+              >
+                <v-icon>
+                  mdi-close
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>
+              {{ $t("meetings.actions.deleteAction") }}
+            </span>
+          </v-tooltip>
         </div>
       </template>
     </v-data-table>
@@ -322,6 +352,10 @@ export default {
     },
     deleteAction(action) {
       this.$emit("delete-action", action);
+    },
+    unlinkTask(action) {
+      action.taskId = null;
+      this.$emit("unlink-task", action);
     },
     createTask(action) {
       if (action.taskId && this.tasksByIds[action.taskId]) {
