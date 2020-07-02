@@ -1,4 +1,5 @@
 import { isBasicAuth, projectAuth, meetingAuth } from "./router/check-auth";
+import { projectHasFeature } from "./router/guards";
 import multiguard from "vue-router-multiguard";
 
 import NotFound from "/imports/ui/pages/NotFound/NotFound.vue";
@@ -255,7 +256,7 @@ export default [
   {
     path: "/projects-meetings/:projectId",
     name: "project-meetings",
-    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    beforeEnter: multiguard([isBasicAuth, projectAuth, projectHasFeature("meetings")]),
     component: async () => (await import("/imports/ui/projects/ProjectMeetings.vue")).default,
     props: true,
     meta: {
@@ -265,7 +266,7 @@ export default [
   {
     path: "/meetings/:projectId/:meetingId",
     name: "meetings",
-    beforeEnter: multiguard([isBasicAuth, meetingAuth]),
+    beforeEnter: multiguard([isBasicAuth, meetingAuth, projectHasFeature("meetings")]),
     component: async () => (await import("/imports/ui/meetings/MeetingPage/MeetingPage.vue")).default,
     props: true
   },
