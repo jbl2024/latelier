@@ -122,9 +122,9 @@
           </v-icon>
           <span>
             {{
-              item.assignedTo == null
-                ? $t("meetings.actions.addAssignedTo")
-                : item.assignedTo
+              usersByIds[item.assignedTo]
+                ? getUserProfileName(usersByIds[item.assignedTo])
+                : $t("meetings.actions.addAssignedTo")
             }}
           </span>
         </v-chip>
@@ -227,10 +227,11 @@
 <script>
 import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import deepCopy from "/imports/ui/utils/deepCopy";
 
 export default {
-  mixins: [MeetingAttendeeMixin, DatesMixin],
+  mixins: [MeetingAttendeeMixin, DatesMixin, usersMixin],
   props: {
     actions: {
       type: Array,
@@ -248,6 +249,7 @@ export default {
   data() {
     return {
       selectedActions: [],
+      users: [],
       types: Object.freeze({
         action: {
           text: this.$t("meetings.actions.types.action"),
@@ -297,6 +299,18 @@ export default {
     selectedActionsWithoutTasks() {
       return this.selectedActions.filter((a) => !a.taskId);
     },
+    meetingActionsAssignedTos() {
+      return this.meetingActions.map((a) => a.assignedTo);
+    },
+    usersByIds() {
+      if (!this.users || !Array.isArray(this.users) || !this.users.length) return {};
+      return this.users.reduce((usersByIds, user) => {
+        if (!usersByIds[user._id]) {
+          usersByIds[user._id] = user;
+        }
+        return usersByIds;
+      }, {});
+    },
     tasksByIds() {
       if (!this.tasks || !Array.isArray(this.tasks) || !this.tasks.length) return {};
       return this.tasks.reduce((tasksByIds, task) => {
@@ -314,6 +328,13 @@ export default {
         this.selectedActions = this.selectedActions
           .filter((sel) => this.meetingActionsIds.includes(sel.actionId))
           .map((sel) => this.meetingActions.find((a) => a.actionId === sel.actionId));
+      }
+    },
+    meetingActionsAssignedTos: {
+      immediate: true,
+      handler() {
+        const users = Meteor.users.find({ _id: { $in: this.meetingActionsAssignedTos } }).fetch();
+        this.users = Array.isArray(users) ? users : []
       }
     }
   },
