@@ -238,6 +238,13 @@
       "DEVELOPMENT": "En développement",
       "PRODUCTION": "En production",
       "ARCHIVED": "Archivé"
+    },
+    "features": {
+      "chooseFeature": "Sélectionner une fonctionnalité",
+      "features": {
+        "estimation": "Estimation de tâche",
+        "meetings": "Réunions"
+      }
     }
   },
   "dates": {

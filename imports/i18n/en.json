@@ -230,6 +230,13 @@
       "DEVELOPMENT": "Development",
       "PRODUCTION": "Production",
       "ARCHIVED": "Archived"
+    },
+    "features": {
+      "chooseFeature": "Choose feature",
+      "features": {
+        "estimation": "Task estimation",
+        "meetings": "Meetings"
+      }
     }
   },
   "dates": {
