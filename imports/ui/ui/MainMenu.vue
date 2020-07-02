@@ -213,6 +213,7 @@ export default {
         },
         {
           id: "meetings",
+          feature: "meetings",
           title: this.$t("meetings.meetings"),
           icon: "mdi-calendar-star",
           to: {
@@ -253,7 +254,13 @@ export default {
             params: { projectId: this.projectId }
           }
         }
-      ];
+      ].filter((item) => {
+        if (item.feature) {
+          return Array.isArray(this.project?.features)
+          && this.project.features.includes(item.feature);
+        }
+        return true;
+      });
       if (this.project && this.project.organizationId) {
         menuItems.unshift({
           id: "dashboard-page",
