@@ -14,7 +14,7 @@
         :project-id="projectId"
         :meeting="newMeeting"
         :types="meetingTypes"
-        @created="fetch"
+        @created="onCreateMeeting"
       />
       <!-- Edit existing meeting -->
       <meeting-edit
@@ -116,6 +116,7 @@ import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/Meet
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import moment from "moment";
+import Api from "/imports/ui/api/Api";
 
 export default {
   components: {
@@ -307,6 +308,18 @@ export default {
       if (this.isCalendarDisplay) {
         this.$refs.calendar.prev();
       }
+    },
+    async onCreateMeeting(meetingId) {
+      const createdMeeting = await Api.call("meetings.get", {
+        meetingId
+      });
+      await this.$router.push({
+        name: "meetings",
+        params: {
+          meetingId: createdMeeting._id,
+          projectId: createdMeeting.projectId
+        }
+      });
     },
     addNewMeeting(selectedTime) {
       const newMeeting = MeetingUtils.makeNewMeeting();

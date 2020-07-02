@@ -280,8 +280,8 @@ export default {
     },
     async create() {
       this.showDialog = false;
-      await Api.call("meetings.create", this.getParams());
-      this.$emit("created");
+      const meetingId = await Api.call("meetings.create", this.getParams());
+      this.$emit("created", meetingId);
       this.$notify(this.$t("meetings.created"));
     }
   }
