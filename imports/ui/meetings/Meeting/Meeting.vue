@@ -48,7 +48,7 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             <!-- Documents -->
-            <v-expansion-panel v-if="meeting && meeting.documents">
+            <v-expansion-panel v-if="documentsCount > 0">
               <v-expansion-panel-header class="meeting__panel-header">
                 Documents {{ `(${documentsCount})` }}
               </v-expansion-panel-header>

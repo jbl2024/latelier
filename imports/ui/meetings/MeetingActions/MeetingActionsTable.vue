@@ -334,7 +334,7 @@ export default {
       immediate: true,
       handler() {
         const users = Meteor.users.find({ _id: { $in: this.meetingActionsAssignedTos } }).fetch();
-        this.users = Array.isArray(users) ? users : []
+        this.users = Array.isArray(users) ? users : [];
       }
     }
   },
