@@ -29,7 +29,7 @@
         @removed="fetch"
       />
       <meeting
-        ref="meeting"
+        :is-shown.sync="showMeeting"
         :meeting="selectedMeeting"
         @edit-meeting="editMeeting"
       />
@@ -147,6 +147,7 @@ export default {
       firstInterval: 7,
       showNewMeeting: false,
       showEditMeeting: false,
+      showMeeting: false,
       newMeeting: null,
       displayTypes: Object.freeze([
         {
@@ -358,13 +359,12 @@ export default {
     },
     async selectEvent(event) {
       try {
-        this.$refs.meeting.close();
+        this.showMeeting = false;
         await this.fetchSelectedMeeting({
           meetingId: event.id
         });
-        this.$refs.meeting.open();
+        this.showMeeting = true;
       } catch (error) {
-        this.$refs.meeting.close();
         this.$notifyError(error);
       }
     },

@@ -85,7 +85,7 @@
         <template v-if="meeting">
           <!-- Edit meeting -->
           <v-btn
-            v-if="canWriteMeeting === true"
+            v-if="edit && canWriteMeeting === true"
             color="black"
             dark
             @click="editMeeting"
@@ -126,16 +126,31 @@ export default {
     meeting: {
       type: Object,
       default: null
+    },
+    isShown: {
+      type: Boolean,
+      default: false
+    },
+    edit: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
       panel: [0, 1],
-      showDialog: false,
       canWriteMeeting: null
     };
   },
   computed: {
+    showDialog: {
+      get() {
+        return this.isShown;
+      },
+      set(isShown) {
+        this.$emit("update:is-shown", isShown);
+      }
+    },
     title() {
       return this.meeting?.name;
     },
