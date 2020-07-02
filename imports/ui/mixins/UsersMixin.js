@@ -54,7 +54,10 @@ export default {
       return user.profile.avatar;
     },
     getUserProfileName(user) {
-      return `${user?.profile?.firstName} ${user?.profile?.lastName}`;
+      if (user?.profile.lastName) {
+        return `${user?.profile?.firstName} ${user?.profile?.lastName}`;
+      }
+      return UserUtils.getEmail(user);
     }
   }
 };
