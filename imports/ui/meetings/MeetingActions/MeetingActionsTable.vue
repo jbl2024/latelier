@@ -5,6 +5,8 @@
       :headers="headers"
       :items="meetingActions"
       item-key="actionId"
+      disable-pagination
+      hide-default-footer
       :no-data-text="$t('meetings.actions.none')"
     >
       <template v-slot:top>
@@ -416,6 +418,9 @@ export default {
 </script>
 <style lang="scss">
 .meeting-actions-table {
+  .v-data-table {
+    padding-bottom: 18px;
+  }
   .v-data-table td,
   .v-data-table th {
     padding: 0 16px;
