@@ -336,6 +336,8 @@
       "addDescription": "Add description",
       "consultTask": "View associated task",
       "deleteSelected": "Delete selected actions",
+      "dueDate": "Due date",
+      "assignedTo": "Assigned to",
       "types": {
         "decision": "Decision",
         "action": "Action",

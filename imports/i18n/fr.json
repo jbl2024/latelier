@@ -344,6 +344,8 @@
       "addDescription": "Ajouter une description",
       "consultTask": "Consulter la tâche associée",
       "deleteSelected": "Supprimer les décisions sélectionnées",
+      "dueDate": "Pour le",
+      "assignedTo": "Responsable",
       "types": {
         "decision": "Décision",
         "action": "Action",

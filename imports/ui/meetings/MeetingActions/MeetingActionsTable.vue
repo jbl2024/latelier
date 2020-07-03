@@ -273,11 +273,11 @@ export default {
         }
       }),
       headers: Object.freeze([
-        { text: "Type", value: "type" },
-        { text: "Description", value: "description" },
-        { text: "Responsable", value: "assignedTo" },
-        { text: "Pour le", value: "dueDate", width: 50 },
-        { text: "Actions", value: "actions", sortable: false, width: 80 }
+        { text: this.$t("Type"), value: "type" },
+        { text: this.$t("Description"), value: "description" },
+        { text: this.$t("meetings.actions.assignedTo"), value: "assignedTo" },
+        { text: this.$t("meetings.actions.dueDate"), value: "dueDate", width: 50 },
+        { text: "", value: "actions", sortable: false, width: 80 }
       ]),
       editedAction: null,
       originalAction: null
