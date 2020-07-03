@@ -33,17 +33,3 @@ export const AttachmentsFindSchema = (() => {
   });
   return findSchema;
 })();
-
-export const AttachmentsUpdateManySchema = (() => {
-  const attachmentSchema = new SimpleSchema(AttachmentSchema);
-  const updateAttachmentSchema = attachmentSchema.pick("_id", "updatedAt", "meta");
-  return new SimpleSchema({
-    attachments: {
-      type: Array,
-      min: 1
-    },
-    "attachments.$": {
-      type: new SimpleSchema(updateAttachmentSchema)
-    }
-  });
-})();

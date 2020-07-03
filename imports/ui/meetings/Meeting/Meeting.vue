@@ -10,7 +10,7 @@
           v-if="meeting"
           :title="meeting.name"
           :color="meeting.color"
-          :documents-count="documentsCount"
+          :documents-count="attachments.length"
           :attendees-count="attendeesCount"
         />
       </template>
@@ -48,25 +48,25 @@
               </v-expansion-panel-content>
             </v-expansion-panel>
             <!-- Documents -->
-            <v-expansion-panel v-if="documentsCount > 0">
+            <v-expansion-panel v-if="attachments.length > 0">
               <v-expansion-panel-header class="meeting__panel-header">
-                Documents {{ `(${documentsCount})` }}
+                {{ $t("attachments.attachments") }} {{ `(${attachments.length})` }}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <v-chip-group
-                  column
-                  active-class="primary--text"
-                >
-                  <v-chip v-for="document in meeting.documents" :key="document.documentId">
-                    {{ document.name }}
-                  </v-chip>
-                </v-chip-group>
+                <attachments
+                  display="list"
+                  :label="$t('meetings.attachments.meetingAttachments')"
+                  :attachments="attachments"
+                  hide-header
+                  read-only
+                  dense
+                />
               </v-expansion-panel-content>
             </v-expansion-panel>
             <!-- Attendees -->
             <v-expansion-panel v-if="meeting && meeting.attendees">
               <v-expansion-panel-header class="meeting__panel-header">
-                Participants {{ `(${attendeesCount})` }}
+                {{ $t("meetings.attendees.attendees") }} {{ `(${attendeesCount})` }}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <meeting-attendees
@@ -118,11 +118,13 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import MeetingAttendees from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendees";
 import MeetingTitle from "/imports/ui/meetings/Meeting/MeetingTitle";
 import Api from "/imports/ui/api/Api";
+import Attachments from "/imports/ui/attachments/Attachments";
 
 export default {
   components: {
     MeetingAttendees,
-    MeetingTitle
+    MeetingTitle,
+    Attachments
   },
   mixins: [MarkdownMixin, DatesMixin],
   props: {
@@ -141,7 +143,8 @@ export default {
   },
   data() {
     return {
-      panel: [0, 1],
+      panel: [0],
+      attachments: [],
       canWriteMeeting: null
     };
   },
@@ -156,11 +159,6 @@ export default {
     },
     title() {
       return this.meeting?.name;
-    },
-    documentsCount() {
-      if (!this.meeting) return 0;
-      return this.meeting.documents && this.meeting.documents.length
-        ? this.meeting.documents.length : 0;
     },
     attendeesCount() {
       if (!this.meeting) return 0;
@@ -182,6 +180,19 @@ export default {
       async handler() {
         if (!this.meeting) return;
         this.canWriteMeeting = await Api.call("permissions.canWriteMeeting", { meetingId: this.meeting._id });
+      }
+    },
+    "meeting.documents": {
+      immediate: true,
+      handler() {
+        if (!Array.isArray(this.meeting?.documents) || !this.meeting.documents.length) return;
+        Api.call("attachments.find", {
+          attachmentsIds: this.meeting.documents.map((document) => document.documentId)
+        }).then((result) => {
+          this.attachments = result.data;
+        }, (error) => {
+          this.$notifyError(error);
+        });
       }
     }
   },

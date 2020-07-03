@@ -409,6 +409,7 @@
     "attachments": "Documents",
     "addDescription": "Vous pouvez ajouter des documents ici ou sur une tâche",
     "addAttachments": "Ajouter des documents",
+    "removeSuccess": "Document supprimé avec succès",
     "none": "Aucun document",
     "noneFound": "Aucun document trouvé"
   }

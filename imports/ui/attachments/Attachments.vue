@@ -6,7 +6,7 @@
       :search.sync="searchInput"
       :label="label"
       :attachments="attachments"
-      :no-list-header="noListHeader"
+      :hide-header="hideHeader"
       :read-only="readOnly"
       @add-attachment="addAttachment"
     />
@@ -55,7 +55,7 @@ export default {
       type: String,
       default: null
     },
-    noListHeader: {
+    hideHeader: {
       type: Boolean,
       default: false
     },

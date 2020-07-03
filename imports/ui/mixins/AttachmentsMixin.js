@@ -33,6 +33,8 @@ export default {
             (error) => {
               if (error) {
                 this.$notifyError(error);
+              } else {
+                this.$notify(this.$t("attachments.removeSuccess"));
               }
             }
           );

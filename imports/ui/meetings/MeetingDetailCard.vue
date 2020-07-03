@@ -59,7 +59,7 @@
                 display="list"
                 :label="$t('meetings.attachments.meetingAttachments')"
                 :attachments="attachments"
-                no-list-header
+                hide-header
                 read-only
               />
             </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="attachments-list">
     <v-list two-line subheader class="list">
-      <slot v-if="!noListHeader" name="list-header">
+      <slot v-if="!hideHeader" name="list-header">
         <v-subheader>
           {{ $t('attachments.attachments') }}
           <v-btn
@@ -30,18 +30,29 @@
               </v-list-item-title>
               <!-- Task link -->
               <v-list-item-subtitle v-if="hasTask(attachment)">
-                <router-link
-                  class="link-subtitle"
-                  :to="{
-                    name: 'project-task',
-                    params: {
-                      projectId: attachment.meta.projectId,
-                      taskId: attachment.meta.taskId
-                    }
-                  }"
-                >
-                  {{ getTask(attachment).name }}
-                </router-link>
+                <v-chip-group>
+                  <v-chip
+                    small
+                    color="indigo"
+                    dark
+                  >
+                    <v-icon small left>
+                      mdi-format-list-bulleted
+                    </v-icon>
+                    <router-link
+                      class="chip-link"
+                      :to="{
+                        name: 'project-task',
+                        params: {
+                          projectId: attachment.meta.projectId,
+                          taskId: attachment.meta.taskId
+                        }
+                      }"
+                    >
+                      {{ getTask(attachment).name }}
+                    </router-link>
+                  </v-chip>
+                </v-chip-group>
               </v-list-item-subtitle>
             </v-list-item-content>
 
@@ -89,7 +100,7 @@ export default {
       type: String,
       default: ""
     },
-    noListHeader: {
+    hideHeader: {
       type: Boolean,
       default: false
     },
@@ -121,5 +132,9 @@ export default {
 <style lang="scss">
 .attachments-list .v-list {
   padding: 0;
+
+  .chip-link {
+    color: white;
+  }
 }
 </style>

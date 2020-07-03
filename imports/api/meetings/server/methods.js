@@ -238,12 +238,25 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     },
     "dates.$.start": { type: String },
     "dates.$.end": { type: String },
-    page: { type: Number },
-    perPage: { type: Number, optional: true }
+    documentsIds: {
+      type: Array,
+      optional: true
+    },
+    "documentsIds.$": {
+      type: String
+    },
+    page: {
+      type: Number,
+      optional: true,
+      defaultValue: 1
+    },
+    perPage: {
+      type: Number,
+      optional: true
+    }
   }).validator(),
-  run({ projectId, dates, page, perPage }) {
+  run({ projectId, dates, page, perPage, documentsIds }) {
     checkCanReadProject(projectId);
-    page = page || 1;
     let skip = 0;
     if (perPage) {
       if (page) {
@@ -266,6 +279,10 @@ Meetings.methods.findMeetings = new ValidatedMethod({
           { endDate: { $lte: moment.utc(d.end).toDate() } }
         ]
       }));
+    }
+
+    if (Array.isArray(documentsIds) && documentsIds.length) {
+      query["documents.documentId"] = { $in: documentsIds };
     }
     const count = Meetings.find(query).count();
     const data = Meetings.find(query, {

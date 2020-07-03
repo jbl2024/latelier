@@ -389,6 +389,7 @@
     "addDescription": "You can add documents here or in a task",
     "addAttachments": "Add documents",
     "none": "No document",
+    "removeSuccess": "Document successfully removed",
     "noneFound": "No document found"
   }  
 }
