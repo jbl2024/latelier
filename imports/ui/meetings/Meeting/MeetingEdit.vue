@@ -7,6 +7,7 @@
     <generic-dialog
       v-model="showDialog"
       :css-classes="['meeting-edit']"
+      :close-label="$t('Close')"
       max-width="600px"
     >
       <template #title>
@@ -71,10 +72,22 @@
         <v-btn v-if="!isNewMeeting" color="error" @click="remove">
           {{ $t("meetings.remove") }}
         </v-btn>
-        <v-btn v-if="isNewMeeting" text :disabled="!valid || !coherent" @click="create">
+        <v-btn
+          v-if="isNewMeeting"
+          :disabled="!valid || !coherent"
+          color="success"
+          dark
+          @click="create"
+        >
           {{ $t("meetings.create") }}
         </v-btn>
-        <v-btn v-else text :disabled="!valid || !coherent" @click="update">
+        <v-btn
+          v-else
+          :disabled="!valid || !coherent"
+          color="success"
+          dark
+          @click="update"
+        >
           {{ $t("meetings.update") }}
         </v-btn>
       </template>

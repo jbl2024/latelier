@@ -102,7 +102,10 @@
             dark
             @click="openMeeting"
           >
-            {{ $t(`meetings.${canWriteMeeting === true ? "prepare" : "participate"}`) }}
+            <v-icon left>
+              mdi-calendar-star
+            </v-icon>
+            {{ $t(`meetings.open`) }}
           </v-btn>
         </template>
       </template>
