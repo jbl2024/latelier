@@ -93,10 +93,6 @@
             @select-event="selectEvent"
             @add-new-meeting="addNewMeeting"
           />
-          <!-- Streamline list of meetings -->
-          <meeting-list v-else
-                        :meetings="meetings"
-          />
         </v-col>
       </v-row>
     </div>
