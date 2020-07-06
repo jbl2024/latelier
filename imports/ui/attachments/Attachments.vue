@@ -6,6 +6,7 @@
       :search.sync="searchInput"
       :label="label"
       :attachments="attachments"
+      :meetings="meetings"
       :hide-header="hideHeader"
       :read-only="readOnly"
       @add-attachment="addAttachment"
@@ -36,6 +37,12 @@ export default {
       validator: (display) => ["list", "autocomplete"].includes(display)
     },
     attachments: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    meetings: {
       type: Array,
       default() {
         return [];

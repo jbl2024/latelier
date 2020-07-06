@@ -24,14 +24,15 @@
 
             <v-list-item-content class="pointer">
               <v-list-item-title>
-                <a class="link" :href="link(attachment)" target="_blank">{{
-                  attachment.name
-                }}</a>
+                <a class="link" :href="link(attachment)" target="_blank">
+                  {{ attachment.name }}
+                </a>
               </v-list-item-title>
               <!-- Task link -->
-              <v-list-item-subtitle v-if="hasTask(attachment)">
+              <v-list-item-subtitle>
                 <v-chip-group>
                   <v-chip
+                    v-if="hasTask(attachment)"
                     small
                     color="indigo"
                     dark
@@ -52,6 +53,31 @@
                       {{ getTask(attachment).name }}
                     </router-link>
                   </v-chip>
+                  <template v-if="attachmentMeetings(attachment).length">
+                    <v-chip
+                      v-for="meeting in attachmentMeetings(attachment)"
+                      :key="meeting._id"
+                      small
+                      color="success"
+                      dark
+                    >
+                      <v-icon small left>
+                        mdi-calendar-star
+                      </v-icon>
+                      <router-link
+                        class="chip-link"
+                        :to="{
+                          name: 'meetings',
+                          params: {
+                            projectId: meeting.projectId,
+                            meetingId: meeting._id
+                          }
+                        }"
+                      >
+                        {{ meeting.name }}
+                      </router-link>
+                    </v-chip>
+                  </template>
                 </v-chip-group>
               </v-list-item-subtitle>
             </v-list-item-content>
@@ -92,6 +118,12 @@ export default {
         return [];
       }
     },
+    meetings: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
     search: {
       type: String,
       default: ""
@@ -125,6 +157,14 @@ export default {
       set(selectedAttachments) {
         this.$emit("input", selectedAttachments);
       }
+    },
+    attachmentMeetings() {
+      return function(attachment) {
+        return this.meetings.filter((meeting) => {
+          const documentsIds = meeting.documents.map((doc) => doc.documentId);
+          return documentsIds.includes(attachment._id);
+        }).filter((m) => m);
+      };
     }
   }
 };
