@@ -78,12 +78,6 @@ export default {
   }
 };
 </script>
-
-<style>
-.project-list .v-list {
-  padding: 0;
-}
-</style>
 <style scoped>
   .empty-state {
     padding: 2rem;

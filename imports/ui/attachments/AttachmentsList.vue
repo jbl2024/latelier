@@ -14,12 +14,15 @@
             <v-icon>mdi-plus</v-icon>
           </v-btn>
         </v-subheader>
+        <v-divider />
       </slot>
       <template v-for="attachment in attachments">
         <slot name="item" :attachment="attachment">
           <v-list-item :key="attachment._id">
-            <v-list-item-avatar>
-              <v-icon>mdi-file-document</v-icon>
+            <v-list-item-avatar :color="getIconStyles(attachment).color">
+              <v-icon color="white">
+                {{ getIconStyles(attachment).icon }}
+              </v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content class="pointer">
@@ -31,10 +34,11 @@
               <!-- Task link -->
               <v-list-item-subtitle>
                 <v-chip-group>
+                  <!-- Related tasks -->
                   <v-chip
-                    v-if="hasTask(attachment)"
+                    v-if="hasTask(attachment) && getTask(attachment)"
                     small
-                    color="indigo"
+                    color="success"
                     dark
                   >
                     <v-icon small left>
@@ -53,12 +57,13 @@
                       {{ getTask(attachment).name }}
                     </router-link>
                   </v-chip>
+                  <!-- Related meetings -->
                   <template v-if="attachmentMeetings(attachment).length">
                     <v-chip
                       v-for="meeting in attachmentMeetings(attachment)"
                       :key="meeting._id"
                       small
-                      color="success"
+                      :color="meeting.color"
                       dark
                     >
                       <v-icon small left>
@@ -160,6 +165,7 @@ export default {
     },
     attachmentMeetings() {
       return function(attachment) {
+        if (!this.meetings || !Array.isArray(this.meetings)) return [];
         return this.meetings.filter((meeting) => {
           const documentsIds = meeting.documents.map((doc) => doc.documentId);
           return documentsIds.includes(attachment._id);
@@ -175,6 +181,7 @@ export default {
 
   .chip-link {
     color: white;
+    text-decoration: none;
   }
 }
 </style>

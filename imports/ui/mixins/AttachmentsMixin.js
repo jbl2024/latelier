@@ -20,6 +20,9 @@ export default {
     getTask(attachment) {
       return AttachmentsUtils.getTask(attachment);
     },
+    getIconStyles(attachment) {
+      return AttachmentsUtils.getIconStyles(attachment);
+    },
     deleteAttachment(attachment) {
       this.$confirm(this.$t("Delete attachment?"), {
         title: attachment.name,

@@ -1,8 +1,14 @@
 <template>
   <div>
+    <empty-state
+      v-if="Array.isArray(attachments) && !attachments.length && emptyIllustration"
+      :illustration="emptyIllustration"
+      small
+      :label="$t('attachments.none')"
+    />
     <!-- List -->
     <attachment-list
-      v-if="display === 'list'"
+      v-else-if="display === 'list'"
       :search.sync="searchInput"
       :label="label"
       :attachments="attachments"
@@ -47,6 +53,10 @@ export default {
       default() {
         return [];
       }
+    },
+    emptyIllustration: {
+      type: String,
+      default: null
     },
     value: {
       type: Array,
@@ -96,3 +106,8 @@ export default {
   }
 };
 </script>
+<style scoped>
+  .empty-state {
+    padding: 2rem;
+  }
+</style>

@@ -1,6 +1,7 @@
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { Projects } from "/imports/api/projects/projects";
+import { Attachments } from "/imports/api/attachments/attachments";
 import {
   Permissions,
   checkLoggedIn,
@@ -236,6 +237,75 @@ methods.findOrganizations = new ValidatedMethod({
     // get organizations
     const count = Organizations.find(organizationQuery).count();
     const data = Organizations.find(organizationQuery, {
+      skip,
+      limit: perPage,
+      sort
+    }).fetch();
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
+  }
+});
+
+methods.findTasks = new ValidatedMethod({
+  name: "search.findAttachments",
+  validate: new SimpleSchema({
+    projectId: { type: String, optional: true },
+    name: { type: String },
+    page: { type: Number, optional: true }
+  }).validator(),
+  run({ projectId, name, page }) {
+    checkLoggedIn();
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
+
+    const perPage = 5;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const attachmentQuery = {};
+    const sort = { updatedAt: -1 };
+
+
+    // get projects
+    const projectQuery = {
+      deleted: { $ne: true }
+    };
+    if (projectId) {
+      checkCanReadProject(projectId);
+      projectQuery._id = projectId;
+    }
+    if (isRegularUser) {
+      projectQuery.members = userId;
+    }
+    const projectIds = Projects.find(projectQuery, {
+      fields: {
+        _id: 1
+      }
+    }).map((project) => project._id);
+    attachmentQuery["meta.projectId"] = { $in: projectIds };
+
+    // filter by name
+    if (name && name.length > 0) {
+      attachmentQuery.name = { $regex: `.*${name}.*`, $options: "i" };
+    }
+
+    // get tasks
+    const count = Attachments.find(attachmentQuery).count();
+    const data = Attachments.find(attachmentQuery, {
       skip,
       limit: perPage,
       sort

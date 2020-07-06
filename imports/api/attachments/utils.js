@@ -34,5 +34,24 @@ export default {
   },
   getTask(attachment) {
     return Tasks.findOne({ _id: attachment.meta.taskId });
+  },
+  getIconStyles(attachment) {
+    /* isVideo|isAudio|isImage|isText|isJSON|isPDF */
+    if (attachment.isPDF) {
+      return {
+        icon: "mdi-pdf-box",
+        color: "red"
+      };
+    }
+    if (attachment.isImage) {
+      return {
+        icon: "mdi-file-image",
+        color: "brown"
+      };
+    }
+    return {
+      icon: "mdi-file-document",
+      color: "blue"
+    };
   }
 };
