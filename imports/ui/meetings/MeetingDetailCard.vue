@@ -25,6 +25,12 @@
               </v-icon>
             </v-btn>
           </h1>
+          <div class="meeting-date">
+            <v-icon class="mr-2">
+              mdi-clock
+            </v-icon>
+            {{ meetingInterval }}
+          </div>
           <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
@@ -90,6 +96,7 @@
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import debounce from "lodash/debounce";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
 import MeetingUtils from "/imports/api/meetings/utils";
@@ -104,6 +111,7 @@ export default {
     MeetingActionsTable,
     Attachments
   },
+  mixins: [DatesMixin],
   props: {
     meeting: {
       type: Object,
@@ -133,6 +141,14 @@ export default {
     hasDocuments() {
       if (!this.meeting) return false;
       return Array.isArray(this.meeting?.documents) && this.meeting.documents.length > 0;
+    },
+    meetingInterval() {
+      if (!this.meeting) return "";
+      return this.displayDateInterval({
+        start: this.meeting.startDate,
+        end: this.meeting.endDate,
+        type: "dateWithHours"
+      });
     }
   },
   watch: {
@@ -358,6 +374,13 @@ export default {
 <style scoped>
 .meeting-detail-card h2 {
   margin-bottom: 24px;
+}
+
+.meeting-date {
+  display: flex;
+  font-size: 14px;
+  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .editor {
