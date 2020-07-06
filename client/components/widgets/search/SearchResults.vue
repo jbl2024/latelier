@@ -24,6 +24,12 @@
       </v-tab>
       <v-tab>
         <v-icon left>
+          mdi-calendar-star
+        </v-icon>
+        {{ $t("meetings.meetings") }} ({{ projectCount }})
+      </v-tab>
+      <v-tab>
+        <v-icon left>
           mdi-attachment
         </v-icon>
         {{ $t("attachments.attachments") }} ({{ attachmentCount }})
@@ -45,6 +51,16 @@
           :filter="filterProjects"
           :project-count.sync="projectCount"
           @select="onSelectProject"
+        />
+      </v-tab-item>
+      <!-- Meetings -->
+      <v-tab-item eager :transition="false" :reverse-transition="false">
+        <search-meetings
+          :project-id="currentProjectId"
+          :organization-id="currentOrganizationId"
+          :filter="filterMeetings"
+          :meeting-count.sync="meetingCount"
+          @select="onSelectMeeting"
         />
       </v-tab-item>
       <!-- Attachments (@select open attachment in new tab) -->
@@ -79,9 +95,11 @@ export default {
       filterTasks: "",
       filterProjects: "",
       filterAttachments: "",
+      filterMeetings: "",
       taskCount: 0,
       projectCount: 0,
-      attachmentCount: 0
+      attachmentCount: 0,
+      meetingCount: 0
     };
   },
   computed: {
@@ -107,6 +125,7 @@ export default {
       this.filterTasks = this.filter;
       this.filterProjects = this.filter;
       this.filterAttachments = this.filter;
+      this.filterMeetings = this.filter;
     },
 
     onSelectTask(task) {
@@ -127,6 +146,17 @@ export default {
         name: "project-dashboard",
         params: {
           projectId: project._id
+        }
+      });
+      this.$emit("update:active", false);
+    },
+    onSelectMeeting(meeting) {
+      if (!meeting) return;
+      this.$router.push({
+        name: "meetings",
+        params: {
+          projectId: meeting.projectId,
+          meetingId: meeting._id
         }
       });
       this.$emit("update:active", false);

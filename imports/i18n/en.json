@@ -293,6 +293,7 @@
     "list": "List",
     "meeting": "Meeting",
     "meetings": "Meetings",
+    "none": "No meeting",
     "allMeetings": "All meetings",
     "scheduleMeeting": "Schedule a meeting",
     "newMeeting": "New meeting",
@@ -390,7 +391,7 @@
       "subject": "Meeting subject",
       "agenda": "Agenda"
     },
-    "none": {
+    "noneField": {
       "name": "No name",
       "state": "No statut",
       "description": "No description",

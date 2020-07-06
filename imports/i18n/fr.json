@@ -301,6 +301,7 @@
     "list": "Liste",
     "meeting": "Réunion",
     "meetings": "Réunions",
+    "none": "Aucune réunion",
     "allMeetings": "Toutes les réunions",
     "scheduleMeeting": "Planifier une réunion",
     "newMeeting": "Nouvelle réunion",
@@ -399,7 +400,7 @@
       "subject": "Sujet de la réunion",
       "agenda": "Ordre du jour"
     },
-    "none": {
+    "noneField": {
       "name": "Aucun nom",
       "state": "Aucun statut",
       "description": "Aucune description",

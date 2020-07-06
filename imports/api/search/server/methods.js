@@ -2,6 +2,7 @@ import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { Projects } from "/imports/api/projects/projects";
 import { Attachments } from "/imports/api/attachments/attachments";
+import { Meetings } from "/imports/api/meetings/meetings";
 import {
   Permissions,
   checkLoggedIn,
@@ -303,7 +304,7 @@ methods.findAttachments = new ValidatedMethod({
       attachmentQuery.name = { $regex: `.*${name}.*`, $options: "i" };
     }
 
-    // get tasks
+    // get attachments
     const count = Attachments.find(attachmentQuery).count();
     const data = Attachments.find(attachmentQuery, {
       skip,
@@ -322,5 +323,79 @@ methods.findAttachments = new ValidatedMethod({
   }
 });
 
+methods.findMeetings = new ValidatedMethod({
+  name: "search.findMeetings",
+  validate: new SimpleSchema({
+    organizationId: { type: String, optional: true },
+    projectId: { type: String, optional: true },
+    name: { type: String },
+    page: { type: Number, optional: true }
+  }).validator(),
+  run({ organizationId, projectId, name, page }) {
+    checkLoggedIn();
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
+
+    const perPage = 5;
+    let skip = 0;
+    if (page) {
+      skip = (page - 1) * perPage;
+    }
+
+    if (!skip) {
+      skip = 0;
+    }
+
+    const meetingQuery = {
+      deleted: { $ne: true }
+    };
+    const sort = { updatedAt: -1 };
+
+
+    // get projects
+    const projectQuery = {
+      deleted: { $ne: true }
+    };
+    if (organizationId) {
+      projectQuery.organizationId = organizationId;
+    }
+    if (projectId) {
+      checkCanReadProject(projectId);
+      projectQuery._id = projectId;
+    }
+    if (isRegularUser) {
+      projectQuery.members = userId;
+    }
+    const projectIds = Projects.find(projectQuery, {
+      fields: {
+        _id: 1
+      }
+    }).map((project) => project._id);
+    meetingQuery.projectId = { $in: projectIds };
+
+    // filter by name
+    if (name && name.length > 0) {
+      meetingQuery.name = { $regex: `.*${name}.*`, $options: "i" };
+    }
+
+    // get meetings
+    const count = Meetings.find(meetingQuery).count();
+    const data = Meetings.find(meetingQuery, {
+      skip,
+      limit: perPage,
+      sort
+    }).fetch();
+
+    const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
+
+    return {
+      rowsPerPage: perPage,
+      totalItems: count,
+      totalPages: totalPages,
+      data
+    };
+  }
+});
 
 export default methods;
