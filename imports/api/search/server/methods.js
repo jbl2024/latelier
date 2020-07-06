@@ -253,7 +253,7 @@ methods.findOrganizations = new ValidatedMethod({
   }
 });
 
-methods.findTasks = new ValidatedMethod({
+methods.findAttachments = new ValidatedMethod({
   name: "search.findAttachments",
   validate: new SimpleSchema({
     projectId: { type: String, optional: true },
