@@ -26,7 +26,7 @@
         <v-icon left>
           mdi-calendar-star
         </v-icon>
-        {{ $t("meetings.meetings") }} ({{ projectCount }})
+        {{ $t("meetings.meetings") }} ({{ meetingCount }})
       </v-tab>
       <v-tab>
         <v-icon left>
