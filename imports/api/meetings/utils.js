@@ -2,6 +2,23 @@ import moment from "moment";
 import i18n from "/imports/i18n/";
 import { UserUtils } from "../users/utils";
 
+
+const allowedUpdateFields = [
+  "id",
+  "name",
+  "state",
+  "description",
+  "agenda",
+  "color",
+  "location",
+  "type",
+  "startDate",
+  "endDate",
+  "attendees",
+  "documents",
+  "actions"
+];
+
 export default {
   getAttendeeName(attendee) {
     if (!attendee) {
@@ -54,6 +71,16 @@ export default {
     const sanitizedAttendee = { ...attendee };
     delete sanitizedAttendee.avatar;
     return sanitizedAttendee;
+  },
+  sanitizeMeetingForUpdate(meeting) {
+    const sanitizedMeeting = { ...meeting };
+    sanitizedMeeting.id = meeting._id;
+    Object.keys(sanitizedMeeting).forEach((property) => {
+      if (!allowedUpdateFields.includes(property)) {
+        delete sanitizedMeeting[property];
+      }
+    });
+    return sanitizedMeeting;
   },
   formatUsersAsAttendees(users) {
     return users.map((user) => this.createUserAttendee(user));

@@ -24,6 +24,7 @@
       :max-days="calendarDatas.maxDays"
       :now="now"
       :events="events"
+      event-overlap-mode="stack"
       :interval-height="intervalHeight"
       :event-color="getEventColor"
       :locale="locale"
@@ -35,28 +36,11 @@
       @change="changeCalendar"
     >
       <template #event="{ event }">
-        <div class="event">
-          <div>
-            {{ event.name }}
-          </div>
-          <div
-            v-if="event.project && event.project.name"
-            class="event-project-name"
-          >
-            <v-icon
-              v-if="event.project.color"
-              :color="event.project.color"
-              class="mr-1"
-              x-small
-            >
-              mdi-checkbox-blank-circle
-            </v-icon>
-            {{ event.project.name }}
-          </div>
-          <b>
-            {{ displayEventHours(event) }}
-          </b>
-        </div>
+        <meeting-calendar-event
+          :event="event"
+          @move-up="$emit('event-move-up', $event)"
+          @move-down="$emit('event-move-down', $event)"
+        />
       </template>
     </v-calendar>
   </div>
@@ -64,13 +48,15 @@
 <script>
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import MeetingCalendarContextualMenu from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarContextualMenu";
+import MeetingCalendarEvent from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarEvent";
 import moment from "moment";
 
 const weekdaysDefault = [1, 2, 3, 4, 5, 6, 0];
 const fiveWeekdays = [1, 2, 3, 4, 5];
 export default {
   components: {
-    MeetingCalendarContextualMenu
+    MeetingCalendarContextualMenu,
+    MeetingCalendarEvent
   },
   mixins: [DatesMixin],
   props: {
@@ -123,7 +109,7 @@ export default {
   },
   computed: {
     intervalHeight() {
-      return this.firstInterval === 7 ? 70 : 48;
+      return this.firstInterval === 7 ? 70 : 58;
     },
     selectedDate: {
       get() {
@@ -189,9 +175,6 @@ export default {
     this.$el.removeEventListener("contextmenu", this.clickHandler);
   },
   methods: {
-    displayEventHours(event) {
-      return `${moment(event.start).format("HH:mm")} - ${moment(event.end).format("HH:mm")}`;
-    },
     changeCalendar(data) {
       this.$emit("update:start", data.start.date);
       this.$emit("update:end", data.end.date);
@@ -229,6 +212,9 @@ export default {
 </script>
 <style lang="scss">
   .meeting-calendar {
+    &.v-calendar .v-event-timed-container {
+      margin-right: 0;
+    }
     &.theme--dark.v-calendar-daily,
     &.theme--light.v-calendar-daily {
       border-left: 0;
@@ -238,15 +224,6 @@ export default {
     }
     .v-calendar-daily_head-day-label .v-btn__content {
       font-size: 2rem;
-    }
-    /* Event box */
-    .event {
-      padding: 4px;
-    }
-    .event-project-name {
-      font-size: 10px;
-      display: flex;
-      align-items: center;
     }
   }
 </style>

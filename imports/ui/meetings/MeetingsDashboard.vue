@@ -100,6 +100,8 @@
             :locale="currentLocale"
             :first-interval="firstInterval"
             @select-event="selectEvent"
+            @event-move-up="moveMeeting($event, 'up')"
+            @event-move-down="moveMeeting($event, 'down')"
             @add-new-meeting="addNewMeeting"
           />
         </v-col>
@@ -214,6 +216,10 @@ export default {
       if (!this.selectedMeeting?._id) return null;
       return this.selectedMeeting._id;
     },
+    meetingsEvents() {
+      const events = this.formatMeetingsAsEvents(this.meetings);
+      return this.filterMeetingsEvents(events);
+    },
     dateRanges() {
       const startFormat = "YYYY-MM-DD 00:00:00";
       const endFormat = "YYYY-MM-DD 23:59:59";
@@ -252,11 +258,9 @@ export default {
     ...mapState("organization", ["currentOrganization"]),
     ...mapState("meeting", {
       selectedMeeting: (state) => state.selectedMeeting,
-      meetingsEvents(state) {
-        const meetings = Array.isArray(state?.meetingsResults?.data)
+      meetings(state) {
+        return Array.isArray(state?.meetingsResults?.data)
           ? state.meetingsResults.data : [];
-        const events = this.formatMeetingsAsEvents(meetings);
-        return this.filterMeetingsEvents(events);
       }
     }),
     asideCols() {
@@ -374,6 +378,21 @@ export default {
     }
   },
   methods: {
+    async moveMeeting(meetingEvent, direction) {
+      const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
+      if (!meeting) return;
+      const dateFormat = "YYYY-MM-DD HH:mm";
+      if (direction === "up") {
+        meeting.startDate = moment(meeting.startDate).subtract(30, "minutes").format(dateFormat);
+        meeting.endDate = moment(meeting.endDate).subtract(30, "minutes").format(dateFormat);
+      } else if (direction === "down") {
+        meeting.startDate = moment(meeting.startDate).add(30, "minutes").format(dateFormat);
+        meeting.endDate = moment(meeting.endDate).add(30, "minutes").format(dateFormat);
+      }
+      const params = MeetingUtils.sanitizeMeetingForUpdate(meeting);
+      await Api.call("meetings.update", params);
+      await this.fetch();
+    },
     ...mapActions("meeting", ["fetchMeetings", "fetchSelectedMeeting"]),
     filterMeetingsEvents(events) {
       if (this.organizationId && this.selectedProjects.length) {
