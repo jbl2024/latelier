@@ -16,11 +16,16 @@
                 {{ meeting.name }}
               </span>
             </v-list-item-title>
+            <v-list-item-subtitle v-if="meeting.project">
+              <span class="grey--text text--darken-1 show-desktop">
+                <template v-if="meeting.organization">
+                  {{ meeting.organization.name }} /
+                </template>
+                {{ meeting.project.name }}
+              </span>
+            </v-list-item-subtitle>
             <v-list-item-subtitle v-if="getMeetingInterval(meeting)">
               <div class="meeting-date">
-                <v-icon small class="mr-2">
-                  mdi-clock
-                </v-icon>
                 {{ getMeetingInterval(meeting) }}
               </div>
             </v-list-item-subtitle>
@@ -72,7 +77,6 @@ export default {
 
 .meeting-date {
   display: flex;
-  font-size: 14px;
   align-items: center;
 }
 

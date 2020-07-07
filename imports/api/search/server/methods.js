@@ -387,6 +387,32 @@ methods.findMeetings = new ValidatedMethod({
       sort
     }).fetch();
 
+
+    // load associated objects and assign them to meetings
+    const projects = {};
+    const organizations = {};
+
+    data.forEach((meeting) => {
+      let project = projects[meeting.projectId];
+      if (!project) {
+        projects[meeting.projectId] = Projects.findOne({ _id: meeting.projectId });
+        project = projects[meeting.projectId];
+      }
+      if (project) {
+        meeting.project = project;
+        let organization = organizations[project.organizationId];
+        if (!organization) {
+          organizations[project.organizationId] = Organizations.findOne({
+            _id: project.organizationId
+          });
+          organization = organizations[project.organizationId];
+        }
+        if (organization) {
+          meeting.organization = organization;
+        }
+      }
+    });
+
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
     return {
