@@ -43,6 +43,14 @@
             v-if="event.project && event.project.name"
             class="event-project-name"
           >
+            <v-icon
+              v-if="event.project.color"
+              :color="event.project.color"
+              class="mr-1"
+              x-small
+            >
+              mdi-checkbox-blank-circle
+            </v-icon>
             {{ event.project.name }}
           </div>
           <b>
@@ -221,12 +229,6 @@ export default {
 </script>
 <style lang="scss">
   .meeting-calendar {
-    .event {
-      padding: 4px;
-    }
-    .event-project-name {
-      font-size: 10px;
-    }
     &.theme--dark.v-calendar-daily,
     &.theme--light.v-calendar-daily {
       border-left: 0;
@@ -236,6 +238,15 @@ export default {
     }
     .v-calendar-daily_head-day-label .v-btn__content {
       font-size: 2rem;
+    }
+    /* Event box */
+    .event {
+      padding: 4px;
+    }
+    .event-project-name {
+      font-size: 10px;
+      display: flex;
+      align-items: center;
     }
   }
 </style>

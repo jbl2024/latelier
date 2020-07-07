@@ -3,7 +3,8 @@
     <v-date-picker
       ref="datepicker"
       v-model="selectedDate"
-      class="meeting-calendar-date-picker"
+      :color="color"
+      :class="['meeting-calendar-date-picker', !darkColor ? 'dark-content' : null]"
       :events="formattedEvents"
       :locale="locale"
       :picker-date.sync="selectedPickerDate"
@@ -14,6 +15,7 @@
 </template>
 <script>
 import moment from "moment";
+import { colors } from "/imports/colors";
 
 export default {
   props: {
@@ -25,6 +27,10 @@ export default {
       type: String,
       default: null
     },
+    color: {
+      type: String,
+      default: "accent"
+    },
     events: {
       type: Array,
       default: null
@@ -35,6 +41,9 @@ export default {
     }
   },
   computed: {
+    darkColor() {
+      return colors.isDark(this.color);
+    },
     selectedDate: {
       get() {
         return this.value;
@@ -55,7 +64,7 @@ export default {
       return this.$refs.datepicker.activePicker === "DATE";
     },
     formattedEvents() {
-      if (!this.events) return null;
+      if (!this.events) return [];
       return this.events.map((event) => moment(event.start).format("YYYY-MM-DD"));
     }
   }
@@ -65,6 +74,12 @@ export default {
 .meeting-calendar-date-picker {
   &.v-card:not(.v-sheet--tile):not(.v-card--shaped) {
     border-radius: 9px;
+  }
+  &.dark-content {
+    .v-picker__title,
+    .v-date-picker-table .v-btn.v-btn--active {
+      color: black;
+    }
   }
 }
 </style>

@@ -7,7 +7,7 @@
           :key="project._id"
           v-model="selected"
           :value="project._id"
-          color="accent"
+          :color="project.color ? project.color : 'accent'"
           :label="project.name"
           hide-details
         />

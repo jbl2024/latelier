@@ -53,6 +53,7 @@
             <v-col :lg="asideCols.datepicker.lg">
               <meeting-calendar-date-picker
                 v-model="selectedDate"
+                :color="color"
                 :picker-date.sync="pickerDate"
                 :locale="currentLocale"
                 :events="meetingsEvents"
@@ -190,6 +191,12 @@ export default {
     };
   },
   computed: {
+    color() {
+      if (this.projectId) {
+        return this.currentProject?.color ? this.currentProject.color : null;
+      }
+      return null;
+    },
     isReady() {
       if (this.projectId) return this.currentProject;
       if (this.organizationId) return this.organizationId;
@@ -417,6 +424,9 @@ export default {
     },
     addNewMeeting(selectedTime) {
       const newMeeting = MeetingUtils.makeNewMeeting();
+      if (this.color) {
+        newMeeting.color = this.color;
+      }
       if (selectedTime?.date && selectedTime?.hour) {
         const startHour = `${String(selectedTime.hour).padStart(2, "0")}:00`;
         const endHour = `${String(selectedTime.hour + 1).padStart(2, "0")}:00`;
