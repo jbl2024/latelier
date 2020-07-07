@@ -111,7 +111,7 @@ export default new SimpleSchema({
   color: {
     type: String,
     optional: true,
-    defaultValue: "#363636"
+    defaultValue: "#3f51b5" // indigo
   },
   type: {
     type: String,

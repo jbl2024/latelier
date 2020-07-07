@@ -105,7 +105,7 @@ export default {
       description: "",
       agenda: "",
       type: "",
-      color: "#363636",
+      color: "#3f51b5",
       location: "",
       attendees: [],
       documents: [],
