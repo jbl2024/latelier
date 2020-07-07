@@ -5,7 +5,7 @@ import ProjectsTimeline from "/imports/ui/projects/ProjectsTimeline.vue";
 import ProjectTimeline from "/imports/ui/projects/ProjectTimeline.vue";
 import ProcessDiagram from "/imports/ui/projects/ProjectProcessDiagram.vue";
 import ProjectBPMN from "/imports/ui/projects/ProjectBPMN.vue";
-import ProjectMeetings from "/imports/ui/projects/ProjectMeetings.vue";
+import MeetingsDashboard from "/imports/ui/meetings/MeetingsDashboard.vue";
 
 import modern from "./routes";
 
@@ -52,7 +52,7 @@ const legacy = [
     path: "/projects-meetings/:projectId",
     name: "project-meetings",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectMeetings,
+    component: MeetingsDashboard,
     props: true,
     meta: {
       isProject: true

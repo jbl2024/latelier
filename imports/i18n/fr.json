@@ -372,12 +372,6 @@
       "attendee": "Participant",
       "organizer": "Organisateur"
     },
-    "types": {
-      "none": "Sans type",
-      "weeklypoint": "Point hebdomadaire",
-      "info": "Réunion d'information",
-      "service": "Réunion de service"
-    },
     "agenda": {
       "agenda": "Ordre du jour",
       "none": "Aucun ordre du jour"
@@ -392,6 +386,9 @@
     "hoursRange": {
       "select": "Choisir l'heure de début/fin",
       "range": "{start} - {end}"
+    },
+    "project": {
+      "project": "Projet"
     },
     "fields": {
       "name": "Nom",

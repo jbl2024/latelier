@@ -1,5 +1,5 @@
 <template>
-  <div v-if="projectId" class="meeting-attendees">
+  <div v-if="isReady" class="meeting-attendees">
     <!-- List -->
     <meeting-attendees-list
       v-if="display === 'list'"
@@ -34,6 +34,10 @@ export default {
   },
   mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
+    organizationId: {
+      type: String,
+      default: null
+    },
     projectId: {
       type: String,
       default: null
@@ -72,6 +76,9 @@ export default {
     };
   },
   computed: {
+    isReady() {
+      return this.projectId !== null || this.organizationId !== null;
+    },
     selectedAttendees: {
       get() {
         return this.value;
@@ -94,6 +101,7 @@ export default {
     usersParams() {
       const params = {
         projectId: this.projectId,
+        organizationId: this.organizationId,
         filter: this.filter
       };
       if (this.searchAttendeesOnly === true
@@ -105,7 +113,7 @@ export default {
     }
   },
   watch: {
-    projectId: {
+    isReady: {
       immediate: true,
       async handler() {
         await this.fetchUsers();

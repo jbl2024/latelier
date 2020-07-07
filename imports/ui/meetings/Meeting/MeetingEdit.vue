@@ -4,6 +4,13 @@
       :active.sync="showSelectColor"
       @select="onSelectColor"
     />
+
+    <select-project
+      v-if="canSelectProject"
+      v-model="showSelectProject"
+      :organization-id="organizationId"
+      @select="onSelectProject"
+    />
     <generic-dialog
       v-model="showDialog"
       :css-classes="['meeting-edit']"
@@ -41,7 +48,6 @@
           <!-- Main infos and dates -->
           <meeting-infos
             :rules="rules"
-            :types="types"
             :name.sync="name"
             :type.sync="type"
             :description.sync="description"
@@ -49,23 +55,28 @@
             :location.sync="location"
             :start-hour.sync="startHour"
             :end-hour.sync="endHour"
+            :project.sync="project"
+            :can-select-project="canSelectProject"
+            @show-select-project="showSelectProject = true"
             @show-select-date="showSelectDate = true"
             @reset-date="date = null"
             @show-select-hour-range="showSelectHourRange = true"
             @reset-hour-range="resetHourRange"
           />
-          <!-- Attendees -->
-          <meeting-attendees
-            v-model="attendees"
-            :project-id="projectId"
-            display="combobox"
-            class="meeting-edit__attendees"
-          />
-          <!-- Documents -->
-          <meeting-documents
-            v-model="documents"
-            :project-id="projectId"
-          />
+          <template v-if="currentProjectId">
+            <!-- Attendees -->
+            <meeting-attendees
+              v-model="attendees"
+              :project-id="currentProjectId"
+              display="combobox"
+              class="meeting-edit__attendees"
+            />
+            <!-- Documents -->
+            <meeting-documents
+              v-model="documents"
+              :project-id="currentProjectId"
+            />
+          </template>
         </v-form>
       </template>
       <template v-slot:actions>
@@ -121,11 +132,17 @@ export default {
       type: String,
       default: null
     },
-    meeting: {
-      type: Object,
+    organizationId: {
+      type: String,
       default: null
     },
-    types: {
+    projects: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    meeting: {
       type: Object,
       default: null
     },
@@ -142,6 +159,7 @@ export default {
       showSelectDate: false,
       showSelectHourRange: false,
       showSelectColor: false,
+      showSelectProject: false,
       coherent: false,
       valid: false,
       agenda: null,
@@ -153,6 +171,7 @@ export default {
       date: null,
       startHour: null,
       endHour: null,
+      project: null,
       attendees: [],
       documents: [],
       rules: {
@@ -164,6 +183,15 @@ export default {
     };
   },
   computed: {
+    canSelectProject() {
+      return Boolean(this.organizationId && this.isNewMeeting);
+    },
+    currentProjectId() {
+      const selectedProjectId = this.project?._id ? this.project?._id : null;
+      if (this.canSelectProject) return selectedProjectId;
+      if (this.projectId) return this.projectId;
+      return this.meeting?.projectId ? this.meeting.projectId : null;
+    },
     showDialog: {
       get() {
         return this.isShown;
@@ -173,7 +201,7 @@ export default {
       }
     },
     isNewMeeting() {
-      return !this.meeting || !this.meeting._id;
+      return Boolean(this.meeting?._id) === false;
     },
     computedTitle() {
       return (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
@@ -201,6 +229,7 @@ export default {
           this[prop] = this.meeting[prop];
         }
       });
+
       this.date = startDate;
       this.startHour = startHour;
       this.endHour = endHour;
@@ -267,7 +296,7 @@ export default {
       const date = moment(this.date).format("YYYY-MM-DD");
       const params = {
         name: this.name,
-        projectId: this.projectId,
+        projectId: this.currentProjectId,
         startDate: `${date} ${this.startHour}:00`,
         endDate: `${date} ${this.endHour}:00`,
         agenda: this.agenda,
@@ -279,8 +308,9 @@ export default {
         attendees: this.attendees.map((attendee) => this.sanitizeAttendee(attendee)),
         documents: this.documents.map(MeetingUtils.formatAttachmentAsDocument)
       };
-      if (!this.isNewMeeting && this.meeting._id) {
+      if (!this.isNewMeeting) {
         delete params.projectId;
+        delete params.organizationId;
         params.id = this.meeting._id;
       }
       return params;
@@ -296,6 +326,9 @@ export default {
       const meetingId = await Api.call("meetings.create", this.getParams());
       this.$emit("created", meetingId);
       this.$notify(this.$t("meetings.created"));
+    },
+    onSelectProject(project) {
+      this.project = project;
     }
   }
 };

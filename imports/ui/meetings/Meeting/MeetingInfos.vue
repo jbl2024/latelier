@@ -14,6 +14,16 @@
           />
         </v-col>
       </v-row>
+      <v-row v-if="canSelectProject">
+        <v-col cols="12" class="py-0">
+          <v-text-field
+            :value="projectName"
+            :label="$t('meetings.project.project')"
+            readonly
+            @click="$emit('show-select-project')"
+          />
+        </v-col>
+      </v-row>
       <v-row>
         <v-col cols="12" class="py-0">
           <v-text-field
@@ -69,10 +79,6 @@ export default {
       type: String,
       default: null
     },
-    types: {
-      type: Object,
-      default: null
-    },
     type: {
       type: String,
       default: null
@@ -96,6 +102,14 @@ export default {
     endHour: {
       type: String,
       default: null
+    },
+    project: {
+      type: Object,
+      default: null
+    },
+    canSelectProject: {
+      type: Boolean,
+      default: false
     }
   },
   computed: {
@@ -107,18 +121,6 @@ export default {
         });
       }
       return this.$t("meetings.hoursRange.select");
-    },
-    typesItems() {
-      if (!this.types) return [];
-      return Object.keys(this.types).map((key) => ({ value: this.types[key], text: this.$t(`meetings.types.${this.types[key]}`) }));
-    },
-    meetingType: {
-      get() {
-        return this.type;
-      },
-      set(newType) {
-        this.$emit("update:type", newType);
-      }
     },
     meetingName: {
       get() {
@@ -159,6 +161,9 @@ export default {
       set(newLocation) {
         return this.$emit("update:location", newLocation);
       }
+    },
+    projectName() {
+      return this.project?.name ? this.project.name : "";
     }
   },
   methods: {

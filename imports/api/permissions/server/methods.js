@@ -3,6 +3,7 @@ import {
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 import { Projects } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Meetings } from "/imports/api/meetings/meetings.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
@@ -316,5 +317,27 @@ Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
         }
       }
     });
+  }
+});
+
+Permissions.methods.canReadOrganization = new ValidatedMethod({
+  name: "permissions.canReadOrganization",
+  validate: new SimpleSchema({
+    organizationId: { type: String }
+  }).validator(),
+  run({ organizationId }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    if (Permissions.isAdmin(userId)) {
+      return true;
+    }
+    const organization = Organizations.findOne({
+      _id: organizationId,
+      $or: [{ createdBy: userId }, { members: userId }]
+    });
+    if (organization) {
+      return true;
+    }
+    throw new Meteor.Error("not-authorized");
   }
 });

@@ -56,6 +56,10 @@ export default {
     value: {
       type: Boolean,
       default: false
+    },
+    organizationId: {
+      type: String,
+      default: null
     }
   },
   data() {
@@ -122,7 +126,11 @@ export default {
       this.loading = true;
       Meteor.call(
         "projects.load",
-        { name: this.search, page: this.page },
+        {
+          name: this.search,
+          page: this.page,
+          organizationId: this.organizationId
+        },
         (error, result) => {
           this.loading = false;
           if (error) {

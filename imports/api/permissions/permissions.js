@@ -150,6 +150,10 @@ export const checkCanWriteProject = (projectId) => {
   Meteor.call("permissions.canWriteProject", { projectId });
 };
 
+export const checkCanReadOrganization = (organizationId) => {
+  Meteor.call("permissions.canReadOrganization", { organizationId });
+};
+
 export const checkCanDeleteProject = (projectId) => {
   Meteor.call("permissions.canDeleteProject", { projectId });
 };

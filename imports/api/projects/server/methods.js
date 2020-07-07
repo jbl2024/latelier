@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Projects } from "../projects";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
@@ -201,23 +202,50 @@ Projects.methods.adminFind = new ValidatedMethod({
   }
 });
 
+
+const projectOrOrganizationRequired = function() {
+  if (!this.field("projectId").value && !this.field("organizationId").value) {
+    return SimpleSchema.ErrorTypes.REQUIRED;
+  }
+  return true;
+};
 Projects.methods.findUsers = new ValidatedMethod({
   name: "projects.findUsers",
   validate: new SimpleSchema({
-    projectId: { type: String },
+    projectId: {
+      type: String,
+      optional: true,
+      custom: projectOrOrganizationRequired
+    },
+    organizationId: {
+      type: String,
+      optional: true,
+      custom: projectOrOrganizationRequired
+    },
     filter: { type: String, optional: true },
     usersIds: { type: Array, optional: true },
     "usersIds.$": {
       type: String
     }
   }).validator(),
-  run({ projectId, filter, usersIds }) {
+  run({ projectId, organizationId, filter, usersIds }) {
     checkLoggedIn();
-    const project = Projects.findOne({ _id: projectId });
-    if (!project) {
-      throw new Meteor.Error("not-found");
+    let membersIds = [];
+    const projectQuery = {};
+    if (projectId) {
+      projectQuery._id = projectId;
     }
-    let membersIds = findProjectMembersIds(project);
+    if (organizationId) {
+      projectQuery.organizationId = organizationId;
+    }
+    const projects = Projects.find(projectQuery).fetch();
+    if (!projects || !Array.isArray(projects) || !projects.length) {
+      return [];
+    }
+    projects.forEach((project) => {
+      membersIds = membersIds.concat(findProjectMembersIds(project));
+    });
+    membersIds = [...new Set(membersIds)];
     if (usersIds && Array.isArray(usersIds) && usersIds.length) {
       membersIds = membersIds.filter((memberId) => usersIds.includes(memberId));
     }

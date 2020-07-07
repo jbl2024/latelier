@@ -1,10 +1,12 @@
 import { Meteor } from "meteor/meteor";
-import { MeetingState, MeetingTypes, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
+import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
+import { Projects } from "/imports/api/projects/projects";
 import moment from "moment";
 // We use project rights for meeting rights
 import {
   Permissions,
   checkCanReadProject,
+  checkCanReadOrganization,
   checkCanWriteProject,
   checkCanDeleteMeeting,
   checkCanReadMeeting,
@@ -225,10 +227,25 @@ Meetings.methods.restore = new ValidatedMethod({
 });
 
 
+const projectOrOrganizationRequired = function() {
+  if (!this.field("projectId").value && !this.field("organizationId").value) {
+    return SimpleSchema.ErrorTypes.REQUIRED;
+  }
+  return true;
+};
 Meetings.methods.findMeetings = new ValidatedMethod({
   name: "meetings.findMeetings",
   validate: new SimpleSchema({
-    projectId: { type: String },
+    projectId: {
+      type: String,
+      optional: true,
+      custom: projectOrOrganizationRequired
+    },
+    organizationId: {
+      type: String,
+      optional: true,
+      custom: projectOrOrganizationRequired
+    },
     dates: {
       type: Array,
       optional: true
@@ -255,8 +272,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       optional: true
     }
   }).validator(),
-  run({ projectId, dates, page, perPage, documentsIds }) {
-    checkCanReadProject(projectId);
+  run({ projectId, organizationId, dates, page, perPage, documentsIds }) {
+    if (projectId) {
+      checkCanReadProject(projectId);
+    }
+    if (organizationId) {
+      checkCanReadOrganization(organizationId);
+    }
+
     let skip = 0;
     if (perPage) {
       if (page) {
@@ -268,9 +291,18 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }
     const query = {
-      projectId,
       deleted: { $ne: true }
     };
+    if (projectId) {
+      query.projectId = projectId;
+    }
+
+    if (organizationId) {
+      const projects = Projects.find({ organizationId }).fetch();
+      if (projects && Array.isArray(projects)) {
+        query.projectId = { $in: projects.map((p) => p._id) };
+      }
+    }
 
     if (Array.isArray(dates) && dates.length) {
       query.$or = dates.map((d) => ({
@@ -312,15 +344,7 @@ Meetings.methods.get = new ValidatedMethod({
   }
 });
 
-Meetings.methods.getTypes = new ValidatedMethod({
-  name: "meetings.getTypes",
-  validate: null,
-  run() {
-    return MeetingTypes;
-  }
-});
-
-Meetings.methods.getTypes = new ValidatedMethod({
+Meetings.methods.getRoles = new ValidatedMethod({
   name: "meetings.getRoles",
   validate: null,
   run() {

@@ -7,7 +7,6 @@
       :is-shown.sync="showEditMeeting"
       :project-id="projectId"
       :meeting="currentMeeting"
-      :types="meetingTypes"
       @created="fetch"
       @updated="fetch"
       @removed="fetch"
@@ -50,7 +49,7 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["currentMeeting", "meetingTypes"])
+    ...mapState("meeting", ["currentMeeting"])
   },
   meteor: {
     $subscribe: {
@@ -72,7 +71,6 @@ export default {
   },
   async mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    await this.$store.dispatch("meeting/fetchMeetingTypes");
     await this.$store.dispatch("meeting/fetchMeetingRoles");
     await this.fetch();
   },

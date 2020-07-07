@@ -1,37 +1,44 @@
 <template>
   <v-card class="meeting-calendar-filters">
     <v-card-text>
-      <v-checkbox
-        v-for="(type, key) in types"
-        :key="key"
-        v-model="selected"
-        :value="type"
-        color="accent"
-        :label="$t(`meetings.types.${type}`)"
-        hide-details
-      />
+      <template v-if="hasProjects">
+        <v-checkbox
+          v-for="project in projects"
+          :key="project._id"
+          v-model="selected"
+          :value="project._id"
+          color="accent"
+          :label="project.name"
+          hide-details
+        />
+      </template>
     </v-card-text>
   </v-card>
 </template>
 <script>
 export default {
   props: {
-    types: {
-      type: Object,
-      default: null
+    projects: {
+      type: Array,
+      default() {
+        return [];
+      }
     },
-    selectedTypes: {
+    selectedProjects: {
       type: Array,
       default: null
     }
   },
   computed: {
+    hasProjects() {
+      return this.projects && Array.isArray(this.projects) && this.projects.length;
+    },
     selected: {
       get() {
-        return this.selectedTypes;
+        return this.selectedProjects;
       },
-      set(newSelectedTypes) {
-        this.$emit("update:selected-types", newSelectedTypes);
+      set(newSelectedProjects) {
+        this.$emit("update:selected-projects", newSelectedProjects);
       }
     }
   }

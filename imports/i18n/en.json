@@ -363,12 +363,6 @@
       "attendee": "Attendee",
       "organizer": "Organizer"
     },
-    "types": {
-      "none": "No type",
-      "weeklypoint": "Weekly point",
-      "info": "Information meeting",
-      "service": "Departement meeting"
-    },
     "agenda": {
       "agenda": "Agenda",
       "none": "No agenda"
@@ -383,6 +377,9 @@
     "hoursRange": {
       "select": "Select range time",
       "range": "{start} - {end}"
+    },
+    "project": {
+      "project": "Project"
     },
     "fields": {
       "name": "Nom",

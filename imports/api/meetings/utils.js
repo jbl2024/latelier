@@ -65,6 +65,7 @@ export default {
     ${hasFirstName && hasLastName && attendee.lastName[0] ? attendee.lastName[0] : ""}`;
   },
   formatMeetingsAsEvents(meetings) {
+    if (!meetings || !Array.isArray(meetings)) return [];
     return meetings
       .filter((meeting) => meeting.startDate && meeting.endDate)
       .map(this.formatMeetingAsEvent);
@@ -73,6 +74,7 @@ export default {
     const dateFormat = "YYYY-MM-DD HH:mm";
     return {
       id: meeting._id,
+      projectId: meeting.projectId,
       name: meeting.name,
       description: meeting.description,
       location: meeting.location,

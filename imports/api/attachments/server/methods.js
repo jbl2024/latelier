@@ -131,7 +131,9 @@ Attachments.methods.find = new ValidatedMethod({
     const query = {};
     if (meta === Object(meta)) {
       Object.keys(meta).forEach((key) => {
-        query[`meta.${key}`] = meta[key];
+        if (meta[key]) {
+          query[`meta.${key}`] = meta[key];
+        }
       });
     }
     if (name && name.length > 0) {

@@ -10,13 +10,6 @@ export const MeetingState = Object.freeze({
   CANCELED: "canceled"
 });
 
-export const MeetingTypes = Object.freeze({
-  NONE: "none",
-  WEEKLYPOINT: "weeklypoint",
-  INFO: "info",
-  SERVICE: "service"
-});
-
 export const MeetingRoles = Object.freeze({
   ORGANIZER: "organizer",
   ATTENDEE: "attendee"

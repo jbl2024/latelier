@@ -1,19 +1,20 @@
 <template>
   <div
-    ref="projectMeetings"
+    ref="meetingsDashboard"
     v-resize="onResize"
     class="project-meetings"
     :style="getBackgroundUrl(currentUser)"
   >
-    <v-progress-linear v-if="!currentProject" indeterminate />
+    <v-progress-linear v-if="!isReady" indeterminate />
     <div v-else>
       <!-- New meeting -->
       <meeting-edit
         ref="newMeeting"
         :is-shown.sync="showNewMeeting"
         :project-id="projectId"
+        :organization-id="organizationId"
         :meeting="newMeeting"
-        :types="meetingTypes"
+        :projects="projects"
         @created="onCreateMeeting"
       />
       <!-- Edit existing meeting -->
@@ -23,7 +24,7 @@
         :is-shown.sync="showEditMeeting"
         :project-id="projectId"
         :meeting="selectedMeeting"
-        :types="meetingTypes"
+        :projects="projects"
         @created="fetch"
         @updated="fetch"
         @removed="fetch"
@@ -33,7 +34,7 @@
         :meeting="selectedMeeting"
         @edit-meeting="editMeeting"
       />
-      <project-meetings-toolbar
+      <meetings-dashboard-toolbar
         :display-type.sync="displayType"
         :display-types="displayTypes"
         @add-new-meeting="addNewMeeting"
@@ -55,6 +56,13 @@
                 :picker-date.sync="pickerDate"
                 :locale="currentLocale"
                 :events="meetingsEvents"
+              />
+            </v-col>
+            <v-col v-if="organizationId" :lg="asideCols.datepicker.lg">
+              <meeting-calendar-filters
+                class="filters"
+                :projects="projects"
+                :selected-projects.sync="selectedProjects"
               />
             </v-col>
           </v-row>
@@ -101,13 +109,15 @@
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { mapState, mapActions } from "vuex";
 import MeetingUtils from "/imports/api/meetings/utils";
-import ProjectMeetingsToolbar from "/imports/ui/projects/ProjectMeetingsToolbar";
+import MeetingsDashboardToolbar from "/imports/ui/meetings/MeetingsDashboardToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
 import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarToolbar";
+import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
@@ -116,9 +126,10 @@ import Api from "/imports/ui/api/Api";
 
 export default {
   components: {
-    ProjectMeetingsToolbar,
+    MeetingsDashboardToolbar,
     MeetingCalendar,
     MeetingCalendarToolbar,
+    MeetingCalendarFilters,
     MeetingCalendarDatePicker,
     Meeting,
     MeetingEdit
@@ -126,6 +137,10 @@ export default {
   mixins: [DatesMixin, BackgroundMixin],
   props: {
     projectId: {
+      type: String,
+      default: null
+    },
+    organizationId: {
       type: String,
       default: null
     }
@@ -143,6 +158,7 @@ export default {
       firstInterval: 7,
       showNewMeeting: false,
       showEditMeeting: false,
+      selectedProjects: [],
       showMeeting: false,
       newMeeting: null,
       displayTypes: Object.freeze([
@@ -174,13 +190,18 @@ export default {
     };
   },
   computed: {
+    isReady() {
+      if (this.projectId) return this.currentProject;
+      if (this.organizationId) return this.organizationId;
+      return false;
+    },
     active() {
-      return Boolean(
-        this.pickerDate
-        && this.start
-        && this.end
-        && this.currentProject === Object(this.currentProject)
-      );
+      const validDates = Boolean(this.pickerDate && this.start && this.end);
+      const validProject = this.currentProject === Object(this.currentProject);
+      const validOrganization = this.currentOrganization === Object(this.currentOrganization);
+      if (this.projectId) return validDates && validProject;
+      if (this.organizationId) return validDates && validOrganization;
+      return false;
     },
     selectedMeetingId() {
       if (!this.selectedMeeting?._id) return null;
@@ -200,6 +221,19 @@ export default {
         }
       ];
     },
+    fetchParams() {
+      const params = {
+        page: 1,
+        dates: this.dateRanges
+      };
+      if (this.currentProject) {
+        params.projectId = this.currentProject._id;
+      }
+      if (this.currentOrganization) {
+        params.organizationId = this.currentOrganization._id;
+      }
+      return params;
+    },
     isCalendarDisplay() {
       const foundDisplayType = this.displayTypes.find(
         (displayType) => displayType.value === this.displayType
@@ -208,22 +242,15 @@ export default {
     },
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["selectedMeeting", "meetingTypes"]),
-    ...mapGetters("meeting", ["filteredMeetingsByProjectId"]),
-    selectedMeetingTypes: {
-      get() {
-        return this.$store.state.meeting.selectedMeetingTypes;
-      },
-      set(selectedMeetingTypes) {
-        this.$store.dispatch("meeting/setSelectedMeetingTypes", selectedMeetingTypes);
+    ...mapState("organization", ["currentOrganization"]),
+    ...mapState("meeting", {
+      selectedMeeting: (state) => state.selectedMeeting,
+      meetingsEvents(state) {
+        const meetings = Array.isArray(state?.meetingsResults?.data)
+          ? state.meetingsResults.data : [];
+        return this.filterMeetingsEvents(MeetingUtils.formatMeetingsAsEvents(meetings));
       }
-    },
-    meetings() {
-      return this.filteredMeetingsByProjectId(this.currentProject._id);
-    },
-    meetingsEvents() {
-      return MeetingUtils.formatMeetingsAsEvents(this.meetings);
-    },
+    }),
     asideCols() {
       if (this.denseWidth) {
         return {
@@ -258,6 +285,13 @@ export default {
         }
       }
     },
+    currentOrganization: {
+      async handler() {
+        if (this.active) {
+          await this.fetch();
+        }
+      }
+    },
     currentProject: {
       async handler() {
         if (this.active) {
@@ -267,32 +301,78 @@ export default {
     }
   },
   async mounted() {
-    this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    await this.$store.dispatch("meeting/fetchMeetingTypes");
+    if (this.projectId) {
+      this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+      this.$store.dispatch("organization/setCurrentOrganizationId", null);
+    } else if (this.organizationId) {
+      this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
+      this.$store.dispatch("project/setCurrentProject", null);
+    }
     await this.$store.dispatch("meeting/fetchMeetingRoles");
-    await this.$store.dispatch("meeting/setSelectedMeetingTypes", Object.values(this.meetingTypes));
   },
   beforeDestroy() {
     this.$store.dispatch("meeting/setSelectedMeeting", null);
     this.$store.dispatch("project/setCurrentProjectId", null);
+    this.$store.dispatch("organization/setCurrentOrganizationId", null);
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       project() {
         return [this.projectId];
+      },
+      projects() {
+        return [this.organizationId];
+      },
+      organization() {
+        return [this.organizationId];
       }
     },
     project() {
+      if (this.organizationId) return null;
       const project = Projects.findOne();
       if (project) {
         this.$store.dispatch("project/setCurrentProject", project);
       }
       return project;
+    },
+    projects: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update({ organizationId }) {
+        if (this.projectId) return [];
+        const projects = Projects.find({ organizationId }).fetch();
+        if (projects) {
+          this.selectedProjects = projects.map((p) => p._id);
+        }
+        return projects;
+      }
+    },
+    organization: {
+      params() {
+        return {
+          organizationId: this.organizationId
+        };
+      },
+      update() {
+        if (this.projectId) return null;
+        const organization = Organizations.findOne();
+        this.$store.dispatch("organization/setCurrentOrganization", organization);
+        return organization;
+      }
     }
   },
   methods: {
     ...mapActions("meeting", ["fetchMeetings", "fetchSelectedMeeting"]),
+    filterMeetingsEvents(events) {
+      if (this.organizationId && this.selectedProjects.length) {
+        return events.filter((event) => this.selectedProjects.includes(event.projectId));
+      }
+      return events;
+    },
     setToday() {
       this.selectedDate = this.now;
     },
@@ -318,7 +398,7 @@ export default {
           meetingId: createdMeeting._id,
           projectId: createdMeeting.projectId
         }
-      });
+      }).catch((error) => this.$notifyError(error));
     },
     addNewMeeting(selectedTime) {
       const newMeeting = MeetingUtils.makeNewMeeting();
@@ -344,11 +424,7 @@ export default {
     },
     async fetch() {
       try {
-        await this.fetchMeetings({
-          projectId: this.currentProject._id,
-          page: 1,
-          dates: this.dateRanges
-        });
+        await this.fetchMeetings(this.fetchParams);
       } catch (error) {
         this.$notifyError(error);
       }
@@ -388,7 +464,9 @@ export default {
   background-position: center;
   background-attachment: fixed;
 
-
+  .filters {
+    margin-top: 1rem;
+  }
   .current-date {
     border-radius: 16px;
     background-color: white;
