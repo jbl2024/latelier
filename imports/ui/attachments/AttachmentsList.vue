@@ -178,10 +178,12 @@ export default {
 <style lang="scss">
 .attachments-list .v-list {
   padding: 0;
-
+  .chip-link,
+  .link {
+    text-decoration: none;
+  }
   .chip-link {
     color: white;
-    text-decoration: none;
   }
 }
 </style>
