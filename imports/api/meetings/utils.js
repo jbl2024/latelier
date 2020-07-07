@@ -72,9 +72,11 @@ export default {
   },
   formatMeetingAsEvent: (meeting) => {
     const dateFormat = "YYYY-MM-DD HH:mm";
+    const project = meeting?.project
+      ? meeting.project : { _id: meeting.projectId };
     return {
       id: meeting._id,
-      projectId: meeting.projectId,
+      project: project,
       name: meeting.name,
       description: meeting.description,
       location: meeting.location,

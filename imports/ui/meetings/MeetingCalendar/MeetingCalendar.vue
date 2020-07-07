@@ -24,6 +24,7 @@
       :max-days="calendarDatas.maxDays"
       :now="now"
       :events="events"
+      :interval-height="intervalHeight"
       :event-color="getEventColor"
       :locale="locale"
       :short-weekdays="false"
@@ -32,7 +33,24 @@
       @contextmenu:time="showContextMenu"
       @click:event="selectEvent"
       @change="changeCalendar"
-    />
+    >
+      <template #event="{ event }">
+        <div class="event">
+          <div>
+            {{ event.name }}
+          </div>
+          <div
+            v-if="event.project && event.project.name"
+            class="event-project-name"
+          >
+            {{ event.project.name }}
+          </div>
+          <b>
+            {{ displayEventHours(event) }}
+          </b>
+        </div>
+      </template>
+    </v-calendar>
   </div>
 </template>
 <script>
@@ -96,6 +114,9 @@ export default {
     };
   },
   computed: {
+    intervalHeight() {
+      return this.firstInterval === 7 ? 70 : 48;
+    },
     selectedDate: {
       get() {
         return this.value;
@@ -160,6 +181,9 @@ export default {
     this.$el.removeEventListener("contextmenu", this.clickHandler);
   },
   methods: {
+    displayEventHours(event) {
+      return `${moment(event.start).format("HH:mm")} - ${moment(event.end).format("HH:mm")}`;
+    },
     changeCalendar(data) {
       this.$emit("update:start", data.start.date);
       this.$emit("update:end", data.end.date);
@@ -178,6 +202,9 @@ export default {
     getEventColor(event) {
       return event.color;
     },
+    getEventName({ input }) {
+      return `${input.name} (${input?.project?.name ? input.project.name : ""})`;
+    },
     showContextMenu(data) {
       this.clickedTime = data;
       this.showContextualMenu = true;
@@ -194,6 +221,12 @@ export default {
 </script>
 <style lang="scss">
   .meeting-calendar {
+    .event {
+      padding: 4px;
+    }
+    .event-project-name {
+      font-size: 10px;
+    }
     &.theme--dark.v-calendar-daily,
     &.theme--light.v-calendar-daily {
       border-left: 0;

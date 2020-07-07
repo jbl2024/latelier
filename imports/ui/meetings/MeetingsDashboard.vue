@@ -248,7 +248,8 @@ export default {
       meetingsEvents(state) {
         const meetings = Array.isArray(state?.meetingsResults?.data)
           ? state.meetingsResults.data : [];
-        return this.filterMeetingsEvents(MeetingUtils.formatMeetingsAsEvents(meetings));
+        const events = this.formatMeetingsAsEvents(meetings);
+        return this.filterMeetingsEvents(events);
       }
     }),
     asideCols() {
@@ -369,9 +370,23 @@ export default {
     ...mapActions("meeting", ["fetchMeetings", "fetchSelectedMeeting"]),
     filterMeetingsEvents(events) {
       if (this.organizationId && this.selectedProjects.length) {
-        return events.filter((event) => this.selectedProjects.includes(event.projectId));
+        return events.filter((event) => this.selectedProjects.includes(event?.project?._id));
       }
       return events;
+    },
+    formatMeetingsAsEvents(meetings) {
+      const withProjects = this.organizationId
+      && Array.isArray(this.projects)
+      && this.projects.length;
+      return MeetingUtils.formatMeetingsAsEvents(meetings).map((event) => {
+        if (withProjects) {
+          const foundProject = this.projects.find((project) => project._id === event?.project?._id);
+          if (foundProject) {
+            event.project = foundProject;
+          }
+        }
+        return event;
+      });
     },
     setToday() {
       this.selectedDate = this.now;
