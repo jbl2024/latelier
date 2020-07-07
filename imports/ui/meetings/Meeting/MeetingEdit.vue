@@ -310,7 +310,6 @@ export default {
       };
       if (!this.isNewMeeting) {
         delete params.projectId;
-        delete params.organizationId;
         params.id = this.meeting._id;
       }
       return params;

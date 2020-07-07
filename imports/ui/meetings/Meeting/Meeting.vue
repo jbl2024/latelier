@@ -3,7 +3,7 @@
     <generic-dialog
       v-model="showDialog"
       :css-classes="['meeting']"
-      max-width="1000px"
+      max-width="700px"
     >
       <template v-slot:title>
         <meeting-title
