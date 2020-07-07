@@ -312,6 +312,59 @@ methods.findAttachments = new ValidatedMethod({
       sort
     }).fetch();
 
+    // load associated objects and assign them to attachments
+    const projects = {};
+    const users = {};
+    const organizations = {};
+
+    const loadUser = (aUserId) => {
+      const aUser = users[aUserId];
+      if (aUser) {
+        return aUser;
+      }
+      users[aUserId] = Meteor.users.findOne(
+        { _id: aUserId },
+        {
+          fields: {
+            profile: 1,
+            status: 1,
+            statusDefault: 1,
+            statusConnection: 1,
+            emails: 1,
+            roles: 1
+          }
+        }
+      );
+      return users[aUserId];
+    };
+
+    data.forEach((attachment) => {
+      const attachmentProjectId = attachment?.meta?.projectId ? attachment.meta.projectId : null;
+      if (attachmentProjectId) {
+        let project = projects[attachmentProjectId];
+        if (!project) {
+          projects[attachmentProjectId] = Projects.findOne({ _id: attachmentProjectId });
+          project = projects[attachmentProjectId];
+        }
+        if (project) {
+          attachment.project = project;
+          let organization = organizations[project.organizationId];
+          if (!organization) {
+            organizations[project.organizationId] = Organizations.findOne({
+              _id: project.organizationId
+            });
+            organization = organizations[project.organizationId];
+          }
+          if (organization) {
+            attachment.organization = organization;
+          }
+        }
+      }
+      if (attachment.createdBy) {
+        attachment.createdBy = loadUser(attachment.createdBy);
+      }
+    });
+
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
     return {

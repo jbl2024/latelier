@@ -31,7 +31,14 @@
                   {{ attachment.name }}
                 </a>
               </v-list-item-title>
-              <!-- Task link -->
+              <v-list-item-subtitle v-if="attachment.project">
+                <span class="grey--text text--darken-1 show-desktop">
+                  <template v-if="attachment.organization">
+                    {{ attachment.organization.name }} /
+                  </template>
+                  {{ attachment.project.name }}
+                </span>
+              </v-list-item-subtitle>
               <v-list-item-subtitle>
                 <v-chip-group>
                   <!-- Related tasks -->
