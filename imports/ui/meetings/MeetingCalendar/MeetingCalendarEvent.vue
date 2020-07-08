@@ -78,6 +78,7 @@ export default {
     },
     eventName() {
       if (!this.event?.name) return "";
+      if (this.displayType === "day") return this.event.name;
       return truncate(this.event.name, this.displayType === "month" ? 10 : 20);
     }
   },
