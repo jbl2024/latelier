@@ -30,6 +30,7 @@
       :locale="locale"
       :short-weekdays="false"
       :short-months="false"
+      :interval-count="24 - firstInterval"
       :first-interval="firstInterval"
       @contextmenu:time="showContextMenu"
       @click:event="selectEvent"
