@@ -28,7 +28,7 @@
     <div class="event__container">
       <div class="event__content">
         <div class="event__name">
-          {{ truncate(event.name, 20) }}
+          {{ eventName }}
         </div>
         <div
           v-if="event.project && event.project.name"
@@ -75,6 +75,10 @@ export default {
     },
     iconColor() {
       return colors.isDark(this.event.color) ? "white" : "black";
+    },
+    eventName() {
+      if (!this.event?.name) return "";
+      return truncate(this.event.name, this.displayType === "month" ? 10 : 20);
     }
   },
   methods: {
