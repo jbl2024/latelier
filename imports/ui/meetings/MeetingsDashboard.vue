@@ -292,6 +292,23 @@ export default {
           await this.refresh();
         }
       }
+    },
+    projectId: {
+      immediate: true,
+      handler(projectId) {
+        if (projectId) {
+          this.$subscribe("project", projectId);
+        }
+      }
+    },
+    organizationId: {
+      immediate: true,
+      handler(organizationId) {
+        if (organizationId) {
+          this.$subscribe("organization", organizationId);
+          this.$subscribe("projects", organizationId);
+        }
+      }
     }
   },
   async mounted() {
@@ -308,18 +325,6 @@ export default {
     this.$store.dispatch("organization/setCurrentOrganizationId", null);
   },
   meteor: {
-    // Subscriptions
-    $subscribe: {
-      project() {
-        return [this.projectId];
-      },
-      projects() {
-        return [this.organizationId];
-      },
-      organization() {
-        return [this.organizationId];
-      }
-    },
     project() {
       if (this.organizationId) return null;
       const project = Projects.findOne();
