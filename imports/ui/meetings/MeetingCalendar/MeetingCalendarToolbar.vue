@@ -40,9 +40,9 @@
       </div>
     </div>
     <div class="right-side">
-      <div>
+      <div v-if="displayType !== 'month'">
         <!-- Corporate week number -->
-        <v-chip v-if="displayType !== 'month'" label>
+        <v-chip label>
           {{ $t("calendar.weekNumber", {weekNumber: weekNumber}) }}
         </v-chip>
         <!-- Switch between 24h and 7h start interval -->
