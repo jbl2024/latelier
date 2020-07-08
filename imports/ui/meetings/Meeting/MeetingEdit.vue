@@ -177,6 +177,9 @@ export default {
         name: [
           (v) => !!v || this.$t("Name is mandatory"),
           (v) => v.length > 1 || this.$t("Name is too short")
+        ],
+        project: [
+          (v) => !!v || this.$t("meetings.pleaseSelectProject")
         ]
       }
     };

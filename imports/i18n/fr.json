@@ -322,6 +322,7 @@
     "meetingDeleted": "Réunion supprimée", 
     "meetingRestored": "Réunion restaurée",
     "invalidMeeting": "Réunion invalide",
+    "pleaseSelectProject": "Veuillez sélectionner un projet",
     "actions": {
       "title": "Relevé de décisions",
       "none": "Aucune décision",

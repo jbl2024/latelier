@@ -314,6 +314,7 @@
     "meetingDeleted": "Meeting deleted", 
     "meetingRestored": "Meeting restored",
     "invalidMeeting": "Invalid meeting",
+    "pleaseSelectProject": "Please select a project",
     "actions": {
       "title": "Actions",
       "none": "No action",

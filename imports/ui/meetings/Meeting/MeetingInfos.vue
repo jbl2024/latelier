@@ -18,8 +18,12 @@
         <v-col cols="12" class="py-0">
           <v-text-field
             :value="projectName"
+            :rules="rules.project"
             :label="$t('meetings.project.project')"
             readonly
+            clearable
+            required
+            @click:clear="meetingProject = null"
             @click="$emit('show-select-project')"
           />
         </v-col>
@@ -160,6 +164,14 @@ export default {
       },
       set(newLocation) {
         return this.$emit("update:location", newLocation);
+      }
+    },
+    meetingProject: {
+      get() {
+        return this.project;
+      },
+      set(newProject) {
+        return this.$emit("update:project", newProject);
       }
     },
     projectName() {
