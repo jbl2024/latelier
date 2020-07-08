@@ -18,7 +18,7 @@
       </slot>
       <template v-for="attachment in attachments">
         <slot name="item" :attachment="attachment">
-          <v-list-item :key="attachment._id">
+          <v-list-item :key="attachment._id" @click="goToLink(attachment)">
             <v-list-item-avatar :color="getIconStyles(attachment).color">
               <v-icon color="white">
                 {{ getIconStyles(attachment).icon }}
@@ -27,9 +27,7 @@
 
             <v-list-item-content class="pointer">
               <v-list-item-title>
-                <a class="link" :href="link(attachment)" target="_blank">
-                  {{ attachment.name }}
-                </a>
+                {{ attachment.name }}
               </v-list-item-title>
               <v-list-item-subtitle v-if="attachment.project">
                 <span class="grey--text text--darken-1 show-desktop">
@@ -39,11 +37,13 @@
                   {{ attachment.project.name }}
                 </span>
               </v-list-item-subtitle>
-              <v-list-item-subtitle>
+              <v-list-item-subtitle
+                v-if="hasTask(attachment) || attachmentMeetings(attachment).length"
+              >
                 <v-chip-group>
                   <!-- Related tasks -->
                   <v-chip
-                    v-if="hasTask(attachment) && getTask(attachment)"
+                    v-if="getTask(attachment)"
                     small
                     color="success"
                     dark
@@ -178,6 +178,11 @@ export default {
           return documentsIds.includes(attachment._id);
         }).filter((m) => m);
       };
+    }
+  },
+  methods: {
+    goToLink(attachment) {
+      window.open(this.link(attachment), "_blank");
     }
   }
 };
