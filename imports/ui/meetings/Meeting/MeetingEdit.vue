@@ -85,18 +85,18 @@
         </v-btn>
         <v-btn
           v-if="isNewMeeting"
-          :disabled="!valid || !coherent"
+          :disabled="!isValid"
           color="success"
-          dark
+          :dark="isValid"
           @click="create"
         >
           {{ $t("meetings.create") }}
         </v-btn>
         <v-btn
           v-else
-          :disabled="!valid || !coherent"
+          :disabled="!isValid"
           color="success"
-          dark
+          :dark="isValid"
           @click="update"
         >
           {{ $t("meetings.update") }}
@@ -160,7 +160,6 @@ export default {
       showSelectHourRange: false,
       showSelectColor: false,
       showSelectProject: false,
-      coherent: false,
       valid: false,
       agenda: null,
       color: null,
@@ -191,6 +190,10 @@ export default {
       if (this.canSelectProject) return selectedProjectId;
       if (this.projectId) return this.projectId;
       return this.meeting?.projectId ? this.meeting.projectId : null;
+    },
+    isValid() {
+      const hasDate = Boolean(this.date);
+      return this.valid && hasDate;
     },
     showDialog: {
       get() {
@@ -233,7 +236,6 @@ export default {
       this.date = startDate;
       this.startHour = startHour;
       this.endHour = endHour;
-      this.checkConsistency();
     },
     async fetchSelectedDocuments() {
       if (this.isNewMeeting) return;
@@ -252,7 +254,6 @@ export default {
     },
     onSelectDate(date) {
       this.date = date;
-      this.checkConsistency();
     },
     onSelectHourRange({ start, end }) {
       this.startHour = start;
@@ -261,13 +262,6 @@ export default {
     resetHourRange() {
       this.startHour = null;
       this.endHour = null;
-    },
-    checkConsistency() {
-      if (!this.date) {
-        this.coherent = false;
-        return;
-      }
-      this.coherent = true;
     },
     onSelectColor(color) {
       const hex = color || this.color;
