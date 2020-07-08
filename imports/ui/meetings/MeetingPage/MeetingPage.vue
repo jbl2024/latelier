@@ -7,9 +7,9 @@
       :is-shown.sync="showEditMeeting"
       :project-id="projectId"
       :meeting="currentMeeting"
-      @created="fetch"
-      @updated="fetch"
-      @removed="fetch"
+      @created="refresh"
+      @updated="refresh"
+      @removed="refresh"
     />
     <meeting-detail-card
       v-if="currentMeeting"
@@ -22,9 +22,11 @@
 </template>
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
+import Api from "/imports/ui/api/Api";
+
 
 export default {
   components: {
@@ -43,13 +45,13 @@ export default {
   },
   data() {
     return {
-      showEditMeeting: false
+      showEditMeeting: false,
+      currentMeeting: null
     };
   },
   computed: {
     ...mapState(["currentUser"]),
-    ...mapState("project", ["currentProject"]),
-    ...mapState("meeting", ["currentMeeting"])
+    ...mapState("project", ["currentProject"])
   },
   meteor: {
     $subscribe: {
@@ -69,24 +71,22 @@ export default {
       this.$store.dispatch("project/setCurrentProjectId", this.projectId);
     }
   },
-  async mounted() {
+  mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    await this.$store.dispatch("meeting/fetchMeetingRoles");
-    await this.fetch();
+    this.refresh();
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
-    ...mapActions("meeting", ["fetchCurrentMeeting"]),
-    async fetch() {
-      try {
-        await this.fetchCurrentMeeting({
-          meetingId: this.meetingId
-        });
-      } catch (error) {
+    refresh() {
+      Api.call("meetings.get", {
+        meetingId: this.meetingId
+      }).then((meet) => {
+        this.currentMeeting = meet;
+      }).catch((error) => {
         this.$notifyError(error);
-      }
+      });
     }
   }
 };

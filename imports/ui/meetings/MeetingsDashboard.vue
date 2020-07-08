@@ -25,9 +25,9 @@
         :project-id="projectId"
         :meeting="selectedMeeting"
         :projects="projects"
-        @created="fetch"
-        @updated="fetch"
-        @removed="fetch"
+        @created="refresh"
+        @updated="refresh"
+        @removed="refresh"
       />
       <meeting
         :is-shown.sync="showMeeting"
@@ -115,7 +115,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
-import { mapState, mapActions } from "vuex";
+import { mapState } from "vuex";
 import MeetingUtils from "/imports/api/meetings/utils";
 import MeetingsDashboardToolbar from "/imports/ui/meetings/MeetingsDashboardToolbar";
 import MeetingCalendar from "/imports/ui/meetings/MeetingCalendar/MeetingCalendar";
@@ -164,6 +164,8 @@ export default {
       selectedProjects: [],
       showMeeting: false,
       newMeeting: null,
+      selectedMeeting: null,
+      meetings: [],
       displayTypes: Object.freeze([
         {
           text: this.$t("calendar.types.day"),
@@ -234,19 +236,6 @@ export default {
         }
       ];
     },
-    fetchParams() {
-      const params = {
-        page: 1,
-        dates: this.dateRanges
-      };
-      if (this.currentProject) {
-        params.projectId = this.currentProject._id;
-      }
-      if (this.currentOrganization) {
-        params.organizationId = this.currentOrganization._id;
-      }
-      return params;
-    },
     isCalendarDisplay() {
       const foundDisplayType = this.displayTypes.find(
         (displayType) => displayType.value === this.displayType
@@ -256,13 +245,6 @@ export default {
     ...mapState(["currentLocale", "currentUser"]),
     ...mapState("project", ["currentProject"]),
     ...mapState("organization", ["currentOrganization"]),
-    ...mapState("meeting", {
-      selectedMeeting: (state) => state.selectedMeeting,
-      meetings(state) {
-        return Array.isArray(state?.meetingsResults?.data)
-          ? state.meetingsResults.data : [];
-      }
-    }),
     asideCols() {
       if (this.denseWidth) {
         return {
@@ -293,21 +275,21 @@ export default {
       immediate: true,
       async handler() {
         if (this.active) {
-          await this.fetch();
+          await this.refresh();
         }
       }
     },
     currentOrganization: {
       async handler() {
         if (this.active) {
-          await this.fetch();
+          await this.refresh();
         }
       }
     },
     currentProject: {
       async handler() {
         if (this.active) {
-          await this.fetch();
+          await this.refresh();
         }
       }
     }
@@ -320,10 +302,8 @@ export default {
       this.$store.dispatch("organization/setCurrentOrganizationId", this.organizationId);
       this.$store.dispatch("project/setCurrentProject", null);
     }
-    await this.$store.dispatch("meeting/fetchMeetingRoles");
   },
   beforeDestroy() {
-    this.$store.dispatch("meeting/setSelectedMeeting", null);
     this.$store.dispatch("project/setCurrentProjectId", null);
     this.$store.dispatch("organization/setCurrentOrganizationId", null);
   },
@@ -391,9 +371,8 @@ export default {
       }
       const params = MeetingUtils.sanitizeMeetingForUpdate(meeting);
       await Api.call("meetings.update", params);
-      await this.fetch();
+      await this.refresh();
     },
-    ...mapActions("meeting", ["fetchMeetings", "fetchSelectedMeeting"]),
     filterMeetingsEvents(events) {
       if (this.organizationId && this.selectedProjects.length) {
         return events.filter((event) => this.selectedProjects.includes(event?.project?._id));
@@ -455,34 +434,44 @@ export default {
       this.newMeeting = newMeeting;
       this.showNewMeeting = true;
     },
-    async editMeeting(meeting) {
-      try {
-        await this.fetchSelectedMeeting({
-          meetingId: meeting._id
-        });
+    editMeeting(meeting) {
+      Api.call("meetings.get", {
+        meetingId: meeting._id
+      }).then((meet) => {
+        this.selectedMeeting = meet;
         this.showEditMeeting = true;
-      } catch (error) {
+      }).catch((error) => {
         this.showEditMeeting = false;
         this.$notifyError(error);
-      }
+      });
     },
-    async fetch() {
-      try {
-        await this.fetchMeetings(this.fetchParams);
-      } catch (error) {
-        this.$notifyError(error);
-      }
-    },
-    async selectEvent(event) {
-      try {
-        this.showMeeting = false;
-        await this.fetchSelectedMeeting({
-          meetingId: event.id
-        });
+    selectEvent(event) {
+      Api.call("meetings.get", {
+        meetingId: event.id
+      }).then((meet) => {
+        this.selectedMeeting = meet;
         this.showMeeting = true;
-      } catch (error) {
+      }).catch((error) => {
+        this.showMeeting = false;
         this.$notifyError(error);
+      });
+    },
+    refresh() {
+      const params = {
+        page: 1,
+        dates: this.dateRanges
+      };
+      if (this.currentProject) {
+        params.projectId = this.currentProject._id;
       }
+      if (this.currentOrganization) {
+        params.organizationId = this.currentOrganization._id;
+      }
+      Api.call("meetings.findMeetings", params).then((result) => {
+        this.meetings = Array.isArray(result?.data) ? result.data : [];
+      }).catch((error) => {
+        this.$notifyError = error;
+      });
     },
     onResize() {
       const width = window.innerWidth;
