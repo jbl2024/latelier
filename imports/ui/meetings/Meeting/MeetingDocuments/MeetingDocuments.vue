@@ -139,7 +139,7 @@ export default {
           this.$emit("upload-document-finished");
           await this.fetchAttachments();
           this.selectedDocuments.push(uploadedFile);
-          this.$notify("meetings.documents.documentAddedSuccess");
+          this.$notify(this.$t("meetings.documents.documentAddedSuccess"));
         }
       });
       upload.start();
