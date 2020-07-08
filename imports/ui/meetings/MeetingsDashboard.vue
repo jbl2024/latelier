@@ -2,7 +2,7 @@
   <div
     ref="meetingsDashboard"
     v-resize="onResize"
-    class="project-meetings"
+    class="meetings-dashboard"
     :style="getBackgroundUrl(currentUser)"
   >
     <v-progress-linear v-if="!isReady" indeterminate />
@@ -483,7 +483,7 @@ export default {
 </script>
 
 <style lang="scss">
-.project-meetings {
+.meetings-dashboard {
   display: flex;
   min-height: 0;
   height: 100%;
@@ -519,13 +519,6 @@ export default {
       .filters {
         margin-top: 2rem;
       }
-    }
-  }
-
-
-  .project-meetings__picker {
-    .v-picker__title {
-      display: none;
     }
   }
 }

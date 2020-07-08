@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="project-meetings-toolbar" :flat="flat" :dense="dense">
+  <v-toolbar class="meetings-dashboard-toolbar" :flat="flat" :dense="dense">
     <div class="left-side">
       <!-- Toggling between calendar and list views -->
       <meeting-calendar-display-type-selector
