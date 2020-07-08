@@ -303,7 +303,6 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         query.projectId = { $in: projects.map((p) => p._id) };
       }
     }
-
     if (Array.isArray(dates) && dates.length) {
       query.$or = dates.map((d) => ({
         $and: [
@@ -339,7 +338,12 @@ Meetings.methods.get = new ValidatedMethod({
   }).validator(),
   run({ meetingId }) {
     checkCanReadMeeting(meetingId);
-    const meeting = Meetings.findOne({ _id: meetingId });
+    const meeting = Meetings.findOne(
+      {
+        _id: meetingId,
+        deleted: { $ne: true }
+      }
+    );
     return meeting;
   }
 });

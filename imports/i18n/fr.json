@@ -321,6 +321,7 @@
     "meetingDelete?": "Supprimer la réunion ?",
     "meetingDeleted": "Réunion supprimée", 
     "meetingRestored": "Réunion restaurée",
+    "invalidMeeting": "Réunion invalide",
     "actions": {
       "title": "Relevé de décisions",
       "none": "Aucune décision",
@@ -389,20 +390,6 @@
     },
     "project": {
       "project": "Projet"
-    },
-    "fields": {
-      "name": "Nom",
-      "state": "Statut",
-      "description": "Description",
-      "subject": "Sujet de la réunion",
-      "agenda": "Ordre du jour"
-    },
-    "noneField": {
-      "name": "Aucun nom",
-      "state": "Aucun statut",
-      "description": "Aucune description",
-      "subject": "Sans sujet",
-      "agenda": "Aucun ordre du jour"
     }
   },
   "attachments": {

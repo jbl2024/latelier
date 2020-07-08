@@ -9,7 +9,7 @@
       :meeting="currentMeeting"
       @created="refresh"
       @updated="refresh"
-      @removed="refresh"
+      @removed="onRemove"
     />
     <meeting-detail-card
       v-if="currentMeeting"
@@ -73,20 +73,36 @@ export default {
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    this.refresh();
+    this.refresh().then(() => {
+      if (!this.currentMeeting) {
+        this.$notify(this.$t("meetings.invalidMeeting"));
+        this.goToMeetings();
+      }
+    });
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
+    goToMeetings() {
+      this.$router.push({
+        name: "project-meetings",
+        params: { projectId: this.projectId }
+      });
+    },
     refresh() {
-      Api.call("meetings.get", {
+      return Api.call("meetings.get", {
         meetingId: this.meetingId
       }).then((meet) => {
         this.currentMeeting = meet;
+        return meet;
       }).catch((error) => {
         this.$notifyError(error);
       });
+    },
+    onRemove() {
+      this.$notify(this.$t("meetings.meetingDeleted"));
+      this.goToMeetings();
     }
   }
 };

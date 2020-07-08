@@ -313,6 +313,7 @@
     "meetingDelete?": "Delete meeting?",
     "meetingDeleted": "Meeting deleted", 
     "meetingRestored": "Meeting restored",
+    "invalidMeeting": "Invalid meeting",
     "actions": {
       "title": "Actions",
       "none": "No action",
@@ -380,20 +381,6 @@
     },
     "project": {
       "project": "Project"
-    },
-    "fields": {
-      "name": "Nom",
-      "state": "Status",
-      "description": "Description",
-      "subject": "Meeting subject",
-      "agenda": "Agenda"
-    },
-    "noneField": {
-      "name": "No name",
-      "state": "No statut",
-      "description": "No description",
-      "subject": "No subject",
-      "agenda": "No agenda"
     }
   },
   "attachments": {
