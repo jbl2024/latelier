@@ -175,7 +175,7 @@ export default {
       attendees: [],
       documents: [],
       rules: {
-        names: [
+        name: [
           (v) => !!v || this.$t("Name is mandatory"),
           (v) => v.length > 1 || this.$t("Name is too short")
         ]
