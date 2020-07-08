@@ -39,6 +39,7 @@
       <template #event="{ event }">
         <meeting-calendar-event
           :event="event"
+          :display-type="displayType"
           @move-up="$emit('event-move-up', $event)"
           @move-down="$emit('event-move-down', $event)"
         />

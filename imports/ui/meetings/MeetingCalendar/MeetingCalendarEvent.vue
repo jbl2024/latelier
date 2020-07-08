@@ -1,6 +1,9 @@
 <template>
-  <div v-if="event" class="event" @contextmenu.stop>
-    <div class="event__sidebar">
+  <div v-if="event" :class="['event', displayType]" @contextmenu.stop>
+    <div
+      v-if="displayType !== 'month'"
+      class="event__sidebar"
+    >
       <v-btn
         icon
         rounded
@@ -22,8 +25,8 @@
         </v-icon>
       </v-btn>
     </div>
-    <div class="event__content">
-      <div>
+    <div class="event__container">
+      <div class="event__content">
         <div class="event__name">
           {{ truncate(event.name, 20) }}
         </div>
@@ -42,7 +45,7 @@
             </span>
           </v-chip>
         </div>
-        <b>
+        <b class="event__hours">
           {{ displayEventHours(event) }}
         </b>
       </div>
@@ -59,6 +62,10 @@ export default {
     event: {
       type: Object,
       default: null
+    },
+    displayType: {
+      type: String,
+      default: "week"
     }
   },
   computed: {
@@ -91,13 +98,28 @@ export default {
     height: 100%;
     display: flex;
     position: relative;
-    .event__content {
+    .event__container {
       padding: 4px;
       display: flex;
       align-items: center;
       word-break: break-word;
       flex: 1;
     }
+    &.month {
+      .event__container {
+        padding: 0;
+      }
+      .event__content {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-evenly;
+      }
+      .event__hours {
+        font-size: 0.8em;
+      }
+    }
+
     .event__name {
       word-break: break-word;
     }
