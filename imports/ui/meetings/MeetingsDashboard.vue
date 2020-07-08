@@ -383,7 +383,7 @@ export default {
     formatMeetingsAsEvents(meetings) {
       const withProjects = this.organizationId
       && Array.isArray(this.projects)
-      && this.projects.length;
+      && this.projects.length > 0;
       return MeetingUtils.formatMeetingsAsEvents(meetings).map((event) => {
         if (withProjects) {
           const foundProject = this.projects.find((project) => project._id === event?.project?._id);
