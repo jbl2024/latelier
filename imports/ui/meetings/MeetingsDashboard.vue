@@ -27,7 +27,7 @@
         :projects="projects"
         @created="refresh"
         @updated="refresh"
-        @removed="refresh"
+        @removed="onRemove"
       />
       <meeting
         :is-shown.sync="showMeeting"
@@ -473,6 +473,11 @@ export default {
       }).catch((error) => {
         this.$notifyError = error;
       });
+    },
+    onRemove() {
+      this.showEditMeeting = false;
+      this.showMeeting = false;
+      this.refresh();
     },
     onResize() {
       const width = window.innerWidth;
