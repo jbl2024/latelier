@@ -360,15 +360,11 @@ export default {
   methods: {
     async moveMeeting(meetingEvent, direction) {
       const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
-      if (!meeting) return;
+      if (!meeting || !["up", "down"].includes(direction)) return;
       const dateFormat = "YYYY-MM-DD HH:mm";
-      if (direction === "up") {
-        meeting.startDate = moment(meeting.startDate).subtract(30, "minutes").format(dateFormat);
-        meeting.endDate = moment(meeting.endDate).subtract(30, "minutes").format(dateFormat);
-      } else if (direction === "down") {
-        meeting.startDate = moment(meeting.startDate).add(30, "minutes").format(dateFormat);
-        meeting.endDate = moment(meeting.endDate).add(30, "minutes").format(dateFormat);
-      }
+      const func = direction === "up" ? "subtract" : "add";
+      meeting.startDate = moment(meeting.startDate)[func](30, "minutes").format(dateFormat);
+      meeting.endDate = moment(meeting.endDate)[func](30, "minutes").format(dateFormat);
       const params = MeetingUtils.sanitizeMeetingForUpdate(meeting);
       await Api.call("meetings.update", params);
       await this.refresh();
