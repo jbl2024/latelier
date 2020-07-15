@@ -39,6 +39,7 @@
               </v-list-item-subtitle>
               <v-list-item-subtitle
                 v-if="hasTask(attachment) || attachmentMeetings(attachment).length"
+                @click.stop
               >
                 <v-chip-group>
                   <!-- Related tasks -->
