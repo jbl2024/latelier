@@ -35,6 +35,10 @@ export default {
     organizationId: {
       type: String,
       default: null
+    },
+    type: {
+      type: String,
+      default: "today"
     }
   },
   data() {
@@ -50,6 +54,22 @@ export default {
       }
     };
   },
+  computed: {
+    params() {
+      const baseParams = {
+        projectId: this.projectId,
+        organizationId: this.organizationId,
+        page: this.page
+      };
+      if (this.type === "today") {
+        return { ...baseParams,
+          dates: [
+            { start: moment().format("YYYY-MM-DD 00:00:00") }
+          ] };
+      }
+      return baseParams;
+    }
+  },
   watch: {
     page: {
       immediate: true,
@@ -63,14 +83,7 @@ export default {
       this.loading = true;
       Meteor.call(
         "meetings.findMeetings",
-        {
-          projectId: this.projectId,
-          organizationId: this.organizationId,
-          page: this.page,
-          dates: [
-            { start: moment().format("YYYY-MM-DD HH:mm:00") }
-          ]
-        },
+        this.params,
         (error, result) => {
           this.loading = false;
           if (error) {

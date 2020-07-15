@@ -60,13 +60,23 @@
       </v-tab-item>
     </v-tabs>
     <!-- Meetings -->
-    <div v-if="currentCategory === 'meeting'">
-      <meeting-find-list
-        :project-id="projectId"
-        :organization-id="organizationId"
-        @select="onSelectMeeting"
-      />
-    </div>
+    <v-tabs
+      v-if="currentCategory === 'meeting'"
+      v-model="meetingTab"
+      v-scroll:[scrollTarget]="onScroll"
+      :class="tabsShouldStick ? 'sticky-tabs' : null"
+    >
+      <v-tabs-slider color="accent" />
+      <v-tab>{{ $t("Today") }}</v-tab>
+      <v-tab-item :transition="false" :reverse-transition="false">
+        <meeting-find-list
+          :project-id="projectId"
+          :organization-id="organizationId"
+          type="today"
+          @select="onSelectMeeting"
+        />
+      </v-tab-item>
+    </v-tabs>
     <!-- Project History -->
     <div v-show="currentCategory === 'history'">
       <project-history v-if="projectId" :key="projectId" :project-id="projectId" />
@@ -101,7 +111,8 @@ export default {
       currentCategory: "task",
       scrollTarget: "#left-drawer > .v-navigation-drawer__content",
       tabsShouldStick: false,
-      taskTab: null
+      taskTab: null,
+      meetingTab: null
     };
   },
   computed: {
