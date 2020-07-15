@@ -1,17 +1,26 @@
 <template>
   <div class="tasks">
     <div class="categories">
-      <div
-        v-for="category in categories"
-        :key="category.id"
-        :class="cssCategoryClasses(category.id)"
-        @click="currentCategory = category.id"
-      >
-        <v-icon v-if="category.icon" left small>
-          {{ category.icon }}
-        </v-icon>
-        {{ category.text }}
-      </div>
+      <v-row no-gutters>
+        <v-col v-for="category in categories" :key="category.id"
+               sm="12"
+               md="4"
+               @click="currentCategory = category.id"
+        >
+          <div :class="cssCategoryClasses(category.id)">
+            <v-icon
+              v-if="category.icon"
+              class="mr-1"
+              small
+            >
+              {{ category.icon }}
+            </v-icon>
+            <span>
+              {{ category.text }}
+            </span>
+          </div>
+        </v-col>
+      </v-row>
     </div>
     <v-divider />
     <!-- Tasks -->
@@ -101,7 +110,7 @@ export default {
         { id: "task", text: this.$t("Tasks"), icon: "mdi-format-list-bulleted" },
         { id: "meeting", text: this.$t("meetings.meetings"), icon: "mdi-calendar-star" },
         this.projectId ? { id: "history", text: this.$t("History"), icon: "mdi-history" } : null
-      ]);
+      ].filter((cat) => cat !== null));
     },
     key() {
       return function(type) {
@@ -135,10 +144,11 @@ export default {
   display: flex;
   padding: 0 4px;
   justify-content: space-between;
+  width: 100%;
   .category-title {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: center;
     cursor: pointer;
     margin: 12px;
     flex: 0;
