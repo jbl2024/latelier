@@ -253,8 +253,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     "dates.$": {
       type: Object
     },
-    "dates.$.start": { type: String },
-    "dates.$.end": { type: String },
+    "dates.$.start": {
+      type: String,
+      optional: true
+    },
+    "dates.$.end": {
+      type: String,
+      optional: true
+    },
     documentsIds: {
       type: Array,
       optional: true
@@ -304,12 +310,16 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }
     if (Array.isArray(dates) && dates.length) {
-      query.$or = dates.map((d) => ({
-        $and: [
-          { startDate: { $gte: moment.utc(d.start).toDate() } },
-          { endDate: { $lte: moment.utc(d.end).toDate() } }
-        ]
-      }));
+      query.$or = dates.map((d) => {
+        const $and = [];
+        if (d.start) {
+          $and.push({ startDate: { $gte: moment(d.start).toDate() } });
+        }
+        if (d.end) {
+          $and.push({ endDate: { $lte: moment(d.end).toDate() } });
+        }
+        return { $and };
+      });
     }
 
     if (Array.isArray(documentsIds) && documentsIds.length) {

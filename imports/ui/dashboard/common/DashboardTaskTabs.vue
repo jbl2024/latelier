@@ -7,11 +7,14 @@
         :class="cssCategoryClasses(category.id)"
         @click="currentCategory = category.id"
       >
+        <v-icon v-if="category.icon" left small>
+          {{ category.icon }}
+        </v-icon>
         {{ category.text }}
       </div>
     </div>
     <v-divider />
-    <!-- Taches -->
+    <!-- Tasks -->
     <v-tabs
       v-if="currentCategory === 'task'"
       v-model="taskTab"
@@ -47,7 +50,15 @@
         />
       </v-tab-item>
     </v-tabs>
-    <!-- Historique et activité -->
+    <!-- Meetings -->
+    <div v-if="currentCategory === 'meeting'">
+      <meeting-find-list
+        :project-id="projectId"
+        :organization-id="organizationId"
+        @select="onSelectMeeting"
+      />
+    </div>
+    <!-- Project History -->
     <div v-show="currentCategory === 'history'">
       <project-history v-if="projectId" :key="projectId" :project-id="projectId" />
     </div>
@@ -55,10 +66,12 @@
 </template>
 <script>
 import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
+import MeetingFindList from "/imports/ui/meetings/MeetingFindList";
 
 export default {
   components: {
-    DashboardTaskList
+    DashboardTaskList,
+    MeetingFindList
   },
   props: {
     user: {
@@ -84,11 +97,11 @@ export default {
   },
   computed: {
     categories() {
-      const categories = [{ id: "task", text: this.$t("Tasks") }];
-      if (this.projectId) {
-        categories.push({ id: "history", text: this.$t("History") });
-      }
-      return Object.freeze(categories);
+      return Object.freeze([
+        { id: "task", text: this.$t("Tasks"), icon: "mdi-format-list-bulleted" },
+        { id: "meeting", text: this.$t("meetings.meetings"), icon: "mdi-calendar-star" },
+        this.projectId ? { id: "history", text: this.$t("History"), icon: "mdi-history" } : null
+      ]);
     },
     key() {
       return function(type) {
@@ -97,6 +110,16 @@ export default {
     }
   },
   methods: {
+    onSelectMeeting(meeting) {
+      if (!meeting) return;
+      this.$router.push({
+        name: "meetings",
+        params: {
+          projectId: meeting.projectId,
+          meetingId: meeting._id
+        }
+      });
+    },
     cssCategoryClasses(category) {
       return ["category-title", this.currentCategory === category ? "selected" : null];
     },
@@ -110,17 +133,21 @@ export default {
 
 .categories {
   display: flex;
-
+  padding: 0 4px;
+  justify-content: space-between;
   .category-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     cursor: pointer;
-    margin: 15.5px;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    margin: 12px;
     flex: 0;
-    &.selected,
-    :hover {
-      font-weight: bold;
-    }
+  }
+  .category-title.selected,
+  .category-title.selected .v-icon,
+  .category-title:hover .v-icon {
+    font-weight: bold;
+    color: black;
   }
 
 }
