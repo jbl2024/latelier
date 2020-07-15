@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import { Projects } from "/imports/api/projects/projects";
+import { Organizations } from "/imports/api/organizations/organizations";
 import moment from "moment";
 // We use project rights for meeting rights
 import {
@@ -227,24 +228,16 @@ Meetings.methods.restore = new ValidatedMethod({
 });
 
 
-const projectOrOrganizationRequired = function() {
-  if (!this.field("projectId").value && !this.field("organizationId").value) {
-    return SimpleSchema.ErrorTypes.REQUIRED;
-  }
-  return true;
-};
 Meetings.methods.findMeetings = new ValidatedMethod({
   name: "meetings.findMeetings",
   validate: new SimpleSchema({
     projectId: {
       type: String,
-      optional: true,
-      custom: projectOrOrganizationRequired
+      optional: true
     },
     organizationId: {
       type: String,
-      optional: true,
-      custom: projectOrOrganizationRequired
+      optional: true
     },
     dates: {
       type: Array,
@@ -276,9 +269,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     perPage: {
       type: Number,
       optional: true
+    },
+    withRelated: {
+      type: Boolean,
+      optional: true,
+      defaultValue: false
     }
   }).validator(),
-  run({ projectId, organizationId, dates, page, perPage, documentsIds }) {
+  run({ projectId, organizationId, dates, page, perPage, documentsIds, withRelated }) {
     if (projectId) {
       checkCanReadProject(projectId);
     }
@@ -333,6 +331,33 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         startDate: -1
       }
     }).fetch();
+
+
+    // load associated objects and assign them to meetings
+    const projects = {};
+    const organizations = {};
+    if (withRelated === true) {
+      data.forEach((meeting) => {
+        let project = projects[meeting.projectId];
+        if (!project) {
+          projects[meeting.projectId] = Projects.findOne({ _id: meeting.projectId });
+          project = projects[meeting.projectId];
+        }
+        if (project) {
+          meeting.project = project;
+          let organization = organizations[project.organizationId];
+          if (!organization) {
+            organizations[project.organizationId] = Organizations.findOne({
+              _id: project.organizationId
+            });
+            organization = organizations[project.organizationId];
+          }
+          if (organization) {
+            meeting.organization = organization;
+          }
+        }
+      });
+    }
     return {
       rowsPerPage: perPage,
       totalItems: count,

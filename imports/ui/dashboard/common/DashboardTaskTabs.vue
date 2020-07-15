@@ -36,7 +36,7 @@
       <v-tab>{{ $t("Late") }}</v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
-          :key="key('recent')"
+          :key="key('task-list-recent')"
           type="recent"
           :organization-id="organizationId"
           :project-id="projectId"
@@ -44,7 +44,7 @@
       </v-tab-item>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
-          :key="key('assignedToMe')"
+          :key="key('task-list-assignedToMe')"
           type="assignedToMe"
           :organization-id="organizationId"
           :project-id="projectId"
@@ -52,7 +52,7 @@
       </v-tab-item>
       <v-tab-item :transition="false" :reverse-transition="false">
         <dashboard-task-list
-          :key="key('late')"
+          :key="key('task-list-late')"
           type="late"
           empty-illustration="celebration"
           :organization-id="organizationId"
@@ -70,6 +70,7 @@
       <v-tab>{{ $t("Today") }}</v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <meeting-find-list
+          :key="key('meeting-list-today')"
           :project-id="projectId"
           :organization-id="organizationId"
           type="today"
@@ -125,7 +126,7 @@ export default {
     },
     key() {
       return function(type) {
-        return [this.projectId, this.organizationId, type].filter((part) => part).join("-");
+        return [type, this.projectId, this.organizationId].filter((part) => part).join("-");
       };
     }
   },

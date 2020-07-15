@@ -59,7 +59,8 @@ export default {
       const baseParams = {
         projectId: this.projectId,
         organizationId: this.organizationId,
-        page: this.page
+        page: this.page,
+        withRelated: true
       };
       if (this.type === "today") {
         return { ...baseParams,
@@ -68,10 +69,13 @@ export default {
           ] };
       }
       return baseParams;
+    },
+    refreshParams() {
+      return [this.projectId, this.organizationId, this.page];
     }
   },
   watch: {
-    page: {
+    refreshParams: {
       immediate: true,
       handler() {
         this.find();
