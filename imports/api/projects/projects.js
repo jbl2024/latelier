@@ -96,7 +96,14 @@ Projects.methods.create = new ValidatedMethod({
     projectType: { type: String },
     projectGroupId: { type: String, optional: true },
     state: { type: String },
-    accessRights: { type: String, optional: true }
+    accessRights: { type: String, optional: true },
+    features: {
+      type: Array,
+      optional: true
+    },
+    "features.$": {
+      type: String
+    }
   }).validator(),
   run({
     organizationId,
@@ -104,7 +111,8 @@ Projects.methods.create = new ValidatedMethod({
     projectType,
     projectGroupId,
     state,
-    accessRights
+    accessRights,
+    features
   }) {
     checkLoggedIn();
     const currentUserId = Meteor.userId();
@@ -115,7 +123,8 @@ Projects.methods.create = new ValidatedMethod({
       state,
       createdAt: new Date(),
       createdBy: currentUserId,
-      accessRights
+      accessRights,
+      features
     });
     Meteor.call("projects.addMember", {
       projectId,

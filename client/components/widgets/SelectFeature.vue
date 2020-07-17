@@ -42,10 +42,6 @@
 <script>
 export default {
   props: {
-    projectId: {
-      type: String,
-      default: ""
-    },
     active: Boolean,
     features: {
       type: Array,

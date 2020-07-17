@@ -17,7 +17,6 @@
     />
     <select-feature
       :active.sync="showSelectFeature"
-      :project-id="project._id"
       :features="features"
       @select="onSelectFeature"
     />

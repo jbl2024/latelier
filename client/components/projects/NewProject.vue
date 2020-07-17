@@ -1,5 +1,10 @@
 <template>
   <div class="new-project">
+    <select-feature
+      :active.sync="showSelectFeature"
+      :features="features"
+      @select="onSelectFeature"
+    />
     <generic-dialog
       v-model="showDialog"
       max-width="420"
@@ -62,6 +67,31 @@
                     </v-list-item-action>
                   </v-list-item>
                 </v-list>
+                <v-subheader>
+                  {{ $t("Features") }}
+                  <v-btn text icon @click="showSelectFeature = true">
+                    <v-icon>mdi-plus</v-icon>
+                  </v-btn>
+                </v-subheader>
+                <v-list v-if="projectFeatures.length > 0" class="elevation-1">
+                  <v-list-item v-for="feature in projectFeatures" :key="feature.name">
+                    <v-list-item-avatar v-if="feature.icon">
+                      <v-icon>
+                        {{ feature.icon }}
+                      </v-icon>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ feature.text }}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn text icon @click.stop="removeFeature(feature.name)">
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
               </v-col>
             </v-row>
           </v-container>
@@ -94,6 +124,7 @@ export default {
   data() {
     return {
       showDialog: false,
+      showSelectFeature: false,
       projectType: "kanban",
       projectState: ProjectStates.DEVELOPMENT,
       allowOrganization: true,
@@ -102,8 +133,20 @@ export default {
       nameRules: [
         (v) => !!v || this.$t("Name is mandatory"),
         (v) => v.length > 1 || this.$t("Name is too short")
-      ]
+      ],
+      features: Object.freeze([
+        { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
+        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" }
+      ]),
+      selectedFeatures: []
     };
+  },
+  computed: {
+    projectFeatures() {
+      return this.selectedFeatures.map((
+        feature
+      ) => this.features.find((feat) => feat.name === feature));
+    }
   },
   methods: {
     open() {
@@ -111,6 +154,11 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    onSelectFeature(feature) {
+      if (!this.selectedFeatures.includes(feature)) {
+        this.selectedFeatures.push(feature);
+      }
     },
     create() {
       Meteor.call(
@@ -123,7 +171,8 @@ export default {
           state: this.projectState,
           accessRights: this.allowOrganization
             ? ProjectAccessRights.ORGANIZATION
-            : ProjectAccessRights.PRIVATE
+            : ProjectAccessRights.PRIVATE,
+          features: this.selectedFeatures
         },
         (error, result) => {
           if (error) {
