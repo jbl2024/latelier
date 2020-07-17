@@ -23,6 +23,7 @@
         :key="selectedMeetingId"
         :is-shown.sync="showEditMeeting"
         :project="currentProject"
+        :organization-id="organizationId"
         :meeting="selectedMeeting"
         :projects="projects"
         @created="refresh"

@@ -325,7 +325,12 @@ export default {
       return this.meeting?.projectId ? this.meeting.projectId : null;
     },
     currentProject() {
-      if (this.organizationId) return this.selectedProject;
+      if (this.organizationId) {
+        if (this.isNewMeeting) return this.selectedProject;
+        if (this.organizationId && this.projects.length) {
+          return this.projects.find((p) => this.meeting.projectId === p._id);
+        }
+      }
       return this.project;
     },
     isValid() {
