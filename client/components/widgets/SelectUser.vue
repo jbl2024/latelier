@@ -14,7 +14,12 @@
         </v-card-title>
         <v-divider />
         <div>
-          <v-tabs v-if="active" ref="tabs" class="select-user-tabs" grow>
+          <v-tabs 
+            v-if="active"
+            ref="tabs"
+            class="select-user-tabs"
+            grow
+          >
             <v-tabs-slider color="accent" />
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
@@ -25,7 +30,11 @@
             <v-tab v-if="!hideAdmin && isAdmin">
               {{ $t("Find") }}
             </v-tab>
-            <v-tab-item v-if="!hideProject && project" class="pa-4">
+            <v-tab-item 
+              v-if="!hideProject && project"
+              class="pa-4"
+              :transition="false" :reverse-transition="false"
+            >
               <div class="flex-container">
                 <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
@@ -59,7 +68,11 @@
                 </v-list>
               </div>
             </v-tab-item>
-            <v-tab-item v-if="project && project.organizationId" class="pa-4">
+            <v-tab-item
+              v-if="project && project.organizationId"
+              class="pa-4"
+              :transition="false" :reverse-transition="false"
+            >
               <div class="flex-container">
                 <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
                   <v-text-field
@@ -93,7 +106,10 @@
                 </v-list>
               </div>
             </v-tab-item>
-            <v-tab-item v-if="isAdmin" class="pa-4">
+            <v-tab-item 
+              v-if="isAdmin" class="pa-4"
+              :transition="false" :reverse-transition="false"
+            >
               <div class="flex-container">
                 <div class="flex0">
                   <v-text-field
@@ -239,7 +255,6 @@ export default {
   },
   data() {
     return {
-      selectedTab: 0,
       search: "",
       searchProjectUsers: "",
       searchOrganizationUsers: "",
@@ -284,7 +299,6 @@ export default {
       immediate: true,
       handler() {
         this.selectedUsers = [];
-        this.selectedTabs = [];
       }
     },
     project: {
