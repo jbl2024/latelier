@@ -10,11 +10,11 @@
           app
           clipped
         >
-          <dashboard-task-tabs
+          <dashboard-tabs
             v-if="currentUser"
             :user="currentUser"
-            :project-id="currentProjectId"
-            :organization-id="currentOrganizationId"
+            :project="currentProject"
+            :organization="currentOrganization"
           />
         </v-navigation-drawer>
         <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
@@ -73,14 +73,14 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
+import DashboardTabs from "/imports/ui/dashboard/common/DashboardTabs";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
     TopBar,
     NavDrawer,
-    DashboardTaskTabs,
+    DashboardTabs,
     MainMenu
   },
   data() {

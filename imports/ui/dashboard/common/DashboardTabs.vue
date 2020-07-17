@@ -61,7 +61,7 @@
     </v-tabs>
     <!-- Meetings -->
     <v-tabs
-      v-if="currentCategory === 'meeting'"
+      v-if="currentCategory === 'meeting' && features.includes('meetings')"
       v-model="meetingTab"
       v-scroll:[scrollTarget]="onScroll"
       :class="tabsShouldStick ? 'sticky-tabs' : null"
@@ -98,12 +98,12 @@ export default {
       type: Object,
       default: null
     },
-    organizationId: {
-      type: String,
+    organization: {
+      type: Object,
       default: null
     },
-    projectId: {
-      type: String,
+    project: {
+      type: Object,
       default: null
     }
   },
@@ -117,10 +117,28 @@ export default {
     };
   },
   computed: {
+    organizationId() {
+      return this.organization?._id ? this.organization._id : null;
+    },
+    projectId() {
+      return this.project?._id ? this.project._id : null;
+    },
+    features() {
+      if (this.project?.features) {
+        return this.project.features;
+      } if (this.organization?.features) {
+        return this.organization?.features;
+      // Home
+      } if (!this.project && !this.organization) {
+        return ["meetings"];
+      }
+      return [];
+    },
     categories() {
       return Object.freeze([
         { id: "task", text: this.$t("Tasks"), icon: "mdi-format-list-bulleted" },
-        { id: "meeting", text: this.$t("meetings.meetings"), icon: "mdi-calendar-star" },
+        this.features.includes("meetings")
+          ? { id: "meeting", text: this.$t("meetings.meetings"), icon: "mdi-calendar-star" } : null,
         this.projectId ? { id: "history", text: this.$t("History"), icon: "mdi-history" } : null
       ].filter((cat) => cat !== null));
     },
