@@ -67,6 +67,8 @@
                     </v-list-item-action>
                   </v-list-item>
                 </v-list>
+              </v-col>
+              <v-col cols="12">
                 <v-subheader>
                   {{ $t("Features") }}
                   <v-btn text icon @click="showSelectFeature = true">
