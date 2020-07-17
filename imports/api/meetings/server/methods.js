@@ -324,7 +324,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       query["documents.documentId"] = { $in: documentsIds };
     }
     const count = Meetings.find(query).count();
-    const data = Meetings.find(query, {
+    let data = Meetings.find(query, {
       skip,
       limit: perPage,
       sort: {
@@ -332,6 +332,16 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }).fetch();
 
+    if (!projectId) {
+      data = data.filter((meeting) => {
+        try {
+          checkCanReadProject(meeting.projectId);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      });
+    }
 
     // load associated objects and assign them to meetings
     const projects = {};
