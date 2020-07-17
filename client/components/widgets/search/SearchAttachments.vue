@@ -4,6 +4,7 @@
     <attachments
       :attachments="attachments"
       empty-illustration="empty"
+      with-meetings
     />
     <div class="text-xs-center">
       <v-pagination

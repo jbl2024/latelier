@@ -30,6 +30,7 @@
       <attachments
         :attachments="attachments"
         can-delete
+        with-meetings
         class="list"
       >
         <template #list-header>

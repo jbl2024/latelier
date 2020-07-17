@@ -58,9 +58,8 @@
                       {{ attachment.project.name }}
                     </span>
                   </v-list-item-subtitle>
-                  <!-- v-if="hasTask(attachment) || attachmentMeetings(attachment).length" -->
                   <v-list-item-subtitle
-                    v-if="hasTask(attachment)"
+                    v-if="hasTask(attachment) || attachmentMeetings(attachment).length"
                     @click.stop
                   >
                     <v-chip-group>
@@ -87,7 +86,6 @@
                           {{ getTask(attachment).name }}
                         </router-link>
                       </v-chip>
-                      <!--
                       <template v-if="attachmentMeetings(attachment).length">
                         <v-chip
                           v-for="meeting in attachmentMeetings(attachment)"
@@ -112,7 +110,7 @@
                             {{ meeting.name }}
                           </router-link>
                         </v-chip>
-                      </template> -->
+                      </template>
                     </v-chip-group>
                   </v-list-item-subtitle>
                 </v-list-item-content>
@@ -207,12 +205,17 @@ export default {
     params: {
       type: Object,
       default: null
+    },
+    withMeetings: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
       page: 1,
       selectedAttachmentsIds: [],
+      meetings: [],
       pagination: {
         totalItems: 0,
         rowsPerPage: 0,
@@ -234,6 +237,15 @@ export default {
         page: this.page,
         perPage: this.perPage,
         ...this.params };
+    },
+    attachmentMeetings() {
+      return function(attachment) {
+        if (!this.meetings || !Array.isArray(this.meetings)) return [];
+        return this.meetings.filter((meeting) => {
+          const documentsIds = meeting.documents.map((doc) => doc.documentId);
+          return documentsIds.includes(attachment._id);
+        }).filter((m) => m);
+      };
     }
   },
   watch: {
@@ -247,6 +259,14 @@ export default {
     },
     page() {
       this.fetchAttachments();
+    },
+    attachments: {
+      immediate: true,
+      handler() {
+        if (this.withMeetings) {
+          this.fetchMeetings();
+        }
+      }
     },
     fetch: {
       immediate: true,
@@ -264,11 +284,22 @@ export default {
         this.pagination.totalItems = result.totalItems;
         this.pagination.rowsPerPage = result.rowsPerPage;
         this.pagination.totalPages = result.totalPages;
-        this.$emit("update:attachments", Array.isArray(result?.data) ? result.data : []);
+        const attachments = Array.isArray(result?.data) ? result.data : [];
+        this.$emit("update:attachments", attachments);
         // this.attachmentCount = result.totalItems;
       }, (error) => {
         this.$notifyError(error);
       });
+    },
+    fetchMeetings() {
+      if (!this.attachments || !Array.isArray(this.attachments)) return;
+      const attachmentsIds = this.attachments.map(((a) => a._id));
+      Api.call("meetings.findMeetings", {
+        projectId: this.projectId,
+        documentsIds: attachmentsIds
+      }).then((result) => {
+        this.meetings = Array.isArray(result?.data) ? result.data : [];
+      }).catch((error) => this.$notifyError(error));
     },
     clickAttachment(attachment) {
       if (this.itemAction === "link") {
