@@ -11,10 +11,10 @@
       @select="onSelectAttachments"
     />
     <select-user
-      :project="project"
+      v-if="currentProject"
+      :project="currentProject"
       :active.sync="showSelectAttendees"
-      :hide-organization="!organizationId"
-      :hide-project="!project"
+      :hide-organization="true"
       :multiple="true"
       :is-admin="canManageProject()"
       @select="onSelectAttendees"
@@ -322,6 +322,10 @@ export default {
       if (this.canSelectProject) return selectedProjectId;
       if (this.project?._id) return this.project._id;
       return this.meeting?.projectId ? this.meeting.projectId : null;
+    },
+    currentProject() {
+      if (this.organizationId) return this.selectedProject;
+      return this.project;
     },
     isValid() {
       const hasDate = Boolean(this.date);
