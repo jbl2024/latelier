@@ -175,6 +175,7 @@ export default {
         },
         {
           id: "organization-meetings",
+          feature: "meetings",
           title: this.$t("meetings.meetings"),
           icon: "mdi-calendar-star",
           to: {
@@ -191,7 +192,13 @@ export default {
             params: { organizationId: this.organizationId }
           }
         }
-      ];
+      ].filter((item) => {
+        if (item.feature) {
+          return Array.isArray(this.organization?.features)
+          && this.organization.features.includes(item.feature);
+        }
+        return true;
+      });
       return menuItems;
     },
     projectMenuItems() {

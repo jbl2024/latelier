@@ -1,5 +1,5 @@
 import { isBasicAuth, projectAuth, meetingAuth } from "./router/check-auth";
-import { projectHasFeature } from "./router/guards";
+import { projectHasFeature, organizationHasFeature } from "./router/guards";
 import multiguard from "vue-router-multiguard";
 
 import NotFound from "/imports/ui/pages/NotFound/NotFound.vue";
@@ -266,7 +266,7 @@ export default [
   {
     path: "/organizations-meetings/:organizationId",
     name: "organization-meetings",
-    beforeEnter: multiguard([isBasicAuth]),
+    beforeEnter: multiguard([isBasicAuth, organizationHasFeature("meetings")]),
     component: async () => (await import("/imports/ui/meetings/MeetingsDashboard.vue")).default,
     props: true,
     meta: {

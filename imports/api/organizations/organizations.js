@@ -315,3 +315,32 @@ Organizations.methods.removeAdmin = new ValidatedMethod({
     });
   }
 });
+
+Organizations.methods.getFeatures = new ValidatedMethod({
+  name: "organizations.getFeatures",
+  validate: new SimpleSchema({
+    organizationId: { type: String }
+  }).validator(),
+  run({ organizationId }) {
+    checkLoggedIn();
+    const projectsQuery = {
+      organizationId,
+      deleted: { $ne: true }
+    };
+    const projects = Projects.find(projectsQuery, {
+      fields: {
+        features: 1
+      }
+    }).fetch();
+    if (!projects || !Array.isArray(projects)) return [];
+    const features = {};
+    projects.forEach((project) => {
+      project.features.forEach((feature) => {
+        if (!features[feature]) {
+          features[feature] = feature;
+        }
+      });
+    });
+    return Object.keys(features);
+  }
+});

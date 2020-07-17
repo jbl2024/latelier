@@ -14,3 +14,18 @@ export const projectHasFeature = (feature) => (to, from, next) => {
     }
   });
 };
+
+export const organizationHasFeature = (feature) => (to, from, next) => {
+  const { organizationId } = to.params;
+  Meteor.call("organizations.getFeatures", { organizationId }, (error, features) => {
+    features = Array.isArray(features) ? features : [];
+    if (error || !features.includes(feature)) {
+      next({
+        name: "dashboard-organization-page",
+        params: { organizationId }
+      });
+    } else {
+      next();
+    }
+  });
+};
