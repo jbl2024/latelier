@@ -111,7 +111,7 @@ import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import MeetingAttendeesList from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesList";
 import MeetingTitle from "/imports/ui/meetings/Meeting/MeetingTitle";
-import Api from "/imports/ui/api/Api";
+import Api from "/imports/api/Api";
 import Attachments from "/imports/ui/attachments/Attachments";
 
 export default {

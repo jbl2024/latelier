@@ -92,7 +92,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
-import Api from "/imports/ui/api/Api";
+import Api from "/imports/api/Api";
 
 export default {
   name: "ProjectSettingsManageUsers",

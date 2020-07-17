@@ -149,7 +149,7 @@
   </div>
 </template>
 <script>
-import Api from "/imports/ui/api/Api";
+import Api from "/imports/api/Api";
 import AttachmentsMixin from "/imports/ui/mixins/AttachmentsMixin";
 import debounce from "lodash/debounce";
 

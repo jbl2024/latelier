@@ -1,5 +1,5 @@
 
-import Api from "/imports/ui/api/Api";
+import Api from "/imports/api/Api";
 
 export default {
   namespaced: true,

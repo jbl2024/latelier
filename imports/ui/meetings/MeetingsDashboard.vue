@@ -125,7 +125,7 @@ import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/Meet
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import moment from "moment";
-import Api from "/imports/ui/api/Api";
+import Api from "/imports/api/Api";
 
 export default {
   components: {
