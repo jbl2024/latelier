@@ -24,7 +24,7 @@
             v-model="selectedAttachments"
             :attachments.sync="attachments"
             :fetch="true"
-            :search.sync="filter"
+            :search="filter"
             :per-page="5"
             item-action="select"
             :params="params"

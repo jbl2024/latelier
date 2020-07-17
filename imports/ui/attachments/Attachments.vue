@@ -229,16 +229,8 @@ export default {
         this.$emit("input", selectedAttachments);
       }
     },
-    searchInput: {
-      get() {
-        return this.search;
-      },
-      set(newSearch) {
-        this.$emit("update:search", newSearch);
-      }
-    },
     fetchParams() {
-      return { name: this.searchInput,
+      return { name: this.search,
         page: this.page,
         perPage: this.perPage,
         ...this.params };
