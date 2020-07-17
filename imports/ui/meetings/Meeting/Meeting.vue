@@ -48,7 +48,17 @@
             <!-- Documents -->
             <v-expansion-panel v-if="attachments.length > 0">
               <v-expansion-panel-header class="meeting__panel-header">
-                {{ $t("attachments.attachments") }} {{ `(${attachments.length})` }}
+                {{ $t("attachments.attachments") }}
+                <v-avatar
+                  v-if="attachments.length > 0"
+                  :size="24"
+                  color="success"
+                  class="count-icon"
+                >
+                  <span class="white--text">
+                    {{ attachments.length }}
+                  </span>
+                </v-avatar>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <attachments
@@ -60,7 +70,17 @@
             <!-- Attendees -->
             <v-expansion-panel v-if="meeting && meeting.attendees">
               <v-expansion-panel-header class="meeting__panel-header">
-                {{ $t("meetings.attendees.attendees") }} {{ `(${attendeesCount})` }}
+                {{ $t("meetings.attendees.attendees") }}
+                <v-avatar
+                  v-if="attendeesCount > 0"
+                  :size="24"
+                  color="success"
+                  class="count-icon"
+                >
+                  <span class="white--text">
+                    {{ attendeesCount }}
+                  </span>
+                </v-avatar>
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <meeting-attendees-list
@@ -214,6 +234,10 @@ export default {
 </script>
 <style lang="scss">
 .meeting {
+  .count-icon {
+    margin-left: 8px;
+    flex: 0;
+  }
   .meeting__panels,
   .meeting__content {
     margin-top: 1rem;
