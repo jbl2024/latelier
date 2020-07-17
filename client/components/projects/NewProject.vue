@@ -162,6 +162,12 @@ export default {
         this.selectedFeatures.push(feature);
       }
     },
+    removeFeature(feature) {
+      const index = this.selectedFeatures.findIndex((feat) => feat === feature);
+      if (index !== -1) {
+        this.selectedFeatures.splice(index, 1);
+      }
+    },
     create() {
       Meteor.call(
         "projects.create",
