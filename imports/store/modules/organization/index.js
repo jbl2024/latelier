@@ -30,7 +30,6 @@ export default {
       if (organization == null) {
         context.commit("updateCurrentOrganizationId", null);
         context.commit("updateCurrentOrganization", null);
-        context.commit("updateFeatures", null);
       } else {
         context.commit("clearSelectedGroup", null, { root: true });
         // Organizations features sums all related projects features
