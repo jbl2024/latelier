@@ -15,6 +15,7 @@
       :project="currentProject"
       :active.sync="showSelectAttendees"
       :hide-organization="true"
+      :hide-admin="true"
       :multiple="true"
       :is-admin="canManageProject()"
       @select="onSelectAttendees"

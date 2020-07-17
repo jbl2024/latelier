@@ -22,7 +22,7 @@
             <v-tab v-if="!hideOrganization && project && project.organizationId">
               {{ $t("Organization") }}
             </v-tab>
-            <v-tab v-if="isAdmin">
+            <v-tab v-if="!hideAdmin && isAdmin">
               {{ $t("Find") }}
             </v-tab>
             <v-tab-item v-if="!hideProject && project" class="pa-4">
@@ -217,6 +217,10 @@ export default {
       default: false
     },
     hideOrganization: {
+      type: Boolean,
+      default: false
+    },
+    hideAdmin: {
       type: Boolean,
       default: false
     },
