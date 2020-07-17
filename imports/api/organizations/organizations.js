@@ -335,11 +335,13 @@ Organizations.methods.getFeatures = new ValidatedMethod({
     if (!projects || !Array.isArray(projects)) return [];
     const features = {};
     projects.forEach((project) => {
-      project.features.forEach((feature) => {
-        if (!features[feature]) {
-          features[feature] = feature;
-        }
-      });
+      if (Array.isArray(project.features)) {
+        project.features.forEach((feature) => {
+          if (!features[feature]) {
+            features[feature] = feature;
+          }
+        });
+      }
     });
     return Object.keys(features);
   }
