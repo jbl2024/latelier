@@ -5,7 +5,7 @@
       ref="editMeeting"
       :key="currentMeeting ? currentMeeting._id : null"
       :is-shown.sync="showEditMeeting"
-      :project-id="projectId"
+      :project="currentProject"
       :meeting="currentMeeting"
       @created="refresh"
       @updated="refresh"

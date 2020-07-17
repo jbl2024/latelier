@@ -10,8 +10,6 @@
           v-if="meeting"
           :title="meeting.name"
           :color="meeting.color"
-          :documents-count="attachments.length"
-          :attendees-count="attendeesCount"
         />
       </template>
       <template v-slot:content>
@@ -54,12 +52,8 @@
               </v-expansion-panel-header>
               <v-expansion-panel-content>
                 <attachments
-                  display="list"
                   :label="$t('meetings.attachments.meetingAttachments')"
                   :attachments="attachments"
-                  hide-header
-                  read-only
-                  dense
                 />
               </v-expansion-panel-content>
             </v-expansion-panel>
@@ -69,7 +63,7 @@
                 {{ $t("meetings.attendees.attendees") }} {{ `(${attendeesCount})` }}
               </v-expansion-panel-header>
               <v-expansion-panel-content>
-                <meeting-attendees
+                <meeting-attendees-list
                   :key="meeting._id"
                   :project-id="meeting.projectId"
                   :attendees="meeting.attendees"
@@ -115,14 +109,14 @@
 <script>
 import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
-import MeetingAttendees from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendees";
+import MeetingAttendeesList from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesList";
 import MeetingTitle from "/imports/ui/meetings/Meeting/MeetingTitle";
 import Api from "/imports/ui/api/Api";
 import Attachments from "/imports/ui/attachments/Attachments";
 
 export default {
   components: {
-    MeetingAttendees,
+    MeetingAttendeesList,
     MeetingTitle,
     Attachments
   },

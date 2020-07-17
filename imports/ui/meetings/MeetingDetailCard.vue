@@ -62,11 +62,8 @@
             </h2>
             <div v-show="showDocuments" class="content documents">
               <attachments
-                display="list"
                 :label="$t('meetings.attachments.meetingAttachments')"
                 :attachments="attachments"
-                hide-header
-                read-only
               />
             </div>
           </template>

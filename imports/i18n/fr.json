@@ -363,6 +363,7 @@
     "attendees": {
       "attendees": "Participants",
       "meetingAttendees": "Participants de la réunion",
+      "selectAttendees": "Sélectionner les participants",
       "addAttendees": "Ajouter des participants",
       "isExternalAttendee": "Invité externe au projet",
       "isProjectAttendee": "Membre du projet"
@@ -397,6 +398,8 @@
     "attachments": "Documents",
     "addDescription": "Vous pouvez ajouter des documents ici ou sur une tâche",
     "addAttachments": "Ajouter des documents",
+    "importAttachments": "Importer des documents",
+    "selectAttachments": "Sélectionner des documents",
     "removeSuccess": "Document supprimé avec succès",
     "none": "Aucun document",
     "noneFound": "Aucun document trouvé"

@@ -1,5 +1,7 @@
 <template>
-  <v-list>
+  <v-list class="meeting-attendees-list">
+    <slot name="list-prepend" />
+    <!-- Attendees list -->
     <v-list-item-group
       v-model="selectedListItems"
       :multiple="multiple"
@@ -27,20 +29,46 @@
             }}
           </v-list-item-subtitle>
         </v-list-item-content>
+        <template v-if="edit">
+          <v-list-item-action @click.stop>
+            <meeting-attendee-role-selector
+              v-model="attendee.role"
+            />
+          </v-list-item-action>
+          <v-list-item-action @click.stop="$emit('remove', attendee)">
+            <v-btn icon text>
+              <v-icon color="error">
+                mdi-close
+              </v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </template>
       </v-list-item>
     </v-list-item-group>
   </v-list>
 </template>
 <script>
-import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
+import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin.js";
+import MeetingAttendeeRoleSelector from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeRoleSelector";
+import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
+import MeetingUtils from "/imports/api/meetings/utils";
 
 export default {
   components: {
+    MeetingAttendeeRoleSelector,
     MeetingAttendeeAvatar
   },
-  mixins: [MeetingAttendeeMixin],
+  mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
+    organizationId: {
+      type: String,
+      default: null
+    },
+    projectId: {
+      type: String,
+      default: null
+    },
     value: {
       type: Array,
       default() {
@@ -56,14 +84,24 @@ export default {
     multiple: {
       type: Boolean,
       default: true
+    },
+    edit: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      selectedListItems: []
+      filter: "",
+      selectedListItems: [],
+      createdAttendees: [],
+      users: []
     };
   },
   computed: {
+    isReady() {
+      return this.projectId !== null || this.organizationId !== null;
+    },
     selectedAttendees: {
       get() {
         return this.value;
@@ -74,16 +112,22 @@ export default {
     }
   },
   methods: {
-    getSelectedAttendeeIndex(attendee) {
-      return this.selectedAttendees
-        .findIndex((selectedAttendee) => selectedAttendee.attendeeId === attendee.attendeeId);
+    getAttendeeName(attendee) {
+      return MeetingUtils.getAttendeeName(attendee);
+    },
+    addNewAttendee(name) {
+      const attendee = MeetingUtils.createNewAttendee(name);
+      this.createdAttendees.push(attendee);
+      this.attendees.push(attendee);
     },
     selectAttendee(attendee) {
-      const existingIndex = this.getSelectedAttendeeIndex(attendee);
-      if (existingIndex === -1) {
-        this.selectedAttendees.push(attendee);
-      }
+      this.$emit("select", attendee);
     }
   }
 };
 </script>
+<style lang="scss" scoped>
+  .meeting-attendees-list .v-list {
+    padding: 0;
+  }
+</style>

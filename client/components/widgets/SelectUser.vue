@@ -8,7 +8,9 @@
     >
       <v-card>
         <v-card-title class="headline">
-          {{ $t("Select user") }}
+          <slot name="title">
+            {{ $t("Select user") }}
+          </slot>
         </v-card-title>
         <v-divider />
         <div>
@@ -17,7 +19,7 @@
             <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
             </v-tab>
-            <v-tab v-if="project && project.organizationId">
+            <v-tab v-if="!hideOrganization && project && project.organizationId">
               {{ $t("Organization") }}
             </v-tab>
             <v-tab v-if="isAdmin">
@@ -36,18 +38,24 @@
                   />
                 </div>
                 <v-list class="flex1" subheader>
-                  <template v-for="user in projectUsers">
-                    <v-list-item :key="user._id" @click="selectUser(user)">
-                      <v-list-item-avatar :color="isOnline(user)">
-                        <author-avatar :user-id="user" />
-                      </v-list-item-avatar>
-                      <v-list-item-content class="pointer">
-                        <v-list-item-title>
-                          {{ formatUser(user) }}
-                        </v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
+                  <v-list-item-group
+                    v-model="selectedItems"
+                    :multiple="multiple"
+                    active-class="success--text"
+                  >
+                    <template v-for="user in projectUsers">
+                      <v-list-item :key="user._id" @click="selectUser(user)">
+                        <v-list-item-avatar :color="isOnline(user)">
+                          <author-avatar :user-id="user" />
+                        </v-list-item-avatar>
+                        <v-list-item-content class="pointer">
+                          <v-list-item-title>
+                            {{ formatUser(user) }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
                 </v-list>
               </div>
             </v-tab-item>
@@ -64,22 +72,27 @@
                   />
                 </div>
                 <v-list class="flex1" subheader>
-                  <template v-for="user in organizationUsers">
-                    <v-list-item :key="user._id" @click="selectUser(user)">
-                      <v-list-item-avatar :color="isOnline(user)">
-                        <author-avatar :user-id="user" />
-                      </v-list-item-avatar>
-                      <v-list-item-content class="pointer">
-                        <v-list-item-title>
-                          {{ formatUser(user) }}
-                        </v-list-item-title>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </template>
+                  <v-list-item-group
+                    v-model="selectedItems"
+                    :multiple="multiple"
+                    active-class="success--text"
+                  >
+                    <template v-for="user in organizationUsers">
+                      <v-list-item :key="user._id" @click="selectUser(user)">
+                        <v-list-item-avatar :color="isOnline(user)">
+                          <author-avatar :user-id="user" />
+                        </v-list-item-avatar>
+                        <v-list-item-content class="pointer">
+                          <v-list-item-title>
+                            {{ formatUser(user) }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </template>
+                  </v-list-item-group>
                 </v-list>
               </div>
             </v-tab-item>
-
             <v-tab-item v-if="isAdmin" class="pa-4">
               <div class="flex-container">
                 <div class="flex0">
@@ -95,18 +108,24 @@
                 <template v-if="users.length > 0 && search.length > 0">
                   <div class="flex1">
                     <v-list subheader>
-                      <template v-for="user in users">
-                        <v-list-item :key="user._id" @click="selectUser(user)">
-                          <v-list-item-avatar :color="isOnline(user)">
-                            <author-avatar :user-id="user" />
-                          </v-list-item-avatar>
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              {{ formatUser(user) }}
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </template>
+                      <v-list-item-group
+                        v-model="selectedItems"
+                        :multiple="multiple"
+                        active-class="success--text"
+                      >
+                        <template v-for="user in users">
+                          <v-list-item :key="user._id" @click="selectUser(user)">
+                            <v-list-item-avatar :color="isOnline(user)">
+                              <author-avatar :user-id="user" />
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                              <v-list-item-title>
+                                {{ formatUser(user) }}
+                              </v-list-item-title>
+                            </v-list-item-content>
+                          </v-list-item>
+                        </template>
+                      </v-list-item-group>
                     </v-list>
                   </div>
                   <div class="flex0">
@@ -146,7 +165,10 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="closeDialog">
-            {{ this.$t("Cancel") }}
+            {{ $t("Cancel") }}
+          </v-btn>
+          <v-btn v-if="multiple" color="success" dark @click="confirmSelectUsers">
+            {{ $t("Select")}}
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -194,11 +216,19 @@ export default {
       type: Boolean,
       default: false
     },
+    hideOrganization: {
+      type: Boolean,
+      default: false
+    },
     project: {
       type: Object,
       default: () => {}
     },
     isAdmin: {
+      type: Boolean,
+      default: false
+    },
+    multiple: {
       type: Boolean,
       default: false
     }
@@ -212,6 +242,8 @@ export default {
       debouncedFilter: null,
       dfFilterProjectUsers: null,
       dfFilterOrganizationUsers: null,
+      selectedUsers: [],
+      selectedItems: [],
       users: [],
       user: null,
       showUserDetail: false,
@@ -256,6 +288,13 @@ export default {
     }
   },
   watch: {
+    active: {
+      immediate: true,
+      handler() {
+        this.selectedUsers = [];
+        this.selectedTabs = [];
+      }
+    },
     page() {
       this.findUsers();
     },
@@ -324,10 +363,17 @@ export default {
     },
 
     selectUser(user) {
-      this.$emit("update:active", false);
-      this.$emit("select", user);
+      if (this.multiple === true) {
+        this.selectedUsers.push(user);
+      } else {
+        this.$emit("update:active", false);
+        this.$emit("select", user);
+      }
     },
-
+    confirmSelectUsers() {
+      this.$emit("update:active", false);
+      this.$emit("select", this.selectedUsers);
+    },
     isEmail(email) {
       const re = /\S+@\S+\.\S+/;
       return re.test(email);

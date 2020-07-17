@@ -29,11 +29,25 @@
       <v-progress-linear v-show="isUploading" indeterminate />
       <attachments
         :attachments="attachments"
-        :meetings="meetings"
-        display="list"
+        can-delete
         class="list"
-        @add-attachment="beginUpload"
-      />
+      >
+        <template #list-header>
+          <v-subheader>
+            {{ $t('attachments.attachments') }}
+            <v-btn
+              icon
+              dark
+              small
+              color="primary"
+              @click="beginUpload"
+            >
+              <v-icon>mdi-plus</v-icon>
+            </v-btn>
+          </v-subheader>
+          <v-divider />
+        </template>
+      </attachments>
     </div>
   </div>
 </template>
@@ -43,7 +57,6 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { mapState, mapGetters } from "vuex";
 import AttachmentsComponent from "/imports/ui/attachments/Attachments";
-import Api from "/imports/ui/api/Api";
 
 export default {
   components: {
@@ -58,8 +71,7 @@ export default {
   data() {
     return {
       file: null,
-      isUploading: false,
-      meetings: []
+      isUploading: false
     };
   },
   computed: {
@@ -89,10 +101,6 @@ export default {
           { "meta.projectId": projectId },
           { sort: { "meta.taskId": 1, name: 1 } }
         ).fetch();
-
-        if (this.currentProject?._id && this.hasProjectFeature("meetings")) {
-          this.fetchMeetings(attachments);
-        }
         return attachments;
       }
     }
@@ -109,16 +117,6 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
-    fetchMeetings(attachments) {
-      if (!attachments || !Array.isArray(attachments)) return;
-      const attachmentsIds = attachments.map(((a) => a._id));
-      Api.call("meetings.findMeetings", {
-        projectId: this.projectId,
-        documentsIds: attachmentsIds
-      }).then((result) => {
-        this.meetings = Array.isArray(result?.data) ? result.data : [];
-      }).catch((error) => this.$notifyError(error));
-    },
     onUpload(e) {
       const files = e.target.files || [];
       for (let i = 0; i < files.length; i++) {

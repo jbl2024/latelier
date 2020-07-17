@@ -11,7 +11,7 @@
       <meeting-edit
         ref="newMeeting"
         :is-shown.sync="showNewMeeting"
-        :project-id="projectId"
+        :project="currentProject"
         :organization-id="organizationId"
         :meeting="newMeeting"
         :projects="projects"
@@ -22,7 +22,7 @@
         ref="editMeeting"
         :key="selectedMeetingId"
         :is-shown.sync="showEditMeeting"
-        :project-id="projectId"
+        :project="currentProject"
         :meeting="selectedMeeting"
         :projects="projects"
         @created="refresh"

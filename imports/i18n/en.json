@@ -354,6 +354,7 @@
     "attendees": {
       "attendees": "Attendees",
       "meetingAttendees": "Meeting attendees",
+      "selectAttendees": "Select attendees",
       "addAttendees": "Add attendees",
       "isExternalAttendee": "External project attendee",
       "isProjectAttendee": "Project attendee"
@@ -388,8 +389,10 @@
     "attachments": "Documents",
     "addDescription": "You can add documents here or in a task",
     "addAttachments": "Add documents",
-    "none": "No document",
+    "importAttachments": "Import documents",
+    "selectAttachments": "Select documents",
     "removeSuccess": "Document successfully removed",
+    "none": "No document",
     "noneFound": "No document found"
   }  
 }

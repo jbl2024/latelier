@@ -14,20 +14,6 @@
         </div>
       </slot>
     </div>
-    <div class="meeting-title__counts">
-      <div class="mr-2">
-        <v-icon>
-          mdi-attachment
-        </v-icon>
-        {{ documentsCount }}
-      </div>
-      <div>
-        <v-icon>
-          mdi-account-multiple
-        </v-icon>
-        {{ attendeesCount }}
-      </div>
-    </div>
   </div>
 </template>
 <script>
@@ -40,14 +26,6 @@ export default {
     color: {
       type: String,
       default: null
-    },
-    documentsCount: {
-      type: Number,
-      default: 0
-    },
-    attendeesCount: {
-      type: Number,
-      default: 0
     }
   },
   computed: {

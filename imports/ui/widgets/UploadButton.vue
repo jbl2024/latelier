@@ -1,11 +1,11 @@
 <template>
   <div>
-    <slot>
+    <slot :on="{click: beginUpload}">
       <v-btn dark @click="beginUpload">
         <v-icon left color="white">
           mdi-plus
         </v-icon>
-        {{ $t("attachments.addAttachments") }}
+        {{ $t("attachments.importAttachments") }}
       </v-btn>
     </slot>
     <input

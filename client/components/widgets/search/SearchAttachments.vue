@@ -4,9 +4,6 @@
     <attachments
       :attachments="attachments"
       empty-illustration="empty"
-      display="list"
-      hide-header
-      read-only
     />
     <div class="text-xs-center">
       <v-pagination

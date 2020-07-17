@@ -6,59 +6,167 @@
       small
       :label="$t('attachments.none')"
     />
-    <!-- List -->
-    <attachment-list
-      v-else-if="display === 'list'"
-      :search.sync="searchInput"
-      :label="label"
-      :attachments="attachments"
-      :meetings="meetings"
-      :hide-header="hideHeader"
-      :read-only="readOnly"
-      @add-attachment="addAttachment"
-    />
-    <!-- Autocomplete -->
-    <attachments-autocomplete
-      v-else-if="display === 'autocomplete'"
-      v-model="selectedAttachments"
-      :search.sync="searchInput"
-      :label="label"
-      :attachments="attachments"
-    />
+    <div
+      v-else
+      class="attachments-list"
+    >
+      <v-list
+        :two-line="twoLine"
+        subheader
+        class="list"
+      >
+        <slot name="list-header" />
+        <slot name="list-prepend" />
+        <!-- Attachments -->
+        <v-list-item-group
+          v-model="selectedAttachmentsIds"
+          :multiple="itemAction === 'select'"
+          active-class="success--text"
+        >
+          <template v-for="attachment in attachments">
+            <slot name="item" :attachment="attachment">
+              <v-list-item
+                :key="attachment._id"
+                :value="attachment._id"
+                @click="clickAttachment(attachment)"
+              >
+                <v-list-item-avatar
+                  v-if="itemAction === 'select' && isSelected(attachment)"
+                  color="success"
+                >
+                  <v-icon color="white">
+                    mdi-check
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-avatar
+                  v-else
+                  :color="getIconStyles(attachment).color"
+                >
+                  <v-icon color="white">
+                    {{ getIconStyles(attachment).icon }}
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content class="pointer">
+                  <v-list-item-title>
+                    {{ attachment.name }}
+                  </v-list-item-title>
+                  <v-list-item-subtitle v-if="attachment.project">
+                    <span class="grey--text text--darken-1 show-desktop">
+                      <template v-if="attachment.organization">
+                        {{ attachment.organization.name }} /
+                      </template>
+                      {{ attachment.project.name }}
+                    </span>
+                  </v-list-item-subtitle>
+                  <!-- v-if="hasTask(attachment) || attachmentMeetings(attachment).length" -->
+                  <v-list-item-subtitle
+                    v-if="hasTask(attachment)"
+                    @click.stop
+                  >
+                    <v-chip-group>
+                      <!-- Related tasks -->
+                      <v-chip
+                        v-if="getTask(attachment)"
+                        small
+                        color="success"
+                        dark
+                      >
+                        <v-icon small left>
+                          mdi-format-list-bulleted
+                        </v-icon>
+                        <router-link
+                          class="chip-link"
+                          :to="{
+                            name: 'project-task',
+                            params: {
+                              projectId: attachment.meta.projectId,
+                              taskId: attachment.meta.taskId
+                            }
+                          }"
+                        >
+                          {{ getTask(attachment).name }}
+                        </router-link>
+                      </v-chip>
+                      <!--
+                      <template v-if="attachmentMeetings(attachment).length">
+                        <v-chip
+                          v-for="meeting in attachmentMeetings(attachment)"
+                          :key="meeting._id"
+                          small
+                          :color="meeting.color"
+                          dark
+                        >
+                          <v-icon small left>
+                            mdi-calendar-star
+                          </v-icon>
+                          <router-link
+                            class="chip-link"
+                            :to="{
+                              name: 'meetings',
+                              params: {
+                                projectId: meeting.projectId,
+                                meetingId: meeting._id
+                              }
+                            }"
+                          >
+                            {{ meeting.name }}
+                          </router-link>
+                        </v-chip>
+                      </template> -->
+                    </v-chip-group>
+                  </v-list-item-subtitle>
+                </v-list-item-content>
+                <slot name="item-actions" :item="attachment">
+                  <template v-if="canDelete">
+                    <v-list-item-action>
+                      <v-btn
+                        icon
+                        text
+                        color="grey darken-1"
+                        @click.stop="deleteAttachment(attachment)"
+                      >
+                        <v-icon>mdi-delete</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </template>
+                </slot>
+              </v-list-item>
+            </slot>
+          </template>
+        </v-list-item-group>
+      </v-list>
+      <div
+        v-if="fetch && pagination.totalPages > 1"
+        class="text-xs-center"
+      >
+        <v-pagination
+          v-model="page"
+          :total-visible="5"
+          :length="pagination.totalPages"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
-import AttachmentsAutocomplete from "./AttachmentsAutocomplete";
-import AttachmentList from "./AttachmentsList";
+import Api from "/imports/ui/api/Api";
+import AttachmentsMixin from "/imports/ui/mixins/AttachmentsMixin";
+import debounce from "lodash/debounce";
 
 export default {
-  components: {
-    AttachmentsAutocomplete,
-    AttachmentList
-  },
+  mixins: [AttachmentsMixin],
   props: {
-    display: {
-      type: String,
-      default: "list",
-      validator: (display) => ["list", "autocomplete"].includes(display)
-    },
-    attachments: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
-    meetings: {
-      type: Array,
-      default() {
-        return [];
-      }
-    },
     emptyIllustration: {
       type: String,
       default: null
     },
     value: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    attachments: {
       type: Array,
       default() {
         return [];
@@ -72,14 +180,45 @@ export default {
       type: String,
       default: null
     },
+    fetch: {
+      type: Boolean,
+      default: false
+    },
     hideHeader: {
       type: Boolean,
       default: false
     },
-    readOnly: {
+    canDelete: {
       type: Boolean,
       default: false
+    },
+    twoLine: {
+      type: Boolean,
+      default: true
+    },
+    itemAction: {
+      type: String,
+      default: "link"
+    },
+    perPage: {
+      type: Number,
+      default: 10
+    },
+    params: {
+      type: Object,
+      default: null
     }
+  },
+  data() {
+    return {
+      page: 1,
+      selectedAttachmentsIds: [],
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 0,
+        totalPages: 0
+      }
+    };
   },
   computed: {
     selectedAttachments: {
@@ -97,17 +236,91 @@ export default {
       set(newSearch) {
         this.$emit("update:search", newSearch);
       }
+    },
+    fetchParams() {
+      return { name: this.searchInput,
+        page: this.page,
+        perPage: this.perPage,
+        ...this.params };
+    }
+  },
+  watch: {
+    selectedAttachments(attachments) {
+      this.selectedAttachmentsIds = attachments.map((a) => a._id);
+    },
+    search: {
+      handler: debounce(function() {
+        this.fetchAttachments();
+      }, 300)
+    },
+    page() {
+      this.fetchAttachments();
+    },
+    fetch: {
+      immediate: true,
+      handler(newVal) {
+        if (newVal === true) {
+          this.fetchAttachments();
+        }
+      }
     }
   },
   methods: {
+    fetchAttachments() {
+      if (!this.fetch) return;
+      Api.call("attachments.find", this.fetchParams).then((result) => {
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.$emit("update:attachments", Array.isArray(result?.data) ? result.data : []);
+        // this.attachmentCount = result.totalItems;
+      }, (error) => {
+        this.$notifyError(error);
+      });
+    },
+    clickAttachment(attachment) {
+      if (this.itemAction === "link") {
+        this.goToLink(attachment);
+      } else if (this.itemAction === "select") {
+        this.selectAttachment(attachment);
+      }
+    },
+    selectAttachment(attachment) {
+      const index = this.getAttachmentIndex(attachment);
+      if (index === -1) {
+        this.selectedAttachments.push(attachment);
+      } else {
+        this.selectedAttachments.splice(index, 1);
+      }
+    },
+    getAttachmentIndex(attachment) {
+      return this.selectedAttachments.findIndex((a) => a._id === attachment._id);
+    },
+    isSelected(attachment) {
+      return this.getAttachmentIndex(attachment) !== -1;
+    },
+    goToLink(attachment) {
+      window.open(this.link(attachment), "_blank");
+    },
     addAttachment() {
       return this.$emit("add-attachment");
     }
   }
 };
 </script>
-<style scoped>
+<style lang="scss" scoped>
   .empty-state {
     padding: 2rem;
+  }
+
+  .attachments-list .v-list {
+    padding: 0;
+    .chip-link,
+    .link {
+      text-decoration: none;
+    }
+    .chip-link {
+      color: white;
+    }
   }
 </style>

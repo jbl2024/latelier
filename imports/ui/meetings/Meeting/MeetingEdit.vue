@@ -4,7 +4,25 @@
       :active.sync="showSelectColor"
       @select="onSelectColor"
     />
-
+    <select-attachments
+      :value="documents"
+      :active.sync="showSelectDocuments"
+      :project-id="currentProjectId"
+      @select="onSelectAttachments"
+    />
+    <select-user
+      :project="project"
+      :active.sync="showSelectAttendees"
+      :hide-organization="!organizationId"
+      :hide-project="!project"
+      :multiple="true"
+      :is-admin="canManageProject()"
+      @select="onSelectAttendees"
+    >
+      <template #title>
+        {{ $t("meetings.attendees.selectAttendees") }}
+      </template>
+    </select-user>
     <select-project
       v-if="canSelectProject"
       v-model="showSelectProject"
@@ -21,8 +39,6 @@
         <meeting-title
           :title="computedTitle"
           :color="color"
-          :documents-count="documents.length"
-          :attendees-count="attendees.length"
           @click-color="showSelectColor = true"
         />
       </template>
@@ -55,7 +71,7 @@
             :location.sync="location"
             :start-hour.sync="startHour"
             :end-hour.sync="endHour"
-            :project.sync="project"
+            :project.sync="selectedProject"
             :can-select-project="canSelectProject"
             @show-select-project="showSelectProject = true"
             @show-select-date="showSelectDate = true"
@@ -65,17 +81,123 @@
           />
           <template v-if="currentProjectId">
             <!-- Attendees -->
-            <meeting-attendees
-              v-model="attendees"
-              :project-id="currentProjectId"
-              display="combobox"
-              class="meeting-edit__attendees"
-            />
+            <div class="meeting-edit__attendees">
+              <div
+                class="meeting-edit__header"
+                @click="showAttendeesSection = !showAttendeesSection"
+              >
+                <div class="meeting-edit__header-title">
+                  <b>
+                    {{ $t("meetings.attendees.attendees") }}
+                  </b>
+                  <v-avatar
+                    v-if="attendees.length > 0"
+                    :size="24"
+                    color="success"
+                  >
+                    <span class="white--text">
+                      {{ attendees.length }}
+                    </span>
+                  </v-avatar>
+                </div>
+                <v-icon :class="['meeting-edit__chevron', showAttendeesSection ? 'active' : null]">
+                  mdi-chevron-down
+                </v-icon>
+              </div>
+              <v-divider class="my-2" />
+              <div v-show="showAttendeesSection">
+                <meeting-attendees-list
+                  :attendees="attendees"
+                  :project-id="currentProjectId"
+                  edit
+                  @remove="removeAttendee"
+                >
+                  <template #list-prepend>
+                    <v-list-item-group>
+                      <v-list-item @click.stop="showSelectAttendees = true">
+                        <v-list-item-avatar>
+                          <v-avatar :color="color">
+                            <v-icon color="white" dark>
+                              mdi-plus
+                            </v-icon>
+                          </v-avatar>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ $t("meetings.attendees.addAttendees") }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </template>
+                </meeting-attendees-list>
+              </div>
+            </div>
+
             <!-- Documents -->
-            <meeting-documents
-              v-model="documents"
-              :project-id="currentProjectId"
-            />
+            <div class="meeting-edit__documents">
+              <div class="meeting-edit__header"
+                   @click="showDocumentsSection = !showDocumentsSection"
+              >
+                <div class="meeting-edit__header-title">
+                  <b>
+                    {{ $t('attachments.attachments') }}
+                  </b>
+                  <v-avatar
+                    v-if="documents.length > 0"
+                    :size="24"
+                    color="success"
+                  >
+                    <span class="white--text">
+                      {{ documents.length }}
+                    </span>
+                  </v-avatar>
+                </div>
+                <v-icon :class="['meeting-edit__chevron', showDocumentsSection ? 'active' : null]">
+                  mdi-chevron-down
+                </v-icon>
+              </div>
+              <v-divider class="my-2" />
+              <div v-show="showDocumentsSection">
+                <attachments
+                  :attachments.sync="documents"
+                  :label="$t('meetings.attachments.meetingAttachments')"
+                  :two-line="false"
+                  :per-page="4"
+                >
+                  <template #list-prepend>
+                    <v-list-item-group>
+                      <v-list-item @click.stop="showSelectDocuments = true">
+                        <v-list-item-avatar>
+                          <v-avatar :color="color">
+                            <v-icon color="white" dark>
+                              mdi-plus
+                            </v-icon>
+                          </v-avatar>
+                        </v-list-item-avatar>
+                        <v-list-item-content>
+                          <v-list-item-title>
+                            {{ $t("attachments.addAttachments") }}
+                          </v-list-item-title>
+                        </v-list-item-content>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </template>
+                  <template #item-actions="props">
+                    <v-list-item-action>
+                      <v-btn
+                        icon
+                        text
+                        color="error"
+                        @click.stop="removeDocument(props.item)"
+                      >
+                        <v-icon>mdi-close</v-icon>
+                      </v-btn>
+                    </v-list-item-action>
+                  </template>
+                </attachments>
+              </div>
+            </div>
           </template>
         </v-form>
       </template>
@@ -108,28 +230,31 @@
 
 <script>
 import MeetingInfos from "./MeetingInfos";
-import MeetingAttendees from "./MeetingAttendees/MeetingAttendees";
-import MeetingDocuments from "./MeetingDocuments/MeetingDocuments";
+import MeetingAttendeesList from "./MeetingAttendees/MeetingAttendeesList";
 import MeetingTitle from "./MeetingTitle";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
+import SelectAttachments from "/imports/ui/attachments/SelectAttachments.vue";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin";
 import MeetingUtils from "/imports/api/meetings/utils";
+import { Permissions } from "/imports/api/permissions/permissions";
+import Attachments from "/imports/ui/attachments/Attachments";
 import Api from "/imports/ui/api/Api";
 
 export default {
   components: {
     MeetingInfos,
-    MeetingAttendees,
-    MeetingDocuments,
+    MeetingAttendeesList,
     MeetingTitle,
-    SelectHourRange
+    SelectHourRange,
+    SelectAttachments,
+    Attachments
   },
   mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
-    projectId: {
-      type: String,
+    project: {
+      type: Object,
       default: null
     },
     organizationId: {
@@ -160,6 +285,10 @@ export default {
       showSelectHourRange: false,
       showSelectColor: false,
       showSelectProject: false,
+      showSelectAttendees: false,
+      showSelectDocuments: false,
+      showAttendeesSection: true,
+      showDocumentsSection: true,
       valid: false,
       agenda: null,
       color: null,
@@ -170,7 +299,7 @@ export default {
       date: null,
       startHour: null,
       endHour: null,
-      project: null,
+      selectedProject: null,
       attendees: [],
       documents: [],
       rules: {
@@ -189,9 +318,9 @@ export default {
       return Boolean(this.organizationId && this.isNewMeeting);
     },
     currentProjectId() {
-      const selectedProjectId = this.project?._id ? this.project?._id : null;
+      const selectedProjectId = this.selectedProject?._id ? this.selectedProject?._id : null;
       if (this.canSelectProject) return selectedProjectId;
-      if (this.projectId) return this.projectId;
+      if (this.project?._id) return this.project._id;
       return this.meeting?.projectId ? this.meeting.projectId : null;
     },
     isValid() {
@@ -254,6 +383,30 @@ export default {
     },
     close() {
       this.showDialog = false;
+    },
+    removeAttendee(attendee) {
+      const index = this.attendees.find((att) => att.attendeeId === attendee.attendeeId);
+      if (index !== -1) {
+        this.attendees.splice(index, 1);
+      }
+    },
+    removeDocument(document) {
+      const index = this.documents.findIndex((d) => d._id === document._id);
+      if (index !== -1) {
+        this.documents.splice(index, 1);
+      }
+    },
+    onSelectAttendees(users) {
+      if (!users || !Array.isArray(users)) return;
+      // Unique ids
+      // eslint-disable-next-line max-len
+      users = users.filter((currentUser, index, self) => self.findIndex((user) => user._id === currentUser._id) === index);
+      this.attendees = users.map((u) => MeetingUtils.createUserAttendee(u));
+      this.showAttendeesSection = true;
+    },
+    onSelectAttachments(attachments) {
+      this.documents = attachments;
+      this.showSelectDocuments = false;
     },
     onSelectDate(date) {
       this.date = date;
@@ -324,7 +477,13 @@ export default {
       this.$notify(this.$t("meetings.created"));
     },
     onSelectProject(project) {
-      this.project = project;
+      this.selectedProject = project;
+    },
+    canManageProject() {
+      return (
+        Permissions.isAdmin(Meteor.userId(), this.currentProjectId)
+        || Permissions.isAdmin(Meteor.userId())
+      );
     }
   }
 };
@@ -351,8 +510,24 @@ export default {
     justify-content: flex-start;
   }
   .meeting-edit__attendees {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+   margin: 10px 0;
+  }
+  .meeting-edit__header {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1rem;
+  }
+  .meeting-edit__header-title {
+    width: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .meeting-edit__chevron.active.v-icon {
+    transform: rotate(-180deg);
   }
 }
 </style>

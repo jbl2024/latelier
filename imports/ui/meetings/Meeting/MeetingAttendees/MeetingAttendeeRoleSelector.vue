@@ -40,13 +40,15 @@ export default {
     value: {
       type: String,
       default: "attendee"
-    },
-    roles: {
-      type: Array,
-      default() {
-        return [];
-      }
     }
+  },
+  data() {
+    return {
+      roles: [
+        { value: "attendee", text: this.$t("meetings.roles.attendee"), icon: "mdi-account" },
+        { value: "organizer", text: this.$t("meetings.roles.organizer"), icon: "mdi-account-edit" }
+      ]
+    };
   },
   computed: {
     selectedRole: {
