@@ -489,7 +489,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .meetings-dashboard {
   display: flex;
   min-height: 0;
@@ -534,7 +534,7 @@ export default {
 .flex0 {
   flex: 0;
   height: 100%;
-  z-index: 9;
+  z-index: 7;
 }
 
 .flex1 {
