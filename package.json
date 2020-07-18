@@ -26,7 +26,7 @@
     "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
     "linkifyjs": "^2.1.9",
-    "lodash": ">=4.17.13",
+    "lodash": ">=4.17.19",
     "meteor-node-stubs": "^1.0.0",
     "mjml": "^4.6.3",
     "mobile-drag-drop": "^2.3.0-rc.2",
