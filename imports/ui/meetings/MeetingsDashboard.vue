@@ -44,9 +44,9 @@
         <!-- Side calendar -->
         <v-col
           v-show="$vuetify.breakpoint.mdAndUp"
-          cols="12"
+          cols="3"
           sm="12"
-          md="12"
+          md="6"
           :lg="cols.aside.lg"
           :class="['aside', denseWidth ? 'lg-dense-width' : null]"
         >
@@ -71,7 +71,7 @@
         </v-col>
         <!-- Main content -->
         <v-col
-          cols="12"
+          cols="9"
           sm="12"
           :lg="cols.body.lg"
           class="body"
