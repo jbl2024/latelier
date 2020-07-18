@@ -174,16 +174,6 @@ export default {
           }
         },
         {
-          id: "organization-meetings",
-          feature: "meetings",
-          title: this.$t("meetings.meetings"),
-          icon: "mdi-calendar-star",
-          to: {
-            name: "organization-meetings",
-            params: { organizationId: this.organizationId }
-          }
-        },
-        {
           id: "organization-settings",
           title: "Paramètres",
           icon: "mdi-settings",
