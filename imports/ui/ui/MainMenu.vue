@@ -52,7 +52,7 @@
       :background-color="navigationColor"
     >
       <v-btn
-        v-for="menuItem in menuItems"
+        v-for="menuItem in bottomMenuItems"
         :key="menuItem.id"
         :value="menuItem.id"
         :to="menuItem.to"
@@ -113,6 +113,10 @@ export default {
     projectId() {
       if (!this.project) return null;
       return this.project._id;
+    },
+    bottomMenuItems() {
+      const items = this.menuItems;
+      return items.filter((item) => !item.hideBottom);
     },
     menuItems() {
       let menuItems = [];
@@ -221,6 +225,7 @@ export default {
           id: "meetings",
           feature: "meetings",
           title: this.$t("meetings.meetings"),
+          hideBottom: true,
           icon: "mdi-calendar-star",
           to: {
             name: "project-meetings",
