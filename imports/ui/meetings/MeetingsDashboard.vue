@@ -6,7 +6,7 @@
     :style="getBackgroundUrl(currentUser)"
   >
     <v-progress-linear v-if="!isReady" indeterminate />
-    <div v-else>
+    <template v-else>
       <!-- New meeting -->
       <meeting-edit
         ref="newMeeting"
@@ -36,11 +36,12 @@
         @edit-meeting="editMeeting"
       />
       <meetings-dashboard-toolbar
+        class="flex0"
         :display-type.sync="displayType"
         :display-types="displayTypes"
         @add-new-meeting="addNewMeeting"
       />
-      <v-row>
+      <v-row class="flex1">
         <!-- Side calendar -->
         <v-col
           v-show="$vuetify.breakpoint.mdAndUp"
@@ -71,7 +72,7 @@
         </v-col>
         <!-- Main content -->
         <v-col
-          cols="9"
+          cols="12"
           sm="12"
           :lg="cols.body.lg"
           class="body"
@@ -107,7 +108,7 @@
           />
         </v-col>
       </v-row>
-    </div>
+    </template>
   </div>
 </template>
 
@@ -493,8 +494,9 @@ export default {
   display: flex;
   min-height: 0;
   height: 100%;
+  width: 100%;
   flex-direction: column;
-  position: relative;
+  position: absolute;
   flex: 1;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -528,4 +530,16 @@ export default {
     }
   }
 }
+
+.flex0 {
+  flex: 0;
+  height: 100%;
+  z-index: 9;
+}
+
+.flex1 {
+  flex: 1; /* takes the remaining height of the "container" div */
+  overflow: auto; /* to scroll just the "main" div */
+}
+
 </style>
