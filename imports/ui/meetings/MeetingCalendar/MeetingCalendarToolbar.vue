@@ -32,14 +32,14 @@
         {{ $t("calendar.today") }}
       </v-btn>
     </div>
-    <div class="center">
+    <div v-if="$vuetify.breakpoint.mdAndUp" class="center">
       <div v-if="currentDateInterval" class="current-date-interval">
         <span>
           {{ currentDateInterval }}
         </span>
       </div>
     </div>
-    <div class="right-side">
+    <div v-if="$vuetify.breakpoint.mdAndUp" class="right-side">
       <div v-if="displayType !== 'month'">
         <!-- Corporate week number -->
         <v-chip label>
