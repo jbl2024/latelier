@@ -534,7 +534,7 @@ export default {
 .flex0 {
   flex: 0;
   height: 100%;
-  z-index: 7;
+  z-index: 1;
 }
 
 .flex1 {
