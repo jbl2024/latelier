@@ -31,7 +31,7 @@
                 <v-icon left>
                   mdi-chevron-left
                 </v-icon>
-                <span v-if="$vuetify.breakpoint.mdAndUp">
+                <span>
                   {{ $t("meetings.goBackToMeetings") }}
                 </span>
               </v-btn>
@@ -39,7 +39,9 @@
                 <v-icon left>
                   mdi-pencil
                 </v-icon>
-                <span>Editer</span>
+                <span>
+                  {{ $t("Edit") }}
+                </span>
               </v-btn>
             </div>
           </v-col>
@@ -68,27 +70,43 @@
         </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
+        <div class="meeting-title-header">
+          <v-btn
+            color="primary"
+            dark
+            :to="meetingsRoute"
+          >
+            <v-icon left>
+              mdi-chevron-left
+            </v-icon>
+            <span>
+              {{ $t("meetings.goBackToMeetings") }}
+            </span>
+          </v-btn>
+          <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
+            <v-icon left>
+              mdi-pencil
+            </v-icon>
+            <span>
+              {{ $t("Edit") }}
+            </span>
+          </v-btn>
+        </div>
         <div class="list">
           <h1 class="meeting-main-title">
-            <v-btn
-              v-if="$vuetify.breakpoint.smAndDown"
-              color="primary"
-              icon @click="editMeeting"
-            >
-              <v-icon>
-                mdi-pencil
-              </v-icon>
-            </v-btn>
             {{ meeting.name }}
           </h1>
+
           <div
             v-if="$vuetify.breakpoint.smAndDown"
-            class="meeting-date"
+            class="meeting-main-subtitle"
           >
-            <v-icon class="mr-2">
-              mdi-clock
-            </v-icon>
-            {{ meetingInterval }}
+            <div class="meeting-date">
+              <v-icon class="mr-2">
+                mdi-clock
+              </v-icon>
+              {{ meetingInterval }}
+            </div>
           </div>
           <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
@@ -451,23 +469,25 @@ export default {
 
 .meeting-main-title {
   margin: 1rem 0;
+  line-height: normal;
+}
+.meeting-main-subtitle {
+  margin-bottom: 1rem;
 }
 
 .meeting-date,
 .meeting-date-header {
   display: flex;
+  align-items: center;
   font-size: 14px;
   height: 100%;
 }
-.meeting-date-header {
-  align-items: center;
-  justify-content: flex-end;
-}
-
 .meeting-date {
   margin-bottom: 1rem;
 }
-
+.meeting-date-header {
+  justify-content: flex-end;
+}
 .editor {
   color: black;
   font-size: 16px;
