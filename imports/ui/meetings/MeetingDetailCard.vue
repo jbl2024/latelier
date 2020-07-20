@@ -35,6 +35,12 @@
                   {{ $t("meetings.goBackToMeetings") }}
                 </span>
               </v-btn>
+              <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
+                <v-icon left>
+                  mdi-pencil
+                </v-icon>
+                <span>Editer</span>
+              </v-btn>
             </div>
           </v-col>
           <v-col
@@ -63,13 +69,17 @@
       </v-toolbar>
       <v-card-text class="flex1">
         <div class="list">
-          <h1>
-            {{ meeting.name }}
-            <v-btn color="primary" icon @click="editMeeting">
+          <h1 class="meeting-main-title">
+            <v-btn
+              v-if="$vuetify.breakpoint.smAndDown"
+              color="primary"
+              icon @click="editMeeting"
+            >
               <v-icon>
                 mdi-pencil
               </v-icon>
             </v-btn>
+            {{ meeting.name }}
           </h1>
           <div
             v-if="$vuetify.breakpoint.smAndDown"
@@ -437,6 +447,10 @@ export default {
 <style lang="scss" scoped>
 .meeting-detail-card h2 {
   margin-bottom: 24px;
+}
+
+.meeting-main-title {
+  margin: 1rem 0;
 }
 
 .meeting-date,
