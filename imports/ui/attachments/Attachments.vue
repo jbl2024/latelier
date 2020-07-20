@@ -98,17 +98,15 @@
                             mdi-calendar-star
                           </v-icon>
                           <router-link
+                            v-if="meeting.to"
                             class="chip-link"
-                            :to="{
-                              name: 'meetings',
-                              params: {
-                                projectId: meeting.projectId,
-                                meetingId: meeting._id
-                              }
-                            }"
+                            :to="meeting.to"
                           >
                             {{ meeting.name }}
                           </router-link>
+                          <span v-else>
+                            {{ meeting.name }}
+                          </span>
                         </v-chip>
                       </template>
                     </v-chip-group>
@@ -216,6 +214,7 @@ export default {
       page: 1,
       selectedAttachmentsIds: [],
       meetings: [],
+      maxMeetingsPerRow: 5,
       pagination: {
         totalItems: 0,
         rowsPerPage: 0,
@@ -239,12 +238,20 @@ export default {
         ...this.params };
     },
     attachmentMeetings() {
-      return function(attachment) {
+      return (attachment) => {
         if (!this.meetings || !Array.isArray(this.meetings)) return [];
-        return this.meetings.filter((meeting) => {
+        const meetings = this.meetings.filter((meeting) => {
           const documentsIds = meeting.documents.map((doc) => doc.documentId);
           return documentsIds.includes(attachment._id);
         }).filter((m) => m);
+        if (meetings.length > this.maxMeetingsPerRow) {
+          const otherMeetings = meetings.slice(this.maxMeetingsPerRow);
+          return meetings
+            .filter((m, index) => index < this.maxMeetingsPerRow)
+            .map(this.formatMeetingAsChip)
+            .concat([this.formatOtherMeetingsAsChip(otherMeetings)]);
+        }
+        return meetings.map(this.formatMeetingAsChip);
       };
     }
   },
@@ -315,6 +322,27 @@ export default {
       } else {
         this.selectedAttachments.splice(index, 1);
       }
+    },
+    formatMeetingAsChip(meeting) {
+      return {
+        _id: meeting._id,
+        color: meeting.color,
+        to: {
+          name: "meetings",
+          params: {
+            projectId: meeting.projectId,
+            meetingId: meeting._id
+          }
+        },
+        name: meeting.name
+      };
+    },
+    formatOtherMeetingsAsChip(otherMeetings) {
+      return {
+        _id: "others",
+        color: "indigo",
+        name: ` +${otherMeetings.length} ${this.$t("meetings.meetings")}`
+      };
     },
     getAttachmentIndex(attachment) {
       return this.selectedAttachments.findIndex((a) => a._id === attachment._id);
