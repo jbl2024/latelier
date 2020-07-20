@@ -288,8 +288,8 @@ export default {
       showSelectProject: false,
       showSelectAttendees: false,
       showSelectDocuments: false,
-      showAttendeesSection: true,
-      showDocumentsSection: true,
+      showAttendeesSection: false,
+      showDocumentsSection: false,
       valid: false,
       agenda: null,
       color: null,
@@ -357,6 +357,12 @@ export default {
       immediate: true,
       async handler() {
         this.assignMeetingProps();
+        if (!this.attendees.length) {
+          this.showAttendeesSection = true;
+        }
+        if (!this.documents.length) {
+          this.showDocumentsSection = true;
+        }
         await this.fetchSelectedDocuments();
       }
     }
