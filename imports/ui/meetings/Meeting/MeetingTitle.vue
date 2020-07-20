@@ -9,7 +9,7 @@
         @click="$emit('click-color')"
       />
       <slot name="title">
-        <div>
+        <div class="meeting-title__title">
           {{ title }}
         </div>
       </slot>
@@ -41,6 +41,9 @@ export default {
     justify-content: space-between;
     width: 100%;
     align-items: center;
+    .meeting-title__title {
+      word-break: break-word;
+    }
     .meeting-color-trigger {
       position: relative;
       border-radius: 50px;
