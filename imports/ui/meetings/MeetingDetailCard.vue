@@ -70,7 +70,10 @@
         </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
-        <div class="meeting-title-header">
+        <div 
+          v-if="$vuetify.breakpoint.smAndDown"
+          class="meeting-title-header"
+        >
           <v-btn
             color="primary"
             dark
