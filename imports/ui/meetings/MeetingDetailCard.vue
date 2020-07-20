@@ -9,6 +9,8 @@
       :project="project"
       :active.sync="showSelectUser"
       :is-admin="canManageProject()"
+      hide-organization
+      hide-admin
       @select="selectActionAssignedTo"
     />
     <v-card class="flex-container">
