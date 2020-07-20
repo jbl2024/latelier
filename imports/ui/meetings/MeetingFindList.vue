@@ -1,5 +1,5 @@
 <template>
-  <div class="meeting-page-list">
+  <div class="meeting-find-list">
     <v-progress-linear v-if="loading" indeterminate />
     <template v-else>
       <meeting-list
