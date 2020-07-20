@@ -12,8 +12,52 @@
       @select="selectActionAssignedTo"
     />
     <v-card class="flex-container">
-      <v-toolbar class="flex0" dense>
-        <rich-editor-menu-bar :editor="currentEditor" />
+      <v-toolbar class="meeting-detail-card__toolbar" dense>
+        <v-row class="meeting-detail-card__row">
+          <v-col
+            v-if="$vuetify.breakpoint.mdAndUp"
+            cols="12"
+            sm="12"
+            md="4"
+          >
+            <div class="meeting-title-header">
+              <v-btn
+                color="primary"
+                dark
+                :to="meetingsRoute"
+              >
+                <v-icon left>
+                  mdi-chevron-left
+                </v-icon>
+                <span v-if="$vuetify.breakpoint.mdAndUp">
+                  {{ $t("meetings.goBackToMeetings") }}
+                </span>
+              </v-btn>
+            </div>
+          </v-col>
+          <v-col
+            cols="12"
+            sm="12"
+            md="4"
+          >
+            <div class="editor-header">
+              <rich-editor-menu-bar :editor="currentEditor" />
+            </div>
+          </v-col>
+          <v-col
+            v-if="$vuetify.breakpoint.mdAndUp"
+            cols="12"
+            sm="12"
+            md="4"
+          >
+            <div class="meeting-date-header">
+              <v-icon class="mr-2">
+                mdi-clock
+              </v-icon>
+              {{ meetingInterval }}
+            </div>
+          </v-col>
+        </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
         <div class="list">
@@ -25,7 +69,10 @@
               </v-icon>
             </v-btn>
           </h1>
-          <div class="meeting-date">
+          <div
+            v-if="$vuetify.breakpoint.smAndDown"
+            class="meeting-date"
+          >
             <v-icon class="mr-2">
               mdi-clock
             </v-icon>
@@ -93,6 +140,7 @@
 <script>
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { mapState } from "vuex";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import debounce from "lodash/debounce";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
@@ -131,6 +179,22 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      currentUser: (state) => state.currentUser,
+      meetingsRoute(state) {
+        return state.storedRoutes["meetings-dashboard"]
+          ? state.storedRoutes["meetings-dashboard"] : this.defaultMeetingsRoute;
+      }
+    }),
+    defaultMeetingsRoute() {
+      if (!this.project?._id) return null;
+      return {
+        name: "project-meetings",
+        params: {
+          projectId: this.project._id
+        }
+      };
+    },
     selectedActionId() {
       if (!this.selectedAction?.actionId) return null;
       return this.selectedAction.actionId;
@@ -368,15 +432,23 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .meeting-detail-card h2 {
   margin-bottom: 24px;
 }
 
-.meeting-date {
+.meeting-date,
+.meeting-date-header {
   display: flex;
   font-size: 14px;
+  height: 100%;
+}
+.meeting-date-header {
   align-items: center;
+  justify-content: flex-end;
+}
+
+.meeting-date {
   margin-bottom: 1rem;
 }
 
@@ -414,9 +486,26 @@ export default {
   transform: rotate(-180deg);
 }
 
-.flex0 {
+.meeting-detail-card__toolbar {
   flex: 0;
   height: 100%;
+  .v-toolbar__content {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .meeting-title-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+
+  .editor-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
 }
 
 .flex1 {

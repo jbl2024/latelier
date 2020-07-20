@@ -254,7 +254,7 @@ export default [
     }
   },
   {
-    path: "/projects-meetings/:projectId",
+    path: "/projects-meetings/:projectId/:date?",
     name: "project-meetings",
     beforeEnter: multiguard([isBasicAuth, projectAuth, projectHasFeature("meetings")]),
     component: async () => (await import("/imports/ui/meetings/MeetingsDashboard.vue")).default,
@@ -264,7 +264,7 @@ export default [
     }
   },
   {
-    path: "/organizations-meetings/:organizationId",
+    path: "/organizations-meetings/:organizationId/:date?",
     name: "organization-meetings",
     beforeEnter: multiguard([isBasicAuth, organizationHasFeature("meetings")]),
     component: async () => (await import("/imports/ui/meetings/MeetingsDashboard.vue")).default,

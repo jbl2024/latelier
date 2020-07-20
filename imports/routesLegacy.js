@@ -49,7 +49,7 @@ const legacy = [
     }
   },
   {
-    path: "/projects-meetings/:projectId",
+    path: "/projects-meetings/:projectId/:date",
     name: "project-meetings",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: MeetingsDashboard,

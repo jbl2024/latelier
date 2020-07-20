@@ -148,6 +148,12 @@ export default {
     organizationId: {
       type: String,
       default: null
+    },
+    date: {
+      type: String,
+      default() {
+        return moment().format("YYYY-MM-DD");
+      }
     }
   },
   data() {
@@ -155,8 +161,8 @@ export default {
     return {
       denseWidth: false,
       now: now,
-      selectedDate: now,
-      pickerDate: moment(now).format("YYYY-MM"),
+      selectedDate: this.date,
+      pickerDate: this.date,
       start: now,
       end: null,
       displayType: "5days",
@@ -279,6 +285,20 @@ export default {
         if (this.active) {
           await this.refresh();
         }
+      }
+    },
+    selectedDate: {
+      immediate: true,
+      handler(date) {
+        const route = {
+          name: this.$route.name,
+          params: { ...this.$route.params, date }
+        };
+        this.$router.replace(route);
+        this.$store.dispatch("storeRoute", {
+          name: "meetings-dashboard",
+          route
+        });
       }
     },
     currentOrganization: {
@@ -448,15 +468,13 @@ export default {
         this.$notifyError(error);
       });
     },
-    selectEvent(event) {
-      Api.call("meetings.get", {
-        meetingId: event.id
-      }).then((meet) => {
-        this.selectedMeeting = meet;
-        this.showMeeting = true;
-      }).catch((error) => {
-        this.showMeeting = false;
-        this.$notifyError(error);
+    async selectEvent(event) {
+      await this.$router.push({
+        name: "meetings",
+        params: {
+          meetingId: event.id,
+          projectId: event?.project?._id
+        }
       });
     },
     refresh() {
