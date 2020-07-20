@@ -18,7 +18,7 @@
       :hide-admin="true"
       :multiple="true"
       :is-admin="canManageProject()"
-      @select="onSelectAttendees"
+      @select-multiple="onSelectAttendees"
     >
       <template #title>
         {{ $t("meetings.attendees.selectAttendees") }}
@@ -408,10 +408,19 @@ export default {
     },
     onSelectAttendees(users) {
       if (!users || !Array.isArray(users)) return;
-      // Unique ids
-      // eslint-disable-next-line max-len
-      users = users.filter((currentUser, index, self) => self.findIndex((user) => user._id === currentUser._id) === index);
-      this.attendees = users.map((u) => MeetingUtils.createUserAttendee(u));
+      const attendeesUsersIds = this.attendees.map((a) => a.userId);
+      // We add new selected users with existing attendees
+      const newUsers = Object.values(users.reduce((uniqueNewUsers, user) => {
+        if (!attendeesUsersIds.includes(user._id)
+        && !uniqueNewUsers[user._id]) {
+          uniqueNewUsers[user._id] = user;
+        }
+        return uniqueNewUsers;
+      }, {}));
+      this.attendees = this.attendees
+        .concat(
+          newUsers.map((u) => MeetingUtils.createUserAttendee(u))
+        );
       this.showAttendeesSection = true;
     },
     onSelectAttachments(attachments) {

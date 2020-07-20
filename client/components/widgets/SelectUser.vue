@@ -54,7 +54,18 @@
                   >
                     <template v-for="user in projectUsers">
                       <v-list-item :key="user._id" @click="selectUser(user)">
-                        <v-list-item-avatar :color="isOnline(user)">
+                        <v-list-item-avatar
+                          v-if="multiple && isSelected(user)"
+                          color="success"
+                        >
+                          <v-icon color="white">
+                            mdi-check
+                          </v-icon>
+                        </v-list-item-avatar>
+                        <v-list-item-avatar
+                          v-else
+                          :color="isOnline(user)"
+                        >
                           <author-avatar :user-id="user" />
                         </v-list-item-avatar>
                         <v-list-item-content class="pointer">
@@ -92,7 +103,18 @@
                   >
                     <template v-for="user in organizationUsers">
                       <v-list-item :key="user._id" @click="selectUser(user)">
-                        <v-list-item-avatar :color="isOnline(user)">
+                        <v-list-item-avatar
+                          v-if="multiple && isSelected(user)"
+                          color="success"
+                        >
+                          <v-icon color="white">
+                            mdi-check
+                          </v-icon>
+                        </v-list-item-avatar>
+                        <v-list-item-avatar
+                          v-else
+                          :color="isOnline(user)"
+                        >
                           <author-avatar :user-id="user" />
                         </v-list-item-avatar>
                         <v-list-item-content class="pointer">
@@ -299,6 +321,7 @@ export default {
       immediate: true,
       handler() {
         this.selectedUsers = [];
+        this.selectedItems = [];
       }
     },
     project: {
@@ -368,7 +391,12 @@ export default {
         }
       );
     },
-
+    getSelectedUserIndex(user) {
+      return this.selectedUsers.findIndex((u) => u._id === user._id);
+    },
+    isSelected(user) {
+      return this.getSelectedUserIndex(user) !== -1;
+    },
     calculateTotalPages() {
       if (
         this.pagination.rowsPerPage == null
@@ -388,7 +416,12 @@ export default {
 
     selectUser(user) {
       if (this.multiple === true) {
-        this.selectedUsers.push(user);
+        const index = this.getSelectedUserIndex(user);
+        if (index === -1) {
+          this.selectedUsers.push(user);
+        } else {
+          this.selectedUsers.splice(index, 1);
+        }
       } else {
         this.$emit("update:active", false);
         this.$emit("select", user);
@@ -396,7 +429,7 @@ export default {
     },
     confirmSelectUsers() {
       this.$emit("update:active", false);
-      this.$emit("select", this.selectedUsers);
+      this.$emit("select-multiple", this.selectedUsers);
     },
     isEmail(email) {
       const re = /\S+@\S+\.\S+/;
