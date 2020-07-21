@@ -30,11 +30,6 @@
         @updated="refresh"
         @removed="onRemove"
       />
-      <meeting
-        :is-shown.sync="showMeeting"
-        :meeting="selectedMeeting"
-        @edit-meeting="editMeeting"
-      />
       <meetings-dashboard-toolbar
         class="flex0"
         :display-type.sync="displayType"
@@ -125,7 +120,6 @@ import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/Meeting
 import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
-import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import moment from "moment";
 import Api from "/imports/api/Api";
 
@@ -136,7 +130,6 @@ export default {
     MeetingCalendarToolbar,
     MeetingCalendarFilters,
     MeetingCalendarDatePicker,
-    Meeting,
     MeetingEdit
   },
   mixins: [DatesMixin, BackgroundMixin],
@@ -170,7 +163,6 @@ export default {
       showNewMeeting: false,
       showEditMeeting: false,
       selectedProjects: [],
-      showMeeting: false,
       newMeeting: null,
       selectedMeeting: null,
       meetings: [],
@@ -457,17 +449,6 @@ export default {
       this.newMeeting = newMeeting;
       this.showNewMeeting = true;
     },
-    editMeeting(meeting) {
-      Api.call("meetings.get", {
-        meetingId: meeting._id
-      }).then((meet) => {
-        this.selectedMeeting = meet;
-        this.showEditMeeting = true;
-      }).catch((error) => {
-        this.showEditMeeting = false;
-        this.$notifyError(error);
-      });
-    },
     async selectEvent(event) {
       await this.$router.push({
         name: "meetings",
@@ -496,7 +477,6 @@ export default {
     },
     onRemove() {
       this.showEditMeeting = false;
-      this.showMeeting = false;
       this.refresh();
     },
     onResize() {

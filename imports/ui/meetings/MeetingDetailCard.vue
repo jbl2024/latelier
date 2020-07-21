@@ -70,7 +70,7 @@
         </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
-        <div 
+        <div
           v-if="$vuetify.breakpoint.smAndDown"
           class="meeting-title-header"
         >
