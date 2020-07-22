@@ -1,51 +1,5 @@
 <template>
   <div>
-    <select-color
-      :active.sync="showSelectColor"
-      @select="onSelectColor"
-    />
-    <select-attachments
-      :value="documents"
-      :active.sync="showSelectDocuments"
-      :project-id="currentProjectId"
-      @select="onSelectAttachments"
-    />
-    <select-user
-      v-if="currentProject"
-      :project="currentProject"
-      :active.sync="showSelectAttendees"
-      :hide-organization="true"
-      :hide-admin="true"
-      :multiple="true"
-      :is-admin="canManageProject()"
-      @select-multiple="onSelectAttendees"
-    >
-      <template #title>
-        {{ $t("meetings.attendees.selectAttendees") }}
-      </template>
-      <template #tab-append>
-        <v-tab>
-          {{ $t("meetings.attendees.external") }}
-        </v-tab>
-      </template>
-      <template #tab-item-append>
-        <v-tab-item
-          :transition="false" :reverse-transition="false"
-          class="pa-4"
-        >
-          <meeting-external-attendees
-            v-model="externalAttendees"
-            :transition="false" :reverse-transition="false"
-          />
-        </v-tab-item>
-      </template>
-    </select-user>
-    <select-project
-      v-if="canSelectProject"
-      v-model="showSelectProject"
-      :organization-id="organizationId"
-      @select="onSelectProject"
-    />
     <generic-dialog
       v-model="showDialog"
       :css-classes="['meeting-edit']"
@@ -60,6 +14,51 @@
         />
       </template>
       <template v-slot:content>
+        <select-color :active.sync="showSelectColor" @select="onSelectColor" />
+        <select-attachments
+          :value="documents"
+          :active.sync="showSelectDocuments"
+          :project-id="currentProjectId"
+          @select="onSelectAttachments"
+        />
+        <select-user
+          v-if="currentProject"
+          :project="currentProject"
+          :active.sync="showSelectAttendees"
+          :hide-organization="true"
+          :hide-admin="true"
+          :multiple="true"
+          :is-admin="canManageProject()"
+          @select-multiple="onSelectAttendees"
+        >
+          <template #title>
+            {{ $t("meetings.attendees.selectAttendees") }}
+          </template>
+          <template #tab-append>
+            <v-tab>
+              {{ $t("meetings.attendees.external") }}
+            </v-tab>
+          </template>
+          <template #tab-item-append>
+            <v-tab-item
+              :transition="false"
+              :reverse-transition="false"
+              class="pa-4"
+            >
+              <meeting-external-attendees
+                v-model="externalAttendees"
+                :transition="false"
+                :reverse-transition="false"
+              />
+            </v-tab-item>
+          </template>
+        </select-user>
+        <select-project
+          v-if="canSelectProject"
+          v-model="showSelectProject"
+          :organization-id="organizationId"
+          @select="onSelectProject"
+        />
         <select-date
           v-model="showSelectDate"
           :disable-time="true"
@@ -73,11 +72,7 @@
           :allowed-hours="allowedHours"
           @select="onSelectHourRange"
         />
-        <v-form
-          v-model="valid"
-          class="meeting-edit__form"
-          @submit.prevent
-        >
+        <v-form v-model="valid" class="meeting-edit__form" @submit.prevent>
           <!-- Main infos and dates -->
           <meeting-infos
             :rules="rules"
@@ -117,7 +112,12 @@
                     </span>
                   </v-avatar>
                 </div>
-                <v-icon :class="['meeting-edit__chevron', showAttendeesSection ? 'active' : null]">
+                <v-icon
+                  :class="[
+                    'meeting-edit__chevron',
+                    showAttendeesSection ? 'active' : null,
+                  ]"
+                >
                   mdi-chevron-down
                 </v-icon>
               </div>
@@ -153,12 +153,13 @@
 
             <!-- Documents -->
             <div class="meeting-edit__documents">
-              <div class="meeting-edit__header"
-                   @click="showDocumentsSection = !showDocumentsSection"
+              <div
+                class="meeting-edit__header"
+                @click="showDocumentsSection = !showDocumentsSection"
               >
                 <div class="meeting-edit__header-title">
                   <b>
-                    {{ $t('attachments.attachments') }}
+                    {{ $t("attachments.attachments") }}
                   </b>
                   <v-avatar
                     v-if="documents.length > 0"
@@ -170,7 +171,12 @@
                     </span>
                   </v-avatar>
                 </div>
-                <v-icon :class="['meeting-edit__chevron', showDocumentsSection ? 'active' : null]">
+                <v-icon
+                  :class="[
+                    'meeting-edit__chevron',
+                    showDocumentsSection ? 'active' : null,
+                  ]"
+                >
                   mdi-chevron-down
                 </v-icon>
               </div>
@@ -298,7 +304,22 @@ export default {
     return {
       currentTab: null,
       allowedMinutes: Object.freeze([0, 10, 15, 30, 45]),
-      allowedHours: Object.freeze([7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]),
+      allowedHours: Object.freeze([
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20
+      ]),
       showSelectDate: false,
       showSelectHourRange: false,
       showSelectColor: false,
@@ -326,9 +347,7 @@ export default {
           (v) => !!v || this.$t("Name is mandatory"),
           (v) => v.length > 1 || this.$t("Name is too short")
         ],
-        project: [
-          (v) => !!v || this.$t("meetings.pleaseSelectProject")
-        ]
+        project: [(v) => !!v || this.$t("meetings.pleaseSelectProject")]
       }
     };
   },
@@ -337,7 +356,9 @@ export default {
       return Boolean(this.organizationId && this.isNewMeeting);
     },
     currentProjectId() {
-      const selectedProjectId = this.selectedProject?._id ? this.selectedProject?._id : null;
+      const selectedProjectId = this.selectedProject?._id
+        ? this.selectedProject?._id
+        : null;
       if (this.canSelectProject) return selectedProjectId;
       if (this.project?._id) return this.project._id;
       return this.meeting?.projectId ? this.meeting.projectId : null;
@@ -367,7 +388,9 @@ export default {
       return Boolean(this.meeting?._id) === false;
     },
     computedTitle() {
-      return (this.name == null || this.name === "") ? this.$t("meetings.newMeeting") : this.name;
+      return this.name == null || this.name === ""
+        ? this.$t("meetings.newMeeting")
+        : this.name;
     }
   },
   watch: {
@@ -396,13 +419,26 @@ export default {
   },
   methods: {
     assignMeetingProps() {
-      const endDate = this.meeting?.endDate ? moment(this.meeting.endDate).format("YYYY-MM-DD HH:mm") : null;
-      const startDate = this.meeting?.startDate ? moment(this.meeting.startDate).format("YYYY-MM-DD HH:mm") : null;
+      const endDate = this.meeting?.endDate
+        ? moment(this.meeting.endDate).format("YYYY-MM-DD HH:mm")
+        : null;
+      const startDate = this.meeting?.startDate
+        ? moment(this.meeting.startDate).format("YYYY-MM-DD HH:mm")
+        : null;
       const startHour = startDate ? startDate.split(" ")[1] : null;
       const endHour = endDate ? endDate.split(" ")[1] : null;
 
       // Mass assignment
-      ["name", "attendees", "documents", "type", "description", "agenda", "color", "location"].forEach((prop) => {
+      [
+        "name",
+        "attendees",
+        "documents",
+        "type",
+        "description",
+        "agenda",
+        "color",
+        "location"
+      ].forEach((prop) => {
         if (prop in this && this.meeting && this.meeting[prop] != null) {
           this[prop] = this.meeting[prop];
         }
@@ -428,7 +464,9 @@ export default {
       this.showDialog = false;
     },
     removeAttendee(attendee) {
-      const index = this.attendees.find((att) => att.attendeeId === attendee.attendeeId);
+      const index = this.attendees.find(
+        (att) => att.attendeeId === attendee.attendeeId
+      );
       if (index !== -1) {
         this.attendees.splice(index, 1);
       }
@@ -443,18 +481,21 @@ export default {
       if (!users || !Array.isArray(users)) return;
       const attendeesUsersIds = this.attendees.map((a) => a.userId);
       // We add new selected users with existing attendees
-      const newUsers = Object.values(users.reduce((uniqueNewUsers, user) => {
-        if (!attendeesUsersIds.includes(user._id)
-        && !uniqueNewUsers[user._id]) {
-          uniqueNewUsers[user._id] = user;
-        }
-        return uniqueNewUsers;
-      }, {}));
-      this.attendees = this.attendees
-        .concat(
-          newUsers.map((u) => MeetingUtils.createUserAttendee(u)),
-          this.externalAttendees.length ? this.externalAttendees : []
-        );
+      const newUsers = Object.values(
+        users.reduce((uniqueNewUsers, user) => {
+          if (
+            !attendeesUsersIds.includes(user._id)
+            && !uniqueNewUsers[user._id]
+          ) {
+            uniqueNewUsers[user._id] = user;
+          }
+          return uniqueNewUsers;
+        }, {})
+      );
+      this.attendees = this.attendees.concat(
+        newUsers.map((u) => MeetingUtils.createUserAttendee(u)),
+        this.externalAttendees.length ? this.externalAttendees : []
+      );
       this.externalAttendees = [];
       this.showAttendeesSection = true;
     },
@@ -486,10 +527,7 @@ export default {
         });
         if (res === null || res === false) return;
         this.showDialog = false;
-        await Api.call(
-          "meetings.remove",
-          { meetingId: this.meeting._id }
-        );
+        await Api.call("meetings.remove", { meetingId: this.meeting._id });
         this.$notify(this.$t("meetings.meetingDeleted"));
         this.$emit("removed");
       } catch (error) {
@@ -564,7 +602,7 @@ export default {
     justify-content: flex-start;
   }
   .meeting-edit__attendees {
-   margin: 10px 0;
+    margin: 10px 0;
   }
   .meeting-edit__header {
     display: flex;
@@ -583,6 +621,5 @@ export default {
   .meeting-edit__chevron.active.v-icon {
     transform: rotate(-180deg);
   }
-
 }
 </style>
