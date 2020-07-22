@@ -148,18 +148,27 @@ export default {
       return this.getWeekNumber(this.start);
     },
     currentDateInterval() {
-      if (!this.start || (this.isCalendarDisplay && !this.end)) return false;
-      let type = this.displayType;
-      if (this.displayType === "list") {
-        type = "day";
+      if (this.isCalendarDisplay) {
+        if (!this.start) return "";
+        if (this.isCalendarDisplay && !this.end) return "";
+        return this.displayDateInterval(
+          {
+            start: this.start,
+            end: this.end,
+            type: this.displayType
+          }
+        );
+      } if (this.displayType === "list") {
+        if (!this.selectedDate) return "";
+        return this.displayDateInterval(
+          {
+            start: this.selectedDate,
+            end: this.selectedDate,
+            type: "day"
+          }
+        );
       }
-      return this.displayDateInterval(
-        {
-          start: this.start,
-          end: this.end,
-          type
-        }
-      );
+      return "";
     },
     selectedDate: {
       get() {
@@ -229,7 +238,7 @@ export default {
   &.mobile {
     border-radius: 0;
   }
-  
+
   .meeting-calendar-toolbar__mobile-content {
     display: flex;
     align-items: center;

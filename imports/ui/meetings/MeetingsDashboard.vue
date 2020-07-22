@@ -218,10 +218,11 @@ export default {
     }
   },
   data() {
-    const date = this.date ? this.date : this.nowDate();
+    const now = this.nowDate();
+    const date = this.date ? this.date : now;
     return {
       denseWidth: false,
-      now: date,
+      now,
       selectedDate: date,
       pickerDate: date,
       start: date,
