@@ -362,10 +362,12 @@
       "search": "Rechercher parmi les documents du projet"
     },
     "attendees": {
+      "external": "Invités",
       "attendees": "Participants",
       "meetingAttendees": "Participants de la réunion",
       "selectAttendees": "Sélectionner les participants",
       "addAttendees": "Ajouter des participants",
+      "addExternalAttendee": "Ajouter un participant externe",
       "isExternalAttendee": "Invité externe au projet",
       "isProjectAttendee": "Membre du projet"
     },

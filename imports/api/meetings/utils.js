@@ -150,5 +150,8 @@ export default {
       dueDate: null,
       assignedTo: null
     };
+  },
+  isExternalAttendee(attendee) {
+    return attendee.userId == null;
   }
 };

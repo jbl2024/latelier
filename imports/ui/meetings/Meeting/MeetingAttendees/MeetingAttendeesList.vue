@@ -48,8 +48,6 @@
   </v-list>
 </template>
 <script>
-import usersMixin from "/imports/ui/mixins/UsersMixin.js";
-import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin.js";
 import MeetingAttendeeRoleSelector from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeRoleSelector";
 import MeetingAttendeeAvatar from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeeAvatar";
 import MeetingUtils from "/imports/api/meetings/utils";
@@ -59,7 +57,6 @@ export default {
     MeetingAttendeeRoleSelector,
     MeetingAttendeeAvatar
   },
-  mixins: [MeetingAttendeeMixin, usersMixin],
   props: {
     organizationId: {
       type: String,
@@ -93,9 +90,7 @@ export default {
   data() {
     return {
       filter: "",
-      selectedListItems: [],
-      createdAttendees: [],
-      users: []
+      selectedListItems: []
     };
   },
   computed: {
@@ -115,10 +110,11 @@ export default {
     getAttendeeName(attendee) {
       return MeetingUtils.getAttendeeName(attendee);
     },
-    addNewAttendee(name) {
-      const attendee = MeetingUtils.createNewAttendee(name);
-      this.createdAttendees.push(attendee);
-      this.attendees.push(attendee);
+    isExternalAttendee(attendee) {
+      return MeetingUtils.isExternalAttendee(attendee);
+    },
+    createAttendeeLetters(attendee) {
+      return MeetingUtils.createAttendeeLetters(attendee);
     },
     selectAttendee(attendee) {
       this.$emit("select", attendee);

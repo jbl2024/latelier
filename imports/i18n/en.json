@@ -353,10 +353,12 @@
       "search": "Search within project documents"
     },
     "attendees": {
+      "external": "Guests",
       "attendees": "Attendees",
       "meetingAttendees": "Meeting attendees",
       "selectAttendees": "Select attendees",
       "addAttendees": "Add attendees",
+      "addExternalAttendee": "An an external attendee",
       "isExternalAttendee": "External project attendee",
       "isProjectAttendee": "Project attendee"
     },

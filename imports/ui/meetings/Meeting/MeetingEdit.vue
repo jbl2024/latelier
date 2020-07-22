@@ -23,6 +23,22 @@
       <template #title>
         {{ $t("meetings.attendees.selectAttendees") }}
       </template>
+      <template #tab-append>
+        <v-tab>
+          {{ $t("meetings.attendees.external") }}
+        </v-tab>
+      </template>
+      <template #tab-item-append>
+        <v-tab-item
+          :transition="false" :reverse-transition="false"
+          class="pa-4"
+        >
+          <meeting-external-attendees
+            v-model="externalAttendees"
+            :transition="false" :reverse-transition="false"
+          />
+        </v-tab-item>
+      </template>
     </select-user>
     <select-project
       v-if="canSelectProject"
@@ -232,12 +248,12 @@
 <script>
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendeesList from "./MeetingAttendees/MeetingAttendeesList";
+import MeetingExternalAttendees from "./MeetingAttendees/MeetingExternalAttendees";
 import MeetingTitle from "./MeetingTitle";
 import moment from "moment";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import SelectAttachments from "/imports/ui/attachments/SelectAttachments.vue";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
-import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin";
 import MeetingUtils from "/imports/api/meetings/utils";
 import { Permissions } from "/imports/api/permissions/permissions";
 import Attachments from "/imports/ui/attachments/Attachments";
@@ -247,12 +263,13 @@ export default {
   components: {
     MeetingInfos,
     MeetingAttendeesList,
+    MeetingExternalAttendees,
     MeetingTitle,
     SelectHourRange,
     SelectAttachments,
     Attachments
   },
-  mixins: [MeetingAttendeeMixin, usersMixin],
+  mixins: [usersMixin],
   props: {
     project: {
       type: Object,
@@ -302,6 +319,7 @@ export default {
       endHour: null,
       selectedProject: null,
       attendees: [],
+      externalAttendees: [],
       documents: [],
       rules: {
         name: [
@@ -365,6 +383,15 @@ export default {
         }
         await this.fetchSelectedDocuments();
       }
+    },
+    showSelectAttendees: {
+      immediate: true,
+      handler(val) {
+        // We reset created attendees each time we select attendees
+        if (val === true) {
+          this.externalAttendees = [];
+        }
+      }
     }
   },
   methods: {
@@ -425,8 +452,10 @@ export default {
       }, {}));
       this.attendees = this.attendees
         .concat(
-          newUsers.map((u) => MeetingUtils.createUserAttendee(u))
+          newUsers.map((u) => MeetingUtils.createUserAttendee(u)),
+          this.externalAttendees.length ? this.externalAttendees : []
         );
+      this.externalAttendees = [];
       this.showAttendeesSection = true;
     },
     onSelectAttachments(attachments) {
@@ -480,7 +509,7 @@ export default {
         location: this.location,
         color: this.color,
         // We remove avatar picture (unwanted schema fields)
-        attendees: this.attendees.map((attendee) => this.sanitizeAttendee(attendee)),
+        attendees: this.attendees.map((attendee) => MeetingUtils.sanitizeAttendee(attendee)),
         documents: this.documents.map(MeetingUtils.formatAttachmentAsDocument)
       };
       if (!this.isNewMeeting) {
@@ -554,5 +583,6 @@ export default {
   .meeting-edit__chevron.active.v-icon {
     transform: rotate(-180deg);
   }
+
 }
 </style>

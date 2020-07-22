@@ -227,13 +227,12 @@
   </div>
 </template>
 <script>
-import MeetingAttendeeMixin from "/imports/ui/mixins/MeetingAttendeeMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import deepCopy from "/imports/ui/utils/deepCopy";
 
 export default {
-  mixins: [MeetingAttendeeMixin, DatesMixin, usersMixin],
+  mixins: [DatesMixin, usersMixin],
   props: {
     actions: {
       type: Array,

@@ -14,24 +14,25 @@
         </v-card-title>
         <v-divider />
         <div>
-          <v-tabs 
+          <v-tabs
             v-if="active"
             ref="tabs"
             class="select-user-tabs"
             grow
           >
             <v-tabs-slider color="accent" />
-            <v-tab v-if="!hideProject && project">
+            <v-tab v-show="!hideProject && project">
               {{ $t("Project") }}
             </v-tab>
-            <v-tab v-if="!hideOrganization && project && project.organizationId">
+            <v-tab v-show="!hideOrganization && project && project.organizationId">
               {{ $t("Organization") }}
             </v-tab>
-            <v-tab v-if="!hideAdmin && isAdmin">
+            <v-tab v-show="!hideAdmin && isAdmin">
               {{ $t("Find") }}
             </v-tab>
+            <slot name="tab-append" />
             <v-tab-item 
-              v-if="!hideProject && project"
+              v-show="!hideProject && project"
               class="pa-4"
               :transition="false" :reverse-transition="false"
             >
@@ -153,7 +154,18 @@
                       >
                         <template v-for="user in users">
                           <v-list-item :key="user._id" @click="selectUser(user)">
-                            <v-list-item-avatar :color="isOnline(user)">
+                            <v-list-item-avatar
+                              v-if="multiple && isSelected(user)"
+                              color="success"
+                            >
+                              <v-icon color="white">
+                                mdi-check
+                              </v-icon>
+                            </v-list-item-avatar>
+                            <v-list-item-avatar
+                              v-else
+                              :color="isOnline(user)"
+                            >
                               <author-avatar :user-id="user" />
                             </v-list-item-avatar>
                             <v-list-item-content>
@@ -197,6 +209,7 @@
                 </template>
               </div>
             </v-tab-item>
+            <slot name="tab-item-append" />
           </v-tabs>
         </div>
         <v-divider />
