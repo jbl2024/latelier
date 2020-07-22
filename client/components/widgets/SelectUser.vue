@@ -21,18 +21,18 @@
             grow
           >
             <v-tabs-slider color="accent" />
-            <v-tab v-show="!hideProject && project">
+            <v-tab v-if="!hideProject && project">
               {{ $t("Project") }}
             </v-tab>
-            <v-tab v-show="!hideOrganization && project && project.organizationId">
+            <v-tab v-if="!hideOrganization && project && project.organizationId">
               {{ $t("Organization") }}
             </v-tab>
-            <v-tab v-show="!hideAdmin && isAdmin">
+            <v-tab v-if="!hideAdmin && isAdmin">
               {{ $t("Find") }}
             </v-tab>
             <slot name="tab-append" />
             <v-tab-item 
-              v-show="!hideProject && project"
+              v-if="!hideProject && project"
               class="pa-4"
               :transition="false" :reverse-transition="false"
             >
