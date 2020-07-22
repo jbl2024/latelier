@@ -268,7 +268,8 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     },
     perPage: {
       type: Number,
-      optional: true
+      optional: true,
+      defaultValue: 0
     },
     withRelated: {
       type: Boolean,
@@ -328,7 +329,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       skip,
       limit: perPage,
       sort: {
-        startDate: -1
+        startDate: 1
       }
     }).fetch();
 
@@ -368,9 +369,11 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         }
       });
     }
+    const totalPages = !perPage ? 0 : Math.ceil(count / perPage);
     return {
-      rowsPerPage: perPage,
+      rowsPerPage: perPage || 0,
       totalItems: count,
+      totalPages,
       data
     };
   }

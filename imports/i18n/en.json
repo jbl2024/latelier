@@ -268,7 +268,8 @@
       "day": "Day",
       "5days": "Monday/Friday",
       "week": "Week",
-      "month": "Month"
+      "month": "Month",
+      "list": "Liste"
     }
   },
   "hoursRange": {
@@ -293,6 +294,7 @@
     "list": "List",
     "meeting": "Meeting",
     "meetings": "Meetings",
+    "meetingsCount": "No meetings | 1 meeting | {count} meetings",
     "none": "No meeting",
     "goBackToMeetings": "Meetings",
     "allMeetings": "All meetings",

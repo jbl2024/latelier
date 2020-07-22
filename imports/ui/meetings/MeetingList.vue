@@ -16,19 +16,21 @@
                 {{ meeting.name }}
               </span>
             </v-list-item-title>
-            <v-list-item-subtitle v-if="meeting.project">
-              <span class="grey--text text--darken-1 show-desktop">
-                <template v-if="meeting.organization">
-                  {{ meeting.organization.name }} /
-                </template>
-                {{ meeting.project.name }}
-              </span>
-            </v-list-item-subtitle>
-            <v-list-item-subtitle v-if="getMeetingInterval(meeting)">
-              <div class="meeting-date">
-                {{ getMeetingInterval(meeting) }}
-              </div>
-            </v-list-item-subtitle>
+            <template v-if="!hideSubtitles">
+              <v-list-item-subtitle v-if="meeting.project">
+                <span class="grey--text text--darken-1 show-desktop">
+                  <template v-if="meeting.organization">
+                    {{ meeting.organization.name }} /
+                  </template>
+                  {{ meeting.project.name }}
+                </span>
+              </v-list-item-subtitle>
+              <v-list-item-subtitle v-if="getMeetingInterval(meeting)">
+                <div class="meeting-date">
+                  {{ getMeetingInterval(meeting) }}
+                </div>
+              </v-list-item-subtitle>
+            </template>
           </v-list-item-content>
         </v-list-item>
         <v-divider :key="`divider-${meeting._id}`" inset />
@@ -52,6 +54,10 @@ export default {
     emptyIllustration: {
       type: String,
       default: "empty"
+    },
+    hideSubtitles: {
+      type: Boolean,
+      default: false
     }
   },
   methods: {
@@ -71,6 +77,10 @@ export default {
 </script>
 
 <style scoped>
+
+.meeting-list {
+  background-color: white;
+}
 .empty-state {
   padding: 2rem;
 }

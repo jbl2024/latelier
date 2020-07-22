@@ -2,60 +2,100 @@
   <v-toolbar
     :flat="flat"
     :dense="dense"
-    class="meeting-calendar-toolbar"
+    :class="['meeting-calendar-toolbar', mobile ? 'mobile' : null]"
   >
-    <div class="left-side">
-      <!-- Chevron for prev/next date -->
-      <div class="time-navigation">
+    <template v-if="mobile">
+      <div class="meeting-calendar-toolbar__mobile-content">
         <v-btn
           icon
           small
           class="prev-icon"
           @click="$emit('prev')"
         >
-          <v-icon>mdi-chevron-left</v-icon>
+          <v-icon>
+            mdi-chevron-left
+          </v-icon>
         </v-btn>
+        <div
+          v-if="currentDateInterval"
+          class="current-date-interval"
+          @click="$emit('click-current-date')"
+        >
+          <v-icon color="black" left>
+            mdi-calendar-today
+          </v-icon>
+          <span>
+            {{ currentDateInterval }}
+          </span>
+        </div>
         <v-btn
           icon
           small
           class="next-icon"
           @click="$emit('next')"
         >
-          <v-icon>mdi-chevron-right</v-icon>
+          <v-icon>
+            mdi-chevron-right
+          </v-icon>
         </v-btn>
       </div>
-      <v-btn
-        outlined
-        class="today-button"
-        @click="$emit('set-today')"
-      >
-        {{ $t("calendar.today") }}
-      </v-btn>
-    </div>
-    <div v-if="$vuetify.breakpoint.mdAndUp" class="center">
-      <div v-if="currentDateInterval" class="current-date-interval">
-        <span>
-          {{ currentDateInterval }}
-        </span>
-      </div>
-    </div>
-    <div v-if="$vuetify.breakpoint.mdAndUp" class="right-side">
-      <div v-if="displayType !== 'month'">
-        <!-- Corporate week number -->
-        <v-chip label>
-          {{ $t("calendar.weekNumber", {weekNumber: weekNumber}) }}
-        </v-chip>
-        <!-- Switch between 24h and 7h start interval -->
+    </template>
+    <template v-else>
+      <div class="left-side">
+        <!-- Chevron for prev/next date -->
+        <div class="time-navigation">
+          <v-btn
+            icon
+            small
+            class="prev-icon"
+            @click="$emit('prev')"
+          >
+            <v-icon>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn
+            icon
+            small
+            class="next-icon"
+            @click="$emit('next')"
+          >
+            <v-icon>mdi-chevron-right</v-icon>
+          </v-btn>
+        </div>
         <v-btn
-          class="first-interval-button"
-          :outlined="firstInterval !== 0"
-          :dark="firstInterval == 0"
-          @click.native="toggleFirstInterval"
+          v-if="isCalendarDisplay"
+          outlined
+          class="today-button"
+          @click="$emit('set-today')"
         >
-          {{ $t("calendar.24h") }}
+          {{ $t("calendar.today") }}
         </v-btn>
       </div>
-    </div>
+      <div class="center">
+        <div v-if="currentDateInterval" class="current-date-interval">
+          <span>
+            {{ currentDateInterval }}
+          </span>
+        </div>
+      </div>
+      <div class="right-side">
+        <div v-if="displayType !== 'month'">
+          <!-- Corporate week number -->
+          <v-chip label>
+            {{ $t("calendar.weekNumber", {weekNumber: weekNumber}) }}
+          </v-chip>
+          <!-- Switch between 24h and 7h start interval -->
+          <v-btn
+            v-if="isCalendarDisplay"
+            class="first-interval-button"
+            :outlined="firstInterval !== 0"
+            :dark="firstInterval == 0"
+            @click.native="toggleFirstInterval"
+          >
+            {{ $t("calendar.24h") }}
+          </v-btn>
+        </div>
+      </div>
+    </template>
   </v-toolbar>
 </template>
 <script>
@@ -94,6 +134,10 @@ export default {
       type: Boolean,
       default: true
     },
+    mobile: {
+      type: Boolean,
+      default: false
+    },
     firstInterval: {
       type: Number,
       default: 0
@@ -104,12 +148,16 @@ export default {
       return this.getWeekNumber(this.start);
     },
     currentDateInterval() {
-      if (!this.start || !this.end) return false;
+      if (!this.start || (this.isCalendarDisplay && !this.end)) return false;
+      let type = this.displayType;
+      if (this.displayType === "list") {
+        type = "day";
+      }
       return this.displayDateInterval(
         {
           start: this.start,
           end: this.end,
-          type: this.selectedDisplayType
+          type
         }
       );
     },
@@ -129,6 +177,12 @@ export default {
         if (!newDisplayType) return false;
         return this.$emit("update:display-type", newDisplayType);
       }
+    },
+    isCalendarDisplay() {
+      const foundDisplayType = this.displayTypes.find(
+        (displayType) => displayType.value === this.displayType
+      );
+      return foundDisplayType && foundDisplayType.type === "calendar";
     }
   },
   methods: {
@@ -167,6 +221,29 @@ export default {
   .current-date-interval {
     text-align: center;
     font-size: 1.2rem;
+  }
+
+
+  /* Mobile */
+
+  &.mobile {
+    border-radius: 0;
+  }
+  
+  .meeting-calendar-toolbar__mobile-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    & .prev-icon {
+      margin-right: 1rem;
+    }
+    & .next-icon {
+      margin-left: 1rem;
+    }
+    & .current-date-interval {
+      cursor: pointer;
+    }
   }
 }
 </style>

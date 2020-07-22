@@ -276,7 +276,8 @@
       "day": "Jour",
       "5days": "Lundi/Vendredi",
       "week": "Semaine",
-      "month": "Mois"
+      "month": "Mois",
+      "list": "Liste"
     }
   },
   "hoursRange": {
@@ -301,6 +302,7 @@
     "list": "Liste",
     "meeting": "Réunion",
     "meetings": "Réunions",
+    "meetingsCount": "Pas de réunion | 1 réunion | {count} réunions",
     "none": "Aucune réunion",
     "goBackToMeetings": "Réunions",
     "allMeetings": "Toutes les réunions",

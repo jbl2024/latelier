@@ -30,11 +30,30 @@
         @updated="refresh"
         @removed="onRemove"
       />
+      <!-- Standard Toolbar -->
       <meetings-dashboard-toolbar
+        v-if="$vuetify.breakpoint.mdAndUp"
         class="flex0"
         :display-type.sync="displayType"
         :display-types="displayTypes"
         @add-new-meeting="addNewMeeting"
+        @set-today="setToday"
+      />
+      <!-- Mobile Toolbar -->
+      <meeting-calendar-toolbar
+        v-else-if="$vuetify.breakpoint.smAndDown"
+        v-model="selectedDate"
+        :start.sync="start"
+        :end.sync="end"
+        :display-type.sync="displayType"
+        :display-types="displayTypes"
+        :first-interval.sync="firstInterval"
+        :flat="true"
+        :mobile="true"
+        @click-current-date="showBottomSheet = true"
+        @set-today="setToday"
+        @next="next"
+        @prev="prev"
       />
       <v-row class="flex1">
         <!-- Side calendar -->
@@ -72,38 +91,83 @@
           :lg="cols.body.lg"
           class="body"
         >
-          <meeting-calendar-toolbar
-            v-model="selectedDate"
-            :start.sync="start"
-            :end.sync="end"
-            :display-type.sync="displayType"
-            :display-types="displayTypes"
-            :first-interval.sync="firstInterval"
-            :flat="true"
-            @set-today="setToday"
-            @next="next"
-            @prev="prev"
-          />
-          <!-- Calendar display type -->
-          <meeting-calendar
-            v-if="isCalendarDisplay"
-            ref="calendar"
-            v-model="selectedDate"
-            :start.sync="start"
-            :end.sync="end"
-            :events="meetingsEvents"
-            :display-type.sync="displayType"
-            :display-types="displayTypes"
-            :locale="currentLocale"
-            :first-interval="firstInterval"
-            @select-event="selectEvent"
-            @event-move-up="moveMeeting($event, 'up')"
-            @event-move-down="moveMeeting($event, 'down')"
-            @add-new-meeting="addNewMeeting"
-          />
+          <template v-if="isCalendarDisplay">
+            <meeting-calendar-toolbar
+              v-model="selectedDate"
+              :start.sync="start"
+              :end.sync="end"
+              :display-type.sync="displayType"
+              :display-types="displayTypes"
+              :first-interval.sync="firstInterval"
+              :flat="true"
+              @set-today="setToday"
+              @next="next"
+              @prev="prev"
+            />
+            <!-- Calendar display type -->
+            <meeting-calendar
+              v-if="isCalendarDisplay"
+              ref="calendar"
+              v-model="selectedDate"
+              :start.sync="start"
+              :end.sync="end"
+              :events="meetingsEvents"
+              :display-type.sync="displayType"
+              :display-types="displayTypes"
+              :locale="currentLocale"
+              :first-interval="firstInterval"
+              @select-event="selectEvent"
+              @event-move-up="moveMeeting($event, 'up')"
+              @event-move-down="moveMeeting($event, 'down')"
+              @add-new-meeting="addNewMeeting"
+            />
+          </template>
+          <div v-else-if="displayType === 'list'">
+            <template v-if="$vuetify.breakpoint.smAndDown">
+              <v-row>
+                <v-col>
+                  <meeting-list-header
+                    :meetings="selectedDateMeetings"
+                    @add-new-meeting="addNewMeeting"
+                  />
+                </v-col>
+              </v-row>
+            </template>
+            <meeting-list
+              :meetings="selectedDateMeetings"
+              empty-illustration="empty"
+              hide-subtitles
+              @select="openMeeting"
+            />
+          </div>
         </v-col>
       </v-row>
     </template>
+    <v-bottom-sheet v-model="showBottomSheet">
+      <v-sheet class="meetings-dashboard__bottom-sheet">
+        <meeting-calendar-date-picker
+          v-model="selectedDate"
+          :color="color"
+          :picker-date.sync="pickerDate"
+          :locale="currentLocale"
+          :events="meetingsEvents"
+        />
+        <div class="meetings-dashboard__bottom-actions">
+          <v-btn
+            outlined
+            @click="setToday"
+          >
+            {{ $t("calendar.today") }}
+          </v-btn>
+          <v-btn
+            text
+            @click="showBottomSheet = false"
+          >
+            Fermer
+          </v-btn>
+        </div>
+      </v-sheet>
+    </v-bottom-sheet>
   </div>
 </template>
 
@@ -120,6 +184,8 @@ import MeetingCalendarToolbar from "/imports/ui/meetings/MeetingCalendar/Meeting
 import MeetingCalendarFilters from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarFilters";
 import MeetingCalendarDatePicker from "/imports/ui/meetings/MeetingCalendar/MeetingCalendarDatePicker";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
+import MeetingList from "/imports/ui/meetings/MeetingList";
+import MeetingListHeader from "/imports/ui/meetings/MeetingListHeader";
 import moment from "moment";
 import Api from "/imports/api/Api";
 
@@ -130,7 +196,9 @@ export default {
     MeetingCalendarToolbar,
     MeetingCalendarFilters,
     MeetingCalendarDatePicker,
-    MeetingEdit
+    MeetingListHeader,
+    MeetingEdit,
+    MeetingList
   },
   mixins: [DatesMixin, BackgroundMixin],
   props: {
@@ -150,22 +218,29 @@ export default {
     }
   },
   data() {
-    const now = this.nowDate();
+    const date = this.date ? this.date : this.nowDate();
     return {
       denseWidth: false,
-      now: now,
-      selectedDate: this.date,
-      pickerDate: this.date,
-      start: now,
-      end: null,
+      now: date,
+      selectedDate: date,
+      pickerDate: date,
+      start: date,
+      end: moment(date).add(4, "days").format("YYYY-MM-DD"),
       displayType: "5days",
       firstInterval: 7,
+      showBottomSheet: false,
       showNewMeeting: false,
       showEditMeeting: false,
       selectedProjects: [],
       newMeeting: null,
       selectedMeeting: null,
       meetings: [],
+      sheet: false,
+      pagination: {
+        totalItems: 0,
+        rowsPerPage: 0,
+        totalPages: 0
+      },
       displayTypes: Object.freeze([
         {
           text: this.$t("calendar.types.day"),
@@ -190,11 +265,19 @@ export default {
           value: "month",
           icon: "mdi-calendar-month",
           type: "calendar"
+        },
+        {
+          text: this.$t("calendar.types.list"),
+          value: "list",
+          icon: "mdi-view-list"
         }
       ])
     };
   },
   computed: {
+    selectedDateMeetings() {
+      return this.meetings.filter((meeting) => this.selectedDate === moment(meeting.startDate).format("YYYY-MM-DD"));
+    },
     color() {
       if (this.projectId) {
         return this.currentProject?.color ? this.currentProject.color : null;
@@ -207,7 +290,7 @@ export default {
       return false;
     },
     active() {
-      const validDates = Boolean(this.pickerDate && this.start && this.end);
+      const validDates = Boolean(this.selectedDate && this.start && this.end);
       const validProject = this.currentProject === Object(this.currentProject);
       const validOrganization = this.currentOrganization === Object(this.currentOrganization);
       if (this.projectId) return validDates && validProject;
@@ -268,10 +351,17 @@ export default {
         aside: { lg: 3 },
         body: { lg: 9 }
       };
+    },
+    refreshParams() {
+      return [
+        this.currentProject,
+        this.currentOrganization,
+        this.dateRanges
+      ].filter((param) => param);
     }
   },
   watch: {
-    dateRanges: {
+    refreshParams: {
       immediate: true,
       async handler() {
         if (this.active) {
@@ -286,25 +376,11 @@ export default {
           name: this.$route.name,
           params: { ...this.$route.params, date }
         };
-        this.$router.replace(route);
+        this.$router.replace(route).catch(() => {});
         this.$store.dispatch("storeRoute", {
           name: "meetings-dashboard",
           route
         });
-      }
-    },
-    currentOrganization: {
-      async handler() {
-        if (this.active) {
-          await this.refresh();
-        }
-      }
-    },
-    currentProject: {
-      async handler() {
-        if (this.active) {
-          await this.refresh();
-        }
       }
     },
     projectId: {
@@ -322,6 +398,13 @@ export default {
           this.$subscribe("organization", organizationId);
           this.$subscribe("projects", organizationId);
         }
+      }
+    },
+    "$vuetify.breakpoint.smAndDown": {
+      immediate: true,
+      handler(smAndDown) {
+        this.displayType = smAndDown === true ? "list" : "5days";
+        this.setSameDate(this.selectedDate);
       }
     }
   },
@@ -377,6 +460,12 @@ export default {
     }
   },
   methods: {
+    setSameDate(date) {
+      this.selectedDate = date;
+      this.pickerDate = date;
+      this.start = date;
+      this.end = date;
+    },
     async moveMeeting(meetingEvent, direction) {
       const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
       if (!meeting || !["up", "down"].includes(direction)) return;
@@ -414,11 +503,17 @@ export default {
     next() {
       if (this.isCalendarDisplay) {
         this.$refs.calendar.next();
+      } else if (this.displayType === "list") {
+        const day = moment(this.start).add(1, "days").format("YYYY-MM-DD");
+        this.setSameDate(day);
       }
     },
     prev() {
       if (this.isCalendarDisplay) {
         this.$refs.calendar.prev();
+      } else if (this.displayType === "list") {
+        const day = moment(this.start).add(-1, "days").format("YYYY-MM-DD");
+        this.setSameDate(day);
       }
     },
     async onCreateMeeting(meetingId) {
@@ -427,13 +522,7 @@ export default {
       }).catch((error) => {
         this.$notifyError(error);
       });
-      await this.$router.push({
-        name: "meetings",
-        params: {
-          meetingId: createdMeeting._id,
-          projectId: createdMeeting.projectId
-        }
-      }).catch((error) => this.$notifyError(error));
+      await this.openMeeting(createdMeeting);
     },
     addNewMeeting(selectedTime) {
       const newMeeting = MeetingUtils.makeNewMeeting();
@@ -450,13 +539,19 @@ export default {
       this.showNewMeeting = true;
     },
     async selectEvent(event) {
+      await this.openMeeting({
+        _id: event.id,
+        projectId: event?.project?._id
+      });
+    },
+    async openMeeting(meeting) {
       await this.$router.push({
         name: "meetings",
         params: {
-          meetingId: event.id,
-          projectId: event?.project?._id
+          meetingId: meeting._id,
+          projectId: meeting.projectId
         }
-      });
+      }).catch((error) => this.$notifyError(error));
     },
     refresh() {
       const params = {
@@ -470,9 +565,12 @@ export default {
         params.organizationId = this.currentOrganization._id;
       }
       Api.call("meetings.findMeetings", params).then((result) => {
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
         this.meetings = Array.isArray(result?.data) ? result.data : [];
       }).catch((error) => {
-        this.$notifyError = error;
+        this.$notifyError(error);
       });
     },
     onRemove() {
@@ -488,6 +586,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+
+@import "/imports/ui/styles/mixins/breakpoint";
+
 .meetings-dashboard {
   display: flex;
   min-height: 0;
@@ -517,6 +618,10 @@ export default {
   .aside {
     padding: 2rem;
     padding-bottom: 1rem;
+    @include media-query("sm-and-down") {
+      padding-top: 1rem;
+      padding-bottom: 0;
+    }
   }
 
   .aside {
@@ -538,6 +643,18 @@ export default {
 .flex1 {
   flex: 1; /* takes the remaining height of the "container" div */
   overflow: auto; /* to scroll just the "main" div */
+}
+
+.meetings-dashboard__bottom-sheet {
+  height: 90vh;
+  padding: 1rem;
+  border-radius: 1rem 1rem 0 0;
+  .meetings-dashboard__bottom-actions {
+    margin-top: 1rem;
+    display: flex;
+    width: 100;
+    justify-content: space-between;
+  }
 }
 
 </style>
