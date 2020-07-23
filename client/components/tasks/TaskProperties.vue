@@ -230,9 +230,12 @@ export default {
     }
   },
   watch: {
-    task(task) {
-      if (task) {
-        this.loadEstimationFeature(task);
+    task: {
+      immediate: true,
+      handler(task) {
+        if (task) {
+          this.loadEstimationFeature(task);
+        }
       }
     }
   },
