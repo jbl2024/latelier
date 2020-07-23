@@ -122,13 +122,13 @@
                   <template #list-prepend>
                     <v-list-item-group>
                       <v-list-item @click.stop="showSelectAttendees = true">
-                        <v-list-item-avatar>
-                          <v-avatar :color="color">
+                        <v-list-item-icon>
+                          <v-avatar size="40" :color="color">
                             <v-icon color="white" dark>
                               mdi-plus
                             </v-icon>
                           </v-avatar>
-                        </v-list-item-avatar>
+                        </v-list-item-icon>
                         <v-list-item-content>
                           <v-list-item-title>
                             {{ $t("meetings.attendees.addAttendees") }}
@@ -181,13 +181,13 @@
                   <template #list-prepend>
                     <v-list-item-group>
                       <v-list-item @click.stop="showSelectDocuments = true">
-                        <v-list-item-avatar>
-                          <v-avatar :color="color">
+                        <v-list-item-icon>
+                          <v-avatar size="40" :color="color">
                             <v-icon color="white" dark>
                               mdi-plus
                             </v-icon>
                           </v-avatar>
-                        </v-list-item-avatar>
+                        </v-list-item-icon>
                         <v-list-item-content>
                           <v-list-item-title>
                             {{ $t("attachments.addAttachments") }}
