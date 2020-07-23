@@ -567,9 +567,6 @@ export default {
       if (this.currentProject) {
         params.projectId = this.currentProject._id;
       }
-      if (this.currentOrganization) {
-        params.organizationId = this.currentOrganization._id;
-      }
       Api.call("meetings.findMeetings", params).then((result) => {
         this.pagination.totalItems = result.totalItems;
         this.pagination.rowsPerPage = result.rowsPerPage;
