@@ -19,7 +19,7 @@
         <div
           v-if="currentDateInterval"
           class="current-date-interval"
-          @click="$emit('click-current-date')"
+          @click.stop="$emit('click-current-date')"
         >
           <v-icon color="black" left>
             mdi-calendar-today

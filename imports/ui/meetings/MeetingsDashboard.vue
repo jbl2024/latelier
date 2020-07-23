@@ -226,7 +226,7 @@ export default {
       end: moment(date).add(4, "days").format("YYYY-MM-DD"),
       displayType: "5days",
       firstInterval: 7,
-      showBottomSheet: null,
+      showBottomSheet: false,
       showNewMeeting: false,
       showEditMeeting: false,
       selectedProjects: [],
