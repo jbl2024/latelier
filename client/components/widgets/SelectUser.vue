@@ -2,9 +2,8 @@
   <!-- eslint-disable -->
   <div class="select-user">
     <v-dialog
-      :value="active"
+      v-model="showDialog"
       max-width="620"
-      @input="$emit('update:active')"
     >
       <v-card>
         <v-card-title class="headline">
@@ -21,196 +20,216 @@
             grow
           >
             <v-tabs-slider color="accent" />
-            <v-tab v-if="!hideProject && project">
-              {{ $t("Project") }}
-            </v-tab>
-            <v-tab v-if="!hideOrganization && project && project.organizationId">
-              {{ $t("Organization") }}
-            </v-tab>
-            <v-tab v-if="!hideAdmin && isAdmin">
-              {{ $t("Find") }}
-            </v-tab>
-            <slot name="tab-append" />
-            <v-tab-item 
-              v-if="!hideProject && project"
-              class="pa-4"
-              :transition="false" :reverse-transition="false"
+            <v-tab 
+              v-for="tab in activeTabs"
+              :key="tab.id"
+              @click="selectedTab = tab.id"
             >
-              <div class="flex-container">
-                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
-                  <v-text-field
-                    :label="$t('Search') + '...'"
-                    single-line
-                    append-icon="mdi-magnify"
-                    clearable
-                    autofocus
-                    @input="dfFilterProjectUsers"
-                  />
-                </div>
-                <v-list class="flex1" subheader>
-                  <v-list-item-group
-                    v-model="selectedItems"
-                    :multiple="multiple"
-                    active-class="success--text"
-                  >
-                    <template v-for="user in projectUsers">
-                      <v-list-item :key="user._id" @click="selectUser(user)">
-                        <v-list-item-avatar
-                          v-if="multiple && isSelected(user)"
-                          color="success"
-                        >
-                          <v-icon color="white">
-                            mdi-check
-                          </v-icon>
-                        </v-list-item-avatar>
-                        <v-list-item-avatar
-                          v-else
-                          :color="isOnline(user)"
-                        >
-                          <author-avatar :user-id="user" />
-                        </v-list-item-avatar>
-                        <v-list-item-content class="pointer">
-                          <v-list-item-title>
-                            {{ formatUser(user) }}
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-list-item-group>
-                </v-list>
-              </div>
-            </v-tab-item>
-            <v-tab-item
-              v-if="project && project.organizationId"
-              class="pa-4"
-              :transition="false" :reverse-transition="false"
-            >
-              <div class="flex-container">
-                <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
-                  <v-text-field
-                    :label="$t('Search') + '...'"
-                    single-line
-                    append-icon="mdi-magnify"
-                    clearable
-                    autofocus
-                    @input="dfFilterOrganizationUsers"
-                  />
-                </div>
-                <v-list class="flex1" subheader>
-                  <v-list-item-group
-                    v-model="selectedItems"
-                    :multiple="multiple"
-                    active-class="success--text"
-                  >
-                    <template v-for="user in organizationUsers">
-                      <v-list-item :key="user._id" @click="selectUser(user)">
-                        <v-list-item-avatar
-                          v-if="multiple && isSelected(user)"
-                          color="success"
-                        >
-                          <v-icon color="white">
-                            mdi-check
-                          </v-icon>
-                        </v-list-item-avatar>
-                        <v-list-item-avatar
-                          v-else
-                          :color="isOnline(user)"
-                        >
-                          <author-avatar :user-id="user" />
-                        </v-list-item-avatar>
-                        <v-list-item-content class="pointer">
-                          <v-list-item-title>
-                            {{ formatUser(user) }}
-                          </v-list-item-title>
-                        </v-list-item-content>
-                      </v-list-item>
-                    </template>
-                  </v-list-item-group>
-                </v-list>
-              </div>
-            </v-tab-item>
-            <v-tab-item 
-              v-if="isAdmin" class="pa-4"
-              :transition="false" :reverse-transition="false"
-            >
-              <div class="flex-container">
-                <div class="flex0">
-                  <v-text-field
-                    :label="$t('Search') + '...'"
-                    single-line
-                    append-icon="mdi-magnify"
-                    clearable
-                    autofocus
-                    @input="debouncedFilter"
-                  />
-                </div>
-                <template v-if="users.length > 0 && search.length > 0">
-                  <div class="flex1">
-                    <v-list subheader>
-                      <v-list-item-group
-                        v-model="selectedItems"
-                        :multiple="multiple"
-                        active-class="success--text"
-                      >
-                        <template v-for="user in users">
-                          <v-list-item :key="user._id" @click="selectUser(user)">
-                            <v-list-item-avatar
-                              v-if="multiple && isSelected(user)"
-                              color="success"
-                            >
-                              <v-icon color="white">
-                                mdi-check
-                              </v-icon>
-                            </v-list-item-avatar>
-                            <v-list-item-avatar
-                              v-else
-                              :color="isOnline(user)"
-                            >
-                              <author-avatar :user-id="user" />
-                            </v-list-item-avatar>
-                            <v-list-item-content>
-                              <v-list-item-title>
-                                {{ formatUser(user) }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                        </template>
-                      </v-list-item-group>
-                    </v-list>
-                  </div>
-                  <div class="flex0">
-                    <div class="text-xs-center">
-                      <v-pagination
-                        v-if="pagination.totalPages > 0"
-                        v-model="page"
-                        :length="pagination.totalPages"
-                      />
-                    </div>
-                  </div>
-                </template>
-                <template
-                  v-if="
-                    users.length === 0 && search.length > 0 && isEmail(search)
-                  "
-                >
-                  <div class="flex1 invite">
-                    <empty-state
-                      :description="
-                        $t('No user found, do you want to send an invitation?')
-                      "
-                      xs
-                      illustration="empty"
-                    >
-                      <v-btn primary @click="sendInvitation(search)">
-                        {{ $t("Send invitation") }}
-                      </v-btn>
-                    </empty-state>
-                  </div>
-                </template>
-              </div>
-            </v-tab-item>
-            <slot name="tab-item-append" />
+              <v-icon 
+                v-if="tab.icon"
+                left
+              >
+                {{ tab.icon }}
+              </v-icon>
+              {{ tab.text }}
+            </v-tab>
           </v-tabs>
+          <div
+            v-if="selectedTab === 'project'"
+            key="project-tab-item"
+            class="pa-4"
+            :transition="false" :reverse-transition="false"
+          >
+            <div class="flex-container">
+              <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
+                <v-text-field
+                  :label="$t('Search') + '...'"
+                  single-line
+                  append-icon="mdi-magnify"
+                  clearable
+                  autofocus
+                  @input="dfFilterProjectUsers"
+                />
+              </div>
+              <v-list class="flex1" subheader>
+                <v-list-item-group
+                  v-model="selectedItems"
+                  :multiple="multiple"
+                  active-class="success--text"
+                >
+                  <template v-for="user in projectUsers">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
+                      <v-list-item-avatar
+                        v-if="multiple && isSelected(user)"
+                        color="success"
+                      >
+                        <v-icon color="white">
+                          mdi-check
+                        </v-icon>
+                      </v-list-item-avatar>
+                      <v-list-item-avatar
+                        v-else
+                        :color="isOnline(user)"
+                      >
+                        <author-avatar :user-id="user" />
+                      </v-list-item-avatar>
+                      <v-list-item-content class="pointer">
+                        <v-list-item-title>
+                          {{ formatUser(user) }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-list-item-group>
+              </v-list>
+            </div>
+          </div>
+          <div
+            v-if="selectedTab === 'organization'"
+            key="organization-tab-item"
+            class="pa-4"
+            :transition="false" :reverse-transition="false"
+          >
+            <div class="flex-container">
+              <div class="flex0" v-if="!$vuetify.breakpoint.xsOnly">
+                <v-text-field
+                  :label="$t('Search') + '...'"
+                  single-line
+                  append-icon="mdi-magnify"
+                  clearable
+                  autofocus
+                  @input="dfFilterOrganizationUsers"
+                />
+              </div>
+              <v-list class="flex1" subheader>
+                <v-list-item-group
+                  v-model="selectedItems"
+                  :multiple="multiple"
+                  active-class="success--text"
+                >
+                  <template v-for="user in organizationUsers">
+                    <v-list-item :key="user._id" @click="selectUser(user)">
+                      <v-list-item-avatar
+                        v-if="multiple && isSelected(user)"
+                        color="success"
+                      >
+                        <v-icon color="white">
+                          mdi-check
+                        </v-icon>
+                      </v-list-item-avatar>
+                      <v-list-item-avatar
+                        v-else
+                        :color="isOnline(user)"
+                      >
+                        <author-avatar :user-id="user" />
+                      </v-list-item-avatar>
+                      <v-list-item-content class="pointer">
+                        <v-list-item-title>
+                          {{ formatUser(user) }}
+                        </v-list-item-title>
+                      </v-list-item-content>
+                    </v-list-item>
+                  </template>
+                </v-list-item-group>
+              </v-list>
+            </div>
+          </div>
+          <div
+            v-if="selectedTab === 'admin'"
+            class="pa-4"
+            key="admin-tab-item"
+            :transition="false" :reverse-transition="false"
+          >
+            <div class="flex-container">
+              <div class="flex0">
+                <v-text-field
+                  :label="$t('Search') + '...'"
+                  single-line
+                  append-icon="mdi-magnify"
+                  clearable
+                  autofocus
+                  @input="debouncedFilter"
+                />
+              </div>
+              <template v-if="users.length > 0 && search.length > 0">
+                <div class="flex1">
+                  <v-list subheader>
+                    <v-list-item-group
+                      v-model="selectedItems"
+                      :multiple="multiple"
+                      active-class="success--text"
+                    >
+                      <template v-for="user in users">
+                        <v-list-item :key="user._id" @click="selectUser(user)">
+                          <v-list-item-avatar
+                            v-if="multiple && isSelected(user)"
+                            color="success"
+                          >
+                            <v-icon color="white">
+                              mdi-check
+                            </v-icon>
+                          </v-list-item-avatar>
+                          <v-list-item-avatar
+                            v-else
+                            :color="isOnline(user)"
+                          >
+                            <author-avatar :user-id="user" />
+                          </v-list-item-avatar>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ formatUser(user) }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </template>
+                    </v-list-item-group>
+                  </v-list>
+                </div>
+                <div class="flex0">
+                  <div class="text-xs-center">
+                    <v-pagination
+                      v-if="pagination.totalPages > 0"
+                      v-model="page"
+                      :length="pagination.totalPages"
+                    />
+                  </div>
+                </div>
+              </template>
+              <template
+                v-if="
+                  users.length === 0 && search.length > 0 && isEmail(search)
+                "
+              >
+                <div class="flex1 invite">
+                  <empty-state
+                    :description="
+                      $t('No user found, do you want to send an invitation?')
+                    "
+                    xs
+                    illustration="empty"
+                  >
+                    <v-btn primary @click="sendInvitation(search)">
+                      {{ $t("Send invitation") }}
+                    </v-btn>
+                  </empty-state>
+                </div>
+              </template>
+            </div>
+          </div>
+          <!-- Appended tabs via appendedTabs + slots -->
+          <template v-for="tab in activeAppendedTabs">
+            <div
+              v-show="selectedTab === tab.id"
+              :key="`${tab.id}-tab-item`"
+              class="pa-4"
+              :transition="false"
+              :reverse-transition="false"
+            >
+              <div class="flex-container">
+                <slot :name="`${tab.id}-tab-item`" />
+              </div>
+            </div>
+          </template>
         </div>
         <v-divider />
         <v-card-actions>
@@ -262,7 +281,10 @@ export default {
     }
   },
   props: {
-    active: Boolean,
+    active: {
+      type: Boolean,
+      default: false
+    },
     hideProject: {
       type: Boolean,
       default: false
@@ -286,6 +308,12 @@ export default {
     multiple: {
       type: Boolean,
       default: false
+    },
+    appendedTabs: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   },
   data() {
@@ -296,6 +324,7 @@ export default {
       debouncedFilter: null,
       dfFilterProjectUsers: null,
       dfFilterOrganizationUsers: null,
+      selectedTab: null,
       selectedUsers: [],
       selectedItems: [],
       users: [],
@@ -311,6 +340,14 @@ export default {
     };
   },
   computed: {
+    showDialog: {
+      get() {
+        return this.active;
+      },
+      set(active) {
+        this.$emit("update:active", active);
+      }
+    },
     organizationUsers() {
       if (this.project && this.project.organizationId) {
         const organization = Organizations.findOne(this.project.organizationId);
@@ -327,9 +364,51 @@ export default {
         }
       }
       return null;
+    },
+    showProject() {
+      return Boolean(!this.hideProject && this.project);
+    },
+    showOrganization() {
+      return Boolean(!this.hideOrganization && this.project && this.project.organizationId);
+    },
+    showAdmin() {
+      return Boolean(!this.hideAdmin && this.isAdmin);
+    },
+    activeAppendedTabs() {
+      return this.appendedTabs.filter((tab) => tab.active);
+    },
+    activeTabs() {
+      return [
+        {
+          id: "project",
+          text: this.$t("Project"),
+          icon: "mdi-clipboard-pulse-outline",
+          active: this.showProject
+        },
+        {
+          id: "organization",
+          text: this.$t("Organization"),
+          icon: "mdi-domain",
+          active: this.showOrganization
+        },
+        {
+          id: "admin",
+          text: this.$t("Find"),
+          icon: "mdi-shield-check",
+          active: this.showAdmin
+        }
+      ].filter((tab) => tab.active).concat(this.activeAppendedTabs);
     }
   },
   watch: {
+    activeTabs: {
+      immediate: true,
+      handler() {
+        if (Array.isArray(this.activeTabs) && this.activeTabs.length) {
+          this.selectedTab = this.activeTabs[0]?.id;
+        }
+      }
+    },
     active: {
       immediate: true,
       handler() {
@@ -424,7 +503,7 @@ export default {
     },
 
     closeDialog() {
-      this.$emit("update:active", false);
+      this.showDialog = false;
     },
 
     selectUser(user) {
@@ -436,12 +515,12 @@ export default {
           this.selectedUsers.splice(index, 1);
         }
       } else {
-        this.$emit("update:active", false);
+        this.showDialog = false;
         this.$emit("select", user);
       }
     },
     confirmSelectUsers() {
-      this.$emit("update:active", false);
+      this.showDialog = false;
       this.$emit("select-multiple", this.selectedUsers);
     },
     isEmail(email) {
@@ -463,8 +542,7 @@ export default {
             }
             this.$notify(this.$t("Invitation sent"));
             const user = result;
-
-            this.$emit("update:active", false);
+            this.showDialog = false;
             this.$emit("select", user);
 
             this.findUsers();

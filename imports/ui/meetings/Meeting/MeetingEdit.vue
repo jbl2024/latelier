@@ -29,28 +29,18 @@
           :hide-admin="true"
           :multiple="true"
           :is-admin="canManageProject()"
+          :appended-tabs="[externalAttendeeTab]"
           @select-multiple="onSelectAttendees"
         >
           <template #title>
             {{ $t("meetings.attendees.selectAttendees") }}
           </template>
-          <template #tab-append>
-            <v-tab>
-              {{ $t("meetings.attendees.external") }}
-            </v-tab>
-          </template>
-          <template #tab-item-append>
-            <v-tab-item
+          <template #external-tab-item>
+            <meeting-external-attendees
+              v-model="externalAttendees"
               :transition="false"
               :reverse-transition="false"
-              class="pa-4"
-            >
-              <meeting-external-attendees
-                v-model="externalAttendees"
-                :transition="false"
-                :reverse-transition="false"
-              />
-            </v-tab-item>
+            />
           </template>
         </select-user>
         <select-project
@@ -328,6 +318,12 @@ export default {
       showSelectDocuments: false,
       showAttendeesSection: false,
       showDocumentsSection: false,
+      externalAttendeeTab: {
+        id: "external",
+        text: this.$t("meetings.attendees.external"),
+        icon: "mdi-account-multiple-plus-outline",
+        active: true
+      },
       valid: false,
       agenda: null,
       color: null,
