@@ -50,7 +50,7 @@
         :first-interval.sync="firstInterval"
         :flat="true"
         :mobile="true"
-        @click-current-date="showBottomSheet = true"
+        @click-current-date="showBottomSheet = !showBottomSheet"
         @set-today="setToday"
         @next="next"
         @prev="prev"
@@ -229,7 +229,7 @@ export default {
       end: moment(date).add(4, "days").format("YYYY-MM-DD"),
       displayType: "5days",
       firstInterval: 7,
-      showBottomSheet: false,
+      showBottomSheet: null,
       showNewMeeting: false,
       showEditMeeting: false,
       selectedProjects: [],
