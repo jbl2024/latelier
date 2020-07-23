@@ -91,48 +91,45 @@
           :lg="cols.body.lg"
           class="body"
         >
-          <template v-if="isCalendarDisplay">
-            <meeting-calendar-toolbar
-              v-model="selectedDate"
-              :start.sync="start"
-              :end.sync="end"
-              :display-type.sync="displayType"
-              :display-types="displayTypes"
-              :first-interval.sync="firstInterval"
-              :flat="true"
-              @set-today="setToday"
-              @next="next"
-              @prev="prev"
-            />
-            <!-- Calendar display type -->
-            <meeting-calendar
-              v-if="isCalendarDisplay"
-              ref="calendar"
-              v-model="selectedDate"
-              :start.sync="start"
-              :end.sync="end"
-              :events="meetingsEvents"
-              :display-type.sync="displayType"
-              :display-types="displayTypes"
-              :locale="currentLocale"
-              :first-interval="firstInterval"
-              @select-event="selectEvent"
-              @event-move-up="moveMeeting($event, 'up')"
-              @event-move-down="moveMeeting($event, 'down')"
-              @add-new-meeting="addNewMeeting"
-            />
-          </template>
+          <meeting-calendar-toolbar
+            v-if="$vuetify.breakpoint.mdAndUp"
+            v-model="selectedDate"
+            :start.sync="start"
+            :end.sync="end"
+            :display-type.sync="displayType"
+            :display-types="displayTypes"
+            :first-interval.sync="firstInterval"
+            :flat="true"
+            @set-today="setToday"
+            @next="next"
+            @prev="prev"
+          />
+          <!-- Calendar display type -->
+          <meeting-calendar
+            v-if="isCalendarDisplay"
+            ref="calendar"
+            v-model="selectedDate"
+            :start.sync="start"
+            :end.sync="end"
+            :events="meetingsEvents"
+            :display-type.sync="displayType"
+            :display-types="displayTypes"
+            :locale="currentLocale"
+            :first-interval="firstInterval"
+            @select-event="selectEvent"
+            @event-move-up="moveMeeting($event, 'up')"
+            @event-move-down="moveMeeting($event, 'down')"
+            @add-new-meeting="addNewMeeting"
+          />
           <div v-else-if="displayType === 'list'">
-            <template v-if="$vuetify.breakpoint.smAndDown">
-              <v-row>
-                <v-col>
-                  <meeting-list-header
-                    :meetings="selectedDateMeetings"
-                    @add-new-meeting="addNewMeeting"
-                  />
-                </v-col>
-              </v-row>
-            </template>
+            <v-row v-if="$vuetify.breakpoint.smAndDown">
+              <v-col>
+                <meeting-list-header
+                  :meetings="selectedDateMeetings"
+                  @add-new-meeting="addNewMeeting"
+                />
+              </v-col>
+            </v-row>
             <meeting-list
               :meetings="selectedDateMeetings"
               empty-illustration="empty"

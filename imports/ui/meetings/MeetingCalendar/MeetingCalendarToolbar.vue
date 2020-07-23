@@ -145,7 +145,10 @@ export default {
   },
   computed: {
     weekNumber() {
-      return this.getWeekNumber(this.start);
+      return this.getWeekNumber(
+        this.displayType !== "list"
+          ? this.start : this.selectedDate
+      );
     },
     currentDateInterval() {
       if (this.isCalendarDisplay) {
