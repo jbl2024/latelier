@@ -7,6 +7,7 @@ import { Attachments } from "/imports/api/attachments/attachments";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams.js";
 import { HealthReports } from "/imports/api/healthReports/healthReports.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
 import { Canvas } from "/imports/api/canvas/canvas.js";
 import { Labels } from "/imports/api/labels/labels.js";
 import { Events } from "/imports/api/events/events.js";
@@ -95,7 +96,14 @@ Projects.methods.create = new ValidatedMethod({
     projectType: { type: String },
     projectGroupId: { type: String, optional: true },
     state: { type: String },
-    accessRights: { type: String, optional: true }
+    accessRights: { type: String, optional: true },
+    features: {
+      type: Array,
+      optional: true
+    },
+    "features.$": {
+      type: String
+    }
   }).validator(),
   run({
     organizationId,
@@ -103,7 +111,8 @@ Projects.methods.create = new ValidatedMethod({
     projectType,
     projectGroupId,
     state,
-    accessRights
+    accessRights,
+    features
   }) {
     checkLoggedIn();
     const currentUserId = Meteor.userId();
@@ -114,7 +123,8 @@ Projects.methods.create = new ValidatedMethod({
       state,
       createdAt: new Date(),
       createdBy: currentUserId,
-      accessRights
+      accessRights,
+      features
     });
     Meteor.call("projects.addMember", {
       projectId,
@@ -192,6 +202,7 @@ Projects.methods.deleteForever = new ValidatedMethod({
     Labels.remove({ projectId });
     ProcessDiagrams.remove({ projectId });
     HealthReports.remove({ projectId });
+    Meetings.remove({ projectId });
     Canvas.remove({ projectId });
     Attachments.remove({ "meta.projectId": projectId });
     Meteor.call("events.removeProject", projectId);

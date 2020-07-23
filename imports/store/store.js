@@ -3,6 +3,7 @@ import Vuex from "vuex";
 import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import { UserUtils } from "/imports/api/users/utils";
+import deepCopy from "/imports/ui/utils/deepCopy";
 
 import get from "lodash/get";
 import ui from "./modules/ui";
@@ -18,6 +19,7 @@ const store = new Vuex.Store({
     organization
   },
   state: {
+    currentLocale: null,
     currentUserId: null,
     currentUser: null,
     isAdmin: false,
@@ -25,7 +27,6 @@ const store = new Vuex.Store({
     selectedTask: null,
     showSelectBackgroundDialog: false,
     showCategories: false,
-    showLeftDrawer: null,
     showTaskDetail: false,
     showTaskHistory: false,
     showTaskExport: false,
@@ -34,7 +35,8 @@ const store = new Vuex.Store({
     windowTitle: "",
     notifyMessage: "",
     showMobileDrawer: false,
-    showLabelText: false
+    showLabelText: false,
+    storedRoutes: {}
   },
   getters: {
     isConnected: (state) => Boolean(state.currentUserId),
@@ -44,6 +46,9 @@ const store = new Vuex.Store({
     isTaskDetailShown: (state) => state.showTaskDetail === true
   },
   mutations: {
+    updateCurrentLocale(state, locale) {
+      state.currentLocale = locale;
+    },
     updateCurrentUserId(state, currentUserId) {
       state.currentUserId = currentUserId;
     },
@@ -64,9 +69,6 @@ const store = new Vuex.Store({
     },
     updateShowSelectBackgroundDialog(state, showSelectBackgroundDialog) {
       state.showSelectBackgroundDialog = showSelectBackgroundDialog;
-    },
-    updateShowLeftDrawer(state, showLeftDrawer) {
-      state.showLeftDrawer = showLeftDrawer;
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
@@ -106,9 +108,15 @@ const store = new Vuex.Store({
     },
     updateShowMobileDrawer(state, showMobileDrawer) {
       state.showMobileDrawer = showMobileDrawer;
+    },
+    updateStoredRoutes(state, storedRoutes) {
+      state.storedRoutes = storedRoutes;
     }
   },
   actions: {
+    setCurrentLocale(context, locale) {
+      context.commit("updateCurrentLocale", locale);
+    },
     setCurrentUserId(context, currentUserId) {
       context.commit("updateCurrentUserId", currentUserId);
     },
@@ -153,9 +161,6 @@ const store = new Vuex.Store({
     selectTask(context, task) {
       context.commit("selectTask", task);
     },
-    showLeftDrawer(context, showLeftDrawer) {
-      context.commit("updateShowLeftDrawer", showLeftDrawer);
-    },
     showTaskDetail(context, showTaskDetail) {
       context.commit("updateShowTaskDetail", showTaskDetail);
     },
@@ -177,6 +182,12 @@ const store = new Vuex.Store({
     },
     showTaskExport(context, showTaskExport) {
       context.commit("updateShowTaskExport", showTaskExport);
+    },
+    storeRoute(context, { name, route }) {
+      if (!name || !route) return;
+      const storedRoutes = deepCopy(context.state.storedRoutes);
+      storedRoutes[name] = route;
+      context.commit("updateStoredRoutes", storedRoutes);
     }
   }
 });

@@ -10,11 +10,11 @@
           app
           clipped
         >
-          <dashboard-task-tabs
+          <dashboard-tabs
             v-if="currentUser"
             :user="currentUser"
-            :project-id="currentProjectId"
-            :organization-id="currentOrganizationId"
+            :project="currentProject"
+            :organization="currentOrganization"
           />
         </v-navigation-drawer>
         <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
@@ -73,14 +73,14 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import DashboardTaskTabs from "/imports/ui/dashboard/common/DashboardTaskTabs";
+import DashboardTabs from "/imports/ui/dashboard/common/DashboardTabs";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
   components: {
     TopBar,
     NavDrawer,
-    DashboardTaskTabs,
+    DashboardTabs,
     MainMenu
   },
   data() {
@@ -108,10 +108,10 @@ export default {
     ...mapGetters("ui", ["isNavigationColorDark"]),
     showLeftDrawer: {
       get() {
-        return this.$store.state.showLeftDrawer;
+        return this.$store.state.ui.leftDrawer.showLeftDrawer;
       },
       set(value) {
-        this.$store.dispatch("showLeftDrawer", value);
+        this.$store.dispatch("ui/leftDrawer/showLeftDrawer", value);
       }
     },
     showTaskDetail: {
@@ -177,6 +177,7 @@ export default {
     }
   },
   created() {
+    this.$store.dispatch("setCurrentLocale", this.$i18n.locale);
     this.$store.dispatch("ui/setNavigationColor", this.$vuetify.theme.currentTheme.primary);
   },
   mounted() {
@@ -275,7 +276,11 @@ html {
   width: 100%;
 }
 
+.v-list--dense .v-list-item .v-list-item__title {
+  font-size: 1rem;
+}
 
+.sticky,
 .sticky-tabs .v-tabs-bar {
   position: sticky;
   position: -webkit-sticky;

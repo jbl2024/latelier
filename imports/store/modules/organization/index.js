@@ -1,4 +1,6 @@
 
+import Api from "/imports/api/Api";
+
 export default {
   namespaced: true,
   state: {
@@ -30,8 +32,17 @@ export default {
         context.commit("updateCurrentOrganization", null);
       } else {
         context.commit("clearSelectedGroup", null, { root: true });
-        context.commit("updateCurrentOrganizationId", organization._id);
-        context.commit("updateCurrentOrganization", organization);
+        // Organizations features sums all related projects features
+        Api.call("organizations.getFeatures", {
+          organizationId: organization._id
+        }).then((features) => {
+          organization.features = Array.isArray(features) ? features : [];
+          context.commit("updateCurrentOrganizationId", organization._id);
+          context.commit("updateCurrentOrganization", organization);
+        }).catch(() => {
+          context.commit("updateCurrentOrganizationId", organization._id);
+          context.commit("updateCurrentOrganization", organization);
+        });
       }
     }
   }

@@ -66,6 +66,15 @@
               color="blue-grey"
             />
           </v-col>
+          <v-col :cols="cardColumns">
+            <admin-dashboard-card
+              :title="$t('meetings.meetings')"
+              icon="mdi-calendar-star"
+              :legend="$t('Total')"
+              :value="info.meetingCount"
+              color="blue-grey"
+            />
+          </v-col>
         </v-row>
       </v-container>
     </div>

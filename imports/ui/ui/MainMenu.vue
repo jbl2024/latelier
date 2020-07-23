@@ -15,7 +15,9 @@
         :to="menuItem.to"
       >
         <div class="tabs__item-content">
-          <v-icon class="tabs__icon">{{ menuItem.icon }}</v-icon>
+          <v-icon class="tabs__icon">
+            {{ menuItem.icon }}
+          </v-icon>
           <v-list-item-title>{{ menuItem.title }}</v-list-item-title>
         </div>
       </v-list-item>
@@ -50,7 +52,7 @@
       :background-color="navigationColor"
     >
       <v-btn
-        v-for="menuItem in menuItems"
+        v-for="menuItem in bottomMenuItems"
         :key="menuItem.id"
         :value="menuItem.id"
         :to="menuItem.to"
@@ -111,6 +113,10 @@ export default {
     projectId() {
       if (!this.project) return null;
       return this.project._id;
+    },
+    bottomMenuItems() {
+      const items = this.menuItems;
+      return items.filter((item) => !item.hideBottom);
     },
     menuItems() {
       let menuItems = [];
@@ -180,7 +186,13 @@ export default {
             params: { organizationId: this.organizationId }
           }
         }
-      ];
+      ].filter((item) => {
+        if (item.feature) {
+          return Array.isArray(this.organization?.features)
+          && this.organization.features.includes(item.feature);
+        }
+        return true;
+      });
       return menuItems;
     },
     projectMenuItems() {
@@ -206,6 +218,17 @@ export default {
           icon: "mdi-chart-timeline-variant",
           to: {
             name: "project-timeline",
+            params: { projectId: this.projectId }
+          }
+        },
+        {
+          id: "meetings",
+          feature: "meetings",
+          title: this.$t("meetings.meetings"),
+          hideBottom: true,
+          icon: "mdi-calendar-star",
+          to: {
+            name: "project-meetings",
             params: { projectId: this.projectId }
           }
         },
@@ -242,7 +265,13 @@ export default {
             params: { projectId: this.projectId }
           }
         }
-      ];
+      ].filter((item) => {
+        if (item.feature) {
+          return Array.isArray(this.project?.features)
+          && this.project.features.includes(item.feature);
+        }
+        return true;
+      });
       if (this.project && this.project.organizationId) {
         menuItems.unshift({
           id: "dashboard-page",

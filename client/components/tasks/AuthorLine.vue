@@ -20,7 +20,7 @@ export default {
   mixins: [usersMixin, DatesMixin],
   props: {
     userId: {
-      type: String,
+      type: [String, Object],
       default: ""
     },
     date: {

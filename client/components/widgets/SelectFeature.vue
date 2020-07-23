@@ -8,17 +8,21 @@
     >
       <v-card>
         <v-card-title class="headline">
-          {{ $t("Choose feature") }}
+          {{ $t("projects.features.chooseFeature") }}
         </v-card-title>
         <v-card-text>
           <v-list class="content">
             <template v-for="feature in features">
-              <v-list-item :key="feature" @click="selectFeature(feature)">
-                <v-list-item-avatar>
-                  <v-icon>mdi-folder</v-icon>
+              <v-list-item :key="feature.name" @click="selectFeature(feature)">
+                <v-list-item-avatar v-if="feature.icon">
+                  <v-icon>
+                    {{ feature.icon }}
+                  </v-icon>
                 </v-list-item-avatar>
                 <v-list-item-content class="cursor">
-                  <v-list-item-title>{{ feature }}</v-list-item-title>
+                  <v-list-item-title>
+                    {{ feature.text }}
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </template>
@@ -37,27 +41,14 @@
 
 <script>
 export default {
-  i18n: {
-    messages: {
-      en: {
-        "Choose feature": "Choose feature"
-      },
-      fr: {
-        "Choose feature": "Sélectionner une fonctionnalité"
+  props: {
+    active: Boolean,
+    features: {
+      type: Array,
+      default() {
+        return [];
       }
     }
-  },
-  props: {
-    projectId: {
-      type: String,
-      default: ""
-    },
-    active: Boolean
-  },
-  data() {
-    return {
-      features: ["estimation"]
-    };
   },
   methods: {
     closeDialog() {
@@ -66,18 +57,14 @@ export default {
 
     selectFeature(feature) {
       this.$emit("update:active", false);
-      this.$emit("select", feature);
+      this.$emit("select", feature.name);
     }
   }
 };
 </script>
 
 <style scoped>
-.content {
-  margin-left: 24px;
-  margin-right: 24px;
-  overflow-y: scroll;
-}
+
 
 .cursor {
   cursor: pointer;

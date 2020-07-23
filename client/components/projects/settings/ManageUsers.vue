@@ -1,5 +1,5 @@
 <template>
-  <div class="manage-users">
+  <div v-if="project && currentUser && projectUsers" class="manage-users">
     <select-user
       hide-project
       :project="project"
@@ -7,7 +7,7 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list v-if="currentUser && $subReady.usersInProject" class="list">
+    <v-list class="list">
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
@@ -92,6 +92,7 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
+import Api from "/imports/api/Api";
 
 export default {
   name: "ProjectSettingsManageUsers",
@@ -99,40 +100,29 @@ export default {
   props: {
     project: {
       type: Object,
-      default: () => {}
+      default: null
     }
   },
   data() {
     return {
-      showSelectUserDialog: false
+      showSelectUserDialog: false,
+      projectUsers: null
     };
   },
   computed: {
     ...mapState(["currentUser"])
   },
   meteor: {
-    $subscribe: {
-      usersInProject() {
-        return [this.project._id];
-      }
-    },
-    projectUsers: {
-      params() {
-        return {
-          project: this.project
-        };
-      },
-      deep: false,
-      update({ project }) {
-        if (project) {
-          const members = project.members || [];
-          return Meteor.users.find({ _id: { $in: members } });
-        }
-        return null;
-      }
-    },
     userId() {
       return Meteor.userId();
+    }
+  },
+  watch: {
+    project: {
+      immediate: true,
+      async handler() {
+        await this.fetchUsers();
+      }
     }
   },
   methods: {
@@ -188,6 +178,12 @@ export default {
           }
         );
       }
+    },
+    async fetchUsers() {
+      this.projectUsers = await Api.call(
+        "projects.findUsers",
+        { projectId: this.project._id }
+      );
     }
   }
 };

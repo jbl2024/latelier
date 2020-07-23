@@ -37,24 +37,27 @@ export default {
       if (!user) return null;
       return UserUtils.getEmail(user);
     },
-
+    isOnlineClasses(isOnline) {
+      return isOnline ? "blue" : "grey lighten-1";
+    },
     isOnline(user) {
       user = getUser(user);
-      if (user && user.statusConnection === "online") {
-        return "blue";
-      }
-      return "grey lighten-1";
+      return this.isOnlineClasses(user && user.statusConnection === "online");
     },
-
     getEmailForUser(user) {
       user = getUser(user);
       return UserUtils.getEmail(user);
     },
-
     getAvatarForUser(user) {
       user = getUser(user);
       if (!user || !user.profile) return null;
       return user.profile.avatar;
+    },
+    getUserProfileName(user) {
+      if (user?.profile?.lastName) {
+        return `${user?.profile?.firstName} ${user?.profile?.lastName}`;
+      }
+      return UserUtils.getEmail(user);
     }
   }
 };

@@ -150,6 +150,10 @@ export const checkCanWriteProject = (projectId) => {
   Meteor.call("permissions.canWriteProject", { projectId });
 };
 
+export const checkCanReadOrganization = (organizationId) => {
+  Meteor.call("permissions.canReadOrganization", { organizationId });
+};
+
 export const checkCanDeleteProject = (projectId) => {
   Meteor.call("permissions.canDeleteProject", { projectId });
 };
@@ -165,6 +169,22 @@ export const checkCanWriteTask = (taskId) => {
 export const checkCanDeleteTask = (taskId) => {
   Meteor.call("permissions.canDeleteTask", { taskId });
 };
+
+
+/** Meetings * */
+
+export const checkCanReadMeeting = (meetingId) => {
+  Meteor.call("permissions.canReadMeeting", { meetingId });
+};
+
+export const checkCanWriteMeeting = (meetingId) => {
+  Meteor.call("permissions.canWriteMeeting", { meetingId });
+};
+
+export const checkCanDeleteMeeting = (meetingId) => {
+  Meteor.call("permissions.canDeleteMeeting", { meetingId });
+};
+
 Permissions.methods = {};
 
 Permissions.methods.setAdmin = new ValidatedMethod({

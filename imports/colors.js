@@ -69,5 +69,8 @@ export const colors = {
 
   isDark(color, threshold = 128) {
     return this.getBrightness(color) < threshold;
+  },
+  adjust(color, amount) {
+    return `#${color.replace(/^#/, "").replace(/../g, (aColor) => (`0${Math.min(255, Math.max(0, parseInt(aColor, 16) + amount)).toString(16)}`).substr(-2))}`;
   }
 };

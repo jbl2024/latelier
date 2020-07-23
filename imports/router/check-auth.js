@@ -54,3 +54,16 @@ export const projectAuth = (to, from, next) => {
     }
   });
 };
+
+export const meetingAuth = (to, from, next) => {
+  const { meetingId } = to.params;
+  Meteor.call("permissions.canReadMeeting", { meetingId }, (error, result) => {
+    if (error || !result) {
+      next({
+        name: "forbidden"
+      });
+    } else {
+      next();
+    }
+  });
+};

@@ -56,7 +56,7 @@
   "No favorite": "Aucun favori",
   "All": "Tous",
   "Favorites": "Favoris",
-  "Delete attachment?": "Supprimer la pièce jointe ?",
+  "Delete attachment?": "Supprimer le document?",
   "Individuals": "Sans organisation",
   "Organizations & Projects": "Organisations & Projets",
   "Late": "En retard",
@@ -74,7 +74,7 @@
   "History": "Historique",
   "Search project": "Rechercher un projet",
   "Search": "Rechercher",
-  "Attachments": "Pièces jointes",
+  "Attachments": "Documents",
   "Leave project": "Quitter le projet",
   "Leave project?": "Quitter le projet ?",
   "Project": "Projet",
@@ -206,8 +206,8 @@
       "toggleCheckItem": "Modification d'un item",
       "convertItemToTask": "Conversion d'un item en tache",
       "move": "Déplacement",
-      "addAttachment": "Ajout d'une pièce jointe",
-      "removeAttachment": "Suppression d'un pièce jointe",
+      "addAttachment": "Ajout d'un document",
+      "removeAttachment": "Suppression d'un document",
       "remove": "Suppression",
       "setDueDate": "Date d'échéance",
       "complete": "Complétée",
@@ -227,25 +227,62 @@
       "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
     }
   },
+  "tasks": {
+    "recent": "Tâches récentes",
+    "assignedToMe": "Mes tâches",
+    "late": "Tâches en retard"
+  },
   "projects": {
     "state": {
       "PLANNED": "Planifié",
       "DEVELOPMENT": "En développement",
       "PRODUCTION": "En production",
       "ARCHIVED": "Archivé"
+    },
+    "features": {
+      "chooseFeature": "Sélectionner une fonctionnalité",
+      "features": {
+        "estimation": "Estimation de tâche",
+        "meetings": "Réunions"
+      }
     }
   },
   "dates": {
     "locale": "fr",
     "format": {
       "date": "DD/MM/YYYY",
-      "dateTime": "DD/MM/YYYY HH:mm"
+      "dateTime": "DD/MM/YYYY HH:mm",
+      "prettyDate": "DD MMMM YYYY",
+      "prettyMonthAndDate": "MMMM YYYY"
     },
     "duration": {
       "past": "il y a {duration}",
       "future": "dans {duration}",
       "by": "{duration} par {user}"
+    },
+    "interval": {
+      "date": "du {start} au {end}",
+      "dateWithHours": {
+        "sameDay": "Le {start} de {startHour} à {endHour}",
+        "differentDay": "Du {start} à {startHour} jusqu'au {end} à {endHour}"
+      } 
     }
+  },
+  "calendar": {
+    "today": "Aujourd'hui",
+    "24h": "24h",
+    "weekNumber": "Semaine {weekNumber}",
+    "types": {
+      "day": "Jour",
+      "5days": "Lundi/Vendredi",
+      "week": "Semaine",
+      "month": "Mois",
+      "list": "Liste"
+    }
+  },
+  "hoursRange": {
+    "select": "Choisir l'heure de début/fin",
+    "range": "De {start} à {end}"
   },
   "reminders": {
     "never": "Jamais",
@@ -260,5 +297,116 @@
   "login": {
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
+  },
+  "meetings": {
+    "list": "Liste",
+    "meeting": "Réunion",
+    "meetings": "Réunions",
+    "meetingsCount": "Pas de réunion | 1 réunion | {count} réunions",
+    "none": "Aucune réunion",
+    "goBackToMeetings": "Réunions",
+    "allMeetings": "Toutes les réunions",
+    "scheduleMeeting": "Planifier une réunion",
+    "newMeeting": "Nouvelle réunion",
+    "prepare": "Préparer la réunion",
+    "participate": "Participer à la réunion",
+    "open": "Ouvrir",
+    "create": "Créer",
+    "created": "Réunion créée",
+    "update": "Mettre à jour",
+    "updated": "Réunion mise à jour",
+    "remove": "Supprimer",
+    "remove?": "Supprimer la réunion ?",
+    "edit": "Editer",
+    "noType": "Aucun type",
+    "type": "Type de réunion",
+    "location": "Lieu",
+    "meetingDelete?": "Supprimer la réunion ?",
+    "meetingDeleted": "Réunion supprimée", 
+    "meetingRestored": "Réunion restaurée",
+    "invalidMeeting": "Réunion invalide",
+    "pleaseSelectProject": "Veuillez sélectionner un projet",
+    "actions": {
+      "title": "Relevé de décisions",
+      "none": "Aucune décision",
+      "addAction": "Ajouter une décision",
+      "deleteAction": "Supprimer la décision",
+      "deleteAction?": "Supprimer la décision ?",
+      "deleteActionSuccess": "Décision supprimée avec succès",
+      "deleteActionsSuccess": "Décisions supprimées avec succès",
+      "createActionSuccess": "Décision créée avec succès",
+      "updateActionSuccess": "Décision mise à jour avec succès",
+      "noTaskList": "Le projet n'a aucune de liste de tâches",
+      "alreadyHasTask": "La décision est déjà liée à une tâche existante",
+      "createTaskSuccess": "Tâche créée avec succès",
+      "createTaskFailed": "Erreur lors de la création de la tâche associée",
+      "createAssociatedTask": "Créer une tâche associée",
+      "unlinkTask": "Dissocier la tâche de la décision",
+      "saveActionFailed": "Erreur lors de la mise à jour de la décision",
+      "noDescription": "Veuillez saisir la description de votre décision",
+      "selectAssignedTo": "Sélectionner un responsable",
+      "addAssignedTo": "Ajouter un responsable",
+      "addDueDate": "Ajouter une date",
+      "addDescription": "Ajouter une description",
+      "consultTask": "Consulter la tâche associée",
+      "deleteSelected": "Supprimer les décisions sélectionnées",
+      "dueDate": "Pour le",
+      "assignedTo": "Responsable",
+      "types": {
+        "decision": "Décision",
+        "action": "Action",
+        "information": "Information"
+      }
+    },
+    "documents": {
+      "documents": "Documents",
+      "documentAddedSuccess": "Document ajouté avec succès",
+      "search": "Rechercher parmi les documents du projet"
+    },
+    "attendees": {
+      "external": "Invités",
+      "attendees": "Participants",
+      "meetingAttendees": "Participants de la réunion",
+      "selectAttendees": "Sélectionner les participants",
+      "addAttendees": "Ajouter des participants",
+      "addExternalAttendee": "Ajouter un participant externe",
+      "isExternalAttendee": "Invité externe au projet",
+      "isProjectAttendee": "Membre du projet"
+    },
+    "attachments": {
+      "meetingAttachments": "Documents de la réunion"
+    },
+    "roles": {
+      "attendee": "Participant",
+      "organizer": "Organisateur"
+    },
+    "agenda": {
+      "agenda": "Ordre du jour",
+      "none": "Aucun ordre du jour"
+    },
+    "report": {
+      "report": "Compte-rendu"
+    },
+    "date": {
+      "select": "Choisir une date",
+      "start": "{date}"
+    },
+    "hoursRange": {
+      "select": "Choisir l'heure de début/fin",
+      "range": "{start} - {end}"
+    },
+    "project": {
+      "project": "Projet"
+    }
+  },
+  "attachments": {
+    "attachments": "Documents",
+    "addDescription": "Vous pouvez ajouter des documents ici ou sur une tâche",
+    "addAttachments": "Ajouter des documents",
+    "importAttachments": "Importer des documents",
+    "selectAttachments": "Sélectionner des documents",
+    "removeSuccess": "Document supprimé avec succès",
+    "none": "Aucun document",
+    "noneFound": "Aucun document trouvé"
   }
 }

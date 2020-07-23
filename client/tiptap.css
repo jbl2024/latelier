@@ -34,3 +34,64 @@ see https://github.com/scrumpy/tiptap/issues/412
 .tiptap-editor-view p:empty::after {
   content: "\00A0";
 }
+
+.tiptap-editor-view table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+.tiptap-editor-view table td,
+.tiptap-editor-view table th {
+  min-width: 1em;
+  border: 2px solid #ddd;
+  padding: 3px 5px;
+  vertical-align: top;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.tiptap-editor-view table td > *,
+.tiptap-editor-view table th > * {
+  margin-bottom: 0;
+}
+
+.tiptap-editor-view table th {
+  font-weight: bold;
+  text-align: left;
+}
+
+.tiptap-editor-view table .selectedCell::after {
+  z-index: 2;
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(200, 200, 255, 0.4);
+  pointer-events: none;
+}
+
+.tiptap-editor-view table .column-resize-handle {
+  position: absolute;
+  right: -2px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  z-index: 20;
+  background-color: #adf;
+  pointer-events: none;
+}
+
+.tiptap-editor-view .tableWrapper {
+  margin: 1em 0;
+  overflow-x: auto;
+}
+
+.tiptap-editor-view .resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}

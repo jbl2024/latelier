@@ -4,6 +4,11 @@
       <v-progress-linear indeterminate />
     </template>
     <template v-else-if="$subReady.project && currentProject && currentProject._id">
+      <meeting
+        :is-shown.sync="showSelectedMeeting"
+        :meeting="selectedMeeting"
+        :edit="false"
+      />
       <project-filters-dialog
         v-model="showFiltersDialog"
         :project-id="currentProject._id"
@@ -62,7 +67,9 @@
           :items="items"
           :groups="groups"
           :options="timeline.options"
-          @select="onSelectTask"
+          @items-update="refreshTimeline"
+          @rangechange="updateRange"
+          @select="onSelectItem"
         />
       </div>
     </template>
@@ -74,13 +81,16 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Timeline } from "vue2vis";
-import { mapState } from "vuex";
-
+import { mapState, mapGetters } from "vuex";
+import Meeting from "/imports/ui/meetings/Meeting/Meeting";
+import debounce from "lodash/debounce";
 import moment from "moment";
+import Api from "/imports/api/Api";
 
 export default {
   components: {
-    Timeline
+    Timeline,
+    Meeting
   },
   props: {
     projectId: {
@@ -93,8 +103,13 @@ export default {
       showFilters: false,
       showFiltersDialog: false,
       showTaskDetail: false,
+      showSelectedMeeting: false,
       selectedTask: {},
       filterName: "",
+      meetings: [],
+      selectedMeeting: null,
+      startRange: null,
+      endRange: null,
       timeline: {
         groups: [
           {
@@ -122,6 +137,7 @@ export default {
   },
   computed: {
     ...mapState("project", ["currentProject"]),
+    ...mapGetters("project", ["hasProjectFeature"]),
     ...mapState("project/filters", {
       selectedLabels: (state) => state.selectedLabels,
       selectedAssignedTos: (state) => state.selectedAssignedTos,
@@ -130,20 +146,18 @@ export default {
     groups() {
       if (!this.$subReady.project || !this.currentProject) return [];
       const lists = Lists.find({});
-      const groups = [];
-      groups.push({
-        id: 0,
-        content: "Projet"
-      });
-      lists.forEach((list) => {
-        const group = {
-          id: list._id,
-          content: list.name,
-          subgroupStack: true
-        };
-        groups.push(group);
-      });
-      return groups;
+      const projectGroups = [
+        { id: 0, content: "Projet" }
+      ];
+      if (this.hasProjectFeature("meetings")) {
+        projectGroups.push({ id: "meetings", content: "Réunions" });
+      }
+      const listsGroups = lists.map((list) => ({
+        id: list._id,
+        content: list.name,
+        subgroupStack: true
+      }));
+      return projectGroups.concat(listsGroups);
     },
     items() {
       if (!this.$subReady.project || !this.currentProject) return [];
@@ -200,17 +214,52 @@ export default {
           content: this.getTaskContent(task),
           start: start,
           end: end,
+          itemType: "task",
           type: type
         };
         items.push(item);
       });
-      // eslint-disable-next-line vue/no-async-in-computed-properties
-      setTimeout(() => {
-        if (this.$refs.timeline && this.$refs.timeline.redraw) {
-          this.$refs.timeline.redraw();
-        }
-      }, 1000);
+
+      if (this.hasProjectFeature("meetings") && this.meetings.length > 0) {
+        this.meetings.forEach((meeting) => {
+          const meetingStart = meeting.startDate ? moment(meeting.startDate).toDate() : null;
+          const meetingEnd = meeting.endDate ? moment(meeting.endDate).toDate() : null;
+          const type = "point";
+          items.push({
+            id: meeting._id,
+            group: "meetings",
+            content: this.getItemContent(meeting.name),
+            start: meetingStart,
+            end: meetingEnd,
+            itemType: "meeting",
+            type
+          });
+        });
+      }
       return items;
+    },
+    meetingsParams() {
+      return {
+        projectId: this.projectId,
+        page: 1,
+        dates: [
+          {
+            start: moment(this.startRange).format("YYYY-MM-DD 00:00:00"),
+            end: moment(this.endRange).format("YYYY-MM-DD 23:59:59")
+          }
+        ]
+      };
+    }
+  },
+  watch: {
+    meetingsParams: {
+      immediate: true,
+      handler() {
+        if (this.hasProjectFeature("meetings")) {
+          this.fetchMeetings();
+          this.refreshTimeline();
+        }
+      }
     }
   },
   mounted() {
@@ -285,19 +334,59 @@ export default {
     }
   },
   methods: {
-    onSelectTask(data) {
+    updateRange: debounce(function(datas) {
+      this.startRange = datas.start;
+      this.endRange = datas.end;
+    }, 400),
+    refreshTimeline() {
+      if (this.$refs.timeline && this.$refs.timeline.redraw) {
+        this.$refs.timeline.redraw();
+      }
+    },
+    fetchMeetings() {
+      if (!this.hasProjectFeature("meetings")) return;
+      Api.call("meetings.findMeetings", this.meetingsParams).then((result) => {
+        this.meetings = Array.isArray(result?.data) ? result.data : [];
+      }).catch((error) => {
+        this.$notifyError(error);
+        this.meetings = [];
+      });
+    },
+    clearSelectedTask() {
+      this.$store.dispatch("selectTask", null);
+      this.$store.dispatch("showTaskDetail", false);
+    },
+    clearSelectedMeeting() {
+      this.selectedMeeting = null;
+      this.showSelectedMeeting = false;
+    },
+    onSelectItem(data) {
       const { items } = data;
       if (items && items.length > 0) {
         if (items[0] === "start" || items[0] === "end") {
           this.$store.dispatch("showTaskDetail", false);
           return;
         }
-        const task = Tasks.findOne({ _id: items[0] });
-        this.$store.dispatch("selectTask", task);
-        this.$store.dispatch("showTaskDetail", true);
+        const itemId = items[0];
+        const selectedItem = this.items.find((item) => item.id === itemId);
+        if (selectedItem?.itemType) {
+          if (selectedItem.itemType === "task") {
+            this.clearSelectedMeeting();
+            const task = Tasks.findOne({ _id: itemId });
+            this.$store.dispatch("selectTask", task);
+            this.$store.dispatch("showTaskDetail", true);
+          } else if (selectedItem.itemType === "meeting") {
+            this.clearSelectedTask();
+            const selectedMeeting = this.meetings.find((meeting) => meeting._id === itemId);
+            if (selectedMeeting) {
+              this.selectedMeeting = selectedMeeting;
+              this.showSelectedMeeting = true;
+            }
+          }
+        }
       } else {
-        this.$store.dispatch("selectTask", null);
-        this.$store.dispatch("showTaskDetail", false);
+        this.clearSelectedMeeting();
+        this.clearSelectedTask();
       }
     },
 
@@ -323,20 +412,17 @@ export default {
         height: height
       });
     },
-
+    getItemContent(innerContent) {
+      return `<div class="timeline-custom-item timeline-custom-item-default-colors">${innerContent}</div>`;
+    },
     getTaskContent(task) {
-      const { name } = task;
-      return `<div class="timeline-custom-item timeline-custom-item-default-colors">${name}</div>`;
+      return this.getItemContent(task.name);
     },
-
     getStartContent() {
-      const start = this.$t("Start date");
-      return `<div class="timeline-custom-item timeline-custom-item-default-colors">${start}</div>`;
+      return this.getItemContent(this.$t("Start date"));
     },
-
     getEndContent() {
-      const end = this.$t("End date");
-      return `<div class="timeline-custom-item timeline-custom-item-default-colors">${end}</div>`;
+      return this.getItemContent(this.$t("End date"));
     },
 
     onResizeToolbar() {

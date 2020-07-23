@@ -12,6 +12,9 @@
         <v-tab id="tab-projects">
           {{ $t('Projects') }}
         </v-tab>
+        <v-tab id="tab-meetings">
+          {{ $t('meetings.meetings') }}
+        </v-tab>
         <v-tab id="tab-users">
           {{ $t('BPMN examples') }}
         </v-tab>
@@ -23,6 +26,9 @@
         </v-tab-item>
         <v-tab-item :transition="false" :reverse-transition="false">
           <administration-projects />
+        </v-tab-item>
+        <v-tab-item :transition="false" :reverse-transition="false">
+          <administration-meetings />
         </v-tab-item>
         <v-tab-item :transition="false" :reverse-transition="false">
           <administration-bpmn-examples />
@@ -38,6 +44,7 @@ import { mapGetters } from "vuex";
 import AdministrationDashboard from "./dashboard/AdministrationDashboard";
 import AdministrationUsers from "./users/AdministrationUsers";
 import AdministrationProjects from "./projects/AdministrationProjects";
+import AdministrationMeetings from "./meetings/AdministrationMeetings";
 import AdministrationBpmnExamples from "./bpmn/AdministrationBpmnExamples";
 
 export default {
@@ -45,6 +52,7 @@ export default {
     AdministrationDashboard,
     AdministrationUsers,
     AdministrationProjects,
+    AdministrationMeetings,
     AdministrationBpmnExamples
   },
   computed: {

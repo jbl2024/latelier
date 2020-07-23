@@ -5,7 +5,10 @@
       :max-width="maxWidth"
       :fullscreen="isFullscreen"
     >
-      <v-card class="flex-container">
+      <v-card
+        class="flex-container"
+        :class="cssClasses"
+      >
         <v-toolbar
           v-if="isFullscreen"
           dark
@@ -16,6 +19,7 @@
             <v-icon>mdi-close</v-icon>
           </v-btn>
           <v-toolbar-title>
+            <slot name="title" />
             {{ title }}
           </v-toolbar-title>
           <v-spacer />
@@ -25,6 +29,7 @@
         </v-toolbar>
 
         <v-card-title v-if="!isFullscreen" class="headline flex0">
+          <slot name="title" />
           {{ title }}
         </v-card-title>
         <v-divider />
@@ -68,6 +73,10 @@ export default {
       default: function () {
         return this.$t("Cancel");
       }
+    },
+    cssClasses: {
+      type: [Array, Object, String],
+      default: null
     }
   },
   computed: {

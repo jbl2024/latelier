@@ -3,29 +3,33 @@
     <div v-if="!currentProject">
       <v-progress-linear indeterminate />
     </div>
-    <v-container
+    <div
       v-if="currentProject && info"
       ref="cards"
       v-resize="onResize"
       class="container-wrapper"
       :style="getBackgroundUrl(currentUser)"
-      fluid
     >
-      <v-row>
-        <v-col cols="12">
-          <project-card :project="currentProject" :user="currentUser" :info="info" />
-        </v-col>
-        <v-col :cols="cardColumns">
-          <canvas-card :project="currentProject" :info="info" />
-        </v-col>
-        <v-col :cols="cardColumns">
-          <process-card :project="currentProject" :info="info" />
-        </v-col>
-        <v-col :cols="cardColumns">
-          <weather-card :project="currentProject" :info="info" />
-        </v-col>
-      </v-row>
-    </v-container>
+      <v-container fluid>
+        <v-row>
+          <v-col cols="12">
+            <project-card :project="currentProject" :user="currentUser" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <meeting-card :project="currentProject" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <canvas-card :project="currentProject" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <process-card :project="currentProject" :info="info" />
+          </v-col>
+          <v-col :cols="cardColumns">
+            <weather-card :project="currentProject" :info="info" />
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </div>
 </template>
 
@@ -35,6 +39,7 @@ import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
 import WeatherCard from "/imports/ui/projects/info/WeatherCard";
+import MeetingCard from "/imports/ui/projects/info/MeetingCard";
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import { mapState } from "vuex";
 
@@ -43,6 +48,7 @@ export default {
     ProjectCard,
     ProcessCard,
     CanvasCard,
+    MeetingCard,
     WeatherCard
   },
   mixins: [BackgroundMixin],
@@ -99,7 +105,7 @@ export default {
     onResize() {
       const { cards } = this.$refs;
       const width = cards.offsetWidth;
-      this.cardColumns = width > 600 ? 4 : 12;
+      this.cardColumns = width > 600 ? 3 : 12;
     }
   }
 };

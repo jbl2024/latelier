@@ -230,19 +230,51 @@
       "DEVELOPMENT": "Development",
       "PRODUCTION": "Production",
       "ARCHIVED": "Archived"
+    },
+    "features": {
+      "chooseFeature": "Choose feature",
+      "features": {
+        "estimation": "Task estimation",
+        "meetings": "Meetings"
+      }
     }
   },
   "dates": {
     "locale": "en",
     "format": {
       "date": "MM/DD/YYYY",
-      "dateTime": "MM/DD/YYYY HH:mm"
+      "dateTime": "MM/DD/YYYY HH:mm",
+      "prettyDate": "MMMM DD YYYY",
+      "prettyMonthAndDate": "MMMM YYYY"
     },
     "duration": {
       "past": "{duration} ago",
       "future": "in {duration}",
       "by": "{duration} by {user}"
+    },
+    "interval": {
+      "date": "from {start} to {end}",
+      "dateWithHours": {
+        "sameDay": "On {start} from {startHour} to {endHour}",
+        "differentDay": "On {start} from {startHour} until {end} at {endHour}"
+      } 
     }
+  },
+  "calendar": {
+    "today": "Today",
+    "24h": "24h",
+    "weekNumber": "Week {weekNumber}",
+    "types": {
+      "day": "Day",
+      "5days": "Monday/Friday",
+      "week": "Week",
+      "month": "Month",
+      "list": "Liste"
+    }
+  },
+  "hoursRange": {
+    "select": "Choose start/end time",
+    "range": "From {start} to {end}"
   },
   "reminders": {
     "never": "Never",
@@ -257,5 +289,115 @@
   "login": {
     "logout": "Log out",
     "logoutConfirm": "Do you want to log out?"
-  }
+  },
+  "meetings": {
+    "list": "List",
+    "meeting": "Meeting",
+    "meetings": "Meetings",
+    "meetingsCount": "No meetings | 1 meeting | {count} meetings",
+    "none": "No meeting",
+    "goBackToMeetings": "Meetings",
+    "allMeetings": "All meetings",
+    "scheduleMeeting": "Schedule a meeting",
+    "newMeeting": "New meeting",
+    "prepare": "Setup meeting",
+    "participate": "Join meeting",
+    "open": "Open",
+    "create": "Create",
+    "created": "Meeting created",
+    "update": "Update",
+    "updated": "Meeting updated",
+    "remove": "Delete",
+    "remove?": "Delete meeting ?",
+    "edit": "Edit",
+    "noType": "No type",
+    "type": "Meeting type",
+    "location": "Location",
+    "meetingDelete?": "Delete meeting?",
+    "meetingDeleted": "Meeting deleted", 
+    "meetingRestored": "Meeting restored",
+    "invalidMeeting": "Invalid meeting",
+    "pleaseSelectProject": "Please select a project",
+    "actions": {
+      "title": "Actions",
+      "none": "No action",
+      "addAction": "Add action",
+      "deleteAction": "Delete action",
+      "deleteAction?": "Delete action?",
+      "deleteActionSuccess": "Action deleted successfully",
+      "deleteActionsSuccess": "Actions deleted successfully",
+      "createActionSuccess": "Action created successfully",
+      "updateActionSuccess": "Action updated successuffly",
+      "noTaskList": "Project does not have any task list",
+      "alreadyHasTask": "Action is already linked with a task",
+      "createTaskSuccess": "Task created successfully",
+      "createTaskFailed": "Error while creating linked tas",
+      "createAssociatedTask": "Create associated task",
+      "unlinkTask": "Unlink task from action",
+      "saveActionFailed": "Error while updating action",
+      "noDescription": "Please fill in description",
+      "selectAssignedTo": "Select assigned to",
+      "addAssignedTo": "Add assigned to",
+      "addDueDate": "Add date",
+      "addDescription": "Add description",
+      "consultTask": "View associated task",
+      "deleteSelected": "Delete selected actions",
+      "dueDate": "Due date",
+      "assignedTo": "Assigned to",
+      "types": {
+        "decision": "Decision",
+        "action": "Action",
+        "information": "Information"
+      }
+    },
+    "documents": {
+      "documentAddedSuccess": "Document added successfully",
+      "search": "Search within project documents"
+    },
+    "attendees": {
+      "external": "Guests",
+      "attendees": "Attendees",
+      "meetingAttendees": "Meeting attendees",
+      "selectAttendees": "Select attendees",
+      "addAttendees": "Add attendees",
+      "addExternalAttendee": "An an external attendee",
+      "isExternalAttendee": "External project attendee",
+      "isProjectAttendee": "Project attendee"
+    },
+    "attachments": {
+      "meetingAttachments": "Meeting documents"
+    },
+    "roles": {
+      "attendee": "Attendee",
+      "organizer": "Organizer"
+    },
+    "agenda": {
+      "agenda": "Agenda",
+      "none": "No agenda"
+    },
+    "report": {
+      "report": "Report"
+    },
+    "date": {
+      "select": "Choose a date",
+      "start": "{date}"
+    },
+    "hoursRange": {
+      "select": "Select range time",
+      "range": "{start} - {end}"
+    },
+    "project": {
+      "project": "Project"
+    }
+  },
+  "attachments": {
+    "attachments": "Documents",
+    "addDescription": "You can add documents here or in a task",
+    "addAttachments": "Add documents",
+    "importAttachments": "Import documents",
+    "selectAttachments": "Select documents",
+    "removeSuccess": "Document successfully removed",
+    "none": "No document",
+    "noneFound": "No document found"
+  }  
 }

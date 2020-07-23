@@ -4,6 +4,7 @@ import { check, Match } from "meteor/check";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Events } from "/imports/api/events/events.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
 
 import { Random } from "meteor/random";
 import moment from "moment";
@@ -27,6 +28,24 @@ const Counter = new Mongo.Collection("counters");
 
 const incNumber = function() {
   return incrementCounter(Counter, "taskNumber");
+};
+
+const removeLinkWithMeetingAction = (taskId) => {
+  const meeting = Meetings.findOne({
+    "actions.taskId": taskId
+  });
+  if (!meeting || !meeting.actions || !Array.isArray(meeting.actions) || !meeting.actions.length) {
+    return;
+  }
+  linkedAction = meeting.actions.find((action) => action.taskId === taskId);
+  if (!linkedAction) {
+    return;
+  }
+  linkedAction.taskId = null;
+  Meteor.call("meetings.updateAction", {
+    meetingId: meeting._id,
+    action: linkedAction
+  });
 };
 
 if (Meteor.isServer) {
@@ -69,11 +88,13 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
 });
 
 Meteor.methods({
-  "tasks.insert"(projectId, listId, name, labelIds) {
+  "tasks.insert"(projectId, listId, name, labelIds, assignedTo, dueDate) {
     check(projectId, String);
     check(listId, String);
     check(name, String);
     check(labelIds, Match.Maybe([String]));
+    check(assignedTo, Match.Maybe(String));
+    check(dueDate, Match.Maybe(String));
     checkCanWriteProject(projectId);
 
     const userId = Meteor.userId();
@@ -118,6 +139,8 @@ Meteor.methods({
       updatedBy: userId,
       watchers: [userId],
       number,
+      assignedTo,
+      dueDate,
       labels: labelIds || []
     });
 
@@ -154,6 +177,8 @@ Meteor.methods({
       }
     );
 
+    removeLinkWithMeetingAction(taskId);
+
     Meteor.call("tasks.track", {
       type: "tasks.remove",
       taskId
@@ -172,6 +197,7 @@ Meteor.methods({
     });
 
     Tasks.remove(taskId);
+    removeLinkWithMeetingAction(taskId);
   },
 
   "tasks.restore"(taskId) {

@@ -4,7 +4,6 @@ import { Meteor } from "meteor/meteor";
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-import VueI18n from "vue-i18n";
 
 import VueMeteorTracker from "vue-meteor-tracker";
 
@@ -24,7 +23,7 @@ import App from "/imports/ui/App.vue";
 import store from "/imports/store/store";
 import routes from "/imports/routesLegacy";
 import "/imports/favicon";
-import messages from "/imports/i18n/i18n";
+import i18n from "/imports/i18n/";
 
 import confirm from "/imports/confirm/confirm";
 
@@ -66,7 +65,6 @@ Accounts.onEmailVerificationLink(function(token, done) {
 });
 
 Vue.use(VueRouter);
-Vue.use(VueI18n);
 Vue.use(VueMeteorTracker);
 Vue.use(VueEvents);
 Vue.use(Vuetify);
@@ -114,17 +112,6 @@ Meteor.startup(() => {
     routes
   });
 
-  let { language } = navigator;
-  if (language.startsWith("en-")) {
-    language = "en";
-  }
-
-  const i18n = new VueI18n({
-    locale: language,
-    fallbackLocale: "fr",
-    silentTranslationWarn: true,
-    messages
-  });
 
   new Vue({
     i18n,

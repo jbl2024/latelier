@@ -9,72 +9,75 @@
         small
         full-page
         illustration="documents"
-        label="Aucune pièce jointe"
-        description="Vous pouvez ajouter une pièce jointe sur une tâche"
-      />
+        :label="$t('attachments.none')"
+        :description="$t('attachments.addDescription')"
+      >
+        <v-btn class="primary" @click="beginUpload">
+          {{ $t("attachments.addAttachments") }}
+        </v-btn>
+      </empty-state>
 
-      <v-list v-show="attachments.length > 0" two-line subheader class="list">
-        <v-subheader>
-          {{ $t('Attachments') }}
-        </v-subheader>
-        <v-list-item v-for="attachment in attachments" :key="attachment._id">
-          <v-list-item-avatar>
-            <v-icon>mdi-file-document</v-icon>
-          </v-list-item-avatar>
-
-          <v-list-item-content class="pointer">
-            <v-list-item-title>
-              <a class="link" :href="link(attachment)" target="_blank">{{
-                attachment.name
-              }}</a>
-            </v-list-item-title>
-            <v-list-item-subtitle>
-              <router-link
-                class="link-subtitle"
-                :to="{
-                  name: 'project-task',
-                  params: {
-                    projectId: attachment.meta.projectId,
-                    taskId: attachment.meta.taskId
-                  }
-                }"
-              >
-                {{ getTask(attachment).name }}
-              </router-link>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-
-          <v-list-item-action>
+      <input
+        v-if="!isUploading"
+        ref="uploadInput"
+        style="display: none;"
+        type="file"
+        multiple
+        :disabled="isUploading"
+        @change="onUpload"
+      >
+      <v-progress-linear v-show="isUploading" indeterminate />
+      <attachments
+        :attachments="attachments"
+        can-delete
+        with-meetings
+        class="list"
+      >
+        <template #list-header>
+          <v-subheader>
+            {{ $t('attachments.attachments') }}
             <v-btn
               icon
-              text
-              color="grey darken-1"
-              @click.stop="deleteAttachment(attachment)"
+              dark
+              small
+              color="primary"
+              @click="beginUpload"
             >
-              <v-icon>mdi-delete</v-icon>
+              <v-icon>mdi-plus</v-icon>
             </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
+          </v-subheader>
+          <v-divider />
+        </template>
+      </attachments>
     </div>
   </div>
 </template>
 
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments.js";
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
+import AttachmentsComponent from "/imports/ui/attachments/Attachments";
 
 export default {
+  components: {
+    attachments: AttachmentsComponent
+  },
   props: {
     projectId: {
       type: String,
       default: null
     }
   },
+  data() {
+    return {
+      file: null,
+      isUploading: false
+    };
+  },
   computed: {
-    ...mapState("project", ["currentProject"])
+    ...mapState("project", ["currentProject"]),
+    ...mapGetters("project", ["hasProjectFeature"])
   },
   meteor: {
     $subscribe: {
@@ -99,7 +102,7 @@ export default {
           { "meta.projectId": projectId },
           { sort: { "meta.taskId": 1, name: 1 } }
         ).fetch();
-        return attachments.filter((attachment) => Tasks.findOne({ _id: attachment.meta.taskId }));
+        return attachments;
       }
     }
   },
@@ -115,22 +118,45 @@ export default {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
-    link(attachment) {
-      return Attachments.link(attachment);
+    onUpload(e) {
+      const files = e.target.files || [];
+      for (let i = 0; i < files.length; i++) {
+        this.uploadFile(files[i]);
+      }
     },
-    getTask(attachment) {
-      return Tasks.findOne({ _id: attachment.meta.taskId });
+    beginUpload() {
+      this.$refs.uploadInput.click();
     },
-    deleteAttachment(attachment) {
-      this.$confirm(this.$t("Delete attachment?"), {
-        title: attachment.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("attachments.remove", attachment._id);
+    uploadFile(file) {
+      const that = this;
+      const transport = Meteor.settings.public.uploadTransport || "ddp";
+      const upload = Attachments.insert(
+        {
+          file: file,
+          streams: "dynamic",
+          chunkSize: "dynamic",
+          transport: transport,
+          meta: {
+            projectId: this.projectId,
+            createdBy: Meteor.userId()
+          }
+        },
+        false
+      );
+
+      upload.on("start", function() {
+        that.isUploading = true;
+      });
+
+      upload.on("end", function(error) {
+        that.isUploading = false;
+        if (error) {
+          this.$notifyError(error);
+        } else {
+          that.file = null;
         }
       });
+      upload.start();
     }
   }
 };

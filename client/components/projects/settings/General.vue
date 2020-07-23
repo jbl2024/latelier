@@ -17,7 +17,7 @@
     />
     <select-feature
       :active.sync="showSelectFeature"
-      :project-id="project._id"
+      :features="features"
       @select="onSelectFeature"
     />
     <select-organization
@@ -197,15 +197,19 @@
         </v-btn>
       </v-subheader>
       <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-        <v-list-item v-for="feature in projectFeatures" :key="feature._id">
-          <v-list-item-avatar>
-            <v-icon>mdi-folder</v-icon>
+        <v-list-item v-for="feature in projectFeatures" :key="feature.name">
+          <v-list-item-avatar v-if="feature.icon">
+            <v-icon>
+              {{ feature.icon }}
+            </v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
-            <v-list-item-title>{{ feature }}</v-list-item-title>
+            <v-list-item-title>
+              {{ feature.text }}
+            </v-list-item-title>
           </v-list-item-content>
           <v-list-item-action>
-            <v-btn text icon @click.stop="removeFeature(feature)">
+            <v-btn text icon @click.stop="removeFeature(feature.name)">
               <v-icon>mdi-delete</v-icon>
             </v-btn>
           </v-list-item-action>
@@ -248,12 +252,17 @@ export default {
       showSelectColor: false,
       showSelectFeature: false,
       editName: false,
-      editDescription: false
+      editDescription: false,
+      features: Object.freeze([
+        { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
+        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" }
+      ])
     };
   },
   computed: {
     projectFeatures() {
-      return (this.project && this.project.features) || [];
+      const projectFeatures = Array.isArray(this.project?.features) ? this.project.features : [];
+      return projectFeatures.map((feature) => this.features.find((feat) => feat.name === feature));
     },
     allowedOrganization: {
       get() {
@@ -502,6 +511,7 @@ export default {
   margin: 0 auto;
   padding-left: 12px;
   padding-right: 12px;
+  padding-bottom: 24px;
   margin-top: 24px;
   margin-bottom: 24px;
   background-color: white;

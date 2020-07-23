@@ -4,7 +4,7 @@ import { Tasks } from "/imports/api/tasks/tasks";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
-
+import { Meetings } from "/imports/api/meetings/meetings";
 import { checkAdmin } from "/imports/api/permissions/permissions";
 
 export const methods = {};
@@ -22,6 +22,10 @@ methods.info = new ValidatedMethod({
       deleted: { $ne: true }
     }).count();
 
+    const meetingCount = Meetings.find({
+      deleted: { $ne: true }
+    }).count();
+
     const organizationCount = Organizations.find({}).count();
     const processDiagramCount = ProcessDiagrams.find({}).count();
     const healthReportCount = HealthReports.find({}).count();
@@ -35,7 +39,8 @@ methods.info = new ValidatedMethod({
       processDiagramCount,
       healthReportCount,
       attachmentCount,
-      userCount
+      userCount,
+      meetingCount
     };
   }
 });
