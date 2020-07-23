@@ -59,11 +59,6 @@
               {{ selectedHoursTitle }}
             </span>
           </v-chip>
-          <v-btn text icon @click.stop="resetDateAndHours">
-            <v-icon>
-              mdi-delete
-            </v-icon>
-          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -176,12 +171,6 @@ export default {
     },
     projectName() {
       return this.project?.name ? this.project.name : "";
-    }
-  },
-  methods: {
-    resetDateAndHours() {
-      this.$emit("reset-date");
-      this.$emit("reset-hour-range");
     }
   }
 };
