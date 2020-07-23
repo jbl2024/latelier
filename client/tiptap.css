@@ -42,6 +42,7 @@ see https://github.com/scrumpy/tiptap/issues/412
   margin: 0;
   overflow: hidden;
 }
+
 .tiptap-editor-view table td,
 .tiptap-editor-view table th {
   min-width: 1em;
@@ -51,14 +52,17 @@ see https://github.com/scrumpy/tiptap/issues/412
   box-sizing: border-box;
   position: relative;
 }
+
 .tiptap-editor-view table td > *,
 .tiptap-editor-view table th > * {
   margin-bottom: 0;
 }
+
 .tiptap-editor-view table th {
   font-weight: bold;
   text-align: left;
 }
+
 .tiptap-editor-view table .selectedCell:after {
   z-index: 2;
   position: absolute;
@@ -70,6 +74,7 @@ see https://github.com/scrumpy/tiptap/issues/412
   background: rgba(200, 200, 255, 0.4);
   pointer-events: none;
 }
+
 .tiptap-editor-view table .column-resize-handle {
   position: absolute;
   right: -2px;
@@ -80,10 +85,12 @@ see https://github.com/scrumpy/tiptap/issues/412
   background-color: #adf;
   pointer-events: none;
 }
+
 .tiptap-editor-view .tableWrapper {
   margin: 1em 0;
   overflow-x: auto;
 }
+
 .tiptap-editor-view .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
