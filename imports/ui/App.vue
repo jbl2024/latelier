@@ -45,11 +45,11 @@
           />
         </v-navigation-drawer>
       </template>
-      <v-content class="main-content">
+      <v-main class="main-content">
         <v-container class="page-container" fluid>
           <router-view />
         </v-container>
-      </v-content>
+      </v-main>
       <template v-if="isConnected">
         <main-menu
           v-if="$vuetify.breakpoint.mdAndDown"
@@ -58,11 +58,13 @@
           :project="currentProject"
           :organization="currentOrganization"
         />
-        <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom>
+        <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
           {{ notifyMessage }}
-          <v-btn dark icon text @click="showSnackbar = false">
-            <v-icon>mdi-close</v-icon>
-          </v-btn>
+          <template v-slot:action="{ attrs }">
+            <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </template>
         </v-snackbar>
       </template>
     </v-app>

@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Meetings (basic management)
 
 ### Changed
+- Update vuetify to 2.3.6
 
 ### Removed
 
