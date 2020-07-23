@@ -63,7 +63,7 @@ see https://github.com/scrumpy/tiptap/issues/412
   text-align: left;
 }
 
-.tiptap-editor-view table .selectedCell:after {
+.tiptap-editor-view table .selectedCell::after {
   z-index: 2;
   position: absolute;
   content: "";
