@@ -372,7 +372,7 @@ export default {
     },
     selectedDate: {
       immediate: true,
-      handler(date) {
+      handler(date, prev) {
         const route = {
           name: this.$route.name,
           params: { ...this.$route.params, date }
@@ -382,6 +382,14 @@ export default {
           name: "meetings-dashboard",
           route
         });
+        if (prev && date) {
+          // prev is undefined when
+          // bottomsheet is shown the first time
+
+          // we close only when selecting
+          // a new date on opened bottom sheet
+          this.showBottomSheet = false;
+        }
       }
     },
     projectId: {
