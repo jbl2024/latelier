@@ -394,7 +394,7 @@ export default {
         {
           id: "admin",
           text: this.$t("Find"),
-          icon: "mdi-shield-check",
+          icon: "mdi-magnify",
           active: this.showAdmin
         }
       ].filter((tab) => tab.active).concat(this.activeAppendedTabs);
