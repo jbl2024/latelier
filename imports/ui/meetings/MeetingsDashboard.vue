@@ -163,7 +163,7 @@
             text
             @click="showBottomSheet = false"
           >
-            Fermer
+            {{ $t('Close') }}
           </v-btn>
         </div>
       </v-sheet>
