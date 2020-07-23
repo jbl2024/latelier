@@ -647,7 +647,6 @@ export default {
 }
 
 .meetings-dashboard__bottom-sheet {
-  height: 90vh;
   padding: 1rem;
   border-radius: 1rem 1rem 0 0;
   .meetings-dashboard__bottom-actions {
