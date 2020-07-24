@@ -216,7 +216,8 @@ export default {
   },
   data() {
     const now = this.nowDate();
-    const date = this.date ? this.date : now;
+    const date = this.date && moment(this.date).isValid()
+      ? this.date : now;
     return {
       denseWidth: false,
       now,
