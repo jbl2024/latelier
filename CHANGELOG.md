@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update vuetify to 2.3.6
 
 ### Removed
+- Support for ff <= 60
+- Legacy route support (was needed for ff <= 60)
 
 ## [v3.0.1 2020-07-01]
 
