@@ -312,7 +312,7 @@ html {
 }
 
 /* fix for safari : all parents must have height defined for height:100% to work */
-.v-content__wrap {
+.v-main__wrap {
   height: 100%;
 }
 
