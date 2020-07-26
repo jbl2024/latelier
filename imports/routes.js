@@ -17,13 +17,6 @@ import OrganizationSettings from "/imports/ui/organizations/OrganizationSettings
 import ProjectsPage from "/imports/ui/projects/ProjectsPage.vue";
 import Project from "/imports/ui/projects/Project.vue";
 import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
-import ProjectSettings from "/imports/ui/projects/ProjectSettings.vue";
-import ProjectCanvas from "/imports/ui/projects/ProjectCanvas.vue";
-import ProjectWeather from "/imports/ui/projects/ProjectWeather.vue";
-import ProjectAttachmentsPage from "/imports/ui/projects/ProjectAttachmentsPage.vue";
-
-import MailSettingsPage from "/imports/ui/settings/MailSettingsPage.vue";
-import ProfileSettingsPage from "/imports/ui/settings/ProfileSettingsPage.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
 import ProjectInfo from "/imports/ui/projects/ProjectInfo.vue";
 
@@ -119,7 +112,7 @@ export default [
     path: "/projects-settings/:projectId",
     name: "project-settings",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectSettings,
+    component: async () => (await import("/imports/ui/projects/ProjectSettings.vue")).default,
     props: true,
     meta: {
       isProject: true
@@ -169,7 +162,7 @@ export default [
     path: "/projects-canvas/:projectId",
     name: "project-canvas",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectCanvas,
+    component: async () => (await import("/imports/ui/projects/ProjectCanvas.vue")).default,
     props: true,
     meta: {
       isProject: true
@@ -179,7 +172,7 @@ export default [
     path: "/projects-weather/:projectId",
     name: "project-weather",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectWeather,
+    component: async () => (await import("/imports/ui/projects/ProjectWeather.vue")).default,
     props: true,
     meta: {
       isProject: true
@@ -189,7 +182,7 @@ export default [
     path: "/projects-attachments/:projectId",
     name: "project-attachments-page",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: ProjectAttachmentsPage,
+    component: async () => (await import("/imports/ui/projects/ProjectAttachmentsPage.vue")).default,
     props: true,
     meta: {
       isProject: true
@@ -226,14 +219,14 @@ export default [
     path: "/settings/mail",
     name: "mail-settings-page",
     beforeEnter: isBasicAuth,
-    component: MailSettingsPage,
+    component: async () => (await import("/imports/ui/settings/MailSettingsPage.vue")).default,
     props: true
   },
   {
     path: "/settings/profile",
     name: "profile-settings-page",
     beforeEnter: isBasicAuth,
-    component: ProfileSettingsPage,
+    component: async () => (await import("/imports/ui/settings/ProfileSettingsPage.vue")).default,
     props: true
   },
   {
