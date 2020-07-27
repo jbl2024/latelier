@@ -67,6 +67,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import { mapState } from "vuex";
 
@@ -240,7 +241,7 @@ export default {
             name: "project-attachments-page",
             params: { projectId: this.projectId }
           },
-          isActive: this.display !== "bottom-navigation"
+          isActive: this.display !== "bottom-navigation" && !Meteor.settings.public.disableAttachments
         },
         {
           id: "bpmn",

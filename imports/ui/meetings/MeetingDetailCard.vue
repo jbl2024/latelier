@@ -171,6 +171,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
@@ -233,6 +234,9 @@ export default {
       return this.selectedAction.actionId;
     },
     hasDocuments() {
+      if (Meteor.settings.public.disableAttachments) {
+        return false;
+      }
       if (!this.meeting) return false;
       return Array.isArray(this.meeting?.documents) && this.meeting.documents.length > 0;
     },

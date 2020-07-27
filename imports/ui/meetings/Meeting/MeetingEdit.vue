@@ -142,7 +142,7 @@
             </div>
 
             <!-- Documents -->
-            <div class="meeting-edit__documents">
+            <div v-if="!attachmentsDisabled" class="meeting-edit__documents">
               <div
                 class="meeting-edit__header"
                 @click="showDocumentsSection = !showDocumentsSection"
@@ -242,6 +242,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import MeetingInfos from "./MeetingInfos";
 import MeetingAttendeesList from "./MeetingAttendees/MeetingAttendeesList";
 import MeetingExternalAttendees from "./MeetingAttendees/MeetingExternalAttendees";
@@ -348,6 +349,9 @@ export default {
     };
   },
   computed: {
+    attachmentsDisabled() {
+      return Meteor.settings.public.disableAttachments;
+    },
     canSelectProject() {
       return Boolean(this.organizationId && this.isNewMeeting);
     },

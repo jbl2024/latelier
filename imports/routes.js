@@ -1,3 +1,4 @@
+import { Meteor } from "meteor/meteor";
 import { isBasicAuth, projectAuth, meetingAuth } from "./router/check-auth";
 import { projectHasFeature, organizationHasFeature } from "./router/guards";
 import multiguard from "vue-router-multiguard";
@@ -20,7 +21,7 @@ import TaskRedirect from "/imports/ui/projects/TaskRedirect.vue";
 import DashboardPage from "/imports/ui/dashboard/DashboardPage.vue";
 import ProjectInfo from "/imports/ui/projects/ProjectInfo.vue";
 
-export default [
+const routes = [
   {
     path: "/",
     name: "home",
@@ -275,3 +276,18 @@ export default [
   },
   { path: "*", name: "not-found", component: NotFound }
 ];
+
+if (!Meteor.settings.public.disableAttachments) {
+  routes.push({
+    path: "/projects-attachments/:projectId",
+    name: "project-attachments-page",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: async () => (await import("/imports/ui/projects/ProjectAttachmentsPage.vue")).default,
+    props: true,
+    meta: {
+      isProject: true
+    }
+  });
+}
+
+export default routes;

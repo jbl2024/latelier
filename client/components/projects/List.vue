@@ -281,6 +281,10 @@ export default {
     onDrop(event) {
       event.preventDefault();
 
+      if (Meteor.settings.public.disableAttachments) {
+        return;
+      }
+
       const files = [];
       if (event.dataTransfer.items) {
         for (let i = 0; i < event.dataTransfer.items.length; i++) {
