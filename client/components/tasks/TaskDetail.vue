@@ -51,7 +51,7 @@
                 <!-- eslint-disable -->
                 <path
                   d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                  style="stroke: white;fill:white;"
+                  style="stroke: white; fill: white;"
                 ></path>
                 <!-- eslint-enable -->
               </svg>
@@ -89,8 +89,8 @@
                 name: 'project-task',
                 params: {
                   projectId: taskObject.project._id,
-                  taskId: taskObject._id
-                }
+                  taskId: taskObject._id,
+                },
               }"
             >
               [{{ taskObject.project.name }}]
@@ -127,7 +127,6 @@
         </v-layout>
       </div>
 
-
       <v-divider />
 
       <v-tabs
@@ -160,7 +159,7 @@
             {{ $t("List") }}
           </v-badge>
         </v-tab>
-        <v-tab id="tab-attachments">
+        <v-tab v-if="!attachmentsDisabled" id="tab-attachments">
           <v-badge
             color="green"
             :value="attachmentsCount > 0"
@@ -178,7 +177,11 @@
         <v-tab-item :transition="false" :reverse-transition="false">
           <task-checklist-in-detail :task="task" />
         </v-tab-item>
-        <v-tab-item :transition="false" :reverse-transition="false">
+        <v-tab-item
+          v-if="!attachmentsDisabled"
+          :transition="false"
+          :reverse-transition="false"
+        >
           <task-attachments :task="task" />
         </v-tab-item>
       </v-tabs>
@@ -187,6 +190,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
@@ -238,6 +242,9 @@ export default {
     hideLabels() {
       if (this.taskObject && this.taskObject.project) return true;
       return false;
+    },
+    attachmentsDisabled() {
+      return Meteor.settings.public.disableAttachments;
     }
   },
   watch: {
@@ -249,7 +256,7 @@ export default {
   },
   meteor: {
     $subscribe: {
-      task: function() {
+      task: function () {
         return [this.taskId];
       }
     },
@@ -433,8 +440,7 @@ export default {
   margin-right: 8px;
 }
 .default-toolbar {
-
-  .v-toolbar__content>.v-btn.v-btn--icon:first-child+.v-toolbar__title,
+  .v-toolbar__content > .v-btn.v-btn--icon:first-child + .v-toolbar__title,
   .default-toolbar-title {
     padding: 0;
     display: flex;
@@ -465,7 +471,6 @@ export default {
   margin-top: 12px;
   margin-left: 12px;
 }
-
 
 .project-link {
   margin-bottom: 12px;
@@ -498,5 +503,4 @@ pre {
   flex: 2;
   font-size: 18px;
 }
-
 </style>

@@ -47,7 +47,7 @@
             </div>
           </div>
         </v-col>
-        <v-col :cols="3">
+        <v-col :cols="colsForProjectCard">
           <div class="indicator sep">
             <div class="legend grey--text">
               <v-icon small>
@@ -62,7 +62,7 @@
             </div>
           </div>
         </v-col>
-        <v-col :cols="3">
+        <v-col :cols="colsForProjectCard">
           <div class="indicator sep">
             <div class="legend grey--text">
               <v-icon small>
@@ -77,7 +77,7 @@
             </div>
           </div>
         </v-col>
-        <v-col :cols="3">
+        <v-col v-if="!attachmentsDisabled" :cols="colsForProjectCard">
           <div class="indicator">
             <div class="legend grey--text">
               <v-icon small>
@@ -201,6 +201,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import { Attachments } from "/imports/api/attachments/attachments.js";
@@ -235,6 +236,17 @@ export default {
         Users: "Utilisateurs",
         Tasks: "Tâches"
       }
+    }
+  },
+  computed: {
+    attachmentsDisabled() {
+      return Meteor.settings.public.disableAttachments;
+    },
+    colsForProjectCard() {
+      if (this.attachmentsDisabled) {
+        return 4;
+      }
+      return 3;
     }
   },
   methods: {

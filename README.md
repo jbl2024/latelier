@@ -51,6 +51,7 @@ Settings:
 | public.seo.titlePrefix         | string   | l'atelier       | window.title prefix                              |
 | public.sso                     | object   | {}              | See below                                        |
 | public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
+| public.disableAttachments      | boolean  | false           | If true, attachments are disabled                |
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |

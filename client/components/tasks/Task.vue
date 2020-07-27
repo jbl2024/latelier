@@ -156,6 +156,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { mapState, mapGetters } from "vuex";
@@ -315,6 +316,9 @@ export default {
     },
 
     hasAttachments(task) {
+      if (Meteor.settings.public.disableAttachments) {
+        return false;
+      }
       return Attachments.find({ "meta.taskId": task._id }).count() > 0;
     },
 
@@ -353,6 +357,10 @@ export default {
 
     onDrop(event) {
       event.preventDefault();
+      if (Meteor.settings.public.disableAttachments) {
+        return;
+      }
+
       const { task } = this;
       const files = [];
       if (event.dataTransfer.items) {
