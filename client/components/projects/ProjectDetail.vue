@@ -83,7 +83,7 @@
       </v-list-item>
     </v-list>
     <v-divider />
-    <main-menu :project="{_id: project._id}" display="list" />
+    <main-menu :project="project" display="list" />
   </div>
 </template>
 
