@@ -69,6 +69,32 @@
         </div>
       </div>
 
+      <v-subheader>
+        {{ $t("Features") }}
+        <v-btn text icon @click="showSelectFeature = true">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-subheader>
+      <v-list v-if="projectFeatures.length > 0" class="elevation-1">
+        <v-list-item v-for="feature in projectFeatures" :key="feature.name">
+          <v-list-item-avatar v-if="feature.icon">
+            <v-icon>
+              {{ feature.icon }}
+            </v-icon>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ feature.text }}
+            </v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn text icon @click.stop="removeFeature(feature.name)">
+              <v-icon>mdi-delete</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+
       <v-subheader>{{ $t("State") }}</v-subheader>
       <div class="elevation-1 state">
         <v-select
@@ -190,31 +216,6 @@
         </v-list-item>
       </v-list>
 
-      <v-subheader>
-        {{ $t("Features") }}
-        <v-btn text icon @click="showSelectFeature = true">
-          <v-icon>mdi-plus</v-icon>
-        </v-btn>
-      </v-subheader>
-      <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-        <v-list-item v-for="feature in projectFeatures" :key="feature.name">
-          <v-list-item-avatar v-if="feature.icon">
-            <v-icon>
-              {{ feature.icon }}
-            </v-icon>
-          </v-list-item-avatar>
-          <v-list-item-content>
-            <v-list-item-title>
-              {{ feature.text }}
-            </v-list-item-title>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-btn text icon @click.stop="removeFeature(feature.name)">
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </v-list-item-action>
-        </v-list-item>
-      </v-list>
     </div>
   </div>
 </template>
