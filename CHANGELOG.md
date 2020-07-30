@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Update vuetify to 2.3.6
 - BPMN is a feature (and is hidden in menu if not activated in project)
+- Project weather is a feature (and is hidden in menu if not activated in project)
+- Project canvas is a feature (and is hidden in menu if not activated in project)
 
 ### Removed
 - Support for ff <= 60

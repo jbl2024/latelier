@@ -253,6 +253,7 @@ export default {
         },
         {
           id: "canvas",
+          feature: "canvas",
           title: this.$t("Canvas"),
           icon: "mdi-file-document-box-check",
           to: { name: "project-canvas", params: { projectId: this.projectId } },
@@ -260,6 +261,7 @@ export default {
         },
         {
           id: "weather",
+          feature: "weather",
           title: this.$t("Weather"),
           icon: "mdi-white-balance-sunny",
           to: {

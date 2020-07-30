@@ -18,13 +18,13 @@
           <v-col v-if="hasFeature(currentProject, 'meetings')" :cols="cardColumns">
             <meeting-card :project="currentProject" :info="info" />
           </v-col>
-          <v-col :cols="cardColumns">
+          <v-col v-if="hasFeature(currentProject, 'canvas')" :cols="cardColumns">
             <canvas-card :project="currentProject" :info="info" />
           </v-col>
           <v-col v-if="hasFeature(currentProject, 'bpmn')" :cols="cardColumns">
             <process-card :project="currentProject" :info="info" />
           </v-col>
-          <v-col :cols="cardColumns">
+          <v-col v-if="hasFeature(currentProject, 'weather')" :cols="cardColumns">
             <weather-card :project="currentProject" :info="info" />
           </v-col>
         </v-row>
