@@ -245,6 +245,7 @@ export default {
         },
         {
           id: "bpmn",
+          feature: "bpmn",
           title: this.$t("BPMN"),
           icon: "mdi-chart-donut",
           to: { name: "project-bpmn", params: { projectId: this.projectId } },

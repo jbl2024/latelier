@@ -15,13 +15,13 @@
           <v-col cols="12">
             <project-card :project="currentProject" :user="currentUser" :info="info" />
           </v-col>
-          <v-col :cols="cardColumns">
+          <v-col v-if="hasFeature(currentProject, 'meetings')" :cols="cardColumns">
             <meeting-card :project="currentProject" :info="info" />
           </v-col>
           <v-col :cols="cardColumns">
             <canvas-card :project="currentProject" :info="info" />
           </v-col>
-          <v-col :cols="cardColumns">
+          <v-col v-if="hasFeature(currentProject, 'bpmn')" :cols="cardColumns">
             <process-card :project="currentProject" :info="info" />
           </v-col>
           <v-col :cols="cardColumns">
@@ -106,6 +106,11 @@ export default {
       const { cards } = this.$refs;
       const width = cards.offsetWidth;
       this.cardColumns = width > 600 ? 3 : 12;
+    },
+
+    hasFeature(project, feature) {
+      return Array.isArray(project?.features)
+        && project.features.includes(feature);
     }
   }
 };

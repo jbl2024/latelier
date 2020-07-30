@@ -235,7 +235,8 @@
       "chooseFeature": "Choose feature",
       "features": {
         "estimation": "Task estimation",
-        "meetings": "Meetings"
+        "meetings": "Meetings",
+        "bpmn": "BPMN"
       }
     }
   },
