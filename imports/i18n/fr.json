@@ -243,7 +243,8 @@
       "chooseFeature": "Sélectionner une fonctionnalité",
       "features": {
         "estimation": "Estimation de tâche",
-        "meetings": "Réunions"
+        "meetings": "Réunions",
+        "bpmn": "BPMN"
       }
     }
   },

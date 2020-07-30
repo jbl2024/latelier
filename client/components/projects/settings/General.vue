@@ -256,7 +256,8 @@ export default {
       editDescription: false,
       features: Object.freeze([
         { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
-        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" }
+        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" },
+        { name: "bpmn", text: this.$t("projects.features.features.bpmn"), icon: "mdi-chart-donut" }
       ])
     };
   },
