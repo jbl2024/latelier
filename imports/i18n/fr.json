@@ -244,7 +244,9 @@
       "features": {
         "estimation": "Estimation de tâche",
         "meetings": "Réunions",
-        "bpmn": "BPMN"
+        "bpmn": "BPMN",
+        "canvas": "Canevas",
+        "weather": "Météo"
       }
     }
   },

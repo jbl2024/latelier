@@ -139,7 +139,9 @@ export default {
       features: Object.freeze([
         { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
         { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" },
-        { name: "bpmn", text: this.$t("projects.features.features.bpmn"), icon: "mdi-chart-donut" }
+        { name: "bpmn", text: this.$t("projects.features.features.bpmn"), icon: "mdi-chart-donut" },
+        { name: "canvas", text: this.$t("projects.features.features.canvas"), icon: "mdi-file-document-box-check" },
+        { name: "weather", text: this.$t("projects.features.features.weather"), icon: "mdi-white-balance-sunny" }
       ]),
       selectedFeatures: []
     };
