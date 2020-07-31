@@ -72,9 +72,18 @@ export default {
       };
     }
     this.sortable = Sortable.create(this.$refs.tasks, options);
+
+    this.$events.listen("task-disable-drag", () => {
+      this.sortable.option("disabled", true);
+    });
+    this.$events.listen("task-enable-drag", () => {
+      this.sortable.option("disabled", false);
+    });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
+    this.$events.off("task-disable-drag");
+    this.$events.off("task-enable-drag");
     this.sortable.destroy();
   },
   meteor: {

@@ -91,6 +91,7 @@
               <v-textarea
                 ref="name"
                 v-model="task.name"
+                v-click-outside="updateName"
                 class="edit-name"
                 background-color="white"
                 autofocus
@@ -245,6 +246,7 @@ export default {
         e.stopPropagation();
       }
       this.$events.fire("task-cancel-edit-name", this.task);
+      this.$events.fire("task-disable-drag");
       this.savedName = this.task.name;
       this.editName = true;
       this.$nextTick(() => this.$refs.name.focus());
@@ -254,6 +256,7 @@ export default {
       if (e) {
         e.stopPropagation();
       }
+      this.$events.fire("task-enable-drag");
       this.editName = false;
       if (this.task.name.length === 0) {
         this.task.name = this.savedName;
@@ -275,6 +278,7 @@ export default {
       if (e) {
         e.stopPropagation();
       }
+      this.$events.fire("task-enable-drag");
       this.editName = false;
       this.task.name = this.savedName;
     },
