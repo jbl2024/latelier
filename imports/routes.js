@@ -180,16 +180,6 @@ const routes = [
     }
   },
   {
-    path: "/projects-attachments/:projectId",
-    name: "project-attachments-page",
-    beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: async () => (await import("/imports/ui/projects/ProjectAttachmentsPage.vue")).default,
-    props: true,
-    meta: {
-      isProject: true
-    }
-  },
-  {
     path: "/projects/:projectId/:taskId",
     name: "project-task",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
