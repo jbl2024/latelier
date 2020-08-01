@@ -91,7 +91,6 @@
               <v-textarea
                 ref="name"
                 v-model="task.name"
-                v-click-outside="updateName"
                 class="edit-name"
                 background-color="white"
                 autofocus
