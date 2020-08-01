@@ -139,7 +139,7 @@ Meteor.methods({
       completed: true
     });
     tasks.forEach((task) => {
-      Meteor.call("tasks.move", projectId, list._id, task._id, 0);
+      Meteor.call("tasks.move", projectId, list._id, task._id, /* move task to top */ -1);
     });
   }
 });
