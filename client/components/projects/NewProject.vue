@@ -1,108 +1,116 @@
 <template>
   <div class="new-project">
-    <select-feature
-      :active.sync="showSelectFeature"
-      :features="features"
-      @select="onSelectFeature"
-    />
     <generic-dialog
       v-model="showDialog"
       max-width="820"
       :title="$t('New project')"
     >
       <template v-slot:content>
-        <v-stepper v-model="stepper" non-linear vertical class="stepper">
-          <v-stepper-step step="1" editable>
-            {{ $t('Name') }}
-            <div v-if="name && stepper != 1" class="subtitle-2 grey--text">
-              {{ name }}
-            </div>
-          </v-stepper-step>
-          <v-stepper-content step="1">
-            <v-text-field
-              v-model="name"
-              autofocus
-              :label="$t('Name')"
-            />
-            <v-btn :disabled="!isStep1Completed()" color="primary" @click="stepper = 2">
-              {{ $t('Next') }}
-            </v-btn>
-          </v-stepper-content>
-
-          <v-stepper-step step="2" editable>
-            {{ $t('Features') }}
-          </v-stepper-step>
-
-          <v-stepper-content step="2">
-            <v-container fluid>
-              <v-row dense>
-                <v-col
-                  v-for="feature in features"
-                  :key="feature.text"
-                  :cols="$vuetify.breakpoint.xsOnly ? 12 : 6"
+        <div class="project-wrapper">
+          <div class="project">
+            <v-stepper v-model="stepper" non-linear vertical class="stepper">
+              <v-stepper-step step="1" editable>
+                {{ $t("Name") }}
+                <div v-if="name && stepper != 1" class="subtitle-2 grey--text">
+                  {{ name }}
+                </div>
+              </v-stepper-step>
+              <v-stepper-content step="1">
+                <v-text-field v-model="name" autofocus :label="$t('Name')" />
+                <v-btn
+                  :disabled="!isStep1Completed()"
+                  color="primary"
+                  @click="stepper = 2"
                 >
-                  <v-card :class="{ 'feature-card': true, 'selected': feature.selected }" @click="feature.selected = !feature.selected">
-                    <v-card-title>
-                      <v-icon v-if="!feature.selected" large left>
-                        {{ feature.icon }}
-                      </v-icon>
-                      <v-icon v-if="feature.selected" large left color="success">
-                        mdi-check-circle
-                      </v-icon>
-                      {{ feature.text }}
-                    </v-card-title>
-                    <v-card-subtitle class="mt-2">{{ feature.subtitle }}</v-card-subtitle>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
-            <div class="mt-2">
-              <v-btn v-if="organizationId" color="primary" @click="stepper = 3">
-                {{ $t('Next') }}
-              </v-btn>
-              <v-btn text @click="stepper = 1">
-                {{ $t('Previous') }}
-              </v-btn>
-            </div>
-          </v-stepper-content>
+                  {{ $t("Next") }}
+                </v-btn>
+              </v-stepper-content>
 
-          <v-stepper-step v-if="organizationId" step="3" editable>
-            {{ $t('Access rights') }}
-          </v-stepper-step>
+              <v-stepper-step step="2" editable>
+                {{ $t("Features") }}
+              </v-stepper-step>
 
-          <v-stepper-content v-if="organizationId" step="3">
-            <v-list class="elevation-1">
-              <v-list-item @click="allowOrganization = !allowOrganization">
-                <v-list-item-avatar>
-                  <v-icon>
-                    {{ getVisibilityIcon(allowOrganization) }}
-                  </v-icon>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ getVisibilityText(allowOrganization) }}
-                  </v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-switch
-                    v-model="allowOrganization"
-                    color="accent"
-                    @click="allowOrganization = !allowOrganization"
-                  />
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
-            <div class="mt-2">
-              <v-btn @click="stepper = 2">
-                {{ $t('Previous') }}
-              </v-btn>
-            </div>
-          </v-stepper-content>
-        </v-stepper>
+              <v-stepper-content step="2">
+                <v-container fluid>
+                  <v-row dense>
+                    <v-col
+                      v-for="feature in features"
+                      :key="feature.text"
+                      :cols="$vuetify.breakpoint.xsOnly ? 12 : 6"
+                    >
+                      <v-card
+                        :class="{
+                          'feature-card': true,
+                          selected: feature.selected,
+                        }"
+                        @click="feature.selected = !feature.selected"
+                      >
+                        <v-card-title>
+                          <v-icon v-if="!feature.selected" large left>
+                            {{ feature.icon }}
+                          </v-icon>
+                          <v-icon
+                            v-if="feature.selected"
+                            large
+                            left
+                            color="success"
+                          >
+                            mdi-check-circle
+                          </v-icon>
+                          {{ feature.text }}
+                        </v-card-title>
+                        <v-card-subtitle class="mt-2">
+                          {{ feature.subtitle }}
+                        </v-card-subtitle>
+                      </v-card>
+                    </v-col>
+                  </v-row>
+                </v-container>
+                <div class="pt-2">
+                  <v-btn
+                    v-if="organizationId"
+                    color="primary"
+                    @click="stepper = 3"
+                  >
+                    {{ $t("Next") }}
+                  </v-btn>
+                </div>
+              </v-stepper-content>
+
+              <v-stepper-step v-if="organizationId" step="3" editable>
+                {{ $t("Access rights") }}
+              </v-stepper-step>
+
+              <v-stepper-content v-if="organizationId" step="3">
+                <v-list class="elevation-1">
+                  <v-list-item @click="allowOrganization = !allowOrganization">
+                    <v-list-item-avatar>
+                      <v-icon>
+                        {{ getVisibilityIcon(allowOrganization) }}
+                      </v-icon>
+                    </v-list-item-avatar>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{ getVisibilityText(allowOrganization) }}
+                      </v-list-item-title>
+                    </v-list-item-content>
+                    <v-list-item-action>
+                      <v-switch
+                        v-model="allowOrganization"
+                        color="accent"
+                        @click="allowOrganization = !allowOrganization"
+                      />
+                    </v-list-item-action>
+                  </v-list-item>
+                </v-list>
+              </v-stepper-content>
+            </v-stepper>
+          </div>
+        </div>
       </template>
 
       <template v-slot:actions>
-        <v-btn text :disabled="!isStep1Completed()" @click="create">
+        <v-btn color="primary" :disabled="!isStep1Completed()" @click="create">
           {{ $t("Create") }}
         </v-btn>
       </template>
@@ -128,7 +136,6 @@ export default {
     return {
       stepper: 1,
       showDialog: false,
-      showSelectFeature: false,
       projectType: "kanban",
       projectState: ProjectStates.DEVELOPMENT,
       allowOrganization: true,
@@ -174,13 +181,18 @@ export default {
           icon: "mdi-white-balance-sunny",
           selected: false
         }
-      ],
-      selectedFeatures: []
+      ]
     };
   },
   computed: {
-    projectFeatures() {
-      return this.selectedFeatures.map((feature) => this.features.find((feat) => feat.name === feature));
+    selectedFeatures() {
+      const selected = [];
+      this.features.forEach((feature) => {
+        if (feature.selected) {
+          selected.push(feature.name);
+        }
+      });
+      return selected;
     }
   },
   methods: {
@@ -189,17 +201,6 @@ export default {
     },
     close() {
       this.showDialog = false;
-    },
-    onSelectFeature(feature) {
-      if (!this.selectedFeatures.includes(feature)) {
-        this.selectedFeatures.push(feature);
-      }
-    },
-    removeFeature(feature) {
-      const index = this.selectedFeatures.findIndex((feat) => feat === feature);
-      if (index !== -1) {
-        this.selectedFeatures.splice(index, 1);
-      }
     },
     create() {
       Meteor.call(
@@ -261,6 +262,33 @@ export default {
 </script>
 
 <style scoped>
+.project-wrapper {
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (min-width: 601px) {
+  .project-wrapper {
+    height: calc(100vh - 200px);
+    min-height: 360px;
+    max-height: 530px;
+    overflow-y: scroll;
+  }
+}
+
+@media (max-width: 600px) {
+  .project-wrapper {
+    overflow-y: scroll;
+  }
+}
+
+.project {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  -webkit-overflow-scrolling: touch;
+}
+
+
 .stepper {
   box-shadow: none;
 }

@@ -244,19 +244,19 @@
       "features": {
         "estimation": {
           "text": "Estimation de tâche",
-          "subtitle": "Chaque tâche possède une estimation"
+          "subtitle": "Indiquez pour chaque tâche la durée estimée ainsi que le temps déja passé. Les unités sont volontairement omises."
         },
         "meetings": {
           "text": "Réunions",
-          "subtitle": "Organisez vos réunions projet, rédiger le compte-rendu et rattachez des tâches au relevé de décisions"
+          "subtitle": "Organisez vos réunions projet, rédiger le compte-rendu et rattachez des tâches au relevé de décisions."
         },
         "bpmn": {
           "text": "BPMN",
-          "subtitle": "Décrivez les processus métiers liés à votre projet"
+          "subtitle": "Décrivez les processus métiers liés à votre projet."
         },
         "canvas": {
           "text": "Canevas",
-          "subtitle": "Rédigez et partagez la vision stratégique du projet"
+          "subtitle": "Rédigez et partagez la vision stratégique du projet."
         },
         "weather": {
           "text": "Météo",
