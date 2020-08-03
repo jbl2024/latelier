@@ -260,7 +260,7 @@
         },
         "weather": {
           "text": "Météo",
-          "subtitle": "Permet de communiquer l'état de votre projet sous la forme d'un bulletin météo. Les tâches terminées sont également affichées."
+          "subtitle": "Communiquez l'état de votre projet sous la forme d'un bulletin météo. Les tâches terminées sont également affichées."
         }
       }
     }

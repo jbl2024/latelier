@@ -33,6 +33,11 @@
               <v-stepper-content step="2">
                 <v-container fluid>
                   <v-row dense>
+                    <v-col :cols="12">
+                      <div class="subtitle-2 grey--text">
+                        {{ $t('projects.features.chooseFeature') }}
+                      </div>
+                    </v-col>
                     <v-col
                       v-for="feature in features"
                       :key="feature.text"
@@ -59,7 +64,7 @@
                           </v-icon>
                           {{ feature.text }}
                         </v-card-title>
-                        <v-card-subtitle class="mt-2">
+                        <v-card-subtitle class="mt-1">
                           {{ feature.subtitle }}
                         </v-card-subtitle>
                       </v-card>
