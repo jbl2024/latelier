@@ -12,7 +12,7 @@
     >
       <template v-slot:content>
         <v-stepper v-model="stepper" non-linear vertical class="stepper">
-          <v-stepper-step :complete="isStep1Completed()" step="1" editable>
+          <v-stepper-step step="1" editable>
             {{ $t('Name') }}
             <div v-if="name && stepper != 1" class="subtitle-2 grey--text">
               {{ name }}
@@ -34,38 +34,28 @@
           </v-stepper-step>
 
           <v-stepper-content step="2">
-            <v-subheader>
-              {{ $t("Features") }}
-              <v-btn text icon @click="showSelectFeature = true">
-                <v-icon>mdi-plus</v-icon>
-              </v-btn>
-            </v-subheader>
-            <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-              <v-list-item
-                v-for="feature in projectFeatures"
-                :key="feature.name"
-              >
-                <v-list-item-avatar v-if="feature.icon">
-                  <v-icon>
-                    {{ feature.icon }}
-                  </v-icon>
-                </v-list-item-avatar>
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{ feature.text }}
-                  </v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-btn
-                    text
-                    icon
-                    @click.stop="removeFeature(feature.name)"
-                  >
-                    <v-icon>mdi-delete</v-icon>
-                  </v-btn>
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
+            <v-container fluid>
+              <v-row dense>
+                <v-col
+                  v-for="feature in features"
+                  :key="feature.text"
+                  :cols="$vuetify.breakpoint.xsOnly ? 12 : 6"
+                >
+                  <v-card :class="{ 'feature-card': true, 'selected': feature.selected }" @click="feature.selected = !feature.selected">
+                    <v-card-title>
+                      <v-icon v-if="!feature.selected" large left>
+                        {{ feature.icon }}
+                      </v-icon>
+                      <v-icon v-if="feature.selected" large left color="success">
+                        mdi-check-circle
+                      </v-icon>
+                      {{ feature.text }}
+                    </v-card-title>
+                    <v-card-subtitle class="mt-2">{{ feature.subtitle }}</v-card-subtitle>
+                  </v-card>
+                </v-col>
+              </v-row>
+            </v-container>
             <div class="mt-2">
               <v-btn v-if="organizationId" color="primary" @click="stepper = 3">
                 {{ $t('Next') }}
@@ -103,7 +93,7 @@
               </v-list-item>
             </v-list>
             <div class="mt-2">
-              <v-btn text @click="stepper = 2">
+              <v-btn @click="stepper = 2">
                 {{ $t('Previous') }}
               </v-btn>
             </div>
@@ -148,33 +138,43 @@ export default {
         (v) => !!v || this.$t("Name is mandatory"),
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
-      features: Object.freeze([
+      features: [
         {
           name: "estimation",
-          text: this.$t("projects.features.features.estimation"),
-          icon: "mdi-timelapse"
+          text: this.$t("projects.features.features.estimation.text"),
+          subtitle: this.$t("projects.features.features.estimation.subtitle"),
+          icon: "mdi-timelapse",
+          selected: false
         },
         {
           name: "meetings",
-          text: this.$t("projects.features.features.meetings"),
-          icon: "mdi-calendar-star"
+          text: this.$t("projects.features.features.meetings.text"),
+          subtitle: this.$t("projects.features.features.meetings.subtitle"),
+          icon: "mdi-calendar-star",
+          selected: false
         },
         {
           name: "bpmn",
-          text: this.$t("projects.features.features.bpmn"),
-          icon: "mdi-chart-donut"
+          text: this.$t("projects.features.features.bpmn.text"),
+          subtitle: this.$t("projects.features.features.bpmn.subtitle"),
+          icon: "mdi-chart-donut",
+          selected: false
         },
         {
           name: "canvas",
-          text: this.$t("projects.features.features.canvas"),
-          icon: "mdi-file-document-box-check"
+          text: this.$t("projects.features.features.canvas.text"),
+          subtitle: this.$t("projects.features.features.canvas.subtitle"),
+          icon: "mdi-file-document-box-check",
+          selected: false
         },
         {
           name: "weather",
-          text: this.$t("projects.features.features.weather"),
-          icon: "mdi-white-balance-sunny"
+          text: this.$t("projects.features.features.weather.text"),
+          subtitle: this.$t("projects.features.features.weather.subtitle"),
+          icon: "mdi-white-balance-sunny",
+          selected: false
         }
-      ]),
+      ],
       selectedFeatures: []
     };
   },
@@ -263,5 +263,19 @@ export default {
 <style scoped>
 .stepper {
   box-shadow: none;
+}
+
+.feature-card {
+  border: 4px solid transparent;
+  transition: border 0.5s;
+  min-height: 158px;
+}
+
+.feature-card:hover {
+  border: 4px solid #2675c5;
+}
+
+.feature-card.selected {
+  border: 4px solid #2675c5;
 }
 </style>
