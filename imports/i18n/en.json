@@ -402,5 +402,7 @@
     "removeSuccess": "Document successfully removed",
     "none": "No document",
     "noneFound": "No document found"
-  }  
+  },
+  "Next": "Next",
+  "Previous": "Previous"
 }

@@ -411,5 +411,7 @@
     "removeSuccess": "Document supprimé avec succès",
     "none": "Aucun document",
     "noneFound": "Aucun document trouvé"
-  }
+  },
+  "Next": "Suivant",
+  "Previous": "Précédent"
 }

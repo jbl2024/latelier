@@ -7,101 +7,112 @@
     />
     <generic-dialog
       v-model="showDialog"
-      max-width="420"
+      max-width="820"
       :title="$t('New project')"
     >
       <template v-slot:content>
-        <v-form v-model="valid" @submit.prevent>
-          <v-container>
-            <v-row>
-              <v-col cols="12">
-                <v-text-field
-                  v-model="name"
-                  autofocus
-                  :rules="nameRules"
-                  :label="$t('Name')"
-                  required
-                  @keyup.enter="create()"
-                />
-              </v-col>
-              <v-col cols="6">
-                <label>{{ $t("Template") }}</label>
-                <v-radio-group v-model="projectType">
-                  <v-radio color="accent" label="Kanban" value="kanban" />
-                  <v-radio color="accent" :label="$t('People')" value="people" />
-                  <v-radio color="accent" :label="$t('Empty')" value="none" />
-                </v-radio-group>
-              </v-col>
-              <v-col cols="6">
-                <label>{{ $t("State") }}</label>
-                <v-radio-group v-model="projectState">
-                  <v-radio
-                    v-for="item in projectStates()"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                    color="accent"
-                  />
-                </v-radio-group>
-              </v-col>
-              <v-col v-if="organizationId" cols="12">
-                <v-subheader>{{ $t("Access rights") }}</v-subheader>
-                <v-list class="elevation-1">
-                  <v-list-item @click="allowOrganization = !allowOrganization">
-                    <v-list-item-avatar>
-                      <v-icon>
-                        {{ getVisibilityIcon(allowOrganization) }}
-                      </v-icon>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        {{ getVisibilityText(allowOrganization) }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-switch
-                        v-model="allowOrganization"
-                        color="accent"
-                        @click="allowOrganization = !allowOrganization"
-                      />
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-col>
-              <v-col cols="12">
-                <v-subheader>
-                  {{ $t("Features") }}
-                  <v-btn text icon @click="showSelectFeature = true">
-                    <v-icon>mdi-plus</v-icon>
+        <v-stepper v-model="stepper" non-linear vertical class="stepper">
+          <v-stepper-step :complete="isStep1Completed()" step="1" editable>
+            {{ $t('Name') }}
+            <div v-if="name && stepper != 1" class="subtitle-2 grey--text">
+              {{ name }}
+            </div>
+          </v-stepper-step>
+          <v-stepper-content step="1">
+            <v-text-field
+              v-model="name"
+              autofocus
+              :label="$t('Name')"
+            />
+            <v-btn :disabled="!isStep1Completed()" color="primary" @click="stepper = 2">
+              {{ $t('Next') }}
+            </v-btn>
+          </v-stepper-content>
+
+          <v-stepper-step step="2" editable>
+            {{ $t('Features') }}
+          </v-stepper-step>
+
+          <v-stepper-content step="2">
+            <v-subheader>
+              {{ $t("Features") }}
+              <v-btn text icon @click="showSelectFeature = true">
+                <v-icon>mdi-plus</v-icon>
+              </v-btn>
+            </v-subheader>
+            <v-list v-if="projectFeatures.length > 0" class="elevation-1">
+              <v-list-item
+                v-for="feature in projectFeatures"
+                :key="feature.name"
+              >
+                <v-list-item-avatar v-if="feature.icon">
+                  <v-icon>
+                    {{ feature.icon }}
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ feature.text }}
+                  </v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-btn
+                    text
+                    icon
+                    @click.stop="removeFeature(feature.name)"
+                  >
+                    <v-icon>mdi-delete</v-icon>
                   </v-btn>
-                </v-subheader>
-                <v-list v-if="projectFeatures.length > 0" class="elevation-1">
-                  <v-list-item v-for="feature in projectFeatures" :key="feature.name">
-                    <v-list-item-avatar v-if="feature.icon">
-                      <v-icon>
-                        {{ feature.icon }}
-                      </v-icon>
-                    </v-list-item-avatar>
-                    <v-list-item-content>
-                      <v-list-item-title>
-                        {{ feature.text }}
-                      </v-list-item-title>
-                    </v-list-item-content>
-                    <v-list-item-action>
-                      <v-btn text icon @click.stop="removeFeature(feature.name)">
-                        <v-icon>mdi-delete</v-icon>
-                      </v-btn>
-                    </v-list-item-action>
-                  </v-list-item>
-                </v-list>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-form>
+                </v-list-item-action>
+              </v-list-item>
+            </v-list>
+            <div class="mt-2">
+              <v-btn v-if="organizationId" color="primary" @click="stepper = 3">
+                {{ $t('Next') }}
+              </v-btn>
+              <v-btn text @click="stepper = 1">
+                {{ $t('Previous') }}
+              </v-btn>
+            </div>
+          </v-stepper-content>
+
+          <v-stepper-step v-if="organizationId" step="3" editable>
+            {{ $t('Access rights') }}
+          </v-stepper-step>
+
+          <v-stepper-content v-if="organizationId" step="3">
+            <v-list class="elevation-1">
+              <v-list-item @click="allowOrganization = !allowOrganization">
+                <v-list-item-avatar>
+                  <v-icon>
+                    {{ getVisibilityIcon(allowOrganization) }}
+                  </v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ getVisibilityText(allowOrganization) }}
+                  </v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-switch
+                    v-model="allowOrganization"
+                    color="accent"
+                    @click="allowOrganization = !allowOrganization"
+                  />
+                </v-list-item-action>
+              </v-list-item>
+            </v-list>
+            <div class="mt-2">
+              <v-btn text @click="stepper = 2">
+                {{ $t('Previous') }}
+              </v-btn>
+            </div>
+          </v-stepper-content>
+        </v-stepper>
       </template>
 
       <template v-slot:actions>
-        <v-btn text :disabled="!valid" @click="create">
+        <v-btn text :disabled="!isStep1Completed()" @click="create">
           {{ $t("Create") }}
         </v-btn>
       </template>
@@ -120,11 +131,12 @@ export default {
   props: {
     organizationId: {
       type: String,
-      default: ""
+      default: null
     }
   },
   data() {
     return {
+      stepper: 1,
       showDialog: false,
       showSelectFeature: false,
       projectType: "kanban",
@@ -137,20 +149,38 @@ export default {
         (v) => v.length > 1 || this.$t("Name is too short")
       ],
       features: Object.freeze([
-        { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
-        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" },
-        { name: "bpmn", text: this.$t("projects.features.features.bpmn"), icon: "mdi-chart-donut" },
-        { name: "canvas", text: this.$t("projects.features.features.canvas"), icon: "mdi-file-document-box-check" },
-        { name: "weather", text: this.$t("projects.features.features.weather"), icon: "mdi-white-balance-sunny" }
+        {
+          name: "estimation",
+          text: this.$t("projects.features.features.estimation"),
+          icon: "mdi-timelapse"
+        },
+        {
+          name: "meetings",
+          text: this.$t("projects.features.features.meetings"),
+          icon: "mdi-calendar-star"
+        },
+        {
+          name: "bpmn",
+          text: this.$t("projects.features.features.bpmn"),
+          icon: "mdi-chart-donut"
+        },
+        {
+          name: "canvas",
+          text: this.$t("projects.features.features.canvas"),
+          icon: "mdi-file-document-box-check"
+        },
+        {
+          name: "weather",
+          text: this.$t("projects.features.features.weather"),
+          icon: "mdi-white-balance-sunny"
+        }
       ]),
       selectedFeatures: []
     };
   },
   computed: {
     projectFeatures() {
-      return this.selectedFeatures.map((
-        feature
-      ) => this.features.find((feat) => feat.name === feature));
+      return this.selectedFeatures.map((feature) => this.features.find((feat) => feat.name === feature));
     }
   },
   methods: {
@@ -221,7 +251,17 @@ export default {
         return this.$t("Organization");
       }
       return this.$t("The project is private");
+    },
+
+    isStep1Completed() {
+      return this.name && this.name.length > 0;
     }
   }
 };
 </script>
+
+<style scoped>
+.stepper {
+  box-shadow: none;
+}
+</style>
