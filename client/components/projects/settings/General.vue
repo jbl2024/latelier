@@ -254,17 +254,44 @@ export default {
       editName: false,
       editDescription: false,
       features: Object.freeze([
-        { name: "estimation", text: this.$t("projects.features.features.estimation"), icon: "mdi-timelapse" },
-        { name: "meetings", text: this.$t("projects.features.features.meetings"), icon: "mdi-calendar-star" },
-        { name: "bpmn", text: this.$t("projects.features.features.bpmn"), icon: "mdi-chart-donut" },
-        { name: "canvas", text: this.$t("projects.features.features.canvas"), icon: "mdi-file-document-box-check" },
-        { name: "weather", text: this.$t("projects.features.features.weather"), icon: "mdi-white-balance-sunny" }
+        {
+          name: "estimation",
+          text: this.$t("projects.features.features.estimation.text"),
+          subtitle: this.$t("projects.features.features.estimation.subtitle"),
+          icon: "mdi-timelapse"
+        },
+        {
+          name: "meetings",
+          text: this.$t("projects.features.features.meetings.text"),
+          subtitle: this.$t("projects.features.features.meetings.subtitle"),
+          icon: "mdi-calendar-star"
+        },
+        {
+          name: "bpmn",
+          text: this.$t("projects.features.features.bpmn.text"),
+          subtitle: this.$t("projects.features.features.bpmn.subtitle"),
+          icon: "mdi-chart-donut"
+        },
+        {
+          name: "canvas",
+          text: this.$t("projects.features.features.canvas.text"),
+          subtitle: this.$t("projects.features.features.canvas.subtitle"),
+          icon: "mdi-file-document-box-check"
+        },
+        {
+          name: "weather",
+          text: this.$t("projects.features.features.weather.text"),
+          subtitle: this.$t("projects.features.features.weather.subtitle"),
+          icon: "mdi-white-balance-sunny"
+        }
       ])
     };
   },
   computed: {
     projectFeatures() {
-      const projectFeatures = Array.isArray(this.project?.features) ? this.project.features : [];
+      const projectFeatures = Array.isArray(this.project?.features)
+        ? this.project.features
+        : [];
       return projectFeatures.map((feature) => this.features.find((feat) => feat.name === feature));
     },
     allowedOrganization: {

@@ -114,6 +114,7 @@
   "The project is public": "The project is public",
   "The project is private": "The project is private",
   "Features": "Features",
+  "Additional features": "Additional features",
   "Members": "Members",
   "BackgroundNone": "None",
   "Automatically mark as completed": "Automatically mark as completed",
@@ -234,11 +235,26 @@
     "features": {
       "chooseFeature": "Choose feature",
       "features": {
-        "estimation": "Task estimation",
-        "meetings": "Meetings",
-        "bpmn": "BPMN",
-        "canvas": "Canvas",
-        "weather": "Weather"
+        "estimation": {
+          "text": "Task estimation",
+          "subtitle": "Set task estimated size and time spent."
+        },
+        "meetings": {
+          "text": "Meetings",
+          "subtitle": "Organize your meetings, write reports and attach tasks to it."
+        },
+        "bpmn": {
+          "text": "BPMN",
+          "subtitle": "Describe the business processes associated with your project."
+        },
+        "canvas": {
+          "text": "Canvas",
+          "subtitle": "Write and share your strategic vision."
+        },
+        "weather": {
+          "text": "Weather",
+          "subtitle": "Share the project state as a weather report with related completed tasks."
+        }
       }
     }
   },
@@ -402,5 +418,7 @@
     "removeSuccess": "Document successfully removed",
     "none": "No document",
     "noneFound": "No document found"
-  }  
+  },
+  "Next": "Next",
+  "Previous": "Previous"
 }

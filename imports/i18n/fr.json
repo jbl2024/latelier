@@ -117,6 +117,7 @@
   "The project is public": "Le projet est public",
   "The project is private": "Le projet est privé",
   "Features": "Fonctionnalités",
+  "Additional features": "Fonctionnalités supplémentaires",
   "Members": "Membres",
   "BackgroundNone": "Aucun",
   "None": "Aucun",
@@ -242,11 +243,26 @@
     "features": {
       "chooseFeature": "Sélectionner une fonctionnalité",
       "features": {
-        "estimation": "Estimation de tâche",
-        "meetings": "Réunions",
-        "bpmn": "BPMN",
-        "canvas": "Canevas",
-        "weather": "Météo"
+        "estimation": {
+          "text": "Estimation de tâche",
+          "subtitle": "Indiquez pour chaque tâche la durée estimée ainsi que le temps déja passé. Les unités sont volontairement omises."
+        },
+        "meetings": {
+          "text": "Réunions",
+          "subtitle": "Organisez vos réunions projet, rédiger le compte-rendu et rattachez des tâches au relevé de décisions."
+        },
+        "bpmn": {
+          "text": "BPMN",
+          "subtitle": "Décrivez les processus métiers liés à votre projet."
+        },
+        "canvas": {
+          "text": "Canevas",
+          "subtitle": "Rédigez et partagez la vision stratégique du projet."
+        },
+        "weather": {
+          "text": "Météo",
+          "subtitle": "Communiquez l'état de votre projet sous la forme d'un bulletin météo. Les tâches terminées sont également affichées."
+        }
       }
     }
   },
@@ -411,5 +427,7 @@
     "removeSuccess": "Document supprimé avec succès",
     "none": "Aucun document",
     "noneFound": "Aucun document trouvé"
-  }
+  },
+  "Next": "Suivant",
+  "Previous": "Précédent"
 }
