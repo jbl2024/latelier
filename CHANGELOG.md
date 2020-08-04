@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project canvas is a feature (and is hidden in menu if not activated in project)
 - Allow text selection when updating name in task card 
 - Move completed tasks to top in "auto catch completed" list
+- Improve New project dialog (stepper, minimal infos only)
 
 ### Removed
 - Support for ff <= 60
