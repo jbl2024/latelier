@@ -46,7 +46,7 @@
                         @click="feature.selected = !feature.selected"
                       >
                         <v-card-title>
-                          <v-checkbox color="success" v-model="feature.selected" />
+                          <v-checkbox v-model="feature.selected" color="success" />
                           <v-icon color="blue darken-4" large left>
                             {{ feature.icon }}
                           </v-icon>
