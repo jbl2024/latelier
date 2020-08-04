@@ -27,7 +27,7 @@
               </v-stepper-content>
 
               <v-stepper-step step="2" editable>
-                {{ $t("Features") }}
+                {{ $t("Additional features") }}
               </v-stepper-step>
 
               <v-stepper-content step="2">
@@ -46,16 +46,9 @@
                         @click="feature.selected = !feature.selected"
                       >
                         <v-card-title>
-                          <v-icon v-if="!feature.selected" large left>
+                          <v-checkbox color="success" v-model="feature.selected" />
+                          <v-icon color="blue darken-4" large left>
                             {{ feature.icon }}
-                          </v-icon>
-                          <v-icon
-                            v-if="feature.selected"
-                            large
-                            left
-                            color="success"
-                          >
-                            mdi-check-circle
                           </v-icon>
                           {{ feature.text }}
                         </v-card-title>
