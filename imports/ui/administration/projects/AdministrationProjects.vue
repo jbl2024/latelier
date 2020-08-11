@@ -23,6 +23,17 @@
           </v-row>
           <v-row>
             <v-col>
+              <v-btn
+                :loading="migrating"
+                :disabled="migrating"
+                @click="migrateToFeatures()"
+              >
+                {{ $t("Migrate to features") }}
+              </v-btn>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
               <v-list subheader>
                 <v-subheader inset>
                   {{ pagination.totalItems }} {{ $t("Projects") }}
@@ -48,12 +59,22 @@
                       </v-list-item-subtitle>
                     </v-list-item-content>
                     <v-list-item-action v-if="project.deleted">
-                      <v-btn color="red" icon ripple @click.stop="deleteForever(project)">
+                      <v-btn
+                        color="red"
+                        icon
+                        ripple
+                        @click.stop="deleteForever(project)"
+                      >
                         <v-icon>mdi-delete-forever</v-icon>
                       </v-btn>
                     </v-list-item-action>
                     <v-list-item-action v-if="project.deleted">
-                      <v-btn color="blue" icon ripple @click.stop="restoreProject(project)">
+                      <v-btn
+                        color="blue"
+                        icon
+                        ripple
+                        @click.stop="restoreProject(project)"
+                      >
                         <v-icon>mdi-delete-restore</v-icon>
                       </v-btn>
                     </v-list-item-action>
@@ -104,7 +125,8 @@ export default {
         rowsPerPage: 0,
         totalPages: 0
       },
-      filterDeleted: false
+      filterDeleted: false,
+      migrating: false
     };
   },
   watch: {
@@ -212,18 +234,14 @@ export default {
     },
 
     restoreProject(project) {
-      Meteor.call(
-        "projects.restore",
-        { projectId: project._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$notify(this.$t("Project restored"));
-          this.refresh();
+      Meteor.call("projects.restore", { projectId: project._id }, (error) => {
+        if (error) {
+          this.$notifyError(error);
+          return;
         }
-      );
+        this.$notify(this.$t("Project restored"));
+        this.refresh();
+      });
     },
 
     openDetail(project) {
@@ -256,9 +274,19 @@ export default {
 
     getColor(project) {
       return project.color;
+    },
+
+    migrateToFeatures() {
+      this.migrating = true;
+      Meteor.call("admin.projectsMigrateFeatures", {}, (error) => {
+        this.migrating = false;
+        if (error) {
+          this.$notifyError(error);
+          return;
+        }
+        this.$notify(this.$t("Migration finished"));
+      });
     }
-
-
   }
 };
 </script>
