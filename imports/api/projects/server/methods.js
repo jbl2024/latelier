@@ -160,15 +160,13 @@ Projects.methods.adminFind = new ValidatedMethod({
     }
     const count = Projects.find(query).count();
 
-    const data = Projects
-      .find(query, {
-        skip,
-        limit: perPage,
-        sort: {
-          name: 1
-        }
-      })
-      .fetch();
+    const data = Projects.find(query, {
+      skip,
+      limit: perPage,
+      sort: {
+        name: 1
+      }
+    }).fetch();
 
     const loadUser = (aUserId) => {
       if (!aUserId) return {};
@@ -202,8 +200,7 @@ Projects.methods.adminFind = new ValidatedMethod({
   }
 });
 
-
-const projectOrOrganizationRequired = function() {
+const projectOrOrganizationRequired = function () {
   if (!this.field("projectId").value && !this.field("organizationId").value) {
     return SimpleSchema.ErrorTypes.REQUIRED;
   }
@@ -271,9 +268,8 @@ Projects.methods.findUsers = new ValidatedMethod({
       ];
     }
 
-    return Meteor.users.find(
-      query,
-      {
+    return Meteor.users
+      .find(query, {
         fields: {
           profile: 1,
           status: 1,
@@ -281,7 +277,75 @@ Projects.methods.findUsers = new ValidatedMethod({
           statusConnection: 1,
           emails: 1
         }
+      })
+      .fetch();
+  }
+});
+
+Projects.methods.adminMigrateFeatures = new ValidatedMethod({
+  name: "admin.projectsMigrateFeatures",
+  validate: null,
+  run() {
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+
+    const hasMeetings = (project) => Meetings.findOne(
+      { projectId: project._id },
+      {
+        fields: { _id: 1 }
       }
-    ).fetch();
+    );
+
+    const hasBPMN = (project) => ProcessDiagrams.findOne(
+      { projectId: project._id },
+      {
+        fields: { _id: 1 }
+      }
+    );
+
+    const hasCanvas = (project) => Canvas.findOne(
+      { projectId: project._id },
+      {
+        fields: { _id: 1 }
+      }
+    );
+
+    const hasWeather = (project) => HealthReports.findOne(
+      { projectId: project._id },
+      {
+        fields: { _id: 1 }
+      }
+    );
+
+    const projects = Projects.find({ deleted: { $ne: true } }, {
+      fields: { _id: 1 }
+    });
+    projects.forEach((project) => {
+      if (hasMeetings(project)) {
+        Meteor.call("projects.addFeature", {
+          projectId: project._id,
+          feature: "meetings"
+        });
+      }
+      if (hasBPMN(project)) {
+        Meteor.call("projects.addFeature", {
+          projectId: project._id,
+          feature: "bpmn"
+        });
+      }
+      if (hasCanvas(project)) {
+        Meteor.call("projects.addFeature", {
+          projectId: project._id,
+          feature: "canvas"
+        });
+      }
+      if (hasWeather(project)) {
+        Meteor.call("projects.addFeature", {
+          projectId: project._id,
+          feature: "weather"
+        });
+      }
+    });
   }
 });
