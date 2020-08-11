@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - Option (in settings.json) to disable attachments
 - Meetings (basic management)
+- Method & admin button to add missing features on projects
 
 ### Changed
 - Update vuetify to 2.3.6
