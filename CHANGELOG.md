@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [3.1.0 2020-08-12]
+
+### Added
 - Option (in settings.json) to disable attachments
 - Meetings (basic management)
 - Method & admin button to add missing features on projects
