@@ -19,18 +19,6 @@ services:
       MONGO_URL: mongodb://mongo:27017/meteor
       MAIL_URL: smtp://maildev:25
       NODE_TLS_REJECT_UNAUTHORIZED: 0
-      METEOR_SETTINGS: '{
-        "generateFixtures": false,
-        "disableAccountCreation": false,
-        "attachmentsPath": "/attachments",
-        "email": {
-          "from": "noreply@localhost",
-          "prefix": "[latelier]"
-        },
-        "roles": {
-          "admin": ["admin@localhost"]
-        }
-      }'
     volumes:
       - ./:/latelier
       - /latelier/.cache
