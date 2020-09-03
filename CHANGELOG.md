@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- Docker development environment
 
 ### Changed
 - Fix checkbox selection on new project wizard
