@@ -1,0 +1,60 @@
+# Adapted from https://github.com/disney/meteor-base/issues/48
+# Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.10.2
+FROM node:12.16.1-alpine
+
+# Setup environment variables that will be available to the instance
+ENV METEOR_VERSION 1.10.1
+
+RUN apk add --update --no-cache bash
+
+# Here we're running https://github.com/staeke/meteor-alpine/ with a few tweaks
+RUN export TEMP_PACKAGES="alpine-sdk libc6-compat python graphicsmagick linux-headers" && \
+    apk add --update --no-cache $TEMP_PACKAGES && \
+    curl https://install.meteor.com/?release=${METEOR_VERSION} | sh && \
+    cd /root/.meteor/packages/meteor-tool/*/mt-os.linux.x86_64 && \
+    cp scripts/admin/launch-meteor /usr/bin/meteor && \
+    cd dev_bundle && \
+    cd bin && \
+    rm node && \
+    rm npm && \
+    rm npx && \
+    ln -s $(which node) && \
+    ln -s $(which npm) && \
+    ln -s $(which npx) && \
+    cd ../mongodb/bin && \
+    rm mongo mongod && \
+    cd ../../lib && \
+    npm rebuild && \
+    cd ~ && \
+    ln -s /root/.meteor
+
+ENV APP_HOME /latelier
+
+# Create a directory for our application
+# and set it as the working directory
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/.meteor
+
+WORKDIR $APP_HOME
+
+# Copy app and meteor package.json and package-lock.json into container
+COPY package*.json $APP_HOME/
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+
+# Fix permissions warning; https://github.com/meteor/meteor/issues/7959
+ENV METEOR_ALLOW_SUPERUSER=1
+
+# Install gulp so we can run our servers, then npm install
+# everything and rebuild node-sass
+RUN npm ci --unsafe-perm && \
+  npm rebuild node-sass
+
+COPY . $APP_HOME
+
+EXPOSE 3000
+EXPOSE 3030
+
+RUN ls -rtlah
+#CMD ["/bin/sh" , "-c" , "npm run start-dev"]
+CMD ["/bin/sh" , "-c" , "sleep infinity"]

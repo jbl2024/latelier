@@ -1,0 +1,59 @@
+version: '3'
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - '80:3000'
+      - '3030:3030'
+      - '3003:3003'
+    depends_on:
+      - mongo
+    environment:
+      HMR_PORT: 3003
+      PORT: 3000
+      ROOT_URL: http://localhost
+      VUE_DEV_SERVER_URL: http://localhost:3003
+      MONGO_URL: mongodb://mongo:27017/meteor
+      MAIL_URL: smtp://maildev:25
+      NODE_TLS_REJECT_UNAUTHORIZED: 0
+    volumes:
+      - ./:/latelier
+      - /latelier/.cache
+      - /latelier/.meteor/local
+      - /latelier/node_modules
+      - attachments:/attachments
+    networks:
+      - latelier-network
+
+  mongo:
+    image: mongo:latest
+    command:
+      - --storageEngine=wiredTiger
+      - --logpath=/dev/null
+    volumes:
+      - data:/data/db
+    networks:
+      - latelier-network
+
+  mongoexpress:
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+    ports:
+      - "8081:8081"
+    networks:
+      - latelier-network
+  
+  maildev:
+    image: djfarrelly/maildev
+    ports:
+      - "1080:80"
+      - "1025:25"
+networks:
+  latelier-network:
+volumes:
+  data:
+  attachments:

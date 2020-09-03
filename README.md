@@ -179,6 +179,30 @@ Default password for generated users is `password`.
 
 `npm start`
 
+### Docker development environment
+
+A Dockerfile and a docker-compose are provided to start a development environment.
+
+```
+$ docker-compose --file docker-compose.dev.yml up
+```
+
+will start in dev mode (autorestart, no production build):
+- the app container with node & meteor
+- mongodb (latest)
+- mongoexpress (http://localhost:8081)
+- maildev (http://localhost:1080)
+
+When all containers are running, open another terminal to start meteor application:
+
+```
+$ docker-compose --file docker-compose.dev.yml exec app npm run start-dev
+```
+
+After a few minutes, the app will be available at http://localhost
+
+Note: do not forget to create a `settings-development.json` file.
+
 ### Screenshots
 
 ![Dashboard](/docs/task.png)
