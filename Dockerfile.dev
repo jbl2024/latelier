@@ -8,7 +8,7 @@ ENV METEOR_VERSION 1.10.1
 RUN apk add --update --no-cache bash
 
 # Here we're running https://github.com/staeke/meteor-alpine/ with a few tweaks
-RUN export TEMP_PACKAGES="alpine-sdk libc6-compat python linux-headers" && \
+RUN export TEMP_PACKAGES="alpine-sdk libc6-compat python graphicsmagick linux-headers" && \
     apk add --update --no-cache $TEMP_PACKAGES && \
     curl https://install.meteor.com/?release=${METEOR_VERSION} | sh && \
     cd /root/.meteor/packages/meteor-tool/*/mt-os.linux.x86_64 && \
@@ -27,8 +27,6 @@ RUN export TEMP_PACKAGES="alpine-sdk libc6-compat python linux-headers" && \
     npm rebuild && \
     cd ~ && \
     ln -s /root/.meteor
-    #  \
-    # apk del $TEMP_PACKAGES
 
 ENV APP_HOME /latelier
 
