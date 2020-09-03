@@ -34,7 +34,7 @@ services:
     volumes:
       - ./:/latelier
       - /latelier/.cache
-      - /latelier/meteor/local
+      - /latelier/.meteor/local
       - /latelier/node_modules
       - attachments:/attachments
     networks:
