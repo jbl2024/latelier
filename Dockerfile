@@ -12,7 +12,7 @@ RUN METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash "$SCRIPTS_FOLDER/build-meteor-bundl
 
 
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.9
-FROM node:12.14.0-alpine
+FROM node:12.16.1-alpine
 
 ENV APP_BUNDLE_FOLDER /opt/bundle
 ENV SCRIPTS_FOLDER /docker
