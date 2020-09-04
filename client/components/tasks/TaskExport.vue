@@ -83,6 +83,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
+import { saveAs } from "file-saver";
 
 export default {
   props: {

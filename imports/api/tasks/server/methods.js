@@ -8,6 +8,9 @@ import { Labels } from "/imports/api/labels/labels.js";
 import * as htmlToText from "@mxiii/html-to-text";
 import carbone from "carbone";
 import moment from "moment";
+import Handlebars from "handlebars";
+import fs from "fs";
+import { convertHtml } from "/imports/docConverter";
 
 import {
   checkCanReadTask,
@@ -197,14 +200,12 @@ Tasks.methods.exportODT = new ValidatedMethod({
   run({ taskId, format }) {
     checkCanReadTask(taskId);
 
-    const source = Assets.absoluteFilePath(`exports/tasks/task.${format}`);
+    const source = Assets.absoluteFilePath("exports/tasks/task.html");
     const task = Tasks.findOne({ _id: taskId });
     const context = Tasks.helpers.loadAssociations(task);
 
-    context.description = htmlToText.fromString(context.description);
     if (context.notes) {
       context.notes.forEach((note) => {
-        note.content = htmlToText.fromString(note.content);
         note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
       });
     }
@@ -213,21 +214,10 @@ Tasks.methods.exportODT = new ValidatedMethod({
     context.dueDate = context.dueDate ? moment(context.dueDate).format("DD/MM/YYYY HH:mm") : "";
     context.completedAt = context.completedAt ? moment(context.completedAt).format("DD/MM/YYYY HH:mm") : "";
 
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
+    const template = Handlebars.compile(fs.readFileSync(source, "utf8"));
+    const html = template({ task: context });
 
-    bound(() => {
-      carbone.render(source, context, (err, res) => {
-        if (err) {
-          throw new Meteor.Error("error", err);
-        }
-        future.return({
-          data: res
-        });
-      });
-    });
-    return future.wait();
+    return convertHtml(html, format);
   }
 });
 
