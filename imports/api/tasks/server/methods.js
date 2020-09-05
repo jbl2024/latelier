@@ -217,7 +217,21 @@ Tasks.methods.exportODT = new ValidatedMethod({
     const template = Handlebars.compile(fs.readFileSync(source, "utf8"));
     const html = template({ task: context });
 
-    return convertHtml(html, format);
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
+
+    bound(() => {
+      convertHtml(html, format, (error, result) => {
+        if (error) {
+          throw new Meteor.Error("cannot-convert");
+        }
+        future.return({
+          data: result
+        });
+      });
+    });
+    return future.wait();
   }
 });
 
