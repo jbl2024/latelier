@@ -3,6 +3,12 @@ import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meet
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
 import moment from "moment";
+import fs from "fs";
+import {
+  compileTemplate,
+  convertHtml
+} from "/imports/docConverter";
+
 // We use project rights for meeting rights
 import {
   Permissions,
@@ -16,6 +22,8 @@ import {
 
 import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
 import SimpleSchema from "simpl-schema";
+
+const bound = Meteor.bindEnvironment((callback) => callback());
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
@@ -577,5 +585,36 @@ Meetings.methods.adminFind = new ValidatedMethod({
       totalPages: totalPages,
       data
     };
+  }
+});
+
+Meetings.methods.export = new ValidatedMethod({
+  name: "meetings.export",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    format: { type: String }
+  }).validator(),
+  run({ meetingId, format }) {
+    checkCanReadMeeting(meetingId);
+
+    const meeting = Meetings.findOne({ _id: meetingId });
+
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
+
+    bound(() => {
+      const templateFile = Assets.absoluteFilePath("exports/meetings/meeting.html");
+      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { meeting });
+      convertHtml(html, format, (error, result) => {
+        if (error) {
+          throw new Meteor.Error("cannot-convert");
+        }
+        future.return({
+          data: result
+        });
+      });
+    });
+    return future.wait();
   }
 });
