@@ -15,12 +15,14 @@ export const convertHtml = function (html, format, cb) {
   const directoryAndFilename = `${directory}/output.${format}`;
   nodePandoc(html, `-f html -o ${directoryAndFilename}`, (err) => {
     if (err) {
+      fs.unlinkSync(directoryAndFilename);
+      fs.rmdirSync(directory);
+
       cb(err, null);
       return;
     }
     const data = fs.readFileSync(directoryAndFilename);
 
-    // cleanup
     fs.unlinkSync(directoryAndFilename);
     fs.rmdirSync(directory);
 
