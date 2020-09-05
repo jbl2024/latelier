@@ -8,9 +8,11 @@ import { Labels } from "/imports/api/labels/labels.js";
 import * as htmlToText from "@mxiii/html-to-text";
 import carbone from "carbone";
 import moment from "moment";
-import Handlebars from "handlebars";
 import fs from "fs";
-import { convertHtml } from "/imports/docConverter";
+import {
+  compileTemplate,
+  convertHtml
+} from "/imports/docConverter";
 
 import {
   checkCanReadTask,
@@ -200,7 +202,6 @@ Tasks.methods.exportODT = new ValidatedMethod({
   run({ taskId, format }) {
     checkCanReadTask(taskId);
 
-    const source = Assets.absoluteFilePath("exports/tasks/task.html");
     const task = Tasks.findOne({ _id: taskId });
     const context = Tasks.helpers.loadAssociations(task);
 
@@ -214,14 +215,13 @@ Tasks.methods.exportODT = new ValidatedMethod({
     context.dueDate = context.dueDate ? moment(context.dueDate).format("DD/MM/YYYY HH:mm") : "";
     context.completedAt = context.completedAt ? moment(context.completedAt).format("DD/MM/YYYY HH:mm") : "";
 
-    const template = Handlebars.compile(fs.readFileSync(source, "utf8"));
-    const html = template({ task: context });
-
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
     ))();
 
     bound(() => {
+      const templateFile = Assets.absoluteFilePath("exports/tasks/task.html");
+      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { task: context });
       convertHtml(html, format, (error, result) => {
         if (error) {
           throw new Meteor.Error("cannot-convert");
