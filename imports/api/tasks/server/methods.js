@@ -8,11 +8,6 @@ import { Labels } from "/imports/api/labels/labels.js";
 import * as htmlToText from "@mxiii/html-to-text";
 import carbone from "carbone";
 import moment from "moment";
-import fs from "fs";
-import {
-  compileTemplate,
-  convertHtml
-} from "/imports/docConverter";
 
 import {
   checkCanReadTask,
@@ -202,11 +197,14 @@ Tasks.methods.exportODT = new ValidatedMethod({
   run({ taskId, format }) {
     checkCanReadTask(taskId);
 
+    const source = Assets.absoluteFilePath(`exports/tasks/task.${format}`);
     const task = Tasks.findOne({ _id: taskId });
     const context = Tasks.helpers.loadAssociations(task);
 
+    context.description = htmlToText.fromString(context.description);
     if (context.notes) {
       context.notes.forEach((note) => {
+        note.content = htmlToText.fromString(note.content);
         note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
       });
     }
@@ -220,14 +218,12 @@ Tasks.methods.exportODT = new ValidatedMethod({
     ))();
 
     bound(() => {
-      const templateFile = Assets.absoluteFilePath("exports/tasks/task.html");
-      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { task: context });
-      convertHtml(html, format, (error, result) => {
-        if (error) {
-          throw new Meteor.Error("cannot-convert");
+      carbone.render(source, context, (err, res) => {
+        if (err) {
+          throw new Meteor.Error("error", err);
         }
         future.return({
-          data: result
+          data: res
         });
       });
     });
