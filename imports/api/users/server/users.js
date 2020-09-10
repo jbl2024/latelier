@@ -496,10 +496,10 @@ Meteor.methods({
   "users.getRedirectUrlAfterLogout"() {
     const user = Meteor.user();
     if (!user) {
-      return null;
+      return Meteor.absoluteUrl("/");
     }
     if (!user.services?.oidc) {
-      return null;
+      return Meteor.absoluteUrl("/");
     }
     const redirectUrl = Meteor.absoluteUrl("/login");
     const redirectParameter = Meteor.settings.auth?.oauth2?.logoutRedirectParameter;
