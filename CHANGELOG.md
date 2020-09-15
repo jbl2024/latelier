@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [3.1.2 2020-09-15]
+
+### Added
+
+### Changed
 - Fix font display on firefox with retina screens 
 
 ### Removed
