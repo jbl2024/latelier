@@ -106,6 +106,9 @@
       <small>*indique un champ obligatoire</small>
     </v-card-text>
     <v-card-actions>
+      <v-btn text :to="{ name: 'administration-user-page', params: { userId: user._id } }">
+        {{ this.$t("Open") }}
+      </v-btn>
       <v-spacer />
       <v-btn text @click.native="close()">
         {{ this.$t("Close") }}

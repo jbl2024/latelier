@@ -21,6 +21,7 @@ Meteor.users.deny({
     return true;
   }
 });
+export const methods = {};
 
 Meteor.methods({
   "admin.findUsers"(page, filter, isOnline, isAway) {
@@ -108,7 +109,6 @@ Meteor.methods({
       data
     };
   },
-
   "admin.updateUser"(user) {
     check(user, Object);
 
@@ -522,5 +522,28 @@ Meteor.methods({
       enabled: Meteor.settings.auth?.oauth2?.enabled,
       title: Meteor.settings.auth?.oauth2?.title
     };
+  }
+});
+
+
+methods.adminGetUser = new ValidatedMethod({
+  name: "admin.getUser",
+  validate: new SimpleSchema({
+    userId: { type: String }
+  }).validator(),
+  run({ userId }) {
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
+    }
+    const user = Meteor.users.findOne({ _id: userId });
+    if (!user) {
+      throw new Meteor.Error("not-found");
+    }
+    user.features = {
+      emailVerified: user.emails ? user.emails[0].verified : false,
+      isActive: Permissions.isActive(user),
+      isAdmin: Permissions.isAdmin(user)
+    };
+    return user;
   }
 });

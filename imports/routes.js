@@ -207,6 +207,13 @@ const routes = [
     props: true
   },
   {
+    path: "/administration/user/:userId",
+    name: "administration-user-page",
+    beforeEnter: isBasicAuth,
+    component: async () => (await import("/imports/ui/administration/users/UserPage.vue")).default,
+    props: true
+  },
+  {
     path: "/settings/mail",
     name: "mail-settings-page",
     beforeEnter: isBasicAuth,
