@@ -4,7 +4,12 @@
       <v-card class="center">
         <v-card-title>{{ getEmail(user) }}</v-card-title>
         <v-card-text>
-          <
+          <h2>{{ $t('Projects') }}</h2>
+          <project-list
+            :projects="projects"
+            empty-illustration="empty"
+            @select="onSelectProject"
+          />
         </v-card-text>
       </v-card>
     </template>
@@ -24,7 +29,8 @@ export default {
   },
   data() {
     return {
-      user: null
+      user: null,
+      projects: []
     };
   },
   computed: {
@@ -34,7 +40,6 @@ export default {
     userId: {
       immediate: true,
       handler() {
-        console.log(this.userId)
         if (this.userId) {
           this.refresh();
         }
@@ -52,7 +57,12 @@ export default {
           this.$notifyError(error);
         }
         this.user = result;
+        this.projects = this.user.projects;
       });
+    },
+
+    onSelectProject(project) {
+      
     }
   }
 };

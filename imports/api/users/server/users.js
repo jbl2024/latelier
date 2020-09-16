@@ -5,6 +5,7 @@ import {
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 import { Email } from "/imports/email";
+import { Projects } from "/imports/api/projects/projects";
 import { UserUtils } from "/imports/api/users/utils";
 import * as htmlToText from "@mxiii/html-to-text";
 import { MJML } from "/imports/mjml";
@@ -544,6 +545,10 @@ methods.adminGetUser = new ValidatedMethod({
       isActive: Permissions.isActive(user),
       isAdmin: Permissions.isAdmin(user)
     };
+    user.projects = Projects.find({
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+    }).fetch();
+
     return user;
   }
 });
