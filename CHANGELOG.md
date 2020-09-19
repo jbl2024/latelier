@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [3.1.3 2020-09-19]
+
+### Added
+
+### Changed
 - Fix filter users in select dialog
 - Disable profile photo upload when attachments are disabled 
 
