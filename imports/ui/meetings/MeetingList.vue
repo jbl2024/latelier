@@ -30,8 +30,16 @@
                   {{ getMeetingInterval(meeting) }}
                 </div>
               </v-list-item-subtitle>
+              <v-list-item-subtitle v-if="meeting.description">
+                {{ meeting.description }}
+              </v-list-item-subtitle>
             </template>
           </v-list-item-content>
+          <v-list-item-action v-if="withEdit">
+            <v-btn icon ripple @click.stop="editMeeting(meeting)">
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
         <v-divider :key="`divider-${meeting._id}`" inset />
       </template>
@@ -58,18 +66,29 @@ export default {
     hideSubtitles: {
       type: Boolean,
       default: false
+    },
+    withEdit: {
+      type: Boolean,
+      default: false
+    },
+    dateInterval: {
+      type: String,
+      default: "dateWithHours"
     }
   },
   methods: {
     select(meeting) {
       this.$emit("select", meeting);
     },
+    editMeeting(meeting) {
+      this.$emit("edit-meeting", meeting);
+    },
     getMeetingInterval(meeting) {
       if (!meeting) return "";
       return this.displayDateInterval({
         start: meeting.startDate,
         end: meeting.endDate,
-        type: "dateWithHours"
+        type: this.dateInterval
       });
     }
   }

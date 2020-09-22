@@ -133,8 +133,10 @@
             <meeting-list
               :meetings="selectedDateMeetings"
               empty-illustration="empty"
-              hide-subtitles
+              date-interval="hours"
+              with-edit
               @select="openMeeting"
+              @edit-meeting="editMeeting"
             />
           </div>
         </v-col>
@@ -472,6 +474,10 @@ export default {
       this.pickerDate = date;
       this.start = date;
       this.end = date;
+    },
+    editMeeting(meeting) {
+      this.selectedMeeting = meeting;
+      this.showEditMeeting = true;
     },
     async moveMeeting(meetingEvent, direction) {
       const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
