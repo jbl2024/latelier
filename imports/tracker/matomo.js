@@ -25,7 +25,7 @@ export default {
           s.parentNode.insertBefore(script, s);
         })();
     },
-    trackEvent(category, action, name, value) {
+    event(category, action, name, value) {
         const _tracker = this;
         setTimeout(function () {
             if (!Piwik) return;
@@ -33,7 +33,7 @@ export default {
             tracker.trackEvent(category, action, name, value);
         }, 0);
     },
-    trackSearch(keyword) {
+    search(keyword) {
         const _tracker = this;
         setTimeout(() => {
             if (!Piwik) return;

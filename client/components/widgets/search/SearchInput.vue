@@ -88,6 +88,7 @@ export default {
   watch: {
     filter() {
       this.showMenu = this.filter && this.filter.length > 0;
+      this.$track('search', [this.filter]);
     },
     showMenu(showMenu) {
       if (showMenu) {
