@@ -11,7 +11,7 @@ export default {
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
         (function() {
-          _paq.push(['setTrackerUrl', `${config.url}piwik.php`]);
+          _paq.push(['setTrackerUrl', `${config.url}matomo.php`]);
           _paq.push(['setSiteId', config.siteId]);
           const script = document.createElement('script');
           Object.assign(script, {
@@ -19,7 +19,7 @@ export default {
             type: 'text/javascript',
             async: 'true',
             defer: 'true',
-            src: `${config.url}piwik.js`,
+            src: `${config.url}matomo.js`,
           });
           const s = document.getElementsByTagName('script')[0];
           s.parentNode.insertBefore(script, s);
@@ -28,16 +28,16 @@ export default {
     event(category, action, name, value) {
         const _tracker = this;
         setTimeout(function () {
-            if (!Piwik) return;
-            var tracker = Piwik.getAsyncTracker(_tracker.config.url, _tracker.config.siteId);
+            if (!window.Matomo) return;
+            var tracker = Matomo.getAsyncTracker(`${_tracker.config.url}matomo.php`, _tracker.config.siteId);
             tracker.trackEvent(category, action, name, value);
         }, 0);
     },
     search(keyword) {
         const _tracker = this;
         setTimeout(() => {
-            if (!Piwik) return;
-            var tracker = Piwik.getAsyncTracker(_tracker.config.url, _tracker.config.siteId);
+            if (!window.Matomo) return;
+            var tracker = Matomo.getAsyncTracker(`${_tracker.config.url}matomo.php`, _tracker.config.siteId);
             tracker.trackSiteSearch(keyword);
         }, 0);
     }
