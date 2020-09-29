@@ -63,7 +63,7 @@
       "matomo": {
         "enabled": true,
         "url": "https://matomo.url/analytics/",
-        "siteId": 0
+        "siteId": "1"
       }
     }
   }

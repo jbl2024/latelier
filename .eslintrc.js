@@ -38,5 +38,10 @@ module.exports = {
     "sourceType": "module",
     "allowImportExportEverywhere": true,
     "codeFrame": false
+  },
+  "globals": {
+    "_paq": true,
+    "Piwik": true,
+    "Matomo": true
   }
 };
