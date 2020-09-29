@@ -53,10 +53,8 @@ Settings:
 | public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
 | public.disableAttachments      | boolean  | false           | If true, attachments are disabled                |
 | public.tracking                | object   | {}              | See below                                        |
-| public.tracking.matomo         | object   | {}              | Matomo/Piwik tracker settings                    |
+| public.tracking.matomo         | object   | {}              | See https://github.com/AmazingDreams/vue-matomo#usage                    |
 | public.tracking.matomo.enabled | boolean  | false           | If true, page and search keyword tracking are enabled|
-| public.tracking.matomo.url     | string   |                 | Matomo/Piwik tracker base URL                    |
-| public.tracking.matomo.siteId  | string   |                 | Matomo/Piwik siteId (Matomo Website ID)          |
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |

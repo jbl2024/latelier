@@ -3,7 +3,6 @@ import { Meteor } from "meteor/meteor";
 // Libs
 import Vue from "vue";
 import VueRouter from "vue-router";
-import debounce from "lodash/debounce";
 
 import VueMeteorTracker from "vue-meteor-tracker";
 import VueEvents from "vue-event-handler";
@@ -27,7 +26,7 @@ import i18n from "/imports/i18n/";
 import confirm from "/imports/confirm/confirm";
 
 // Matomo Tracker
-import MatomoTracker from "/imports/tracker/matomo";
+import VueMatomo from 'vue-matomo'
 
 require("intersection-observer");
 
@@ -119,17 +118,10 @@ Meteor.startup(() => {
 
   // Matomo Tracker
   if (Meteor.settings.public?.tracking?.matomo?.enabled === true) {
-    MatomoTracker.setConfig(Meteor.settings.public?.tracking?.matomo).setup();
-    Vue.prototype.$tracker = MatomoTracker;
+    Vue.use(VueMatomo, Object.assign({}, { router }, Meteor.settings.public?.tracking?.matomo));
   }
-
-  Vue.prototype.$track = debounce(function(method, params) {
-    if (this.$tracker && typeof this.$tracker[method] === "function") {
-      this.$tracker[method].apply(this.$tracker, params);
-    }
-  }, 100);
   
-  const app = new Vue({
+  new Vue({
     i18n,
     router,
     store,
@@ -137,12 +129,6 @@ Meteor.startup(() => {
     render: (h) => h(App)
   }).$mount("app");
   
-  router.afterEach((to) => {
-    if (to && to.name) {
-      app.$track('event', ['Navigation', 'Page', to.name]);
-    }
-  });
-
   Vue.prototype.$log = window.console.log;
   Vue.prototype.$notifyError = function (error) {
     store.dispatch("notifyError", error);

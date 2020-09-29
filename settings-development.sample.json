@@ -62,8 +62,9 @@
     "tracking": {
       "matomo": {
         "enabled": true,
-        "url": "https://matomo.url/analytics/",
-        "siteId": "1"
+        "host": "https://matomo.url/analytics/",
+        "siteId": "1",
+        "trackInitialView": true
       }
     }
   }
