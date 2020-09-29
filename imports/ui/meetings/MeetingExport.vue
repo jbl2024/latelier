@@ -3,7 +3,7 @@
     <template v-slot:content>
       <v-progress-linear v-if="loading" indeterminate absolute top />
       <v-list>
-        <v-list-item @click="exportODT()">
+        <v-list-item @click="exportAs('odt')">
           <v-list-item-avatar>
             <v-icon class="blue white--text">
               mdi-file-document-box-outline
@@ -20,7 +20,7 @@
           </v-list-item-content>
         </v-list-item>
 
-        <v-list-item @click="exportDOCX()">
+        <v-list-item @click="exportAs('docx')">
           <v-list-item-avatar>
             <v-icon class="green white--text">
               mdi-file-document-box-outline
@@ -45,10 +45,15 @@
 import { Meteor } from "meteor/meteor";
 import { saveAs } from "file-saver";
 
+mimeTypes = {
+  odt: "application/vnd.oasis.opendocument.text",
+  docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+};
+
 export default {
   props: {
-    meetingId: {
-      type: String,
+    meeting: {
+      type: Object,
       default: null
     },
     value: {
@@ -72,12 +77,12 @@ export default {
     }
   },
   methods: {
-    exportODT() {
+    exportAs(format) {
       if (this.loading) return;
       this.loading = true;
       Meteor.call(
         "meetings.export",
-        { meetingId: this.meetingId, format: "odt" },
+        { meetingId: this.meeting._id, format },
         (error, result) => {
           this.loading = false;
           if (error) {
@@ -85,30 +90,9 @@ export default {
             return;
           }
           const blob = new Blob([result.data], {
-            type: "application/vnd.oasis.opendocument.text"
+            type: mimeTypes[format]
           });
-          saveAs(blob, "meeting.odt");
-        }
-      );
-    },
-
-    exportDOCX() {
-      if (this.loading) return;
-      this.loading = true;
-      Meteor.call(
-        "meetings.export",
-        { meetingId: this.meetingId, format: "docx" },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          const blob = new Blob([result.data], {
-            type:
-              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-          });
-          saveAs(blob, "meeting.docx");
+          saveAs(blob, `${this.meeting.name}.${format}`);
         }
       );
     }

@@ -1,7 +1,7 @@
 <template>
   <div v-if="meeting" class="meeting-detail-card">
     <select-date v-model="showSelectDate" @select="selectActionDueDate" />
-    <meeting-export v-model="showMeetingExport" :meeting-id="meeting._id" />
+    <meeting-export v-model="showMeetingExport" :meeting="meeting" />
     <select-user
       :key="selectedActionId"
       :project="project"
