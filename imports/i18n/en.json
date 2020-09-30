@@ -407,6 +407,24 @@
     },
     "project": {
       "project": "Project"
+    },
+    "export": {
+      "title": "Title",
+      "project": "Project",
+      "date": "Date",
+      "startDate": "Start",
+      "endDate": "End",
+      "description": "Description",
+      "attendees": "Attendees",
+      "agenda": "Agenda",
+      "report": "Report",
+      "actions": {
+        "title": "Actions",
+        "type": "Type",
+        "description": "Description",
+        "assignedTo": "Assigned to",
+        "dueDate": "Due date"
+      }
     }
   },
   "attachments": {
