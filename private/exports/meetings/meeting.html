@@ -1,5 +1,78 @@
-<h1>{{ meeting.name }}<h1>
+<div>
+    <h1>
+        {{i18n "meetings.export.title" }}: {{ meeting.name }}
+    <h1>
+    <div>
+        {{i18n "meetings.export.date" }}: {{ meeting.startDate }}
+    </div>
+    <div>
+        {{i18n "meetings.export.startDate" }}: {{ meeting.startDate }}
+    </div>
+    <div>
+        {{i18n "meetings.export.endDate" }}: {{ meeting.endDate }}
+    </div>
+    <div>
+        {{i18n "meetings.export.description" }}: {{ meeting.description }}
+    </div>
+    <ul>
+        {{#each meeting.attendees }}
+            <li>{{ firstName }} {{ lastName }}</li>
+        {{/each}}
+    </ul>
+    <h2>
+        {{i18n "meetings.export.agenda" }}
+    </h2>
+    <p>
+        {{{ meeting.agenda }}}
+    </p>
+    <h2>
+        {{i18n "meetings.export.report" }}
+    </h2>
+    <p>
+        {{{ meeting.report }}}
+    </p>
+    <h2>
+        {{i18n "meetings.export.actions.title" }}
+    </h2>
+    <table>
+        <colgroup>
+            <col width="20%">
+            <col width="20%">
+            <col width="20%">
+            <col width="20%">
+        </colgroup>
+        <thead>
+            <tr>
+                <th>
+                    {{i18n "meetings.export.actions.type" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.description" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.assignedTo" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.dueDate" }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
 
-<p>{{{ meeting.agenda }}}</p>
+                </td>
+                <td>
 
-<p>{{{ meeting.report }}}</p>
+                </td>
+                <td>
+
+                </td>
+                <td>
+
+                </td>
+            </tr>
+        </tbody>
+    </table> 
+    
+</div>
