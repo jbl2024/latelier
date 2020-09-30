@@ -416,6 +416,24 @@
     },
     "project": {
       "project": "Projet"
+    },
+    "export": {
+      "title": "Titre",
+      "project": "Projet",
+      "date": "Date",
+      "startDate": "Début",
+      "endDate": "Fin",
+      "description": "Description",
+      "attendees": "Participants",
+      "agenda": "Ordre du jour",
+      "report": "Compte-rendu",
+      "actions": {
+        "title": "Relevé de décisions",
+        "type": "Type",
+        "description": "Description",
+        "assignedTo": "Assigné à",
+        "dueDate": "Echéance"
+      }
     }
   },
   "attachments": {

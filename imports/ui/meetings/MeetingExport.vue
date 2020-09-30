@@ -82,7 +82,11 @@ export default {
       this.loading = true;
       Meteor.call(
         "meetings.export",
-        { meetingId: this.meeting._id, format },
+        {
+          meetingId: this.meeting._id,
+          locale: this.$i18n.locale,
+          format
+        },
         (error, result) => {
           this.loading = false;
           if (error) {

@@ -4,8 +4,13 @@ import fs from "fs";
 import path from "path";
 import os from "os";
 
-export const compileTemplate = function(source, context) {
+export const compileTemplate = function(source, context, helpers = {}) {
   const template = Handlebars.compile(source);
+  if (typeof helpers === "object" && helpers !== null) {
+    Object.keys(helpers).forEach((helperName) => {
+      Handlebars.registerHelper(helperName, helpers[helperName]);
+    });
+  }
   const html = template(context);
   return html;
 };

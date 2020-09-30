@@ -8,6 +8,7 @@ import {
   compileTemplate,
   convertHtml
 } from "/imports/docConverter";
+import i18n from "/imports/i18n/server/";
 
 // We use project rights for meeting rights
 import {
@@ -592,9 +593,13 @@ Meetings.methods.export = new ValidatedMethod({
   name: "meetings.export",
   validate: new SimpleSchema({
     meetingId: { type: String },
-    format: { type: String }
+    format: { type: String },
+    locale: {
+      type: String,
+      defaultValue: "en"
+    }
   }).validator(),
-  run({ meetingId, format }) {
+  run({ meetingId, format, locale}) {
     checkCanReadMeeting(meetingId);
 
     const meeting = Meetings.findOne({ _id: meetingId });
@@ -602,10 +607,16 @@ Meetings.methods.export = new ValidatedMethod({
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
     ))();
-
+    
+    const i18nHelper = i18n(locale.split("-")[0]);
     bound(() => {
+
       const templateFile = Assets.absoluteFilePath("exports/meetings/meeting.html");
-      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { meeting });
+      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { meeting }, {
+        "i18n": function(str, datas = {}) {
+          return (i18nHelper != undefined ? i18nHelper.t(str, datas) : str);
+        }
+      });
       convertHtml(html, format, (error, result) => {
         if (error) {
           throw new Meteor.Error("cannot-convert");
