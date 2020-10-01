@@ -264,7 +264,8 @@
       "date": "MM/DD/YYYY",
       "dateTime": "MM/DD/YYYY HH:mm",
       "prettyDate": "MMMM DD YYYY",
-      "prettyMonthAndDate": "MMMM YYYY"
+      "prettyMonthAndDate": "MMMM YYYY",
+      "time": "HH:mm"
     },
     "duration": {
       "past": "{duration} ago",
