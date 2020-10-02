@@ -603,7 +603,7 @@ Meetings.methods.export = new ValidatedMethod({
       defaultValue: "en"
     }
   }).validator(),
-  run({ meetingId, format, locale}) {
+  run({ meetingId, format, locale }) {
     checkCanReadMeeting(meetingId);
 
     const meeting = Meetings.findOne({ _id: meetingId });
@@ -613,10 +613,10 @@ Meetings.methods.export = new ValidatedMethod({
 
     meeting.createdBy = loadUser(meeting.createdBy);
     // Gathering all meeting related users
-    const attendeesIds = Array.isArray(meeting.attendees) ? 
-    meeting.attendees.map(a => a.userId) : [];
-    const assignedIds = Array.isArray(meeting.actions) ? 
-    meeting.actions.map(a => a.assignedTo) : [];
+    const attendeesIds = Array.isArray(meeting.attendees)
+      ? meeting.attendees.map((a) => a.userId) : [];
+    const assignedIds = Array.isArray(meeting.actions)
+      ? meeting.actions.map((a) => a.assignedTo) : [];
     const users = attendeesIds.concat(assignedIds).reduce((users, userId) => {
       if (!users[userId]) {
         users[userId] = loadUser(userId);
@@ -632,24 +632,23 @@ Meetings.methods.export = new ValidatedMethod({
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
     ))();
-    
+
     const i18nHelper = i18n(locale.split("-")[0]);
     bound(() => {
-
       const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
       const datas = {
         meeting,
         project,
         users,
         datesFormats: i18nHelper.t("dates.format"),
-        meetingTypes: i18nHelper.t("meetings.actions.types"),
+        meetingTypes: i18nHelper.t("meetings.actions.types")
       };
       const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
         i18n(str, datas = {}) {
-          return (i18nHelper != undefined ? i18nHelper.t(str, datas) : str);
+          return (i18nHelper !== undefined ? i18nHelper.t(str, datas) : str);
         },
         date(dateStr, format) {
-          if (!dateStr || !format) return '';
+          if (!dateStr || !format) return "";
           const date = moment(dateStr);
           date.locale(locale);
           return date.format(format);

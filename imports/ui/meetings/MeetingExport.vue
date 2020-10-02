@@ -48,13 +48,6 @@ export default {
       loading: false,
       formats: Object.freeze([
         {
-          format: "pdf",
-          title: "PDF",
-          description: "Portable Document Format",
-          color: "red",
-          mimeType: "application/pdf"
-        },
-        {
           format: "odt",
           title: "ODT",
           description: "OpenDocument Format - LibreOffice Writer",
@@ -71,10 +64,9 @@ export default {
         },
         {
           format: "pdf",
-          title: "PDF (Preview)",
+          title: "PDF",
           description: "Portable Document Format",
           color: "red",
-          previewOnly: true,
           mimeType: "application/pdf"
         }
       ])
