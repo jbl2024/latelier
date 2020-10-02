@@ -1,3 +1,4 @@
+/* eslint-disable */
 const truncate = (sanitized) => sanitized.split("").splice(0, 255).join("");
 const illegalRe = /[\/\?<>\\:\*\|":]/g;
 const controlRe = /[\x00-\x1f\x80-\x9f]/g;
