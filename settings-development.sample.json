@@ -58,6 +58,14 @@
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "ddp"
+    "uploadTransport": "ddp",
+    "tracking": {
+      "matomo": {
+        "enabled": true,
+        "host": "https://matomo.url/analytics/",
+        "siteId": "1",
+        "trackInitialView": true
+      }
+    }
   }
 }

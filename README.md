@@ -52,6 +52,9 @@ Settings:
 | public.sso                     | object   | {}              | See below                                        |
 | public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
 | public.disableAttachments      | boolean  | false           | If true, attachments are disabled                |
+| public.tracking                | object   | {}              | See below                                        |
+| public.tracking.matomo         | object   | {}              | See https://github.com/AmazingDreams/vue-matomo#usage                    |
+| public.tracking.matomo.enabled | boolean  | false           | If true, page and search keyword tracking are enabled|
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |
