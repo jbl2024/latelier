@@ -29,6 +29,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { saveAs } from "file-saver";
+import { sanitizeForFs } from "/imports/ui/utils/sanitize";
 
 export default {
   props: {
@@ -116,7 +117,8 @@ export default {
             var blobURL = URL.createObjectURL(blob);
             window.open(blobURL);
           } else {
-            saveAs(blob, `${this.meeting.name}.${format}`);
+            const filename = `${this.meeting.name}.${format}`;
+            saveAs(blob, sanitizeForFs(filename));
           }
 
         }
