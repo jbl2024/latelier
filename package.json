@@ -15,7 +15,7 @@
     "@babel/runtime": "^7.9.6",
     "@mxiii/html-to-text": "^5.2.3",
     "aws-sdk": "^2.670.0",
-    "bcrypt": "^3.0.8",
+    "bcrypt": "^5.0.0",
     "bpmn-js": "^6.5.1",
     "carbone": "^1.2.1",
     "diagram-js-minimap": "^2.0.3",
