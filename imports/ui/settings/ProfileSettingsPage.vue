@@ -9,7 +9,7 @@
         </div>
         <div class="pa-4">
           <input
-            v-if="!isUploading"
+            v-if="!isUploading && !attachmentsDisabled()"
             type="file"
             :disabled="isUploading"
             @change="onUpload"
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { Meteor } from "meteor/meteor";
 import { Avatars } from "/imports/api/users/avatars";
 import { UserUtils } from "/imports/api/users/utils";
 
@@ -116,6 +117,10 @@ export default {
 
     getEmail(user) {
       return UserUtils.getEmail(user);
+    },
+
+    attachmentsDisabled() {
+      return Meteor.settings.public.disableAttachments;
     }
   }
 };

@@ -7,10 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [3.1.3 2020-09-19]
+
+### Added
+
+### Changed
+- Fix filter users in select dialog
+- Disable profile photo upload when attachments are disabled 
+
+### Removed
+
+## [3.1.2 2020-09-15]
+
+### Added
+
+### Changed
+- Fix font display on firefox with retina screens 
+
+### Removed
+
+## [3.1.1 2020-09-11]
+
+### Added
 - Docker development environment
 
 ### Changed
 - Fix checkbox selection on new project wizard
+- Improve SSO login
 
 ### Removed
 

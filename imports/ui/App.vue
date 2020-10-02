@@ -194,17 +194,11 @@ export default {
         return [];
       }
     },
-    userId() {
-      const userId = Meteor.userId();
-      if (!userId) {
-        this.$store.dispatch("setCurrentUser", null);
-        this.$router.push({ name: "login" });
-      }
-    },
     user() {
       const user = Meteor.user();
-      if (user) {
-        this.$store.dispatch("setCurrentUser", user);
+      this.$store.dispatch("setCurrentUser", user);
+      if (!user && !Meteor.loggingIn() && !this.$isLoggingIn) {
+        this.$router.push({ name: "login" });
       }
     }
   },

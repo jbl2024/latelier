@@ -328,7 +328,6 @@ export default {
       selectedUsers: [],
       selectedItems: [],
       users: [],
-      projectUsers: [],
       user: null,
       showUserDetail: false,
       page: 1,
@@ -347,6 +346,20 @@ export default {
       set(active) {
         this.$emit("update:active", active);
       }
+    },
+    projectUsers() {
+      if (this.project) {
+        const members = this.project.members || [];
+        const users = Meteor.users.find({ _id: { $in: members } }).fetch();
+        if (!this.searchProjectUsers) {
+          return users;
+        }
+        return users.filter((user) => {
+          const email = UserUtils.getEmail(user);
+          return email.toUpperCase().indexOf(this.searchProjectUsers.toUpperCase()) >= 0;
+        });
+      }
+      return null;
     },
     organizationUsers() {
       if (this.project && this.project.organizationId) {
@@ -414,24 +427,6 @@ export default {
       handler() {
         this.selectedUsers = [];
         this.selectedItems = [];
-      }
-    },
-    project: {
-      immediate: true,
-      handler() {
-        if (this.project) {
-          Meteor.call("projects.findUsers", {
-            projectId: this.project._id,
-            usersIds: this.project.members,
-            filter: this.searchProjectUsers ? this.searchProjectUsers : null
-          }, (error, users) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.projectUsers = users;
-          });
-        }
       }
     },
     page() {
