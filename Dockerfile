@@ -13,7 +13,7 @@ RUN METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash "$SCRIPTS_FOLDER/build-meteor-bundl
 
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.9
 FROM node:12.16.1-alpine
-
+ENV PANDOC_VERSION 2.10.1
 ENV APP_BUNDLE_FOLDER /opt/bundle
 ENV SCRIPTS_FOLDER /docker
 
@@ -22,12 +22,34 @@ RUN apk --no-cache --virtual .node-gyp-compilation-dependencies add \
 	g++ \
 	make \
 	python \
+	curl \
 	# And runtime dependencies, which we keep
 	&& apk --no-cache add \
 	bash \
 	ca-certificates \
 	file \
 	graphicsmagick
+
+# Setup texlive for PDF exports
+ENV PATH /usr/local/texlive/2020/bin/x86_64-linuxmusl:$PATH
+RUN apk add --no-cache perl fontconfig-dev freetype-dev && \
+    apk add --no-cache --virtual .fetch-deps xz tar wget && \
+    mkdir /tmp/install-tl-unx && \
+    curl -L ftp://tug.org/historic/systems/texlive/2020/install-tl-unx.tar.gz | \
+      tar -xz -C /tmp/install-tl-unx --strip-components=1 && \
+    printf "%s\n" \
+      "selected_scheme scheme-basic" \
+      "tlpdbopt_install_docfiles 0" \
+      "tlpdbopt_install_srcfiles 0" \
+      > /tmp/install-tl-unx/texlive.profile && \
+    /tmp/install-tl-unx/install-tl \
+      --profile=/tmp/install-tl-unx/texlive.profile && \
+    rm -fr /tmp/install-tl-unx && \
+    tlmgr install \
+    collection-latexextra \
+    latexmk && \
+    apk del .fetch-deps
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xz --strip-components 1 -C /usr/local/
 
 # Copy in entrypoint
 COPY --from=build $SCRIPTS_FOLDER $SCRIPTS_FOLDER/

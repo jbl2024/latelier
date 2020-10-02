@@ -13,5 +13,11 @@ export const UserUtils = {
   },
   hasAvatar(user) {
     return user?.profile?.avatar;
+  },
+  getUserProfileName(user) {
+    if (user?.profile?.lastName) {
+      return `${user?.profile?.firstName} ${user?.profile?.lastName}`;
+    }
+    return this.getEmail(user);
   }
 };

@@ -32,7 +32,13 @@ See https://www.meteor.com/install for installation instructions.
 
 ### Requirements
 
-GraphicsMagick is required to generate thumbnails. See http://www.graphicsmagick.org/
+The following external dependencies are required:
+
+| Component         | Usage                 | Reference       |
+| ----------------- | --------------------- | --------------- |
+| GraphicsMagick    | Generate thumbnails   | http://www.graphicsmagick.org/ |
+| Pandoc            | Export content to libreoffice & word formats | https://pandoc.org/ |
+
 
 ### Configuration
 
@@ -191,6 +197,7 @@ $ docker-compose --file docker-compose.dev.yml up
 ```
 
 will start in dev mode (autorestart, no production build):
+
 - the app container with node & meteor
 - mongodb (latest)
 - mongoexpress (http://localhost:8081)

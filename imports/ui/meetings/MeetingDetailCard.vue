@@ -1,9 +1,7 @@
 <template>
   <div v-if="meeting" class="meeting-detail-card">
-    <select-date
-      v-model="showSelectDate"
-      @select="selectActionDueDate"
-    />
+    <select-date v-model="showSelectDate" @select="selectActionDueDate" />
+    <meeting-export v-model="showMeetingExport" :meeting="meeting" />
     <select-user
       :key="selectedActionId"
       :project="project"
@@ -16,18 +14,9 @@
     <v-card class="flex-container">
       <v-toolbar class="meeting-detail-card__toolbar" dense>
         <v-row class="meeting-detail-card__row">
-          <v-col
-            v-if="$vuetify.breakpoint.mdAndUp"
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-title-header">
-              <v-btn
-                color="primary"
-                dark
-                :to="meetingsRoute"
-              >
+              <v-btn color="primary" dark :to="meetingsRoute">
                 <v-icon left>
                   mdi-chevron-left
                 </v-icon>
@@ -43,23 +32,20 @@
                   {{ $t("Edit") }}
                 </span>
               </v-btn>
+              <tooltip-button
+                bottom
+                icon="mdi-file-export"
+                :tooltip="$t('Export')"
+                @on="showMeetingExport = true"
+              />
             </div>
           </v-col>
-          <v-col
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col cols="12" sm="12" md="4">
             <div class="editor-header">
               <rich-editor-menu-bar :editor="currentEditor" />
             </div>
           </v-col>
-          <v-col
-            v-if="$vuetify.breakpoint.mdAndUp"
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-date-header">
               <v-icon class="mr-2">
                 mdi-clock
@@ -70,15 +56,8 @@
         </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
-        <div
-          v-if="$vuetify.breakpoint.smAndDown"
-          class="meeting-title-header"
-        >
-          <v-btn
-            color="primary"
-            dark
-            :to="meetingsRoute"
-          >
+        <div v-if="$vuetify.breakpoint.smAndDown" class="meeting-title-header">
+          <v-btn color="primary" dark :to="meetingsRoute">
             <v-icon left>
               mdi-chevron-left
             </v-icon>
@@ -131,12 +110,11 @@
             @on-focus="setCurrentEditor"
           />
           <template v-if="hasDocuments">
-            <h2
-              class="documents-title"
-              @click="showDocuments = !showDocuments"
-            >
+            <h2 class="documents-title" @click="showDocuments = !showDocuments">
               {{ $t("meetings.documents.documents") }}
-              <v-icon :class="['documents-chevron', showDocuments ? 'active' : null]">
+              <v-icon
+                :class="['documents-chevron', showDocuments ? 'active' : null]"
+              >
                 mdi-chevron-down
               </v-icon>
             </h2>
@@ -177,6 +155,7 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import debounce from "lodash/debounce";
+import MeetingExport from "/imports/ui/meetings/MeetingExport";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
 import MeetingUtils from "/imports/api/meetings/utils";
 import Attachments from "/imports/ui/attachments/Attachments";
@@ -187,6 +166,7 @@ import moment from "moment";
 
 export default {
   components: {
+    MeetingExport,
     MeetingActionsTable,
     Attachments
   },
@@ -208,6 +188,7 @@ export default {
       showSelectDate: false,
       showSelectUser: false,
       showDocuments: false,
+      showMeetingExport: false,
       actions: [],
       attachments: []
     };
@@ -217,7 +198,8 @@ export default {
       currentUser: (state) => state.currentUser,
       meetingsRoute(state) {
         return state.storedRoutes["meetings-dashboard"]
-          ? state.storedRoutes["meetings-dashboard"] : this.defaultMeetingsRoute;
+          ? state.storedRoutes["meetings-dashboard"]
+          : this.defaultMeetingsRoute;
       }
     }),
     defaultMeetingsRoute() {
@@ -238,7 +220,10 @@ export default {
         return false;
       }
       if (!this.meeting) return false;
-      return Array.isArray(this.meeting?.documents) && this.meeting.documents.length > 0;
+      return (
+        Array.isArray(this.meeting?.documents)
+        && this.meeting.documents.length > 0
+      );
     },
     meetingInterval() {
       if (!this.meeting) return "";
@@ -267,14 +252,22 @@ export default {
     "meeting.documents": {
       immediate: true,
       handler() {
-        if (!Array.isArray(this.meeting?.documents) || !this.meeting.documents.length) return;
+        if (
+          !Array.isArray(this.meeting?.documents)
+          || !this.meeting.documents.length
+        ) return;
         Api.call("attachments.find", {
-          attachmentsIds: this.meeting.documents.map((document) => document.documentId)
-        }).then((result) => {
-          this.attachments = result.data;
-        }, (error) => {
-          this.$notifyError(error);
-        });
+          attachmentsIds: this.meeting.documents.map(
+            (document) => document.documentId
+          )
+        }).then(
+          (result) => {
+            this.attachments = result.data;
+          },
+          (error) => {
+            this.$notifyError(error);
+          }
+        );
       }
     }
   },
@@ -351,7 +344,9 @@ export default {
       }
 
       // update list before loading from server to avoid flickering
-      const actionIndex = this.actions.findIndex((a) => a.actionId === action.actionId);
+      const actionIndex = this.actions.findIndex(
+        (a) => a.actionId === action.actionId
+      );
       if (actionIndex > -1) {
         this.$set(this.actions, actionIndex, deepCopy(action));
       }
@@ -400,11 +395,14 @@ export default {
       Api.call("meetings.createAction", {
         meetingId: this.meeting._id,
         action: MeetingUtils.makeNewMeetingAction()
-      }).then(() => {
-        this.fetch();
-      }, (error) => {
-        this.$notifyError(error);
-      });
+      }).then(
+        () => {
+          this.fetch();
+        },
+        (error) => {
+          this.$notifyError(error);
+        }
+      );
     },
 
     async fetch() {
@@ -439,14 +437,18 @@ export default {
         action.description,
         [],
         action?.assignedTo ? action.assignedTo : null,
-        action?.dueDate ? moment(action.dueDate).format("YYYY-MM-DD HH:mm") : null
+        action?.dueDate
+          ? moment(action.dueDate).format("YYYY-MM-DD HH:mm")
+          : null
       ).catch(() => {
         this.$notifyError(this.$t("meetings.actions.createTaskFailed"));
       });
 
-      await this.saveAction({ ...action, taskId: createdTask._id }).catch(() => {
-        this.$notifyError(this.$t("meetings.actions.saveActionFailed"));
-      });
+      await this.saveAction({ ...action, taskId: createdTask._id }).catch(
+        () => {
+          this.$notifyError(this.$t("meetings.actions.saveActionFailed"));
+        }
+      );
       this.$notify(this.$t("meetings.actions.createTaskSuccess"));
     },
     selectTask(task) {

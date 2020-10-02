@@ -2,7 +2,15 @@ import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
+import { UserUtils } from "/imports/api/users/utils";
 import moment from "moment";
+import fs from "fs";
+import {
+  compileTemplate,
+  convertHtml
+} from "/imports/docConverter";
+import i18n from "/imports/i18n/server/";
+
 // We use project rights for meeting rights
 import {
   Permissions,
@@ -16,6 +24,23 @@ import {
 
 import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
 import SimpleSchema from "simpl-schema";
+
+const loadUser = (aUserId) => {
+  if (!aUserId) return {};
+  return Meteor.users.findOne(
+    { _id: aUserId },
+    {
+      fields: {
+        profile: 1,
+        status: 1,
+        statusDefault: 1,
+        statusConnection: 1,
+        emails: 1,
+        roles: 1
+      }
+    }
+  );
+};
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
@@ -551,23 +576,6 @@ Meetings.methods.adminFind = new ValidatedMethod({
       })
       .fetch();
 
-    const loadUser = (aUserId) => {
-      if (!aUserId) return {};
-      return Meteor.users.findOne(
-        { _id: aUserId },
-        {
-          fields: {
-            profile: 1,
-            status: 1,
-            statusDefault: 1,
-            statusConnection: 1,
-            emails: 1,
-            roles: 1
-          }
-        }
-      );
-    };
-
     data.forEach((meeting) => {
       meeting.createdBy = loadUser(meeting.createdBy);
     });
@@ -581,4 +589,95 @@ Meetings.methods.adminFind = new ValidatedMethod({
       data
     };
   }
+});
+
+Meetings.methods.export = new ValidatedMethod({
+  name: "meetings.export",
+  validate: new SimpleSchema({
+    meetingId: { type: String },
+    format: { type: String },
+    locale: {
+      type: String,
+      defaultValue: "en"
+    }
+  }).validator(),
+  run({ meetingId, format, locale }) {
+    checkCanReadMeeting(meetingId);
+
+    const meeting = Meetings.findOne({ _id: meetingId });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+
+    meeting.createdBy = loadUser(meeting.createdBy);
+    // Gathering all meeting related users
+    const attendeesIds = Array.isArray(meeting.attendees)
+      ? meeting.attendees.map((a) => a.userId) : [];
+    const assignedIds = Array.isArray(meeting.actions)
+      ? meeting.actions.map((a) => a.assignedTo) : [];
+    const users = attendeesIds.concat(assignedIds).reduce((aUsers, userId) => {
+      if (!aUsers[userId]) {
+        aUsers[userId] = loadUser(userId);
+      }
+      return aUsers;
+    }, {});
+
+
+    const project = Projects.findOne({ _id: meeting.projectId });
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
+
+    const i18nHelper = i18n(locale.split("-")[0]);
+    if (meeting.actions) {
+      meeting.actions.forEach((action) => {
+        action.typeString = i18nHelper.t("meetings.actions.types")[action.type];
+      });
+    }
+
+    const async = Meteor.wrapAsync(function (done) {
+      const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
+      const datas = {
+        meeting,
+        project,
+        users,
+        datesFormats: i18nHelper.t("dates.format")
+      };
+      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
+        i18n(str, aDatas = {}) {
+          return (i18nHelper !== undefined ? i18nHelper.t(str, aDatas) : str);
+        },
+        date(dateStr, aFormat) {
+          if (!aFormat) {
+            aFormat = datas.datesFormats.prettyDate;
+          }
+          if (!dateStr) return "";
+          const date = moment(dateStr);
+          date.locale(locale);
+          return date.format(aFormat);
+        },
+        getUserProfileName(user) {
+          if (!user._id) {
+            user = loadUser(user);
+          }
+          return UserUtils.getUserProfileName(user);
+        }
+      });
+      try {
+        convertHtml(html, format, (error, result) => {
+          if (error) {
+            done(new Meteor.Error("cannot-convert"));
+          } else {
+            done(error, {
+              data: result
+            });
+          }
+        });
+      } catch (error) {
+        done(new Meteor.Error("cannot-convert"));
+      }
+    });
+    return async();
+  }
+
 });

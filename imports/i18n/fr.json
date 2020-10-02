@@ -272,7 +272,8 @@
       "date": "DD/MM/YYYY",
       "dateTime": "DD/MM/YYYY HH:mm",
       "prettyDate": "DD MMMM YYYY",
-      "prettyMonthAndDate": "MMMM YYYY"
+      "prettyMonthAndDate": "MMMM YYYY",
+      "time": "HH:mm"
     },
     "duration": {
       "past": "il y a {duration}",
@@ -416,6 +417,26 @@
     },
     "project": {
       "project": "Projet"
+    },
+    "export": {
+      "title": "Titre",
+      "project": "Projet",
+      "date": "Date",
+      "startDate": "Début",
+      "endDate": "Fin",
+      "time": "Heure",
+      "description": "Description",
+      "attendees": "Participants",
+      "agenda": "Ordre du jour",
+      "report": "Compte-rendu",
+      "organizedBy": "Organisé par",
+      "actions": {
+        "title": "Relevé de décisions",
+        "type": "Type",
+        "description": "Description",
+        "assignedTo": "Assigné à",
+        "dueDate": "Echéance"
+      }
     }
   },
   "attachments": {

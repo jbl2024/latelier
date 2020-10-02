@@ -264,7 +264,8 @@
       "date": "MM/DD/YYYY",
       "dateTime": "MM/DD/YYYY HH:mm",
       "prettyDate": "MMMM DD YYYY",
-      "prettyMonthAndDate": "MMMM YYYY"
+      "prettyMonthAndDate": "MMMM YYYY",
+      "time": "HH:mm"
     },
     "duration": {
       "past": "{duration} ago",
@@ -407,6 +408,26 @@
     },
     "project": {
       "project": "Project"
+    },
+    "export": {
+      "title": "Title",
+      "project": "Project",
+      "date": "Date",
+      "startDate": "Start",
+      "endDate": "End",
+      "time": "Heure",
+      "description": "Description",
+      "attendees": "Attendees",
+      "agenda": "Agenda",
+      "report": "Report",
+      "organizedBy": "Organised by",
+      "actions": {
+        "title": "Actions",
+        "type": "Type",
+        "description": "Description",
+        "assignedTo": "Assigned to",
+        "dueDate": "Due date"
+      }
     }
   },
   "attachments": {
