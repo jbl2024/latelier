@@ -26,7 +26,7 @@ import i18n from "/imports/i18n/";
 import confirm from "/imports/confirm/confirm";
 
 // Matomo Tracker
-import VueMatomo from 'vue-matomo'
+import VueMatomo from "vue-matomo";
 
 require("intersection-observer");
 
@@ -118,9 +118,9 @@ Meteor.startup(() => {
 
   // Matomo Tracker
   if (Meteor.settings.public?.tracking?.matomo?.enabled === true) {
-    Vue.use(VueMatomo, Object.assign({}, { router }, Meteor.settings.public?.tracking?.matomo));
+    Vue.use(VueMatomo, { router, ...Meteor.settings.public?.tracking?.matomo });
   }
-  
+
   new Vue({
     i18n,
     router,
@@ -128,7 +128,7 @@ Meteor.startup(() => {
     vuetify,
     render: (h) => h(App)
   }).$mount("app");
-  
+
   Vue.prototype.$log = window.console.log;
   Vue.prototype.$notifyError = function (error) {
     store.dispatch("notifyError", error);
