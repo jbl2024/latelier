@@ -2,7 +2,7 @@
   <generic-dialog v-model="showDialog" :title="$t('Export')" simple>
     <template v-slot:content>
       <v-progress-linear v-if="loading" indeterminate absolute top />
-      <v-list>
+      <v-list :disabled="loading">
         <v-list-item
           v-for="(format, index) in formats"
           :key="index"

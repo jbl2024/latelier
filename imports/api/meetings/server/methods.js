@@ -25,8 +25,6 @@ import {
 import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
 import SimpleSchema from "simpl-schema";
 
-const bound = Meteor.bindEnvironment((callback) => callback());
-
 const loadUser = (aUserId) => {
   if (!aUserId) return {};
   return Meteor.users.findOne(
@@ -628,10 +626,6 @@ Meetings.methods.export = new ValidatedMethod({
     if (!project) {
       throw new Meteor.Error("not-found");
     }
-
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
 
     const i18nHelper = i18n(locale.split("-")[0]);
     const async = Meteor.wrapAsync(function (done) {
