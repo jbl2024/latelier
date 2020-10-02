@@ -29,7 +29,6 @@ export const convertHtml = function (html, format, cb) {
   }
   nodePandoc(html, args, (err) => {
     if (err) {
-      console.log(err);
       if (fs.existsSync(directoryAndFilename)) {
         fs.unlinkSync(directoryAndFilename);
       }
@@ -40,11 +39,13 @@ export const convertHtml = function (html, format, cb) {
       cb(err, null);
       return;
     }
-    const data = fs.readFileSync(directoryAndFilename);
-
-    fs.unlinkSync(directoryAndFilename);
-    fs.rmdirSync(directory);
-
-    cb(err, data);
+    try {
+      const data = fs.readFileSync(directoryAndFilename);
+      fs.unlinkSync(directoryAndFilename);
+      fs.rmdirSync(directory);
+      cb(err, data);
+    } catch (readError) {
+      cb(readError, null);
+    }
   });
 };

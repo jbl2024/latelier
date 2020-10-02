@@ -617,11 +617,11 @@ Meetings.methods.export = new ValidatedMethod({
       ? meeting.attendees.map((a) => a.userId) : [];
     const assignedIds = Array.isArray(meeting.actions)
       ? meeting.actions.map((a) => a.assignedTo) : [];
-    const users = attendeesIds.concat(assignedIds).reduce((users, userId) => {
-      if (!users[userId]) {
-        users[userId] = loadUser(userId);
+    const users = attendeesIds.concat(assignedIds).reduce((aUsers, userId) => {
+      if (!aUsers[userId]) {
+        aUsers[userId] = loadUser(userId);
       }
-      return users;
+      return aUsers;
     }, {});
 
     const project = Projects.findOne({ _id: meeting.projectId });
@@ -634,7 +634,7 @@ Meetings.methods.export = new ValidatedMethod({
     ))();
 
     const i18nHelper = i18n(locale.split("-")[0]);
-    bound(() => {
+    const async = Meteor.wrapAsync(function (done) {
       const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
       const datas = {
         meeting,
@@ -644,28 +644,34 @@ Meetings.methods.export = new ValidatedMethod({
         meetingTypes: i18nHelper.t("meetings.actions.types")
       };
       const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
-        i18n(str, datas = {}) {
-          return (i18nHelper !== undefined ? i18nHelper.t(str, datas) : str);
+        i18n(str, aDatas = {}) {
+          return (i18nHelper !== undefined ? i18nHelper.t(str, aDatas) : str);
         },
-        date(dateStr, format) {
-          if (!dateStr || !format) return "";
+        date(dateStr, aFormat) {
+          if (!dateStr || !aFormat) return "";
           const date = moment(dateStr);
           date.locale(locale);
-          return date.format(format);
+          return date.format(aFormat);
         },
         getUserProfileName(user) {
           return UserUtils.getUserProfileName(user);
         }
       });
-      convertHtml(html, format, (error, result) => {
-        if (error) {
-          throw new Meteor.Error("cannot-convert");
-        }
-        future.return({
-          data: result
+      try {
+        convertHtml(html, format, (error, result) => {
+          if (error) {
+            done(new Meteor.Error("cannot-convert"));
+          } else {
+            done(error, {
+              data: result
+            });
+          }
         });
-      });
+      } catch (error) {
+        done(new Meteor.Error("cannot-convert"));
+      }
     });
-    return future.wait();
+    return async();
   }
+
 });
