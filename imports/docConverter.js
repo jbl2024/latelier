@@ -18,10 +18,19 @@ export const compileTemplate = function(source, context, helpers = {}) {
 export const convertHtml = function (html, format, cb) {
   const directory = fs.mkdtempSync(path.join(os.tmpdir(), "convert-"));
   const directoryAndFilename = `${directory}/output.${format}`;
-  nodePandoc(html, `-f html -o ${directoryAndFilename}`, (err) => {
+  let args = ["-f", "html", "-o", directoryAndFilename];
+  if (format === "pdf") {
+    args = args.concat(["--pdf-engine=pdflatex"]);
+  }
+  nodePandoc(html, args, (err) => {
     if (err) {
-      fs.unlinkSync(directoryAndFilename);
-      fs.rmdirSync(directory);
+      console.log(err);
+      if (fs.existsSync(directoryAndFilename)) {
+        fs.unlinkSync(directoryAndFilename);
+      }
+      if (fs.existsSync(directory)) {
+        fs.rmdirSync(directory);
+      }
 
       cb(err, null);
       return;
