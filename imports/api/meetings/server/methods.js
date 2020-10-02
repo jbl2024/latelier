@@ -614,7 +614,7 @@ Meetings.methods.export = new ValidatedMethod({
     const i18nHelper = i18n(locale.split("-")[0]);
     bound(() => {
 
-      const templateFile = Assets.absoluteFilePath("exports/meetings/meeting.html");
+      const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
       const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { meeting, datesFormats: i18nHelper.t("dates.format") }, {
         "i18n": function(str, datas = {}) {
           return (i18nHelper != undefined ? i18nHelper.t(str, datas) : str);
