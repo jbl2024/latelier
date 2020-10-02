@@ -3,13 +3,14 @@
     <template v-slot:content>
       <v-progress-linear v-if="loading" indeterminate absolute top />
       <v-list>
-        <v-list-item 
+        <v-list-item
           v-for="(format, index) in formats"
           :key="index"
-          @click="exportAs(format.format, format)">
+          @click="exportAs(format.format, format)"
+        >
           <v-list-item-avatar>
             <v-icon :class="[format.color, 'white--text']">
-              {{ format.icon ? format.icon : 'mdi-file-document-box-outline' }}
+              {{ format.icon ? format.icon : "mdi-file-document-box-outline" }}
             </v-icon>
           </v-list-item-avatar>
           <v-list-item-content>
@@ -65,7 +66,8 @@ export default {
           title: "DOCX",
           description: "Word",
           color: "green",
-          mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+          mimeType:
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         },
         {
           format: "pdf",
@@ -74,7 +76,7 @@ export default {
           color: "red",
           previewOnly: true,
           mimeType: "application/pdf"
-        },
+        }
       ])
     };
   },
@@ -90,7 +92,7 @@ export default {
   },
   methods: {
     findFormat(format) {
-      return this.formats.find(f => f.format === format);
+      return this.formats.find((f) => f.format === format);
     },
     exportAs(format, options = {}) {
       const foundFormat = this.findFormat(format);
@@ -114,13 +116,12 @@ export default {
           });
 
           if (options.previewOnly === true) {
-            var blobURL = URL.createObjectURL(blob);
+            const blobURL = URL.createObjectURL(blob);
             window.open(blobURL);
           } else {
             const filename = `${this.meeting.name}.${format}`;
             saveAs(blob, sanitizeForFs(filename));
           }
-
         }
       );
     }
