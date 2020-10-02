@@ -2,6 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
+import { UserUtils } from "/imports/api/users/utils";
 import moment from "moment";
 import fs from "fs";
 import {
@@ -25,6 +26,23 @@ import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } fr
 import SimpleSchema from "simpl-schema";
 
 const bound = Meteor.bindEnvironment((callback) => callback());
+
+const loadUser = (aUserId) => {
+  if (!aUserId) return {};
+  return Meteor.users.findOne(
+    { _id: aUserId },
+    {
+      fields: {
+        profile: 1,
+        status: 1,
+        statusDefault: 1,
+        statusConnection: 1,
+        emails: 1,
+        roles: 1
+      }
+    }
+  );
+};
 
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
@@ -560,23 +578,6 @@ Meetings.methods.adminFind = new ValidatedMethod({
       })
       .fetch();
 
-    const loadUser = (aUserId) => {
-      if (!aUserId) return {};
-      return Meteor.users.findOne(
-        { _id: aUserId },
-        {
-          fields: {
-            profile: 1,
-            status: 1,
-            statusDefault: 1,
-            statusConnection: 1,
-            emails: 1,
-            roles: 1
-          }
-        }
-      );
-    };
-
     data.forEach((meeting) => {
       meeting.createdBy = loadUser(meeting.createdBy);
     });
@@ -606,6 +607,27 @@ Meetings.methods.export = new ValidatedMethod({
     checkCanReadMeeting(meetingId);
 
     const meeting = Meetings.findOne({ _id: meetingId });
+    if (!meeting) {
+      throw new Meteor.Error("not-found");
+    }
+
+    meeting.createdBy = loadUser(meeting.createdBy);
+    // Gathering all meeting related users
+    const attendeesIds = Array.isArray(meeting.attendees) ? 
+    meeting.attendees.map(a => a.userId) : [];
+    const assignedIds = Array.isArray(meeting.actions) ? 
+    meeting.actions.map(a => a.assignedTo) : [];
+    const users = attendeesIds.concat(assignedIds).reduce((users, userId) => {
+      if (!users[userId]) {
+        users[userId] = loadUser(userId);
+      }
+      return users;
+    }, {});
+
+    const project = Projects.findOne({ _id: meeting.projectId });
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
 
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
@@ -615,15 +637,25 @@ Meetings.methods.export = new ValidatedMethod({
     bound(() => {
 
       const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
-      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), { meeting, datesFormats: i18nHelper.t("dates.format") }, {
-        "i18n": function(str, datas = {}) {
+      const datas = {
+        meeting,
+        project,
+        users,
+        datesFormats: i18nHelper.t("dates.format"),
+        meetingTypes: i18nHelper.t("meetings.actions.types"),
+      };
+      const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
+        i18n(str, datas = {}) {
           return (i18nHelper != undefined ? i18nHelper.t(str, datas) : str);
         },
-        "date": function(dateStr, format) {
+        date(dateStr, format) {
           if (!dateStr || !format) return '';
           const date = moment(dateStr);
           date.locale(locale);
           return date.format(format);
+        },
+        getUserProfileName(user) {
+          return UserUtils.getUserProfileName(user);
         }
       });
       convertHtml(html, format, (error, result) => {

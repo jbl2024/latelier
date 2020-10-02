@@ -415,10 +415,12 @@
       "date": "Date",
       "startDate": "Start",
       "endDate": "End",
+      "time": "Heure",
       "description": "Description",
       "attendees": "Attendees",
       "agenda": "Agenda",
       "report": "Report",
+      "organizedBy": "Organised by",
       "actions": {
         "title": "Actions",
         "type": "Type",

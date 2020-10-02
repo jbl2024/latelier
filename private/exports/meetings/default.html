@@ -1,22 +1,27 @@
 <div>
-    <h1>
+    <h2>
         {{i18n "meetings.export.title" }}: {{ meeting.name }}
-    <h1>
+    <h2>
+    <p> {{i18n "meetings.export.organizedBy" }}: {{ getUserProfileName meeting.createdBy }}</p>
+    <h2>
+        {{ project.name }}
+    </h2>
     <div>
-        {{i18n "meetings.export.date" }}: {{ meeting.startDate }}
+        {{i18n "meetings.export.date" }}: {{ date meeting.startDate datesFormats.prettyDate }}
     </div>
     <div>
-        {{i18n "meetings.export.startDate" }}: {{ meeting.startDate }}
-    </div>
-    <div>
-        {{i18n "meetings.export.endDate" }}: {{ meeting.endDate }}
+        {{i18n "meetings.export.time" }}: {{ date meeting.startDate datesFormats.time }} - {{ date meeting.endDate datesFormats.time }}
     </div>
     <div>
         {{i18n "meetings.export.description" }}: {{ meeting.description }}
     </div>
+
+    <h2>
+        {{i18n "meetings.export.attendees"}}
+    </h2>
     <ul>
         {{#each meeting.attendees }}
-            <li>{{ firstName }} {{ lastName }}</li>
+            <li>{{ firstName }} {{ lastName }} ({{ email }})</li>
         {{/each}}
     </ul>
     <h2>
@@ -35,12 +40,6 @@
         {{i18n "meetings.export.actions.title" }}
     </h2>
     <table>
-        <colgroup>
-            <col width="20%">
-            <col width="20%">
-            <col width="20%">
-            <col width="20%">
-        </colgroup>
         <thead>
             <tr>
                 <th>
@@ -58,21 +57,22 @@
             </tr>
         </thead>
         <tbody>
+            {{#each meeting.actions }}
             <tr>
                 <td>
-
+                    {{ ../meetingTypes.[type] }}
                 </td>
                 <td>
-
+                    {{{ description }}}
                 </td>
                 <td>
-
+                    {{ assignedTo }}
                 </td>
                 <td>
-
+                    {{ date dueDate datesFormats.prettyDate }}
                 </td>
             </tr>
+            {{/each}}
         </tbody>
     </table> 
-    
 </div>

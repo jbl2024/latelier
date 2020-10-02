@@ -424,10 +424,12 @@
       "date": "Date",
       "startDate": "Début",
       "endDate": "Fin",
+      "time": "Heure",
       "description": "Description",
       "attendees": "Participants",
       "agenda": "Ordre du jour",
       "report": "Compte-rendu",
+      "organizedBy": "Organisé par",
       "actions": {
         "title": "Relevé de décisions",
         "type": "Type",

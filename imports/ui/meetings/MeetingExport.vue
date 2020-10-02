@@ -4,8 +4,8 @@
       <v-progress-linear v-if="loading" indeterminate absolute top />
       <v-list>
         <v-list-item 
-          v-for="format in formats" 
-          :key="format.format" 
+          v-for="(format, index) in formats"
+          :key="index"
           @click="exportAs(format.format, format)">
           <v-list-item-avatar>
             <v-icon :class="[format.color, 'white--text']">
