@@ -622,27 +622,36 @@ Meetings.methods.export = new ValidatedMethod({
       return aUsers;
     }, {});
 
+
     const project = Projects.findOne({ _id: meeting.projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
 
     const i18nHelper = i18n(locale.split("-")[0]);
+    if (meeting.actions) {
+      meeting.actions.forEach((action) => {
+        action.typeString = i18nHelper.t("meetings.actions.types")[action.type];
+      });
+    }
+
     const async = Meteor.wrapAsync(function (done) {
       const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
       const datas = {
         meeting,
         project,
         users,
-        datesFormats: i18nHelper.t("dates.format"),
-        meetingTypes: i18nHelper.t("meetings.actions.types")
+        datesFormats: i18nHelper.t("dates.format")
       };
       const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
         i18n(str, aDatas = {}) {
           return (i18nHelper !== undefined ? i18nHelper.t(str, aDatas) : str);
         },
         date(dateStr, aFormat) {
-          if (!dateStr || !aFormat) return "";
+          if (!aFormat) {
+            aFormat = datas.datesFormats.prettyDate;
+          }
+          if (!dateStr) return "";
           const date = moment(dateStr);
           date.locale(locale);
           return date.format(aFormat);

@@ -60,7 +60,7 @@
             {{#each meeting.actions }}
             <tr>
                 <td>
-                    {{ ../meetingTypes.[type] }}
+                    {{ typeString }}
                 </td>
                 <td>
                     {{{ description }}}
@@ -69,7 +69,7 @@
                     {{ getUserProfileName assignedTo }}
                 </td>
                 <td>
-                    {{ date dueDate datesFormats.prettyDate }}
+                    {{ date dueDate datesFormats.prettyDates }}
                 </td>
             </tr>
             {{/each}}
