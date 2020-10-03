@@ -204,6 +204,10 @@ export default {
     maxHeight: {
       type: String,
       default: null
+    },
+    editable: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -225,10 +229,18 @@ export default {
       if (existingContent !== this.value) {
         this.editor.setContent(this.value);
       }
+    },
+    watch: {
+      editable() {
+        this.editor.setOptions({
+          editable: this.editable
+        });
+      }
     }
   },
   mounted() {
     this.editor = new Editor({
+      editable: this.editable,
       content: this.content,
       extensions: [
         new HardBreak(),
