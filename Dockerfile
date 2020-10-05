@@ -45,9 +45,7 @@ RUN apk add --no-cache perl fontconfig-dev freetype-dev && \
     /tmp/install-tl-unx/install-tl \
       --profile=/tmp/install-tl-unx/texlive.profile && \
     rm -fr /tmp/install-tl-unx && \
-    tlmgr install \
-    collection-latexextra \
-    latexmk && \
+    tlmgr install collection-latexrecommended && \
     apk del .fetch-deps
 RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xz --strip-components 1 -C /usr/local/
 
