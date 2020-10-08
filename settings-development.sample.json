@@ -33,6 +33,20 @@
   "roles": {
     "admin": ["foo@bar.com"]
   },
+  "restApi": {
+    "enabled": true,
+    "basePath": "/api",
+    "swagger": {
+      "uiPath": "/api-docs",
+      "enabled": true,
+      "servers": [
+        {
+          "url": "http://localhost/api",
+          "description": "Main HTTP REST Api endpoint"
+        }
+      ]
+    }
+  },
   "auth": {
     "oauth2": {
       "enabled": true,
