@@ -13,6 +13,13 @@ router.get('/', function(req, res) {
     if (req.params.listId) {
         query.listId = req.params.listId;
     }
+
+    if (req.params.userId) {
+        query.$or = [
+            { "createdBy": req.params.userId},
+            { "updatedBy": req.params.userId}
+        ];
+    }
     const tasks = Tasks.find(query).fetch();
     res.status(200).json(tasks);
 });
