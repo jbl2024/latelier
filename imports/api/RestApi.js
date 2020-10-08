@@ -1,4 +1,5 @@
-import express from 'express';
+import express from "express";
+import helmet from "helmet";
 import routes from "./routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json";
@@ -18,6 +19,7 @@ export const RestApi = class RestApi {
     }
     createServer() {
         const server = express();
+        server.use(helmet());
         server.use(this.config.basePath, routes);
         if (this.config?.swagger?.enabled === true) {
             this.setupSwagger(server);
