@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router({mergeParams: true});
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { RestApiError } from "/imports/api/RestApi";
 import projects from "/imports/api/tasks/server/rest.js";
 
 router.get('/', function(req, res) {
@@ -8,7 +9,7 @@ router.get('/', function(req, res) {
         deleted: { $ne: true }
     };
     const organizations = Organizations.find(query).fetch();
-    res.status(200).json(organizations);
+    res.status(200).json(organizations).end();
 });
 
 router.get('/:organizationId', function(req, res) {
@@ -17,8 +18,11 @@ router.get('/:organizationId', function(req, res) {
         delete: { $ne : true },
         _id: organizationId
     };
-    const organization = Organizations.findOne(query)
-    res.status(200).json(organization);
+    const organization = Organizations.findOne(query);
+    if (!organization) {
+        throw new RestApiError("not-found", 404);
+    }
+    res.status(200).json(organization).end();
 });
 
 router.use("/:organizationId/projects", projects);

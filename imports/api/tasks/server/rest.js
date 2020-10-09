@@ -2,6 +2,7 @@ import express from "express";
 const router = express.Router({ mergeParams : true });
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { isNumeric } from "/imports/utils/";
+import { RestApiError } from "/imports/api/RestApi";
 
 router.get('/', function(req, res) {
     const query = {
@@ -21,7 +22,7 @@ router.get('/', function(req, res) {
         ];
     }
     const tasks = Tasks.find(query).fetch();
-    res.status(200).json(tasks);
+    res.status(200).json(tasks).end();
 });
 
 router.get('/:taskId', function(req, res) {
@@ -34,7 +35,10 @@ router.get('/:taskId', function(req, res) {
         query._id = taskId;
     }
     const task = Tasks.findOne(query);
-    res.status(200).json(task);
+    if (!task) {
+        throw new RestApiError("not-found", 404);
+    }
+    res.status(200).json(task).end();
 });
 
 export default router;
