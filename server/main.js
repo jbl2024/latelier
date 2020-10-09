@@ -86,6 +86,6 @@ Meteor.startup(() => {
   if (Meteor.settings?.restApi?.enabled === true) {
     const restApi = new RestApi(Meteor.settings?.restApi);
     const server = restApi.createServer();
-    WebApp.connectHandlers.use(server);
+    WebApp.rawConnectHandlers.use(server);
   }
 });
