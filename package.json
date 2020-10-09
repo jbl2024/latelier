@@ -20,6 +20,7 @@
     "carbone": "^1.2.1",
     "diagram-js-minimap": "^2.0.3",
     "express": "^4.17.1",
+    "express-list-endpoints": "^5.0.0",
     "faker": "^4.1.0",
     "file-saver": "^2.0.2",
     "fs-extra": "^7.0.1",
