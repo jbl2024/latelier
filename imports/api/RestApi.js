@@ -12,6 +12,22 @@ export const API_STATUSES = {
     ERROR: "error"
 };
 
+
+export const runAsUser = function runAsUser(userId, func) {
+	const DDPCommon = Package['ddp-common'].DDPCommon;
+	var invocation = new DDPCommon.MethodInvocation({
+	  isSimulation: false,
+	  userId: userId,
+	  setUserId: () => {},
+	  unblock: () => {},
+	  connection: {},
+	  randomSeed: Random.id()
+	});
+	return DDP._CurrentInvocation.withValue(invocation, () => {
+	  return func();
+	});
+}
+
 export const RestApi = class RestApi {
     constructor(config) {
         this.config = config || this.defaultConfig();
@@ -28,6 +44,7 @@ export const RestApi = class RestApi {
     createServer() {
         const server = express();
         // server.use(helmet());
+        server.use((req, res, next) => runAsUser("Z4f76EuDbLhN6whyy", next));
         server.use(this.responseEnvelope());
         server.use(this.config.basePath, routes);
         this.setErrorHandler(server);

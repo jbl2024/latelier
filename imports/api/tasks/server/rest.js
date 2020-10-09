@@ -41,4 +41,20 @@ router.get('/:taskId', function(req, res) {
     res.status(200).json(task).end();
 });
 
+router.post("/", function(req, res) {
+    console.log(Meteor.userId());
+    Meteor.call(
+        "tasks.insert",
+        "qhr6zJnjKDq9QnDp9",
+        "EsecabSogj95f8zP7",
+        "Nouvelle tâche",
+        (error, task) => {
+            if (error) {
+            throw new RestApiError("Unprocessable entity", 422);
+            }
+            res.status(200).json(task).end();
+        }
+    );
+});
+
 export default router;
