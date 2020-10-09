@@ -15,10 +15,7 @@ routes.use("/users", users);
 // Listing all API Routes
 if (Meteor.isDevelopment) {
     routes.get("/routes", function(req, res) {
-        res.status(200).json(listEndpoints(routes).map(endpoint => {
-            if (endpoint.middleware) delete endpoint.middleware;
-            return endpoint;
-        }));
+        res.status(200).json(listEndpoints(routes).map(endpoint => `${endpoint.path} [${endpoint.methods.join(',')}]`));
     });
 }
 
