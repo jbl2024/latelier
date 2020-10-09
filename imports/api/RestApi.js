@@ -19,7 +19,7 @@ export const RestApi = class RestApi {
     }
     createServer() {
         const server = express();
-        server.use(helmet());
+        // server.use(helmet());
         server.use(this.config.basePath, routes);
         if (this.config?.swagger?.enabled === true) {
             this.setupSwagger(server);
