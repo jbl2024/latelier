@@ -48,7 +48,8 @@ import {
   Table,
   TableHeader,
   TableCell,
-  TableRow
+  TableRow,
+  Collaboration
 } from "tiptap-extensions";
 
 import {
@@ -208,6 +209,10 @@ export default {
     editable: {
       type: Boolean,
       default: true
+    },
+    collaboration: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -239,35 +244,61 @@ export default {
     }
   },
   mounted() {
+    const version = 1;
+    const extensions = [
+      new HardBreak(),
+      new Blockquote(),
+      new CodeBlock(),
+      new Heading({ levels: [1, 2, 3] }),
+      new BulletList(),
+      new OrderedList(),
+      new ListItem(),
+      new Bold(),
+      new Code(),
+      new Italic(),
+      new Link(),
+      new Strike(),
+      new Underline(),
+      new History(),
+      new TodoItem({
+        nested: true
+      }),
+      new TodoList(),
+      new Table({
+        resizable: true
+      }),
+      new TableHeader(),
+      new TableCell(),
+      new TableRow()
+    ];
+
+    if (this.collaboration) {
+      extensions.push(
+        new Collaboration({
+          // the initial version we start with
+          // version is an integer which is incremented with every change
+          version,
+          // debounce changes so we can save some requests
+          debounce: 250,
+          // onSendable is called whenever there are changed we have to send to our server
+          onSendable: ({ sendable }) => {
+            this.$emit("on-sendable", {
+              sendable: sendable,
+              schema: {
+                topNode: this.editor.options.topNode,
+                nodes: this.editor.nodes,
+                marks: this.editor.marks
+              }
+            });
+          }
+        })
+      );
+    }
+
     this.editor = new Editor({
       editable: this.editable,
       content: this.content,
-      extensions: [
-        new HardBreak(),
-        new Blockquote(),
-        new CodeBlock(),
-        new Heading({ levels: [1, 2, 3] }),
-        new BulletList(),
-        new OrderedList(),
-        new ListItem(),
-        new Bold(),
-        new Code(),
-        new Italic(),
-        new Link(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new TodoItem({
-          nested: true
-        }),
-        new TodoList(),
-        new Table({
-          resizable: true
-        }),
-        new TableHeader(),
-        new TableCell(),
-        new TableRow()
-      ],
+      extensions: extensions,
       editorProps: {
         handleKeyDown: (view, event) => {
           if (event.key === "Enter" && event.ctrlKey) {

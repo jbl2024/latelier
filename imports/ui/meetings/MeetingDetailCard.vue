@@ -26,12 +26,18 @@
               </v-btn>
               <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
                 <v-icon left>
-                  mdi-pencil
+                  mdi-lock-outline
                 </v-icon>
                 <span>
                   {{ $t("Edit") }}
                 </span>
               </v-btn>
+              <tooltip-button
+                bottom
+                icon="mdi-settings"
+                :tooltip="$t('Settings')"
+                @on="editMeeting"
+              />
               <tooltip-button
                 bottom
                 icon="mdi-file-export"
@@ -47,10 +53,10 @@
           </v-col>
           <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-date-header">
-              <v-icon class="mr-2">
+              <v-icon v-ripple class="mr-2" @click="editMeeting">
                 mdi-clock
               </v-icon>
-              {{ meetingInterval }}
+              <a v-ripple @click="editMeeting">{{ meetingInterval }}</a>
             </div>
           </v-col>
         </v-row>
@@ -98,6 +104,8 @@
             class="editor"
             hide-toolbar
             autofocus
+            collaboration
+            @on-sendable="updateAgendaWithSendable"
             @on-focus="setCurrentEditor"
           />
           <h2>
@@ -235,9 +243,9 @@ export default {
     }
   },
   watch: {
-    "meeting.agenda"(agenda) {
-      this.updateAgenda(agenda);
-    },
+    // "meeting.agenda"(agenda) {
+    //   this.updateAgenda(agenda);
+    // },
     "meeting.report"(report) {
       this.updateReport(report);
     },
@@ -272,6 +280,16 @@ export default {
     }
   },
   meteor: {
+    // $subscribe: {
+    //   // Subscribes to the 'threads' publication with no parameters
+    //   coedition() {
+    //     // Here you can use Vue reactive properties
+    //     return [
+    //       this.meetingId,
+    //       this.version
+    //     ]; // Subscription params
+    //   }
+    // },
     tasks: {
       params() {
         return {
@@ -465,6 +483,21 @@ export default {
       return (
         Permissions.isAdmin(Meteor.userId(), this.meeting.projectId)
         || Permissions.isAdmin(Meteor.userId())
+      );
+    },
+
+    updateAgendaWithSendable(sendable) {
+      Meteor.call(
+        "meetings.updateAgendaWithSendable",
+        {
+          meetingId: this.meeting._id,
+          sendable: sendable
+        },
+        (error) => {
+          if (error) {
+            this.$notifyError(error);
+          }
+        }
       );
     }
   }
