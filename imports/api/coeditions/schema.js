@@ -5,10 +5,14 @@ export default new SimpleSchema({
     type: String
   },
   version: {
-    type: String
+    type: Number
+  },
+  doc: {
+    type: String,
+    optional: true
   },
   steps: {
-    type: Object,
-    blackbox: true
+    type: String,
+    optional: true
   }
 });

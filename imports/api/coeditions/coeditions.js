@@ -8,6 +8,6 @@ Coeditions.methods = {};
 
 if (Meteor.isServer) {
   Meteor.startup(() => {
-    Coeditions.rawCollection().createIndex({ objectId: 1, version: 1 });
+    Coeditions.rawCollection().createIndex({ objectId: 1 });
   });
 }

@@ -15,7 +15,7 @@
       :editor="editor"
       class="menu-bar"
     />
-
+    {{ version }}
     <editor-content
       :editor="editor"
       :class="{
@@ -28,6 +28,8 @@
 </template>
 
 <script>
+import { Coeditions } from "/imports/api/coeditions/coeditions";
+
 import { Editor, EditorContent, Node } from "tiptap";
 import {
   HardBreak,
@@ -211,8 +213,33 @@ export default {
       default: true
     },
     collaboration: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
+    }
+  },
+  meteor: {
+    coedition() {
+      console.log({
+        newData: true,
+        coedition: Coeditions.findOne({})
+      });
+      const coedition = Coeditions.findOne({ });
+      if (
+        coedition
+        && coedition.steps
+      ) {
+        const data = {
+          version: coedition.version,
+          steps: JSON.parse(coedition.steps)
+        };
+        console.log("pushing")
+        console.log(data)
+        console.log({
+          editor: this.editor.extensions.options.collaboration
+        })
+        this.editor.extensions.options.collaboration.update(data);
+      }
+      return coedition;
     }
   },
   data() {
@@ -220,7 +247,8 @@ export default {
       editor: null,
       content: this.value,
       ctrl: false,
-      enter: false
+      enter: false,
+      version: null
     };
   },
   computed: {
@@ -230,10 +258,10 @@ export default {
   },
   watch: {
     value() {
-      const existingContent = this.editor.getHTML();
-      if (existingContent !== this.value) {
-        this.editor.setContent(this.value);
-      }
+      // const existingContent = this.editor.getHTML();
+      // if (existingContent !== this.value) {
+      //   this.editor.setContent(this.value);
+      // }
     },
     watch: {
       editable() {
@@ -244,7 +272,6 @@ export default {
     }
   },
   mounted() {
-    const version = 1;
     const extensions = [
       new HardBreak(),
       new Blockquote(),
@@ -273,54 +300,91 @@ export default {
     ];
 
     if (this.collaboration) {
-      extensions.push(
-        new Collaboration({
-          // the initial version we start with
-          // version is an integer which is incremented with every change
-          version,
-          // debounce changes so we can save some requests
-          debounce: 250,
-          // onSendable is called whenever there are changed we have to send to our server
-          onSendable: ({ sendable }) => {
-            this.$emit("on-sendable", {
-              sendable: sendable,
-              schema: {
-                topNode: this.editor.options.topNode,
-                nodes: this.editor.nodes,
-                marks: this.editor.marks
+      Meteor.call(
+        "coeditions.init",
+        { objectId: this.collaboration },
+        (error, result) => {
+          if (error) {
+            this.$notifyError(error);
+            return;
+          }
+          console.log("init")
+          console.log(result)
+          this.version = result.version;
+          // this.content = JSON.parse(result.doc);
+          extensions.push(
+            new Collaboration({
+              // the initial version we start with
+              // version is an integer which is incremented with every change
+              version: this.version,
+              // debounce changes so we can save some requests
+              debounce: 250,
+              // onSendable is called whenever there are changed we have to send to our server
+              onSendable: ({ sendable }) => {
+                this.onSendable(sendable);
               }
+            })
+          );
+
+          this.editor = new Editor({
+            editable: this.editable,
+            content: this.content,
+            extensions: extensions,
+            editorProps: {
+              handleKeyDown: (view, event) => {
+                if (event.key === "Enter" && event.ctrlKey) {
+                  this.submit();
+                }
+              }
+            },
+            onUpdate: ({ getHTML }) => {
+              const content = getHTML();
+              this.$emit("input", content);
+            },
+            onFocus: () => {
+              this.$emit("on-focus", this);
+            },
+            onBlur: () => {
+              this.$emit("on-blur", this);
+            }
+          });
+          this.$subscribe("coeditions", this.collaboration);
+
+          if (this.autofocus) {
+            this.$nextTick(() => {
+              this.focus();
             });
           }
-        })
-      );
-    }
-
-    this.editor = new Editor({
-      editable: this.editable,
-      content: this.content,
-      extensions: extensions,
-      editorProps: {
-        handleKeyDown: (view, event) => {
-          if (event.key === "Enter" && event.ctrlKey) {
-            this.submit();
-          }
         }
-      },
-      onUpdate: ({ getHTML }) => {
-        const content = getHTML();
-        this.$emit("input", content);
-      },
-      onFocus: () => {
-        this.$emit("on-focus", this);
-      },
-      onBlur: () => {
-        this.$emit("on-blur", this);
-      }
-    });
-    if (this.autofocus) {
-      this.$nextTick(() => {
-        this.focus();
+      );
+    } else {
+      this.editor = new Editor({
+        editable: this.editable,
+        content: this.content,
+        extensions: extensions,
+        editorProps: {
+          handleKeyDown: (view, event) => {
+            if (event.key === "Enter" && event.ctrlKey) {
+              this.submit();
+            }
+          }
+        },
+        onUpdate: ({ getHTML }) => {
+          const content = getHTML();
+          this.$emit("input", content);
+        },
+        onFocus: () => {
+          this.$emit("on-focus", this);
+        },
+        onBlur: () => {
+          this.$emit("on-blur", this);
+        }
       });
+      if (this.autofocus) {
+        this.$nextTick(() => {
+          this.focus();
+        });
+      }
     }
   },
   beforeDestroy() {
@@ -359,6 +423,32 @@ export default {
         overflow-y: auto;
       `;
       return style;
+    },
+
+    onSendable(sendable) {
+      console.log(sendable);
+      Meteor.call(
+        "coeditions.send",
+        {
+          objectId: this.collaboration,
+          sendable: sendable,
+          schema: {
+            topNode: this.editor.options.topNode,
+            nodes: this.editor.nodes,
+            marks: this.editor.marks
+          }
+        },
+        (error, result) => {
+          if (error) {
+            this.$notifyError(error);
+            return;
+          }
+          console.log("result")
+          console.log(result)
+          this.version = result;
+          console.log(result);
+        }
+      );
     }
   }
 };

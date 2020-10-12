@@ -192,7 +192,7 @@ Meetings.methods.updateAgendaWithSendable = new ValidatedMethod({
       sort: { _id: 1 }
     });
 
-    if (!stortedData) {
+    if (!storedData) {
       Coeditions.insert({
         objectId: `${meeting._id}-agenda`,
         version: 0,
@@ -228,8 +228,6 @@ Meetings.methods.updateAgendaWithSendable = new ValidatedMethod({
       return newStep;
     });
     const newVersion = version + newSteps.length;
-
-    console.log(meeting);
 
     Coeditions.insert({
       objectId: `${meeting._id}-agenda`,

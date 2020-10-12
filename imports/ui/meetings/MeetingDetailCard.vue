@@ -100,12 +100,10 @@
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
             ref="editor1"
-            v-model="meeting.agenda"
             class="editor"
             hide-toolbar
             autofocus
-            collaboration
-            @on-sendable="updateAgendaWithSendable"
+            :collaboration="`${meeting._id}-agenda`"
             @on-focus="setCurrentEditor"
           />
           <h2>
@@ -280,16 +278,6 @@ export default {
     }
   },
   meteor: {
-    // $subscribe: {
-    //   // Subscribes to the 'threads' publication with no parameters
-    //   coedition() {
-    //     // Here you can use Vue reactive properties
-    //     return [
-    //       this.meetingId,
-    //       this.version
-    //     ]; // Subscription params
-    //   }
-    // },
     tasks: {
       params() {
         return {
@@ -483,21 +471,6 @@ export default {
       return (
         Permissions.isAdmin(Meteor.userId(), this.meeting.projectId)
         || Permissions.isAdmin(Meteor.userId())
-      );
-    },
-
-    updateAgendaWithSendable(sendable) {
-      Meteor.call(
-        "meetings.updateAgendaWithSendable",
-        {
-          meetingId: this.meeting._id,
-          sendable: sendable
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
       );
     }
   }
