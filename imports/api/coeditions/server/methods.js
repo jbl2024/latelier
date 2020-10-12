@@ -29,7 +29,7 @@ Coeditions.methods.send = new ValidatedMethod({
       storedData = Coeditions.findOne({
         objectId: objectId
       }, {
-        sort: { _id: 1 }
+        sort: { version: -1 }
       });
     }
     return storedData;
@@ -44,20 +44,11 @@ Coeditions.methods.send = new ValidatedMethod({
     schema: { type: Object, blackbox: true }
   }).validator(),
   run({ objectId, sendable, schema }) {
-    const storedData = Coeditions.findOne({
-      objectId: objectId
-    }, {
-      sort: { version: -1 }
-    });
-
-    if (!storedData) {
-      throw Meteor.error("coedition-not-initialized");
-    }
-
+    const storedData = Meteor.call("coeditions.init", { objectId });
     const { version, clientID, steps } = sendable;
 
     if (storedData.version !== version) {
-      return version;
+      return storedData;
     }
 
     const proseSchema = new Schema(schema);
@@ -85,7 +76,6 @@ Coeditions.methods.send = new ValidatedMethod({
         return stepData;
       }))
     };
-    console.log(newObject)
 
     //  const newData = [
     // ...limitedOldData,
@@ -97,6 +87,6 @@ Coeditions.methods.send = new ValidatedMethod({
     //   }
     // })
     Coeditions.insert(newObject);
-    return newVersion;
+    return newObject;
   }
 });

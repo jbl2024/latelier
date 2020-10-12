@@ -15,7 +15,8 @@
       :editor="editor"
       class="menu-bar"
     />
-    {{ version }}
+    version: {{ version }}
+    <v-divider />
     <editor-content
       :editor="editor"
       :class="{
@@ -219,24 +220,16 @@ export default {
   },
   meteor: {
     coedition() {
-      console.log({
-        newData: true,
-        coedition: Coeditions.findOne({})
-      });
-      const coedition = Coeditions.findOne({ });
-      if (
-        coedition
-        && coedition.steps
-      ) {
+      if (!this.collaboration) {
+        return null;
+      }
+      const coedition = Coeditions.findOne({});
+      if (coedition && coedition.steps && coedition.version !== this.version) {
+        this.version = coedition.version;
         const data = {
           version: coedition.version,
           steps: JSON.parse(coedition.steps)
         };
-        console.log("pushing")
-        console.log(data)
-        console.log({
-          editor: this.editor.extensions.options.collaboration
-        })
         this.editor.extensions.options.collaboration.update(data);
       }
       return coedition;
@@ -308,10 +301,7 @@ export default {
             this.$notifyError(error);
             return;
           }
-          console.log("init")
-          console.log(result)
           this.version = result.version;
-          // this.content = JSON.parse(result.doc);
           extensions.push(
             new Collaboration({
               // the initial version we start with
@@ -328,7 +318,7 @@ export default {
 
           this.editor = new Editor({
             editable: this.editable,
-            content: this.content,
+            content: JSON.parse(result.doc),
             extensions: extensions,
             editorProps: {
               handleKeyDown: (view, event) => {
@@ -426,7 +416,6 @@ export default {
     },
 
     onSendable(sendable) {
-      console.log(sendable);
       Meteor.call(
         "coeditions.send",
         {
@@ -443,10 +432,7 @@ export default {
             this.$notifyError(error);
             return;
           }
-          console.log("result")
-          console.log(result)
-          this.version = result;
-          console.log(result);
+          // this.version = result.version;
         }
       );
     }
