@@ -4,7 +4,7 @@ import routes from "./routes";
 import swaggerUi from "swagger-ui-express";
 import swaggerDocument from "./swagger.json";
 import mung from "express-mung";
-
+import bodyParser from "body-parser";
 
 export const API_STATUSES = {
     SUCCESS: "success",
@@ -41,16 +41,23 @@ export const RestApi = class RestApi {
             }
         }
     }
-    createServer() {
+    connectServer(webApp) {
         const server = express();
-        // server.use(helmet());
+    
         server.use((req, res, next) => runAsUser("Z4f76EuDbLhN6whyy", next));
         server.use(this.responseEnvelope());
         server.use(this.config.basePath, routes);
-        this.setErrorHandler(server);
         if (this.config?.swagger?.enabled === true) {
             this.setupSwagger(server);
         }
+        this.setErrorHandler(server);
+        webApp.connectHandlers
+            .use(this.config.basePath, helmet())
+            .use(this.config.basePath, bodyParser.urlencoded({ extended: true }))
+            .use(this.config.basePath, bodyParser.json())
+            .use(server)
+        ;
+        
         return server;
     }
     setupSwagger(server) {

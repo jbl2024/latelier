@@ -85,7 +85,6 @@ Meteor.startup(() => {
   Meteor.call("organizations.fixOrphanProjectGroups");
   if (Meteor.settings?.restApi?.enabled === true) {
     const restApi = new RestApi(Meteor.settings?.restApi);
-    const server = restApi.createServer();
-    WebApp.rawConnectHandlers.use(server);
+    restApi.connectServer(WebApp);
   }
 });
