@@ -76,16 +76,6 @@ Coeditions.methods.send = new ValidatedMethod({
         return stepData;
       }))
     };
-
-    //  const newData = [
-    // ...limitedOldData,
-    // ...steps.map((step, index) => {
-    //   return {
-    //     step: JSON.parse(JSON.stringify(step)),
-    //     version: version + index + 1,
-    //     clientID: step.clientID,
-    //   }
-    // })
     Coeditions.insert(newObject);
     return newObject;
   }
