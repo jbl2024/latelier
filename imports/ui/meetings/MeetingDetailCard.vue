@@ -100,6 +100,7 @@
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
             ref="editor1"
+            v-model="meeting.agenda"
             class="editor"
             hide-toolbar
             autofocus
@@ -241,9 +242,9 @@ export default {
     }
   },
   watch: {
-    // "meeting.agenda"(agenda) {
-    //   this.updateAgenda(agenda);
-    // },
+    "meeting.agenda"(agenda) {
+      this.updateAgenda(agenda);
+    },
     "meeting.report"(report) {
       this.updateReport(report);
     },
