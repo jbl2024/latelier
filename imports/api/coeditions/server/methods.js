@@ -83,6 +83,32 @@ Coeditions.methods.send = new ValidatedMethod({
       }))
     };
     Coeditions.insert(newObject);
+
+    Meteor.call("coeditions.purge", { objectId });
+
     return newObject;
+  }
+});
+
+Coeditions.methods.purge = new ValidatedMethod({
+  name: "coeditions.purge",
+  validate: new SimpleSchema({
+    objectId: { type: String }
+  }).validator(),
+  run({ objectId }) {
+    this.unblock();
+
+    const count = Coeditions.find({ objectId }).count();
+    const keep = Meteor.settings.coeditionSteps || 500;
+    if (count > keep) {
+      const coeditions = Coeditions.find(
+        { objectId },
+        { sort: { version: 1 } }
+      ).fetch();
+      const toDelete = count - keep;
+      for (let i = 0; i < toDelete; i++) {
+        Coeditions.remove({ _id: coeditions[i]._id });
+      }
+    }
   }
 });
