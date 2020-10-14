@@ -10,7 +10,8 @@ const ApplicationRoles = Object.freeze({
 
 export const PermissionObjects = Object.freeze({
   MEETING: "meeting",
-  PROJECT: "project"
+  PROJECT: "project",
+  TASK: "task"
 });
 
 export const Permissions = {
@@ -196,6 +197,10 @@ export const checkCanWriteObject = (scope, objectId) => {
   switch (scope) {
     case PermissionObjects.MEETING:
       return checkCanWriteMeeting(objectId);
+    case PermissionObjects.PROJECT:
+      return checkCanWriteProject(objectId);
+    case PermissionObjects.TASK:
+      return checkCanWriteTask(objectId);
     default:
       throw new Meteor.Error(401, "not-authorized");
   }
