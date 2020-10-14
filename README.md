@@ -68,6 +68,7 @@ Settings:
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
 | auth                           | object   | {}              | See below                                        |
+| coeditionSteps                 | integer  | 500             | Number of steps to keep for coedit collab feature|
 
 email:
 
