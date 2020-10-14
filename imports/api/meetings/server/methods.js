@@ -182,7 +182,6 @@ Meetings.methods.updateAgendaWithSendable = new ValidatedMethod({
     sendable: { type: Object, blackbox: true }
   }).validator(),
   run({ meetingId, sendable }) {
-    console.log(sendable);
     checkCanWriteMeeting(meetingId);
 
     const meeting = Meetings.findOne({ _id: meetingId });
