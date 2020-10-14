@@ -223,7 +223,7 @@ export default {
       if (!this.collaboration) {
         return null;
       }
-      const coedition = Coeditions.findOne({});
+      const coedition = Coeditions.findOne({ objectId: this.collaboration });
       if (coedition && coedition.steps && coedition.version !== this.version) {
         this.version = coedition.version;
         const data = {
@@ -338,6 +338,12 @@ export default {
               this.$emit("on-blur", this);
             }
           });
+          if (this.value) {
+            const existingContent = this.editor.getHTML();
+            if (existingContent !== this.value) {
+              this.editor.setContent(this.value);
+            }
+          }
           this.$subscribe("coeditions", this.collaboration);
 
           if (this.autofocus) {
@@ -430,9 +436,7 @@ export default {
         (error, result) => {
           if (error) {
             this.$notifyError(error);
-            return;
           }
-          // this.version = result.version;
         }
       );
     }

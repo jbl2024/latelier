@@ -114,6 +114,7 @@
             v-model="meeting.report"
             class="editor"
             hide-toolbar
+            :collaboration="`${meeting._id}-report`"
             @on-focus="setCurrentEditor"
           />
           <template v-if="hasDocuments">
