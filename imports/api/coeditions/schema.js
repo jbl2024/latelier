@@ -14,5 +14,6 @@ export default new SimpleSchema({
   steps: {
     type: String,
     optional: true
-  }
+  },
+  createdAt: Date
 });

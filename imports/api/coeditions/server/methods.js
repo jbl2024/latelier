@@ -21,6 +21,7 @@ Coeditions.methods.send = new ValidatedMethod({
 
     if (!storedData) {
       Coeditions.insert({
+        createdAt: new Date(),
         objectId: objectId,
         version: 0,
         doc: JSON.stringify({
@@ -70,6 +71,7 @@ Coeditions.methods.send = new ValidatedMethod({
     const newVersion = version + newSteps.length;
 
     const newObject = {
+      createdAt: new Date(),
       objectId: objectId,
       version: newVersion,
       doc: JSON.stringify(doc),

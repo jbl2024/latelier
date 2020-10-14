@@ -18,10 +18,12 @@ if (Meteor.isServer) {
     it("coeditions per objectId are capped", async function () {
       for (let i = 0; i < 1000; i++) {
         Coeditions.insert({
+          createdAt: new Date(),
           objectId: "object-a",
           version: i
         });
         Coeditions.insert({
+          createdAt: new Date(),
           objectId: "object-b",
           version: i
         });
