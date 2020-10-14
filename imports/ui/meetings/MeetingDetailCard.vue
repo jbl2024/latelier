@@ -104,6 +104,8 @@
             class="editor"
             hide-toolbar
             autofocus
+            permission-object="meeting"
+            :permission-id="meeting._id"
             :collaboration="`${meeting._id}-agenda`"
             @on-focus="setCurrentEditor"
           />
@@ -114,6 +116,8 @@
             v-model="meeting.report"
             class="editor"
             hide-toolbar
+            permission-object="meeting"
+            :permission-id="meeting._id"
             :collaboration="`${meeting._id}-report`"
             @on-focus="setCurrentEditor"
           />

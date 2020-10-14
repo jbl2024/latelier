@@ -216,6 +216,14 @@ export default {
     collaboration: {
       type: String,
       default: null
+    },
+    permissionObject: {
+      type: String,
+      default: null
+    },
+    permissionId: {
+      type: String,
+      default: null
     }
   },
   meteor: {
@@ -295,7 +303,11 @@ export default {
     if (this.collaboration) {
       Meteor.call(
         "coeditions.init",
-        { objectId: this.collaboration },
+        {
+          objectId: this.collaboration,
+          permissionObject: this.permissionObject,
+          permissionId: this.permissionId
+        },
         (error, result) => {
           if (error) {
             this.$notifyError(error);
@@ -344,7 +356,12 @@ export default {
               this.editor.setContent(this.value);
             }
           }
-          this.$subscribe("coeditions", this.collaboration);
+          this.$subscribe(
+            "coeditions",
+            this.collaboration,
+            this.permissionObject,
+            this.permissionId
+          );
 
           if (this.autofocus) {
             this.$nextTick(() => {
@@ -426,6 +443,8 @@ export default {
         "coeditions.send",
         {
           objectId: this.collaboration,
+          permissionObject: this.permissionObject,
+          permissionId: this.permissionId,
           sendable: sendable,
           schema: {
             topNode: this.editor.options.topNode,
@@ -433,7 +452,7 @@ export default {
             marks: this.editor.marks
           }
         },
-        (error, result) => {
+        (error) => {
           if (error) {
             this.$notifyError(error);
           }

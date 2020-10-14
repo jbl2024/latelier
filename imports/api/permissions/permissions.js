@@ -8,6 +8,11 @@ const ApplicationRoles = Object.freeze({
   INACTIVE: "inactive"
 });
 
+export const PermissionObjects = Object.freeze({
+  MEETING: "meeting",
+  PROJECT: "project"
+});
+
 export const Permissions = {
   isAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     if (!userId) {
@@ -183,6 +188,17 @@ export const checkCanWriteMeeting = (meetingId) => {
 
 export const checkCanDeleteMeeting = (meetingId) => {
   Meteor.call("permissions.canDeleteMeeting", { meetingId });
+};
+
+/** Generic permissions * */
+
+export const checkCanWriteObject = (scope, objectId) => {
+  switch (scope) {
+    case PermissionObjects.MEETING:
+      return checkCanWriteMeeting(objectId);
+    default:
+      throw new Meteor.Error(401, "not-authorized");
+  }
 };
 
 Permissions.methods = {};

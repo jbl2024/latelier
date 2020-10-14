@@ -2,13 +2,17 @@ import { Meteor } from "meteor/meteor";
 import { Schema } from "prosemirror-model";
 import { Coeditions } from "/imports/api/coeditions/coeditions";
 import { Step } from "prosemirror-transform";
+import { checkCanWriteObject } from "/imports/api/permissions/permissions";
 
 Coeditions.methods.send = new ValidatedMethod({
   name: "coeditions.init",
   validate: new SimpleSchema({
-    objectId: { type: String }
+    objectId: { type: String },
+    permissionObject: { type: String },
+    permissionId: { type: String }
   }).validator(),
-  run({ objectId }) {
+  run({ objectId, permissionObject, permissionId }) {
+    checkCanWriteObject(permissionObject, permissionId);
     let storedData = Coeditions.findOne({
       objectId: objectId
     }, {
@@ -40,11 +44,13 @@ Coeditions.methods.send = new ValidatedMethod({
   name: "coeditions.send",
   validate: new SimpleSchema({
     objectId: { type: String },
+    permissionObject: { type: String },
+    permissionId: { type: String },
     sendable: { type: Object, blackbox: true },
     schema: { type: Object, blackbox: true }
   }).validator(),
-  run({ objectId, sendable, schema }) {
-    const storedData = Meteor.call("coeditions.init", { objectId });
+  run({ objectId, permissionObject, permissionId, sendable, schema }) {
+    const storedData = Meteor.call("coeditions.init", { objectId, permissionObject, permissionId });
     const { version, clientID, steps } = sendable;
 
     if (storedData.version !== version) {
