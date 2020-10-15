@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Matomo support
-- Meeting export
+- Meetings:
+  - export to odf/docx/pdf
+  - coedition
+  - lock/unlocked status
 
 ### Changed
 
