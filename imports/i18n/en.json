@@ -311,6 +311,8 @@
     "logoutConfirm": "Do you want to log out?"
   },
   "meetings": {
+    "lock": "Lock",
+    "unlock": "Unlock",
     "list": "List",
     "meeting": "Meeting",
     "meetings": "Meetings",

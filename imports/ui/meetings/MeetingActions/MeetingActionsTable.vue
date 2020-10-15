@@ -63,7 +63,6 @@
           <button
             v-if="item.taskId && tasksByIds[item.taskId]"
             text
-            :disabled="!editable"
             @click="selectTask(tasksByIds[item.taskId])"
           >
             <span class="action-task">

@@ -35,7 +35,7 @@
                     mdi-lock-outline
                   </v-icon>
                   <span>
-                    {{ $t("Edit") }}
+                    {{ $t("meetings.unlock") }}
                   </span>
                 </template>
                 <template v-else>
@@ -43,7 +43,7 @@
                     mdi-lock-open-outline
                   </v-icon>
                   <span>
-                    {{ $t("Close") }}
+                    {{ $t("meetings.lock") }}
                   </span>
                 </template>
               </v-btn>
@@ -97,7 +97,7 @@
                 mdi-lock-outline
               </v-icon>
               <span>
-                {{ $t("Edit") }}
+                {{ $t("meetings.unlock") }}
               </span>
             </template>
             <template v-else>
@@ -105,7 +105,7 @@
                 mdi-lock-open-outline
               </v-icon>
               <span>
-                {{ $t("Close") }}
+                {{ $t("meetings.lock") }}
               </span>
             </template>
           </v-btn>
