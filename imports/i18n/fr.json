@@ -89,7 +89,6 @@
   "No notes": "Aucune note",
   "Add note": "Ajouter une note",
   "edited": "éditée",
-
   "New list": "Nouvelle liste",
   "Template": "Modèle",
   "State": "Etat",
@@ -319,6 +318,8 @@
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
   "meetings": {
+    "lock": "Verrouiller",
+    "unlock": "Déverrouiller",
     "list": "Liste",
     "meeting": "Réunion",
     "meetings": "Réunions",

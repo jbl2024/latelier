@@ -24,14 +24,35 @@
                   {{ $t("meetings.goBackToMeetings") }}
                 </span>
               </v-btn>
-              <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
-                <v-icon left>
-                  mdi-pencil
-                </v-icon>
-                <span>
-                  {{ $t("Edit") }}
-                </span>
+              <v-btn
+                class="ml-2"
+                color="primary"
+                outlined
+                @click="editContent = !editContent"
+              >
+                <template v-if="!editContent">
+                  <v-icon left>
+                    mdi-lock-outline
+                  </v-icon>
+                  <span>
+                    {{ $t("meetings.unlock") }}
+                  </span>
+                </template>
+                <template v-else>
+                  <v-icon left>
+                    mdi-lock-open-outline
+                  </v-icon>
+                  <span>
+                    {{ $t("meetings.lock") }}
+                  </span>
+                </template>
               </v-btn>
+              <tooltip-button
+                bottom
+                icon="mdi-settings"
+                :tooltip="$t('Settings')"
+                @on="editMeeting"
+              />
               <tooltip-button
                 bottom
                 icon="mdi-file-export"
@@ -47,10 +68,10 @@
           </v-col>
           <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-date-header">
-              <v-icon class="mr-2">
+              <v-icon v-ripple class="mr-2" @click="editMeeting">
                 mdi-clock
               </v-icon>
-              {{ meetingInterval }}
+              <a v-ripple @click="editMeeting">{{ meetingInterval }}</a>
             </div>
           </v-col>
         </v-row>
@@ -65,14 +86,41 @@
               {{ $t("meetings.goBackToMeetings") }}
             </span>
           </v-btn>
-          <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
-            <v-icon left>
-              mdi-pencil
-            </v-icon>
-            <span>
-              {{ $t("Edit") }}
-            </span>
+          <v-btn
+            class="ml-2"
+            color="primary"
+            outlined
+            @click="editContent = !editContent"
+          >
+            <template v-if="!editContent">
+              <v-icon left>
+                mdi-lock-outline
+              </v-icon>
+              <span>
+                {{ $t("meetings.unlock") }}
+              </span>
+            </template>
+            <template v-else>
+              <v-icon left>
+                mdi-lock-open-outline
+              </v-icon>
+              <span>
+                {{ $t("meetings.lock") }}
+              </span>
+            </template>
           </v-btn>
+          <tooltip-button
+            bottom
+            icon="mdi-settings"
+            :tooltip="$t('Settings')"
+            @on="editMeeting"
+          />
+          <tooltip-button
+            bottom
+            icon="mdi-file-export"
+            :tooltip="$t('Export')"
+            @on="showMeetingExport = true"
+          />
         </div>
         <div class="list">
           <h1 class="meeting-main-title">
@@ -93,11 +141,14 @@
           <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
-            ref="editor1"
             v-model="meeting.agenda"
-            class="editor"
+            :class="{ editor: true, edition: editContent }"
             hide-toolbar
             autofocus
+            :editable="editContent"
+            permission-object="meeting"
+            :permission-id="meeting._id"
+            :collaboration="`${meeting._id}-agenda`"
             @on-focus="setCurrentEditor"
           />
           <h2>
@@ -105,8 +156,12 @@
           </h2>
           <rich-editor
             v-model="meeting.report"
-            class="editor"
+            :class="{ editor: true, edition: editContent }"
             hide-toolbar
+            :editable="editContent"
+            permission-object="meeting"
+            :permission-id="meeting._id"
+            :collaboration="`${meeting._id}-report`"
             @on-focus="setCurrentEditor"
           />
           <template v-if="hasDocuments">
@@ -130,6 +185,7 @@
           </h2>
           <div class="content actions">
             <meeting-actions-table
+              :editable="editContent"
               :actions="actions"
               :tasks="tasks"
               @select-task="selectTask"
@@ -183,6 +239,7 @@ export default {
   },
   data() {
     return {
+      editContent: false,
       currentEditor: null,
       selectedAction: null,
       showSelectDate: false,
@@ -235,6 +292,17 @@ export default {
     }
   },
   watch: {
+    "meeting.createdAt": {
+      immediate: true,
+      handler(createdAt) {
+        const yesterday = moment().startOf("day").add(-1, "days").toDate();
+        if (moment(createdAt).isBefore(yesterday)) {
+          this.editContent = false;
+        } else {
+          this.editContent = true;
+        }
+      }
+    },
     "meeting.agenda"(agenda) {
       this.updateAgenda(agenda);
     },
@@ -505,6 +573,12 @@ export default {
   margin-bottom: 24px;
 }
 
+.edition {
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border: 2px solid black;
+  border-radius: 4px;
+}
+
 .flex-container {
   display: flex;
   flex-direction: column;
@@ -561,5 +635,16 @@ export default {
 .list {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.content {
+  width: 100%;
+  cursor: text;
+  background-color: white;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease,
+    background-color 0.5s ease;
+  font-size: 16px;
 }
 </style>

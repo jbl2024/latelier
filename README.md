@@ -68,6 +68,7 @@ Settings:
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
 | auth                           | object   | {}              | See below                                        |
+| coedition                      | object   | {}              | See below                                        |
 
 email:
 
@@ -142,6 +143,13 @@ oauth2:
 | idTokenWhitelistFields  | string  |               | []                                                        |
 
 Note: tested only with [keycloak](https://www.keycloak.org/).
+
+coedition:
+
+| Key                     | Type     | Default value   | Description                                            |
+| steps                   | integer  | 500             | Number of steps to keep for coedit collab feature      |
+| daysToKeep              | integer  | 3               | previous edition steps are removed after daysToKeep    |
+
 
 Example:
 
