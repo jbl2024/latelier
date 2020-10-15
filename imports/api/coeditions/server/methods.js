@@ -101,7 +101,7 @@ Coeditions.methods.purge = new ValidatedMethod({
     this.unblock();
 
     const count = Coeditions.find({ objectId }).count();
-    const keep = Meteor.settings.coeditionSteps || 500;
+    const keep = Meteor.settings.coedition?.steps || 500;
     if (count > keep) {
       const coeditions = Coeditions.find(
         { objectId },
@@ -112,5 +112,21 @@ Coeditions.methods.purge = new ValidatedMethod({
         Coeditions.remove({ _id: coeditions[i]._id });
       }
     }
+  }
+});
+
+Coeditions.methods.removeOutdated = new ValidatedMethod({
+  name: "coeditions.removeOutdated",
+  validate: new SimpleSchema({
+    when: { type: Date }
+  }).validator(),
+  run({ when }) {
+    this.unblock();
+
+    Coeditions.remove({
+      createdAt: {
+        $lte: when
+      }
+    });
   }
 });
