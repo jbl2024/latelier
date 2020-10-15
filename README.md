@@ -14,6 +14,7 @@ A project management tool.
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
 - Projects grouped by organization
 - Project weather like status
+- Meeting reports
 - Permissions per organization & per project
 
 ## Installation
@@ -147,6 +148,7 @@ Note: tested only with [keycloak](https://www.keycloak.org/).
 coedition:
 
 | Key                     | Type     | Default value   | Description                                            |
+| ----------------------- | ------- | ---------------- | ------------------------------------------------------ |
 | steps                   | integer  | 500             | Number of steps to keep for coedit collab feature      |
 | daysToKeep              | integer  | 3               | previous edition steps are removed after daysToKeep    |
 
@@ -236,6 +238,10 @@ Note: do not forget to create a `settings-development.json` file.
 ![Weather](/docs/weather.png)
 
 ![Canvas](/docs/canvas.png)
+
+![Meetings calendar](/docs/meeting1.png)
+
+![Meeting detail](/docs/meeting2.png)
 
 ### License
 
