@@ -15,8 +15,6 @@
       :editor="editor"
       class="menu-bar"
     />
-    version: {{ version }}
-    <v-divider />
     <editor-content
       :editor="editor"
       :class="{
@@ -264,12 +262,10 @@ export default {
       //   this.editor.setContent(this.value);
       // }
     },
-    watch: {
-      editable() {
-        this.editor.setOptions({
-          editable: this.editable
-        });
-      }
+    editable() {
+      this.editor.setOptions({
+        editable: this.editable
+      });
     }
   },
   mounted() {
