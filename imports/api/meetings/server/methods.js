@@ -723,6 +723,9 @@ Meetings.methods.export = new ValidatedMethod({
           return date.format(aFormat);
         },
         getUserProfileName(user) {
+          if (!user) {
+            return null;
+          }
           if (!user._id) {
             user = loadUser(user);
           }
