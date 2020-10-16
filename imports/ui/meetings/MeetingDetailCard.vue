@@ -292,7 +292,7 @@ export default {
     }
   },
   watch: {
-    "meeting.createdAt": {
+    "meeting.startDate": {
       immediate: true,
       handler(createdAt) {
         const yesterday = moment().startOf("day").add(-1, "days").toDate();
