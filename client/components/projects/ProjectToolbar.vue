@@ -5,6 +5,7 @@
       :project-id="project._id"
     />
     <project-trashcan ref="projectTrashcan" :project-id="project._id" />
+    <project-history-dialog v-model="showHistory" :project-id="project._id" />
 
     <project-filters-dialog
       v-model="showFiltersDialog"
@@ -24,6 +25,13 @@
       icon="mdi-star-outline"
       :tooltip="$t('Add to favorites')"
       @on="addToFavorites(user, project._id)"
+    />
+    <tooltip-button
+      v-if="$vuetify.breakpoint.smAndUp"
+      bottom
+      icon="mdi-history"
+      :tooltip="$t('History')"
+      @on="openHistory()"
     />
     <tooltip-button
       v-if="isFavorite(user, project._id)"
@@ -87,7 +95,8 @@ export default {
     return {
       showFilters: false,
       showFiltersDialog: false,
-      showTasksExport: false
+      showTasksExport: false,
+      showHistory: false
     };
   },
   methods: {
@@ -182,6 +191,10 @@ export default {
 
     openTrashcan() {
       this.$refs.projectTrashcan.open();
+    },
+
+    openHistory() {
+      this.showHistory = true;
     },
 
     onResizeToolbar() {
