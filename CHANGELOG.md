@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - export to odf/docx/pdf
   - coedition
   - locked/unlocked status
+  - drag mouse on calendar to create event
 
 ### Changed
 
