@@ -224,7 +224,8 @@
         "spent": "Modification de la durée passée"
       },
       "reminderStartDate": "La tâche démarre bientôt",
-      "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
+      "reminderDueDate": "La date d'échéance de la tâche expire bientôt",
+      "restore": "Restauration de la tâche"
     }
   },
   "tasks": {

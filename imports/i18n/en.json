@@ -222,7 +222,8 @@
         "spent": "Update spent time on task"
       },
       "reminderStartDate": "Task is starting soon",
-      "reminderDueDate": "Task is due soon"  
+      "reminderDueDate": "Task is due soon",
+      "restore": "Restore task"
     }
   },
   "projects": {
