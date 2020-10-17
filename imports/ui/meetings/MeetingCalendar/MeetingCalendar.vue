@@ -209,6 +209,9 @@ export default {
       }
     },
     startTime(tms) {
+      if (this.createEvent) {
+        this.removeCreateEvent();
+      }
       const mouse = this.toTime(tms);
       if (!this.dragEvent) {
         this.createStart = this.roundTime(mouse);
