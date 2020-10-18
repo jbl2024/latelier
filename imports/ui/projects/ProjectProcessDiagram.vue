@@ -45,6 +45,7 @@
           />
         </template>
       </v-toolbar>
+      <graph-editor v-if="mode === 'edit'" />
       <bpmn-viewer
         v-if="mode === 'view' && processDiagram.xml"
         ref="viewer"
@@ -63,12 +64,12 @@
         </v-btn>
       </empty-state>
 
-      <bpmn-modeler
+      <!-- <bpmn-modeler
         v-if="mode === 'edit'"
         ref="modeler"
         :process-diagram="processDiagram"
         class="bpmn"
-      />
+      /> -->
     </div>
   </div>
 </template>
@@ -79,12 +80,14 @@ import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 import BpmnViewer from "/imports/ui/bpmn/BpmnViewer.vue";
 import BpmnModeler from "/imports/ui/bpmn/BpmnModeler.vue";
+import GraphEditor from "/imports/ui/bpmn/GraphEditor.vue";
 import { saveAs } from "file-saver";
 
 export default {
   components: {
     BpmnViewer: BpmnViewer,
-    BpmnModeler: BpmnModeler
+    BpmnModeler: BpmnModeler,
+    GraphEditor
   },
   mixins: [TextRenderingMixin],
   i18n: {
@@ -120,7 +123,7 @@ export default {
   data() {
     return {
       modeler: null,
-      mode: "view"
+      mode: "edit"
     };
   },
   mounted() {

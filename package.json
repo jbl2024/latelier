@@ -32,6 +32,7 @@
     "mjml": "^4.6.3",
     "mobile-drag-drop": "^2.3.0-rc.2",
     "moment": "^2.25.3",
+    "mxgraph": "^4.2.0",
     "node-pandoc": "^0.3.0",
     "path": "^0.12.7",
     "pretty-checkbox": "^3.0.3",
