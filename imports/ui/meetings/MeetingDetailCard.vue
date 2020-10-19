@@ -24,29 +24,6 @@
                   {{ $t("meetings.goBackToMeetings") }}
                 </span>
               </v-btn>
-              <v-btn
-                class="ml-2"
-                color="primary"
-                outlined
-                @click="editContent = !editContent"
-              >
-                <template v-if="!editContent">
-                  <v-icon left>
-                    mdi-lock-outline
-                  </v-icon>
-                  <span>
-                    {{ $t("meetings.unlock") }}
-                  </span>
-                </template>
-                <template v-else>
-                  <v-icon left>
-                    mdi-lock-open-outline
-                  </v-icon>
-                  <span>
-                    {{ $t("meetings.lock") }}
-                  </span>
-                </template>
-              </v-btn>
               <tooltip-button
                 bottom
                 icon="mdi-settings"
@@ -59,6 +36,30 @@
                 :tooltip="$t('Export')"
                 @on="showMeetingExport = true"
               />
+              <template v-if="showLock">
+                <v-btn
+                  v-if="editContent == true"
+                  class="ml-2"
+                  outlined
+                  @click="editContent = false"
+                >
+                  <v-icon>
+                    mdi-pencil-off
+                  </v-icon>
+                  {{ $t("meetings.lock") }}
+                </v-btn>
+                <v-btn
+                  v-if="editContent == false"
+                  class="ml-2"
+                  outlined
+                  @click="editContent = true"
+                >
+                  <v-icon>
+                    mdi-pencil
+                  </v-icon>
+                  {{ $t("meetings.unlock") }}
+                </v-btn>
+              </template>
             </div>
           </v-col>
           <v-col cols="12" sm="12" md="4">
@@ -86,29 +87,6 @@
               {{ $t("meetings.goBackToMeetings") }}
             </span>
           </v-btn>
-          <v-btn
-            class="ml-2"
-            color="primary"
-            outlined
-            @click="editContent = !editContent"
-          >
-            <template v-if="!editContent">
-              <v-icon left>
-                mdi-lock-outline
-              </v-icon>
-              <span>
-                {{ $t("meetings.unlock") }}
-              </span>
-            </template>
-            <template v-else>
-              <v-icon left>
-                mdi-lock-open-outline
-              </v-icon>
-              <span>
-                {{ $t("meetings.lock") }}
-              </span>
-            </template>
-          </v-btn>
           <tooltip-button
             bottom
             icon="mdi-settings"
@@ -121,6 +99,22 @@
             :tooltip="$t('Export')"
             @on="showMeetingExport = true"
           />
+          <template v-if="showLock">
+            <tooltip-button
+              v-if="editContent == true"
+              bottom
+              icon="mdi-pencil-off"
+              :tooltip="$t('meetings.lock')"
+              @on="editContent = false"
+            />
+            <tooltip-button
+              v-if="editContent == false"
+              bottom
+              icon="mdi-pencil"
+              :tooltip="$t('meetings.unlock')"
+              @on="editContent = true"
+            />
+          </template>
         </div>
         <div class="list">
           <h1 class="meeting-main-title">
@@ -245,6 +239,7 @@ export default {
       showSelectDate: false,
       showSelectUser: false,
       showDocuments: false,
+      showLock: false,
       showMeetingExport: false,
       actions: [],
       attachments: []
@@ -297,8 +292,10 @@ export default {
       handler(createdAt) {
         const yesterday = moment().startOf("day").add(-1, "days").toDate();
         if (moment(createdAt).isBefore(yesterday)) {
+          this.showLock = true;
           this.editContent = false;
         } else {
+          this.showLock = false;
           this.editContent = true;
         }
       }

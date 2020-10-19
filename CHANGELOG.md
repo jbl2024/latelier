@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Project history available on tasks page
 
 ### Changed
+- Meetings:
+  - better lock/unlock behavior (do not display lock button on present/futur meetings)
 
 ### Removed
 
