@@ -54,6 +54,7 @@ import "../imports/api/digests/server/jobs.js";
 
 import "../imports/api/meetings/meetings.js";
 import "../imports/api/meetings/server/methods.js";
+import "../imports/api/meetings/server/publications.js";
 
 import "../imports/api/coeditions/coeditions.js";
 import "../imports/api/coeditions/server/methods.js";

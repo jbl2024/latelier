@@ -289,7 +289,10 @@ export default {
   watch: {
     "meeting.startDate": {
       immediate: true,
-      handler(createdAt) {
+      handler(createdAt, previousCreatedAt) {
+        if (previousCreatedAt?.getTime() === createdAt?.getTime()) {
+          return;
+        }
         const yesterday = moment().startOf("day").add(-1, "days").toDate();
         if (moment(createdAt).isBefore(yesterday)) {
           this.showLock = true;
@@ -521,6 +524,9 @@ export default {
       this.$store.dispatch("showTaskDetail", true);
     },
     setCurrentEditor(editor) {
+      if (this.showLock && !this.editContent) {
+        return;
+      }
       this.currentEditor = editor.editor;
     },
     editMeeting() {

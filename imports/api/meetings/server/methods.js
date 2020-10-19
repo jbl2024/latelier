@@ -3,9 +3,6 @@ import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meet
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { UserUtils } from "/imports/api/users/utils";
-import { Schema } from "prosemirror-model";
-import { Coeditions } from "/imports/api/coeditions/coeditions";
-import { Step } from "prosemirror-transform";
 
 import moment from "moment";
 import fs from "fs";
@@ -172,68 +169,6 @@ Meetings.methods.updateAgenda = new ValidatedMethod({
         }
       }
     );
-  }
-});
-
-Meetings.methods.updateAgendaWithSendable = new ValidatedMethod({
-  name: "meetings.updateAgendaWithSendable",
-  validate: new SimpleSchema({
-    meetingId: { type: String },
-    sendable: { type: Object, blackbox: true }
-  }).validator(),
-  run({ meetingId, sendable }) {
-    checkCanWriteMeeting(meetingId);
-
-    const meeting = Meetings.findOne({ _id: meetingId });
-    let storedData = Coeditions.findOne({
-      objectId: `${meeting._id}-agenda`
-    }, {
-      sort: { _id: 1 }
-    });
-
-    if (!storedData) {
-      Coeditions.insert({
-        objectId: `${meeting._id}-agenda`,
-        version: 0,
-        doc: {
-          type: "doc",
-          content: [{
-            type: "paragraph"
-          }]
-        }
-      });
-      storedData = Coeditions.findOne({
-        objectId: `${meeting._id}-agenda`
-      }, {
-        sort: { _id: 1 }
-      });
-    }
-
-    const { version, clientID, steps } = sendable.sendable;
-
-    if (storedData.version !== version) {
-      return version;
-    }
-
-    const schema = new Schema(sendable.schema);
-
-    let doc = schema.nodeFromJSON(storedData.doc);
-
-    const newSteps = steps.map((step) => {
-      const newStep = Step.fromJSON(schema, step);
-      newStep.clientID = clientID;
-      const result = newStep.apply(doc);
-      doc = result.doc;
-      return newStep;
-    });
-    const newVersion = version + newSteps.length;
-
-    Coeditions.insert({
-      objectId: `${meeting._id}-agenda`,
-      version: newVersion,
-      steps: newSteps
-    });
-    return newVersion;
   }
 });
 
