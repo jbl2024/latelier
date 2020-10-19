@@ -1,5 +1,5 @@
 <template>
-  <div class="meeting-page">
+  <div v-if="$subReady.meeting" class="meeting-page">
     <!-- Edit existing meeting -->
     <meeting-edit
       ref="editMeeting"
@@ -7,8 +7,6 @@
       :is-shown.sync="showEditMeeting"
       :project="currentProject"
       :meeting="currentMeeting"
-      @created="refresh"
-      @updated="refresh"
       @removed="onRemove"
     />
     <meeting-detail-card
@@ -22,6 +20,7 @@
 </template>
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
 import { mapState } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
@@ -45,8 +44,7 @@ export default {
   },
   data() {
     return {
-      showEditMeeting: false,
-      currentMeeting: null
+      showEditMeeting: false
     };
   },
   computed: {
@@ -57,12 +55,26 @@ export default {
     $subscribe: {
       project() {
         return [this.projectId];
+      },
+      meeting() {
+        return [this.meetingId];
       }
     },
     project() {
       const project = Projects.findOne();
       if (project) {
         this.$store.dispatch("project/setCurrentProject", project);
+      }
+    },
+
+    currentMeeting: {
+      params() {
+        return {
+          id: this.meetingId
+        };
+      },
+      update({ id }) {
+        return Meetings.findOne({ _id: id });
       }
     }
   },
@@ -73,12 +85,6 @@ export default {
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
-    this.refresh().then(() => {
-      if (!this.currentMeeting) {
-        this.$notify(this.$t("meetings.invalidMeeting"));
-        this.goToMeetings();
-      }
-    });
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
@@ -88,16 +94,6 @@ export default {
       this.$router.push({
         name: "project-meetings",
         params: { projectId: this.projectId }
-      });
-    },
-    refresh() {
-      return Api.call("meetings.get", {
-        meetingId: this.meetingId
-      }).then((meet) => {
-        this.currentMeeting = meet;
-        return meet;
-      }).catch((error) => {
-        this.$notifyError(error);
       });
     },
     onRemove() {
