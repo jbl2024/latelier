@@ -24,7 +24,6 @@ import { Meetings } from "/imports/api/meetings/meetings.js";
 import { mapState } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
-import Api from "/imports/api/Api";
 
 
 export default {
