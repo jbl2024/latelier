@@ -1,6 +1,6 @@
 <template>
   <div>
-wo    <v-toolbar outlined dense>
+    <v-toolbar outlined dense>
       <tooltip-button
         icon="mdi-undo"
         :tooltip="$t('Undo')"
