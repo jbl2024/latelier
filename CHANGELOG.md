@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Meetings:
+  - output to pdf: use wkhtmltopdf instead of pdflatex
   - realtime update (actions, dates, ...)
   - better lock/unlock behavior (do not display lock button on present/futur meetings)
 

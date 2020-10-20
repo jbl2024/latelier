@@ -35,10 +35,11 @@ See https://www.meteor.com/install for installation instructions.
 
 The following external dependencies are required:
 
-| Component         | Usage                 | Reference       |
-| ----------------- | --------------------- | --------------- |
-| GraphicsMagick    | Generate thumbnails   | http://www.graphicsmagick.org/ |
+| Component         | Usage                                        | Reference       |
+| ----------------- | -------------------------------------------- | --------------- |
+| GraphicsMagick    | Generate thumbnails                          | http://www.graphicsmagick.org/ |
 | Pandoc            | Export content to libreoffice & word formats | https://pandoc.org/ |
+| wkhtmltopdf       | Convert html to pdf (used by pandoc)         | https://wkhtmltopdf.org/ |
 
 
 ### Configuration
