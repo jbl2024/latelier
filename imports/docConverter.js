@@ -26,6 +26,7 @@ export const convertHtml = function (html, format, cb) {
   }
   nodePandoc(html, args, (err) => {
     if (err) {
+      console.log(err)
       if (fs.existsSync(directoryAndFilename)) {
         fs.unlinkSync(directoryAndFilename);
       }
