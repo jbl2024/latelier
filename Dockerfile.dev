@@ -58,6 +58,4 @@ COPY . $APP_HOME
 EXPOSE 3000
 EXPOSE 3030
 
-RUN ls -rtlah
-#CMD ["/bin/sh" , "-c" , "npm run start-dev"]
 CMD ["/bin/sh" , "-c" , "sleep infinity"]
