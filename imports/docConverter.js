@@ -22,10 +22,6 @@ export const convertHtml = function (html, format, cb) {
 
   if (format === "pdf") {
     args = args.concat(["--pdf-engine=pdflatex"]);
-    const pdfTexConfigPath = Assets.absoluteFilePath("exports/meetings/pdfconfig.tex");
-    if (fs.existsSync(pdfTexConfigPath)) {
-      args = args.concat(["-H", pdfTexConfigPath]);
-    }
   }
   nodePandoc(html, args, (err) => {
     if (err) {
