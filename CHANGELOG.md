@@ -25,6 +25,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - better lock/unlock behavior (do not display lock button on present/futur meetings)
 
 ### Removed
+- pdf support for meetings
+- pdflatex deps in docker file
 
 ## [3.2.0 2020-10-17]
 
