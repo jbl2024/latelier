@@ -41,27 +41,42 @@ const routes = [
       {
         path: "/login",
         name: "login",
-        component: Login
+        component: Login,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/registration-completed",
         name: "registration-completed",
-        component: RegistrationCompleted
+        component: RegistrationCompleted,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/register",
         name: "register",
-        component: Register
+        component: Register,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/forgot-password",
         name: "forgot-password",
-        component: ForgotPassword
+        component: ForgotPassword,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/reset-password/:token",
         name: "reset-password",
-        component: ResetPassword
+        component: ResetPassword,
+        meta: {
+          anonymous: true
+        }
       }
     ]
   },

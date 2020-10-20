@@ -34,9 +34,6 @@
               {{ $t("Register") }}
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -50,8 +47,6 @@ export default {
       email: null,
       password: null
     },
-    notify: false,
-    notifyText: "",
     sending: false,
     valid: false,
     emailRules: [
@@ -62,7 +57,6 @@ export default {
   methods: {
     clearForm() {
       this.form.email = null;
-      this.notify = false;
     },
     recover() {
       this.sending = true;
@@ -70,12 +64,9 @@ export default {
       Accounts.forgotPassword({ email }, (err) => {
         this.sending = false;
         if (err) {
-          this.$notify(err.reason);
+          this.$notifyError(err.reason);
         } else {
-          this.$store.dispatch(
-            "notify",
-            this.$t("A link has been sent to your email!")
-          );
+          this.$notify(this.$t("A link has been sent to your email!"));
           this.$router.push({ name: "login" });
         }
       });

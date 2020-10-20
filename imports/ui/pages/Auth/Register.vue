@@ -44,9 +44,6 @@
               Mot de passe oublié ?
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -60,8 +57,6 @@ export default {
       email: null,
       password: null
     },
-    notify: false,
-    notifyText: "",
     sending: false,
     valid: false,
     emailRules: [
@@ -77,7 +72,6 @@ export default {
     clearForm() {
       this.form.email = null;
       this.form.password = null;
-      this.notify = false;
     },
     register() {
       this.sending = true;
@@ -89,7 +83,6 @@ export default {
       };
       Meteor.call("users.create", userData, (error) => {
         this.sending = false;
-        this.notify = false;
         if (error) {
           this.$notifyError(error);
         } else if (Meteor.settings.public.emailVerificationNeeded) {
@@ -97,10 +90,8 @@ export default {
         } else {
           Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
             this.sending = false;
-            this.notify = false;
             if (err) {
-              this.notifyText = `Erreur ${err.reason}`;
-              this.notify = true;
+              this.$notifyError(err.reason);
             } else {
               this.clearForm();
               this.$notify(this.$t("Welcome to you!"));

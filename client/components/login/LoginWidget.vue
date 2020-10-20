@@ -46,9 +46,6 @@
               Mot de passe oublié ?
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
         <template v-if="oauth2Enabled">
           <v-card class="mt-4">
@@ -74,8 +71,6 @@ export default {
         email: "",
         password: ""
       },
-      notify: false,
-      notifyText: "",
       sending: false,
       emailRules: [
         (v) => !!v || this.$t("Email is mandatory"),
@@ -90,7 +85,7 @@ export default {
   mounted () {
     Meteor.call("users.oauthEnabled", (error, { enabled, title }) => {
       if (error) {
-        this.notifyError(error);
+        this.$notifyError(error);
         return;
       }
       this.oauth2Enabled = enabled;
@@ -101,17 +96,14 @@ export default {
     clearForm() {
       this.form.email = null;
       this.form.password = null;
-      this.notify = false;
     },
     login() {
       this.sending = true;
 
       Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
         this.sending = false;
-        this.notify = false;
         if (err) {
-          this.notifyText = `Erreur ${err.reason}`;
-          this.notify = true;
+          this.$notifyError(err.reason);
         } else {
           this.clearForm();
           Meteor.call("permissions.setAdminIfNeeded");

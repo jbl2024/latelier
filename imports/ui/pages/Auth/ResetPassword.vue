@@ -36,9 +36,6 @@
               {{ $t("Already have an account?") }}
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -53,7 +50,6 @@ export default {
     form: {
       password: ""
     },
-    notify: false,
     sending: false,
     passwordRules: [
       (v) => !!v || "Le mot de passe est obligatoire",
@@ -73,7 +69,6 @@ export default {
   methods: {
     clearForm() {
       this.form.password = null;
-      this.notify = false;
     },
     reset() {
       this.sending = true;
@@ -84,10 +79,7 @@ export default {
           this.$notify(err.reason);
           this.isLoading = false;
         } else {
-          this.$store.dispatch(
-            "notify",
-            this.$t("Password reset with success!")
-          );
+          this.$notify(this.$t("Password reset with success!"));
           this.$router.push({ name: "login" });
         }
       });

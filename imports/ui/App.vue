@@ -58,15 +58,15 @@
           :project="currentProject"
           :organization="currentOrganization"
         />
-        <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
-          {{ notifyMessage }}
-          <template v-slot:action="{ attrs }">
-            <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </template>
-        </v-snackbar>
       </template>
+      <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
+        {{ notifyMessage }}
+        <template v-slot:action="{ attrs }">
+          <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
@@ -197,8 +197,17 @@ export default {
     user() {
       const user = Meteor.user();
       this.$store.dispatch("setCurrentUser", user);
-      if (!user && !Meteor.loggingIn() && !this.$isLoggingIn) {
-        this.$router.push({ name: "login" });
+
+      const isLoggingIn = Meteor.loggingIn() || this.$isLoggingIn;
+      const authRequiredForCurrentRoute = !this.$router.currentRoute.meta.anonymous;
+      const isAuthenticated = user;
+
+      if (isLoggingIn) {
+        return;
+      }
+
+      if (isAuthenticated && !authRequiredForCurrentRoute) {
+        this.$router.push({ name: "home" });
       }
     }
   },
