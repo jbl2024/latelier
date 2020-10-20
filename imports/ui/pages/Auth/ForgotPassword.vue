@@ -42,18 +42,20 @@
 <script>
 export default {
   name: "NewPassword",
-  data: () => ({
-    form: {
-      email: null,
-      password: null
-    },
-    sending: false,
-    valid: false,
-    emailRules: [
-      (v) => !!v || "L'email est obligatoire",
-      (v) => (v && v.length > 1) || "L'email est invalide"
-    ]
-  }),
+  data() {
+    return {
+      form: {
+        email: null,
+        password: null
+      },
+      sending: false,
+      valid: false,
+      emailRules: [
+        (v) => !!v || this.$t("Email is mandatory"),
+        (v) => (v && v.length > 1) || this.$t("Invalid email")
+      ]
+    };
+  },
   methods: {
     clearForm() {
       this.form.email = null;
@@ -66,7 +68,7 @@ export default {
         if (err) {
           this.$notifyError(err.reason);
         } else {
-          this.$notify(this.$t("A link has been sent to your email!"));
+          this.$notify(this.$t("Instructions sent, check your inbox!"));
           this.$router.push({ name: "login" });
         }
       });

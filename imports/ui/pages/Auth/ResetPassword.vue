@@ -10,7 +10,7 @@
             <v-text-field
               id="password"
               v-model="form.password"
-              label="Mot de passe"
+              :label="$t('Password')"
               type="password"
               name="password"
               autocomplete="password"
@@ -52,8 +52,8 @@ export default {
     },
     sending: false,
     passwordRules: [
-      (v) => !!v || "Le mot de passe est obligatoire",
-      (v) => v.length > 1 || "Le mot de passe est trop cours"
+      (v) => !!v || this.$t("Password is mandatory"),
+      (v) => v.length > 1 || this.$t("Password is too short")
     ]
   }),
   i18n: {

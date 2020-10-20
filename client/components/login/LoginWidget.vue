@@ -10,7 +10,7 @@
             <v-text-field
               id="email"
               v-model="form.email"
-              label="Email"
+              :label="$t('Email')"
               name="email"
               autocomplete="email"
               type="email"
@@ -20,7 +20,7 @@
             <v-text-field
               id="password"
               v-model="form.password"
-              label="Mot de passe"
+              :label="$t('Password')"
               type="password"
               name="password"
               autocomplete="password"

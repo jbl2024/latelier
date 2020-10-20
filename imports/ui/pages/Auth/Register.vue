@@ -10,7 +10,7 @@
             <v-text-field
               id="email"
               v-model="form.email"
-              label="Email"
+              :label="$t('Email')"
               name="email"
               autocomplete="email"
               :rules="emailRules"
@@ -19,7 +19,17 @@
             <v-text-field
               id="password"
               v-model="form.password"
-              label="Mot de passe"
+              :label="$t('Password')"
+              type="password"
+              name="password"
+              :rules="passwordRules"
+              autocomplete="password"
+              :disabled="sending"
+            />
+            <v-text-field
+              id="password"
+              v-model="form.passwordConfirmation"
+              :label="$t('Password (again)')"
               type="password"
               name="password"
               :rules="passwordRules"
@@ -52,35 +62,42 @@
 <script>
 export default {
   name: "LoginWidget",
-  data: () => ({
-    form: {
-      email: null,
-      password: null
-    },
-    sending: false,
-    valid: false,
-    emailRules: [
-      (v) => !!v || "L'email est obligatoire",
-      (v) => (v && v.length > 1) || "L'email est invalide"
-    ],
-    passwordRules: [
-      (v) => !!v || "Le mot de passe est obligatoire",
-      (v) => (v && v.length > 2) || "Le mot de passe est trop court"
-    ]
-  }),
+  data() {
+    return {
+      form: {
+        email: null,
+        password: null,
+        passwordConfirmation: null
+      },
+      sending: false,
+      valid: false,
+      emailRules: [
+        (v) => !!v || this.$t("Email is mandatory"),
+        (v) => (v && v.length > 1) || this.$t("Invalid email")
+      ],
+      passwordRules: [
+        (v) => !!v || this.$t("Password is mandatory"),
+        (v) => (v && v.length > 2) || this.$t("Password is too short")
+      ]
+    };
+  },
   methods: {
     clearForm() {
       this.form.email = null;
       this.form.password = null;
     },
     register() {
-      this.sending = true;
+      if (this.form.password !== this.form.passwordConfirmation) {
+        this.$notify(this.$t("Passwords do not match"));
+        return;
+      }
 
       const userData = {
         createdAt: new Date(),
         password: this.form.password,
         email: this.form.email
       };
+      this.sending = true;
       Meteor.call("users.create", userData, (error) => {
         this.sending = false;
         if (error) {
@@ -88,16 +105,20 @@ export default {
         } else if (Meteor.settings.public.emailVerificationNeeded) {
           this.$router.push({ name: "registration-completed" });
         } else {
-          Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
-            this.sending = false;
-            if (err) {
-              this.$notifyError(err.reason);
-            } else {
-              this.clearForm();
-              this.$notify(this.$t("Welcome to you!"));
-              this.$router.push({ name: "dashboard-page" });
+          Meteor.loginWithPassword(
+            this.form.email,
+            this.form.password,
+            (err) => {
+              this.sending = false;
+              if (err) {
+                this.$notifyError(err.reason);
+              } else {
+                this.clearForm();
+                this.$notify(this.$t("Welcome to you!"));
+                this.$router.push({ name: "dashboard-page" });
+              }
             }
-          });
+          );
         }
       });
     },
