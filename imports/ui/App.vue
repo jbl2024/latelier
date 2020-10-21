@@ -209,6 +209,10 @@ export default {
       if (isAuthenticated && !authRequiredForCurrentRoute) {
         this.$router.push({ name: "home" });
       }
+
+      if (!isAuthenticated && authRequiredForCurrentRoute) {
+        this.$router.push({ name: "login" });
+      }
     }
   },
   methods: {

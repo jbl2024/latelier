@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { isBasicAuth, projectAuth, meetingAuth } from "./router/check-auth";
+import { isBasicAuth, projectAuth, meetingAuth, checkSsoAuth } from "./router/check-auth";
 import { projectHasFeature, organizationHasFeature } from "./router/guards";
 import multiguard from "vue-router-multiguard";
 
@@ -42,6 +42,7 @@ const routes = [
         path: "/login",
         name: "login",
         component: Login,
+        beforeEnter: checkSsoAuth,
         meta: {
           anonymous: true
         }
@@ -50,6 +51,7 @@ const routes = [
         path: "/registration-completed",
         name: "registration-completed",
         component: RegistrationCompleted,
+        beforeEnter: checkSsoAuth,
         meta: {
           anonymous: true
         }
@@ -58,6 +60,7 @@ const routes = [
         path: "/register",
         name: "register",
         component: Register,
+        beforeEnter: checkSsoAuth,
         meta: {
           anonymous: true
         }
@@ -66,6 +69,7 @@ const routes = [
         path: "/forgot-password",
         name: "forgot-password",
         component: ForgotPassword,
+        beforeEnter: checkSsoAuth,
         meta: {
           anonymous: true
         }
@@ -74,6 +78,7 @@ const routes = [
         path: "/reset-password/:token",
         name: "reset-password",
         component: ResetPassword,
+        beforeEnter: checkSsoAuth,
         meta: {
           anonymous: true
         }
