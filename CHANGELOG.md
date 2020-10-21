@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Removed
+
+## [3.2.2 2020-10-21]
+
+### Added
+
+### Changed
+- Update SSO handler to handle edge cases
 - Fix recover password page (login was needed)
 - Add missing translations on login pages
 
