@@ -257,10 +257,14 @@ export default {
   },
   watch: {
     value() {
-      // const existingContent = this.editor.getHTML();
-      // if (existingContent !== this.value) {
-      //   this.editor.setContent(this.value);
-      // }
+      if (this.collaboration) {
+        return;
+      }
+
+      const existingContent = this.editor.getHTML();
+      if (existingContent !== this.value) {
+        this.editor.setContent(this.value);
+      }
     },
     editable() {
       this.editor.setOptions({
