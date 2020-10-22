@@ -29,7 +29,7 @@
 <script>
 import { Coeditions } from "/imports/api/coeditions/coeditions";
 
-import { Editor, EditorContent, Node } from "tiptap";
+import { Editor, EditorContent, Node, Extension } from "tiptap";
 import {
   HardBreak,
   Blockquote,
@@ -59,6 +59,7 @@ import {
   liftListItem
 } from "tiptap-commands";
 
+/* eslint max-classes-per-file: off */
 /* eslint class-methods-use-this: off */
 class TodoItem extends Node {
   get name() {
@@ -273,6 +274,8 @@ export default {
     }
   },
   mounted() {
+    const vm = this;
+
     const extensions = [
       new HardBreak(),
       new Blockquote(),
@@ -297,7 +300,16 @@ export default {
       }),
       new TableHeader(),
       new TableCell(),
-      new TableRow()
+      new TableRow(),
+      new (class extends Extension {
+        keys() {
+          return {
+            "Ctrl-Enter": () => {
+              vm.submit();
+            }
+          };
+        }
+      })()
     ];
 
     if (this.collaboration) {
@@ -332,13 +344,6 @@ export default {
             editable: this.editable,
             content: JSON.parse(result.doc),
             extensions: extensions,
-            editorProps: {
-              handleKeyDown: (view, event) => {
-                if (event.key === "Enter" && event.ctrlKey) {
-                  this.submit();
-                }
-              }
-            },
             onUpdate: ({ getHTML }) => {
               const content = getHTML();
               this.$emit("input", content);
@@ -375,13 +380,6 @@ export default {
         editable: this.editable,
         content: this.content,
         extensions: extensions,
-        editorProps: {
-          handleKeyDown: (view, event) => {
-            if (event.key === "Enter" && event.ctrlKey) {
-              this.submit();
-            }
-          }
-        },
         onUpdate: ({ getHTML }) => {
           const content = getHTML();
           this.$emit("input", content);
