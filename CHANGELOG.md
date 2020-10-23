@@ -8,8 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+### Changed
+
+### Removed
+
+## [3.2.4 2020-10-23]
+
+### Added
 
 ### Changed
+- Fix translation for canvas/milestones
 
 ### Removed
 
