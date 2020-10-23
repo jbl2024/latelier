@@ -17,6 +17,19 @@ A project management tool.
 - Meeting reports
 - Permissions per organization & per project
 
+
+## Demonstration
+
+Demo server: https://latelier.services.jbl2024.com
+
+Warning: do not store sensitive data, use at your own risk. 
+Data is reset periodically.
+
+Available credentials:
+
+- username: user1@localhost / password: user1
+- username: user2@localhost / password: user2
+
 ## Installation
 
 ### Docker
