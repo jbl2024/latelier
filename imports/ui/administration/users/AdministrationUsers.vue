@@ -4,7 +4,7 @@
       v-model="showUserDetail"
       eager
       class="detail"
-      max-width="640"
+      max-width="740"
       :fullscreen="$vuetify.breakpoint.xsOnly"
     >
       <user-detail
@@ -46,7 +46,7 @@
             <v-col>
               <v-list subheader>
                 <v-subheader inset>
-                  {{ pagination.totalItems }} utilisateurs
+                  {{ pagination.totalItems }} {{ $t('users') }}
                   <v-btn text icon @click="$refs.newUser.open()">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
