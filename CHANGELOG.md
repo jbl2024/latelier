@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+
+### Changed
+
+### Removed
+
+## [3.2.3 2020-10-23]
+
+### Added
 - Admin can change user password
 - Missing translations
   - canvas
