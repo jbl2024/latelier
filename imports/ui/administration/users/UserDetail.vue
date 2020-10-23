@@ -101,6 +101,20 @@
               required
             />
           </v-flex>
+          <v-flex xs12 sm6 md6>
+            <v-text-field
+              v-model="user.profile.password"
+              label="New password"
+              type="password"
+            />
+          </v-flex>
+          <v-flex xs12 sm6 md6>
+            <v-text-field
+              v-model="user.profile.passwordConfirmation"
+              label="New password (confirmation)"
+              type="password"
+            />
+          </v-flex>
         </v-layout>
       </v-container>
       <small>*indique un champ obligatoire</small>
@@ -111,7 +125,7 @@
         {{ this.$t("Close") }}
       </v-btn>
       <v-btn color="primary" @click.native="save()">
-        Mettre à jour
+        {{ $t('Update') }}
       </v-btn>
     </v-card-actions>
   </v-card>

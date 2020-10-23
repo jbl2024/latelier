@@ -112,8 +112,8 @@ Meteor.methods({
   "admin.updateUser"(user) {
     check(user, Object);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
     }
 
     const { _id } = user;
