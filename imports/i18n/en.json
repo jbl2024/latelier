@@ -209,6 +209,52 @@
   "contentSelector": {
     "search": "Project or organization"
   },
+  "canvas": {
+    "goal": {
+      "title": "Goal",
+      "subtitle": "What is the intention behind the project? (cause and need) <br> Why is this project meaningful and important? and for whom? <br> How will this project change the future? and for whom?"
+    },
+    "budget": {
+      "title": "Budget",
+      "subtitle": "What is the needed budget? available? <br> ... for THE TEAM (internal / external) <br> ..for RESOURCES"
+    },
+    "team": {
+      "title": "Team",
+      "subtitle": "Who is / should be part of it? <br> ... core team <br> ... extended team <br> ... as external partners <br> ... as project manager"
+    },
+    "requirements": {
+      "title": "Requirements",
+      "subtitle": "Facts, events and known people influencing the project? <br> ... Who or what supports the project? <br> ... Who or what hinders the project?"
+    },
+    "resources": {
+      "title": "Resources",
+      "subtitle": "What resources are needed? <br> ... a dedicated space<br> ... meeting rooms (on site, outside) <br> ... tools (software included) and materials"
+    },
+    "risks": {
+      "title": "Risks & opportunities",
+      "subtitle": "What are the future and uncertain events that would threaten or promote the project? <br> If they are likely to come, or if you can influence them, consider them as CONDITIONS"
+    },
+    "milestones": {
+      "title": "Milestones",
+      "subtitle": "What are the key milestones? <br> Deadlines for: <br> ... intermediate results <br> ... crucial decisions <br> ... visible and measurable results"
+    },
+    "quality": {
+      "title": "Quality",
+      "subtitle": "What makes the CLIENT really happy with regard to: <br> ... the RESULT of the project? <br> ... MILESTONES to achieve the result? <br> ... how to be informed / involved during the project?"
+    },
+    "outcome": {
+      "title": "Outcome",
+      "subtitle": "What is the project supposed to deliver to the CLIENT? Is it: <br> ... a new product / service? <br> ... awareness? <br> ... new knowledge?"
+    },
+    "customers": {
+      "title": "Customers",
+      "subtitle": "Who is the real customer? People who: <br> ... pay for the project (SPONSOR) <br> ... start & stop the project (OWNER) <br> ... is impacted by the results (RECIPIENTS) <br> If multiple customers: Are there any known conflicts?"
+    },
+    "planning": {
+      "title": "Planning",
+      "subtitle": "When does the project actually start? <br> What is needed? (ex: preparations, documents, decisions) <br> When will the project actually be finished? <br> What is needed? (eg: documents, decisions) <br> What flexibility do we have on the progress with regard to the start and end dates of the project? <br> deadlines and MILESTONES included?"
+    }
+  },  
   "history": {
     "tasks": {
       "create": "Creation",

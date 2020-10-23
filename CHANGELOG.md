@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Missing translations
+  - canvas
+  - login, register, lost password
+  - misc dialogs
 
 ### Changed
 - Fix Richeditor behaviors:
