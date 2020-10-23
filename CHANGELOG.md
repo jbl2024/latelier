@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- Admin can change user password
 - Missing translations
   - canvas
   - login, register, lost password
