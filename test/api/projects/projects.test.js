@@ -114,12 +114,12 @@ if (Meteor.isServer) {
 
       const listId1 = Lists.findOne({
         projectId: projectAid,
-        name: "A planifier"
+        name: "Todo"
       })._id;
 
       const listId2 = Lists.findOne({
         projectId: projectAid,
-        name: "En cours"
+        name: "Doing"
       })._id;
 
       Meteor.call("tasks.insert", projectAid, listId1, "task1");
@@ -135,7 +135,7 @@ if (Meteor.isServer) {
         projectId: projectBid,
         listId: Lists.findOne({
           projectId: projectBid,
-          name: "A planifier"
+          name: "Todo"
         })._id
       });
       expect(task1).to.not.be.undefined;
@@ -145,7 +145,7 @@ if (Meteor.isServer) {
         projectId: projectBid,
         listId: Lists.findOne({
           projectId: projectBid,
-          name: "En cours"
+          name: "Doing"
         })._id
       });
       expect(task2).to.not.be.undefined;
@@ -164,12 +164,12 @@ if (Meteor.isServer) {
 
       const listId1 = Lists.findOne({
         projectId: projectAid,
-        name: "A planifier"
+        name: "Todo"
       })._id;
 
       const listId2 = Lists.findOne({
         projectId: projectAid,
-        name: "En cours"
+        name: "Doing"
       })._id;
 
       const task1id = Meteor.call("tasks.insert", projectAid, listId1, "task1")
@@ -217,12 +217,12 @@ if (Meteor.isServer) {
 
       const listId1 = Lists.findOne({
         projectId: projectAid,
-        name: "A planifier"
+        name: "Todo"
       })._id;
 
       const listId2 = Lists.findOne({
         projectId: projectAid,
-        name: "En cours"
+        name: "Doing"
       })._id;
 
       const task1id = Meteor.call("tasks.insert", projectAid, listId1, "task1")

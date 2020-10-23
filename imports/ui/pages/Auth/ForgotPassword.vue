@@ -26,11 +26,11 @@
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'login' }">
+            <v-btn small text :to="{ name: 'login' }">
               {{ $t("Already have an account?") }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'register' }">
+            <v-btn small text :to="{ name: 'register' }">
               {{ $t("Register") }}
             </v-btn>
           </v-card-actions>

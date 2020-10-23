@@ -4,7 +4,7 @@
       <v-form v-model="valid" @submit.prevent="validateRegister">
         <v-card>
           <v-card-title class="title">
-            Créer un compte
+            {{ $t('Register') }}
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -41,17 +41,17 @@
           <v-card-actions>
             <v-spacer />
             <v-btn color="primary" type="submit" :disabled="sending || !valid">
-              Créer un compte
+              {{ $t('Create account') }}
             </v-btn>
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'login' }">
-              Déjà un compte ?
+            <v-btn small text :to="{ name: 'login' }">
+              {{ $t('Already have an account?') }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'forgot-password' }">
-              Mot de passe oublié ?
+            <v-btn small text :to="{ name: 'forgot-password' }">
+              {{ $t('Lost password?') }}
             </v-btn>
           </v-card-actions>
         </v-card>
@@ -137,4 +137,5 @@ export default {
   position: relative;
   height: calc(100vh - 64px);
 }
+
 </style>

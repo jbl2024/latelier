@@ -4,7 +4,7 @@
       <v-form v-model="valid" @submit.prevent>
         <v-card>
           <v-card-title class="title">
-            Authentification
+            {{ $t('Authentication') }}
           </v-card-title>
           <v-card-text>
             <v-text-field
@@ -33,17 +33,17 @@
           <v-card-actions>
             <v-spacer />
             <v-btn color="primary" :disabled="sending || !valid" @click="login">
-              Se connecter
+              {{ $t('Login') }}
             </v-btn>
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'register' }">
-              Créer un compte
+            <v-btn small text :to="{ name: 'register' }">
+              {{ $t('Register') }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'forgot-password' }">
-              Mot de passe oublié ?
+            <v-btn small text :to="{ name: 'forgot-password' }">
+              {{ $t('Lost password?') }}
             </v-btn>
           </v-card-actions>
         </v-card>

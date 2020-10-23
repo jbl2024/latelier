@@ -211,7 +211,8 @@ export default {
           accessRights: this.allowOrganization
             ? ProjectAccessRights.ORGANIZATION
             : ProjectAccessRights.PRIVATE,
-          features: this.selectedFeatures
+          features: this.selectedFeatures,
+          locale: this.$i18n.locale
         },
         (error, result) => {
           if (error) {

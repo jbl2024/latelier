@@ -1,5 +1,5 @@
 import SimpleSchema from "simpl-schema";
-import { Projects } from "../projects";
+import { Projects, ProjectAccessRights } from "../projects";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
@@ -7,12 +7,92 @@ import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 
 import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import i18n from "/imports/i18n/server/";
 
 import {
   Permissions,
   checkLoggedIn,
   checkCanReadProject
 } from "/imports/api/permissions/permissions";
+
+Projects.methods.create = new ValidatedMethod({
+  name: "projects.create",
+  validate: new SimpleSchema({
+    organizationId: { type: String, optional: true },
+    name: { type: String },
+    projectType: { type: String },
+    projectGroupId: { type: String, optional: true },
+    state: { type: String },
+    accessRights: { type: String, optional: true },
+    features: {
+      type: Array,
+      optional: true
+    },
+    "features.$": {
+      type: String
+    },
+    locale: {
+      type: String,
+      optional: true
+    }
+  }).validator(),
+  run({
+    organizationId,
+    name,
+    projectType,
+    projectGroupId,
+    state,
+    accessRights,
+    features,
+    locale
+  }) {
+    checkLoggedIn();
+    const currentUserId = Meteor.userId();
+    locale = locale || "en";
+    const i18nHelper = i18n(locale.split("-")[0]);
+
+    const projectId = Projects.insert({
+      organizationId,
+      name,
+      state,
+      createdAt: new Date(),
+      createdBy: currentUserId,
+      accessRights,
+      features
+    });
+    Meteor.call("projects.addMember", {
+      projectId,
+      userId: currentUserId
+    });
+    Meteor.call("permissions.initializeProjectPermissions", {
+      projectId
+    });
+
+    if (projectType === "kanban") {
+      Meteor.call("lists.insert", projectId, i18nHelper.t("Todo"));
+      Meteor.call("lists.insert", projectId, i18nHelper.t("Doing"));
+      Meteor.call("lists.insert", projectId, i18nHelper.t("Done"), true, true);
+    }
+
+    if (projectType === "people") {
+      Meteor.call("lists.insert", projectId, "Vincent");
+      Meteor.call("lists.insert", projectId, "François");
+      Meteor.call("lists.insert", projectId, "Paul");
+      Meteor.call("lists.insert", projectId, "... et les autres");
+    }
+
+    if (projectGroupId) {
+      Meteor.call("projectGroups.addProject", projectGroupId, projectId);
+    }
+    if (organizationId && accessRights === ProjectAccessRights.ORGANIZATION) {
+      Meteor.call("organizations.propagateMembership", {
+        organizationId,
+        projectId
+      });
+    }
+    return projectId;
+  }
+});
 
 Projects.methods.load = new ValidatedMethod({
   name: "projects.load",

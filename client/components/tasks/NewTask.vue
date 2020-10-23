@@ -129,7 +129,7 @@ export default {
     return {
       valid: false,
       nameRules: [
-        (v) => !!v || "Nom obligatoire",
+        (v) => !!v || this.$t("Name is mandatory"),
         (v) => (v && v.length > 0) || this.$t("Name is too short")
       ],
       showDialog: false,
