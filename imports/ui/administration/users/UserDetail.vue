@@ -40,92 +40,88 @@
       </v-menu>
     </v-toolbar>
     <v-card-text>
-      <v-container grid-list-md>
-        <v-layout wrap="">
-          <v-flex xs12 sm4 md4>
-            <v-switch
-              v-if="!isMe()"
-              v-model="user.features.isActive"
-              color="accent"
-              :label="
-                `${
-                  user.features.isActive ? 'Compte activé' : 'Compte déactivé'
-                }`
-              "
-            />
-          </v-flex>
-          <v-flex xs12 sm4 md4>
-            <v-switch
-              v-if="!isMe()"
-              v-model="user.features.emailVerified"
-              color="accent"
-              :label="
-                `${
+      <v-form v-model="valid" class="form" @submit.prevent>
+        <v-container grid-list-md>
+          <v-layout wrap="">
+            <v-flex xs12 sm4 md4>
+              <v-switch
+                v-if="!isMe()"
+                v-model="user.features.isActive"
+                color="accent"
+                :label="`${
+                  user.features.isActive
+                    ? $t('Account activated')
+                    : $t('Account deactivated')
+                }`"
+              />
+            </v-flex>
+            <v-flex xs12 sm4 md4>
+              <v-switch
+                v-if="!isMe()"
+                v-model="user.features.emailVerified"
+                color="accent"
+                :label="`${
                   user.features.emailVerified
-                    ? 'Mail confirmé'
-                    : 'Mail non confirmé'
-                }`
-              "
-            />
-          </v-flex>
-          <v-flex xs12 sm4 md4>
-            <v-switch
-              v-if="!isMe()"
-              v-model="user.features.isAdmin"
-              color="accent"
-              :label="$t('Admin rights')"
-            />
-          </v-flex>
-          <v-flex xs12>
-            <v-divider />
-          </v-flex>
-
-          <v-flex xs12 sm6 md6>
-            <v-text-field
-              v-model="user.profile.firstName"
-              label="Prénom*"
-              required
-            />
-          </v-flex>
-          <v-flex xs12 sm6 md6>
-            <v-text-field
-              v-model="user.profile.lastName"
-              label="Nom*"
-              required
-            />
-          </v-flex>
-          <v-flex v-if="user.emails" xs12>
-            <v-text-field
-              v-model="user.emails[0].address"
-              label="Email*"
-              required
-            />
-          </v-flex>
-          <v-flex xs12 sm6 md6>
-            <v-text-field
-              v-model="user.profile.password"
-              label="New password"
-              type="password"
-            />
-          </v-flex>
-          <v-flex xs12 sm6 md6>
-            <v-text-field
-              v-model="user.profile.passwordConfirmation"
-              label="New password (confirmation)"
-              type="password"
-            />
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <small>*indique un champ obligatoire</small>
+                    ? $t('Confirmed email')
+                    : $t('Unconfirmed email')
+                }`"
+              />
+            </v-flex>
+            <v-flex xs12 sm4 md4>
+              <v-switch
+                v-if="!isMe()"
+                v-model="user.features.isAdmin"
+                color="accent"
+                :label="$t('Admin rights')"
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-text-field
+                v-model="user.profile.firstName"
+                :label="$t('First name')"
+                required
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-text-field
+                v-model="user.profile.lastName"
+                :label="$t('Last name')"
+                required
+              />
+            </v-flex>
+            <v-flex v-if="user.emails" xs12>
+              <v-text-field
+                v-model="user.emails[0].address"
+                :label="$t('Email')"
+                :rules="emailRules"
+                required
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-text-field
+                v-model="user.password"
+                label="New password"
+                type="password"
+              />
+            </v-flex>
+            <v-flex xs12 sm6 md6>
+              <v-text-field
+                v-model="user.passwordConfirmation"
+                label="New password (confirmation)"
+                type="password"
+              />
+            </v-flex>
+          </v-layout>
+        </v-container>
+      </v-form>
     </v-card-text>
     <v-card-actions>
       <v-spacer />
       <v-btn text @click.native="close()">
         {{ this.$t("Close") }}
       </v-btn>
-      <v-btn color="primary" @click.native="save()">
-        {{ $t('Update') }}
+      <v-btn color="primary" :disabled="!valid" @click.native="save()">
+        {{ $t("Update") }}
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -147,6 +143,11 @@ export default {
   },
   data() {
     return {
+      valid: false,
+      emailRules: [
+        (v) => !!v || this.$t("Email is mandatory"),
+        (v) => (v.length > 1 && v.indexOf("@") > -1) || this.$t("Invalid email")
+      ],
       user: null,
       showConfirmDeleteUserDialog: false
     };
