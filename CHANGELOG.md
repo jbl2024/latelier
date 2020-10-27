@@ -10,6 +10,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Upgrade meteor to 1.11.1
+- Update meteor packages:
+  - accounts-base                 upgraded from 1.6.0 to 1.7.0
+  - accounts-password             upgraded from 1.6.0 to 1.6.2
+  - boilerplate-generator         upgraded from 1.7.0 to 1.7.1
+  - ddp-rate-limiter              upgraded from 1.0.7 to 1.0.9
+  - ddp-server                    upgraded from 2.3.1 to 2.3.2
+  - ecmascript-runtime-client     upgraded from 0.10.0 to 0.11.0
+  - ecmascript-runtime-server     upgraded from 0.9.0 to 0.10.0
+  - email*                        upgraded from 1.2.3 to 2.0.0
+  - kschingiz:meteor-elastic-apm  upgraded from 2.3.0 to 2.4.1
+  - minifier-css                  upgraded from 1.5.0 to 1.5.3
+  - minimongo                     upgraded from 1.5.0 to 1.6.0
+  - mongo                         upgraded from 1.9.1 to 1.10.0
+  - npm-mongo                     upgraded from 3.7.0 to 3.8.1
+  - socket-stream-client          upgraded from 0.2.3 to 0.3.1
+  - srp                           upgraded from 1.0.12 to 1.1.0
+  - standard-minifier-css         upgraded from 1.6.0 to 1.6.1
+  - url                           upgraded from 1.2.0 to 1.3.1
+  - dynamic-import               upgraded from 0.5.2 to 0.5.3
+  - meteortesting:browser-tests  upgraded from 1.3.3 to 1.3.4
+  - oauth                        upgraded from 1.3.0 to 1.3.2
+  - ostrio:cookies               upgraded from 2.6.0 to 2.6.1
+  - ostrio:files                 upgraded from 1.14.0 to 1.14.3
+
 ### Removed
 
 ## [3.2.4 2020-10-23]
