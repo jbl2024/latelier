@@ -385,6 +385,19 @@
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
+  "project": {
+    "export": {
+      "itemsToExport": "Éléments à exporter",
+      "items": {
+        "tasks": "Tâches",
+        "users": "Utilisateurs",
+        "meetings": "Réunions",
+        "bpmn": "Diagrammes BPMN",
+        "canvas": "Canvas",
+        "weather": "Météo projet"
+      }
+    }
+  },
   "meetings": {
     "lock": "Verrouiller",
     "unlock": "Déverrouiller",

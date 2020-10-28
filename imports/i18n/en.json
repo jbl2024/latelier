@@ -378,6 +378,19 @@
     "logout": "Log out",
     "logoutConfirm": "Do you want to log out?"
   },
+  "project": {
+    "export": {
+      "itemsToExport": "Items to export",
+      "items": {
+        "tasks": "Tasks",
+        "users": "Users",
+        "meetings": "Meetings",
+        "bpmn": "BPMN Diagrams",
+        "canvas": "Canvas",
+        "weather": "Project Weather"
+      }
+    }
+  },
   "meetings": {
     "lock": "Lock",
     "unlock": "Unlock",

@@ -13,6 +13,22 @@
       <v-container fluid>
         <v-row>
           <v-col cols="12">
+            <div class="mb-2">
+              <v-btn 
+                class="mr-2"
+                @click.stop="openProjectSettings(currentProject)"
+              >
+                <v-icon class="mr-2">
+                  mdi-settings
+                </v-icon>
+                {{ $t("Settings") }}
+              </v-btn>
+              <v-btn
+                @click.stop="openProjectExport(currentProject)"
+              >
+                {{ $t("Export") }}
+              </v-btn>
+            </div>
             <project-card :project="currentProject" :user="currentUser" :info="info" />
           </v-col>
           <v-col v-if="hasFeature(currentProject, 'meetings')" :cols="cardColumns">
@@ -107,11 +123,27 @@ export default {
       const width = cards.offsetWidth;
       this.cardColumns = width > 600 ? 3 : 12;
     },
-
     hasFeature(project, feature) {
       return Array.isArray(project?.features)
         && project.features.includes(feature);
-    }
+    },
+    openProjectExport(project) {
+      this.$router.push({
+        name: "project-export",
+        params: {
+          projectId: project._id
+        }
+      });
+    },
+    openProjectSettings(project) {
+      this.$router.push({
+        name: "project-settings",
+        params: {
+          organizationId: project.organizationId,
+          projectId: project._id
+        }
+      });
+    },
   }
 };
 </script>

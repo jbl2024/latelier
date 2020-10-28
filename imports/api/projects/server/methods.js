@@ -5,15 +5,17 @@ import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
-
+import { UserUtils } from "/imports/api/users/utils";
 import { findProjectMembersIds } from "/imports/api/projects/server/common";
 import i18n from "/imports/i18n/server/";
-
+import JSZip from "jszip";
 import {
   Permissions,
   checkLoggedIn,
   checkCanReadProject
 } from "/imports/api/permissions/permissions";
+
+const bound = Meteor.bindEnvironment((callback) => callback());
 
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
@@ -429,3 +431,54 @@ Projects.methods.adminMigrateFeatures = new ValidatedMethod({
     });
   }
 });
+
+Projects.methods.export = new ValidatedMethod({
+  name: "projects.export",
+  validate: new SimpleSchema({
+    projectId: { type: String },
+    items: {
+      type: Array,
+      optional: true
+    },
+    "items.$": {
+      type: String
+    }
+  }).validator(),
+  run({
+    projectId,
+    items
+  }) {
+    checkLoggedIn();
+    const userId = Meteor.userId();
+    const project = Projects.findOne({ _id: projectId });
+    if (!project) {
+      throw new Meteor.Error("not-found");
+    }
+    const membersIds = findProjectMembersIds(project);
+    const users = {};
+    membersIds.forEach((id) => {
+      UserUtils.loadUser(id, users);
+    });
+    const zip = new JSZip();
+    const future = new (Npm.require(
+      Npm.require("path").join("fibers", "future")
+    ))();
+
+    bound(() => {
+      try {
+        const projectFolder = zip.folder(projectId);
+        projectFolder.file("users.json", JSON.stringify(users));
+        return zip.generateAsync({type:"arraybuffer"}).then((blob) => {
+          future.return({
+            data: blob
+          });
+        })
+      } catch (err) {
+        if (err) {
+          throw new Meteor.Error("error", err);
+        }
+      }
+    });
+    return future.wait();
+  }
+})
