@@ -459,26 +459,22 @@ Projects.methods.export = new ValidatedMethod({
     membersIds.forEach((id) => {
       UserUtils.loadUser(id, users);
     });
-    const zip = new JSZip();
+
     const future = new (Npm.require(
       Npm.require("path").join("fibers", "future")
     ))();
 
     bound(() => {
-      try {
-        const projectFolder = zip.folder(projectId);
-        projectFolder.file("users.json", JSON.stringify(users));
-        return zip.generateAsync({type:"arraybuffer"}).then((blob) => {
-          future.return({
-            data: blob
-          });
-        })
-      } catch (err) {
-        if (err) {
-          throw new Meteor.Error("error", err);
-        }
-      }
+      const zip = new JSZip();
+      const projectFolder = zip.folder(projectId);
+      projectFolder.file("users.json", JSON.stringify(users));
+      zip.generateAsync({type:"base64"}).then((zipContent) => {
+        future.return({
+          data: zipContent
+        });
+      });
     });
     return future.wait();
+
   }
 })

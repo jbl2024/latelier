@@ -102,7 +102,11 @@ export default {
           items: this.itemsToExport
         },
         (error, result) => {
-          // saveAs(blob, `export.zip`);
+          fetch("data:application/octet-stream;base64," + result.data)
+            .then(res => res.blob())
+            .then(blob => {
+              saveAs(blob, `export.zip`);
+            });
         }
       )
     },
