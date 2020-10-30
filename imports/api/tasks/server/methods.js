@@ -236,12 +236,13 @@ Tasks.methods.exportProject = new ValidatedMethod({
   name: "tasks.exportProject",
   validate: new SimpleSchema({
     projectId: { type: String },
-    format: { type: String }
+    format: {
+      type: String,
+      optional: true
+    }
   }).validator(),
-  run({ projectId, format }) {
+  async run({ projectId, format }) {
     checkCanReadProject(projectId);
-
-    const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
     const project = Projects.findOne({ _id: projectId });
     const context = project;
     context.lists = [];
@@ -254,7 +255,6 @@ Tasks.methods.exportProject = new ValidatedMethod({
         listId: list._id,
         deleted: { $ne: true }
       }, { sort: { order: 1 } });
-
       tasks.forEach((task) => {
         task = Tasks.helpers.loadAssociations(task);
         task.description = htmlToText.fromString(task.description);
@@ -291,20 +291,21 @@ Tasks.methods.exportProject = new ValidatedMethod({
       });
     });
 
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
-
-    bound(() => {
-      carbone.render(source, context, (err, res) => {
-        if (err) {
-          throw new Meteor.Error("error", err);
-        }
-        future.return({
-          data: res
+    const res = await new Promise((resolve, reject) => {
+      if (format) {
+        const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
+        carbone.render(source, context, (err, res) => {
+          if (err) {
+            reject(new Meteor.Error("error", err));
+          }
+          resolve({
+            data: res
+          });
         });
-      });
+      } else {
+        resolve(context);
+      }
     });
-    return future.wait();
+    return res;
   }
 });

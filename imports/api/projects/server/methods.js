@@ -444,7 +444,7 @@ Projects.methods.export = new ValidatedMethod({
       type: String
     }
   }).validator(),
-  run({
+  async run({
     projectId,
     items
   }) {
@@ -460,21 +460,26 @@ Projects.methods.export = new ValidatedMethod({
       UserUtils.loadUser(id, users);
     });
 
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
-
-    bound(() => {
-      const zip = new JSZip();
-      const projectFolder = zip.folder(projectId);
-      projectFolder.file("users.json", JSON.stringify(users));
-      zip.generateAsync({type:"base64"}).then((zipContent) => {
-        future.return({
-          data: zipContent
-        });
+    const projectInfos = await new Promise((resolve, reject) => {
+      if (!items.includes("tasks")) resolve(null);
+      Meteor.call("tasks.exportProject", { projectId }, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
       });
     });
-    return future.wait();
 
+    const zip = new JSZip();
+    const projectFolder = zip.folder(projectId);
+    projectFolder.file("users.json", JSON.stringify(users));
+    if (Array.isArray(projectInfos?.lists) && projectInfos.lists.length > 0) {
+      const listsFolder = projectFolder.folder("lists");
+      projectInfos.lists.forEach((list) => {
+        listsFolder.file(`${list._id}.json`, JSON.stringify(list));
+      });
+    }
+    const zipContent = await zip.generateAsync({type:"base64"});
+    return {
+      data: zipContent
+    };
   }
 })
