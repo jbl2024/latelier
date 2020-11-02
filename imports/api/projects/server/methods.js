@@ -6,9 +6,8 @@ import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
-import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import { findProjectMembersIds, createProjectExportZip } from "/imports/api/projects/server/common";
 import i18n from "/imports/i18n/server/";
-import JSZip from "jszip";
 import {
   Permissions,
   checkLoggedIn,
@@ -467,16 +466,13 @@ Projects.methods.export = new ValidatedMethod({
         resolve(result);
       });
     });
-
-    const zip = new JSZip();
-    const projectFolder = zip.folder(projectId);
-    projectFolder.file("users.json", JSON.stringify(users));
-    if (Array.isArray(projectInfos?.lists) && projectInfos.lists.length > 0) {
-      const listsFolder = projectFolder.folder("lists");
-      projectInfos.lists.forEach((list) => {
-        listsFolder.file(`${list._id}.json`, JSON.stringify(list));
-      });
-    }
+    const tasksLists = Array.isArray(projectInfos?.lists) && projectInfos.lists.length > 0 ? 
+    projectInfos.lists : null;
+    const zip = createProjectExportZip({
+      projectId,
+      users,
+      tasksLists
+    });
     const zipContent = await zip.generateAsync({type:"base64"});
     return {
       data: zipContent

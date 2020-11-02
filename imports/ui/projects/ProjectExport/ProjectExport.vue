@@ -4,10 +4,14 @@
       <v-subheader>
         {{ $t("project.export.itemsToExport") }}
       </v-subheader>
-      <v-list v-if="availableItems && availableItems.length > 0" dense>
-        <v-list-item v-for="item in availableItems" :key="item">
+      <v-list dense>
+        <v-list-item v-for="(isSelected, item) in selectedItems" :key="item">
           <v-list-item-action>
-            <v-checkbox color="accent" v-model="enabledItems[item]" />
+            <v-checkbox color="accent"
+              :disabled="!availableItems.includes(item)"
+
+              v-model="selectedItems[item]"
+            />
           </v-list-item-action>
           <v-list-item-title>
             {{ $t(`project.export.items.${item}`) }}
@@ -49,7 +53,7 @@ export default {
   data() {
     return {
       info: null,
-      enabledItems: items.reduce((obj, item) => {
+      selectedItems: items.reduce((obj, item) => {
         obj[item] = true;
         return obj;
       }, {})
@@ -58,6 +62,7 @@ export default {
   computed: {
     ...mapState(["currentUser"]),
     ...mapState("project", ["currentProject"]),
+    // Available items to export on current project
     availableItems() {
       if (!this.currentProject) return [];
       const baseItems = ["tasks", "users"];
@@ -66,9 +71,10 @@ export default {
         return this.hasFeature(this.currentProject, item);
       })
     },
-    itemsToExport() {
-      return Object.keys(this.enabledItems).filter((item) => {
-        return this.availableItems.includes(item) && this.enabledItems[item] === true;
+    // Selected items to export
+    selectedItemsList() {
+      return Object.keys(this.selectedItems).filter((item) => {
+        return this.availableItems.includes(item) && this.selectedItems[item] === true;
       });
     }
   },
@@ -77,6 +83,15 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
+  },
+  watch: {
+    availableItems(items) {
+      const selectedItems = {};
+      Object.keys(this.selectedItems).map((key) => {
+        selectedItems[key] = items.includes(key);
+      });
+      this.selectedItems = selectedItems;
+    }
   },
   meteor: {
     // Subscriptions
@@ -99,7 +114,7 @@ export default {
       Meteor.call("projects.export",
         {
           projectId: this.projectId,
-          items: this.itemsToExport
+          items: this.selectedItemsList
         },
         (error, result) => {
           fetch("data:application/octet-stream;base64," + result.data)

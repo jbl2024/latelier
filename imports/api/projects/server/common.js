@@ -1,6 +1,7 @@
 
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
+import JSZip from "jszip";
 
 export const findProjectMembersIds = (project) => {
   const members = Array.from(project.members || []);
@@ -29,3 +30,20 @@ export const findProjectMembersIds = (project) => {
   }
   return [...new Set(members)];
 };
+
+export const createProjectExportZip = ({
+  projectId,
+  users,
+  tasksLists
+}) => {
+  const zip = new JSZip();
+  const projectFolder = zip.folder(projectId);
+  projectFolder.file("users.json", JSON.stringify(users));
+  if (Array.isArray(tasksLists) && tasksLists.length > 0) {
+    const tasksListsFolder = projectFolder.folder("tasks");
+    tasksLists.forEach((list) => {
+      tasksListsFolder.file(`${list._id}.json`, JSON.stringify(list));
+    });
+  }
+  return zip;
+}
