@@ -386,6 +386,9 @@
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
   "project": {
+    "import": {
+      "importProject": "Importer un projet"
+    },
     "export": {
       "itemsToExport": "Éléments à exporter",
       "items": {

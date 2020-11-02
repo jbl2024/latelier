@@ -99,6 +99,17 @@
               </v-list-item-action>
               <v-list-item-title>{{ $t("Clone") }}</v-list-item-title>
             </v-list-item>
+            <v-list-item 
+              v-if="canManageProject(project)"
+              @click="openProjectExport(project)"
+            >
+              <v-list-item-action>
+                <v-icon>
+                  mdi-file-export
+                </v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t("Export") }}</v-list-item-title>
+            </v-list-item>
             <v-list-item
               v-if="canManageProject(project)"
               @click="deleteProject(project)"
@@ -245,7 +256,14 @@ export default {
         }
       });
     },
-
+    openProjectExport(project) {
+        this.$router.push({
+        name: "project-export",
+        params: {
+          projectId: project._id
+        }
+      });
+    },
     deleteProject(project) {
       this.$confirm(this.$t("Delete project?"), {
         title: project.name,

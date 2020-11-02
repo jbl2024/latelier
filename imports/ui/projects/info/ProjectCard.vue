@@ -174,6 +174,22 @@
               text
               color="grey darken-1"
               v-on="on"
+              @click.stop="openProjectExport(project)"
+            >
+              <v-icon>mdi-file-export</v-icon>
+            </v-btn>
+          </template>
+          <span>
+            {{ $t("Export") }}
+          </span>
+        </v-tooltip>
+        <v-tooltip top>
+          <template v-slot:activator="{ on }">
+            <v-btn
+              icon
+              text
+              color="grey darken-1"
+              v-on="on"
               @click.stop="openProjectSettings(project)"
             >
               <v-icon>mdi-settings</v-icon>
@@ -308,7 +324,14 @@ export default {
     attachmentCount(project) {
       return Attachments.find({ "meta.projectId": project._id }).count();
     },
-
+    openProjectExport(project) {
+      this.$router.push({
+        name: "project-export",
+        params: {
+          projectId: project._id
+        }
+      });
+    },
     canDeleteProject(project) {
       if (
         Permissions.isAdmin(Meteor.userId())

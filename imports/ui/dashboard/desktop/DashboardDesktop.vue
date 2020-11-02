@@ -63,6 +63,21 @@
                   </v-list-item>
                   <v-divider />
                 </template>
+                <!-- Import project from zip -->
+                <v-list-item @click.stop="importProject">
+                  <v-list-item-action>
+                    <v-icon>mdi-file-import</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-title>
+                    <upload-button
+                      ref="uploadProject"
+                      :is-uploading="isUploading"
+                      @on-upload="importProject"
+                    >
+                      <span>{{ $t("project.import.importProject") }}</span>
+                    </upload-button>
+                  </v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="$refs.projectsTrashcan.open()">
                   <v-list-item-action>
                     <v-icon>mdi-delete</v-icon>
@@ -253,13 +268,15 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
+import UploadButton from "/imports/ui/widgets/UploadButton";
 
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   components: {
     DashboardProjectCard,
-    DashboardProjectList
+    DashboardProjectList,
+    UploadButton
   },
   mixins: [DatesMixin],
   props: {
@@ -272,7 +289,8 @@ export default {
     return {
       user: null,
       selectedOrganizationId: "",
-      cardClass: "card1"
+      cardClass: "card1",
+      isUploading: false
     };
   },
   computed: {
@@ -378,6 +396,12 @@ export default {
     }
   },
   methods: {
+    importProject() {
+      this.$refs.uploadProject.beginUpload();
+    },
+    uploadFile(file) {
+      console.log(file);
+    },
     newOrganization() {
       this.$refs.newOrganization.open();
     },

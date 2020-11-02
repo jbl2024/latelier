@@ -379,6 +379,9 @@
     "logoutConfirm": "Do you want to log out?"
   },
   "project": {
+    "import": {
+      "importProject": "Import project"
+    },
     "export": {
       "itemsToExport": "Items to export",
       "items": {
