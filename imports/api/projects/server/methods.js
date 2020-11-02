@@ -449,29 +449,65 @@ Projects.methods.export = new ValidatedMethod({
   }) {
     checkLoggedIn();
     const userId = Meteor.userId();
+
+    // Project
     const project = Projects.findOne({ _id: projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
+
+    // Tasks (project + associated lists and tasks)
+    const projectInfos = await new Promise((resolve, reject) => {
+      Meteor.call("tasks.exportProject", { projectId }, (err, result) => {
+        if (err) reject(err);
+        resolve(result);
+      });
+    });
+
+    // Users
     const membersIds = findProjectMembersIds(project);
     const users = {};
     membersIds.forEach((id) => {
       UserUtils.loadUser(id, users);
     });
 
-    const projectInfos = await new Promise((resolve, reject) => {
-      if (!items.includes("tasks")) resolve(null);
-      Meteor.call("tasks.exportProject", { projectId }, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    });
-    const tasksLists = Array.isArray(projectInfos?.lists) && projectInfos.lists.length > 0 ? 
+    // Tasks
+    const tasksLists = items.includes("tasks") && 
+    Array.isArray(projectInfos?.lists) && 
+    projectInfos.lists.length > 0 ? 
     projectInfos.lists : null;
-    const zip = createProjectExportZip({
+
+    // BPMN Diagrams
+    let bpmnDiagrams = items.includes("bpmn") ? 
+    ProcessDiagrams.find({ projectId }).fetch() : null;
+
+    // Meetings
+    let meetings = items.includes("meetings") ?
+    Meetings.find({
       projectId,
+      deleted: { $ne: true }
+    }).fetch() : null;
+
+    // Canvas
+    let canvases = items.includes("canvas") ?
+    Canvas.find({
+      projectId
+    }).fetch() : null;
+
+    // Weather reports
+    let healthReports = items.includes("weather") ?
+    HealthReports.find({
+      projectId
+    }).fetch() : null;
+    
+    const zip = createProjectExportZip({
+      project,
       users,
-      tasksLists
+      tasksLists,
+      bpmnDiagrams,
+      meetings,
+      canvases,
+      healthReports
     });
     const zipContent = await zip.generateAsync({type:"base64"});
     return {
