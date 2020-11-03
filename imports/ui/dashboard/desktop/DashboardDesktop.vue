@@ -3,7 +3,10 @@
     <new-organization ref="newOrganization" />
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
-
+    <project-import
+      :file="importedProjectFile"
+      :is-shown.sync="showProjectImport" 
+    />
     <div v-if="!isReady">
       <v-progress-linear indeterminate />
     </div>
@@ -64,7 +67,7 @@
                   <v-divider />
                 </template>
                 <!-- Import project from zip -->
-                <v-list-item @click.stop="importProject">
+                <v-list-item @click="importProject">
                   <v-list-item-action>
                     <v-icon>mdi-file-import</v-icon>
                   </v-list-item-action>
@@ -72,7 +75,7 @@
                     <upload-button
                       ref="uploadProject"
                       :is-uploading="isUploading"
-                      @on-upload="importProject"
+                      @on-upload="uploadProject"
                     >
                       <span>{{ $t("project.import.importProject") }}</span>
                     </upload-button>
@@ -269,14 +272,15 @@ import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
 import UploadButton from "/imports/ui/widgets/UploadButton";
-
+import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   components: {
     DashboardProjectCard,
     DashboardProjectList,
-    UploadButton
+    UploadButton,
+    ProjectImport
   },
   mixins: [DatesMixin],
   props: {
@@ -290,6 +294,8 @@ export default {
       user: null,
       selectedOrganizationId: "",
       cardClass: "card1",
+      showProjectImport: false,
+      importedProjectFile: null,
       isUploading: false
     };
   },
@@ -399,8 +405,9 @@ export default {
     importProject() {
       this.$refs.uploadProject.beginUpload();
     },
-    uploadFile(file) {
-      console.log(file);
+    uploadProject(file) {
+      this.importedProjectFile = file;
+      this.showProjectImport = true;
     },
     newOrganization() {
       this.$refs.newOrganization.open();

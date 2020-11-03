@@ -32,16 +32,8 @@
 <script>
 import { mapState } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
+import { items } from "/imports/api/projects/importExport/";
 import { saveAs } from "file-saver";
-
-const items = [
-  "tasks",
-  "users",
-  "meetings",
-  "bpmn",
-  "canvas",
-  "weather"
-];
 
 export default {
   props: {

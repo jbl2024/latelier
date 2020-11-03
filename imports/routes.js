@@ -213,7 +213,7 @@ const routes = [
     path: "/projects-export/:projectId",
     name: "project-export",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
-    component: async () => (await import("/imports/ui/projects/ProjectExport/ProjectExport.vue")).default,
+    component: async () => (await import("/imports/ui/projects/ProjectImportExport/ProjectExport.vue")).default,
     props: true,
     meta: {
       isProject: true

@@ -6,7 +6,8 @@ import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
-import { findProjectMembersIds, createProjectExportZip } from "/imports/api/projects/server/common";
+import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import { createProjectExportZip } from "/imports/api/projects/importExport/";
 import i18n from "/imports/i18n/server/";
 import {
   Permissions,
