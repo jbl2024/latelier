@@ -2,18 +2,49 @@
   <div class="project-import">
     <generic-dialog
       v-model="showDialog"
+      :css-classes="['project-import']"
       max-width="820"
       :title="currentTitle"
     >
       <template v-slot:content>
-        <div v-if="isLoading">
+        <div v-if="isImporting" class="project-import__import-progress">
+          <v-progress-linear
+            v-model="importProgress"
+            color="amber"
+            height="25"
+          >
+            <template v-slot:default="{ value }">
+              <strong>
+                {{ Math.ceil(value) }}%
+              </strong>
+            </template>
+          </v-progress-linear>
+        </div>
+        <div v-else-if="isLoading">
           {{ $t("Loading") }}
         </div>
         <div v-else-if="firstZippedProject" class="project-wrapper">
           <project-import-wizard
             :zipped-project="firstZippedProject"
+            :import-options.sync="importOptions"
           />
         </div>
+      </template>
+      <template v-slot:actions>
+        <v-btn 
+          text 
+          @click="confirmImport({dryRun: true})"
+        >
+          {{ $t("project.import.simulateImport") }}
+        </v-btn>
+        <v-btn
+          :disabled="!valid"
+          color="success"
+          dark
+          @click="confirmImport"
+        >
+        {{ $t("project.import.import") }}
+        </v-btn>
       </template>
     </generic-dialog>
   </div>
@@ -21,7 +52,7 @@
 
 <script>
 import JSZip from "jszip";
-import ProjectImportWizard from "/imports/ui/projects/ProjectImportExport/ProjectImportWizard";
+import ProjectImportWizard from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImportWizard";
 import { parseProjectImportZip } from "/imports/api/projects/importExport";
 
 export default {
@@ -40,7 +71,17 @@ export default {
   data() {
     return {
       zippedProjects: null,
-      isLoading: false
+      importOptions: {
+        project: {
+          name: "",
+          organizationId: null
+        },
+        items: []
+      },
+      isLoading: false,
+      isImporting: false,
+      importProgress: 0,
+      valid: true
     };
   },
   computed: {
@@ -67,6 +108,9 @@ export default {
     close() {
       this.showDialog = false;
     },
+    confirmImport(options = {}) {
+      this.isImporting = true;
+    }
   },
   watch: {
     file: {
@@ -82,48 +126,15 @@ export default {
 };
 </script>
 
-<style scoped>
-.project-wrapper {
-  -webkit-overflow-scrolling: touch;
-}
-
-@media (min-width: 601px) {
-  .project-wrapper {
-    height: calc(100vh - 200px);
-    min-height: 360px;
-    max-height: 530px;
-    overflow-y: scroll;
+<style lang="scss" scoped>
+  .project-import .v-card__text {
+    padding: 0;
   }
-}
-
-@media (max-width: 600px) {
-  .project-wrapper {
-    overflow-y: scroll;
+  .project-import__import-progress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    height: 200px;
   }
-}
-
-.project {
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  -webkit-overflow-scrolling: touch;
-}
-
-.stepper {
-  box-shadow: none;
-}
-
-.feature-card {
-  border: 4px solid transparent;
-  transition: border 0.5s;
-  min-height: 158px;
-}
-
-.feature-card:hover {
-  border: 4px solid #2675c5;
-}
-
-.feature-card.selected {
-  border: 4px solid #2675c5;
-}
 </style>

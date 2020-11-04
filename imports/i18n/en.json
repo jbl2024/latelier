@@ -380,7 +380,39 @@
   },
   "project": {
     "import": {
-      "importProject": "Import project"
+      "itemsToImport": "Items to import",
+      "importProject": "Import project",
+      "import": "Import",
+      "simulateImport": "Dry run import",
+      "projectName": "Project name",
+      "projectOrganization": "Project organization",
+      "withoutOrganization": "Without organization",
+      "items": {
+        "users": {
+          "title": "Users",
+          "description": "Import members of the project as new users"
+        },
+        "tasks": {
+          "title": "Tasks",
+          "description": "Import tasks and related tasks lists"
+        },
+        "meetings": {
+          "title": "Meetings",
+          "description": "Import meetings"
+        },
+        "bpmn": {
+          "title": "BPMN Diagrams",
+          "description": "Import BPMN Diagrams"
+        },
+        "canvas": {
+          "title": "Canvas",
+          "description": "Import canvas"
+        },
+        "weather": {
+          "title": "Weather reports",
+          "description": "Import health reports"
+        }
+      }
     },
     "export": {
       "itemsToExport": "Items to export",

@@ -387,7 +387,39 @@
   },
   "project": {
     "import": {
-      "importProject": "Importer un projet"
+      "itemsToImport": "Éléments à importer",
+      "importProject": "Importer un projet",
+      "import": "Importer",
+      "simulateImport": "Simuler l'import",
+      "projectName": "Nom du projet",
+      "projectOrganization": "Organisation du projet",
+      "withoutOrganization": "Sans organisation",
+      "items": {
+        "users": {
+          "title": "Utilisateurs",
+          "description": "Importer les membres du projet en tant que nouveaux utilisateurs"
+        },
+        "tasks": {
+          "title": "Tâches",
+          "description": "Importer les tâches et les listes de tâches associées"
+        },
+        "meetings": {
+          "title": "Réunions",
+          "description": "Importer les réunions du projet"
+        },
+        "bpmn": {
+          "title": "Diagrammes BPMN",
+          "description": "Importer les diagrammes BPMN"
+        },
+        "canvas": {
+          "title": "Canvas",
+          "description": "Importer le canvas du projet"
+        },
+        "weather": {
+          "title": "Météo",
+          "description": "Importer les rapports météo"
+        }
+      }
     },
     "export": {
       "itemsToExport": "Éléments à exporter",

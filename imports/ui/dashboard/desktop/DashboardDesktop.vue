@@ -272,7 +272,7 @@ import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
 import UploadButton from "/imports/ui/widgets/UploadButton";
-import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport";
+import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImport";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {

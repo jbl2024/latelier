@@ -9,7 +9,6 @@
           <v-list-item-action>
             <v-checkbox color="accent"
               :disabled="!availableItems.includes(item)"
-
               v-model="selectedItems[item]"
             />
           </v-list-item-action>
@@ -34,6 +33,8 @@ import { mapState } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
 import { items } from "/imports/api/projects/importExport/";
 import { saveAs } from "file-saver";
+import { sanitizeForFs } from "/imports/ui/utils/sanitize";
+import moment from "moment";
 
 export default {
   props: {
@@ -112,7 +113,8 @@ export default {
           fetch("data:application/octet-stream;base64," + result.data)
             .then(res => res.blob())
             .then(blob => {
-              saveAs(blob, `export.zip`);
+              const timestamp = moment().format("YYYY-MM-DD");
+              saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
             });
         }
       )
