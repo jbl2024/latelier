@@ -23,6 +23,7 @@ import {
   createProjectExportZip,
   projectFilesFromZip,
   findProjectImportZip,
+  unserializeProjectImportZip
 } from "/imports/api/projects/importExport/";
 
 
@@ -549,7 +550,7 @@ Projects.methods.uploadImport = new ValidatedMethod({
         fs.writeFile(directoryAndFilename, buffer, (err) => {
           if (err) reject(new Meteor.Error("error", "Error when importing project import", err));
           resolve({
-            path: createdDirectory,
+            importPath: createdDirectory,
             projects
           });
         });
@@ -558,18 +559,92 @@ Projects.methods.uploadImport = new ValidatedMethod({
   }
 });
 
-Projects.methods.findImport = new ValidatedMethod({
-  name: "projects.findImport",
+Projects.methods.import = new ValidatedMethod({
+  name: "projects.import",
   validate: new SimpleSchema({
-    path: { type: String }
+    importPath: { type: String },
+    locale: { type: String },
+    options: { type: Object, blackbox: true }
   }).validator(),
   async run({
-    path
+    importPath,
+    locale,
+    options
   }) {
-    if (!fs.existsSync(path)) {
+    const userId = Meteor.userId();
+    const fullImportPath = `${importPath}/${userId}.zip`;
+    if (!fs.existsSync(fullImportPath)) {
       throw new Meteor.Error("error", "Error when retrieving project import");
     }
-    const result = await findProjectImportZip(path);
-    return result;
+    const zip = await findProjectImportZip(fullImportPath);
+    const zippedProjects = await unserializeProjectImportZip(zip);
+    if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
+      throw new Meteor.Error("error", "Error when processing project import");
+    }
+    const zippedProject = zippedProjects[0];
+    const project = await zippedProject.getProject();
+    if (!project) {
+      throw new Meteor.Error("error", "Error when processing project infos");
+    }
+    try {
+      const createdProjectId = await new Promise((resolve, reject) => {
+        const projectDatas = {
+          organizationId: options?.project?.organizationId ? options.project.organizationId : null,
+          name: options?.project?.name ? options.project.name : null,
+          projectType: "none",
+          state: project.state,
+          accessRights: ProjectAccessRights.ORGANIZATION,
+          features: project.features,
+          locale: locale
+        };
+        Meteor.call(
+          "projects.create",
+          projectDatas,
+          (err, projectId) => {
+            if (err) reject(err);
+            resolve(projectId);
+          }
+        );
+      });
+  
+      if (!createdProjectId) {
+        throw new Meteor.Error("error", "Error when creating project");
+      }
+  
+      const tasksLists = await zippedProject.getTasksLists();
+      tasksLists.forEach(async (taskList) => {
+        const createdList = await new Promise((resolve, reject) => {
+          Meteor.call(
+            "lists.insert",
+            createdProjectId,
+            taskList.name,
+            taskList?.autoComplete ? taskList.autoComplete : null,
+            taskList?.catchCompleted ? taskList.catchCompleted : null,
+            (error, createdList) => {
+              if (error) reject(error);
+              resolve(createdList);
+            }
+          );        
+        });
+        if (createdList && Array.isArray(taskList?.tasks)) {
+          taskList.tasks.forEach(async (task) => {
+            const createdTask = await new Promise((resolve, reject) => {
+              Meteor.call(
+                "tasks.insert",
+                createdList.projectId,
+                createdList._id,
+                task.name,
+                (error, task) => {
+                  if (error) reject(error);
+                  resolve(task);
+                }
+              );
+            });
+          });
+        }
+      });
+    } catch(error) {
+      throw new Meteor.Error(error);
+    }
   }
 });

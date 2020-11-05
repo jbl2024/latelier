@@ -387,6 +387,7 @@
       "projectName": "Project name",
       "projectOrganization": "Project organization",
       "withoutOrganization": "Without organization",
+      "importSuccess": "Project imported successfully",
       "items": {
         "users": {
           "title": "Users",

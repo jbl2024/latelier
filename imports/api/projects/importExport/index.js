@@ -101,13 +101,8 @@ export const findProjectImportZip = (importPath) => {
   return new Promise((resolve, reject) => {
     fs.readFile(importPath, (err, data) => {
       if (err) reject(new Meteor.Error("error", "Invalid project import", err));
-      JSZip.loadAsync(data).then((zip) => {
-        zip.generateAsync({type:"base64"}).then((zipContent) => {
-          resolve({
-            data: zipContent
-          });
-        });
-      });
+      const buffer = Buffer.from(data, 'utf-8');
+      resolve(JSZip.loadAsync(buffer));
     });
   });
 }

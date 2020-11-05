@@ -5,7 +5,7 @@
     <projects-trashcan ref="projectsTrashcan" />
     <project-import
       :project="importedProject"
-      :path="importedProjectPath"
+      :import-path="importedProjectPath"
       :is-shown.sync="showProjectImport" 
     />
     <div v-if="!isReady">
@@ -416,7 +416,7 @@ export default {
           // We only import single project for now
           if (Array.isArray(result?.projects) && result.projects.length) {
             this.importedProject = result.projects[0];
-            this.importedProjectPath = result.path;
+            this.importedProjectPath = result.importPath;
             this.showProjectImport = true;
           }
         });

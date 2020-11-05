@@ -61,7 +61,7 @@ export default {
     project: {
       type: Object
     },
-    path: {
+    importPath: {
       type: String
     },
     isShown: {
@@ -106,6 +106,18 @@ export default {
     },
     confirmImport(options = {}) {
       this.isImporting = true;
+      Meteor.call("projects.import", {
+        locale: this.$i18n.locale,
+        importPath: this.importPath,
+        options: this.importOptions
+      }, (err, result) => {
+        if (err) {
+          this.$notifyError(err);
+        }
+        this.$notify(this.$t("project.import.importSuccess"));
+        this.isImporting = false;
+        this.showDialog = false;
+      })
     }
   }
 };
