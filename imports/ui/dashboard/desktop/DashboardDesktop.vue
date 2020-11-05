@@ -4,7 +4,8 @@
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
     <project-import
-      :file="importedProjectFile"
+      :project="importedProject"
+      :path="importedProjectPath"
       :is-shown.sync="showProjectImport" 
     />
     <div v-if="!isReady">
@@ -295,7 +296,8 @@ export default {
       selectedOrganizationId: "",
       cardClass: "card1",
       showProjectImport: false,
-      importedProjectFile: null,
+      importedProject: null,
+      importedProjectPath: null,
       isUploading: false
     };
   },
@@ -406,8 +408,20 @@ export default {
       this.$refs.uploadProject.beginUpload();
     },
     uploadProject(file) {
-      this.importedProjectFile = file;
-      this.showProjectImport = true;
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileBuffer = new Uint8Array(reader.result);
+        Meteor.call('projects.uploadImport', { fileBuffer }, (err, result) => {
+          // We only import single project for now
+          if (Array.isArray(result?.projects) && result.projects.length) {
+            this.importedProject = result.projects[0];
+            this.importedProjectPath = result.path;
+            this.showProjectImport = true;
+          }
+        });
+      }
+      reader.readAsArrayBuffer(file);
     },
     newOrganization() {
       this.$refs.newOrganization.open();

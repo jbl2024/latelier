@@ -23,9 +23,9 @@
         <div v-else-if="isLoading">
           {{ $t("Loading") }}
         </div>
-        <div v-else-if="firstZippedProject" class="project-wrapper">
+        <div v-else-if="project" class="project-wrapper">
           <project-import-wizard
-            :zipped-project="firstZippedProject"
+            :project="project"
             :import-options.sync="importOptions"
           />
         </div>
@@ -51,17 +51,18 @@
 </template>
 
 <script>
-import JSZip from "jszip";
 import ProjectImportWizard from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImportWizard";
-import { parseProjectImportZip } from "/imports/api/projects/importExport";
 
 export default {
   components: {
     ProjectImportWizard
   },
   props: {
-    file: {
-      type: [Object, File]
+    project: {
+      type: Object
+    },
+    path: {
+      type: String
     },
     isShown: {
       type: Boolean,
@@ -70,7 +71,6 @@ export default {
   },
   data() {
     return {
-      zippedProjects: null,
       importOptions: {
         project: {
           name: "",
@@ -87,10 +87,6 @@ export default {
   computed: {
     currentTitle() {
       return this.$t("project.import.importProject");
-    },
-    firstZippedProject() {
-      if (!Array.isArray(this.zippedProjects) || !this.zippedProjects.length) return null;
-      return this.zippedProjects[0];
     },
     showDialog: {
       get() {
@@ -110,17 +106,6 @@ export default {
     },
     confirmImport(options = {}) {
       this.isImporting = true;
-    }
-  },
-  watch: {
-    file: {
-      immediate: true,
-      async handler(file) {
-        this.isLoading = true;
-        const zip = await JSZip.loadAsync(file);
-        this.zippedProjects = await parseProjectImportZip(zip);
-        this.isLoading = false;
-      }
     }
   }
 };

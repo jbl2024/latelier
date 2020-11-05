@@ -7,7 +7,6 @@ import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
 import { findProjectMembersIds } from "/imports/api/projects/server/common";
-import { createProjectExportZip } from "/imports/api/projects/importExport/";
 import i18n from "/imports/i18n/server/";
 import {
   Permissions,
@@ -15,7 +14,17 @@ import {
   checkCanReadProject
 } from "/imports/api/permissions/permissions";
 
-const bound = Meteor.bindEnvironment((callback) => callback());
+import JSZip from "jszip";
+import fs from "fs";
+import path from "path";
+import os from "os";
+
+import {
+  createProjectExportZip,
+  projectFilesFromZip,
+  findProjectImportZip,
+} from "/imports/api/projects/importExport/";
+
 
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
@@ -515,4 +524,52 @@ Projects.methods.export = new ValidatedMethod({
       data: zipContent
     };
   }
-})
+});
+
+Projects.methods.uploadImport = new ValidatedMethod({
+  name: "projects.uploadImport",
+  validate: new SimpleSchema({
+    fileBuffer: { type: Uint8Array }
+  }).validator(),
+  async run({
+    fileBuffer
+  }) {
+    const userId = Meteor.userId();
+    const buffer = Buffer.from(fileBuffer, 'utf-8');
+    const zip = await JSZip.loadAsync(buffer);
+    const projects = await Promise.all(projectFilesFromZip(zip).map(async (zipFilePath) => {
+      const projectRawJson = await zip.file(zipFilePath).async("string");
+      return JSON.parse(projectRawJson);
+    }));
+
+    return new Promise((resolve, reject) => {
+      fs.mkdtemp(path.join(os.tmpdir(), "projects-imports-"), (err, createdDirectory) => {
+        if (err) reject(new Meteor.Error("error", "Error when importing project import", err));
+        const directoryAndFilename = `${createdDirectory}/${userId}.zip`;
+        fs.writeFile(directoryAndFilename, buffer, (err) => {
+          if (err) reject(new Meteor.Error("error", "Error when importing project import", err));
+          resolve({
+            path: createdDirectory,
+            projects
+          });
+        });
+      });
+    });
+  }
+});
+
+Projects.methods.findImport = new ValidatedMethod({
+  name: "projects.findImport",
+  validate: new SimpleSchema({
+    path: { type: String }
+  }).validator(),
+  async run({
+    path
+  }) {
+    if (!fs.existsSync(path)) {
+      throw new Meteor.Error("error", "Error when retrieving project import");
+    }
+    const result = await findProjectImportZip(path);
+    return result;
+  }
+});
