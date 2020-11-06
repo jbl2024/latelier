@@ -40,21 +40,21 @@
 
 <script>
 import ProjectImportWizard from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImportWizard";
+import JSZip from "jszip";
+import { unserializeProjectImportZip } from "/imports/api/projects/importExport";
 
 export default {
   components: {
     ProjectImportWizard
   },
   props: {
-    project: {
-      type: Object
+    projectFile: {
+      type: File,
+      default: null
     },
     organizationId: {
       type: String,
       default: null
-    },
-    importPath: {
-      type: String
     },
     isShown: {
       type: Boolean,
@@ -70,6 +70,7 @@ export default {
         },
         items: []
       },
+      project: null,
       isLoading: false,
       isImporting: false,
       importProgress: 0,
@@ -98,21 +99,47 @@ export default {
     },
     confirmImport() {
       this.isImporting = true;
-      Meteor.call("projects.import", {
-        locale: this.$i18n.locale,
-        importPath: this.importPath,
-        options: this.importOptions
-      }, (err, projectId) => {
-        if (err) {
-          this.$notifyError(err);
-        }
-        this.$notify(this.$t("project.import.importSuccess"));
-        this.isImporting = false;
-        this.showDialog = false;
-        if (projectId) {
-          this.$router.push({ name: "project", params: { projectId } });
-        }
-      })
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const fileBuffer = new Uint8Array(reader.result);
+        Meteor.call("projects.import", {
+          fileBuffer,
+          locale: this.$i18n.locale,
+          options: this.importOptions
+        }, (err, projectId) => {
+          if (err) {
+            this.$notifyError(err);
+          }
+          this.$notify(this.$t("project.import.importSuccess"));
+          this.isImporting = false;
+          this.showDialog = false;
+          if (projectId) {
+            this.$router.push({ name: "project", params: { projectId } });
+          }
+        })
+      }
+      if (this.projectFile) {
+        reader.readAsArrayBuffer(this.projectFile);
+      }
+    }
+  },
+  watch: {
+    projectFile: {
+      immediate: true,
+      handler(file) {
+        if (!file) return;
+        JSZip.loadAsync(file)
+          .then(zip => zip)
+          .then(zip => unserializeProjectImportZip(zip))
+          .then(zippedProjects => {
+            if (Array.isArray(zippedProjects) && zippedProjects[0]) {
+              zippedProjects[0].getContent("project").then((project) => {
+                this.project = project;
+                this.showDialog = true;
+              });
+            }
+          });
+      }
     }
   }
 };

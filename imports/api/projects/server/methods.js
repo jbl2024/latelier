@@ -15,14 +15,9 @@ import {
 } from "/imports/api/permissions/permissions";
 
 import JSZip from "jszip";
-import fs from "fs";
-import path from "path";
-import os from "os";
 
 import {
   createProjectExportZip,
-  projectFilesFromZip,
-  findProjectImportZip,
   unserializeProjectImportZip
 } from "/imports/api/projects/importExport/";
 
@@ -527,56 +522,21 @@ Projects.methods.export = new ValidatedMethod({
   }
 });
 
-Projects.methods.uploadImport = new ValidatedMethod({
-  name: "projects.uploadImport",
+Projects.methods.import = new ValidatedMethod({
+  name: "projects.import",
   validate: new SimpleSchema({
-    fileBuffer: { type: Uint8Array }
+    locale: { type: String },
+    fileBuffer: { type: Uint8Array },
+    options: { type: Object, blackbox: true }
   }).validator(),
   async run({
-    fileBuffer
+    locale,
+    fileBuffer,
+    options
   }) {
     const userId = Meteor.userId();
     const buffer = Buffer.from(fileBuffer, 'utf-8');
     const zip = await JSZip.loadAsync(buffer);
-    const projects = await Promise.all(projectFilesFromZip(zip).map(async (zipFilePath) => {
-      const projectRawJson = await zip.file(zipFilePath).async("string");
-      return JSON.parse(projectRawJson);
-    }));
-
-    return new Promise((resolve, reject) => {
-      fs.mkdtemp(path.join(os.tmpdir(), "projects-imports-"), (err, createdDirectory) => {
-        if (err) reject(new Meteor.Error("error", "Error when importing project import", err));
-        const directoryAndFilename = `${createdDirectory}/${userId}.zip`;
-        fs.writeFile(directoryAndFilename, buffer, (err) => {
-          if (err) reject(new Meteor.Error("error", "Error when importing project import", err));
-          resolve({
-            importPath: createdDirectory,
-            projects
-          });
-        });
-      });
-    });
-  }
-});
-
-Projects.methods.import = new ValidatedMethod({
-  name: "projects.import",
-  validate: new SimpleSchema({
-    importPath: { type: String },
-    locale: { type: String },
-    options: { type: Object, blackbox: true }
-  }).validator(),
-  async run({
-    importPath,
-    locale,
-    options
-  }) {
-    const userId = Meteor.userId();
-    const fullImportPath = `${importPath}/${userId}.zip`;
-    if (!fs.existsSync(fullImportPath)) {
-      throw new Meteor.Error("error", "Error when retrieving project import");
-    }
-    const zip = await findProjectImportZip(fullImportPath);
     const zippedProjects = await unserializeProjectImportZip(zip);
     if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
       throw new Meteor.Error("error", "Error when processing project import");
@@ -642,7 +602,7 @@ Projects.methods.import = new ValidatedMethod({
             name: diagram.name,
             description: diagram?.description ? diagram.description : null,
             xml: diagram?.xml ? diagram.xml : null
-          },
+          }
         );
       });
     }
