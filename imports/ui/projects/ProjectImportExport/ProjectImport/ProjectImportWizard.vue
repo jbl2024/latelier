@@ -1,5 +1,7 @@
 <template>
-  <div v-if="isLoading">Chargement</div>
+  <div v-if="isLoading">
+    <v-progress-linear indeterminate />
+  </div>
   <div v-else-if="isReady" class="project-import-wizard">
     <v-list subheader two-line flat>
       <!-- Project name -->
@@ -89,6 +91,10 @@ export default {
       type: Object,
       default: null,
     },
+    organizationId: {
+      type: String,
+      default: null
+    },
     importOptions: {
       type: Object,
       default() {
@@ -162,6 +168,14 @@ export default {
         }
         this.projectName = this.project.name;
       },
+    },
+    organizationId: {
+      immediate: true,
+      handler(organizationId) {
+        if (organizationId) {
+          this.projectOrganizationId = organizationId;
+        }
+      }
     },
     selectedImportedOptions: {
       immediate: true,

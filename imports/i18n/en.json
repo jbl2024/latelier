@@ -388,6 +388,7 @@
       "projectOrganization": "Project organization",
       "withoutOrganization": "Without organization",
       "importSuccess": "Project imported successfully",
+      "importLoading": "Project import in progress",
       "items": {
         "users": {
           "title": "Users",

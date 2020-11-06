@@ -5,6 +5,7 @@
     <projects-trashcan ref="projectsTrashcan" />
     <project-import
       :project="importedProject"
+      :organization-id="organizationId"
       :import-path="importedProjectPath"
       :is-shown.sync="showProjectImport" 
     />

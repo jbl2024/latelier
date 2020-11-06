@@ -8,35 +8,23 @@
     >
       <template v-slot:content>
         <div v-if="isImporting" class="project-import__import-progress">
-          <v-progress-linear
-            v-model="importProgress"
-            color="amber"
-            height="25"
-          >
-            <template v-slot:default="{ value }">
-              <strong>
-                {{ Math.ceil(value) }}%
-              </strong>
-            </template>
-          </v-progress-linear>
+          <v-progress-linear indeterminate />
+          <div class="mt-2">
+            {{ $t("project.import.importLoading") }}
+          </div>
         </div>
         <div v-else-if="isLoading">
-          {{ $t("Loading") }}
+          <v-progress-linear indeterminate />
         </div>
         <div v-else-if="project" class="project-wrapper">
           <project-import-wizard
             :project="project"
+            :organization-id="organizationId"
             :import-options.sync="importOptions"
           />
         </div>
       </template>
       <template v-slot:actions>
-        <v-btn 
-          text 
-          @click="confirmImport({dryRun: true})"
-        >
-          {{ $t("project.import.simulateImport") }}
-        </v-btn>
         <v-btn
           :disabled="!valid"
           color="success"
@@ -60,6 +48,10 @@ export default {
   props: {
     project: {
       type: Object
+    },
+    organizationId: {
+      type: String,
+      default: null
     },
     importPath: {
       type: String
@@ -104,7 +96,7 @@ export default {
     close() {
       this.showDialog = false;
     },
-    confirmImport(options = {}) {
+    confirmImport() {
       this.isImporting = true;
       Meteor.call("projects.import", {
         locale: this.$i18n.locale,
@@ -129,6 +121,7 @@ export default {
   }
   .project-import__import-progress {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 200px;

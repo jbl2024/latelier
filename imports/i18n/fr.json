@@ -395,6 +395,7 @@
       "projectOrganization": "Organisation du projet",
       "withoutOrganization": "Sans organisation",
       "importSuccess": "Projet importé avec succès",
+      "importLoading": "Importation du projet en cours",
       "items": {
         "users": {
           "title": "Utilisateurs",
