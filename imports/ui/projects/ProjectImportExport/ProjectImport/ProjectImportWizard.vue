@@ -165,6 +165,7 @@ export default {
           this.items = this.items.filter((item) => {
             return availableItems.includes(item);
           });
+          this.selectedItems = this.items.slice();
         }
         this.projectName = this.project.name;
       },

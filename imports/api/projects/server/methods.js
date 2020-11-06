@@ -527,14 +527,30 @@ Projects.methods.import = new ValidatedMethod({
   validate: new SimpleSchema({
     locale: { type: String },
     fileBuffer: { type: Uint8Array },
-    options: { type: Object, blackbox: true }
+    projectName: {
+      type: String
+    },
+    organizationId: {
+      type: String,
+      optional: true
+    },
+    items: {
+      type: Array,
+      optional: true
+    },
+    "items.$": {
+      type: String
+    },
   }).validator(),
   async run({
     locale,
     fileBuffer,
-    options
+    projectName,
+    items,
+    organizationId
   }) {
     const userId = Meteor.userId();
+    items = Array.isArray(items) ? items : [];
     const buffer = Buffer.from(fileBuffer, 'utf-8');
     const zip = await JSZip.loadAsync(buffer);
     const zippedProjects = await unserializeProjectImportZip(zip);
@@ -552,8 +568,8 @@ Projects.methods.import = new ValidatedMethod({
     const createdProjectId = Meteor.call(
       "projects.create",
       {
-        organizationId: options?.project?.organizationId ? options.project.organizationId : null,
-        name: options?.project?.name ? options.project.name : null,
+        organizationId: organizationId ? organizationId : null,
+        name: projectName,
         projectType: "none",
         state: project.state,
         accessRights: ProjectAccessRights.ORGANIZATION,
@@ -567,97 +583,107 @@ Projects.methods.import = new ValidatedMethod({
     }
 
     // Lists and Tasks
-    const tasksLists = await zippedProject.getContent("tasks");
-    if (Array.isArray(tasksLists) && tasksLists.length) {
-      tasksLists.forEach((taskList) => {
-        const createdList = Meteor.call(
-          "lists.insert",
-          createdProjectId,
-          taskList.name,
-          taskList?.autoComplete ? taskList.autoComplete : null,
-          taskList?.catchCompleted ? taskList.catchCompleted : null,
-        );        
-  
-        // Tasks
-        if (createdList && Array.isArray(taskList?.tasks)) {
-          taskList.tasks.forEach((task) => {
-            Meteor.call(
-              "tasks.insert",
-              createdList.projectId,
-              createdList._id,
-              task.name,
-            );
-          });
-        }
-      });
+    if (items.includes("tasks")) {
+      const tasksLists = await zippedProject.getContent("tasks");
+      if (Array.isArray(tasksLists) && tasksLists.length) {
+        tasksLists.forEach((taskList) => {
+          const createdList = Meteor.call(
+            "lists.insert",
+            createdProjectId,
+            taskList.name,
+            taskList?.autoComplete ? taskList.autoComplete : null,
+            taskList?.catchCompleted ? taskList.catchCompleted : null,
+          );        
+    
+          // Tasks
+          if (createdList && Array.isArray(taskList?.tasks)) {
+            taskList.tasks.forEach((task) => {
+              Meteor.call(
+                "tasks.insert",
+                createdList.projectId,
+                createdList._id,
+                task.name,
+              );
+            });
+          }
+        });
+      }
     }
 
     // BPMN Diagrams
-    const bpmnDiagrams = await zippedProject.getContent("bpmn");
-    if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
-      bpmnDiagrams.forEach((diagram) => {
-        Meteor.call("processDiagrams.create",
-          {
-            projectId: createdProjectId,
-            name: diagram.name,
-            description: diagram?.description ? diagram.description : null,
-            xml: diagram?.xml ? diagram.xml : null
-          }
-        );
-      });
+    if (items.includes("bpmn")) {
+      const bpmnDiagrams = await zippedProject.getContent("bpmn");
+      if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
+        bpmnDiagrams.forEach((diagram) => {
+          Meteor.call("processDiagrams.create",
+            {
+              projectId: createdProjectId,
+              name: diagram.name,
+              description: diagram?.description ? diagram.description : null,
+              xml: diagram?.xml ? diagram.xml : null
+            }
+          );
+        });
+      }
     }
 
     // Canvas
-    const canvas = await zippedProject.getContent("canvas");
-    if (canvas && canvas._id && canvas.data) {
-      Canvas.insert({
-        projectId: createdProjectId,
-        createdAt: new Date(),
-        createdBy: userId,
-        data: canvas.data
-      });
+    if (items.includes("canvas")) {
+      const canvas = await zippedProject.getContent("canvas");
+      if (canvas && canvas._id && canvas.data) {
+        Canvas.insert({
+          projectId: createdProjectId,
+          createdAt: new Date(),
+          createdBy: userId,
+          data: canvas.data
+        });
+      }
     }
 
     // Weather (Health reports)
-    const healthReports = await zippedProject.getContent("weather");
-    if (Array.isArray(healthReports) && healthReports.length) {
-      healthReports.forEach((healthReport) => {
-        Meteor.call("healthReports.create",
-          {
-            projectId: createdProjectId,
-            name: healthReport.name,
-            description: healthReport?.description ? healthReport.description : null,
-            date: healthReport.date,
-            weather: healthReport.weather
-          },
-        );
-      });
+    if (items.includes("weather")) {
+      const healthReports = await zippedProject.getContent("weather");
+      if (Array.isArray(healthReports) && healthReports.length) {
+        healthReports.forEach((healthReport) => {
+          Meteor.call("healthReports.create",
+            {
+              projectId: createdProjectId,
+              name: healthReport.name,
+              description: healthReport?.description ? healthReport.description : null,
+              date: healthReport.date,
+              weather: healthReport.weather
+            },
+          );
+        });
+      }
     }
 
-    const meetings = await zippedProject.getContent("meetings");
-    if (Array.isArray(meetings) && meetings.length) {
-      meetings.forEach((meeting) => {        
-        const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
-        const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
-        const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
-        Meteor.call("meetings.create",
-          {
-            projectId: createdProjectId,
-            name: meeting.name,
-            state: meeting?.state ? meeting.state : null,
-            description: meeting?.description ? meeting.description : null,
-            agenda: meeting?.agenda ? meeting.agenda : null,
-            color: meeting?.color ? meeting.color : null,
-            location: meeting?.location ? meeting.location : null,
-            type: meeting?.type ? meeting.type : null,
-            startDate: meeting.startDate,
-            endDate: meeting.endDate,
-            attendees,
-            documents,
-            actions
-          }
-        );
-      });
+    if (items.includes("meetings")) {
+      const meetings = await zippedProject.getContent("meetings");
+      if (Array.isArray(meetings) && meetings.length) {
+        meetings.forEach((meeting) => {        
+          const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
+          const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
+          const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
+          Meteor.call("meetings.create",
+            {
+              projectId: createdProjectId,
+              name: meeting.name,
+              state: meeting?.state ? meeting.state : null,
+              description: meeting?.description ? meeting.description : null,
+              agenda: meeting?.agenda ? meeting.agenda : null,
+              color: meeting?.color ? meeting.color : null,
+              location: meeting?.location ? meeting.location : null,
+              type: meeting?.type ? meeting.type : null,
+              startDate: meeting.startDate,
+              endDate: meeting.endDate,
+              attendees,
+              documents,
+              actions
+            }
+          );
+        });
+      }
     }
 
   /*

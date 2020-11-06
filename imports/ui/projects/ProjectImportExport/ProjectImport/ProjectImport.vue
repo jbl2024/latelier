@@ -105,7 +105,9 @@ export default {
         Meteor.call("projects.import", {
           fileBuffer,
           locale: this.$i18n.locale,
-          options: this.importOptions
+          projectName: this.importOptions.project.name,
+          organizationId: this.importOptions.project.organizationId,
+          items: this.importOptions.items,
         }, (err, projectId) => {
           if (err) {
             this.$notifyError(err);
