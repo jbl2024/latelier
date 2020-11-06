@@ -587,6 +587,8 @@ Projects.methods.import = new ValidatedMethod({
       throw new Meteor.Error("error", "Error when processing project infos");
     }
     try {
+
+      // Project
       const createdProjectId = await new Promise((resolve, reject) => {
         const projectDatas = {
           organizationId: options?.project?.organizationId ? options.project.organizationId : null,
@@ -611,6 +613,7 @@ Projects.methods.import = new ValidatedMethod({
         throw new Meteor.Error("error", "Error when creating project");
       }
   
+      // Lists and Tasks
       const tasksLists = await zippedProject.getTasksLists();
       tasksLists.forEach(async (taskList) => {
         const createdList = await new Promise((resolve, reject) => {
@@ -626,6 +629,8 @@ Projects.methods.import = new ValidatedMethod({
             }
           );        
         });
+
+        // Tasks
         if (createdList && Array.isArray(taskList?.tasks)) {
           taskList.tasks.forEach(async (task) => {
             const createdTask = await new Promise((resolve, reject) => {
@@ -643,6 +648,32 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       });
+
+      // BPMN Diagrams
+      const bpmnDiagrams = await zippedProject.getBpmnDiagrams();
+      bpmnDiagrams.forEach(async (diagram) => {
+        const createdDiagramId = await new Promise((resolve, reject) => {
+          Meteor.call("processDiagrams.create",
+            {
+              projectId: createdProjectId,
+              name: diagram.name,
+              description: diagram?.description ? diagram.description : null,
+              xml: diagram?.xml ? diagram.xml : null
+            },
+            (error, processDiagramId) => {
+              if (error) reject(error);
+              resolve(processDiagramId);
+            }
+          );
+        })
+      });
+
+    /*
+      "users",
+      "canvas",
+      "weather"
+    */
+      
     } catch(error) {
       throw new Meteor.Error(error);
     }

@@ -3,6 +3,7 @@ export default class ZipProject {
       this.zipFolder = zipFolder;
       this.project = null;
       this.tasksLists = null;
+      this.bpmnDiagrams = null;
     }
     getZipFolder() {
       return this.zipFolder;
@@ -22,6 +23,16 @@ export default class ZipProject {
         return JSON.parse(taskRawJson);
       }));
       return this.tasksLists;
+    }
+
+    async getBpmnDiagrams() {
+      if (this.bpmnDiagrams !== null) return this.bpmnDiagrams;
+      const bpmnFiles = this.getContent("bpmn");
+      this.bpmnDiagrams = await Promise.all(bpmnFiles.map(async (file) => {
+        const bpmnRawJson = await file.async("string");
+        return JSON.parse(bpmnRawJson);
+      }));
+      return this.bpmnDiagrams;
     }
 
     getContent(item) {
