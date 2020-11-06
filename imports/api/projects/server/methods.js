@@ -621,7 +621,7 @@ Projects.methods.import = new ValidatedMethod({
     // Weather (Health reports)
     const healthReports = await zippedProject.getContent("weather");
     if (Array.isArray(healthReports) && healthReports.length) {
-      healthReports.forEach(async (healthReport) => {
+      healthReports.forEach((healthReport) => {
         Meteor.call("healthReports.create",
           {
             projectId: createdProjectId,
@@ -636,7 +636,7 @@ Projects.methods.import = new ValidatedMethod({
 
     const meetings = await zippedProject.getContent("meetings");
     if (Array.isArray(meetings) && meetings.length) {
-      meetings.forEach(async (meeting) => {        
+      meetings.forEach((meeting) => {        
         const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
         const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
         const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
