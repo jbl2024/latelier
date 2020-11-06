@@ -14,14 +14,16 @@
           </v-list-item-action>
           <v-list-item-title>
             {{ $t(`project.export.items.${item}`) }}
+            <span v-if="getItemCount(item)">
+              {{ `(${getItemCount(item)})` }}
+            </span>
           </v-list-item-title>
         </v-list-item>
       </v-list>
-
       <v-row justify="center">
         <v-col cols="6">
           <v-btn color="success" block @click.stop="exportProject">
-            Procéder à l'export du projet
+            {{ $t("project.export.export") }}
           </v-btn>
         </v-col>
       </v-row>
@@ -46,6 +48,12 @@ export default {
   data() {
     return {
       info: null,
+      infoMapping: Object.freeze({
+        tasks: "taskCount",
+        meetings: "meetingCount",
+        users: "userCount",
+        bpmn: "diagramCount"
+      }),
       selectedItems: items.reduce((obj, item) => {
         obj[item] = true;
         return obj;
@@ -103,6 +111,10 @@ export default {
     }
   },
   methods: {
+    getItemCount(item) {
+      if (!this.info || !this.infoMapping[item]) return null;
+      return this.info[this.infoMapping[item]];
+    },
     exportProject() {
       Meteor.call("projects.export",
         {

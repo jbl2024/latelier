@@ -425,6 +425,7 @@
     },
     "export": {
       "itemsToExport": "Éléments à exporter",
+      "export": "Exporter le projet",
       "items": {
         "tasks": "Tâches",
         "users": "Utilisateurs",
