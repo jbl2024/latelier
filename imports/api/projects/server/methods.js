@@ -589,8 +589,9 @@ Projects.methods.import = new ValidatedMethod({
     }
 
     // Project
-    const createdProjectId = await new Promise((resolve, reject) => {
-      const projectDatas = {
+    const createdProjectId = Meteor.call(
+      "projects.create",
+      {
         organizationId: options?.project?.organizationId ? options.project.organizationId : null,
         name: options?.project?.name ? options.project.name : null,
         projectType: "none",
@@ -598,16 +599,8 @@ Projects.methods.import = new ValidatedMethod({
         accessRights: ProjectAccessRights.ORGANIZATION,
         features: project.features,
         locale: locale
-      };
-      Meteor.call(
-        "projects.create",
-        projectDatas,
-        (err, projectId) => {
-          if (err) reject(err);
-          resolve(projectId);
-        }
-      );
-    });
+      }
+    );
 
     if (!createdProjectId) {
       throw new Meteor.Error("error", "Error when creating project");
@@ -616,36 +609,24 @@ Projects.methods.import = new ValidatedMethod({
     // Lists and Tasks
     const tasksLists = await zippedProject.getContent("tasks");
     if (Array.isArray(tasksLists) && tasksLists.length) {
-      tasksLists.forEach(async (taskList) => {
-        const createdList = await new Promise((resolve, reject) => {
-          Meteor.call(
-            "lists.insert",
-            createdProjectId,
-            taskList.name,
-            taskList?.autoComplete ? taskList.autoComplete : null,
-            taskList?.catchCompleted ? taskList.catchCompleted : null,
-            (error, createdList) => {
-              if (error) reject(error);
-              resolve(createdList);
-            }
-          );        
-        });
+      tasksLists.forEach((taskList) => {
+        const createdList = Meteor.call(
+          "lists.insert",
+          createdProjectId,
+          taskList.name,
+          taskList?.autoComplete ? taskList.autoComplete : null,
+          taskList?.catchCompleted ? taskList.catchCompleted : null,
+        );        
   
         // Tasks
         if (createdList && Array.isArray(taskList?.tasks)) {
-          taskList.tasks.forEach(async (task) => {
-            await new Promise((resolve, reject) => {
-              Meteor.call(
-                "tasks.insert",
-                createdList.projectId,
-                createdList._id,
-                task.name,
-                (error, task) => {
-                  if (error) reject(error);
-                  resolve(task);
-                }
-              );
-            });
+          taskList.tasks.forEach((task) => {
+            Meteor.call(
+              "tasks.insert",
+              createdList.projectId,
+              createdList._id,
+              task.name,
+            );
           });
         }
       });
@@ -654,21 +635,15 @@ Projects.methods.import = new ValidatedMethod({
     // BPMN Diagrams
     const bpmnDiagrams = await zippedProject.getContent("bpmn");
     if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
-      bpmnDiagrams.forEach(async (diagram) => {
-        await new Promise((resolve, reject) => {
-          Meteor.call("processDiagrams.create",
-            {
-              projectId: createdProjectId,
-              name: diagram.name,
-              description: diagram?.description ? diagram.description : null,
-              xml: diagram?.xml ? diagram.xml : null
-            },
-            (error, processDiagramId) => {
-              if (error) reject(error);
-              resolve(processDiagramId);
-            }
-          );
-        });
+      bpmnDiagrams.forEach((diagram) => {
+        Meteor.call("processDiagrams.create",
+          {
+            projectId: createdProjectId,
+            name: diagram.name,
+            description: diagram?.description ? diagram.description : null,
+            xml: diagram?.xml ? diagram.xml : null
+          },
+        );
       });
     }
 
@@ -687,21 +662,41 @@ Projects.methods.import = new ValidatedMethod({
     const healthReports = await zippedProject.getContent("weather");
     if (Array.isArray(healthReports) && healthReports.length) {
       healthReports.forEach(async (healthReport) => {
-        await new Promise((resolve, reject) => {
-          Meteor.call("healthReports.create",
-            {
-              projectId: createdProjectId,
-              name: healthReport.name,
-              description: healthReport?.description ? healthReport.description : null,
-              date: healthReport.date,
-              weather: healthReport.weather
-            },
-            (error, healthReportId) => {
-              if (error) reject(error);
-              resolve(healthReportId);
-            }
-          );
-        });
+        Meteor.call("healthReports.create",
+          {
+            projectId: createdProjectId,
+            name: healthReport.name,
+            description: healthReport?.description ? healthReport.description : null,
+            date: healthReport.date,
+            weather: healthReport.weather
+          },
+        );
+      });
+    }
+
+    const meetings = await zippedProject.getContent("meetings");
+    if (Array.isArray(meetings) && meetings.length) {
+      meetings.forEach(async (meeting) => {        
+        const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
+        const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
+        const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
+        Meteor.call("meetings.create",
+          {
+            projectId: createdProjectId,
+            name: meeting.name,
+            state: meeting?.state ? meeting.state : null,
+            description: meeting?.description ? meeting.description : null,
+            agenda: meeting?.agenda ? meeting.agenda : null,
+            color: meeting?.color ? meeting.color : null,
+            location: meeting?.location ? meeting.location : null,
+            type: meeting?.type ? meeting.type : null,
+            startDate: meeting.startDate,
+            endDate: meeting.endDate,
+            attendees,
+            documents,
+            actions
+          }
+        );
       });
     }
 
