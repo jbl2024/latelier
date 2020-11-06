@@ -500,10 +500,10 @@ Projects.methods.export = new ValidatedMethod({
     }).fetch() : null;
 
     // Canvas
-    let canvases = items.includes("canvas") ?
-    Canvas.find({
+    let canvas = items.includes("canvas") ?
+    Canvas.findOne({
       projectId
-    }).fetch() : null;
+    }) : null;
 
     // Weather reports
     let healthReports = items.includes("weather") ?
@@ -517,7 +517,7 @@ Projects.methods.export = new ValidatedMethod({
       tasksLists,
       bpmnDiagrams,
       meetings,
-      canvases,
+      canvas,
       healthReports
     });
     const zipContent = await zip.generateAsync({type:"base64"});
@@ -582,39 +582,40 @@ Projects.methods.import = new ValidatedMethod({
       throw new Meteor.Error("error", "Error when processing project import");
     }
     const zippedProject = zippedProjects[0];
-    const project = await zippedProject.getProject();
+    const project = await zippedProject.getContent("project");
+
     if (!project) {
       throw new Meteor.Error("error", "Error when processing project infos");
     }
-    try {
 
-      // Project
-      const createdProjectId = await new Promise((resolve, reject) => {
-        const projectDatas = {
-          organizationId: options?.project?.organizationId ? options.project.organizationId : null,
-          name: options?.project?.name ? options.project.name : null,
-          projectType: "none",
-          state: project.state,
-          accessRights: ProjectAccessRights.ORGANIZATION,
-          features: project.features,
-          locale: locale
-        };
-        Meteor.call(
-          "projects.create",
-          projectDatas,
-          (err, projectId) => {
-            if (err) reject(err);
-            resolve(projectId);
-          }
-        );
-      });
-  
-      if (!createdProjectId) {
-        throw new Meteor.Error("error", "Error when creating project");
-      }
-  
-      // Lists and Tasks
-      const tasksLists = await zippedProject.getTasksLists();
+    // Project
+    const createdProjectId = await new Promise((resolve, reject) => {
+      const projectDatas = {
+        organizationId: options?.project?.organizationId ? options.project.organizationId : null,
+        name: options?.project?.name ? options.project.name : null,
+        projectType: "none",
+        state: project.state,
+        accessRights: ProjectAccessRights.ORGANIZATION,
+        features: project.features,
+        locale: locale
+      };
+      Meteor.call(
+        "projects.create",
+        projectDatas,
+        (err, projectId) => {
+          if (err) reject(err);
+          resolve(projectId);
+        }
+      );
+    });
+
+    if (!createdProjectId) {
+      throw new Meteor.Error("error", "Error when creating project");
+    }
+
+    // Lists and Tasks
+    const tasksLists = await zippedProject.getContent("tasks");
+    if (Array.isArray(tasksLists) && tasksLists.length) {
       tasksLists.forEach(async (taskList) => {
         const createdList = await new Promise((resolve, reject) => {
           Meteor.call(
@@ -629,11 +630,11 @@ Projects.methods.import = new ValidatedMethod({
             }
           );        
         });
-
+  
         // Tasks
         if (createdList && Array.isArray(taskList?.tasks)) {
           taskList.tasks.forEach(async (task) => {
-            const createdTask = await new Promise((resolve, reject) => {
+            await new Promise((resolve, reject) => {
               Meteor.call(
                 "tasks.insert",
                 createdList.projectId,
@@ -648,11 +649,13 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       });
+    }
 
-      // BPMN Diagrams
-      const bpmnDiagrams = await zippedProject.getBpmnDiagrams();
+    // BPMN Diagrams
+    const bpmnDiagrams = await zippedProject.getContent("bpmn");
+    if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
       bpmnDiagrams.forEach(async (diagram) => {
-        const createdDiagramId = await new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
           Meteor.call("processDiagrams.create",
             {
               projectId: createdProjectId,
@@ -665,17 +668,47 @@ Projects.methods.import = new ValidatedMethod({
               resolve(processDiagramId);
             }
           );
-        })
+        });
       });
-
-    /*
-      "users",
-      "canvas",
-      "weather"
-    */
-      
-    } catch(error) {
-      throw new Meteor.Error(error);
     }
+
+    // Canvas
+    const canvas = await zippedProject.getContent("canvas");
+    if (canvas && canvas._id && canvas.data) {
+      Canvas.insert({
+        projectId: createdProjectId,
+        createdAt: new Date(),
+        createdBy: userId,
+        data: canvas.data
+      });
+    }
+
+    // Weather (Health reports)
+    const healthReports = await zippedProject.getContent("weather");
+    if (Array.isArray(healthReports) && healthReports.length) {
+      healthReports.forEach(async (healthReport) => {
+        await new Promise((resolve, reject) => {
+          Meteor.call("healthReports.create",
+            {
+              projectId: createdProjectId,
+              name: healthReport.name,
+              description: healthReport?.description ? healthReport.description : null,
+              date: healthReport.date,
+              weather: healthReport.weather
+            },
+            (error, healthReportId) => {
+              if (error) reject(error);
+              resolve(healthReportId);
+            }
+          );
+        });
+      });
+    }
+
+  /*
+    "attachments",
+    "users",
+  */
+    return createdProjectId;
   }
 });

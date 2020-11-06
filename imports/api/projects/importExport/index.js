@@ -17,7 +17,7 @@ export const createProjectExportZip = ({
   tasksLists,
   bpmnDiagrams,
   meetings,
-  canvases,
+  canvas,
   healthReports
 }) => {
   const zip = new JSZip();
@@ -55,13 +55,9 @@ export const createProjectExportZip = ({
     });
   }
 
-  // Canvases
-  if (Array.isArray(canvases) && canvases.length > 0) {
-    const canvasesFolder = projectFolder.folder("canvas");
-    metas.canvas = { count: canvases.length };
-    canvases.forEach((canvas) => {
-      canvasesFolder.file(`${canvas._id}.json`, JSON.stringify(canvas));
-    });
+  // Canvas
+  if (canvas && canvas._id) {
+    projectFolder.file("canvas.json", JSON.stringify(canvas));
   }
 
   // healthReports
