@@ -41,24 +41,26 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-btn
-            v-if="!showTaskDetailFullscreen"
-            v-shortkey="['m']"
-            icon
-            @click="requestMaximize()"
-            @shortkey="requestMaximize()"
-          >
-            <v-icon>mdi-fullscreen</v-icon>
-          </v-btn>
-          <v-btn
-            v-if="showTaskDetailFullscreen"
-            v-shortkey="['m']"
-            icon
-            @click="requestMinimize()"
-            @shortkey="requestMinimize()"
-          >
-            <v-icon>mdi-fullscreen-exit</v-icon>
-          </v-btn>
+          <template v-if="!$vuetify.breakpoint.xsOnly">
+            <v-btn
+              v-if="!showTaskDetailFullscreen"
+              v-shortkey="['m']"
+              icon
+              @click="requestMaximize()"
+              @shortkey="requestMaximize()"
+            >
+              <v-icon>mdi-fullscreen</v-icon>
+            </v-btn>
+            <v-btn
+              v-if="showTaskDetailFullscreen"
+              v-shortkey="['m']"
+              icon
+              @click="requestMinimize()"
+              @shortkey="requestMinimize()"
+            >
+              <v-icon>mdi-fullscreen-exit</v-icon>
+            </v-btn>
+          </template>
         </div>
 
         <div v-if="!editTaskName" class="checkbox">
@@ -522,13 +524,15 @@ pre {
   margin-right: 8px;
 }
 
-.toolbar-button.left {
-  max-width: 60px;
-}
+@media (min-width: 600px) {
+  .toolbar-button.left {
+    max-width: 60px;
+  }
 
-.toolbar-button.left .v-btn {
-  width: 28px;
-  height: 28px;
+  .toolbar-button.left .v-btn {
+    width: 28px;
+    height: 28px;
+  }
 }
 
 .toolbar-title {
