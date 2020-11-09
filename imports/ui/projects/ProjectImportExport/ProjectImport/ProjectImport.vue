@@ -111,6 +111,7 @@ export default {
         }, (err, projectId) => {
           if (err) {
             this.$notifyError(err);
+            return;
           }
           this.$notify(this.$t("project.import.importSuccess"));
           this.isImporting = false;
