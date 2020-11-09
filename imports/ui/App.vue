@@ -87,13 +87,18 @@ export default {
   },
   data() {
     return {
-      rightDrawerWidth: 600,
       openMenu: false,
       showSnackbar: false,
       timeout: 6000
     };
   },
   computed: {
+    rightDrawerWidth() {
+      if (this.showTaskDetailFullscreen) {
+        return "100%";
+      }
+      return 600;
+    },
     leftDrawerWidth() {
       return this.$vuetify.breakpoint.smAndDown ? "100%" : 360;
     },
@@ -101,7 +106,8 @@ export default {
       "currentUser",
       "notifyMessage",
       "selectedTask",
-      "windowTitle"
+      "windowTitle",
+      "showTaskDetailFullscreen"
     ]),
     ...mapState("organization", ["currentOrganizationId", "currentOrganization"]),
     ...mapState("project", ["currentProjectId", "currentProject"]),
