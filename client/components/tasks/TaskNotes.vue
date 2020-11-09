@@ -199,6 +199,8 @@ pre {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  max-width: 800px;
+  margin: 0 auto;
 }
 .empty-state {
   transition: none;
