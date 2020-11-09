@@ -99,7 +99,7 @@
               </v-list-item-action>
               <v-list-item-title>{{ $t("Clone") }}</v-list-item-title>
             </v-list-item>
-            <v-list-item 
+            <v-list-item
               v-if="canManageProject(project)"
               @click="openProjectExport(project)"
             >
@@ -257,7 +257,7 @@ export default {
       });
     },
     openProjectExport(project) {
-        this.$router.push({
+      this.$router.push({
         name: "project-export",
         params: {
           projectId: project._id

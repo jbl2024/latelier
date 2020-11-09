@@ -1,4 +1,3 @@
-import fs from "fs";
 import JSZip from "jszip";
 import ZipProject from "/imports/api/projects/importExport/ZipProject";
 
@@ -26,7 +25,7 @@ export const createProjectExportZip = ({
 
   // Users
   projectFolder.file("users.json", JSON.stringify(users));
-  
+
   // Tasks
   if (Array.isArray(tasksLists) && tasksLists.length > 0) {
     const tasksListsFolder = projectFolder.folder("tasks");
@@ -70,17 +69,17 @@ export const createProjectExportZip = ({
   }
 
   // Project + Metas
-  projectFolder.file("project.json", JSON.stringify(Object.assign({}, project, { metas })));
+  projectFolder.file("project.json", JSON.stringify({ ...project, metas }));
 
   return zip;
-}
+};
 
 export const projectFilesFromZip = (zip) => {
   if (!zip.files) return null;
   const projectRootPattern = /(.*)project.json/ig;
   const fileNames = Object.keys(zip.files);
-  return fileNames.filter(fileName => projectRootPattern.test(fileName));
-}
+  return fileNames.filter((fileName) => projectRootPattern.test(fileName));
+};
 
 export const unserializeProjectImportZip = async (zip) => {
   if (!zip.files) return null;
@@ -88,7 +87,5 @@ export const unserializeProjectImportZip = async (zip) => {
     const projectFolderName = fileName.replace("project.json", "");
     return new ZipProject(zip.folder(projectFolderName));
   });
-  return Promise.all(projectsFolders).then((projects) => {
-    return projects;
-  });
+  return Promise.all(projectsFolders).then((projects) => projects);
 };

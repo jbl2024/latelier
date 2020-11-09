@@ -31,7 +31,7 @@
           dark
           @click="confirmImport"
         >
-        {{ $t("project.import.import") }}
+          {{ $t("project.import.import") }}
         </v-btn>
       </template>
     </generic-dialog>
@@ -87,7 +87,26 @@ export default {
       },
       set(isShown) {
         this.$emit("update:is-shown", isShown);
-      },
+      }
+    }
+  },
+  watch: {
+    projectFile: {
+      immediate: true,
+      handler(file) {
+        if (!file) return;
+        JSZip.loadAsync(file)
+          .then((zip) => zip)
+          .then((zip) => unserializeProjectImportZip(zip))
+          .then((zippedProjects) => {
+            if (Array.isArray(zippedProjects) && zippedProjects[0]) {
+              zippedProjects[0].getContent("project").then((project) => {
+                this.project = project;
+                this.showDialog = true;
+              });
+            }
+          });
+      }
     }
   },
   methods: {
@@ -100,14 +119,14 @@ export default {
     confirmImport() {
       this.isImporting = true;
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = () => {
         const fileBuffer = new Uint8Array(reader.result);
         Meteor.call("projects.import", {
           fileBuffer,
           locale: this.$i18n.locale,
           projectName: this.importOptions.project.name,
           organizationId: this.importOptions.project.organizationId,
-          items: this.importOptions.items,
+          items: this.importOptions.items
         }, (err, projectId) => {
           if (err) {
             this.$notifyError(err);
@@ -119,29 +138,10 @@ export default {
           if (projectId) {
             this.$router.push({ name: "project", params: { projectId } });
           }
-        })
-      }
+        });
+      };
       if (this.projectFile) {
         reader.readAsArrayBuffer(this.projectFile);
-      }
-    }
-  },
-  watch: {
-    projectFile: {
-      immediate: true,
-      handler(file) {
-        if (!file) return;
-        JSZip.loadAsync(file)
-          .then(zip => zip)
-          .then(zip => unserializeProjectImportZip(zip))
-          .then(zippedProjects => {
-            if (Array.isArray(zippedProjects) && zippedProjects[0]) {
-              zippedProjects[0].getContent("project").then((project) => {
-                this.project = project;
-                this.showDialog = true;
-              });
-            }
-          });
       }
     }
   }

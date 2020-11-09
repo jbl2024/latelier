@@ -26,7 +26,7 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
     name: { type: String },
     description: { type: String, optional: true },
     xml: { type: String, optional: true },
-    diagramUserId: { type: String, optional: true}
+    diagramUserId: { type: String, optional: true }
   }).validator(),
   run({ projectId, name, description, xml, diagramUserId }) {
     checkLoggedIn();

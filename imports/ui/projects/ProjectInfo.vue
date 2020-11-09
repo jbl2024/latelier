@@ -119,7 +119,7 @@ export default {
           projectId: project._id
         }
       });
-    },
+    }
   }
 };
 </script>

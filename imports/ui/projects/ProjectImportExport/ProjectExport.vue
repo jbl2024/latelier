@@ -7,9 +7,9 @@
       <v-list dense>
         <v-list-item v-for="(isSelected, item) in selectedItems" :key="item">
           <v-list-item-action>
-            <v-checkbox color="accent"
-              :disabled="!availableItems.includes(item)"
-              v-model="selectedItems[item]"
+            <v-checkbox v-model="selectedItems[item]"
+                        color="accent"
+                        :disabled="!availableItems.includes(item)"
             />
           </v-list-item-action>
           <v-list-item-title>
@@ -58,7 +58,7 @@ export default {
         obj[item] = true;
         return obj;
       }, {})
-    }
+    };
   },
   computed: {
     ...mapState(["currentUser"]),
@@ -70,13 +70,21 @@ export default {
       return items.filter((item) => {
         if (baseItems.includes(item)) return true;
         return this.hasFeature(this.currentProject, item);
-      })
+      });
     },
     // Selected items to export
     selectedItemsList() {
-      return Object.keys(this.selectedItems).filter((item) => {
-        return this.availableItems.includes(item) && this.selectedItems[item] === true;
-      });
+      return Object.keys(this.selectedItems)
+        .filter((item) => this.availableItems
+          .includes(item) && this.selectedItems[item] === true);
+    }
+  },
+  watch: {
+    availableItems() {
+      this.selectedItems = Object.keys(this.selectedItems).reduce((selectedItems, key) => {
+        selectedItems[key] = this.availableItems.includes(key);
+        return selectedItems;
+      }, {});
     }
   },
   mounted() {
@@ -84,15 +92,6 @@ export default {
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
-  },
-  watch: {
-    availableItems(items) {
-      const selectedItems = {};
-      Object.keys(this.selectedItems).map((key) => {
-        selectedItems[key] = items.includes(key);
-      });
-      this.selectedItems = selectedItems;
-    }
   },
   meteor: {
     // Subscriptions
@@ -122,14 +121,13 @@ export default {
           items: this.selectedItemsList
         },
         (error, result) => {
-          fetch("data:application/octet-stream;base64," + result.data)
-            .then(res => res.blob())
-            .then(blob => {
+          fetch(`data:application/octet-stream;base64,${result.data}`)
+            .then((res) => res.blob())
+            .then((blob) => {
               const timestamp = moment().format("YYYY-MM-DD");
               saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
             });
-        }
-      )
+        });
     },
     refresh() {
       Meteor.call("projects.info",
@@ -145,9 +143,9 @@ export default {
     hasFeature(project, feature) {
       return Array.isArray(project?.features)
         && project.features.includes(feature);
-    },
+    }
   }
-}
+};
 </script>
 <style lang="scss">
   .project-export {

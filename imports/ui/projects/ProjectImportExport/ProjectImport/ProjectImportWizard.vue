@@ -43,7 +43,7 @@
                       </v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
-                  <v-divider></v-divider>
+                  <v-divider />
                 </template>
               </v-select>
             </v-list-item-title>
@@ -57,10 +57,10 @@
         {{ $t("project.import.itemsToImport") }}
       </v-subheader>
       <v-list-item-group v-model="selectedItems" multiple>
-        <v-list-item v-for="item in items" :value="item" :key="item">
+        <v-list-item v-for="item in items" :key="item" :value="item">
           <template v-slot:default="{ active }">
             <v-list-item-action>
-              <v-checkbox :input-value="active" color="accent"></v-checkbox>
+              <v-checkbox :input-value="active" color="accent" />
             </v-list-item-action>
             <v-list-item-content>
               <v-list-item-title>
@@ -81,7 +81,6 @@
 </template>
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import { Permissions } from "/imports/api/permissions/permissions";
 import deepCopy from "/imports/ui/utils/deepCopy";
 import { items } from "/imports/api/projects/importExport/";
 
@@ -89,7 +88,7 @@ export default {
   props: {
     project: {
       type: Object,
-      default: null,
+      default: null
     },
     organizationId: {
       type: String,
@@ -101,28 +100,28 @@ export default {
         return {
           project: {
             name: "",
-            organizationId: null,
+            organizationId: null
           },
-          items: [],
+          items: []
         };
-      },
-    },
+      }
+    }
   },
   meteor: {
     // Subscriptions
     $subscribe: {
       organizations() {
         return [];
-      },
+      }
     },
     organizations() {
       return Organizations.find(
         {},
         {
-          sort: { name: 1 },
+          sort: { name: 1 }
         }
       );
-    },
+    }
   },
   data() {
     return {
@@ -132,43 +131,34 @@ export default {
       isLoading: false,
       metas: null,
       itemsToExport: [],
-      selectedItems: [],
+      selectedItems: []
     };
   },
   computed: {
     isReady() {
       return Boolean(
-        !this.isLoading && 
-        this.project &&
-        Array.isArray(this.organizations)
+        !this.isLoading
+        && this.project
+        && Array.isArray(this.organizations)
       );
     },
     selectedImportedOptions() {
       return [this.selectedItems, this.projectName, this.projectOrganizationId];
-    },
-  },
-  methods: {
-    getItemCount(item) {
-      if (!this.metas || !this.metas[item] || !this.metas[item].count) return null;
-      return this.metas[item].count;
     }
   },
   watch: {
     project: {
       immediate: true,
-      async handler(project) {
+      async handler() {
         if (this.project.metas) {
           this.metas = this.project.metas;
-          const availableItems = Object.keys(this.project.metas).filter((key) => {
-            return this.project.metas[key]?.count > 0;
-          })
-          this.items = this.items.filter((item) => {
-            return availableItems.includes(item);
-          });
+          const availableItems = Object.keys(this.project.metas)
+            .filter((key) => this.project.metas[key]?.count > 0);
+          this.items = this.items.filter((item) => availableItems.includes(item));
           this.selectedItems = this.items.slice();
         }
         this.projectName = this.project.name;
-      },
+      }
     },
     organizationId: {
       immediate: true,
@@ -184,20 +174,25 @@ export default {
         const [
           selectedItems,
           projectName,
-          projectOrganizationId,
+          projectOrganizationId
         ] = selectedOptions;
         this.$emit(
           "update:import-options",
-          Object.assign({}, deepCopy(this.importOptions), {
+          { ...deepCopy(this.importOptions),
             project: {
               name: projectName,
-              organizationId: projectOrganizationId,
+              organizationId: projectOrganizationId
             },
-            items: selectedItems,
-          })
+            items: selectedItems }
         );
-      },
-    },
+      }
+    }
   },
+  methods: {
+    getItemCount(item) {
+      if (!this.metas || !this.metas[item] || !this.metas[item].count) return null;
+      return this.metas[item].count;
+    }
+  }
 };
 </script>

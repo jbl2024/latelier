@@ -291,7 +291,7 @@ Tasks.methods.exportProject = new ValidatedMethod({
       });
     });
 
-    const res = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve, reject) => {
       if (format) {
         const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
         carbone.render(source, context, (err, res) => {
@@ -306,6 +306,6 @@ Tasks.methods.exportProject = new ValidatedMethod({
         resolve(context);
       }
     });
-    return res;
+    return result;
   }
 });

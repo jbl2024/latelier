@@ -454,8 +454,6 @@ Projects.methods.export = new ValidatedMethod({
     items
   }) {
     checkLoggedIn();
-    const userId = Meteor.userId();
-
     // Project
     const project = Projects.findOne({ _id: projectId });
     if (!project) {
@@ -478,34 +476,34 @@ Projects.methods.export = new ValidatedMethod({
     });
 
     // Tasks
-    const tasksLists = items.includes("tasks") && 
-    Array.isArray(projectInfos?.lists) && 
-    projectInfos.lists.length > 0 ? 
-    projectInfos.lists : null;
+    const tasksLists = items.includes("tasks")
+    && Array.isArray(projectInfos?.lists)
+    && projectInfos.lists.length > 0
+      ? projectInfos.lists : null;
 
     // BPMN Diagrams
-    let bpmnDiagrams = items.includes("bpmn") ? 
-    ProcessDiagrams.find({ projectId }).fetch() : null;
+    const bpmnDiagrams = items.includes("bpmn")
+      ? ProcessDiagrams.find({ projectId }).fetch() : null;
 
     // Meetings
-    let meetings = items.includes("meetings") ?
-    Meetings.find({
-      projectId,
-      deleted: { $ne: true }
-    }).fetch() : null;
+    const meetings = items.includes("meetings")
+      ? Meetings.find({
+        projectId,
+        deleted: { $ne: true }
+      }).fetch() : null;
 
     // Canvas
-    let canvas = items.includes("canvas") ?
-    Canvas.findOne({
-      projectId
-    }) : null;
+    const canvas = items.includes("canvas")
+      ? Canvas.findOne({
+        projectId
+      }) : null;
 
     // Weather reports
-    let healthReports = items.includes("weather") ?
-    HealthReports.find({
-      projectId
-    }).fetch() : null;
-    
+    const healthReports = items.includes("weather")
+      ? HealthReports.find({
+        projectId
+      }).fetch() : null;
+
     const zip = createProjectExportZip({
       project,
       users,
@@ -515,7 +513,7 @@ Projects.methods.export = new ValidatedMethod({
       canvas,
       healthReports
     });
-    const zipContent = await zip.generateAsync({type:"base64"});
+    const zipContent = await zip.generateAsync({ type: "base64" });
     return {
       data: zipContent
     };
@@ -540,7 +538,7 @@ Projects.methods.import = new ValidatedMethod({
     },
     "items.$": {
       type: String
-    },
+    }
   }).validator(),
   async run({
     locale,
@@ -551,7 +549,7 @@ Projects.methods.import = new ValidatedMethod({
   }) {
     const currentUserId = Meteor.userId();
     items = Array.isArray(items) ? items : [];
-    const buffer = Buffer.from(fileBuffer, 'utf-8');
+    const buffer = Buffer.from(fileBuffer, "utf-8");
     const zip = await JSZip.loadAsync(buffer);
     const zippedProjects = await unserializeProjectImportZip(zip);
     if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
@@ -568,7 +566,7 @@ Projects.methods.import = new ValidatedMethod({
     const createdProjectId = Meteor.call(
       "projects.create",
       {
-        organizationId: organizationId ? organizationId : null,
+        organizationId: organizationId || null,
         name: projectName,
         projectType: "none",
         state: project.state,
@@ -582,23 +580,22 @@ Projects.methods.import = new ValidatedMethod({
       throw new Meteor.Error("error", "Error when creating project");
     }
 
-    const canImportUsers =
-      items.includes("users") &&
-      !Meteor.settings.disableAccountCreation && 
-      Permissions.isAdmin(currentUserId)
-    ;
+    const canImportUsers = items.includes("users")
+      && !Meteor.settings.disableAccountCreation
+      && Permissions.isAdmin(currentUserId);
     const usersIdsMapping = {};
 
     if (canImportUsers) {
       const users = await zippedProject.getContent("users");
-      if (users && Object.keys(users).length) {
-        for (const userId in users) {
-          if (!usersIdsMapping[userId]) {            
+      const usersIds = Object.keys(users);
+      if (users && usersIds.length) {
+        usersIds.forEach((userId) => {
+          if (!usersIdsMapping[userId]) {
             const user = users[userId];
             const userEmail = UserUtils.getEmail(user);
             const existingUser = Meteor.users.findOne({
-                emails: {
-                  $elemMatch: {
+              emails: {
+                $elemMatch: {
                   address: { $regex: userEmail, $options: "i" }
                 }
               }
@@ -614,7 +611,7 @@ Projects.methods.import = new ValidatedMethod({
               userId: createdUser._id
             });
           }
-        }
+        });
       }
     }
 
@@ -630,8 +627,8 @@ Projects.methods.import = new ValidatedMethod({
             taskList?.autoComplete ? taskList.autoComplete : null,
             taskList?.catchCompleted ? taskList.catchCompleted : null,
             usersIdsMapping[taskList.createdBy] ? usersIdsMapping[taskList.createdBy] : null
-          );        
-    
+          );
+
           // Tasks
           if (createdList && Array.isArray(taskList?.tasks)) {
             taskList.tasks.forEach((task) => {
@@ -663,9 +660,9 @@ Projects.methods.import = new ValidatedMethod({
               name: diagram.name,
               description: diagram?.description ? diagram.description : null,
               xml: diagram?.xml ? diagram.xml : null,
-              diagramUserId: usersIdsMapping[diagram.createdBy] ? usersIdsMapping[diagram.createdBy] : null
-            }
-          );
+              diagramUserId: usersIdsMapping[diagram.createdBy]
+                ? usersIdsMapping[diagram.createdBy] : null
+            });
         });
       }
     }
@@ -677,7 +674,8 @@ Projects.methods.import = new ValidatedMethod({
         Canvas.insert({
           projectId: createdProjectId,
           createdAt: new Date(),
-          createdBy: usersIdsMapping[canvas.createdBy] ? usersIdsMapping[canvas.createdBy] : null,
+          createdBy: usersIdsMapping[canvas.createdBy]
+            ? usersIdsMapping[canvas.createdBy] : null,
           data: canvas.data
         });
       }
@@ -695,9 +693,9 @@ Projects.methods.import = new ValidatedMethod({
               description: healthReport?.description ? healthReport.description : null,
               date: healthReport.date,
               weather: healthReport.weather,
-              reportUserId: usersIdsMapping[healthReport.createdBy] ? usersIdsMapping[healthReport.createdBy] : null,
-            },
-          );
+              reportUserId: usersIdsMapping[healthReport.createdBy]
+                ? usersIdsMapping[healthReport.createdBy] : null
+            });
         });
       }
     }
@@ -705,7 +703,7 @@ Projects.methods.import = new ValidatedMethod({
     if (items.includes("meetings")) {
       const meetings = await zippedProject.getContent("meetings");
       if (Array.isArray(meetings) && meetings.length) {
-        meetings.forEach((meeting) => {        
+        meetings.forEach((meeting) => {
           const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
           const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
           const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
@@ -724,14 +722,14 @@ Projects.methods.import = new ValidatedMethod({
               attendees,
               documents,
               actions,
-              meetingUserId: usersIdsMapping[meeting.createdBy] ? usersIdsMapping[meeting.createdBy] : null, 
-            }
-          );
+              meetingUserId: usersIdsMapping[meeting.createdBy]
+                ? usersIdsMapping[meeting.createdBy] : null
+            });
         });
       }
     }
 
-  /*
+    /*
     "attachments",
   */
     return createdProjectId;

@@ -6,7 +6,7 @@
     <project-import
       :project-file="importedProjectFile"
       :organization-id="organizationId"
-      :is-shown.sync="showProjectImport" 
+      :is-shown.sync="showProjectImport"
     />
     <div v-if="!isReady">
       <v-progress-linear indeterminate />
