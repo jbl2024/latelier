@@ -160,6 +160,7 @@ export default {
   },
   mounted() {
     const extensions = [
+      new Link(),
       new HardBreak(),
       new Blockquote(),
       new CodeBlock(),
@@ -170,7 +171,6 @@ export default {
       new Bold(),
       new Code(),
       new Italic(),
-      new Link(),
       new Strike(),
       new Underline(),
       new History(),
