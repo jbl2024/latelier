@@ -549,7 +549,7 @@ Projects.methods.import = new ValidatedMethod({
     items,
     organizationId
   }) {
-    const userId = Meteor.userId();
+    const currentUserId = Meteor.userId();
     items = Array.isArray(items) ? items : [];
     const buffer = Buffer.from(fileBuffer, 'utf-8');
     const zip = await JSZip.loadAsync(buffer);
@@ -582,6 +582,42 @@ Projects.methods.import = new ValidatedMethod({
       throw new Meteor.Error("error", "Error when creating project");
     }
 
+    const canImportUsers =
+      items.includes("users") &&
+      !Meteor.settings.disableAccountCreation && 
+      Permissions.isAdmin(currentUserId)
+    ;
+    const usersIdsMapping = {};
+
+    if (canImportUsers) {
+      const users = await zippedProject.getContent("users");
+      if (users && Object.keys(users).length) {
+        for (const userId in users) {
+          if (!usersIdsMapping[userId]) {            
+            const user = users[userId];
+            const userEmail = UserUtils.getEmail(user);
+            const existingUser = Meteor.users.findOne({
+                emails: {
+                  $elemMatch: {
+                  address: { $regex: userEmail, $options: "i" }
+                }
+              }
+            });
+            const createdUser = existingUser?._id ? existingUser : Accounts.createUser({
+              createdAt: new Date(),
+              email: userEmail,
+              profile: user.profile
+            });
+            usersIdsMapping[user._id] = createdUser._id;
+            Meteor.call("projects.addMember", {
+              projectId: createdProjectId,
+              userId: createdUser._id
+            });
+          }
+        }
+      }
+    }
+
     // Lists and Tasks
     if (items.includes("tasks")) {
       const tasksLists = await zippedProject.getContent("tasks");
@@ -593,6 +629,7 @@ Projects.methods.import = new ValidatedMethod({
             taskList.name,
             taskList?.autoComplete ? taskList.autoComplete : null,
             taskList?.catchCompleted ? taskList.catchCompleted : null,
+            usersIdsMapping[taskList.createdBy] ? usersIdsMapping[taskList.createdBy] : null
           );        
     
           // Tasks
@@ -603,6 +640,11 @@ Projects.methods.import = new ValidatedMethod({
                 createdList.projectId,
                 createdList._id,
                 task.name,
+                // @TODO
+                null,
+                null,
+                null,
+                usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });
           }
@@ -620,7 +662,8 @@ Projects.methods.import = new ValidatedMethod({
               projectId: createdProjectId,
               name: diagram.name,
               description: diagram?.description ? diagram.description : null,
-              xml: diagram?.xml ? diagram.xml : null
+              xml: diagram?.xml ? diagram.xml : null,
+              diagramUserId: usersIdsMapping[diagram.createdBy] ? usersIdsMapping[diagram.createdBy] : null
             }
           );
         });
@@ -634,7 +677,7 @@ Projects.methods.import = new ValidatedMethod({
         Canvas.insert({
           projectId: createdProjectId,
           createdAt: new Date(),
-          createdBy: userId,
+          createdBy: usersIdsMapping[canvas.createdBy] ? usersIdsMapping[canvas.createdBy] : null,
           data: canvas.data
         });
       }
@@ -651,7 +694,8 @@ Projects.methods.import = new ValidatedMethod({
               name: healthReport.name,
               description: healthReport?.description ? healthReport.description : null,
               date: healthReport.date,
-              weather: healthReport.weather
+              weather: healthReport.weather,
+              reportUserId: usersIdsMapping[healthReport.createdBy] ? usersIdsMapping[healthReport.createdBy] : null,
             },
           );
         });
@@ -679,7 +723,8 @@ Projects.methods.import = new ValidatedMethod({
               endDate: meeting.endDate,
               attendees,
               documents,
-              actions
+              actions,
+              meetingUserId: usersIdsMapping[meeting.createdBy] ? usersIdsMapping[meeting.createdBy] : null, 
             }
           );
         });
@@ -688,7 +733,6 @@ Projects.methods.import = new ValidatedMethod({
 
   /*
     "attachments",
-    "users",
   */
     return createdProjectId;
   }

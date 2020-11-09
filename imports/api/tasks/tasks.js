@@ -9,6 +9,7 @@ import { Meetings } from "/imports/api/meetings/meetings.js";
 import { Random } from "meteor/random";
 import moment from "moment";
 import {
+  Permissions,
   checkCanReadTask,
   checkCanWriteTask,
   checkCanDeleteTask,
@@ -88,16 +89,19 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
 });
 
 Meteor.methods({
-  "tasks.insert"(projectId, listId, name, labelIds, assignedTo, dueDate) {
+  "tasks.insert"(projectId, listId, name, labelIds, assignedTo, dueDate, taskUserId) {
     check(projectId, String);
     check(listId, String);
     check(name, String);
     check(labelIds, Match.Maybe([String]));
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
+    check(taskUserId, Match.Maybe(String));
     checkCanWriteProject(projectId);
 
-    const userId = Meteor.userId();
+    let userId = Meteor.userId();
+    const canSelectUserId = taskUserId && Meteor.isServer && Permissions.isAdmin(userId);
+    userId = canSelectUserId ? taskUserId : userId;
 
     if (!userId) {
       throw new Meteor.Error("not-authorized");

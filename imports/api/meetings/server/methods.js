@@ -59,12 +59,17 @@ Meetings.methods.create = new ValidatedMethod({
     endDate,
     attendees,
     documents,
-    actions
+    actions,
+    meetingUserId
   }) {
     checkCanWriteProject(projectId);
 
     const now = new Date();
-    const author = Meteor.userId();
+    
+    let author = Meteor.userId();
+    const canSelectUserId = meetingUserId && Meteor.isServer && Permissions.isAdmin(author);
+    author = canSelectUserId ? meetingUserId : author;
+
     state = state || MeetingState.PENDING;
 
     attendees = Array.isArray(attendees) ? attendees : [];

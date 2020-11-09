@@ -191,7 +191,11 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
     type: Array,
     optional: true
   },
-  "actions.$": new SimpleSchema(ActionCreateUpdateSchema)
+  "actions.$": new SimpleSchema(ActionCreateUpdateSchema),
+  meetingUserId: {
+    type: String,
+    optional: true
+  }
 }))();
 
 

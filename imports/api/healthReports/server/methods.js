@@ -4,6 +4,7 @@ import { Tasks } from "/imports/api/tasks/tasks";
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
 import {
+  Permissions,
   checkLoggedIn,
   checkCanReadProject,
   checkCanWriteProject
@@ -17,11 +18,19 @@ HealthReports.methods.create = new ValidatedMethod({
     name: { type: String },
     description: { type: String },
     date: { type: String },
-    weather: { type: String }
+    weather: { type: String },
+    reportUserId: {
+      type: String,
+      optional: true
+    }
   }).validator(),
-  run({ projectId, name, description, date, weather }) {
+  run({ projectId, name, description, date, weather, reportUserId }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
+
+    let userId = Meteor.userId();
+    const canSelectUserId = reportUserId && Meteor.isServer && Permissions.isAdmin(userId);
+    userId = canSelectUserId ? reportUserId : userId;
 
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
     const reportId = HealthReports.insert({
@@ -31,7 +40,7 @@ HealthReports.methods.create = new ValidatedMethod({
       date: convertedDate,
       weather,
       createdAt: new Date(),
-      createdBy: Meteor.userId()
+      createdBy: userId
     });
 
     return reportId;
