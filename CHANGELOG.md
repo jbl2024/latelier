@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fullscreen task details window
 
 ### Changed
+- Update tiptap:
+  - tiptap@1.30.0
+  - tiptap-extensions@1.33.2
+  - extract custom extensions to dedicated files
+  - fix link paste when url contains special cars which where messing with markdown detection
 
 ### Removed
 
