@@ -1,5 +1,4 @@
 import { Meteor } from "meteor/meteor";
-import "../imports/startup/server/fixtures.js";
 import "../imports/startup/server/fixEmptyAttributes.js";
 import "../imports/startup/server/fixTaskNumber.js";
 import "../imports/startup/server/permissions.js";
