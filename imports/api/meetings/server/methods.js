@@ -139,7 +139,7 @@ Meetings.methods.update = new ValidatedMethod({
           documents,
           actions,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
@@ -170,7 +170,7 @@ Meetings.methods.updateAgenda = new ValidatedMethod({
         $set: {
           agenda,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
@@ -199,7 +199,7 @@ Meetings.methods.updateReport = new ValidatedMethod({
         $set: {
           report,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
