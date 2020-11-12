@@ -38,6 +38,14 @@ export const ProjectStates = Object.freeze({
   ARCHIVED: "archived"
 });
 
+export const ProjectFeatures = Object.freeze([
+  "estimation",
+  "meetings",
+  "bpmn",
+  "canvas",
+  "weather"
+]);
+
 export const ProjectAccessRights = Object.freeze({
   ORGANIZATION: "organization",
   PRIVATE: "private"
