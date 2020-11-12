@@ -1,39 +1,42 @@
 
-class ProjectFaker {
-    constructor(faker) {
-      this.faker = faker;
-    }
+
+
+class BaseFaker {
+  constructor(faker) {
+    this.faker = faker;
+  }
+  capitalize(s) {
+    if (typeof s !== 'string') return ''
+    return s.charAt(0).toUpperCase() + s.slice(1)
+  }
+}
+
+class ProjectFaker extends BaseFaker {
     name() {
-      return this.faker.random.arrayElement([
-        `Project - ${this.faker.address.city()}`,
-        `Project - ${this.faker.company.companySuffix()} - ${this.faker.company.catchPhraseNoun()}`,
-        `Project - ${this.faker.company.companySuffix()} - ${this.faker.company.catchPhrase()}`,
-        `Project - ${this.faker.company.bs()} - ${this.faker.company.bsNoun()}`,
-        `Project - ${this.faker.company.bs()} - ${this.faker.company.bsAdjective()} - ${this.faker.company.bsBuzz()}`
-      ])
+      return this.capitalize(this.faker.random.arrayElement([
+        `${this.faker.address.city()}`,
+        `${this.faker.company.companySuffix()} - ${this.faker.company.catchPhraseNoun()}`,
+        `${this.faker.company.companySuffix()} - ${this.faker.company.catchPhrase()}`,
+        `${this.faker.company.bs()} - ${this.faker.company.bsNoun()}`,
+        `${this.faker.company.bs()} - ${this.faker.company.bsAdjective()} - ${this.faker.company.bsBuzz()}`
+      ]));
     }
 };
 
 
-class OrganizationFaker {
-  constructor(faker) {
-    this.faker = faker;
-  }
+class OrganizationFaker extends BaseFaker {
   name() {
-    return this.faker.random.arrayElement([
-      `Organization - ${this.faker.address.city()}`,
-      `Organization - ${this.faker.company.companySuffix()} - ${this.faker.company.catchPhraseNoun()}`,
-      `Organization - ${this.faker.company.companySuffix()} - ${this.faker.company.catchPhrase()}`,
-      `Organization - ${this.faker.company.bs()} - ${this.faker.company.bsNoun()}`,
-      `Organization - ${this.faker.company.bs()} - ${this.faker.company.bsAdjective()} - ${this.faker.company.bsBuzz()}`
-    ])
+    return this.capitalize(this.faker.random.arrayElement([
+      `${this.faker.address.city()} ${this.faker.company.companySuffix()}`,
+      `${this.faker.company.companySuffix()} - ${this.faker.company.catchPhraseNoun()}`,
+      `${this.faker.company.companySuffix()} - ${this.faker.company.catchPhrase()}`,
+      `${this.faker.company.bs()} - ${this.faker.company.bsNoun()}`,
+      `${this.faker.company.bs()} - ${this.faker.company.bsAdjective()} - ${this.faker.company.bsBuzz()}`
+    ]));
   }
 };
 
-class TaskFaker {
-  constructor(faker) {
-    this.faker = faker;
-  }
+class TaskFaker extends BaseFaker {
   name() {
     return this.faker.random.arrayElement([
       `Need info : ${this.faker.hacker.phrase()}`,
@@ -43,12 +46,23 @@ class TaskFaker {
   }
 };
 
+class ListFaker extends BaseFaker {
+  name() {
+    return this.faker.random.arrayElement(["À trier","À faire", "En cours", "À Valider", this.completedName()]);
+  }
+  completedName() {
+    return "Terminé";
+  }
+}
+
 export default class LatelierFaker {
   static register(faker) {
     faker.latelier = {
       project: new ProjectFaker(faker),
       task: new TaskFaker(faker),
+      list: new ListFaker(faker),
       organization: new OrganizationFaker(faker)
     };
+    return faker;
   }
 }

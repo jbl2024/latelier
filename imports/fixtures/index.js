@@ -15,14 +15,14 @@ import { Accounts } from "meteor/accounts-base";
   });
 */
 
-export const generateFixtures = async () => {
+export const generateFixtures = () => {
   
   // Register custom fakers methods
   faker.locale = "fr";
   LatelierFaker.register(faker);
 
   // Users
-  const usersIds = await Fixture.of(Meteor.users)
+  const usersIds = Fixture.of(Meteor.users)
     .setFaker(faker)
     .generate(function() {
       const firstName = this.faker.name.firstName();
@@ -46,7 +46,7 @@ export const generateFixtures = async () => {
     }).run(10);
   
   // Organizations
-  const organizationsIds = await Fixture.of(Organizations)
+  const organizationsIds = Fixture.of(Organizations)
     .setFaker(faker)
     .generate(function(usersIds) {
       return {
@@ -59,11 +59,11 @@ export const generateFixtures = async () => {
     .run(10);
 
   // Projects per organization
-  const projectsIds = await Fixture.of(Projects)
+  const projectsIds = Fixture.of(Projects)
     .setFaker(faker)
     .generateForEach(organizationsIds, function(organizationId, usersIds) {
       return {
-        organization: organizationId,
+        organizationId,
         createdBy: this.faker.random.arrayElement(usersIds),
         state: "development",
         name: this.faker.latelier.project.name(),
@@ -81,26 +81,25 @@ export const generateFixtures = async () => {
     return 0;
   };
 
-  let lastTaskOrder = null;
-  const listNames = ["À trier","À faire", "En cours", "À Valider", "Terminé"];
+  let lastListOrder = null;
 
-  const listsIds = await Fixture.of(Lists)
+  const listsIds = Fixture.of(Lists)
     .setFaker(faker)
-    .generateForEach(projectsIds, function(projectId, usersIds, listNames, index) {
+    .generateForEach(projectsIds, function(projectId, usersIds, index) {
       if (index === 0) {
-        lastTaskOrder = _findListLastOrder(projectId);
+        lastListOrder = _findListLastOrder(projectId);
       }
+      const listName = this.faker.latelier.list.name();
       return {
-        name: this.faker.random.arrayElement(listNames),
-        order: lastTaskOrder + 1,
-        autoComplete: false,
+        name: listName,
+        order: lastListOrder + 1,
+        autoComplete: listName === this.faker.latelier.list.completedName(),
         catchCompleted: false,
         projectId,
         createdAt: new Date(),
         createdBy: this.faker.random.arrayElement(usersIds),
       };
-    }, usersIds, listNames).run(5);
-
+    }, usersIds).run(5);
 
     const _findTaskFirstOrder = function() {
       const task = Tasks.findOne(
@@ -114,17 +113,16 @@ export const generateFixtures = async () => {
     };
     let firstTaskOrder = null;
     // Tasks per list per project
-    await Fixture.of(Tasks)
+    Fixture.of(Tasks)
       .setFaker(faker)
       .generateForEach(listsIds, function(listId, usersIds, index) {
-        if (index === 0) {
-          firstTaskOrder = _findTaskFirstOrder(projectId);
-        }
         const list = Lists.findOne({ _id: listId });
         if (!list) return;
         const author = this.faker.random.arrayElement(usersIds);
         const now = new Date();
-
+        if (index === 0) {
+          firstTaskOrder = _findTaskFirstOrder(list.projectId);
+        }
         const name = this.faker.latelier.task.name();
         return {
           projectId: list.projectId,

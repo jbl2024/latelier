@@ -48,13 +48,14 @@ export default class Fixture {
     return this;
   }
 
-  async fakeRun(times) {
-    return await this.run(times, function(datas, index) {
-      console.log(`#${index} - FIXTURE`, datas);
+  fakeRun(times) {
+    return this.run(times, function(datas, index) {
+      console.log(`#${index} - `, datas);
+      return Random.id();
     });
   }
 
-  async run(times, runInsertFn) {
+  run(times, runInsertFn) {
 
     let insertFunction = typeof this.insertFn === "function" ? 
     this.insertFn : this.insertObject;
@@ -64,12 +65,12 @@ export default class Fixture {
 
     const createInserts = (times, parentItem) => {
       for (let i = 0; i < times; i++) {
-        this.results.push(new Promise((resolve, reject) => {
+        try {
           const generatorParams = parentItem ? [parentItem, ...params, i] : [...params];
           const datas = generator.apply(this, generatorParams);
           const result = insertFunction.apply(this, [datas, i]);
-          resolve(result);
-        }));
+          this.results.push(result);
+        } catch (err) {}
       }
     };
     
@@ -80,8 +81,7 @@ export default class Fixture {
     } else {
       createInserts(times);
     }
-
-    this.results = await Promise.all(this.results);
+    
     this.results = this.results.filter(result => result);
     return this.results;
   }
