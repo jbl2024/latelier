@@ -128,13 +128,13 @@ export default {
           organizationId: this.importOptions.project.organizationId,
           items: this.importOptions.items
         }, (err, projectId) => {
+          this.isImporting = false;
+          this.showDialog = false;
           if (err) {
             this.$notifyError(err);
             return;
           }
           this.$notify(this.$t("project.import.importSuccess"));
-          this.isImporting = false;
-          this.showDialog = false;
           if (projectId) {
             this.$router.push({ name: "project", params: { projectId } });
           }
