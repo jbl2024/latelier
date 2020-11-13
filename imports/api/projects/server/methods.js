@@ -1,5 +1,5 @@
 import SimpleSchema from "simpl-schema";
-import { Projects, ProjectAccessRights } from "../projects";
+import { Projects, ProjectAccessRights, ProjectExportVersions } from "../projects";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
@@ -504,7 +504,20 @@ Projects.methods.export = new ValidatedMethod({
         projectId
       }).fetch() : null;
 
+    // Export metadata
+    currentUser = Meteor.user();
+    const metadatas = {
+      version: ProjectExportVersions.V2020_11,
+      createdAt: new Date(),
+      createdBy: {
+        _id: currentUser._id,
+        emails: currentUser?.emails || [],
+        profile: currentUser?.profile || null
+      }
+    };
+
     const zip = createProjectExportZip({
+      metadatas,
       project,
       users,
       tasksLists,

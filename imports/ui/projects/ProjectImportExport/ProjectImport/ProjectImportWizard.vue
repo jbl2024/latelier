@@ -94,6 +94,10 @@ export default {
       type: String,
       default: null
     },
+    metadatas: {
+      type: Object,
+      default: null
+    },
     importOptions: {
       type: Object,
       default() {
@@ -150,14 +154,19 @@ export default {
     project: {
       immediate: true,
       async handler() {
-        if (this.project.metas) {
-          this.metas = this.project.metas;
-          const availableItems = Object.keys(this.project.metas)
-            .filter((key) => this.project.metas[key]?.count > 0);
+        this.projectName = this.project.name;
+      }
+    },
+    metadatas: {
+      immediate: true,
+      async handler() {
+        if (this?.metadatas?.items) {
+          this.metas = this.metadatas.items;
+          const availableItems = Object.keys(this.metadatas.items)
+            .filter((key) => this.metadatas.items[key]?.count > 0);
           this.items = this.items.filter((item) => availableItems.includes(item));
           this.selectedItems = this.items.slice();
         }
-        this.projectName = this.project.name;
       }
     },
     organizationId: {
@@ -190,8 +199,9 @@ export default {
   },
   methods: {
     getItemCount(item) {
-      if (!this.metas || !this.metas[item] || !this.metas[item].count) return null;
-      return this.metas[item].count;
+      if (!this?.metadatas?.items || !this.metadatas.items[item]
+      || !this.metadatas.items[item]?.count) return null;
+      return this.metadatas.items[item].count;
     }
   }
 };

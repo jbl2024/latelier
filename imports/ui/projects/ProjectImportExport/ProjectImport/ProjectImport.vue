@@ -19,6 +19,7 @@
         <div v-else-if="project" class="project-wrapper">
           <project-import-wizard
             :project="project"
+            :metadatas="projectMetadatas"
             :organization-id="organizationId"
             :import-options.sync="importOptions"
           />
@@ -71,6 +72,7 @@ export default {
         items: []
       },
       project: null,
+      projectMetadatas: null,
       isLoading: false,
       isImporting: false,
       importProgress: 0,
@@ -93,19 +95,22 @@ export default {
   watch: {
     projectFile: {
       immediate: true,
-      handler(file) {
+      async handler(file) {
         if (!file) return;
-        JSZip.loadAsync(file)
-          .then((zip) => zip)
-          .then((zip) => unserializeProjectImportZip(zip))
-          .then((zippedProjects) => {
-            if (Array.isArray(zippedProjects) && zippedProjects[0]) {
-              zippedProjects[0].getContent("project").then((project) => {
-                this.project = project;
-                this.showDialog = true;
-              });
-            }
-          });
+        try {
+          const zip = await JSZip.loadAsync(file);
+          const zippedProjects = await unserializeProjectImportZip(zip);
+          if (Array.isArray(zippedProjects) && zippedProjects[0]) {
+            const metadatas = await zippedProjects[0].getContent("metadatas");
+            const project = await zippedProjects[0].getContent("project");
+            this.projectMetadatas = metadatas;
+            this.project = project;
+            this.showDialog = true;
+          }
+        } catch (error) {
+          this.$notifyError(error);
+          this.showDialog = false;
+        }
       }
     }
   },

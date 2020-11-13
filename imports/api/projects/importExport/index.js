@@ -11,6 +11,7 @@ export const items = [
 ];
 
 export const createProjectExportZip = ({
+  metadatas,
   project,
   users,
   tasksLists,
@@ -21,7 +22,7 @@ export const createProjectExportZip = ({
 }) => {
   const zip = new JSZip();
   const projectFolder = zip.folder(project._id);
-  const metas = { users: { count: Object.keys(users).length } };
+  const itemsMetas = { users: { count: Object.keys(users).length } };
 
   // Users
   projectFolder.file("users.json", JSON.stringify(users));
@@ -29,9 +30,9 @@ export const createProjectExportZip = ({
   // Tasks
   if (Array.isArray(tasksLists) && tasksLists.length > 0) {
     const tasksListsFolder = projectFolder.folder("tasks");
-    metas.tasks = { count: 0 };
+    itemsMetas.tasks = { count: 0 };
     tasksLists.forEach((list) => {
-      metas.tasks.count += list.tasks.length;
+      itemsMetas.tasks.count += list.tasks.length;
       tasksListsFolder.file(`${list._id}.json`, JSON.stringify(list));
     });
   }
@@ -39,7 +40,7 @@ export const createProjectExportZip = ({
   // BPMN Diagrams
   if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length > 0) {
     const bpmnFolder = projectFolder.folder("bpmn");
-    metas.bpmn = { count: bpmnDiagrams.length };
+    itemsMetas.bpmn = { count: bpmnDiagrams.length };
     bpmnDiagrams.forEach((diagram) => {
       bpmnFolder.file(`${diagram._id}.json`, JSON.stringify(diagram));
     });
@@ -48,7 +49,7 @@ export const createProjectExportZip = ({
   // Meetings
   if (Array.isArray(meetings) && meetings.length > 0) {
     const meetingsFolder = projectFolder.folder("meetings");
-    metas.meetings = { count: meetings.length };
+    itemsMetas.meetings = { count: meetings.length };
     meetings.forEach((meeting) => {
       meetingsFolder.file(`${meeting._id}.json`, JSON.stringify(meeting));
     });
@@ -62,14 +63,17 @@ export const createProjectExportZip = ({
   // healthReports
   if (Array.isArray(healthReports) && healthReports.length > 0) {
     const weatherFolder = projectFolder.folder("weather");
-    metas.weather = { count: healthReports.length };
+    itemsMetas.weather = { count: healthReports.length };
     healthReports.forEach((healthReport) => {
       weatherFolder.file(`${healthReport._id}.json`, JSON.stringify(healthReport));
     });
   }
 
-  // Project + Metas
-  projectFolder.file("project.json", JSON.stringify({ ...project, metas }));
+  // Export metadatas
+  projectFolder.file("metadatas.json", JSON.stringify({ ...metadatas, items: itemsMetas }));
+
+  // Project
+  projectFolder.file("project.json", JSON.stringify(project));
 
   return zip;
 };

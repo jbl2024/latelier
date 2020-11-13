@@ -4,12 +4,17 @@ export default class ZipProject {
     this.content = {};
   }
 
+  /* eslint class-methods-use-this: "off" */
+  isSingleFile(item) {
+    return ["project", "users", "canvas", "metadatas"].includes(item);
+  }
+
   getZipFolder() {
     return this.zipFolder;
   }
 
   getFiles(item) {
-    if (["project", "users", "canvas"].includes(item)) {
+    if (this.isSingleFile(item)) {
       return [this.zipFolder.file(`${item}.json`)];
     }
     const folder = this.zipFolder.folder(item);
@@ -19,7 +24,7 @@ export default class ZipProject {
 
   async getContent(item) {
     if (this.content[item]) return this.content[item];
-    const isSingleFile = ["project", "users", "canvas"].includes(item);
+    const isSingleFile = this.isSingleFile(item);
     const files = this.getFiles(item);
     if (!Array.isArray(files) || !files.length) return [];
     if (isSingleFile && !files[0]) return null;

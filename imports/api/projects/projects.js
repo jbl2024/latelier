@@ -43,6 +43,10 @@ export const ProjectAccessRights = Object.freeze({
   PRIVATE: "private"
 });
 
+export const ProjectExportVersions = Object.freeze({
+  V2020_11: "V2020_11"
+});
+
 const checkIfAdminOrCreator = (projectId) => {
   if (Permissions.isAdmin(Meteor.userId())) {
     return true;
