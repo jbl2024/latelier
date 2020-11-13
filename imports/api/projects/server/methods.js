@@ -449,11 +449,16 @@ Projects.methods.export = new ValidatedMethod({
       type: String
     }
   }).validator(),
-  async run({
+  run({
     projectId,
     items
   }) {
-    checkLoggedIn();
+    if (!Permissions.isAdmin(Meteor.userId(), projectId)) {
+      throw new Meteor.Error("not-authorized");
+    }
+
+    items = items || [];
+
     // Project
     const project = Projects.findOne({ _id: projectId });
     if (!project) {
@@ -461,12 +466,7 @@ Projects.methods.export = new ValidatedMethod({
     }
 
     // Tasks (project + associated lists and tasks)
-    const projectInfos = await new Promise((resolve, reject) => {
-      Meteor.call("tasks.exportProject", { projectId }, (err, result) => {
-        if (err) reject(err);
-        resolve(result);
-      });
-    });
+    const projectInfos = Meteor.call("tasks.exportProject", { projectId });
 
     // Users
     const membersIds = findProjectMembersIds(project);
@@ -513,10 +513,9 @@ Projects.methods.export = new ValidatedMethod({
       canvas,
       healthReports
     });
-    const zipContent = await zip.generateAsync({ type: "base64" });
-    return {
+    return zip.generateAsync({ type: "base64" }).then((zipContent) => ({
       data: zipContent
-    };
+    }));
   }
 });
 
@@ -728,10 +727,6 @@ Projects.methods.import = new ValidatedMethod({
         });
       }
     }
-
-    /*
-    "attachments",
-  */
     return createdProjectId;
   }
 });
