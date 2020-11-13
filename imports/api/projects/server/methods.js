@@ -547,6 +547,10 @@ Projects.methods.import = new ValidatedMethod({
     organizationId
   }) {
     const currentUserId = Meteor.userId();
+    if (!Permissions.isAdmin(currentUserId, organizationId)) {
+      throw new Meteor.Error("not-authorized");
+    }
+
     items = Array.isArray(items) ? items : [];
     const buffer = Buffer.from(fileBuffer, "utf-8");
     const zip = await JSZip.loadAsync(buffer);
@@ -599,15 +603,21 @@ Projects.methods.import = new ValidatedMethod({
                 }
               }
             });
-            const createdUser = existingUser?._id ? existingUser : Accounts.createUser({
-              createdAt: new Date(),
-              email: userEmail,
-              profile: user.profile
-            });
-            usersIdsMapping[user._id] = createdUser._id;
+            const createdUserId = existingUser && existingUser?._id
+              ? existingUser._id : Accounts.createUser({
+                createdAt: new Date(),
+                email: userEmail,
+                profile: user.profile
+              });
+
+            if (!createdUserId) {
+              throw new Meteor.Error("error", "Error when retrieving user");
+            }
+
+            usersIdsMapping[user._id] = createdUserId;
             Meteor.call("projects.addMember", {
               projectId: createdProjectId,
-              userId: createdUser._id
+              userId: createdUserId
             });
           }
         });
