@@ -96,9 +96,10 @@ Meteor.methods({
     labelIds,
     assignedTo,
     dueDate,
+    description,
+    watchers,
     notes,
     checklist,
-    description,
     taskUserId
   ) {
     check(projectId, String);
@@ -108,6 +109,7 @@ Meteor.methods({
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
     check(description, Match.Maybe(String));
+    check(watchers, Match.Maybe([String]));
     // Task notes
     check(notes, Match.Where((taskNotes) => {
       if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
@@ -194,7 +196,7 @@ Meteor.methods({
       updatedAt: now,
       createdBy: userId,
       updatedBy: userId,
-      watchers: [userId],
+      watchers: watchers || [userId],
       number,
       assignedTo,
       dueDate,

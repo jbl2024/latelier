@@ -707,6 +707,13 @@ Projects.methods.import = new ValidatedMethod({
                   ? labelsIdsMapping[labelId] : null).filter((l) => l);
               }
 
+              // Watchers
+              let watchers = null;
+              if (Array.isArray(task.watchers) && task.watchers.length > 0) {
+                watchers = task.watchers.map((watcherId) => usersIdsMapping[watcherId]
+                  ? usersIdsMapping[watcherId] : null);
+              }
+
               const assignedTo = task.assignedTo ? usersIdsMapping[task.assignedTo] : null;
 
               Meteor.call(
@@ -717,9 +724,10 @@ Projects.methods.import = new ValidatedMethod({
                 Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
                 assignedTo,
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
+                task.description ? task.description : null,
+                watchers,
                 notes,
                 checklist,
-                task.description ? task.description : null,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });
