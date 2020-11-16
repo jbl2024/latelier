@@ -6,7 +6,13 @@ export default class ZipProject {
 
   /* eslint class-methods-use-this: "off" */
   isSingleFile(item) {
-    return ["project", "users", "canvas", "metadatas"].includes(item);
+    return [
+      "project",
+      "users",
+      "canvas",
+      "labels",
+      "metadatas"
+    ].includes(item);
   }
 
   getZipFolder() {

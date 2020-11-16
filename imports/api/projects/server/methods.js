@@ -1,6 +1,7 @@
 import SimpleSchema from "simpl-schema";
 import { Projects, ProjectAccessRights, ProjectExportVersions } from "../projects";
 import { Tasks } from "/imports/api/tasks/tasks";
+import { Labels } from "/imports/api/labels/labels.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
@@ -481,6 +482,10 @@ Projects.methods.export = new ValidatedMethod({
     && projectInfos.lists.length > 0
       ? projectInfos.lists : null;
 
+    // Labels
+    const labels = items.includes("tasks")
+      ? Labels.find({ projectId: projectId }).fetch() : null;
+
     // BPMN Diagrams
     const bpmnDiagrams = items.includes("bpmn")
       ? ProcessDiagrams.find({ projectId }).fetch() : null;
@@ -521,6 +526,7 @@ Projects.methods.export = new ValidatedMethod({
       project,
       users,
       tasksLists,
+      labels,
       bpmnDiagrams,
       meetings,
       canvas,
@@ -599,6 +605,8 @@ Projects.methods.import = new ValidatedMethod({
     const canImportUsers = items.includes("users")
       && !Meteor.settings.disableAccountCreation
       && Permissions.isAdmin(currentUserId);
+
+    const labelsIdsMapping = {};
     const usersIdsMapping = {};
 
     if (canImportUsers) {
@@ -637,8 +645,22 @@ Projects.methods.import = new ValidatedMethod({
       }
     }
 
-    // Lists and Tasks
+    // Tasks and associations (Lists, Labels ...)
     if (items.includes("tasks")) {
+      const labels = await zippedProject.getContent("labels");
+      if (Array.isArray(labels) && labels.length) {
+        labels.forEach((label) => {
+          const labelId = Labels.insert({
+            projectId: createdProjectId,
+            name: label.name,
+            color: label.color,
+            createdAt: new Date(label.createdAt),
+            createdBy: usersIdsMapping[label.createdBy] ? usersIdsMapping[label.createdBy] : null
+          });
+          labelsIdsMapping[label._id] = labelId;
+        });
+      }
+
       const tasksLists = await zippedProject.getContent("tasks");
       if (Array.isArray(tasksLists) && tasksLists.length) {
         tasksLists.forEach((taskList) => {
@@ -678,6 +700,13 @@ Projects.methods.import = new ValidatedMethod({
                 });
               }
 
+              // Labels
+              let taskLabelsIds = null;
+              if (Array.isArray(task.labels)) {
+                taskLabelsIds = task.labels.map((labelId) => labelsIdsMapping[labelId]
+                  ? labelsIdsMapping[labelId] : null).filter((l) => l);
+              }
+
               const assignedTo = task.assignedTo ? usersIdsMapping[task.assignedTo] : null;
 
               Meteor.call(
@@ -685,7 +714,7 @@ Projects.methods.import = new ValidatedMethod({
                 createdList.projectId,
                 createdList._id,
                 task.name,
-                null, // labelsIds
+                Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
                 assignedTo,
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
                 notes,

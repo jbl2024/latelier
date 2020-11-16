@@ -15,6 +15,7 @@ export const createProjectExportZip = ({
   project,
   users,
   tasksLists,
+  labels,
   bpmnDiagrams,
   meetings,
   canvas,
@@ -35,6 +36,11 @@ export const createProjectExportZip = ({
       itemsMetas.tasks.count += list.tasks.length;
       tasksListsFolder.file(`${list._id}.json`, JSON.stringify(list));
     });
+  }
+
+  // Labels
+  if (Array.isArray(labels) && labels.length > 0) {
+    projectFolder.file("labels.json", JSON.stringify(labels));
   }
 
   // BPMN Diagrams
