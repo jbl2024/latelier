@@ -668,13 +668,15 @@ Projects.methods.import = new ValidatedMethod({
                 });
               }
 
+              const assignedTo = task.assignedTo ? usersIdsMapping[task.assignedTo] : null;
+
               Meteor.call(
                 "tasks.insert",
                 createdList.projectId,
                 createdList._id,
                 task.name,
                 null, // labelsIds
-                null, // assignedTo
+                assignedTo,
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
                 notes,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
