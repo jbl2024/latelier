@@ -4,6 +4,7 @@
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
     <project-import
+      v-if="canImportProject(organizationId)"
       :project-file="importedProjectFile"
       :organization-id="organizationId"
       :is-shown.sync="showProjectImport"
@@ -68,7 +69,7 @@
                   <v-divider />
                 </template>
                 <!-- Import project from zip -->
-                <v-list-item @click="importProject">
+                <v-list-item v-if="canImportProject(organizationId)" @click="importProject">
                   <v-list-item-action>
                     <v-icon>mdi-file-import</v-icon>
                   </v-list-item-action>
@@ -403,6 +404,10 @@ export default {
     }
   },
   methods: {
+    canImportProject(organizationId) {
+      return Permissions.isAdmin(Meteor.userId(), organizationId)
+      || Permissions.isAdmin(Meteor.userId());
+    },
     importProject() {
       this.$refs.uploadProject.beginUpload();
     },
