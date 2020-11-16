@@ -58,6 +58,17 @@
                         />
                       </v-list-item-subtitle>
                     </v-list-item-content>
+                    <v-list-item-action>
+                      <v-btn
+                        icon
+                        ripple
+                        @click.stop="openProjectExport(project)"
+                      >
+                        <v-icon>
+                          mdi-file-export
+                        </v-icon>
+                      </v-btn>
+                    </v-list-item-action>
                     <v-list-item-action v-if="project.deleted">
                       <v-btn
                         color="red"
@@ -186,7 +197,14 @@ export default {
         }
       );
     },
-
+    openProjectExport(project) {
+      this.$router.push({
+        name: "project-export",
+        params: {
+          projectId: project._id
+        }
+      });
+    },
     removeProject(project) {
       this.$confirm(this.$t("Delete project?"), {
         title: project.name,
@@ -294,6 +312,10 @@ export default {
 <style scoped>
 .projects {
   background-color: #e5e5e5;
+}
+
+.projects .v-list-item__action:last-of-type:not(:only-child) {
+  margin-left: 0 !important;
 }
 
 .deleted {
