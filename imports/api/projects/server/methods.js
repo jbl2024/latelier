@@ -690,6 +690,7 @@ Projects.methods.import = new ValidatedMethod({
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
                 notes,
                 checklist,
+                task.description ? task.description : null,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });

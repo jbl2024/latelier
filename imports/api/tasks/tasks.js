@@ -98,6 +98,7 @@ Meteor.methods({
     dueDate,
     notes,
     checklist,
+    description,
     taskUserId
   ) {
     check(projectId, String);
@@ -106,7 +107,7 @@ Meteor.methods({
     check(labelIds, Match.Maybe([String]));
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
-
+    check(description, Match.Maybe(String));
     // Task notes
     check(notes, Match.Where((taskNotes) => {
       if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
@@ -183,6 +184,7 @@ Meteor.methods({
 
     const taskId = Tasks.insert({
       name,
+      description,
       order: _findFirstOrder() - 10,
       projectId,
       listId,
