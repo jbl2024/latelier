@@ -1,5 +1,9 @@
 <template>
   <div class="projects">
+    <project-import
+      :project-file="importedProjectFile"
+      :is-shown.sync="showProjectImport"
+    />
     <v-card class="center">
       <v-card-text>
         <v-container>
@@ -23,6 +27,18 @@
           </v-row>
           <v-row>
             <v-col>
+              <v-btn
+                class="mr-2"
+                @click="importProject"
+              >
+                <upload-button
+                  ref="uploadProject"
+                  :is-uploading="isUploading"
+                  @on-upload="uploadProject"
+                >
+                  <span>{{ $t("project.import.importProject") }}</span>
+                </upload-button>
+              </v-btn>
               <v-btn
                 :loading="migrating"
                 :disabled="migrating"
@@ -119,11 +135,17 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImport";
+import UploadButton from "/imports/ui/widgets/UploadButton";
 
 import debounce from "lodash/debounce";
 
 export default {
   name: "AdministrationProjects",
+  components: {
+    ProjectImport,
+    UploadButton
+  },
   data() {
     return {
       search: "",
@@ -137,7 +159,10 @@ export default {
         totalPages: 0
       },
       filterDeleted: false,
-      migrating: false
+      migrating: false,
+      showProjectImport: false,
+      importedProjectFile: null,
+      isUploading: false
     };
   },
   watch: {
@@ -196,6 +221,14 @@ export default {
           });
         }
       );
+    },
+    importProject() {
+      this.$refs.uploadProject.beginUpload();
+    },
+    uploadProject(file) {
+      if (!file) return;
+      this.importedProjectFile = file;
+      this.showProjectImport = true;
     },
     openProjectExport(project) {
       this.$router.push({
