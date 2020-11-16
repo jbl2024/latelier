@@ -611,6 +611,11 @@ Projects.methods.import = new ValidatedMethod({
     const labelsIdsMapping = {};
     const usersIdsMapping = {};
 
+    const findMappedUser = (importedUserId) => {
+      return usersIdsMapping[importedUserId] ?
+      usersIdsMapping[importedUserId] : null;
+    }
+
     if (canImportUsers) {
       const users = await zippedProject.getContent("users");
       const usersIds = Object.keys(users);
@@ -657,7 +662,7 @@ Projects.methods.import = new ValidatedMethod({
             name: label.name,
             color: label.color,
             createdAt: new Date(label.createdAt),
-            createdBy: usersIdsMapping[label.createdBy] ? usersIdsMapping[label.createdBy] : null
+            createdBy: findMappedUser(label.createdBy),
           });
           labelsIdsMapping[label._id] = labelId;
         });
@@ -672,7 +677,7 @@ Projects.methods.import = new ValidatedMethod({
             taskList.name,
             taskList?.autoComplete ? taskList.autoComplete : null,
             taskList?.catchCompleted ? taskList.catchCompleted : null,
-            usersIdsMapping[taskList.createdBy] ? usersIdsMapping[taskList.createdBy] : null
+            findMappedUser(taskList.createdBy)
           );
 
           // Tasks
@@ -682,11 +687,9 @@ Projects.methods.import = new ValidatedMethod({
               let notes = null;
               if (Array.isArray(task.notes)) {
                 notes = task.notes.map((note) => {
-                  note.createdBy = usersIdsMapping[note.createdBy]
-                    ? usersIdsMapping[note.createdBy] : null;
+                  note.createdBy = findMappedUser(note.createdBy);
                   if (note.editedBy) {
-                    note.editedBy = usersIdsMapping[note.editedBy]
-                      ? usersIdsMapping[note.editedBy] : null;
+                    note.editedBy = findMappedUser(note.editedBy);
                   }
                   return note;
                 });
@@ -696,8 +699,7 @@ Projects.methods.import = new ValidatedMethod({
               let checklist = null;
               if (Array.isArray(task.checklist)) {
                 checklist = task.checklist.map((listItem) => {
-                  listItem.createdBy = usersIdsMapping[listItem.createdBy]
-                    ? usersIdsMapping[listItem.createdBy] : null;
+                  listItem.createdBy = findMappedUser(listItem.createdBy);
                   return listItem;
                 });
               }
@@ -712,11 +714,8 @@ Projects.methods.import = new ValidatedMethod({
               // Watchers
               let watchers = null;
               if (Array.isArray(task.watchers) && task.watchers.length > 0) {
-                watchers = task.watchers.map((watcherId) => usersIdsMapping[watcherId]
-                  ? usersIdsMapping[watcherId] : null);
+                watchers = task.watchers.map((watcherId) => findMappedUser(watcherId));
               }
-
-              const assignedTo = task.assignedTo ? usersIdsMapping[task.assignedTo] : null;
 
               Meteor.call(
                 "tasks.insert",
@@ -724,7 +723,7 @@ Projects.methods.import = new ValidatedMethod({
                 createdList._id,
                 task.name,
                 Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
-                assignedTo,
+                findMappedUser(task.assignedTo),
                 task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
                 task.startDate ? moment(task.startDate).format(dateFormat) : null,
                 task.description ? task.description : null,
@@ -734,7 +733,7 @@ Projects.methods.import = new ValidatedMethod({
                 task.reminderStartDate ? task.reminderStartDate : null,
                 task.reminderDueDate ? task.reminderDueDate : null,
                 task.estimation ? task.estimation : null,
-                usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
+                findMappedUser(task.createdBy)
               );
             });
           }
@@ -753,8 +752,7 @@ Projects.methods.import = new ValidatedMethod({
               name: diagram.name,
               description: diagram?.description ? diagram.description : null,
               xml: diagram?.xml ? diagram.xml : null,
-              diagramUserId: usersIdsMapping[diagram.createdBy]
-                ? usersIdsMapping[diagram.createdBy] : null
+              diagramUserId: findMappedUser(diagram.createdBy)
             });
         });
       }
@@ -767,8 +765,7 @@ Projects.methods.import = new ValidatedMethod({
         Canvas.insert({
           projectId: createdProjectId,
           createdAt: new Date(),
-          createdBy: usersIdsMapping[canvas.createdBy]
-            ? usersIdsMapping[canvas.createdBy] : null,
+          createdBy: findMappedUser(canvas.createdBy),
           data: canvas.data
         });
       }
@@ -786,8 +783,7 @@ Projects.methods.import = new ValidatedMethod({
               description: healthReport?.description ? healthReport.description : null,
               date: healthReport.date,
               weather: healthReport.weather,
-              reportUserId: usersIdsMapping[healthReport.createdBy]
-                ? usersIdsMapping[healthReport.createdBy] : null
+              reportUserId: findMappedUser(healthReport.createdBy)
             });
         });
       }
@@ -815,8 +811,7 @@ Projects.methods.import = new ValidatedMethod({
               attendees,
               documents,
               actions,
-              meetingUserId: usersIdsMapping[meeting.createdBy]
-                ? usersIdsMapping[meeting.createdBy] : null
+              meetingUserId: findMappedUser(meeting.createdBy)
             });
         });
       }
