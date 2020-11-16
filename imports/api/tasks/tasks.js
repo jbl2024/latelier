@@ -117,7 +117,7 @@ Meteor.methods({
     check(watchers, Match.Maybe([String]));
     check(reminderStartDate, Match.Maybe(Number));
     check(reminderDueDate, Match.Maybe(Number));
-    check(estimation, Match.Optional({
+    check(estimation, Match.Maybe({
       size: Match.OneOf(String, Number),
       spent: Match.OneOf(String, Number)
     }));
