@@ -654,15 +654,29 @@ Projects.methods.import = new ValidatedMethod({
           // Tasks
           if (createdList && Array.isArray(taskList?.tasks)) {
             taskList.tasks.forEach((task) => {
+              // Notes
+              let notes = null;
+              if (Array.isArray(task.notes)) {
+                notes = task.notes.map((note) => {
+                  note.createdBy = usersIdsMapping[note.createdBy]
+                    ? usersIdsMapping[note.createdBy] : null;
+                  if (note.editedBy) {
+                    note.editedBy = usersIdsMapping[note.editedBy]
+                      ? usersIdsMapping[note.editedBy] : null;
+                  }
+                  return note;
+                });
+              }
+
               Meteor.call(
                 "tasks.insert",
                 createdList.projectId,
                 createdList._id,
                 task.name,
-                // @TODO
-                null,
-                null,
-                null,
+                null, // labelsIds
+                null, // assignedTo
+                null, // dueDate,
+                notes,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });

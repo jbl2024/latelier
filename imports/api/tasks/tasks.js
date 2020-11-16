@@ -89,13 +89,36 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
 });
 
 Meteor.methods({
-  "tasks.insert"(projectId, listId, name, labelIds, assignedTo, dueDate, taskUserId) {
+  "tasks.insert"(
+    projectId,
+    listId,
+    name,
+    labelIds,
+    assignedTo,
+    dueDate,
+    notes,
+    taskUserId
+  ) {
     check(projectId, String);
     check(listId, String);
     check(name, String);
     check(labelIds, Match.Maybe([String]));
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
+    check(notes, Match.Where((taskNotes) => {
+      if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
+      taskNotes.forEach((note) => {
+        check(note, {
+          _id: String,
+          createdAt: Match.Maybe(String),
+          createdBy: String,
+          content: String,
+          edited: Match.Maybe(Boolean),
+          editedBy: Match.Maybe(String)
+        });
+      });
+      return true;
+    }));
     check(taskUserId, Match.Maybe(String));
     checkCanWriteProject(projectId);
 
@@ -130,6 +153,15 @@ Meteor.methods({
     if (Meteor.isServer) {
       number = incNumber();
     }
+
+    if (Array.isArray(notes) && notes.length) {
+      notes.forEach((note) => {
+        if (note.createdAt) {
+          note.createdAt = new Date(note.createdAt);
+        }
+      });
+    }
+
     const taskId = Tasks.insert({
       name,
       order: _findFirstOrder() - 10,
@@ -145,7 +177,8 @@ Meteor.methods({
       number,
       assignedTo,
       dueDate,
-      labels: labelIds || []
+      labels: labelIds || [],
+      notes: notes || []
     });
 
     Meteor.call("tasks.track", {
