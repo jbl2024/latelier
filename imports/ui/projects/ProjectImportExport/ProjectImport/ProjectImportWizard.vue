@@ -23,7 +23,7 @@
       <v-list-item>
         <template>
           <v-list-item-content>
-            <v-list-item-title>
+            <v-list-item-title v-if="!organizationId">
               <v-select
                 v-model="projectOrganizationId"
                 :label="$t('project.import.projectOrganization')"
@@ -46,6 +46,15 @@
                   <v-divider />
                 </template>
               </v-select>
+            <!-- Preselected organization -->
+            </v-list-item-title>
+            <v-list-item-title v-else-if="selectedOrganization">
+              <v-text-field
+                :label="$t('project.import.projectOrganization')"
+                :value="selectedOrganization.name"
+                :readonly="true"
+                hide-details="auto"
+              />
             </v-list-item-title>
           </v-list-item-content>
         </template>
@@ -102,6 +111,7 @@ export default {
       type: Object,
       default() {
         return {
+          organizations: null,
           project: {
             name: "",
             organizationId: null
@@ -109,22 +119,6 @@ export default {
           items: []
         };
       }
-    }
-  },
-  meteor: {
-    // Subscriptions
-    $subscribe: {
-      organizations() {
-        return [];
-      }
-    },
-    organizations() {
-      return Organizations.find(
-        {},
-        {
-          sort: { name: 1 }
-        }
-      );
     }
   },
   data() {
@@ -148,6 +142,10 @@ export default {
     },
     selectedImportedOptions() {
       return [this.selectedItems, this.projectName, this.projectOrganizationId];
+    },
+    selectedOrganization() {
+      if (!this.organizations) return null;
+      return this.organizations.find((organization) => organization._id === this.organizationId);
     }
   },
   watch: {
@@ -155,6 +153,12 @@ export default {
       immediate: true,
       async handler() {
         this.projectName = this.project.name;
+        this.organizations = Organizations.find(
+          {},
+          {
+            sort: { name: 1 }
+          }
+        ).fetch();
       }
     },
     metadatas: {
