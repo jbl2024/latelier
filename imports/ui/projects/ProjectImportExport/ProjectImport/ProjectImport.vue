@@ -97,6 +97,7 @@ export default {
       immediate: true,
       async handler(file) {
         if (!file) return;
+        this.isLoading = true;
         try {
           const zip = await JSZip.loadAsync(file);
           const zippedProjects = await unserializeProjectImportZip(zip);
@@ -106,9 +107,11 @@ export default {
             this.projectMetadatas = metadatas;
             this.project = project;
             this.showDialog = true;
+            this.isLoading = false;
           }
         } catch (error) {
           this.$notifyError(error);
+          this.isLoading = false;
           this.showDialog = false;
         }
       }
