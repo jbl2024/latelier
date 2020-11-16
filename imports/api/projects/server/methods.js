@@ -602,6 +602,8 @@ Projects.methods.import = new ValidatedMethod({
       throw new Meteor.Error("error", "Error when creating project");
     }
 
+    const dateFormat = "YYYY-MM-DD HH:mm";
+
     const canImportUsers = items.includes("users")
       && !Meteor.settings.disableAccountCreation
       && Permissions.isAdmin(currentUserId);
@@ -723,12 +725,14 @@ Projects.methods.import = new ValidatedMethod({
                 task.name,
                 Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
                 assignedTo,
-                task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
-                task.startDate ? moment(task.startDate).format("YYYY-MM-DD HH:mm") : null,
+                task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
+                task.startDate ? moment(task.startDate).format(dateFormat) : null,
                 task.description ? task.description : null,
                 watchers,
                 notes,
                 checklist,
+                task.reminderStartDate ? task.reminderStartDate : null,
+                task.reminderDueDate ? task.reminderDueDate : null,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });
