@@ -611,10 +611,8 @@ Projects.methods.import = new ValidatedMethod({
     const labelsIdsMapping = {};
     const usersIdsMapping = {};
 
-    const findMappedUser = (importedUserId) => {
-      return usersIdsMapping[importedUserId] ?
-      usersIdsMapping[importedUserId] : null;
-    }
+    const findMappedUser = (importedUserId) => usersIdsMapping[importedUserId]
+      ? usersIdsMapping[importedUserId] : null;
 
     if (canImportUsers) {
       const users = await zippedProject.getContent("users");
@@ -662,7 +660,7 @@ Projects.methods.import = new ValidatedMethod({
             name: label.name,
             color: label.color,
             createdAt: new Date(label.createdAt),
-            createdBy: findMappedUser(label.createdBy),
+            createdBy: findMappedUser(label.createdBy)
           });
           labelsIdsMapping[label._id] = labelId;
         });
