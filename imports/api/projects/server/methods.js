@@ -668,6 +668,16 @@ Projects.methods.import = new ValidatedMethod({
                 });
               }
 
+              // Checklist
+              let checklist = null;
+              if (Array.isArray(task.checklist)) {
+                checklist = task.checklist.map((listItem) => {
+                  listItem.createdBy = usersIdsMapping[listItem.createdBy]
+                    ? usersIdsMapping[listItem.createdBy] : null;
+                  return listItem;
+                });
+              }
+
               const assignedTo = task.assignedTo ? usersIdsMapping[task.assignedTo] : null;
 
               Meteor.call(
@@ -679,6 +689,7 @@ Projects.methods.import = new ValidatedMethod({
                 assignedTo,
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
                 notes,
+                checklist,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });

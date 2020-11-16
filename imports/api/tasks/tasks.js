@@ -97,6 +97,7 @@ Meteor.methods({
     assignedTo,
     dueDate,
     notes,
+    checklist,
     taskUserId
   ) {
     check(projectId, String);
@@ -105,6 +106,8 @@ Meteor.methods({
     check(labelIds, Match.Maybe([String]));
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
+
+    // Task notes
     check(notes, Match.Where((taskNotes) => {
       if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
       taskNotes.forEach((note) => {
@@ -119,6 +122,22 @@ Meteor.methods({
       });
       return true;
     }));
+
+    // Checklist items
+    check(checklist, Match.Where((checklistItems) => {
+      if (!Array.isArray(checklistItems) || !checklistItems.length) return true;
+      checklistItems.forEach((listItem) => {
+        check(listItem, {
+          _id: String,
+          createdAt: Match.Maybe(String),
+          createdBy: String,
+          name: String,
+          checked: Match.Maybe(Boolean)
+        });
+      });
+      return true;
+    }));
+
     check(taskUserId, Match.Maybe(String));
     checkCanWriteProject(projectId);
 
@@ -178,7 +197,8 @@ Meteor.methods({
       assignedTo,
       dueDate,
       labels: labelIds || [],
-      notes: notes || []
+      notes: notes || [],
+      checklist: checklist || []
     });
 
     Meteor.call("tasks.track", {
