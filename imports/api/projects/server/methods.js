@@ -13,7 +13,7 @@ import {
   checkLoggedIn,
   checkCanReadProject
 } from "/imports/api/permissions/permissions";
-
+import moment from "moment";
 import JSZip from "jszip";
 
 import {
@@ -675,7 +675,7 @@ Projects.methods.import = new ValidatedMethod({
                 task.name,
                 null, // labelsIds
                 null, // assignedTo
-                null, // dueDate,
+                task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
                 notes,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
