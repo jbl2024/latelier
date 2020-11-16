@@ -733,6 +733,7 @@ Projects.methods.import = new ValidatedMethod({
                 checklist,
                 task.reminderStartDate ? task.reminderStartDate : null,
                 task.reminderDueDate ? task.reminderDueDate : null,
+                task.estimation ? task.estimation : null,
                 usersIdsMapping[task.createdBy] ? usersIdsMapping[task.createdBy] : null
               );
             });

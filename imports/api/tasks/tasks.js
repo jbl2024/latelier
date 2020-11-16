@@ -103,6 +103,7 @@ Meteor.methods({
     checklist,
     reminderStartDate,
     reminderDueDate,
+    estimation,
     taskUserId
   ) {
     check(projectId, String);
@@ -116,6 +117,10 @@ Meteor.methods({
     check(watchers, Match.Maybe([String]));
     check(reminderStartDate, Match.Maybe(Number));
     check(reminderDueDate, Match.Maybe(Number));
+    check(estimation, Match.Optional({
+      size: Match.OneOf(String, Number),
+      spent: Match.OneOf(String, Number)
+    }));
 
     // Task notes
     check(notes, Match.Where((taskNotes) => {
@@ -212,7 +217,8 @@ Meteor.methods({
       notes: notes || [],
       checklist: checklist || [],
       reminderStartDate,
-      reminderDueDate
+      reminderDueDate,
+      estimation
     });
 
     Meteor.call("tasks.track", {
