@@ -1,5 +1,5 @@
 <template>
-  <div v-if="project" class="project-export">
+  <div v-if="project && canManageProject(project)" class="project-export">
     <div class="wrapper">
       <v-subheader>
         {{ $t("project.export.itemsToExport") }}
@@ -36,6 +36,7 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { items } from "/imports/api/projects/importExport/";
 import { saveAs } from "file-saver";
 import { sanitizeForFs } from "/imports/ui/utils/sanitize";
+import { Permissions } from "/imports/api/permissions/permissions";
 import moment from "moment";
 
 export default {
@@ -110,6 +111,12 @@ export default {
     }
   },
   methods: {
+    canManageProject(project) {
+      return (
+        Permissions.isAdmin(Meteor.userId(), project._id)
+        || Permissions.isAdmin(Meteor.userId())
+      );
+    },
     getItemCount(item) {
       if (!this.info || !this.infoMapping[item]) return null;
       return this.info[this.infoMapping[item]];
