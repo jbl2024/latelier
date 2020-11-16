@@ -52,7 +52,7 @@ if (Meteor.isServer) {
       );
     });
 
-    it.only("export project should create a valid zip", async function () {
+    it("export project should create a valid zip", async function () {
       let errorCode = null;
       let zipContent;
       const user = Meteor.users.findOne();
