@@ -96,6 +96,7 @@ Meteor.methods({
     labelIds,
     assignedTo,
     dueDate,
+    startDate,
     description,
     watchers,
     notes,
@@ -108,6 +109,7 @@ Meteor.methods({
     check(labelIds, Match.Maybe([String]));
     check(assignedTo, Match.Maybe(String));
     check(dueDate, Match.Maybe(String));
+    check(startDate, Match.Maybe(String));
     check(description, Match.Maybe(String));
     check(watchers, Match.Maybe([String]));
     // Task notes
@@ -200,6 +202,7 @@ Meteor.methods({
       number,
       assignedTo,
       dueDate,
+      startDate,
       labels: labelIds || [],
       notes: notes || [],
       checklist: checklist || []

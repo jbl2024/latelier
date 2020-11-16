@@ -724,6 +724,7 @@ Projects.methods.import = new ValidatedMethod({
                 Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
                 assignedTo,
                 task.dueDate ? moment(task.dueDate).format("YYYY-MM-DD HH:mm") : null,
+                task.startDate ? moment(task.startDate).format("YYYY-MM-DD HH:mm") : null,
                 task.description ? task.description : null,
                 watchers,
                 notes,
