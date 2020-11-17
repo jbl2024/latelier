@@ -421,6 +421,10 @@
         "weather": {
           "title": "Météo",
           "description": "Importer les rapports météo"
+        },
+        "attachments": {
+          "title": "Documents",
+          "description": "Importer les documents et pièces-jointes"
         }
       }
     },
@@ -433,7 +437,8 @@
         "meetings": "Réunions",
         "bpmn": "Diagrammes BPMN",
         "canvas": "Canvas",
-        "weather": "Météo projet"
+        "weather": "Météo projet",
+        "attachments": "Documents"
       }
     }
   },

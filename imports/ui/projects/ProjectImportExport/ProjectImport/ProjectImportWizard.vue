@@ -146,6 +146,9 @@ export default {
     selectedOrganization() {
       if (!this.organizations) return null;
       return this.organizations.find((organization) => organization._id === this.organizationId);
+    },
+    attachmentsDisabled() {
+      return Meteor.settings?.public?.disableAttachments;
     }
   },
   watch: {
@@ -168,7 +171,12 @@ export default {
           this.metas = this.metadatas.items;
           const availableItems = Object.keys(this.metadatas.items)
             .filter((key) => this.metadatas.items[key]?.count > 0);
-          this.items = this.items.filter((item) => availableItems.includes(item));
+
+          let foundItems = this.items.filter((item) => availableItems.includes(item));
+          if (this.attachmentsDisabled) {
+            foundItems = foundItems.filter((item) => item !== "attachments");
+          }
+          this.items = foundItems;
           this.selectedItems = this.items.slice();
         }
       }

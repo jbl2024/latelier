@@ -1,5 +1,6 @@
 import JSZip from "jszip";
 import ZipProject from "/imports/api/projects/importExport/ZipProject";
+import fs from "fs";
 
 export const items = [
   "tasks",
@@ -7,10 +8,23 @@ export const items = [
   "meetings",
   "bpmn",
   "canvas",
-  "weather"
+  "weather",
+  "attachments"
 ];
 
-export const createProjectExportZip = ({
+export const getAttachmentContent = (attachment) => new Promise((resolve, reject) => {
+  fs.readFile(attachment.path, (err, data) => {
+    if (err) reject(err);
+    resolve(data);
+  });
+});
+
+export const getFileBaseName = (fileName) => {
+  if (!fileName) return "";
+  return fileName.split("/").pop();
+};
+
+export const createProjectExportZip = async ({
   metadatas,
   project,
   users,
@@ -19,7 +33,8 @@ export const createProjectExportZip = ({
   bpmnDiagrams,
   meetings,
   canvas,
-  healthReports
+  healthReports,
+  attachments
 }) => {
   const zip = new JSZip();
   const projectFolder = zip.folder(project._id);
@@ -75,6 +90,20 @@ export const createProjectExportZip = ({
     });
   }
 
+  // Attachments
+  if (Array.isArray(attachments) && attachments.length > 0) {
+    const attachmentsFolder = projectFolder.folder("attachments");
+    itemsMetas.attachments = { count: attachments.length };
+
+    /* eslint no-restricted-syntax: "off" */
+    for (attachment of attachments) {
+      /* eslint no-await-in-loop: "off" */
+      const data = await getAttachmentContent(attachment);
+      attachmentsFolder.file(`${attachment._id} - ${attachment.name}`, data);
+    }
+    attachmentsFolder.file("metadatas.json", JSON.stringify(attachments));
+  }
+
   // Export metadatas
   projectFolder.file("metadatas.json", JSON.stringify({ ...metadatas, items: itemsMetas }));
 
@@ -98,4 +127,19 @@ export const unserializeProjectImportZip = async (zip) => {
     return new ZipProject(zip.folder(projectFolderName));
   });
   return Promise.all(projectsFolders).then((projects) => projects);
+};
+
+export const attachMetadatas = (files, metadatas) => {
+  if (!Array.isArray(files) || !files.length) return [];
+  if (!Array.isArray(metadatas) || !metadatas.length) return files;
+  metadatas.forEach((metadata) => {
+    const foundFile = files.find((file) => {
+      const fileName = getFileBaseName(file.name);
+      return fileName.startsWith(metadata._id);
+    });
+    if (foundFile) {
+      foundFile.metadatas = metadata;
+    }
+  });
+  return files;
 };

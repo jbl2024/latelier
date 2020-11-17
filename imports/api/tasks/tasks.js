@@ -221,10 +221,12 @@ Meteor.methods({
       estimation
     });
 
+    // Slowing import
+    /*
     Meteor.call("tasks.track", {
       type: "tasks.create",
       taskId
-    });
+    }); */
     return Tasks.findOne({ _id: taskId });
   },
 

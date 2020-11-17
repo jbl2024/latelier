@@ -7,9 +7,10 @@
       <v-list dense>
         <v-list-item v-for="(isSelected, item) in selectedItems" :key="item">
           <v-list-item-action>
-            <v-checkbox v-model="selectedItems[item]"
-                        color="accent"
-                        :disabled="!availableItems.includes(item)"
+            <v-checkbox
+              v-model="selectedItems[item]"
+              color="accent"
+              :disabled="!availableItems.includes(item)"
             />
           </v-list-item-action>
           <v-list-item-title>
@@ -53,7 +54,8 @@ export default {
         tasks: "taskCount",
         meetings: "meetingCount",
         users: "userCount",
-        bpmn: "diagramCount"
+        bpmn: "diagramCount",
+        attachments: "attachmentCount"
       }),
       selectedItems: items.reduce((obj, item) => {
         obj[item] = true;
@@ -67,7 +69,7 @@ export default {
     // Available items to export on current project
     availableItems() {
       if (!this.currentProject) return [];
-      const baseItems = ["tasks", "users"];
+      const baseItems = ["tasks", "users", "attachments"];
       return items.filter((item) => {
         if (baseItems.includes(item)) return true;
         return this.hasFeature(this.currentProject, item);
@@ -102,7 +104,7 @@ export default {
       }
     },
     project() {
-      this.refresh();
+      this.getProjectsInfo();
       const project = Projects.findOne();
       if (project) {
         this.$store.dispatch("project/setCurrentProject", project);
@@ -136,7 +138,7 @@ export default {
             });
         });
     },
-    refresh() {
+    getProjectsInfo() {
       Meteor.call("projects.info",
         { projectId: this.projectId },
         (error, result) => {

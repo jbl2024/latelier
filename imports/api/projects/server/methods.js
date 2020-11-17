@@ -5,6 +5,7 @@ import { Labels } from "/imports/api/labels/labels.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { Canvas } from "/imports/api/canvas/canvas";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
+import { Attachments } from "/imports/api/attachments/attachments";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
 import { findProjectMembersIds } from "/imports/api/projects/server/common";
@@ -19,9 +20,9 @@ import JSZip from "jszip";
 
 import {
   createProjectExportZip,
-  unserializeProjectImportZip
+  unserializeProjectImportZip,
+  attachMetadatas
 } from "/imports/api/projects/importExport/";
-
 
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
@@ -203,6 +204,8 @@ Projects.methods.info = new ValidatedMethod({
       }
     );
 
+    const attachmentCount = Attachments.find({ "meta.projectId": projectId }).count();
+
     return {
       taskCount: taskCount,
       completedTaskCount: completedTaskCount,
@@ -210,7 +213,8 @@ Projects.methods.info = new ValidatedMethod({
       userCount: userCount,
       diagramCount: diagramCount,
       canvasProgression: canvasProgression,
-      healthReport: healthReport
+      healthReport: healthReport,
+      attachmentCount: attachmentCount
     };
   }
 });
@@ -450,7 +454,7 @@ Projects.methods.export = new ValidatedMethod({
       type: String
     }
   }).validator(),
-  run({
+  async run({
     projectId,
     items
   }) {
@@ -509,6 +513,11 @@ Projects.methods.export = new ValidatedMethod({
         projectId
       }).fetch() : null;
 
+
+    // Attachments
+    const attachments = items.includes("attachments")
+      ? Attachments.find({ "meta.projectId": projectId }).fetch() : null;
+
     // Export metadata
     currentUser = Meteor.user();
     const metadatas = {
@@ -521,7 +530,7 @@ Projects.methods.export = new ValidatedMethod({
       }
     };
 
-    const zip = createProjectExportZip({
+    const zip = await createProjectExportZip({
       metadatas,
       project,
       users,
@@ -530,11 +539,13 @@ Projects.methods.export = new ValidatedMethod({
       bpmnDiagrams,
       meetings,
       canvas,
-      healthReports
+      healthReports,
+      attachments
     });
-    return zip.generateAsync({ type: "base64" }).then((zipContent) => ({
+    const zipContent = await zip.generateAsync({ type: "base64" });
+    return {
       data: zipContent
-    }));
+    };
   }
 });
 
@@ -814,6 +825,57 @@ Projects.methods.import = new ValidatedMethod({
         });
       }
     }
+
+    const attachmentsDisabled = Meteor.settings?.public?.disableAttachments;
+    if (!attachmentsDisabled && items.includes("attachments")) {
+      const attachmentsFiles = await zippedProject.getFiles("attachments");
+
+      if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
+        const attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
+        if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
+          throw new Meteor.Error("error", "Error when processing attachments metadatas");
+        }
+        attachMetadatas(attachmentsFiles, attachmentsMetadatas);
+
+        const mapAttachmentMeta = (meta) => {
+          const mappedMeta = { ...meta, projectId: createdProjectId };
+          if (mappedMeta.createdAt) {
+            mappedMeta.createdAt = new Date(meta.createdAt);
+          }
+          if (mappedMeta.createdBy) {
+            mappedMeta.createdBy = findMappedUser(mappedMeta.createdBy);
+          }
+          return mappedMeta;
+        };
+
+        const importAttachment = async(attachment) => {
+          if (!attachment.metadatas) {
+            throw new Meteor.Error("error", "Error when processing attachment metadatas");
+          }
+          const data = await attachment.async("uint8array");
+          const attachmentBuffer = Buffer.from(data);
+          return new Promise((resolve, reject) => {
+            Attachments.write(attachmentBuffer, {
+              fileName: attachment.metadatas.name,
+              type: attachment.metadatas.type,
+              userId: currentUserId,
+              meta: mapAttachmentMeta(attachment.metadatas.meta)
+            }, function (writeError, fileRef) {
+              if (writeError) reject(writeError);
+              resolve(fileRef);
+            });
+          });
+        };
+
+        const processAttachments = async (files) => files.reduce(async (p, file) => {
+          await p;
+          return importAttachment(file);
+        }, Promise.resolve());
+
+        await processAttachments(attachmentsFiles);
+      }
+    }
+
     return createdProjectId;
   }
 });

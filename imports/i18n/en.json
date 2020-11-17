@@ -414,6 +414,10 @@
         "weather": {
           "title": "Weather reports",
           "description": "Import health reports"
+        },
+        "attachments": {
+          "title": "Documents",
+          "description": "Import documents and attachments"
         }
       }
     },
@@ -426,7 +430,8 @@
         "meetings": "Meetings",
         "bpmn": "BPMN Diagrams",
         "canvas": "Canvas",
-        "weather": "Project Weather"
+        "weather": "Project Weather",
+        "attachments": "Documnts"
       }
     }
   },
