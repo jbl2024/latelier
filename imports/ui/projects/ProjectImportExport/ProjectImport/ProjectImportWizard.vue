@@ -74,6 +74,14 @@
                 </template>
               </v-list-item>
             </v-list>
+            <div class="pt-2">
+              <v-btn
+                color="primary"
+                @click="stepper = 2"
+              >
+                {{ $t("Next") }}
+              </v-btn>
+            </div>
           </v-stepper-content>
 
           <v-stepper-step step="2" editable>
@@ -81,50 +89,46 @@
           </v-stepper-step>
 
           <v-stepper-content step="2">
-            <v-container fluid>
-              <v-row dense>
-                <!-- Items to import -->
-                <v-list subheader two-line flat>
-                  <v-list-item-group
-                    v-model="selectedItems"
-                    multiple
+            <!-- Items to import -->
+            <v-list subheader two-line flat>
+              <v-list-item-group
+                v-model="selectedItems"
+                multiple
+              >
+                <v-list-item
+                  v-for="item in items"
+                  :key="item"
+                  :value="item"
+                >
+                  <template
+                    v-slot:default="{ active }"
                   >
-                    <v-list-item
-                      v-for="item in items"
-                      :key="item"
-                      :value="item"
-                    >
-                      <template
-                        v-slot:default="{ active }"
-                      >
-                        <v-list-item-action>
-                          <v-checkbox
-                            :input-value="active"
-                            color="accent"
-                          />
-                        </v-list-item-action>
-                        <v-list-item-content>
-                          <v-list-item-title>
-                            {{
-                              $t(
-                                `project.import.items.${item}.title`
-                              )
-                            }}
-                            <span v-if="getItemCount(item)">
-                              {{ `(${getItemCount(item)})` }}
-                            </span>
-                          </v-list-item-title>
-                          <v-list-item-subtitle>
-                            {{ $t(`project.import.items.${item}.description`)
-                            }}
-                          </v-list-item-subtitle>
-                        </v-list-item-content>
-                      </template>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-row>
-            </v-container>
+                    <v-list-item-action>
+                      <v-checkbox
+                        :input-value="active"
+                        color="accent"
+                      />
+                    </v-list-item-action>
+                    <v-list-item-content>
+                      <v-list-item-title>
+                        {{
+                          $t(
+                            `project.import.items.${item}.title`
+                          )
+                        }}
+                        <span v-if="getItemCount(item)">
+                          {{ `(${getItemCount(item)})` }}
+                        </span>
+                      </v-list-item-title>
+                      <v-list-item-subtitle>
+                        {{ $t(`project.import.items.${item}.description`)
+                        }}
+                      </v-list-item-subtitle>
+                    </v-list-item-content>
+                  </template>
+                </v-list-item>
+              </v-list-item-group>
+            </v-list>
             <div class="pt-2">
               <v-btn
                 v-if="organizationId"
