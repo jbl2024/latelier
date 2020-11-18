@@ -397,6 +397,9 @@
       "withoutOrganization": "Sans organisation",
       "importSuccess": "Projet importé avec succès",
       "importLoading": "Importation du projet en cours",
+      "wizard": {
+        "project": "Nom du projet et organisation"
+      },
       "items": {
         "users": {
           "title": "Utilisateurs",

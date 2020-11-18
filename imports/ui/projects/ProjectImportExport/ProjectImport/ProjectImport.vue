@@ -40,6 +40,7 @@
 </template>
 
 <script>
+import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import ProjectImportWizard from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImportWizard";
 import JSZip from "jszip";
 import { unserializeProjectImportZip } from "/imports/api/projects/importExport";
@@ -67,7 +68,8 @@ export default {
       importOptions: {
         project: {
           name: "",
-          organizationId: null
+          organizationId: null,
+          allowOrganization: true
         },
         items: []
       },
@@ -81,6 +83,9 @@ export default {
   },
   computed: {
     currentTitle() {
+      if (this.importOptions?.project?.name) {
+        return `${this.$t("project.import.importProject")} : ${this.importOptions.project.name}`;
+      }
       return this.$t("project.import.importProject");
     },
     showDialog: {
@@ -134,6 +139,9 @@ export default {
           locale: this.$i18n.locale,
           projectName: this.importOptions.project.name,
           organizationId: this.importOptions.project.organizationId,
+          accessRights: this.importOptions.project.allowOrganization
+            ? ProjectAccessRights.ORGANIZATION
+            : ProjectAccessRights.PRIVATE,
           items: this.importOptions.items
         }, (err, projectId) => {
           this.isImporting = false;

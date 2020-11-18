@@ -554,6 +554,7 @@ Projects.methods.import = new ValidatedMethod({
   validate: new SimpleSchema({
     locale: { type: String },
     fileBuffer: { type: Uint8Array },
+    accessRights: { type: String, optional: true },
     projectName: {
       type: String
     },
@@ -572,6 +573,7 @@ Projects.methods.import = new ValidatedMethod({
   async run({
     locale,
     fileBuffer,
+    accessRights,
     projectName,
     items,
     organizationId
@@ -602,7 +604,7 @@ Projects.methods.import = new ValidatedMethod({
         name: projectName,
         projectType: "none",
         state: project.state,
-        accessRights: ProjectAccessRights.ORGANIZATION,
+        accessRights,
         features: project.features,
         locale: locale
       }

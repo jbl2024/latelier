@@ -390,6 +390,9 @@
       "withoutOrganization": "Without organization",
       "importSuccess": "Project imported successfully",
       "importLoading": "Project import in progress",
+      "wizard": {
+        "project": "Project and organizations options"
+      },
       "items": {
         "users": {
           "title": "Users",
