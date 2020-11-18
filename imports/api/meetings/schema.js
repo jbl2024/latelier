@@ -173,6 +173,7 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
   color: { type: String, optional: true },
   location: { type: String, optional: true },
   type: { type: String, optional: true },
+  report: { type: String, optional: true },
   startDate: { type: String },
   endDate: { type: String },
   attendees: {

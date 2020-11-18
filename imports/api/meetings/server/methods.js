@@ -60,6 +60,7 @@ Meetings.methods.create = new ValidatedMethod({
     attendees,
     documents,
     actions,
+    report,
     meetingUserId
   }) {
     checkCanWriteProject(projectId);
@@ -82,6 +83,7 @@ Meetings.methods.create = new ValidatedMethod({
       state,
       description,
       agenda,
+      report,
       color,
       location,
       type,

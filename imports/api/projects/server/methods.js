@@ -21,7 +21,7 @@ import JSZip from "jszip";
 import {
   createProjectExportZip,
   unserializeProjectImportZip,
-  attachMetadatas
+  linkAttachmentsToFiles
 } from "/imports/api/projects/importExport/";
 
 Projects.methods.create = new ValidatedMethod({
@@ -623,12 +623,14 @@ Projects.methods.import = new ValidatedMethod({
     const canImportAttachments = !Meteor.settings?.public?.disableAttachments
     && items.includes("attachments");
 
+    const canImportMeetings = items.includes("meetings");
+
     // Mapping imported ids with inserted ids
     const mappedIds = {
       users: {},
       tasks: {},
       labels: {},
-      meetings: {}
+      attachments: {}
     };
 
     const getMapId = (id, item) => {
@@ -636,9 +638,9 @@ Projects.methods.import = new ValidatedMethod({
       return mappedIds[item][id] ? mappedIds[item][id] : null;
     };
 
+    // Attachments related tasks
     let attachmentsMetadatas = [];
     let attachmentsTasksIds = [];
-
     if (canImportAttachments) {
       attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
       if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
@@ -647,6 +649,18 @@ Projects.methods.import = new ValidatedMethod({
       attachmentsTasksIds = attachmentsMetadatas
         .filter((a) => a.meta?.taskId)
         .map((a) => a.meta.taskId);
+    }
+
+    // Meetings related tasks
+    const meetingsTasksIds = [];
+    let meetings = [];
+    if (canImportMeetings) {
+      meetings = await zippedProject.getContent("meetings");
+      meetings.filter((m) => Array.isArray(m?.actions) && m.actions.length).forEach((meeting) => {
+        meeting.actions.filter((a) => a.taskId).forEach((a) => {
+          meetingsTasksIds.push(a.taskId);
+        });
+      });
     }
 
     if (canImportUsers) {
@@ -772,6 +786,10 @@ Projects.methods.import = new ValidatedMethod({
               if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
                 mappedIds.tasks[task._id] = createdTask._id;
               }
+
+              if (canImportMeetings && meetingsTasksIds.includes(task._id)) {
+                mappedIds.tasks[task._id] = createdTask._id;
+              }
             });
           }
         });
@@ -826,38 +844,10 @@ Projects.methods.import = new ValidatedMethod({
       }
     }
 
-    if (items.includes("meetings")) {
-      const meetings = await zippedProject.getContent("meetings");
-      if (Array.isArray(meetings) && meetings.length) {
-        meetings.forEach((meeting) => {
-          const attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
-          const documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
-          const actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
-          Meteor.call("meetings.create",
-            {
-              projectId: createdProjectId,
-              name: meeting.name,
-              state: meeting?.state ? meeting.state : null,
-              description: meeting?.description ? meeting.description : null,
-              agenda: meeting?.agenda ? meeting.agenda : null,
-              color: meeting?.color ? meeting.color : null,
-              location: meeting?.location ? meeting.location : null,
-              type: meeting?.type ? meeting.type : null,
-              startDate: meeting.startDate,
-              endDate: meeting.endDate,
-              attendees,
-              documents,
-              actions,
-              meetingUserId: getMapId(meeting.createdBy, "users")
-            });
-        });
-      }
-    }
-
     if (canImportAttachments) {
       const attachmentsFiles = await zippedProject.getFiles("attachments");
       if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
-        attachMetadatas(attachmentsFiles, attachmentsMetadatas);
+        linkAttachmentsToFiles(attachmentsFiles, attachmentsMetadatas);
         const mapAttachmentMeta = (meta) => {
           const mappedMeta = { ...meta, projectId: createdProjectId };
           if (mappedMeta.createdAt) {
@@ -872,20 +862,20 @@ Projects.methods.import = new ValidatedMethod({
           return mappedMeta;
         };
 
-        const importAttachment = async(attachment) => {
-          if (!attachment.metadatas) {
+        const importAttachmentFile = async(file) => {
+          if (!file.attachment) {
             throw new Meteor.Error("error", "Error when processing attachment metadatas");
           }
-          const data = await attachment.async("uint8array");
-          const attachmentBuffer = Buffer.from(data);
+          const data = await file.async("uint8array");
           return new Promise((resolve, reject) => {
-            Attachments.write(attachmentBuffer, {
-              fileName: attachment.metadatas.name,
-              type: attachment.metadatas.type,
+            Attachments.write(data, {
+              fileName: file.attachment.name,
+              type: file.attachment.type,
               userId: currentUserId,
-              meta: mapAttachmentMeta(attachment.metadatas.meta)
+              meta: mapAttachmentMeta(file.attachment.meta)
             }, function (writeError, fileRef) {
               if (writeError) reject(writeError);
+              mappedIds.attachments[file.attachment._id] = fileRef._id;
               resolve(fileRef);
             });
           });
@@ -893,10 +883,62 @@ Projects.methods.import = new ValidatedMethod({
 
         const processAttachments = async (files) => files.reduce(async (p, file) => {
           await p;
-          return importAttachment(file);
+          return importAttachmentFile(file);
         }, Promise.resolve());
 
         await processAttachments(attachmentsFiles);
+      }
+    }
+
+    if (canImportMeetings) {
+      if (Array.isArray(meetings) && meetings.length) {
+        meetings.forEach((meeting) => {
+          let attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
+          if (attendees.length > 0) {
+            attendees = attendees.map((attendee) => {
+              if (attendee.userId) {
+                attendee.userId = getMapId(attendee.userId, "users");
+              }
+              return attendee;
+            });
+          }
+
+          let documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
+          if (documents.length > 0) {
+            documents = documents.map((doc) => {
+              doc.documentId = getMapId(doc.documentId, "attachments");
+              return doc;
+            });
+          }
+
+          let actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
+          if (actions.length > 0) {
+            actions = actions.map((action) => {
+              if (action.taskId) {
+                action.taskId = getMapId(action.taskId, "tasks");
+              }
+              return action;
+            });
+          }
+          Meteor.call("meetings.create",
+            {
+              projectId: createdProjectId,
+              name: meeting.name,
+              state: meeting?.state ? meeting.state : null,
+              type: meeting?.type ? meeting.type : null,
+              description: meeting?.description ? meeting.description : null,
+              agenda: meeting?.agenda ? meeting.agenda : null,
+              color: meeting?.color ? meeting.color : null,
+              location: meeting?.location ? meeting.location : null,
+              startDate: meeting.startDate,
+              endDate: meeting.endDate,
+              attendees,
+              documents,
+              actions,
+              report: meeting?.report ? meeting.report : null,
+              meetingUserId: getMapId(meeting.createdBy, "users")
+            });
+        });
       }
     }
 

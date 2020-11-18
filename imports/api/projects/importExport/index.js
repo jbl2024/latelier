@@ -129,16 +129,16 @@ export const unserializeProjectImportZip = async (zip) => {
   return Promise.all(projectsFolders).then((projects) => projects);
 };
 
-export const attachMetadatas = (files, metadatas) => {
+export const linkAttachmentsToFiles = (files, attachments) => {
   if (!Array.isArray(files) || !files.length) return [];
-  if (!Array.isArray(metadatas) || !metadatas.length) return files;
-  metadatas.forEach((metadata) => {
+  if (!Array.isArray(attachments) || !attachments.length) return files;
+  attachments.forEach((attachment) => {
     const foundFile = files.find((file) => {
       const fileName = getFileBaseName(file.name);
-      return fileName.startsWith(metadata._id);
+      return fileName.startsWith(attachment._id);
     });
     if (foundFile) {
-      foundFile.metadatas = metadata;
+      foundFile.attachment = attachment;
     }
   });
   return files;
