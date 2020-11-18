@@ -619,18 +619,41 @@ Projects.methods.import = new ValidatedMethod({
       && !Meteor.settings.disableAccountCreation
       && Permissions.isAdmin(currentUserId);
 
-    const labelsIdsMapping = {};
-    const usersIdsMapping = {};
+    const canImportAttachments = !Meteor.settings?.public?.disableAttachments
+    && items.includes("attachments");
 
-    const findMappedUser = (importedUserId) => usersIdsMapping[importedUserId]
-      ? usersIdsMapping[importedUserId] : null;
+    // Mapping imported ids with inserted ids
+    const mappedIds = {
+      users: {},
+      tasks: {},
+      labels: {},
+      meetings: {}
+    };
+
+    const getMapId = (id, item) => {
+      if (!mappedIds[item]) return null;
+      return mappedIds[item][id] ? mappedIds[item][id] : null;
+    };
+
+    let attachmentsMetadatas = [];
+    let attachmentsTasksIds = [];
+
+    if (canImportAttachments) {
+      attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
+      if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
+        throw new Meteor.Error("error", "Error when processing attachments metadatas");
+      }
+      attachmentsTasksIds = attachmentsMetadatas
+        .filter((a) => a.meta?.taskId)
+        .map((a) => a.meta.taskId);
+    }
 
     if (canImportUsers) {
       const users = await zippedProject.getContent("users");
       const usersIds = Object.keys(users);
       if (users && usersIds.length) {
         usersIds.forEach((userId) => {
-          if (!usersIdsMapping[userId]) {
+          if (!mappedIds.users[userId]) {
             const user = users[userId];
             const userEmail = UserUtils.getEmail(user);
             const existingUser = Meteor.users.findOne({
@@ -651,7 +674,7 @@ Projects.methods.import = new ValidatedMethod({
               throw new Meteor.Error("error", "Error when retrieving user");
             }
 
-            usersIdsMapping[user._id] = createdUserId;
+            mappedIds.users[user._id] = createdUserId;
             Meteor.call("projects.addMember", {
               projectId: createdProjectId,
               userId: createdUserId
@@ -671,9 +694,9 @@ Projects.methods.import = new ValidatedMethod({
             name: label.name,
             color: label.color,
             createdAt: new Date(label.createdAt),
-            createdBy: findMappedUser(label.createdBy)
+            createdBy: getMapId(label.createdBy, "users")
           });
-          labelsIdsMapping[label._id] = labelId;
+          mappedIds.labels[label._id] = labelId;
         });
       }
 
@@ -686,7 +709,7 @@ Projects.methods.import = new ValidatedMethod({
             taskList.name,
             taskList?.autoComplete ? taskList.autoComplete : null,
             taskList?.catchCompleted ? taskList.catchCompleted : null,
-            findMappedUser(taskList.createdBy)
+            getMapId(taskList.createdBy, "users")
           );
 
           // Tasks
@@ -696,9 +719,9 @@ Projects.methods.import = new ValidatedMethod({
               let notes = null;
               if (Array.isArray(task.notes)) {
                 notes = task.notes.map((note) => {
-                  note.createdBy = findMappedUser(note.createdBy);
+                  note.createdBy = getMapId(note.createdBy, "users");
                   if (note.editedBy) {
-                    note.editedBy = findMappedUser(note.editedBy);
+                    note.editedBy = getMapId(note.editedBy, "users");
                   }
                   return note;
                 });
@@ -708,7 +731,7 @@ Projects.methods.import = new ValidatedMethod({
               let checklist = null;
               if (Array.isArray(task.checklist)) {
                 checklist = task.checklist.map((listItem) => {
-                  listItem.createdBy = findMappedUser(listItem.createdBy);
+                  listItem.createdBy = getMapId(listItem.createdBy, "users");
                   return listItem;
                 });
               }
@@ -716,23 +739,23 @@ Projects.methods.import = new ValidatedMethod({
               // Labels
               let taskLabelsIds = null;
               if (Array.isArray(task.labels)) {
-                taskLabelsIds = task.labels.map((labelId) => labelsIdsMapping[labelId]
-                  ? labelsIdsMapping[labelId] : null).filter((l) => l);
+                taskLabelsIds = task.labels.map((labelId) => mappedIds.labels[labelId]
+                  ? mappedIds.labels[labelId] : null).filter((l) => l);
               }
 
               // Watchers
               let watchers = null;
               if (Array.isArray(task.watchers) && task.watchers.length > 0) {
-                watchers = task.watchers.map((watcherId) => findMappedUser(watcherId));
+                watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
               }
 
-              Meteor.call(
+              const createdTask = Meteor.call(
                 "tasks.insert",
                 createdList.projectId,
                 createdList._id,
                 task.name,
                 Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
-                findMappedUser(task.assignedTo),
+                getMapId(task.assignedTo, "users"),
                 task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
                 task.startDate ? moment(task.startDate).format(dateFormat) : null,
                 task.description ? task.description : null,
@@ -742,8 +765,12 @@ Projects.methods.import = new ValidatedMethod({
                 task.reminderStartDate ? task.reminderStartDate : null,
                 task.reminderDueDate ? task.reminderDueDate : null,
                 task.estimation ? task.estimation : null,
-                findMappedUser(task.createdBy)
+                getMapId(task.createdBy, "users")
               );
+
+              if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
+                mappedIds.tasks[task._id] = createdTask._id;
+              }
             });
           }
         });
@@ -761,7 +788,7 @@ Projects.methods.import = new ValidatedMethod({
               name: diagram.name,
               description: diagram?.description ? diagram.description : null,
               xml: diagram?.xml ? diagram.xml : null,
-              diagramUserId: findMappedUser(diagram.createdBy)
+              diagramUserId: getMapId(diagram.createdBy, "users")
             });
         });
       }
@@ -774,7 +801,7 @@ Projects.methods.import = new ValidatedMethod({
         Canvas.insert({
           projectId: createdProjectId,
           createdAt: new Date(),
-          createdBy: findMappedUser(canvas.createdBy),
+          createdBy: getMapId(canvas.createdBy, "users"),
           data: canvas.data
         });
       }
@@ -792,7 +819,7 @@ Projects.methods.import = new ValidatedMethod({
               description: healthReport?.description ? healthReport.description : null,
               date: healthReport.date,
               weather: healthReport.weather,
-              reportUserId: findMappedUser(healthReport.createdBy)
+              reportUserId: getMapId(healthReport.createdBy, "users")
             });
         });
       }
@@ -820,30 +847,26 @@ Projects.methods.import = new ValidatedMethod({
               attendees,
               documents,
               actions,
-              meetingUserId: findMappedUser(meeting.createdBy)
+              meetingUserId: getMapId(meeting.createdBy, "users")
             });
         });
       }
     }
 
-    const attachmentsDisabled = Meteor.settings?.public?.disableAttachments;
-    if (!attachmentsDisabled && items.includes("attachments")) {
+    if (canImportAttachments) {
       const attachmentsFiles = await zippedProject.getFiles("attachments");
-
       if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
-        const attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
-        if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
-          throw new Meteor.Error("error", "Error when processing attachments metadatas");
-        }
         attachMetadatas(attachmentsFiles, attachmentsMetadatas);
-
         const mapAttachmentMeta = (meta) => {
           const mappedMeta = { ...meta, projectId: createdProjectId };
           if (mappedMeta.createdAt) {
             mappedMeta.createdAt = new Date(meta.createdAt);
           }
           if (mappedMeta.createdBy) {
-            mappedMeta.createdBy = findMappedUser(mappedMeta.createdBy);
+            mappedMeta.createdBy = getMapId(mappedMeta.createdBy, "users");
+          }
+          if (mappedMeta.taskId) {
+            mappedMeta.taskId = getMapId(mappedMeta.taskId, "tasks");
           }
           return mappedMeta;
         };
