@@ -422,6 +422,7 @@
       }
     },
     "export": {
+      "invalidExport": "Invalid export project",
       "itemsToExport": "Items to export",
       "export": "Export project",
       "items": {

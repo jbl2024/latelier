@@ -429,6 +429,7 @@
       }
     },
     "export": {
+      "invalidExport": "Fichier d'export invalide",
       "itemsToExport": "Éléments à exporter",
       "export": "Exporter le projet",
       "items": {

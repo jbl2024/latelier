@@ -130,12 +130,13 @@ export default {
           items: this.selectedItemsList
         },
         (error, result) => {
-          fetch(`data:application/octet-stream;base64,${result.data}`)
-            .then((res) => res.blob())
-            .then((blob) => {
-              const timestamp = moment().format("YYYY-MM-DD");
-              saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
-            });
+          if (error || !result?.data || result.data.constructor !== Uint8Array) {
+            this.$notifyError(this.$t("projects.export.invalidExport"));
+            return;
+          }
+          const blob = new Blob([result.data]);
+          const timestamp = moment().format("YYYY-MM-DD");
+          saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
         });
     },
     getProjectsInfo() {

@@ -16,7 +16,7 @@ const createProject = (context, projectData) => {
 };
 
 if (Meteor.isServer) {
-  describe("projectsimportExport", function () {
+  describe.only("projectsimportExport", function () {
     beforeEach(function () {
       initData();
       createStubs();
@@ -68,11 +68,10 @@ if (Meteor.isServer) {
       expect(errorCode, "should not throw error").to.equal(null);
       expect(zipContent, "should be an object").to.be.a("object");
       expect(zipContent, "should have a data property").to.have.property("data");
-      expect(zipContent.data, "should be a string").to.be.a("string");
       expect(zipContent.data, "should not be empty").to.not.be.empty;
+      expect(zipContent.data.constructor, "should be a Uint8Array type array").to.equal(Uint8Array);
 
-      const buffer = Buffer.from(zipContent.data, "base64");
-      const zip = await JSZip.loadAsync(buffer);
+      const zip = await JSZip.loadAsync(zipContent.data);
 
       expect(zip, "should be an object").to.be.a("object");
       expect(zip, "should have a files property").to.have.property("files");

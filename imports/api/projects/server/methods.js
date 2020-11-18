@@ -542,7 +542,7 @@ Projects.methods.export = new ValidatedMethod({
       healthReports,
       attachments
     });
-    const zipContent = await zip.generateAsync({ type: "base64" });
+    const zipContent = await zip.generateAsync({ type: "uint8array" });
     return {
       data: zipContent
     };
@@ -582,8 +582,7 @@ Projects.methods.import = new ValidatedMethod({
     }
 
     items = Array.isArray(items) ? items : [];
-    const buffer = Buffer.from(fileBuffer, "utf-8");
-    const zip = await JSZip.loadAsync(buffer);
+    const zip = await JSZip.loadAsync(fileBuffer);
     const zippedProjects = await unserializeProjectImportZip(zip);
     if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
       throw new Meteor.Error("error", "Error when processing project import");
