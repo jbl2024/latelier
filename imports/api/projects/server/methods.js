@@ -224,10 +224,11 @@ Projects.methods.adminFind = new ValidatedMethod({
   validate: new SimpleSchema({
     page: { type: Number },
     filter: { type: String, optional: true },
-    projectState: { type: String, optional: true },
+    projectStates: { type: Array, optional: true },
+    "projectStates.$": { type: String },
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
-  run({ page, filter, projectState, isDeleted }) {
+  run({ page, filter, projectStates, isDeleted }) {
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
@@ -249,8 +250,8 @@ Projects.methods.adminFind = new ValidatedMethod({
       };
     }
 
-    if (projectState) {
-      query.state = projectState;
+    if (Array.isArray(projectStates) && projectStates.length) {
+      query.state = { $in: projectStates };
     }
 
     if (isDeleted) {

@@ -8,7 +8,7 @@
       <v-card-text>
         <v-container>
           <v-row dense>
-            <v-col cols="12" sm="12" lg="8">
+            <v-col cols="12" sm="12" lg="12">
               <v-text-field
                 :label="$t('Search') + '...'"
                 single-line
@@ -17,10 +17,12 @@
                 @input="debouncedFilter"
               />
             </v-col>
-            <v-col cols="12" sm="12" lg="4">
+            <v-col cols="12" sm="12" lg="12">
               <v-select
-                v-model="filterProjectState"
+                v-model="selectedStates"
+                :label="$t('State')"
                 :items="projectStates"
+                multiple
                 item-text="label"
                 item-value="value"
               />
@@ -166,7 +168,7 @@ export default {
         rowsPerPage: 0,
         totalPages: 0
       },
-      filterProjectState: null,
+      selectedStates: [],
       filterDeleted: false,
       migrating: false,
       showProjectImport: false,
@@ -185,25 +187,28 @@ export default {
       });
       return states;
     },
-    refreshParams() {
+    params() {
       return [
-        this.page,
         this.filterDeleted,
-        this.filterProjectState,
+        this.selectedStates,
         this.search
       ];
     }
   },
   watch: {
-    refreshParams: {
-      immediate: true,
-      handler() {
-        if (this.page !== 1) {
-          this.page = 1;
-        }
+    page() {
+      this.refresh();
+    },
+    params() {
+      if (this.page !== 1) {
+        this.page = 1;
+      } else {
         this.refresh();
       }
     }
+  },
+  mounted() {
+    this.refresh();
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -217,7 +222,7 @@ export default {
         {
           page: this.page,
           filter: this.search,
-          projectState: this.filterProjectState,
+          projectStates: this.selectedStates,
           isDeleted: this.filterDeleted
         },
         (error, result) => {
