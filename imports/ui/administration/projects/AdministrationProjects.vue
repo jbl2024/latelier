@@ -7,14 +7,22 @@
     <v-card class="center">
       <v-card-text>
         <v-container>
-          <v-row>
-            <v-col cols="12" sm="12" lg="10">
+          <v-row dense>
+            <v-col cols="12" sm="12" lg="8">
               <v-text-field
                 :label="$t('Search') + '...'"
                 single-line
                 append-icon="mdi-magnify"
                 clearable
                 @input="debouncedFilter"
+              />
+            </v-col>
+            <v-col cols="12" sm="12" lg="4">
+              <v-select
+                v-model="filterProjectState"
+                :items="projectStates"
+                item-text="label"
+                item-value="value"
               />
             </v-col>
             <v-col sm="6" md="6" lg="2">
@@ -134,7 +142,7 @@
 
 <script>
 import { Meteor } from "meteor/meteor";
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+import { ProjectStates, ProjectAccessRights } from "/imports/api/projects/projects.js";
 import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImport";
 import UploadButton from "/imports/ui/widgets/UploadButton";
 
@@ -158,6 +166,7 @@ export default {
         rowsPerPage: 0,
         totalPages: 0
       },
+      filterProjectState: null,
       filterDeleted: false,
       migrating: false,
       showProjectImport: false,
@@ -165,27 +174,36 @@ export default {
       isUploading: false
     };
   },
+  computed: {
+    projectStates() {
+      const states = [];
+      Object.keys(ProjectStates).forEach((state) => {
+        states.push({
+          value: ProjectStates[state],
+          label: this.$t(`projects.state.${state}`)
+        });
+      });
+      return states;
+    },
+    refreshParams() {
+      return [
+        this.page,
+        this.filterDeleted,
+        this.filterProjectState,
+        this.search
+      ];
+    }
+  },
   watch: {
-    page() {
-      this.refresh();
-    },
-    filterDeleted() {
-      if (this.page !== 1) {
-        this.page = 1;
-      } else {
-        this.refresh();
-      }
-    },
-    search() {
-      if (this.page > 1) {
-        this.page = 1;
-      } else {
+    refreshParams: {
+      immediate: true,
+      handler() {
+        if (this.page !== 1) {
+          this.page = 1;
+        }
         this.refresh();
       }
     }
-  },
-  mounted() {
-    this.refresh();
   },
   created() {
     this.debouncedFilter = debounce((val) => {
@@ -199,6 +217,7 @@ export default {
         {
           page: this.page,
           filter: this.search,
+          projectState: this.filterProjectState,
           isDeleted: this.filterDeleted
         },
         (error, result) => {

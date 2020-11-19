@@ -299,7 +299,9 @@
       "PLANNED": "Planned",
       "DEVELOPMENT": "Development",
       "PRODUCTION": "Production",
-      "ARCHIVED": "Archived"
+      "ARCHIVED": "Archived",
+      "IMPORTING": "Importing",
+      "ERROR": "Error"
     },
     "features": {
       "chooseFeature": "Choose feature",
@@ -422,6 +424,14 @@
           "title": "Documents",
           "description": "Import documents and attachments"
         }
+      },
+      "errors": {
+        "Error when processing project import": "Error when processing project import",
+        "Error when processing project infos": "Error when processing project infos",
+        "Error when creating project": "Error when creating project",
+        "Error when processing attachments metadatas": "Error when processing attachments metadatas",
+        "Error when processing attachment metadatas": "Error when processing attachment metadatas",
+        "Error when importing user": "Error when importing user"
       }
     },
     "export": {

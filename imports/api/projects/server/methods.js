@@ -1,5 +1,5 @@
 import SimpleSchema from "simpl-schema";
-import { Projects, ProjectAccessRights, ProjectExportVersions } from "../projects";
+import { Projects, ProjectStates, ProjectAccessRights, ProjectExportVersions } from "../projects";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Labels } from "/imports/api/labels/labels.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
@@ -224,9 +224,10 @@ Projects.methods.adminFind = new ValidatedMethod({
   validate: new SimpleSchema({
     page: { type: Number },
     filter: { type: String, optional: true },
+    projectState: { type: String, optional: true },
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
-  run({ page, filter, isDeleted }) {
+  run({ page, filter, projectState, isDeleted }) {
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
@@ -247,6 +248,11 @@ Projects.methods.adminFind = new ValidatedMethod({
         $options: "i"
       };
     }
+
+    if (projectState) {
+      query.state = projectState;
+    }
+
     if (isDeleted) {
       query.deleted = true;
     }
@@ -578,370 +584,395 @@ Projects.methods.import = new ValidatedMethod({
     items,
     organizationId
   }) {
-    const currentUserId = Meteor.userId();
-    if (!Permissions.isAdmin(currentUserId, organizationId)) {
-      throw new Meteor.Error("not-authorized");
-    }
+    let createdProjectId;
+    try {
 
-    items = Array.isArray(items) ? items : [];
-    const zip = await JSZip.loadAsync(fileBuffer);
-    const zippedProjects = await unserializeProjectImportZip(zip);
-    if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
-      throw new Meteor.Error("error", "Error when processing project import");
-    }
-    const zippedProject = zippedProjects[0];
-    const project = await zippedProject.getContent("project");
-
-    if (!project) {
-      throw new Meteor.Error("error", "Error when processing project infos");
-    }
-
-    // Project
-    const createdProjectId = Meteor.call(
-      "projects.create",
-      {
-        organizationId: organizationId || null,
-        name: projectName,
-        projectType: "none",
-        state: project.state,
-        accessRights,
-        features: project.features,
-        locale: locale
+      const currentUserId = Meteor.userId();
+      if (!Permissions.isAdmin(currentUserId, organizationId)) {
+        throw new Meteor.Error("not-authorized");
       }
-    );
-
-    if (!createdProjectId) {
-      throw new Meteor.Error("error", "Error when creating project");
-    }
-
-    const dateFormat = "YYYY-MM-DD HH:mm";
-
-    const canImportUsers = items.includes("users")
-      && !Meteor.settings.disableAccountCreation
-      && Permissions.isAdmin(currentUserId);
-
-    const canImportAttachments = !Meteor.settings?.public?.disableAttachments
-    && items.includes("attachments");
-
-    const canImportMeetings = items.includes("meetings");
-
-    // Mapping imported ids with inserted ids
-    const mappedIds = {
-      users: {},
-      tasks: {},
-      labels: {},
-      attachments: {}
-    };
-
-    const getMapId = (id, item) => {
-      if (!mappedIds[item]) return null;
-      return mappedIds[item][id] ? mappedIds[item][id] : null;
-    };
-
-    // Attachments related tasks
-    let attachmentsMetadatas = [];
-    let attachmentsTasksIds = [];
-    if (canImportAttachments) {
-      attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
-      if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
-        throw new Meteor.Error("error", "Error when processing attachments metadatas");
+  
+      items = Array.isArray(items) ? items : [];
+      const zip = await JSZip.loadAsync(fileBuffer);
+      const zippedProjects = await unserializeProjectImportZip(zip);
+      if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
+        throw new Meteor.Error("project-import", "Error when processing project import");
       }
-      attachmentsTasksIds = attachmentsMetadatas
-        .filter((a) => a.meta?.taskId)
-        .map((a) => a.meta.taskId);
-    }
-
-    // Meetings related tasks
-    const meetingsTasksIds = [];
-    let meetings = [];
-    if (canImportMeetings) {
-      meetings = await zippedProject.getContent("meetings");
-      meetings.filter((m) => Array.isArray(m?.actions) && m.actions.length).forEach((meeting) => {
-        meeting.actions.filter((a) => a.taskId).forEach((a) => {
-          meetingsTasksIds.push(a.taskId);
-        });
-      });
-    }
-
-    if (canImportUsers) {
-      const users = await zippedProject.getContent("users");
-      const usersIds = Object.keys(users);
-      if (users && usersIds.length) {
-        usersIds.forEach((userId) => {
-          if (!mappedIds.users[userId]) {
-            const user = users[userId];
-            const userEmail = UserUtils.getEmail(user);
-            const existingUser = Meteor.users.findOne({
-              emails: {
-                $elemMatch: {
-                  address: { $regex: userEmail, $options: "i" }
-                }
-              }
-            });
-            const createdUserId = existingUser && existingUser?._id
-              ? existingUser._id : Accounts.createUser({
-                createdAt: new Date(),
-                email: userEmail,
-                profile: user.profile
-              });
-
-            if (!createdUserId) {
-              throw new Meteor.Error("error", "Error when retrieving user");
-            }
-
-            mappedIds.users[user._id] = createdUserId;
-            Meteor.call("projects.addMember", {
-              projectId: createdProjectId,
-              userId: createdUserId
-            });
-          }
-        });
+      const zippedProject = zippedProjects[0];
+      const project = await zippedProject.getContent("project");
+  
+      if (!project) {
+        throw new Meteor.Error("project-import", "Error when processing project infos");
       }
-    }
+  
+      // Project
+      createdProjectId = Meteor.call(
+        "projects.create",
+        {
+          organizationId: organizationId || null,
+          name: projectName,
+          projectType: "none",
+          state: ProjectStates.IMPORTING,
+          accessRights,
+          features: project.features,
+          locale: locale
+        }
+      );
+  
+      if (!createdProjectId) {
+        throw new Meteor.Error("project-import", "Error when creating project");
+      }
+  
+      const dateFormat = "YYYY-MM-DD HH:mm";
+  
+      const canImportUsers = items.includes("users")
+        && !Meteor.settings.disableAccountCreation
+        && Permissions.isAdmin(currentUserId);
+  
+      const canImportAttachments = !Meteor.settings?.public?.disableAttachments
+      && items.includes("attachments");
+  
+      const canImportMeetings = items.includes("meetings");
 
-    // Tasks and associations (Lists, Labels ...)
-    if (items.includes("tasks")) {
-      const labels = await zippedProject.getContent("labels");
-      if (Array.isArray(labels) && labels.length) {
-        labels.forEach((label) => {
-          const labelId = Labels.insert({
-            projectId: createdProjectId,
-            name: label.name,
-            color: label.color,
-            createdAt: new Date(label.createdAt),
-            createdBy: getMapId(label.createdBy, "users")
+      const canImportTasks = items.includes("tasks");
+  
+      // Mapping imported ids with inserted ids
+      const mappedIds = {
+        users: {},
+        tasks: {},
+        labels: {},
+        attachments: {}
+      };
+  
+      const getMapId = (id, item) => {
+        if (item === "users" && !canImportUsers) return currentUserId;
+        if (!mappedIds[item]) return null;
+        return mappedIds[item][id] ? mappedIds[item][id] : null;
+      };
+  
+      // Attachments related tasks
+      let attachmentsMetadatas = [];
+      let attachmentsTasksIds = [];
+      if (canImportAttachments) {
+        attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
+        if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
+          throw new Meteor.Error("project-import", "Error when processing attachments metadatas");
+        }
+        attachmentsTasksIds = attachmentsMetadatas
+          .filter((a) => a.meta?.taskId)
+          .map((a) => a.meta.taskId);
+      }
+  
+      // Meetings related tasks
+      const meetingsTasksIds = [];
+      let meetings = [];
+      if (canImportMeetings) {
+        meetings = await zippedProject.getContent("meetings");
+        meetings.filter((m) => Array.isArray(m?.actions) && m.actions.length).forEach((meeting) => {
+          meeting.actions.filter((a) => a.taskId).forEach((a) => {
+            meetingsTasksIds.push(a.taskId);
           });
-          mappedIds.labels[label._id] = labelId;
         });
       }
-
-      const tasksLists = await zippedProject.getContent("tasks");
-      if (Array.isArray(tasksLists) && tasksLists.length) {
-        tasksLists.forEach((taskList) => {
-          const createdList = Meteor.call(
-            "lists.insert",
-            createdProjectId,
-            taskList.name,
-            taskList?.autoComplete ? taskList.autoComplete : null,
-            taskList?.catchCompleted ? taskList.catchCompleted : null,
-            getMapId(taskList.createdBy, "users")
-          );
-
-          // Tasks
-          if (createdList && Array.isArray(taskList?.tasks)) {
-            taskList.tasks.forEach((task) => {
-              // Notes
-              let notes = null;
-              if (Array.isArray(task.notes)) {
-                notes = task.notes.map((note) => {
-                  note.createdBy = getMapId(note.createdBy, "users");
-                  if (note.editedBy) {
-                    note.editedBy = getMapId(note.editedBy, "users");
+  
+      if (canImportUsers) {
+        const users = await zippedProject.getContent("users");
+        const usersIds = Object.keys(users);
+        if (users && usersIds.length) {
+          usersIds.forEach((userId) => {
+            if (!mappedIds.users[userId]) {
+              const user = users[userId];
+              const userEmail = UserUtils.getEmail(user);
+              const existingUser = Meteor.users.findOne({
+                emails: {
+                  $elemMatch: {
+                    address: { $regex: userEmail, $options: "i" }
                   }
-                  return note;
+                }
+              });
+              const createdUserId = existingUser && existingUser?._id
+                ? existingUser._id : Accounts.createUser({
+                  createdAt: new Date(),
+                  email: userEmail,
+                  profile: user.profile
                 });
+  
+              if (!createdUserId) {
+                throw new Meteor.Error("project-import", "Error when importing user");
               }
-
-              // Checklist
-              let checklist = null;
-              if (Array.isArray(task.checklist)) {
-                checklist = task.checklist.map((listItem) => {
-                  listItem.createdBy = getMapId(listItem.createdBy, "users");
-                  return listItem;
-                });
-              }
-
-              // Labels
-              let taskLabelsIds = null;
-              if (Array.isArray(task.labels)) {
-                taskLabelsIds = task.labels.map((labelId) => mappedIds.labels[labelId]
-                  ? mappedIds.labels[labelId] : null).filter((l) => l);
-              }
-
-              // Watchers
-              let watchers = null;
-              if (Array.isArray(task.watchers) && task.watchers.length > 0) {
-                watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
-              }
-
-              const createdTask = Meteor.call(
-                "tasks.insert",
-                createdList.projectId,
-                createdList._id,
-                task.name,
-                Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
-                getMapId(task.assignedTo, "users"),
-                task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
-                task.startDate ? moment(task.startDate).format(dateFormat) : null,
-                task.description ? task.description : null,
-                watchers,
-                notes,
-                checklist,
-                task.reminderStartDate ? task.reminderStartDate : null,
-                task.reminderDueDate ? task.reminderDueDate : null,
-                task.estimation ? task.estimation : null,
-                getMapId(task.createdBy, "users")
-              );
-
-              if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
-                mappedIds.tasks[task._id] = createdTask._id;
-              }
-
-              if (canImportMeetings && meetingsTasksIds.includes(task._id)) {
-                mappedIds.tasks[task._id] = createdTask._id;
-              }
-            });
-          }
-        });
-      }
-    }
-
-    // BPMN Diagrams
-    if (items.includes("bpmn")) {
-      const bpmnDiagrams = await zippedProject.getContent("bpmn");
-      if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
-        bpmnDiagrams.forEach((diagram) => {
-          Meteor.call("processDiagrams.create",
-            {
-              projectId: createdProjectId,
-              name: diagram.name,
-              description: diagram?.description ? diagram.description : null,
-              xml: diagram?.xml ? diagram.xml : null,
-              diagramUserId: getMapId(diagram.createdBy, "users")
-            });
-        });
-      }
-    }
-
-    // Canvas
-    if (items.includes("canvas")) {
-      const canvas = await zippedProject.getContent("canvas");
-      if (canvas && canvas._id && canvas.data) {
-        Canvas.insert({
-          projectId: createdProjectId,
-          createdAt: new Date(),
-          createdBy: getMapId(canvas.createdBy, "users"),
-          data: canvas.data
-        });
-      }
-    }
-
-    // Weather (Health reports)
-    if (items.includes("weather")) {
-      const healthReports = await zippedProject.getContent("weather");
-      if (Array.isArray(healthReports) && healthReports.length) {
-        healthReports.forEach((healthReport) => {
-          Meteor.call("healthReports.create",
-            {
-              projectId: createdProjectId,
-              name: healthReport.name,
-              description: healthReport?.description ? healthReport.description : null,
-              date: healthReport.date,
-              weather: healthReport.weather,
-              reportUserId: getMapId(healthReport.createdBy, "users")
-            });
-        });
-      }
-    }
-
-    if (canImportAttachments) {
-      const attachmentsFiles = await zippedProject.getFiles("attachments");
-      if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
-        linkAttachmentsToFiles(attachmentsFiles, attachmentsMetadatas);
-        const mapAttachmentMeta = (meta) => {
-          const mappedMeta = { ...meta, projectId: createdProjectId };
-          if (mappedMeta.createdAt) {
-            mappedMeta.createdAt = new Date(meta.createdAt);
-          }
-          if (mappedMeta.createdBy) {
-            mappedMeta.createdBy = getMapId(mappedMeta.createdBy, "users");
-          }
-          if (mappedMeta.taskId) {
-            mappedMeta.taskId = getMapId(mappedMeta.taskId, "tasks");
-          }
-          return mappedMeta;
-        };
-
-        const importAttachmentFile = async(file) => {
-          if (!file.attachment) {
-            throw new Meteor.Error("error", "Error when processing attachment metadatas");
-          }
-          const data = await file.async("uint8array");
-          return new Promise((resolve, reject) => {
-            Attachments.write(data, {
-              fileName: file.attachment.name,
-              type: file.attachment.type,
-              userId: currentUserId,
-              meta: mapAttachmentMeta(file.attachment.meta)
-            }, function (writeError, fileRef) {
-              if (writeError) reject(writeError);
-              mappedIds.attachments[file.attachment._id] = fileRef._id;
-              resolve(fileRef);
-            });
+  
+              mappedIds.users[user._id] = createdUserId;
+              Meteor.call("projects.addMember", {
+                projectId: createdProjectId,
+                userId: createdUserId
+              });
+            }
           });
-        };
-
-        const processAttachments = async (files) => files.reduce(async (p, file) => {
-          await p;
-          return importAttachmentFile(file);
-        }, Promise.resolve());
-
-        await processAttachments(attachmentsFiles);
+        }
       }
-    }
-
-    if (canImportMeetings) {
-      if (Array.isArray(meetings) && meetings.length) {
-        meetings.forEach((meeting) => {
-          let attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
-          if (attendees.length > 0) {
-            attendees = attendees.map((attendee) => {
-              if (attendee.userId) {
-                attendee.userId = getMapId(attendee.userId, "users");
-              }
-              return attendee;
-            });
-          }
-
-          let documents = Array.isArray(meeting?.documents) ? meeting?.documents : null;
-          if (documents.length > 0) {
-            documents = documents.map((doc) => {
-              doc.documentId = getMapId(doc.documentId, "attachments");
-              return doc;
-            });
-          }
-
-          let actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
-          if (actions.length > 0) {
-            actions = actions.map((action) => {
-              if (action.taskId) {
-                action.taskId = getMapId(action.taskId, "tasks");
-              }
-              return action;
-            });
-          }
-          Meteor.call("meetings.create",
-            {
+  
+      // Tasks and associations (Lists, Labels ...)
+      if (canImportTasks) {
+        const labels = await zippedProject.getContent("labels");
+        if (Array.isArray(labels) && labels.length) {
+          labels.forEach((label) => {
+            const labelId = Labels.insert({
               projectId: createdProjectId,
-              name: meeting.name,
-              state: meeting?.state ? meeting.state : null,
-              type: meeting?.type ? meeting.type : null,
-              description: meeting?.description ? meeting.description : null,
-              agenda: meeting?.agenda ? meeting.agenda : null,
-              color: meeting?.color ? meeting.color : null,
-              location: meeting?.location ? meeting.location : null,
-              startDate: meeting.startDate,
-              endDate: meeting.endDate,
-              attendees,
-              documents,
-              actions,
-              report: meeting?.report ? meeting.report : null,
-              meetingUserId: getMapId(meeting.createdBy, "users")
+              name: label.name,
+              color: label.color,
+              createdAt: new Date(label.createdAt),
+              createdBy: getMapId(label.createdBy, "users")
             });
+            mappedIds.labels[label._id] = labelId;
+          });
+        }
+  
+        const tasksLists = await zippedProject.getContent("tasks");
+        if (Array.isArray(tasksLists) && tasksLists.length) {
+          tasksLists.forEach((taskList) => {
+            const createdList = Meteor.call(
+              "lists.insert",
+              createdProjectId,
+              taskList.name,
+              taskList?.autoComplete ? taskList.autoComplete : null,
+              taskList?.catchCompleted ? taskList.catchCompleted : null,
+              getMapId(taskList.createdBy, "users")
+            );
+  
+            // Tasks
+            if (createdList && Array.isArray(taskList?.tasks)) {
+              taskList.tasks.forEach((task) => {
+                // Notes
+                let notes = null;
+                if (Array.isArray(task.notes)) {
+                  notes = task.notes.map((note) => {
+                    note.createdBy = getMapId(note.createdBy, "users");
+                    if (note.editedBy) {
+                      note.editedBy = getMapId(note.editedBy, "users");
+                    }
+                    return note;
+                  });
+                }
+  
+                // Checklist
+                let checklist = null;
+                if (Array.isArray(task.checklist)) {
+                  checklist = task.checklist.map((listItem) => {
+                    listItem.createdBy = getMapId(listItem.createdBy, "users");
+                    return listItem;
+                  });
+                }
+  
+                // Labels
+                let taskLabelsIds = null;
+                if (Array.isArray(task.labels)) {
+                  taskLabelsIds = task.labels.map((labelId) => mappedIds.labels[labelId]
+                    ? mappedIds.labels[labelId] : null).filter((l) => l);
+                }
+  
+                // Watchers
+                let watchers = null;
+                if (Array.isArray(task.watchers) && task.watchers.length > 0) {
+                  watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
+                }
+  
+                const createdTask = Meteor.call(
+                  "tasks.insert",
+                  createdList.projectId,
+                  createdList._id,
+                  task.name,
+                  Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
+                  getMapId(task.assignedTo, "users"),
+                  task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
+                  task.startDate ? moment(task.startDate).format(dateFormat) : null,
+                  task.description ? task.description : null,
+                  watchers,
+                  notes,
+                  checklist,
+                  task.reminderStartDate ? task.reminderStartDate : null,
+                  task.reminderDueDate ? task.reminderDueDate : null,
+                  task.estimation ? task.estimation : null,
+                  getMapId(task.createdBy, "users")
+                );
+  
+                if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
+                  mappedIds.tasks[task._id] = createdTask._id;
+                }
+  
+                if (canImportMeetings && meetingsTasksIds.includes(task._id)) {
+                  mappedIds.tasks[task._id] = createdTask._id;
+                }
+              });
+            }
+          });
+        }
+      }
+  
+      // BPMN Diagrams
+      if (items.includes("bpmn")) {
+        const bpmnDiagrams = await zippedProject.getContent("bpmn");
+        if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
+          bpmnDiagrams.forEach((diagram) => {
+            Meteor.call("processDiagrams.create",
+              {
+                projectId: createdProjectId,
+                name: diagram.name,
+                description: diagram?.description ? diagram.description : null,
+                xml: diagram?.xml ? diagram.xml : null,
+                diagramUserId: getMapId(diagram.createdBy, "users")
+              });
+          });
+        }
+      }
+  
+      // Canvas
+      if (items.includes("canvas")) {
+        const canvas = await zippedProject.getContent("canvas");
+        if (canvas && canvas._id && canvas.data) {
+          Canvas.insert({
+            projectId: createdProjectId,
+            createdAt: new Date(),
+            createdBy: getMapId(canvas.createdBy, "users"),
+            data: canvas.data
+          });
+        }
+      }
+  
+      // Weather (Health reports)
+      if (items.includes("weather")) {
+        const healthReports = await zippedProject.getContent("weather");
+        if (Array.isArray(healthReports) && healthReports.length) {
+          healthReports.forEach((healthReport) => {
+            Meteor.call("healthReports.create",
+              {
+                projectId: createdProjectId,
+                name: healthReport.name,
+                description: healthReport?.description ? healthReport.description : null,
+                date: healthReport.date,
+                weather: healthReport.weather,
+                reportUserId: getMapId(healthReport.createdBy, "users")
+              });
+          });
+        }
+      }
+  
+      // Attachments 
+      if (canImportAttachments) {
+        const attachmentsFiles = await zippedProject.getFiles("attachments");
+        if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
+          linkAttachmentsToFiles(attachmentsFiles, attachmentsMetadatas);
+          const mapAttachmentMeta = (meta) => {
+            const mappedMeta = { ...meta, projectId: createdProjectId };
+            if (mappedMeta.createdAt) {
+              mappedMeta.createdAt = new Date(meta.createdAt);
+            }
+            if (mappedMeta.createdBy) {
+              mappedMeta.createdBy = getMapId(mappedMeta.createdBy, "users");
+            }
+            if (mappedMeta.taskId) {
+              mappedMeta.taskId = canImportTasks ? getMapId(mappedMeta.taskId, "tasks") : null;
+            }
+            return mappedMeta;
+          };
+  
+          const importAttachmentFile = async(file) => {
+            if (!file.attachment) {
+              throw new Meteor.Error("project-import", "Error when processing attachment metadatas");
+            }
+            const data = await file.async("uint8array");
+            return new Promise((resolve, reject) => {
+              Attachments.write(data, {
+                fileName: file.attachment.name,
+                type: file.attachment.type,
+                userId: currentUserId,
+                meta: mapAttachmentMeta(file.attachment.meta)
+              }, function (writeError, fileRef) {
+                if (writeError) reject(writeError);
+                mappedIds.attachments[file.attachment._id] = fileRef._id;
+                resolve(fileRef);
+              });
+            });
+          };
+  
+          const processAttachments = async (files) => files.reduce(async (p, file) => {
+            await p;
+            return importAttachmentFile(file);
+          }, Promise.resolve());
+  
+          await processAttachments(attachmentsFiles);
+        }
+      }
+  
+      // Meetings
+      if (canImportMeetings) {
+        if (Array.isArray(meetings) && meetings.length) {
+          meetings.forEach((meeting) => {
+            let attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
+            if (attendees.length > 0) {
+              attendees = attendees.map((attendee) => {
+                if (attendee.userId) {
+                  attendee.userId = getMapId(attendee.userId, "users");
+                }
+                return attendee;
+              });
+            }
+  
+            let documents = null;
+            if (canImportAttachments && Array.isArray(meeting?.documents) && meeting?.documents.length > 0) {
+              documents = meeting.documents.map((doc) => {
+                doc.documentId = getMapId(doc.documentId, "attachments");
+                return doc;
+              });
+            }
+  
+            let actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
+            if (actions.length > 0) {
+              actions = actions.map((action) => {
+                if (action.taskId) {
+                  action.taskId = canImportTasks ? getMapId(action.taskId, "tasks") : null;
+                }
+                return action;
+              });
+            }
+            Meteor.call("meetings.create",
+              {
+                projectId: createdProjectId,
+                name: meeting.name,
+                state: meeting?.state ? meeting.state : null,
+                type: meeting?.type ? meeting.type : null,
+                description: meeting?.description ? meeting.description : null,
+                agenda: meeting?.agenda ? meeting.agenda : null,
+                color: meeting?.color ? meeting.color : null,
+                location: meeting?.location ? meeting.location : null,
+                startDate: meeting.startDate,
+                endDate: meeting.endDate,
+                attendees,
+                documents,
+                actions,
+                report: meeting?.report ? meeting.report : null,
+                meetingUserId: getMapId(meeting.createdBy, "users")
+              });
+          });
+        }
+      }
+
+      // Updating with corresponding state
+      Meteor.call("projects.updateState", {
+        projectId: createdProjectId,
+        state: project.state
+      });
+
+      return createdProjectId;
+
+    } catch (error) {
+      // Error state
+      if (createdProjectId) {
+        Meteor.call("projects.updateState", {
+          projectId: createdProjectId,
+          state: ProjectStates.ERROR
         });
       }
+      throw error;
     }
-
-    return createdProjectId;
   }
 });

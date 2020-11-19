@@ -478,7 +478,7 @@
 <script>
 import {
   Projects,
-  ProjectStates,
+  ProjectVisibleStates,
   ProjectAccessRights
 } from "/imports/api/projects/projects.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
@@ -705,9 +705,9 @@ export default {
     },
     projectStates() {
       const states = [];
-      Object.keys(ProjectStates).forEach((state) => {
+      Object.keys(ProjectVisibleStates).forEach((state) => {
         states.push({
-          value: ProjectStates[state],
+          value: ProjectVisibleStates[state],
           label: this.$t(`projects.state.${state}`)
         });
       });
