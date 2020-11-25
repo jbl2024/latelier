@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Removed
+
+## [3.3.1 2020-11-25]
+
+### Added
 - Fullscreen task details window
 
 ### Changed
