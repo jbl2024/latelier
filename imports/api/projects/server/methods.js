@@ -40,6 +40,22 @@ Projects.methods.create = new ValidatedMethod({
     "features.$": {
       type: String
     },
+    description: {
+      type: String,
+      optional: true
+    },
+    color: {
+      type: String,
+      optional: true
+    },
+    startDate: {
+      type: String,
+      optional: true
+    },
+    endDate: {
+      type: String,
+      optional: true
+    },
     locale: {
       type: String,
       optional: true
@@ -53,6 +69,10 @@ Projects.methods.create = new ValidatedMethod({
     state,
     accessRights,
     features,
+    description,
+    color,
+    startDate,
+    endDate,
     locale
   }) {
     checkLoggedIn();
@@ -67,7 +87,11 @@ Projects.methods.create = new ValidatedMethod({
       createdAt: new Date(),
       createdBy: currentUserId,
       accessRights,
-      features
+      features,
+      description,
+      color,
+      startDate,
+      endDate
     });
     Meteor.call("projects.addMember", {
       projectId,
@@ -615,7 +639,11 @@ Projects.methods.import = new ValidatedMethod({
           state: ProjectStates.IMPORTING,
           accessRights,
           features: project.features,
-          locale: locale
+          locale: locale,
+          color: project.color ? project.color : null,
+          description: project.description ? project.description : null,
+          startDate: project.startDate ? project.startDate : null,
+          endDate: project.endDate ? project.endDate : null
         }
       );
   
