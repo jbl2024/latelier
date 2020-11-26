@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import { initData } from "/test/fixtures/fixtures";
 import { Organizations } from "/imports/api/organizations/organizations";
-import JSZip from "jszip";
 import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
@@ -26,7 +25,6 @@ if (Meteor.isServer) {
           fileBuffer
         });
       } catch (error) {
-        console.log(error);
         errorCode = error.error;
       }
 

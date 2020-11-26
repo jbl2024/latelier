@@ -610,12 +610,11 @@ Projects.methods.import = new ValidatedMethod({
   }) {
     let createdProjectId;
     try {
-
       const currentUserId = Meteor.userId();
       if (!Permissions.isAdmin(currentUserId, organizationId)) {
         throw new Meteor.Error("not-authorized");
       }
-  
+
       items = Array.isArray(items) ? items : [];
       const zip = await JSZip.loadAsync(fileBuffer);
       const zippedProjects = await unserializeProjectImportZip(zip);
@@ -624,11 +623,11 @@ Projects.methods.import = new ValidatedMethod({
       }
       const zippedProject = zippedProjects[0];
       const project = await zippedProject.getContent("project");
-  
+
       if (!project) {
         throw new Meteor.Error("project-import", "Error when processing project infos");
       }
-  
+
       // Project
       createdProjectId = Meteor.call(
         "projects.create",
@@ -646,24 +645,24 @@ Projects.methods.import = new ValidatedMethod({
           endDate: project.endDate ? project.endDate : null
         }
       );
-  
+
       if (!createdProjectId) {
         throw new Meteor.Error("project-import", "Error when creating project");
       }
-  
+
       const dateFormat = "YYYY-MM-DD HH:mm";
-  
+
       const canImportUsers = items.includes("users")
         && !Meteor.settings.disableAccountCreation
         && Permissions.isAdmin(currentUserId);
-  
+
       const canImportAttachments = !Meteor.settings?.public?.disableAttachments
       && items.includes("attachments");
-  
+
       const canImportMeetings = items.includes("meetings");
 
       const canImportTasks = items.includes("tasks");
-  
+
       // Mapping imported ids with inserted ids
       const mappedIds = {
         users: {},
@@ -671,13 +670,13 @@ Projects.methods.import = new ValidatedMethod({
         labels: {},
         attachments: {}
       };
-  
+
       const getMapId = (id, item) => {
         if (item === "users" && !canImportUsers) return currentUserId;
         if (!mappedIds[item]) return null;
         return mappedIds[item][id] ? mappedIds[item][id] : null;
       };
-  
+
       // Attachments related tasks
       let attachmentsMetadatas = [];
       let attachmentsTasksIds = [];
@@ -690,7 +689,7 @@ Projects.methods.import = new ValidatedMethod({
           .filter((a) => a.meta?.taskId)
           .map((a) => a.meta.taskId);
       }
-  
+
       // Meetings related tasks
       const meetingsTasksIds = [];
       let meetings = [];
@@ -702,7 +701,7 @@ Projects.methods.import = new ValidatedMethod({
           });
         });
       }
-  
+
       if (canImportUsers) {
         const users = await zippedProject.getContent("users");
         const usersIds = Object.keys(users);
@@ -724,11 +723,11 @@ Projects.methods.import = new ValidatedMethod({
                   email: userEmail,
                   profile: user.profile
                 });
-  
+
               if (!createdUserId) {
                 throw new Meteor.Error("project-import", "Error when importing user");
               }
-  
+
               mappedIds.users[user._id] = createdUserId;
               Meteor.call("projects.addMember", {
                 projectId: createdProjectId,
@@ -738,7 +737,7 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       }
-  
+
       // Tasks and associations (Lists, Labels ...)
       if (canImportTasks) {
         const labels = await zippedProject.getContent("labels");
@@ -754,10 +753,9 @@ Projects.methods.import = new ValidatedMethod({
             mappedIds.labels[label._id] = labelId;
           });
         }
-  
+
         const tasksLists = await zippedProject.getContent("tasks");
         if (Array.isArray(tasksLists) && tasksLists.length) {
-
           // Preserve tasksLists order
           tasksLists.sort((a, b) => {
             if (a.order < b.order) return -1;
@@ -774,10 +772,9 @@ Projects.methods.import = new ValidatedMethod({
               taskList?.catchCompleted ? taskList.catchCompleted : null,
               getMapId(taskList.createdBy, "users")
             );
-  
+
             // Tasks
             if (createdList && Array.isArray(taskList?.tasks)) {
-
               // Preserve tasks order (Tasks are inserted as first on top of list)
               taskList.tasks.sort((a, b) => {
                 if (a.order < b.order) return 1;
@@ -798,7 +795,7 @@ Projects.methods.import = new ValidatedMethod({
                     return note;
                   });
                 }
-  
+
                 // Checklist
                 let checklist = null;
                 if (Array.isArray(task.checklist)) {
@@ -807,20 +804,20 @@ Projects.methods.import = new ValidatedMethod({
                     return listItem;
                   });
                 }
-  
+
                 // Labels
                 let taskLabelsIds = null;
                 if (Array.isArray(task.labels)) {
                   taskLabelsIds = task.labels.map((labelId) => mappedIds.labels[labelId]
                     ? mappedIds.labels[labelId] : null).filter((l) => l);
                 }
-  
+
                 // Watchers
                 let watchers = null;
                 if (Array.isArray(task.watchers) && task.watchers.length > 0) {
                   watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
                 }
-  
+
                 const createdTask = Meteor.call(
                   "tasks.insert",
                   createdList.projectId,
@@ -839,11 +836,11 @@ Projects.methods.import = new ValidatedMethod({
                   task.estimation ? task.estimation : null,
                   getMapId(task.createdBy, "users")
                 );
-  
+
                 if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
                   mappedIds.tasks[task._id] = createdTask._id;
                 }
-  
+
                 if (canImportMeetings && meetingsTasksIds.includes(task._id)) {
                   mappedIds.tasks[task._id] = createdTask._id;
                 }
@@ -852,7 +849,7 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       }
-  
+
       // BPMN Diagrams
       if (items.includes("bpmn")) {
         const bpmnDiagrams = await zippedProject.getContent("bpmn");
@@ -869,7 +866,7 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       }
-  
+
       // Canvas
       if (items.includes("canvas")) {
         const canvas = await zippedProject.getContent("canvas");
@@ -882,7 +879,7 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       }
-  
+
       // Weather (Health reports)
       if (items.includes("weather")) {
         const healthReports = await zippedProject.getContent("weather");
@@ -900,8 +897,8 @@ Projects.methods.import = new ValidatedMethod({
           });
         }
       }
-  
-      // Attachments 
+
+      // Attachments
       if (canImportAttachments) {
         const attachmentsFiles = await zippedProject.getFiles("attachments");
         if (Array.isArray(attachmentsFiles) && attachmentsFiles.length) {
@@ -919,7 +916,7 @@ Projects.methods.import = new ValidatedMethod({
             }
             return mappedMeta;
           };
-  
+
           const importAttachmentFile = async(file) => {
             if (!file.attachment) {
               throw new Meteor.Error("project-import", "Error when processing attachment metadatas");
@@ -938,16 +935,16 @@ Projects.methods.import = new ValidatedMethod({
               });
             });
           };
-  
+
           const processAttachments = async (files) => files.reduce(async (p, file) => {
             await p;
             return importAttachmentFile(file);
           }, Promise.resolve());
-  
+
           await processAttachments(attachmentsFiles);
         }
       }
-  
+
       // Meetings
       if (canImportMeetings) {
         if (Array.isArray(meetings) && meetings.length) {
@@ -961,15 +958,16 @@ Projects.methods.import = new ValidatedMethod({
                 return attendee;
               });
             }
-  
+
             let documents = null;
-            if (canImportAttachments && Array.isArray(meeting?.documents) && meeting?.documents.length > 0) {
+            if (canImportAttachments && Array.isArray(meeting?.documents)
+            && meeting?.documents.length > 0) {
               documents = meeting.documents.map((doc) => {
                 doc.documentId = getMapId(doc.documentId, "attachments");
                 return doc;
               });
             }
-  
+
             let actions = Array.isArray(meeting?.actions) ? meeting?.actions : null;
             if (actions.length > 0) {
               actions = actions.map((action) => {
@@ -1008,7 +1006,6 @@ Projects.methods.import = new ValidatedMethod({
       });
 
       return createdProjectId;
-
     } catch (error) {
       // Error state
       if (createdProjectId) {

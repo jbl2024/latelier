@@ -147,11 +147,11 @@ export default {
           this.isImporting = false;
           this.showDialog = false;
           if (err) {
-            err = err.error === "project-import" ? 
-            {
-              error: err.error,
-              reason: this.$t(`project.import.errors.${err.reason}`)
-            } : err;
+            err = err.error === "project-import"
+              ? {
+                error: err.error,
+                reason: this.$t(`project.import.errors.${err.reason}`)
+              } : err;
             this.$notifyError(err);
             return;
           }
