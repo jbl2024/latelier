@@ -508,7 +508,10 @@ Projects.methods.export = new ValidatedMethod({
     const membersIds = findProjectMembersIds(project);
     const users = {};
     membersIds.forEach((id) => {
-      UserUtils.loadUser(id, users);
+      UserUtils.loadUser(id, users, {
+        profile: 1,
+        emails: 1
+      });
     });
 
     // Tasks

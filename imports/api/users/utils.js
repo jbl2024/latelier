@@ -24,7 +24,7 @@ const UserUtils = {
 
 if (Meteor.isServer) {
   // in future, we could reduce duplication by using this method
-  UserUtils.loadUser = (aUserId, users = {}) => {
+  UserUtils.loadUser = (aUserId, users = {}, fields = null) => {
     if (!aUserId) return {};
     const aUser = users[aUserId];
     if (aUser) {
@@ -33,7 +33,7 @@ if (Meteor.isServer) {
     users[aUserId] = Meteor.users.findOne(
       { _id: aUserId },
       {
-        fields: {
+        fields: fields || {
           profile: 1,
           status: 1,
           statusDefault: 1,
