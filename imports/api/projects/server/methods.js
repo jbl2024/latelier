@@ -757,6 +757,14 @@ Projects.methods.import = new ValidatedMethod({
   
         const tasksLists = await zippedProject.getContent("tasks");
         if (Array.isArray(tasksLists) && tasksLists.length) {
+
+          // Preserve tasksLists order
+          tasksLists.sort((a, b) => {
+            if (a.order < b.order) return -1;
+            if (a.order > b.order) return 1;
+            return 0;
+          });
+
           tasksLists.forEach((taskList) => {
             const createdList = Meteor.call(
               "lists.insert",
@@ -769,6 +777,15 @@ Projects.methods.import = new ValidatedMethod({
   
             // Tasks
             if (createdList && Array.isArray(taskList?.tasks)) {
+
+              // Preserve tasks order (Tasks are inserted as first on top of list)
+              taskList.tasks.sort((a, b) => {
+                if (a.order < b.order) return 1;
+                if (a.order > b.order) return -1;
+                return 0;
+              });
+
+
               taskList.tasks.forEach((task) => {
                 // Notes
                 let notes = null;
