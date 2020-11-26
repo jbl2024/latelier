@@ -263,7 +263,7 @@ export default {
       immediate: true,
       async handler() {
         if (this?.metadatas?.items) {
-          this.metas = this.metadatas.items;
+          this.metas = this?.metadatas?.items;
           const availableItems = Object.keys(
             this.metadatas.items
           ).filter((key) => this.metadatas.items[key]?.count > 0);
@@ -275,8 +275,8 @@ export default {
             );
           }
           this.items = foundItems;
-          this.selectedItems = this.items.slice();
         }
+        this.selectedItems = this.items.slice();
       }
     },
     organizationId: {

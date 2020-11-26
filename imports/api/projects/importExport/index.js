@@ -78,6 +78,7 @@ export const createProjectExportZip = async ({
 
   // Canvas
   if (canvas && canvas._id) {
+    itemsMetas.canvas = { count: 1 };
     projectFolder.file("canvas.json", JSON.stringify(canvas));
   }
 
