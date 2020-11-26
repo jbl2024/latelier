@@ -1,22 +1,10 @@
 import { expect } from "chai";
-
-import { initData } from "/test/fixtures/fixtures";
-import { Projects, ProjectStates } from "/imports/api/projects/projects";
+import { initData, createProject } from "/test/fixtures/fixtures";
 import JSZip from "jszip";
 import { createStubs, restoreStubs } from "/test/stubs";
 
-const createProject = (context, projectData) => {
-  projectData = projectData || {
-    name: "projectA",
-    projectType: "kanban",
-    state: ProjectStates.PRODUCTION
-  };
-  const projectId = Projects.methods.create._execute(context, projectData);
-  return projectId;
-};
-
 if (Meteor.isServer) {
-  describe.only("projectsimportExport", function () {
+  describe.only("projectsExport V2020_11", function () {
     beforeEach(function () {
       initData();
       createStubs();
