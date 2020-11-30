@@ -4,7 +4,7 @@ import JSZip from "jszip";
 import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
-  describe.only("projectsExport V2020_11", function () {
+  describe("projectsExport V2020_11", function () {
     beforeEach(function () {
       initData();
       createStubs();

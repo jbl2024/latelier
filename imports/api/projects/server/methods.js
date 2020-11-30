@@ -18,11 +18,11 @@ import {
 import moment from "moment";
 import JSZip from "jszip";
 
-import {
-  createProjectExportZip,
+import { createProjectExportZip,
   unserializeProjectImportZip,
-  linkAttachmentsToFiles
-} from "/imports/api/projects/importExport/";
+  linkAttachmentsToFiles,
+  items as defaultImportItems } from "/imports/api/projects/importExport/";
+
 
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
@@ -619,7 +619,8 @@ Projects.methods.import = new ValidatedMethod({
         throw new Meteor.Error("not-authorized");
       }
 
-      items = Array.isArray(items) ? items : [];
+      items = Array.isArray(items) ? items : defaultImportItems;
+
       const zip = await JSZip.loadAsync(fileBuffer);
       const zippedProjects = await unserializeProjectImportZip(zip);
       if (!Array.isArray(zippedProjects) || !zippedProjects.length) {
@@ -686,12 +687,11 @@ Projects.methods.import = new ValidatedMethod({
       let attachmentsTasksIds = [];
       if (canImportAttachments) {
         attachmentsMetadatas = await zippedProject.getContent("attachments/metadatas");
-        if (!Array.isArray(attachmentsMetadatas) || !attachmentsMetadatas.length) {
-          throw new Meteor.Error("project-import", "Error when processing attachments metadatas");
+        if (Array.isArray(attachmentsMetadatas) && attachmentsMetadatas.length) {
+          attachmentsTasksIds = attachmentsMetadatas
+            .filter((a) => a.meta?.taskId)
+            .map((a) => a.meta.taskId);
         }
-        attachmentsTasksIds = attachmentsMetadatas
-          .filter((a) => a.meta?.taskId)
-          .map((a) => a.meta.taskId);
       }
 
       // Meetings related tasks
