@@ -3,7 +3,12 @@
     <new-organization ref="newOrganization" />
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
-
+    <project-import
+      v-if="canImportProject(organizationId)"
+      :project-file="importedProjectFile"
+      :organization-id="organizationId"
+      :is-shown.sync="showProjectImport"
+    />
     <div v-if="!isReady">
       <v-progress-linear indeterminate />
     </div>
@@ -63,6 +68,21 @@
                   </v-list-item>
                   <v-divider />
                 </template>
+                <!-- Import project from zip -->
+                <v-list-item v-if="canImportProject(organizationId)" @click="importProject">
+                  <v-list-item-action>
+                    <v-icon>mdi-file-import</v-icon>
+                  </v-list-item-action>
+                  <v-list-item-title>
+                    <upload-button
+                      ref="uploadProject"
+                      :is-uploading="isUploading"
+                      @on-upload="uploadProject"
+                    >
+                      <span>{{ $t("project.import.importProject") }}</span>
+                    </upload-button>
+                  </v-list-item-title>
+                </v-list-item>
                 <v-list-item @click="$refs.projectsTrashcan.open()">
                   <v-list-item-action>
                     <v-icon>mdi-delete</v-icon>
@@ -253,13 +273,16 @@ import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
-
+import UploadButton from "/imports/ui/widgets/UploadButton";
+import ProjectImport from "/imports/ui/projects/ProjectImportExport/ProjectImport/ProjectImport";
 import { Permissions } from "/imports/api/permissions/permissions";
 
 export default {
   components: {
     DashboardProjectCard,
-    DashboardProjectList
+    DashboardProjectList,
+    UploadButton,
+    ProjectImport
   },
   mixins: [DatesMixin],
   props: {
@@ -272,7 +295,10 @@ export default {
     return {
       user: null,
       selectedOrganizationId: "",
-      cardClass: "card1"
+      cardClass: "card1",
+      showProjectImport: false,
+      importedProjectFile: null,
+      isUploading: false
     };
   },
   computed: {
@@ -378,6 +404,18 @@ export default {
     }
   },
   methods: {
+    canImportProject(organizationId) {
+      return Permissions.isAdmin(Meteor.userId(), organizationId)
+      || Permissions.isAdmin(Meteor.userId());
+    },
+    importProject() {
+      this.$refs.uploadProject.beginUpload();
+    },
+    uploadProject(file) {
+      if (!file) return;
+      this.importedProjectFile = file;
+      this.showProjectImport = true;
+    },
     newOrganization() {
       this.$refs.newOrganization.open();
     },

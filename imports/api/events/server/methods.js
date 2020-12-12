@@ -9,6 +9,8 @@ const callbacks = [mailsCB, remindersCB, notificationsCB];
 
 Meteor.methods({
   "events.track"(event) {
+    this.unblock();
+
     check(event, {
       createdAt: Match.Optional(Date),
       type: String,

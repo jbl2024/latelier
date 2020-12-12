@@ -107,10 +107,18 @@ export default {
       const width = cards.offsetWidth;
       this.cardColumns = width > 600 ? 3 : 12;
     },
-
     hasFeature(project, feature) {
       return Array.isArray(project?.features)
         && project.features.includes(feature);
+    },
+    openProjectSettings(project) {
+      this.$router.push({
+        name: "project-settings",
+        params: {
+          organizationId: project.organizationId,
+          projectId: project._id
+        }
+      });
     }
   }
 };

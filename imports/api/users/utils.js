@@ -1,4 +1,4 @@
-export const UserUtils = {
+const UserUtils = {
   getEmail(user) {
     if (!user) {
       return null;
@@ -21,3 +21,30 @@ export const UserUtils = {
     return this.getEmail(user);
   }
 };
+
+if (Meteor.isServer) {
+  // in future, we could reduce duplication by using this method
+  UserUtils.loadUser = (aUserId, users = {}, fields = null) => {
+    if (!aUserId) return {};
+    const aUser = users[aUserId];
+    if (aUser) {
+      return aUser;
+    }
+    users[aUserId] = Meteor.users.findOne(
+      { _id: aUserId },
+      {
+        fields: fields || {
+          profile: 1,
+          status: 1,
+          statusDefault: 1,
+          statusConnection: 1,
+          emails: 1,
+          roles: 1
+        }
+      }
+    );
+    return users[aUserId];
+  };
+}
+
+export { UserUtils };

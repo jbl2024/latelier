@@ -35,12 +35,26 @@ export const ProjectStates = Object.freeze({
   PLANNED: "planned",
   DEVELOPMENT: "development",
   PRODUCTION: "production",
-  ARCHIVED: "archived"
+  ARCHIVED: "archived",
+  IMPORTING: "importing",
+  ERROR: "error"
 });
+
+export const ProjectVisibleStates = Object.entries(ProjectStates).reduce((projectStates, entry) => {
+  [key, value] = entry;
+  if (!["IMPORTING", "ERROR"].includes(key)) {
+    projectStates[key] = value;
+  }
+  return projectStates;
+}, {});
 
 export const ProjectAccessRights = Object.freeze({
   ORGANIZATION: "organization",
   PRIVATE: "private"
+});
+
+export const ProjectExportVersions = Object.freeze({
+  V2020_11: "V2020_11"
 });
 
 const checkIfAdminOrCreator = (projectId) => {

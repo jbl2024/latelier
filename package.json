@@ -26,6 +26,7 @@
     "handlebars": "^4.7.6",
     "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
+    "jszip": "^3.5.0",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.19",
     "meteor-node-stubs": "^1.0.0",

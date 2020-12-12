@@ -113,7 +113,7 @@ Meteor.methods({
     const clonedTaskId = Tasks.insert(clonedTask);
     Meteor.call("tasks.setNumber", clonedTaskId);
 
-    const _reorder = function(aListId) {
+    const _reorder = function (aListId) {
       const tasks = Tasks.find({ aListId }, { sort: { order: 1 } }).fetch();
       for (let i = 0; i < tasks.length; i++) {
         const aTask = tasks[i];
@@ -236,12 +236,13 @@ Tasks.methods.exportProject = new ValidatedMethod({
   name: "tasks.exportProject",
   validate: new SimpleSchema({
     projectId: { type: String },
-    format: { type: String }
+    format: {
+      type: String,
+      optional: true
+    }
   }).validator(),
-  run({ projectId, format }) {
+  async run({ projectId, format }) {
     checkCanReadProject(projectId);
-
-    const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
     const project = Projects.findOne({ _id: projectId });
     const context = project;
     context.lists = [];
@@ -256,55 +257,57 @@ Tasks.methods.exportProject = new ValidatedMethod({
       }, { sort: { order: 1 } });
 
       tasks.forEach((task) => {
-        task = Tasks.helpers.loadAssociations(task);
-        task.description = htmlToText.fromString(task.description);
-        if (task.notes) {
-          task.notes.forEach((note) => {
-            note.content = htmlToText.fromString(note.content);
-            note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
-          });
+        if (format) {
+          task = Tasks.helpers.loadAssociations(task);
+          task.description = htmlToText.fromString(task.description);
+          if (task.notes) {
+            task.notes.forEach((note) => {
+              note.content = htmlToText.fromString(note.content);
+              note.createdAt = moment(note.createdAt).format("DD/MM/YYYY HH:mm");
+            });
+          }
+
+          if (task.labels) {
+            let labels = "";
+            task.labels.forEach((label) => {
+              if (labels === "") {
+                labels = `${label.name}`;
+              } else {
+                labels = `${labels} / ${label.name}`;
+              }
+            });
+            task.labels = labels;
+          }
+
+          if (task.assignedTo && task.assignedTo.emails) {
+            task.assignedTo = task.assignedTo.emails[0].address;
+          } else {
+            task.assignedTo = "";
+          }
+
+          task.startDate = task.startDate ? moment(task.startDate).format("DD/MM/YYYY HH:mm") : "";
+          task.dueDate = task.dueDate ? moment(task.dueDate).format("DD/MM/YYYY HH:mm") : "";
+          task.completedAt = task.completedAt ? moment(task.completedAt).format("DD/MM/YYYY HH:mm") : "";
         }
-
-        if (task.labels) {
-          let labels = "";
-          task.labels.forEach((label) => {
-            if (labels === "") {
-              labels = `${label.name}`;
-            } else {
-              labels = `${labels} / ${label.name}`;
-            }
-          });
-          task.labels = labels;
-        }
-
-        if (task.assignedTo && task.assignedTo.emails) {
-          task.assignedTo = task.assignedTo.emails[0].address;
-        } else {
-          task.assignedTo = "";
-        }
-
-        task.startDate = task.startDate ? moment(task.startDate).format("DD/MM/YYYY HH:mm") : "";
-        task.dueDate = task.dueDate ? moment(task.dueDate).format("DD/MM/YYYY HH:mm") : "";
-        task.completedAt = task.completedAt ? moment(task.completedAt).format("DD/MM/YYYY HH:mm") : "";
-
         list.tasks.push(task);
       });
     });
 
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
+    if (!format) {
+      return context;
+    }
 
-    bound(() => {
+    const result = await new Promise((resolve, reject) => {
+      const source = Assets.absoluteFilePath(`exports/tasks/tasks.${format}`);
       carbone.render(source, context, (err, res) => {
         if (err) {
-          throw new Meteor.Error("error", err);
+          reject(new Meteor.Error("error", err));
         }
-        future.return({
+        resolve({
           data: res
         });
       });
     });
-    return future.wait();
+    return result;
   }
 });

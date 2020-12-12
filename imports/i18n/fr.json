@@ -180,6 +180,7 @@
   "Move": "Déplacer",
   "Task moved": "Tâche déplacée",
   "Export": "Exporter",
+  "Export tasks": "Exporter les tâches",
   "Export image": "Exporter l'image",
   "Export XML": "Exporter en XML",
   "Daily digest from subscribed projects": "Résumé quotidien des projets souscrits",
@@ -305,7 +306,9 @@
       "PLANNED": "Planifié",
       "DEVELOPMENT": "En développement",
       "PRODUCTION": "En production",
-      "ARCHIVED": "Archivé"
+      "ARCHIVED": "Archivé",
+      "IMPORTING": "En cours d'import",
+      "ERROR": "Invalide"
     },
     "features": {
       "chooseFeature": "Sélectionner une fonctionnalité",
@@ -384,6 +387,74 @@
   "login": {
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
+  },
+  "project": {
+    "import": {
+      "itemsToImport": "Éléments à importer",
+      "importProject": "Importer un projet",
+      "import": "Importer",
+      "simulateImport": "Simuler l'import",
+      "projectName": "Nom du projet",
+      "projectOrganization": "Organisation du projet",
+      "withoutOrganization": "Sans organisation",
+      "importSuccess": "Projet importé avec succès",
+      "importLoading": "Importation du projet en cours",
+      "wizard": {
+        "project": "Nom du projet et organisation"
+      },
+      "items": {
+        "users": {
+          "title": "Utilisateurs",
+          "description": "Importer les membres du projet en tant que nouveaux utilisateurs"
+        },
+        "tasks": {
+          "title": "Tâches",
+          "description": "Importer les tâches et les listes de tâches associées"
+        },
+        "meetings": {
+          "title": "Réunions",
+          "description": "Importer les réunions du projet"
+        },
+        "bpmn": {
+          "title": "Diagrammes BPMN",
+          "description": "Importer les diagrammes BPMN"
+        },
+        "canvas": {
+          "title": "Canvas",
+          "description": "Importer le canvas du projet"
+        },
+        "weather": {
+          "title": "Météo",
+          "description": "Importer les rapports météo"
+        },
+        "attachments": {
+          "title": "Documents",
+          "description": "Importer les documents et pièces-jointes"
+        }
+      },
+      "errors": {
+        "Error when processing project import": "Erreur lors de l'importation des fichiers du projet",
+        "Error when processing project infos": "Erreur lors de l'importation du projet",
+        "Error when creating project": "Erreur lors de la création du projet",
+        "Error when processing attachments metadatas": "Erreur lors du traitement des documents et pièces-jointes",
+        "Error when processing attachment metadatas": "Erreur lors du traitement d'un des documents importés",
+        "Error when importing user": "Ereur lors de l'importation d'un membre du projet"
+      }
+    },
+    "export": {
+      "invalidExport": "Fichier d'export invalide",
+      "itemsToExport": "Éléments à exporter",
+      "export": "Exporter le projet",
+      "items": {
+        "tasks": "Tâches",
+        "users": "Utilisateurs",
+        "meetings": "Réunions",
+        "bpmn": "Diagrammes BPMN",
+        "canvas": "Canvas",
+        "weather": "Météo projet",
+        "attachments": "Documents"
+      }
+    }
   },
   "meetings": {
     "lock": "Verrouiller",

@@ -63,7 +63,7 @@
     <tooltip-button
       bottom
       icon="mdi-file-export"
-      :tooltip="$t('Export')"
+      :tooltip="$t('Export tasks')"
       @on="exportODS()"
     />
     <v-btn

@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
+import { Projects, ProjectVisibleStates } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { colors } from "/imports/colors.js";
 import { mapState } from "vuex";
@@ -134,9 +134,9 @@ export default {
     },
     groups() {
       const states = [];
-      Object.keys(ProjectStates).forEach((state) => {
+      Object.keys(ProjectVisibleStates).forEach((state) => {
         states.push({
-          id: ProjectStates[state],
+          id: ProjectVisibleStates[state],
           subgroupStack: true,
           content: this.$t(`projects.state.${state}`)
         });

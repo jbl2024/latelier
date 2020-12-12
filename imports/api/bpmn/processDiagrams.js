@@ -4,6 +4,7 @@ import { Mongo } from "meteor/mongo";
 import ProcessDiagramSchema from "./schema";
 
 import {
+  Permissions,
   checkLoggedIn,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
@@ -24,11 +25,16 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
     projectId: { type: String },
     name: { type: String },
     description: { type: String, optional: true },
-    xml: { type: String, optional: true }
+    xml: { type: String, optional: true },
+    diagramUserId: { type: String, optional: true }
   }).validator(),
-  run({ projectId, name, description, xml }) {
+  run({ projectId, name, description, xml, diagramUserId }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
+
+    let userId = Meteor.userId();
+    const canSelectUserId = diagramUserId && Meteor.isServer && Permissions.isAdmin(userId);
+    userId = canSelectUserId ? diagramUserId : userId;
 
     const id = ProcessDiagrams.insert({
       projectId,
@@ -36,7 +42,7 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
       description,
       xml,
       createdAt: new Date(),
-      createdBy: Meteor.userId()
+      createdBy: userId
     });
     return id;
   }
