@@ -46,7 +46,7 @@ stepCreateProjectZip = async (projectDatas) => {
 
 
 if (Meteor.isServer) {
-  describe.only("projectsImport V2020_11", function () {
+  describe("projectsImport V2020_11", function () {
     beforeEach(function () {
       initData();
       createStubs();
