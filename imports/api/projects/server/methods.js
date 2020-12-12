@@ -1011,6 +1011,8 @@ Projects.methods.import = new ValidatedMethod({
 
       return createdProjectId;
     } catch (error) {
+      /* eslint no-console:off */
+      console.log("Error import", error);
       // Error state
       if (createdProjectId) {
         Meteor.call("projects.updateState", {

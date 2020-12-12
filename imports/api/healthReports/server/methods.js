@@ -16,7 +16,10 @@ HealthReports.methods.create = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String },
     name: { type: String },
-    description: { type: String },
+    description: { 
+      type: String,
+      optional: true
+    },
     date: { type: String },
     weather: { type: String },
     reportUserId: {
