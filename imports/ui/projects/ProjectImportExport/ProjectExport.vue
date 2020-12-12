@@ -157,7 +157,7 @@ export default {
   }
 };
 </script>
-<style lang="scss">
+<style lang="scss" scoped>
   .project-export {
     background-color: #e5e5e5;
   }
