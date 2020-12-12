@@ -54,7 +54,7 @@
     "vue-shortkey": "^3.1.7",
     "vue2vis": "0.0.16",
     "vuelidate": "^0.7.5",
-    "vuetify": "^2.3.15",
+    "vuetify": "^2.3.21",
     "vuex": "^3.3.0"
   },
   "meteor": {
