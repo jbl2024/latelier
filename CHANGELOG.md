@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update to Meteor 2.0
+- Update packages:
+  - accounts-base          upgraded from 1.7.0 to 1.8.0
+  - accounts-password      upgraded from 1.6.2 to 1.7.0
+  - autoupdate             upgraded from 1.6.0 to 1.7.0
+  - babel-compiler         upgraded from 7.5.3 to 7.6.0
+  - ddp-client             upgraded from 2.3.3 to 2.4.0
+  - dynamic-import         upgraded from 0.5.3 to 0.6.0
+  - ecmascript             upgraded from 0.14.3 to 0.15.0
+  - logging                upgraded from 1.1.20 to 1.2.0
+  - minimongo              upgraded from 1.6.0 to 1.6.1
+  - modules                upgraded from 0.15.0 to 0.16.0
+  - mongo                  upgraded from 1.10.0 to 1.10.1
+  - mongo-decimal          upgraded from 0.1.1 to 0.1.2
+  - react-fast-refresh     added, version 0.1.0
+  - reload                 upgraded from 1.3.0 to 1.3.1
+  - standard-minifier-css  upgraded from 1.6.1 to 1.7.2
+  - webapp                 upgraded from 1.9.1 to 1.10.0
+  - webapp-hashing         upgraded from 1.0.9 to 1.1.0
 
 ### Removed
 
