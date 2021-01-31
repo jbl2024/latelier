@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+## [3.3.3 2021-01-31]
+
+### Added
+
+### Changed
 - Update to Meteor 2.0
 - Update packages:
   - accounts-base          upgraded from 1.7.0 to 1.8.0
