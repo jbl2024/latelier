@@ -38,6 +38,7 @@ if (Meteor.isServer) {
         Lists.findOne()._id,
         "a name"
       );
+      Meteor._sleepForMs(100);
 
       const digest = Digests.findOne({
         taskId: task._id
@@ -75,6 +76,8 @@ if (Meteor.isServer) {
 
       Meteor.call("tasks.clone", task._id, task.name, task.projectId);
 
+      Meteor._sleepForMs(100);
+
       expect(Digests.find().count()).to.be.equal(3);
     });
 
@@ -89,15 +92,19 @@ if (Meteor.isServer) {
       );
 
       Meteor.call("tasks.complete", task._id, true);
+      Meteor._sleepForMs(100);
       expect(Digests.find().fetch()[1].type).to.be.equal("tasks.complete");
 
       Meteor.call("tasks.complete", task._id, false);
+      Meteor._sleepForMs(100);
       expect(Digests.find().fetch()[1].type).to.be.equal("tasks.uncomplete");
 
       Meteor.call("tasks.complete", task._id, true);
+      Meteor._sleepForMs(100);
       expect(Digests.find().fetch()[1].type).to.be.equal("tasks.complete");
 
       Meteor.call("tasks.complete", task._id, false);
+      Meteor._sleepForMs(100);
       expect(Digests.find().fetch()[1].type).to.be.equal("tasks.uncomplete");
     });
 
@@ -132,8 +139,8 @@ if (Meteor.isServer) {
       const keep = 60;
 
       expect(Digests.find().count()).to.be.equal(200 + 200);
-
       Meteor.call("digests.purge", { projectId: "projectId" });
+      Meteor._sleepForMs(100);
       expect(Digests.find({ projectId: "anotherProjectId" }).count()).to.be.equal(200);
       expect(Digests.find({ projectId: "projectId" }).count()).to.be.equal(keep * 2);
     });
