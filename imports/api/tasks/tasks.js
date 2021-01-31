@@ -106,7 +106,8 @@ if (Meteor.isServer) {
       reminderStartDate,
       reminderDueDate,
       estimation,
-      taskUserId
+      taskUserId,
+      disableTracking
     ) {
       check(projectId, String);
       check(listId, String);
@@ -123,6 +124,7 @@ if (Meteor.isServer) {
         size: Match.OneOf(String, Number),
         spent: Match.OneOf(String, Number)
       }));
+      check(disableTracking, Match.Maybe(Boolean));
 
       // Task notes
       check(notes, Match.Where((taskNotes) => {
@@ -223,11 +225,12 @@ if (Meteor.isServer) {
         estimation
       });
 
-      Meteor.call("tasks.track", {
-        type: "tasks.create",
-        taskId
-      });
-
+      if (!disableTracking) {
+        Meteor.call("tasks.track", {
+          type: "tasks.create",
+          taskId
+        });
+      }
       return Tasks.findOne({ _id: taskId });
     }
   });

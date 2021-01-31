@@ -822,6 +822,8 @@ Projects.methods.import = new ValidatedMethod({
                   watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
                 }
 
+                const disableTracking = true;
+
                 const createdTask = Meteor.call(
                   "tasks.insert",
                   createdList.projectId,
@@ -838,7 +840,8 @@ Projects.methods.import = new ValidatedMethod({
                   task.reminderStartDate ? task.reminderStartDate : null,
                   task.reminderDueDate ? task.reminderDueDate : null,
                   task.estimation ? task.estimation : null,
-                  getMapId(task.createdBy, "users")
+                  getMapId(task.createdBy, "users"),
+                  disableTracking
                 );
 
                 if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
