@@ -11,14 +11,25 @@ Meteor.publish("tasksForProject", function tasksPublication(projectId) {
   );
 });
 
-Meteor.publish("tasksForList", function tasksPublication(listId, offset) {
+Meteor.publish("tasksForList", function tasksPublication(listId, offset, labelIds) {
   check(listId, String);
   check(offset, Match.Maybe(Number));
+  check(labelIds, Match.Maybe([String]));
 
   const skip = offset || 0;
+  const query = {
+    listId,
+    deleted: false
+  };
+
+  if (labelIds && labelIds.length > 0) {
+    query.labels = {
+      $in: labelIds
+    };
+  }
 
   return Tasks.find(
-    { listId, deleted: false },
+    query,
     { sort: { order: 1 }, skip: skip, limit: 50 }
   );
 });

@@ -18,7 +18,6 @@
             @click="editList(list)"
           >
             {{ list.name }} ({{ taskCount }})
-            {{ displayTop }} - {{ displayBottom }} ({{ offset }})
             {{ getEstimations(tasksForEstimation) }}
           </div>
           <div
@@ -165,6 +164,11 @@ export default {
   computed: {
     ...mapState("project", ["currentProjectId"]),
     ...mapGetters("project", ["hasProjectFeature"]),
+    ...mapState("project/filters", {
+      selectedLabels: (state) => state.selectedLabels,
+      selectedAssignedTos: (state) => state.selectedAssignedTos,
+      selectedUpdatedBy: (state) => state.selectedUpdatedBy
+    }),
     projectColor() {
       const project = Projects.findOne({ _id: this.currentProjectId });
       if (project && project.color) {
@@ -229,7 +233,8 @@ export default {
     // Subscriptions
     $subscribe: {
       tasksForList() {
-        return [this.list._id, this.offset];
+        const labelIds = (this.selectedLabels || []).map((label) => label._id);
+        return [this.list._id, this.offset, labelIds];
       }
     },
     taskCount() {
