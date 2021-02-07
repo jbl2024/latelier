@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { check } from "meteor/check";
+import { check, Match } from "meteor/check";
 import { Tasks } from "../tasks";
 
 // This code only runs on the server
@@ -20,7 +20,11 @@ Meteor.publish("tasksForList", function tasksPublication(listId) {
 });
 
 Meteor.publish("tasksByIds", function tasksPublication(ids) {
-  check(ids, [String]);
+  check(ids, Match.Maybe([String]));
+  if (!ids) {
+    this.ready();
+    return null;
+  }
   return Tasks.find(
     { _id: { $in: ids }, deleted: { $ne: true } },
     { sort: { order: 1 } }
