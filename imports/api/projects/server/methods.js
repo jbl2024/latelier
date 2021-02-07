@@ -824,6 +824,18 @@ Projects.methods.import = new ValidatedMethod({
 
                 const disableTracking = true;
 
+                let { estimation } = task;
+                if (estimation) {
+                  if (!estimation.size || !estimation.spent) {
+                    estimation = null;
+                  }
+                }
+
+                let reminderDueDate = { task };
+                if (!Number.isFinite(reminderDueDate)) {
+                  reminderDueDate = null;
+                }
+
                 const createdTask = Meteor.call(
                   "tasks.insert",
                   createdList.projectId,
@@ -838,11 +850,12 @@ Projects.methods.import = new ValidatedMethod({
                   notes,
                   checklist,
                   task.reminderStartDate ? task.reminderStartDate : null,
-                  task.reminderDueDate ? task.reminderDueDate : null,
-                  task.estimation ? task.estimation : null,
+                  reminderDueDate,
+                  estimation,
                   getMapId(task.createdBy, "users"),
                   disableTracking
                 );
+
 
                 if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
                   mappedIds.tasks[task._id] = createdTask._id;
