@@ -54,8 +54,10 @@ if (Meteor.isServer) {
     Tasks.rawCollection().createIndex({ listId: 1 });
     Tasks.rawCollection().createIndex({ projectId: 1 });
     Tasks.rawCollection().createIndex({ deleted: 1 });
+    Tasks.rawCollection().createIndex({ projectId: 1, deleted: 1 });
     Tasks.rawCollection().createIndex({ completed: 1 });
     Tasks.rawCollection().createIndex({ completedAt: 1 });
+    Tasks.rawCollection().createIndex({ projectId: 1, listId: 1, order: 1 });
     Tasks.rawCollection().createIndex({ number: 1 }, { unique: true });
   });
 }
@@ -88,147 +90,154 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
   }
 });
 
-Meteor.methods({
-  "tasks.insert"(
-    projectId,
-    listId,
-    name,
-    labelIds,
-    assignedTo,
-    dueDate,
-    startDate,
-    description,
-    watchers,
-    notes,
-    checklist,
-    reminderStartDate,
-    reminderDueDate,
-    estimation,
-    taskUserId
-  ) {
-    check(projectId, String);
-    check(listId, String);
-    check(name, String);
-    check(labelIds, Match.Maybe([String]));
-    check(assignedTo, Match.Maybe(String));
-    check(dueDate, Match.Maybe(String));
-    check(startDate, Match.Maybe(String));
-    check(description, Match.Maybe(String));
-    check(watchers, Match.Maybe([String]));
-    check(reminderStartDate, Match.Maybe(Number));
-    check(reminderDueDate, Match.Maybe(Number));
-    check(estimation, Match.Maybe({
-      size: Match.OneOf(String, Number),
-      spent: Match.OneOf(String, Number)
-    }));
-
-    // Task notes
-    check(notes, Match.Where((taskNotes) => {
-      if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
-      taskNotes.forEach((note) => {
-        check(note, {
-          _id: String,
-          createdAt: Match.Maybe(String),
-          createdBy: String,
-          content: String,
-          edited: Match.Maybe(Boolean),
-          editedBy: Match.Maybe(String)
-        });
-      });
-      return true;
-    }));
-
-    // Checklist items
-    check(checklist, Match.Where((checklistItems) => {
-      if (!Array.isArray(checklistItems) || !checklistItems.length) return true;
-      checklistItems.forEach((listItem) => {
-        check(listItem, {
-          _id: String,
-          createdAt: Match.Maybe(String),
-          createdBy: String,
-          name: String,
-          checked: Match.Maybe(Boolean)
-        });
-      });
-      return true;
-    }));
-
-    check(taskUserId, Match.Maybe(String));
-    checkCanWriteProject(projectId);
-
-    let userId = Meteor.userId();
-    const canSelectUserId = taskUserId && Meteor.isServer && Permissions.isAdmin(userId);
-    userId = canSelectUserId ? taskUserId : userId;
-
-    if (!userId) {
-      throw new Meteor.Error("not-authorized");
-    }
-
-    const _findFirstOrder = function() {
-      const task = Tasks.findOne(
-        { projectId, listId },
-        { sort: { order: 1 } }
-      );
-      if (task) {
-        return task.order;
-      }
-      return 0;
-    };
-    const now = new Date();
-
-    let completed = false;
-    let completedAt;
-    const list = Lists.findOne({ _id: listId });
-    if (list && list.autoComplete) {
-      completed = true;
-      completedAt = now;
-    }
-    let number;
-    if (Meteor.isServer) {
-      number = incNumber();
-    }
-
-    if (Array.isArray(notes) && notes.length) {
-      notes.forEach((note) => {
-        if (note.createdAt) {
-          note.createdAt = new Date(note.createdAt);
-        }
-      });
-    }
-
-    const taskId = Tasks.insert({
-      name,
-      description,
-      order: _findFirstOrder() - 10,
+if (Meteor.isServer) {
+  Meteor.methods({
+    "tasks.insert"(
       projectId,
       listId,
-      completed,
-      completedAt,
-      createdAt: now,
-      updatedAt: now,
-      createdBy: userId,
-      updatedBy: userId,
-      watchers: watchers || [userId],
-      number,
+      name,
+      labelIds,
       assignedTo,
       dueDate,
       startDate,
-      labels: labelIds || [],
-      notes: notes || [],
-      checklist: checklist || [],
+      description,
+      watchers,
+      notes,
+      checklist,
       reminderStartDate,
       reminderDueDate,
-      estimation
-    });
+      estimation,
+      taskUserId,
+      disableTracking
+    ) {
+      check(projectId, String);
+      check(listId, String);
+      check(name, String);
+      check(labelIds, Match.Maybe([String]));
+      check(assignedTo, Match.Maybe(String));
+      check(dueDate, Match.Maybe(String));
+      check(startDate, Match.Maybe(String));
+      check(description, Match.Maybe(String));
+      check(watchers, Match.Maybe([String]));
+      check(reminderStartDate, Match.Maybe(Number));
+      check(reminderDueDate, Match.Maybe(Number));
+      check(estimation, Match.Maybe({
+        size: Match.OneOf(String, Number),
+        spent: Match.OneOf(String, Number)
+      }));
+      check(disableTracking, Match.Maybe(Boolean));
 
-    Meteor.call("tasks.track", {
-      type: "tasks.create",
-      taskId
-    });
+      // Task notes
+      check(notes, Match.Where((taskNotes) => {
+        if (!Array.isArray(taskNotes) || !taskNotes.length) return true;
+        taskNotes.forEach((note) => {
+          check(note, {
+            _id: String,
+            createdAt: Match.Maybe(String),
+            createdBy: String,
+            content: String,
+            edited: Match.Maybe(Boolean),
+            editedBy: Match.Maybe(String)
+          });
+        });
+        return true;
+      }));
 
-    return Tasks.findOne({ _id: taskId });
-  },
+      // Checklist items
+      check(checklist, Match.Where((checklistItems) => {
+        if (!Array.isArray(checklistItems) || !checklistItems.length) return true;
+        checklistItems.forEach((listItem) => {
+          check(listItem, {
+            _id: String,
+            createdAt: Match.Maybe(String),
+            createdBy: String,
+            name: String,
+            checked: Match.Maybe(Boolean)
+          });
+        });
+        return true;
+      }));
 
+      check(taskUserId, Match.Maybe(String));
+      checkCanWriteProject(projectId);
+
+      let userId = Meteor.userId();
+      const canSelectUserId = taskUserId && Meteor.isServer && Permissions.isAdmin(userId);
+      userId = canSelectUserId ? taskUserId : userId;
+
+      if (!userId) {
+        throw new Meteor.Error("not-authorized");
+      }
+
+      const _findFirstOrder = function() {
+        const task = Tasks.findOne(
+          { projectId, listId },
+          { sort: { order: 1 }, fields: { order: 1 } }
+        );
+        if (task) {
+          return task.order;
+        }
+        return 0;
+      };
+      const now = new Date();
+
+      let completed = false;
+      let completedAt;
+      const list = Lists.findOne({ _id: listId });
+      if (list && list.autoComplete) {
+        completed = true;
+        completedAt = now;
+      }
+      let number;
+      if (Meteor.isServer) {
+        number = incNumber();
+      }
+
+      if (Array.isArray(notes) && notes.length) {
+        notes.forEach((note) => {
+          if (note.createdAt) {
+            note.createdAt = new Date(note.createdAt);
+          }
+        });
+      }
+
+      const taskId = Tasks.insert({
+        name,
+        description,
+        order: _findFirstOrder() - 10,
+        projectId,
+        listId,
+        completed,
+        completedAt,
+        createdAt: now,
+        updatedAt: now,
+        createdBy: userId,
+        updatedBy: userId,
+        watchers: watchers || [userId],
+        number,
+        assignedTo,
+        dueDate,
+        startDate,
+        labels: labelIds || [],
+        notes: notes || [],
+        checklist: checklist || [],
+        reminderStartDate,
+        reminderDueDate,
+        estimation
+      });
+
+      if (!disableTracking) {
+        Meteor.call("tasks.track", {
+          type: "tasks.create",
+          taskId
+        });
+      }
+      return Tasks.findOne({ _id: taskId });
+    }
+  });
+}
+
+Meteor.methods({
   "tasks.setNumber"(taskId) {
     check(taskId, String);
     const number = incNumber();

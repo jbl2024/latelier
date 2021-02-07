@@ -141,35 +141,37 @@ Meteor.methods({
   },
 
   "tasks.track"(event) {
-    this.unblock();
-
     check(event, {
       taskId: String,
       type: String,
       properties: Match.Optional(Object)
     });
+    const userId = Meteor.userId();
 
-    const task = Tasks.findOne({ _id: event.taskId });
-    const properties = event.properties || {};
+    Meteor.defer(() => {
+      const task = Tasks.findOne({ _id: event.taskId });
+      const properties = event.properties || {};
 
-    const project = Projects.findOne({ _id: task.projectId });
-    const list = Lists.findOne({ _id: task.listId });
+      const project = Projects.findOne({ _id: task.projectId });
+      const list = Lists.findOne({ _id: task.listId });
 
-    properties.task = task;
-    properties.task.project = project;
-    properties.task.list = list;
-    properties.task.url = Meteor.absoluteUrl(
-      `/projects/${project._id}/${task._id}`
-    );
+      properties.task = task;
+      properties.task.project = project;
+      properties.task.list = list;
+      properties.task.url = Meteor.absoluteUrl(
+        `/projects/${project._id}/${task._id}`
+      );
 
-    Meteor.call("events.track", {
-      type: event.type,
-      properties
-    });
+      Meteor.call("events.track", {
+        type: event.type,
+        userId: userId,
+        properties
+      });
 
-    Meteor.call("digests.add", {
-      type: event.type,
-      properties: properties
+      Meteor.call("digests.add", {
+        type: event.type,
+        properties: properties
+      });
     });
   },
 

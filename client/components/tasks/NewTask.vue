@@ -212,6 +212,8 @@ export default {
         ).then((res) => {
           if (res) {
             this.loading = true;
+            this.$stopMeteor();
+
             const labelIds = this.labels.map((l) => l._id);
             tasks.forEach((name) => {
               Meteor.call(
@@ -233,6 +235,7 @@ export default {
               }
             });
             this.$notify(this.$t("Tasks created"));
+            this.$startMeteor();
           }
         });
       }
