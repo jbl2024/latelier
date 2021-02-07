@@ -87,7 +87,6 @@ export default {
     this.sortable.destroy();
   },
   meteor: {
-    $subscribe: {},
     tasks: {
       params() {
         return {

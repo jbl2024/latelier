@@ -32,6 +32,10 @@ Meteor.publish("tasksByIds", function tasksPublication(ids) {
 });
 
 Meteor.publish("task", function task(taskId) {
-  check(taskId, String);
+  check(taskId, Match.Maybe(String));
+  if (!taskId) {
+    this.ready();
+    return null;
+  }
   return Tasks.find({ _id: taskId, deleted: { $ne: true } });
 });

@@ -117,8 +117,10 @@ export default {
   },
   methods: {
     selectTask(taskId) {
-      const selectedTask = Tasks.findOne({ _id: taskId });
-      if (selectedTask) {
+      if (taskId) {
+        const selectedTask = {
+          _id: taskId
+        };
         this.$store.dispatch("selectTask", selectedTask);
         this.$store.dispatch("showTaskDetail", true);
       }

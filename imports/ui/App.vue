@@ -40,7 +40,7 @@
         >
           <task-detail
             :key="showTaskDetail"
-            :task-id="selectedTask ? selectedTask._id : '0'"
+            :task-id="selectedTask ? selectedTask._id : null"
             :task-object="selectedTask"
           />
         </v-navigation-drawer>
