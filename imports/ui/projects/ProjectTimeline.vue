@@ -277,6 +277,9 @@ export default {
     $subscribe: {
       project() {
         return [this.projectId];
+      },
+      tasksForProject() {
+        return [this.projectId];
       }
     },
     project() {

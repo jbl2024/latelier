@@ -185,6 +185,12 @@ export default {
     this.$events.off("edit-list");
   },
   meteor: {
+    // Subscriptions
+    $subscribe: {
+      tasksForList() {
+        return [this.list._id];
+      }
+    },
     taskCount() {
       return Tasks.find({ listId: this.list._id }).count();
     },

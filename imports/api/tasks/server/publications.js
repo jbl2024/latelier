@@ -3,10 +3,26 @@ import { check } from "meteor/check";
 import { Tasks } from "../tasks";
 
 // This code only runs on the server
-Meteor.publish("tasks", function tasksPublication(listId) {
+Meteor.publish("tasksForProject", function tasksPublication(projectId) {
+  check(projectId, String);
+  return Tasks.find(
+    { projectId, deleted: { $ne: true } },
+    { sort: { order: 1 } }
+  );
+});
+
+Meteor.publish("tasksForList", function tasksPublication(listId) {
   check(listId, String);
   return Tasks.find(
     { listId, deleted: { $ne: true } },
+    { sort: { order: 1 } }
+  );
+});
+
+Meteor.publish("tasksByIds", function tasksPublication(ids) {
+  check(ids, [String]);
+  return Tasks.find(
+    { _id: { $in: ids }, deleted: { $ne: true } },
     { sort: { order: 1 } }
   );
 });

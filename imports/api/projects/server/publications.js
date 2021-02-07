@@ -166,14 +166,6 @@ publishComposite("project", function(projectId) {
         }
       },
       {
-        // tasks
-        find(project) {
-          return Tasks.find(
-            { projectId: project._id, deleted: { $ne: true } }
-          );
-        }
-      },
-      {
         // attachments
         find(project) {
           return Attachments.find({ "meta.projectId": project._id }).cursor;
