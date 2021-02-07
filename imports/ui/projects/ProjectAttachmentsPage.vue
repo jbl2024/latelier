@@ -49,6 +49,16 @@
           <v-divider />
         </template>
       </attachments>
+      <div
+        v-if="pagination.totalPages > 1"
+        class="text-xs-center"
+      >
+        <v-pagination
+          v-model="page"
+          :total-visible="5"
+          :length="pagination.totalPages"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -72,6 +82,9 @@ export default {
   data() {
     return {
       file: null,
+      attachments: [],
+      page: 1,
+      pagination: {},
       isUploading: false
     };
   },
@@ -90,34 +103,42 @@ export default {
       if (project) {
         this.$store.dispatch("project/setCurrentProject", project);
       }
-    },
-    attachments: {
-      params() {
-        return {
-          projectId: this.projectId
-        };
-      },
-      update({ projectId }) {
-        const attachments = Attachments.find(
-          { "meta.projectId": projectId },
-          { sort: { "meta.taskId": 1, name: 1 } }
-        ).fetch();
-        return attachments;
-      }
     }
   },
   watch: {
     projectId() {
       this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    },
+    page() {
+      this.refresh();
     }
   },
   mounted() {
     this.$store.dispatch("project/setCurrentProjectId", this.projectId);
+    this.refresh();
   },
   beforeDestroy() {
     this.$store.dispatch("project/setCurrentProjectId", null);
   },
   methods: {
+    refresh() {
+      Meteor.call("attachments.find", {
+        meta: {
+          projectId: this.projectId
+        },
+        perPage: 5,
+        page: this.page
+      }, (error, result) => {
+        if (error) {
+          this.$notifyError(error);
+        } else {
+          this.pagination.totalItems = result.totalItems;
+          this.pagination.rowsPerPage = result.rowsPerPage;
+          this.pagination.totalPages = result.totalPages;
+          this.attachments = result.data;
+        }
+      });
+    },
     onUpload(e) {
       const files = e.target.files || [];
       for (let i = 0; i < files.length; i++) {

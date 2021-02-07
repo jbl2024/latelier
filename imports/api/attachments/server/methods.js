@@ -1,6 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import SimpleSchema from "simpl-schema";
 import { Attachments } from "/imports/api/attachments/attachments";
+import { Tasks } from "/imports/api/tasks/tasks";
 import { checkLoggedIn, checkCanWriteTask } from "/imports/api/permissions/permissions";
 import { AttachmentsFindSchema } from "/imports/api/attachments/schema";
 import fs from "fs";
@@ -155,6 +156,15 @@ Attachments.methods.find = new ValidatedMethod({
         name: 1
       }
     }).fetch();
+
+    data.forEach((attachment) => {
+      if (attachment.meta.taskId) {
+        attachment.meta.task = Tasks.findOne({
+          _id: attachment.meta.taskId
+        }, { fields: { name: 1 } });
+      }
+    });
+
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
     return {

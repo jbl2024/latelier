@@ -34,7 +34,7 @@ export default {
   },
   getTask(attachment) {
     if (!attachment?.meta?.taskId) return null;
-    return Tasks.findOne({ _id: attachment.meta.taskId });
+    return attachment.meta.task;
   },
   getIconStyles(attachment) {
     /* isVideo|isAudio|isImage|isText|isJSON|isPDF */
