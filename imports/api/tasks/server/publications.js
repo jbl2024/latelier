@@ -11,11 +11,15 @@ Meteor.publish("tasksForProject", function tasksPublication(projectId) {
   );
 });
 
-Meteor.publish("tasksForList", function tasksPublication(listId) {
+Meteor.publish("tasksForList", function tasksPublication(listId, offset) {
   check(listId, String);
+  check(offset, Match.Maybe(Number));
+
+  const skip = offset || 0;
+
   return Tasks.find(
     { listId, deleted: { $ne: true } },
-    { sort: { order: 1 }, limit: 5000 }
+    { sort: { order: 1 }, skip: skip, limit: 50 }
   );
 });
 

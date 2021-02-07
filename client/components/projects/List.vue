@@ -18,6 +18,7 @@
             @click="editList(list)"
           >
             {{ list.name }} ({{ taskCount }})
+            {{ displayTop }} - {{ displayBottom }} ({{ offset }})
             {{ getEstimations(tasksForEstimation) }}
           </div>
           <div
@@ -39,9 +40,7 @@
                   <v-checkbox color="accent" :input-value="list.autoComplete" />
                 </v-list-item-action>
                 <v-list-item-title>
-                  {{
-                    $t("Automatically mark as completed")
-                  }}
+                  {{ $t("Automatically mark as completed") }}
                 </v-list-item-title>
               </v-list-item>
               <v-list-item @click="list.catchCompleted = !list.catchCompleted">
@@ -52,9 +51,7 @@
                   />
                 </v-list-item-action>
                 <v-list-item-title>
-                  {{
-                    $t("Catch completed tasks")
-                  }}
+                  {{ $t("Catch completed tasks") }}
                 </v-list-item-title>
               </v-list-item>
               <v-divider />
@@ -97,7 +94,15 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
+      <div
+        v-intersect="
+          (entries, observer, isIntersecting) => {
+            onIntersect('top', entries, observer, isIntersecting);
+          }
+        "
+      />
       <v-btn
+        ref="addNewTask"
         small
         block
         class="add-new-task dragscroll"
@@ -118,6 +123,13 @@
         :project-id="list.projectId"
         :list-id="list._id"
         :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"
+      />
+      <div
+        v-intersect="
+          (entries, observer, isIntersecting) => {
+            onIntersect('bottom', entries, observer, isIntersecting);
+          }
+        "
       />
     </div>
   </div>
@@ -144,7 +156,10 @@ export default {
       savedName: "",
       forceShowHiddenTask: false,
       showHiddenTasks: false,
-      showNewTaskDialog: false
+      showNewTaskDialog: false,
+      displayTop: false,
+      displayBottom: false,
+      offset: 0
     };
   },
   computed: {
@@ -202,6 +217,9 @@ export default {
     this.$events.listen("filter-tasks", (name) => {
       this.forceShowHiddenTask = Boolean(name && name.length > 0);
     });
+    this.$nextTick(() => {
+      this.$refs.addNewTask.$el.scrollIntoView();
+    });
   },
   beforeDestroy() {
     this.$events.off("filter-tasks");
@@ -211,7 +229,7 @@ export default {
     // Subscriptions
     $subscribe: {
       tasksForList() {
-        return [this.list._id];
+        return [this.list._id, this.offset];
       }
     },
     taskCount() {
@@ -378,6 +396,32 @@ export default {
 
     onDragOver(e) {
       e.preventDefault();
+    },
+
+    onIntersect(position, entries, observer, isIntersecting) {
+      if (position === "top") {
+        this.displayTop = isIntersecting;
+      } else if (position === "bottom") {
+        this.displayBottom = isIntersecting;
+      }
+
+      let nextOffset = this.offset;
+      if (!this.displayTop && this.displayBottom) {
+        nextOffset = this.offset + 25;
+      } else if (this.displayTop && !this.displayBottom) {
+        nextOffset = this.offset - 25;
+      }
+
+      const taskCount = this.list.taskCount || 0;
+      if (nextOffset > taskCount) {
+        nextOffset = this.offset;
+      }
+      if (nextOffset < 0) {
+        nextOffset = 0;
+      }
+
+      this.offset = nextOffset;
+
     }
   }
 };
