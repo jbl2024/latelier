@@ -15,7 +15,7 @@
         threshold: 0.2,
       }"
       min-height="54"
-      transition="fade-transition"
+      transition=""
     >
       <div ref="card" class="card" :class="{ selected, completed }">
         <task-labels-in-card class="labels" :task="task" />
