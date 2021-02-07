@@ -7,6 +7,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 export const Lists = new Mongo.Collection("lists");
 Lists.attachSchema(ListSchema);
+Lists.methods = {};
 
 if (Meteor.isServer) {
   Meteor.startup(() => {

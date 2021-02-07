@@ -68,8 +68,25 @@ const _checkForCompletion = function(listId, taskId) {
     Tasks.update({ _id: taskId }, { $set: { completed: true } });
   }
 };
+if (Meteor.isServer) {
+
+  Tasks.after.remove(function (userId, doc) {
+    Meteor.call("lists.recalculateTaskCount", { listId: doc.listId });
+  });
+
+  Tasks.after.update(function(userId, doc, fieldNames, modifier) {
+    if (modifier.$set?.completed || modifier.$set?.deleted) {
+      Meteor.call("lists.recalculateTaskCount", { listId: doc.listId });
+    }
+  });
+
+  Tasks.after.insert(function(userId, doc) {
+    Meteor.call("lists.recalculateTaskCount", { listId: doc.listId });
+  });
+}
 
 Tasks.before.update(function(userId, doc, fieldNames, modifier) {
+
   const hasCompletedModification = () => {
     if (modifier.$set && modifier.$set.completed !== undefined) {
       return true;
@@ -392,7 +409,6 @@ Meteor.methods({
     Tasks.update({ _id: taskId }, { $set: { completed } });
     const task = Tasks.findOne({ _id: taskId });
     Meteor.call("lists.findTasksToCatch", task.projectId);
-
     Meteor.call("tasks.track", {
       type: completed ? "tasks.complete" : "tasks.uncomplete",
       taskId
@@ -407,6 +423,8 @@ Meteor.methods({
     checkCanWriteTask(taskId);
 
     _checkForCompletion(listId, taskId);
+
+    const previousListId = Tasks.findOne({ _id: taskId }, { fields: { listId: 1 } }).listId;
 
     const _reorder = function() {
       const tasks = Tasks.find(
@@ -445,6 +463,9 @@ Meteor.methods({
         {}
       );
     }
+
+    Meteor.call("lists.recalculateTaskCount", { listId: listId });
+    Meteor.call("lists.recalculateTaskCount", { listId: previousListId });
 
     Meteor.call("tasks.track", {
       type: "tasks.move",

@@ -1,6 +1,10 @@
 <template>
   <div class="list" @drop="onDrop" @dragover="onDragOver">
-    <new-task :project-id="list.projectId" :list-id="list._id" :active.sync="showNewTaskDialog" />
+    <new-task
+      :project-id="list.projectId"
+      :list-id="list._id"
+      :active.sync="showNewTaskDialog"
+    />
     <div class="list-header">
       <div class="swimlane dragscroll">
         <div
@@ -8,7 +12,11 @@
           :style="getColor"
           class="flex-container-row list-name-wrapper"
         >
-          <div v-if="hiddenTaskCount == 0" class="list-name flex1" @click="editList(list)">
+          <div
+            v-if="hiddenTaskCount == 0"
+            class="list-name flex1"
+            @click="editList(list)"
+          >
             {{ list.name }} ({{ taskCount }})
             {{ getEstimations(tasksForEstimation) }}
           </div>
@@ -30,13 +38,24 @@
                 <v-list-item-action>
                   <v-checkbox color="accent" :input-value="list.autoComplete" />
                 </v-list-item-action>
-                <v-list-item-title>{{ $t("Automatically mark as completed") }}</v-list-item-title>
+                <v-list-item-title>
+                  {{
+                    $t("Automatically mark as completed")
+                  }}
+                </v-list-item-title>
               </v-list-item>
               <v-list-item @click="list.catchCompleted = !list.catchCompleted">
                 <v-list-item-action>
-                  <v-checkbox color="accent" :input-value="list.catchCompleted" />
+                  <v-checkbox
+                    color="accent"
+                    :input-value="list.catchCompleted"
+                  />
                 </v-list-item-action>
-                <v-list-item-title>{{ $t("Catch completed tasks") }}</v-list-item-title>
+                <v-list-item-title>
+                  {{
+                    $t("Catch completed tasks")
+                  }}
+                </v-list-item-title>
               </v-list-item>
               <v-divider />
               <v-list-item @click="deleteList(list._id)">
@@ -48,7 +67,10 @@
             </v-list>
           </v-menu>
         </div>
-        <div v-show="isListEdited(list, selectedList)" class="list-edit flex-container-row">
+        <div
+          v-show="isListEdited(list, selectedList)"
+          class="list-edit flex-container-row"
+        >
           <input
             ref="name"
             v-model="list.name"
@@ -104,6 +126,7 @@
 <script>
 import { Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
+import { Lists } from "/imports/api/lists/lists.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
 import { mapState, mapGetters } from "vuex";
@@ -192,7 +215,8 @@ export default {
       }
     },
     taskCount() {
-      return Tasks.find({ listId: this.list._id }).count();
+      return Lists.findOne({ _id: this.list._id }, { fields: { taskCount: 1 } })
+        .taskCount;
     },
     tasksForEstimation() {
       return Tasks.find({
@@ -201,7 +225,10 @@ export default {
       });
     },
     hiddenTaskCount() {
-      return Tasks.find({ listId: this.list._id, completed: true }).count();
+      return Lists.findOne(
+        { _id: this.list._id },
+        { fields: { taskCompletedCount: 1 } }
+      ).taskCompletedCount;
     }
   },
   methods: {
@@ -335,8 +362,8 @@ export default {
               },
               false
             );
-            upload.on("start", function() {});
-            upload.on("end", function(uploadError) {
+            upload.on("start", function () {});
+            upload.on("end", function (uploadError) {
               if (error) {
                 this.$notifyError(uploadError);
               } else {

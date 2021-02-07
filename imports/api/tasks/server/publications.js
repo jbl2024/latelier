@@ -15,7 +15,7 @@ Meteor.publish("tasksForList", function tasksPublication(listId) {
   check(listId, String);
   return Tasks.find(
     { listId, deleted: { $ne: true } },
-    { sort: { order: 1 } }
+    { sort: { order: 1 }, limit: 5000 }
   );
 });
 

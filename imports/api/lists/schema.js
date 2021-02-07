@@ -26,6 +26,16 @@ export default new SimpleSchema({
     defaultValue: false
   },
 
+  taskCount: {
+    type: Number,
+    defaultValue: 0
+  },
+
+  taskCompletedCount: {
+    type: Number,
+    defaultValue: 0
+  },
+
   /* creation dates */
   createdAt: Date,
   createdBy: String
