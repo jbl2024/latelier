@@ -18,7 +18,7 @@ Meteor.publish("tasksForList", function tasksPublication(listId, offset) {
   const skip = offset || 0;
 
   return Tasks.find(
-    { listId, deleted: { $ne: true } },
+    { listId, deleted: false },
     { sort: { order: 1 }, skip: skip, limit: 50 }
   );
 });

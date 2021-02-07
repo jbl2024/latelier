@@ -421,7 +421,6 @@ export default {
       }
 
       this.offset = nextOffset;
-
     }
   }
 };

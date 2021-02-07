@@ -130,7 +130,8 @@ export default {
       valid: false,
       nameRules: [
         (v) => !!v || this.$t("Name is mandatory"),
-        (v) => (v && v.length > 0) || this.$t("Name is too short")
+        (v) => (v && v.length > 0) || this.$t("Name is too short"),
+        (v) => (v && (v.split(/\r?\n/g) || []).length <= 250) || this.$t("Too much lines (max 250)")
       ],
       showDialog: false,
       name: "",
@@ -200,6 +201,9 @@ export default {
       } else {
         let tasks = this.name.split(/\r?\n/g) || [];
         tasks = tasks.filter((name) => name && name.length > 0);
+        if (tasks > 250) {
+          tasks = tasks.splice(0, 250);
+        }
         this.$confirm(
           this.$t("Really create {count} tasks?", { count: tasks.length }),
           {
@@ -212,30 +216,26 @@ export default {
         ).then((res) => {
           if (res) {
             this.loading = true;
-            this.$stopMeteor();
-
             const labelIds = this.labels.map((l) => l._id);
-            tasks.forEach((name) => {
-              Meteor.call(
-                "tasks.insert",
-                list.projectId,
-                this.listId,
-                name,
-                labelIds,
-                (error) => {
-                  if (error) {
-                    this.$notifyError(error);
-                  }
+            Meteor.call(
+              "tasks.bulkInsert",
+              tasks,
+              list.projectId,
+              this.listId,
+              labelIds,
+              (error) => {
+                this.loading = false;
+                if (error) {
+                  this.$notifyError(error);
+                  return;
                 }
-              );
-              this.loading = false;
-              this.reset();
-              if (!keep) {
-                this.close();
+                this.reset();
+                if (!keep) {
+                  this.close();
+                }
               }
-            });
+            );
             this.$notify(this.$t("Tasks created"));
-            this.$startMeteor();
           }
         });
       }

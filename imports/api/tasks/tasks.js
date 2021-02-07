@@ -59,6 +59,7 @@ if (Meteor.isServer) {
     Tasks.rawCollection().createIndex({ completedAt: 1 });
     Tasks.rawCollection().createIndex({ projectId: 1, listId: 1, order: 1 });
     Tasks.rawCollection().createIndex({ number: 1 }, { unique: true });
+    Tasks.rawCollection().createIndex({ listId: 1, deleted: 1, sort: 1 });
   });
 }
 
@@ -68,8 +69,8 @@ const _checkForCompletion = function(listId, taskId) {
     Tasks.update({ _id: taskId }, { $set: { completed: true } });
   }
 };
-if (Meteor.isServer) {
 
+if (Meteor.isServer) {
   Tasks.after.remove(function (userId, doc) {
     Meteor.call("lists.recalculateTaskCount", { listId: doc.listId });
   });
@@ -86,7 +87,6 @@ if (Meteor.isServer) {
 }
 
 Tasks.before.update(function(userId, doc, fieldNames, modifier) {
-
   const hasCompletedModification = () => {
     if (modifier.$set && modifier.$set.completed !== undefined) {
       return true;
@@ -109,6 +109,30 @@ Tasks.before.update(function(userId, doc, fieldNames, modifier) {
 
 if (Meteor.isServer) {
   Meteor.methods({
+    "tasks.bulkInsert"(
+      names,
+      projectId,
+      listId,
+      labelIds
+    ) {
+      this.unblock();
+      check(names, [String]);
+      check(projectId, String);
+      check(listId, String);
+      check(labelIds, Match.Maybe([String]));
+
+      names.forEach((name) => {
+        Meteor.call("tasks.insert",
+          projectId,
+          listId,
+          name,
+          labelIds);
+      });
+    }
+  });
+
+
+  Meteor.methods({
     "tasks.insert"(
       projectId,
       listId,
@@ -127,6 +151,7 @@ if (Meteor.isServer) {
       taskUserId,
       disableTracking
     ) {
+      this.unblock();
       check(projectId, String);
       check(listId, String);
       check(name, String);
