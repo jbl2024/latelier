@@ -158,6 +158,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - drag mouse on calendar to create event
 
 ### Changed
+- Improve task insertion performance
 
 ### Removed
 
