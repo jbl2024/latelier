@@ -1,5 +1,4 @@
 import { Attachments } from "/imports/api/attachments/attachments";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 
 
 export default {
