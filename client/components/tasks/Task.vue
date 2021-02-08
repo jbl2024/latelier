@@ -12,10 +12,9 @@
   >
     <v-lazy
       :options="{
-        threshold: 0.2,
+        threshold: 0.1,
       }"
       min-height="54"
-      transition=""
     >
       <div ref="card" class="card" :class="{ selected, completed }">
         <task-labels-in-card class="labels" :task="task" />
@@ -170,6 +169,10 @@ export default {
     task: {
       type: Object,
       default: () => {}
+    },
+    arrayIndex: {
+      type: Number,
+      default: 0
     }
   },
   data() {

@@ -1,10 +1,11 @@
 <template>
   <div ref="tasks" class="tasks dragscroll">
-    <template v-for="task in tasks">
+    <template v-for="(task, i) in tasks">
       <task
         v-if="showCompleted(task, showHiddenTasks)"
         :key="task._id"
         :task="task"
+        :array-index="i"
         :data-id="task._id"
       />
     </template>
@@ -30,6 +31,10 @@ export default {
     showHiddenTasks: {
       type: Boolean,
       default: false
+    },
+    tasks: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
@@ -87,49 +92,49 @@ export default {
     this.sortable.destroy();
   },
   meteor: {
-    tasks: {
-      params() {
-        return {
-          name: this.filterName,
-          labels: this.selectedLabels,
-          assignedTos: this.selectedAssignedTos,
-          updatedBy: this.selectedUpdatedBy
-        };
-      },
-      deep: false,
-      update({ name, labels, assignedTos, updatedBy }) {
-        const query = {
-          listId: this.listId
-        };
+    // tasks: {
+    //   params() {
+    //     return {
+    //       name: this.filterName,
+    //       labels: this.selectedLabels,
+    //       assignedTos: this.selectedAssignedTos,
+    //       updatedBy: this.selectedUpdatedBy
+    //     };
+    //   },
+    //   deep: false,
+    //   update({ name, labels, assignedTos, updatedBy }) {
+    //     const query = {
+    //       listId: this.listId
+    //     };
 
-        if (name && name.length > 0) {
-          query.name = {
-            $regex: `.*${name}.*`,
-            $options: "i"
-          };
-        }
+    //     if (name && name.length > 0) {
+    //       query.name = {
+    //         $regex: `.*${name}.*`,
+    //         $options: "i"
+    //       };
+    //     }
 
-        if (labels && labels.length > 0) {
-          query.labels = {
-            $in: labels.map((label) => label._id)
-          };
-        }
+    //     if (labels && labels.length > 0) {
+    //       query.labels = {
+    //         $in: labels.map((label) => label._id)
+    //       };
+    //     }
 
-        if (assignedTos && assignedTos.length > 0) {
-          query.assignedTo = {
-            $in: assignedTos
-          };
-        }
+    //     if (assignedTos && assignedTos.length > 0) {
+    //       query.assignedTo = {
+    //         $in: assignedTos
+    //       };
+    //     }
 
-        if (updatedBy && updatedBy.length > 0) {
-          query.updatedBy = {
-            $in: updatedBy
-          };
-        }
-
-        return Tasks.find(query, { sort: { order: 1 } });
-      }
-    }
+    //     if (updatedBy && updatedBy.length > 0) {
+    //       query.updatedBy = {
+    //         $in: updatedBy
+    //       };
+    //     }
+    //     console.log(query)
+    //     return Tasks.find(query, { sort: { order: 1 } });
+    //   }
+    // }
   },
   methods: {
     showCompleted(task, show) {

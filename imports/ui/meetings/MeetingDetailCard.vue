@@ -342,7 +342,6 @@ export default {
   meteor: {
     $subscribe: {
       tasksByIds() {
-        console.log("coucou")
         return [this.actions.map((action) => action.taskId)];
       }
     },

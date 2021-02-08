@@ -93,13 +93,6 @@
       </div>
     </div>
     <div class="tasks-wrapper dragscroll">
-      <div
-        v-intersect="
-          (entries, observer, isIntersecting) => {
-            onIntersect('top', entries, observer, isIntersecting);
-          }
-        "
-      />
       <v-btn
         ref="addNewTask"
         small
@@ -120,6 +113,7 @@
       </div>
       <tasks
         :project-id="list.projectId"
+        :tasks="tasks"
         :list-id="list._id"
         :show-hidden-tasks="forceShowHiddenTask ? true : showHiddenTasks"
       />
@@ -129,7 +123,15 @@
             onIntersect('bottom', entries, observer, isIntersecting);
           }
         "
-      />
+        class="text-center"
+      >
+        <v-progress-circular
+          v-if="hasNextItemsToLoad"
+          size="24"
+          indeterminate
+          color="primary"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -141,6 +143,8 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
 import { mapState, mapGetters } from "vuex";
+
+import debounce from "lodash/debounce";
 
 export default {
   props: {
@@ -158,7 +162,8 @@ export default {
       showNewTaskDialog: false,
       displayTop: false,
       displayBottom: false,
-      offset: 0
+      limit: 0,
+      PAGE_SIZE: 25
     };
   },
   computed: {
@@ -198,6 +203,16 @@ export default {
         return colors.isDark(this.projectColor);
       }
       return true;
+    },
+    hasPreviousItemsToLoad() {
+      return this.limit >= this.PAGE_SIZE;
+    },
+    hasNextItemsToLoad() {
+      const nextLimit = this.limit + this.PAGE_SIZE;
+      if (nextLimit > this.taskCount) {
+        return false;
+      }
+      return true;
     }
   },
   watch: {
@@ -234,7 +249,7 @@ export default {
     $subscribe: {
       tasksForList() {
         const labelIds = (this.selectedLabels || []).map((label) => label._id);
-        return [this.list._id, this.offset, labelIds];
+        return [this.list._id, this.limit, labelIds];
       }
     },
     taskCount() {
@@ -246,6 +261,12 @@ export default {
         listId: this.list._id,
         estimation: { $exists: true }
       });
+    },
+    tasks() {
+      const res = Tasks.find({
+        listId: this.list._id
+      }, { sort: { order: 1 } });
+      return res;
     },
     hiddenTaskCount() {
       return Lists.findOne(
@@ -404,29 +425,19 @@ export default {
     },
 
     onIntersect(position, entries, observer, isIntersecting) {
-      if (position === "top") {
-        this.displayTop = isIntersecting;
-      } else if (position === "bottom") {
-        this.displayBottom = isIntersecting;
+      this.debounceIntersect(this, position, isIntersecting);
+    },
+
+    debounceIntersect: debounce((context, position, isIntersecting) => {
+      let nextLimit = context.limit;
+      nextLimit = context.limit + context.PAGE_SIZE;
+      const taskCount = context.list.taskCount || 0;
+      if (nextLimit > taskCount) {
+        nextLimit = context.limit;
       }
 
-      let nextOffset = this.offset;
-      if (!this.displayTop && this.displayBottom) {
-        nextOffset = this.offset + 25;
-      } else if (this.displayTop && !this.displayBottom) {
-        nextOffset = this.offset - 25;
-      }
-
-      const taskCount = this.list.taskCount || 0;
-      if (nextOffset > taskCount) {
-        nextOffset = this.offset;
-      }
-      if (nextOffset < 0) {
-        nextOffset = 0;
-      }
-
-      this.offset = nextOffset;
-    }
+      context.limit = nextLimit;
+    }, 300)
   }
 };
 </script>
