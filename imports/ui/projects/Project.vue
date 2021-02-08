@@ -22,7 +22,6 @@
 <script>
 
 import { Projects } from "/imports/api/projects/projects.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import BackgroundMixin from "/imports/ui/mixins/BackgroundMixin.js";
 import debounce from "lodash/debounce";
