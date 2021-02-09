@@ -446,7 +446,7 @@ export const makeMeetings = () => [
         userId: "itZF3eP7hSwgp46eu",
         present: false,
         role: "attendee",
-        email: "mahed69@gmail.com"
+        email: "attendee-one@gmail.com"
       }
     ],
     documents: [],
@@ -474,7 +474,7 @@ export const makeMeetings = () => [
     deleted: false,
     type: "none",
     agenda: "<p>order</p>",
-    report: "<p>compte-rendu</p>"
+    report: "<p>report</p>"
   }
 ];
 
