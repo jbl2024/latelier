@@ -35,12 +35,26 @@ export const ProjectStates = Object.freeze({
   PLANNED: "planned",
   DEVELOPMENT: "development",
   PRODUCTION: "production",
-  ARCHIVED: "archived"
+  ARCHIVED: "archived",
+  IMPORTING: "importing",
+  ERROR: "error"
 });
+
+export const ProjectVisibleStates = Object.entries(ProjectStates).reduce((projectStates, entry) => {
+  [key, value] = entry;
+  if (!["IMPORTING", "ERROR"].includes(key)) {
+    projectStates[key] = value;
+  }
+  return projectStates;
+}, {});
 
 export const ProjectAccessRights = Object.freeze({
   ORGANIZATION: "organization",
   PRIVATE: "private"
+});
+
+export const ProjectExportVersions = Object.freeze({
+  V2020_11: "V2020_11"
 });
 
 const checkIfAdminOrCreator = (projectId) => {
@@ -85,78 +99,6 @@ Projects.methods.insert = new ValidatedMethod({
     });
 
     return project;
-  }
-});
-
-Projects.methods.create = new ValidatedMethod({
-  name: "projects.create",
-  validate: new SimpleSchema({
-    organizationId: { type: String, optional: true },
-    name: { type: String },
-    projectType: { type: String },
-    projectGroupId: { type: String, optional: true },
-    state: { type: String },
-    accessRights: { type: String, optional: true },
-    features: {
-      type: Array,
-      optional: true
-    },
-    "features.$": {
-      type: String
-    }
-  }).validator(),
-  run({
-    organizationId,
-    name,
-    projectType,
-    projectGroupId,
-    state,
-    accessRights,
-    features
-  }) {
-    checkLoggedIn();
-    const currentUserId = Meteor.userId();
-
-    const projectId = Projects.insert({
-      organizationId,
-      name,
-      state,
-      createdAt: new Date(),
-      createdBy: currentUserId,
-      accessRights,
-      features
-    });
-    Meteor.call("projects.addMember", {
-      projectId,
-      userId: currentUserId
-    });
-    Meteor.call("permissions.initializeProjectPermissions", {
-      projectId
-    });
-
-    if (projectType === "kanban") {
-      Meteor.call("lists.insert", projectId, "A planifier");
-      Meteor.call("lists.insert", projectId, "En cours");
-      Meteor.call("lists.insert", projectId, "Terminé", true, true);
-    }
-
-    if (projectType === "people") {
-      Meteor.call("lists.insert", projectId, "Vincent");
-      Meteor.call("lists.insert", projectId, "François");
-      Meteor.call("lists.insert", projectId, "Paul");
-      Meteor.call("lists.insert", projectId, "... et les autres");
-    }
-
-    if (projectGroupId) {
-      Meteor.call("projectGroups.addProject", projectGroupId, projectId);
-    }
-    if (organizationId && accessRights === ProjectAccessRights.ORGANIZATION) {
-      Meteor.call("organizations.propagateMembership", {
-        organizationId,
-        projectId
-      });
-    }
-    return projectId;
   }
 });
 

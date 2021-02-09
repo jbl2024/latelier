@@ -1,7 +1,7 @@
 import faker from "faker";
 import { resetDatabase } from "meteor/xolvio:cleaner";
 import { Organizations } from "/imports/api/organizations/organizations";
-import { Projects } from "/imports/api/projects/projects";
+import { Projects, ProjectStates } from "/imports/api/projects/projects";
 
 function generateUsers() {
   faker.locale = "fr";
@@ -42,6 +42,16 @@ function generateOrganizations() {
     members: [Meteor.users.findOne()._id]
   });
 }
+
+export const createProject = (context, projectData) => {
+  projectData = projectData || {
+    name: "projectA",
+    projectType: "kanban",
+    state: ProjectStates.PRODUCTION
+  };
+  const projectId = Projects.methods.create._execute(context, projectData);
+  return projectId;
+};
 
 function generateProjects() {
   Projects.insert({

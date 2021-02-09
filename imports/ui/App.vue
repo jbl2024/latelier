@@ -58,15 +58,15 @@
           :project="currentProject"
           :organization="currentOrganization"
         />
-        <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
-          {{ notifyMessage }}
-          <template v-slot:action="{ attrs }">
-            <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
-              <v-icon>mdi-close</v-icon>
-            </v-btn>
-          </template>
-        </v-snackbar>
       </template>
+      <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
+        {{ notifyMessage }}
+        <template v-slot:action="{ attrs }">
+          <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </template>
+      </v-snackbar>
     </v-app>
   </div>
 </template>
@@ -87,13 +87,18 @@ export default {
   },
   data() {
     return {
-      rightDrawerWidth: 600,
       openMenu: false,
       showSnackbar: false,
       timeout: 6000
     };
   },
   computed: {
+    rightDrawerWidth() {
+      if (this.showTaskDetailFullscreen) {
+        return "100%";
+      }
+      return 600;
+    },
     leftDrawerWidth() {
       return this.$vuetify.breakpoint.smAndDown ? "100%" : 360;
     },
@@ -101,7 +106,8 @@ export default {
       "currentUser",
       "notifyMessage",
       "selectedTask",
-      "windowTitle"
+      "windowTitle",
+      "showTaskDetailFullscreen"
     ]),
     ...mapState("organization", ["currentOrganizationId", "currentOrganization"]),
     ...mapState("project", ["currentProjectId", "currentProject"]),
@@ -197,7 +203,20 @@ export default {
     user() {
       const user = Meteor.user();
       this.$store.dispatch("setCurrentUser", user);
-      if (!user && !Meteor.loggingIn() && !this.$isLoggingIn) {
+
+      const isLoggingIn = Meteor.loggingIn() || this.$isLoggingIn;
+      const authRequiredForCurrentRoute = !this.$router.currentRoute.meta.anonymous;
+      const isAuthenticated = user;
+
+      if (isLoggingIn) {
+        return;
+      }
+
+      if (isAuthenticated && !authRequiredForCurrentRoute) {
+        this.$router.push({ name: "home" });
+      }
+
+      if (!isAuthenticated && authRequiredForCurrentRoute) {
         this.$router.push({ name: "login" });
       }
     }

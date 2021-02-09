@@ -118,7 +118,7 @@
 <script>
 import { Meteor } from "meteor/meteor";
 import {
-  ProjectStates,
+  ProjectVisibleStates,
   ProjectAccessRights
 } from "/imports/api/projects/projects.js";
 
@@ -134,7 +134,7 @@ export default {
       stepper: 1,
       showDialog: false,
       projectType: "kanban",
-      projectState: ProjectStates.DEVELOPMENT,
+      projectState: ProjectVisibleStates.DEVELOPMENT,
       allowOrganization: true,
       valid: false,
       name: "",
@@ -211,7 +211,8 @@ export default {
           accessRights: this.allowOrganization
             ? ProjectAccessRights.ORGANIZATION
             : ProjectAccessRights.PRIVATE,
-          features: this.selectedFeatures
+          features: this.selectedFeatures,
+          locale: this.$i18n.locale
         },
         (error, result) => {
           if (error) {
@@ -228,9 +229,9 @@ export default {
     },
     projectStates() {
       const states = [];
-      Object.keys(ProjectStates).forEach((state) => {
+      Object.keys(ProjectVisibleStates).forEach((state) => {
         states.push({
-          value: ProjectStates[state],
+          value: ProjectVisibleStates[state],
           label: this.$t(`projects.state.${state}`)
         });
       });

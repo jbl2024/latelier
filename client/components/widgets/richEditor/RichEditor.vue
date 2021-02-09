@@ -15,7 +15,6 @@
       :editor="editor"
       class="menu-bar"
     />
-
     <editor-content
       :editor="editor"
       :class="{
@@ -28,8 +27,14 @@
 </template>
 
 <script>
-import { Editor, EditorContent, Node } from "tiptap";
+import { Coeditions } from "/imports/api/coeditions/coeditions";
+
+import { Editor, EditorContent } from "tiptap";
+import KeyboardSubmit from "./extensions/KeyboardSubmit";
+import TodoItem from "./extensions/TodoItem";
+
 import {
+  Link,
   HardBreak,
   Blockquote,
   CodeBlock,
@@ -40,7 +45,6 @@ import {
   Bold,
   Code,
   Italic,
-  Link,
   Strike,
   Underline,
   History,
@@ -48,125 +52,9 @@ import {
   Table,
   TableHeader,
   TableCell,
-  TableRow
+  TableRow,
+  Collaboration
 } from "tiptap-extensions";
-
-import {
-  sinkListItem,
-  splitToDefaultListItem,
-  liftListItem
-} from "tiptap-commands";
-
-/* eslint class-methods-use-this: off */
-class TodoItem extends Node {
-  get name() {
-    return "todo_item";
-  }
-
-  get defaultOptions() {
-    return {
-      nested: false
-    };
-  }
-
-  get view() {
-    return {
-      props: ["node", "updateAttrs", "view"],
-      methods: {
-        onChange() {
-          this.updateAttrs({
-            done: !this.node.attrs.done
-          });
-        }
-      },
-      template: `
-        <li :data-type="node.type.name" :data-done="node.attrs.done.toString()" data-drag-handle>
-          <span class="todo-checkbox" contenteditable="false" @click="onChange"></span>
-          <div class="todo-content" ref="content" :contenteditable="view.editable.toString()"></div>
-        </li>
-      `,
-      /*
-        The render function enables TodoItem to work in `runtimeonly` builds,
-        which is required for frameworks requiring strict CSP policies. For
-        example, doing this is required in Chrome Extensions. Having both
-        the template and the render function ensures there are no issues
-        converting the node to JSON and rendering the component.
-      */
-      render(h) {
-        return h(
-          "li",
-          {
-            attrs: {
-              "data-type": this.node.type.name,
-              "data-done": this.node.attrs.done.toString(),
-              "data-drag-handle": ""
-            }
-          },
-          [
-            h("span", {
-              class: "todo-checkbox",
-              attrs: {
-                contenteditable: false
-              },
-              on: {
-                click: this.onChange
-              }
-            }),
-            h("div", {
-              class: "todo-content",
-              attrs: {
-                contenteditable: this.view.editable.toString()
-              },
-              ref: "content"
-            })
-          ]
-        );
-      }
-    };
-  }
-
-  get schema() {
-    return {
-      attrs: {
-        done: {
-          default: false
-        }
-      },
-      draggable: true,
-      content: this.options.nested ? "(paragraph|todo_list)+" : "paragraph+",
-      toDOM: (node) => {
-        const { done } = node.attrs;
-
-        return [
-          "li",
-          {
-            "data-type": this.name,
-            "data-done": done.toString()
-          },
-          ["span", { class: "todo-checkbox", contenteditable: "false" }],
-          ["div", { class: "todo-content" }, 0]
-        ];
-      },
-      parseDOM: [
-        {
-          priority: 51,
-          tag: `[data-type="${this.name}"]`,
-          getAttrs: (dom) => ({
-            done: dom.getAttribute("data-done") === "true"
-          })
-        }
-      ]
-    };
-  }
-
-  keys({ type }) {
-    return {
-      Enter: splitToDefaultListItem(type),
-      Tab: this.options.nested ? sinkListItem(type) : () => {},
-      "Shift-Tab": liftListItem(type)
-    };
-  }
-}
 
 export default {
   components: {
@@ -204,6 +92,39 @@ export default {
     maxHeight: {
       type: String,
       default: null
+    },
+    editable: {
+      type: Boolean,
+      default: true
+    },
+    collaboration: {
+      type: String,
+      default: null
+    },
+    permissionObject: {
+      type: String,
+      default: null
+    },
+    permissionId: {
+      type: String,
+      default: null
+    }
+  },
+  meteor: {
+    coedition() {
+      if (!this.collaboration) {
+        return null;
+      }
+      const coedition = Coeditions.findOne({ objectId: this.collaboration });
+      if (coedition && coedition.steps && coedition.version !== this.version) {
+        this.version = coedition.version;
+        const data = {
+          version: coedition.version,
+          steps: JSON.parse(coedition.steps)
+        };
+        this.editor.extensions.options.collaboration.update(data);
+      }
+      return coedition;
     }
   },
   data() {
@@ -211,7 +132,8 @@ export default {
       editor: null,
       content: this.value,
       ctrl: false,
-      enter: false
+      enter: false,
+      version: null
     };
   },
   computed: {
@@ -221,63 +143,136 @@ export default {
   },
   watch: {
     value() {
+      if (this.collaboration) {
+        return;
+      }
+
       const existingContent = this.editor.getHTML();
       if (existingContent !== this.value) {
         this.editor.setContent(this.value);
       }
+    },
+    editable() {
+      this.editor.setOptions({
+        editable: this.editable
+      });
     }
   },
   mounted() {
-    this.editor = new Editor({
-      content: this.content,
-      extensions: [
-        new HardBreak(),
-        new Blockquote(),
-        new CodeBlock(),
-        new Heading({ levels: [1, 2, 3] }),
-        new BulletList(),
-        new OrderedList(),
-        new ListItem(),
-        new Bold(),
-        new Code(),
-        new Italic(),
-        new Link(),
-        new Strike(),
-        new Underline(),
-        new History(),
-        new TodoItem({
-          nested: true
-        }),
-        new TodoList(),
-        new Table({
-          resizable: true
-        }),
-        new TableHeader(),
-        new TableCell(),
-        new TableRow()
-      ],
-      editorProps: {
-        handleKeyDown: (view, event) => {
-          if (event.key === "Enter" && event.ctrlKey) {
-            this.submit();
+    const extensions = [
+      new Link(),
+      new HardBreak(),
+      new Blockquote(),
+      new CodeBlock(),
+      new Heading({ levels: [1, 2, 3] }),
+      new BulletList(),
+      new OrderedList(),
+      new ListItem(),
+      new Bold(),
+      new Code(),
+      new Italic(),
+      new Strike(),
+      new Underline(),
+      new History(),
+      new TodoItem({
+        nested: true
+      }),
+      new TodoList(),
+      new Table({
+        resizable: true
+      }),
+      new TableHeader(),
+      new TableCell(),
+      new TableRow(),
+      new KeyboardSubmit({
+        context: this
+      })
+    ];
+
+    if (this.collaboration) {
+      Meteor.call(
+        "coeditions.init",
+        {
+          objectId: this.collaboration,
+          permissionObject: this.permissionObject,
+          permissionId: this.permissionId
+        },
+        (error, result) => {
+          if (error) {
+            this.$notifyError(error);
+            return;
+          }
+          this.version = result.version;
+          extensions.push(
+            new Collaboration({
+              // the initial version we start with
+              // version is an integer which is incremented with every change
+              version: this.version,
+              // debounce changes so we can save some requests
+              debounce: 250,
+              // onSendable is called whenever there are changed we have to send to our server
+              onSendable: ({ sendable }) => {
+                this.onSendable(sendable);
+              }
+            })
+          );
+
+          this.editor = new Editor({
+            editable: this.editable,
+            content: JSON.parse(result.doc),
+            extensions: extensions,
+            onUpdate: ({ getHTML }) => {
+              const content = getHTML();
+              this.$emit("input", content);
+            },
+            onFocus: () => {
+              this.$emit("on-focus", this);
+            },
+            onBlur: () => {
+              this.$emit("on-blur", this);
+            }
+          });
+          if (this.value) {
+            const existingContent = this.editor.getHTML();
+            if (existingContent !== this.value) {
+              this.editor.setContent(this.value);
+            }
+          }
+          this.$subscribe(
+            "coeditions",
+            this.collaboration,
+            this.permissionObject,
+            this.permissionId
+          );
+
+          if (this.autofocus) {
+            this.$nextTick(() => {
+              this.focus();
+            });
           }
         }
-      },
-      onUpdate: ({ getHTML }) => {
-        const content = getHTML();
-        this.$emit("input", content);
-      },
-      onFocus: () => {
-        this.$emit("on-focus", this);
-      },
-      onBlur: () => {
-        this.$emit("on-blur", this);
-      }
-    });
-    if (this.autofocus) {
-      this.$nextTick(() => {
-        this.focus();
+      );
+    } else {
+      this.editor = new Editor({
+        editable: this.editable,
+        content: this.content,
+        extensions: extensions,
+        onUpdate: ({ getHTML }) => {
+          const content = getHTML();
+          this.$emit("input", content);
+        },
+        onFocus: () => {
+          this.$emit("on-focus", this);
+        },
+        onBlur: () => {
+          this.$emit("on-blur", this);
+        }
       });
+      if (this.autofocus) {
+        this.$nextTick(() => {
+          this.focus();
+        });
+      }
     }
   },
   beforeDestroy() {
@@ -316,6 +311,28 @@ export default {
         overflow-y: auto;
       `;
       return style;
+    },
+
+    onSendable(sendable) {
+      Meteor.call(
+        "coeditions.send",
+        {
+          objectId: this.collaboration,
+          permissionObject: this.permissionObject,
+          permissionId: this.permissionId,
+          sendable: sendable,
+          schema: {
+            topNode: this.editor.options.topNode,
+            nodes: this.editor.nodes,
+            marks: this.editor.marks
+          }
+        },
+        (error) => {
+          if (error) {
+            this.$notifyError(error);
+          }
+        }
+      );
     }
   }
 };

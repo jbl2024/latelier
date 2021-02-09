@@ -31,7 +31,7 @@
           </v-btn>
         </div>
 
-        <div v-if="!editTaskName" class="toolbar-button">
+        <div v-if="!editTaskName" class="toolbar-button left">
           <v-btn
             v-shortkey="['esc']"
             icon
@@ -41,6 +41,26 @@
           >
             <v-icon>mdi-close</v-icon>
           </v-btn>
+          <template v-if="!$vuetify.breakpoint.xsOnly">
+            <v-btn
+              v-if="!showTaskDetailFullscreen"
+              v-shortkey="['m']"
+              icon
+              @click="requestMaximize()"
+              @shortkey="requestMaximize()"
+            >
+              <v-icon>mdi-fullscreen</v-icon>
+            </v-btn>
+            <v-btn
+              v-if="showTaskDetailFullscreen"
+              v-shortkey="['m']"
+              icon
+              @click="requestMinimize()"
+              @shortkey="requestMinimize()"
+            >
+              <v-icon>mdi-fullscreen-exit</v-icon>
+            </v-btn>
+          </template>
         </div>
 
         <div v-if="!editTaskName" class="checkbox">
@@ -51,7 +71,7 @@
                 <!-- eslint-disable -->
                 <path
                   d="M7.629,14.566c0.125,0.125,0.291,0.188,0.456,0.188c0.164,0,0.329-0.062,0.456-0.188l8.219-8.221c0.252-0.252,0.252-0.659,0-0.911c-0.252-0.252-0.659-0.252-0.911,0l-7.764,7.763L4.152,9.267c-0.252-0.251-0.66-0.251-0.911,0c-0.252,0.252-0.252,0.66,0,0.911L7.629,14.566z"
-                  style="stroke: white; fill: white;"
+                  style="stroke: white; fill: white"
                 ></path>
                 <!-- eslint-enable -->
               </svg>
@@ -190,6 +210,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import { Meteor } from "meteor/meteor";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
@@ -233,6 +254,7 @@ export default {
     };
   },
   computed: {
+    ...mapState(["showTaskDetailFullscreen"]),
     toolbarTaskTitle() {
       return `
         #${this.task.number} - 
@@ -315,6 +337,14 @@ export default {
   methods: {
     requestClose() {
       this.$store.dispatch("showTaskDetail", false);
+    },
+
+    requestMaximize() {
+      this.$store.dispatch("showTaskDetailFullscreen", true);
+    },
+
+    requestMinimize() {
+      this.$store.dispatch("showTaskDetailFullscreen", false);
     },
 
     startEditTaskName() {
@@ -433,12 +463,6 @@ export default {
   margin-right: 4px;
 }
 
-.toolbar-button {
-  flex: 1;
-  max-width: 42px;
-  margin-left: 8px;
-  margin-right: 8px;
-}
 .default-toolbar {
   .v-toolbar__content > .v-btn.v-btn--icon:first-child + .v-toolbar__title,
   .default-toolbar-title {
@@ -499,6 +523,18 @@ pre {
   margin-left: 8px;
   margin-right: 8px;
 }
+
+@media (min-width: 600px) {
+  .toolbar-button.left {
+    max-width: 60px;
+  }
+
+  .toolbar-button.left .v-btn {
+    width: 28px;
+    height: 28px;
+  }
+}
+
 .toolbar-title {
   flex: 2;
   font-size: 18px;

@@ -14,7 +14,21 @@ A project management tool.
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
 - Projects grouped by organization
 - Project weather like status
+- Meeting reports
 - Permissions per organization & per project
+
+
+## Demonstration
+
+Demo server: https://latelier.services.jbl2024.com
+
+Warning: do not store sensitive data, use at your own risk. 
+Data is reset periodically.
+
+Available credentials:
+
+- username: user1@localhost / password: user1
+- username: user2@localhost / password: user2
 
 ## Installation
 
@@ -68,6 +82,7 @@ Settings:
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
 | auth                           | object   | {}              | See below                                        |
+| coedition                      | object   | {}              | See below                                        |
 
 email:
 
@@ -142,6 +157,14 @@ oauth2:
 | idTokenWhitelistFields  | string  |               | []                                                        |
 
 Note: tested only with [keycloak](https://www.keycloak.org/).
+
+coedition:
+
+| Key                     | Type     | Default value   | Description                                            |
+| ----------------------- | ------- | ---------------- | ------------------------------------------------------ |
+| steps                   | integer  | 500             | Number of steps to keep for coedit collab feature      |
+| daysToKeep              | integer  | 3               | previous edition steps are removed after daysToKeep    |
+
 
 Example:
 
@@ -228,6 +251,10 @@ Note: do not forget to create a `settings-development.json` file.
 ![Weather](/docs/weather.png)
 
 ![Canvas](/docs/canvas.png)
+
+![Meetings calendar](/docs/meeting1.png)
+
+![Meeting detail](/docs/meeting2.png)
 
 ### License
 

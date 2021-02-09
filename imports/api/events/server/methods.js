@@ -16,10 +16,7 @@ Meteor.methods({
       userId: Match.Optional(String),
       properties: Match.Optional(Object)
     });
-
     event.createdAt = event.createdAt || new Date();
-    event.userId = event.userId || Meteor.userId();
-
     Events.insert(event);
 
     callbacks.forEach((cb) => {
@@ -33,9 +30,9 @@ Meteor.methods({
   },
 
   "events.removeProject"(projectId) {
-    this.unblock();
-
     check(projectId, String);
-    Events.remove({ "properties.task.project._id": projectId });
+    Meteor.defer(() => {
+      Events.remove({ "properties.task.project._id": projectId });
+    });
   }
 });

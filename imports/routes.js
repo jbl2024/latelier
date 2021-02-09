@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { isBasicAuth, projectAuth, meetingAuth } from "./router/check-auth";
+import { isBasicAuth, projectAuth, meetingAuth, checkSsoAuth } from "./router/check-auth";
 import { projectHasFeature, organizationHasFeature } from "./router/guards";
 import multiguard from "vue-router-multiguard";
 
@@ -41,27 +41,47 @@ const routes = [
       {
         path: "/login",
         name: "login",
-        component: Login
+        component: Login,
+        beforeEnter: checkSsoAuth,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/registration-completed",
         name: "registration-completed",
-        component: RegistrationCompleted
+        component: RegistrationCompleted,
+        beforeEnter: checkSsoAuth,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/register",
         name: "register",
-        component: Register
+        component: Register,
+        beforeEnter: checkSsoAuth,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/forgot-password",
         name: "forgot-password",
-        component: ForgotPassword
+        component: ForgotPassword,
+        beforeEnter: checkSsoAuth,
+        meta: {
+          anonymous: true
+        }
       },
       {
         path: "/reset-password/:token",
         name: "reset-password",
-        component: ResetPassword
+        component: ResetPassword,
+        beforeEnter: checkSsoAuth,
+        meta: {
+          anonymous: true
+        }
       }
     ]
   },
@@ -184,6 +204,16 @@ const routes = [
     name: "project-task",
     beforeEnter: multiguard([isBasicAuth, projectAuth]),
     component: Project,
+    props: true,
+    meta: {
+      isProject: true
+    }
+  },
+  {
+    path: "/projects-export/:projectId",
+    name: "project-export",
+    beforeEnter: multiguard([isBasicAuth, projectAuth]),
+    component: async () => (await import("/imports/ui/projects/ProjectImportExport/ProjectExport.vue")).default,
     props: true,
     meta: {
       isProject: true

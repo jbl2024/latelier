@@ -61,13 +61,6 @@ export default {
           color: "green",
           mimeType:
             "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        },
-        {
-          format: "pdf",
-          title: "PDF",
-          description: "Portable Document Format",
-          color: "red",
-          mimeType: "application/pdf"
         }
       ])
     };

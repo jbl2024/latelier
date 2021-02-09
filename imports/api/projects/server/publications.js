@@ -169,8 +169,7 @@ publishComposite("project", function(projectId) {
         // tasks
         find(project) {
           return Tasks.find(
-            { projectId: project._id, deleted: { $ne: true } },
-            { sort: { order: 1 } }
+            { projectId: project._id, deleted: { $ne: true } }
           );
         }
       },

@@ -8,7 +8,7 @@
     >
       <v-card>
         <v-card-title class="headline">
-          Choisir une couleur
+          {{ $t('Choose color') }}
         </v-card-title>
         <v-card-text>
           <v-color-picker

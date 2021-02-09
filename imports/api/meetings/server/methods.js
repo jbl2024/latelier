@@ -3,6 +3,7 @@ import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meet
 import { Projects } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { UserUtils } from "/imports/api/users/utils";
+
 import moment from "moment";
 import fs from "fs";
 import {
@@ -58,12 +59,18 @@ Meetings.methods.create = new ValidatedMethod({
     endDate,
     attendees,
     documents,
-    actions
+    actions,
+    report,
+    meetingUserId
   }) {
     checkCanWriteProject(projectId);
 
     const now = new Date();
-    const author = Meteor.userId();
+
+    let author = Meteor.userId();
+    const canSelectUserId = meetingUserId && Meteor.isServer && Permissions.isAdmin(author);
+    author = canSelectUserId ? meetingUserId : author;
+
     state = state || MeetingState.PENDING;
 
     attendees = Array.isArray(attendees) ? attendees : [];
@@ -76,6 +83,7 @@ Meetings.methods.create = new ValidatedMethod({
       state,
       description,
       agenda,
+      report,
       color,
       location,
       type,
@@ -133,7 +141,7 @@ Meetings.methods.update = new ValidatedMethod({
           documents,
           actions,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
@@ -164,7 +172,7 @@ Meetings.methods.updateAgenda = new ValidatedMethod({
         $set: {
           agenda,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
@@ -193,7 +201,7 @@ Meetings.methods.updateReport = new ValidatedMethod({
         $set: {
           report,
           updatedAt: new Date(),
-          updateddBy: Meteor.userId()
+          updatedBy: Meteor.userId()
         }
       }
     );
@@ -657,6 +665,9 @@ Meetings.methods.export = new ValidatedMethod({
           return date.format(aFormat);
         },
         getUserProfileName(user) {
+          if (!user) {
+            return null;
+          }
           if (!user._id) {
             user = loadUser(user);
           }

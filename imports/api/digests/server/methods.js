@@ -10,61 +10,61 @@ methods.addDigest = new ValidatedMethod({
     properties: { type: Object, blackbox: true }
   }).validator(),
   run({ type, properties }) {
-    this.unblock();
+    Meteor.defer(() => {
+      const today = moment()
+        .startOf("day")
+        .toDate();
 
-    const today = moment()
-      .startOf("day")
-      .toDate();
 
+      let digestType = type;
+      const notUpdateTypes = [
+        "tasks.create",
+        "tasks.remove",
+        "tasks.deleteForever",
+        "tasks.complete",
+        "tasks.uncomplete"
+      ];
 
-    let digestType = type;
-    const notUpdateTypes = [
-      "tasks.create",
-      "tasks.remove",
-      "tasks.deleteForever",
-      "tasks.complete",
-      "tasks.uncomplete"
-    ];
+      if (digestType === "tasks.complete") {
+        Digests.remove({
+          type: "tasks.uncomplete",
+          when: today,
+          taskId: properties.task._id
+        });
+      }
 
-    if (digestType === "tasks.complete") {
-      Digests.remove({
-        type: "tasks.uncomplete",
-        when: today,
-        taskId: properties.task._id
-      });
-    }
+      if (digestType === "tasks.uncomplete") {
+        Digests.remove({
+          type: "tasks.complete",
+          when: today,
+          taskId: properties.task._id
+        });
+      }
 
-    if (digestType === "tasks.uncomplete") {
-      Digests.remove({
-        type: "tasks.complete",
-        when: today,
-        taskId: properties.task._id
-      });
-    }
+      if (!notUpdateTypes.includes(digestType)) {
+        digestType = "tasks.update";
+      }
 
-    if (!notUpdateTypes.includes(digestType)) {
-      digestType = "tasks.update";
-    }
-
-    Digests.upsert(
-      {
-        type: digestType,
-        when: today,
-        taskId: properties.task._id
-      },
-      {
-        $set: {
+      Digests.upsert(
+        {
           type: digestType,
           when: today,
-          projectId: properties.task.projectId,
-          taskId: properties.task._id,
-          properties: properties
+          taskId: properties.task._id
+        },
+        {
+          $set: {
+            type: digestType,
+            when: today,
+            projectId: properties.task.projectId,
+            taskId: properties.task._id,
+            properties: properties
+          }
         }
-      }
-    );
+      );
 
-    Meteor.call("digests.purge", {
-      projectId: properties.task.projectId
+      Meteor.call("digests.purge", {
+        projectId: properties.task.projectId
+      });
     });
   }
 });
@@ -78,40 +78,40 @@ methods.purge = new ValidatedMethod({
     projectId: { type: String }
   }).validator(),
   run({ projectId }) {
-    this.unblock();
+    Meteor.defer(() => {
+      const keep = Meteor.settings.digestsRetention || 60;
+      const digests = Digests.find(
+        {
+          projectId: projectId
+        },
+        {
+          sort: {
+            when: -1
+          }
+        }
+      ).fetch();
 
-    const keep = Meteor.settings.digestsRetention || 60;
-    const digests = Digests.find(
-      {
-        projectId: projectId
-      },
-      {
-        sort: {
-          when: -1
+      let when;
+      let differentDays = 0;
+      const count = digests.length;
+      const toDelete = [];
+      for (let i = 0; i < count; i++) {
+        const digest = digests[i];
+        if (digest.when.getTime() !== when) {
+          when = digest.when.getTime();
+          differentDays += 1;
+        }
+        if (differentDays > keep) {
+          toDelete.push(digest._id);
         }
       }
-    ).fetch();
 
-    let when;
-    let differentDays = 0;
-    const count = digests.length;
-    const toDelete = [];
-    for (let i = 0; i < count; i++) {
-      const digest = digests[i];
-      if (digest.when.getTime() !== when) {
-        when = digest.when.getTime();
-        differentDays += 1;
+      if (toDelete.length > 0) {
+        Digests.remove({
+          _id: { $in: toDelete }
+        });
       }
-      if (differentDays > keep) {
-        toDelete.push(digest._id);
-      }
-    }
-
-    if (toDelete.length > 0) {
-      Digests.remove({
-        _id: { $in: toDelete }
-      });
-    }
+    });
   }
 });
 

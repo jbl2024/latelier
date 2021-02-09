@@ -17,7 +17,7 @@
             class="btn-color"
             @click="showSelectColor = true"
           >
-            Choisir une couleur
+            {{ $t('Choose color') }}
           </v-btn>
           <div
             ref="color"

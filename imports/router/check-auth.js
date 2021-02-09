@@ -48,6 +48,37 @@ export const isBasicAuth = (to, from, next) => {
   }
 };
 
+export const checkSsoAuth = (to, from, next) => {
+  Vue.prototype.$isLoggingIn = true;
+  if (
+    Meteor.settings.public
+    && Meteor.settings.public.sso
+    && Meteor.settings.public.sso.enabled
+    && !Meteor.userId()
+  ) {
+    Meteor.call("users.ssoAuthenticate", (error, result) => {
+      if (!error) {
+        Meteor.loginWithToken(result.token, (err) => {
+          Vue.prototype.$isLoggingIn = false;
+          if (!err) {
+            Meteor.call("permissions.setAdminIfNeeded");
+          } else {
+            store.dispatch("notifyError", err);
+          }
+          next();
+        });
+      } else {
+        Vue.prototype.$isLoggingIn = false;
+        store.dispatch("notifyError", error);
+        next();
+      }
+    });
+  } else {
+    Vue.prototype.$isLoggingIn = false;
+    next();
+  }
+};
+
 export const projectAuth = (to, from, next) => {
   const { projectId } = to.params;
   Meteor.call("permissions.canReadProject", { projectId }, (error, result) => {
