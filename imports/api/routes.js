@@ -15,13 +15,13 @@ routes.use("/users", users);
 
 // Listing all API Routes
 if (Meteor.isDevelopment) {
-    routes.get("/routes", function(req, res) {
-        res.status(200).json(listEndpoints(routes).map(endpoint => `${endpoint.path} [${endpoint.methods.join(',')}]`)).end();
-    });
+  routes.get("/routes", function({ res }) {
+    res.status(200).json(listEndpoints(routes).map((endpoint) => `${endpoint.path} [${endpoint.methods.join(",")}]`)).end();
+  });
 }
 
-routes.all('*', (req, res, next) => {
-    throw new RestApiError("Method Not Allowed", 405);
+routes.all("*", () => {
+  throw new RestApiError("Method Not Allowed", 405);
 });
 
 export default routes;

@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-import { WebApp } from 'meteor/webapp';
+import { WebApp } from "meteor/webapp";
 import "../imports/startup/server/fixtures.js";
 import "../imports/startup/server/fixEmptyAttributes.js";
 import "../imports/startup/server/fixTaskNumber.js";
