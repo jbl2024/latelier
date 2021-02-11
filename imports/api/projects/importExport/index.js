@@ -2,7 +2,7 @@ import JSZip from "jszip";
 import ZipProject from "/imports/api/projects/importExport/ZipProject";
 import fs from "fs";
 
-export const items = [
+export const importExportDefaultItems = [
   "tasks",
   "users",
   "meetings",

@@ -3,7 +3,7 @@ import { initData } from "/test/fixtures/fixtures";
 import { makeProjectDatas } from "/test/fixtures/projects/projectsImportExport";
 import {
   createProjectExportZip,
-  items as defaultImportItems
+  importExportDefaultItems
 } from "/imports/api/projects/importExport";
 import { Projects, ProjectAccessRights } from "/imports/api/projects/projects";
 import { Tasks } from "/imports/api/tasks/tasks";
@@ -407,7 +407,7 @@ if (Meteor.isServer) {
       const projectDatas = makeProjectDatas();
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
-      const itemsToImport = defaultImportItems.filter((item) => item !== "users");
+      const itemsToImport = importExportDefaultItems.filter((item) => item !== "users");
 
       try {
         userId = Meteor.users.findOne()._id;

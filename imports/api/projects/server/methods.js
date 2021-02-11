@@ -21,7 +21,7 @@ import JSZip from "jszip";
 import { createProjectExportZip,
   unserializeProjectImportZip,
   linkAttachmentsToFiles,
-  items as defaultImportItems } from "/imports/api/projects/importExport/";
+  importExportDefaultItems } from "/imports/api/projects/importExport/";
 
 
 Projects.methods.create = new ValidatedMethod({
@@ -619,7 +619,7 @@ Projects.methods.import = new ValidatedMethod({
         throw new Meteor.Error("not-authorized");
       }
 
-      items = Array.isArray(items) ? items : defaultImportItems;
+      items = Array.isArray(items) ? items : importExportDefaultItems;
 
       const zip = await JSZip.loadAsync(fileBuffer);
       const zippedProjects = await unserializeProjectImportZip(zip);

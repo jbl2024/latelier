@@ -34,7 +34,7 @@
 <script>
 import { mapState } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
-import { items } from "/imports/api/projects/importExport/";
+import { importExportDefaultItems } from "/imports/api/projects/importExport/";
 import { saveAs } from "file-saver";
 import { sanitizeForFs } from "/imports/ui/utils/sanitize";
 import { Permissions } from "/imports/api/permissions/permissions";
@@ -57,7 +57,7 @@ export default {
         bpmn: "diagramCount",
         attachments: "attachmentCount"
       }),
-      selectedItems: items.reduce((obj, item) => {
+      selectedItems: importExportDefaultItems.reduce((obj, item) => {
         obj[item] = true;
         return obj;
       }, {})
