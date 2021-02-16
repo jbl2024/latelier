@@ -1,0 +1,78 @@
+<div>
+    <h2>
+        {{i18n "meetings.export.title" }}: {{ meeting.name }}
+    <h2>
+    <p> {{i18n "meetings.export.organizedBy" }}: {{ getUserProfileName meeting.createdBy }}</p>
+    <h2>
+        {{ project.name }}
+    </h2>
+    <div>
+        {{i18n "meetings.export.date" }}: {{ date meeting.startDate datesFormats.prettyDate }}
+    </div>
+    <div>
+        {{i18n "meetings.export.time" }}: {{ date meeting.startDate datesFormats.time }} - {{ date meeting.endDate datesFormats.time }}
+    </div>
+    <div>
+        {{i18n "meetings.export.description" }}: {{ meeting.description }}
+    </div>
+
+    <h2>
+        {{i18n "meetings.export.attendees"}}
+    </h2>
+    <ul>
+        {{#each meeting.attendees }}
+            <li>{{ firstName }} {{ lastName }} ({{ email }})</li>
+        {{/each}}
+    </ul>
+    <h2>
+        {{i18n "meetings.export.agenda" }}
+    </h2>
+    <p>
+        {{{ meeting.agenda }}}
+    </p>
+    <h2>
+        {{i18n "meetings.export.report" }}
+    </h2>
+    <p>
+        {{{ meeting.report }}}
+    </p>
+    <h2>
+        {{i18n "meetings.export.actions.title" }}
+    </h2>
+    <table>
+        <thead>
+            <tr>
+                <th>
+                    {{i18n "meetings.export.actions.type" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.description" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.assignedTo" }}
+                </th>
+                <th>
+                    {{i18n "meetings.export.actions.dueDate" }}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each meeting.actions }}
+            <tr>
+                <td>
+                    {{ typeString }}
+                </td>
+                <td>
+                    {{{ description }}}
+                </td>
+                <td>
+                    {{ getUserProfileName assignedTo }}
+                </td>
+                <td>
+                    {{ date dueDate datesFormats.prettyDates }}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table> 
+</div>

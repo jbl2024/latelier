@@ -3,6 +3,7 @@ import { Mongo } from "meteor/mongo";
 import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import ListSchema from "./schema";
+import { Permissions } from "/imports/api/permissions/permissions";
 
 export const Lists = new Mongo.Collection("lists");
 Lists.attachSchema(ListSchema);
@@ -14,11 +15,12 @@ if (Meteor.isServer) {
 }
 
 Meteor.methods({
-  "lists.insert"(projectId, name, autoComplete, catchCompleted) {
+  "lists.insert"(projectId, name, autoComplete, catchCompleted, listUserId) {
     check(projectId, String);
     check(name, String);
     check(autoComplete, Match.Maybe(Boolean));
     check(catchCompleted, Match.Maybe(Boolean));
+    check(listUserId, Match.Maybe(String));
 
     if (!autoComplete) autoComplete = false;
     if (!catchCompleted) catchCompleted = false;
@@ -27,6 +29,10 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
+
+    let userId = Meteor.userId();
+    const canSelectUserId = listUserId && Meteor.isServer && Permissions.isAdmin(userId);
+    userId = canSelectUserId ? listUserId : userId;
 
     const _findLastOrder = function() {
       const list = Lists.findOne({ projectId }, { sort: { order: -1 } });
@@ -43,7 +49,7 @@ Meteor.methods({
       catchCompleted,
       projectId,
       createdAt: new Date(),
-      createdBy: Meteor.userId()
+      createdBy: userId
     });
 
     return Lists.findOne({ _id: listId });

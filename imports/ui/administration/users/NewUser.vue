@@ -28,20 +28,22 @@
                 <v-switch
                   v-model="user.isActive"
                   color="accent"
-                  :label="
-                    `${user.isActive ? 'Compte activé' : 'Compte déactivé'}`
-                  "
+                  :label="`${
+                    user.isActive
+                      ? $t('Account activated')
+                      : $t('Account deactivated')
+                  }`"
                 />
               </v-flex>
               <v-flex xs12 sm6 md6>
                 <v-switch
                   v-model="user.isConfirmed"
                   color="accent"
-                  :label="
-                    `${
-                      user.isConfirmed ? 'Mail confirmé' : 'Mail non confirmé'
-                    }`
-                  "
+                  :label="`${
+                    user.isConfirmed
+                      ? $t('Confirmed email')
+                      : $t('Unconfirmed email')
+                  }`"
                 />
               </v-flex>
               <v-flex xs12>
@@ -49,18 +51,21 @@
               </v-flex>
 
               <v-flex xs12 sm6 md6>
-                <v-text-field v-model="user.profile.firstName" label="Prénom" />
+                <v-text-field
+                  v-model="user.profile.firstName"
+                  :label="$t('First name')"
+                />
               </v-flex>
               <v-flex xs12 sm6 md6>
                 <v-text-field
                   v-model="user.profile.lastName"
-                  :label="$t('Name')"
+                  :label="$t('Last name')"
                 />
               </v-flex>
               <v-flex xs12>
                 <v-text-field
                   v-model="user.email"
-                  label="Email*"
+                  :label="$t('Email')"
                   required
                   :rules="emailRules"
                 />
@@ -68,7 +73,6 @@
             </v-layout>
           </v-container>
         </v-form>
-        <small>*indique un champ obligatoire</small>
       </v-card-text>
       <v-card-actions>
         <v-spacer />

@@ -1,4 +1,7 @@
 {
+  "Todo": "A faire",
+  "Doing": "En cours",
+  "Done": "Terminé",
   "Back": "Retour",
   "Cancel": "Annuler",
   "Confirm": "Confirmer",
@@ -7,6 +10,9 @@
   "Update": "Mettre à jour",
   "Canvas": "Canevas",
   "Weather": "Météo",
+  "First name": "Prénom",
+  "Last name": "Nom",
+  "users": "utilisateurs",
   "Title": "Titre",
   "Home": "Accueil",
   "Description": "Description",
@@ -39,6 +45,7 @@
   "New organization": "Nouvelle organisation",
   "Create new organization": "Créer une nouvelle organisation",
   "Create new project": "Créer un nouveau projet",
+  "Choose color": "Choisir une couleur",
   "New label": "Nouveau label",
   "Add new task": "Ajouter une tâche",
   "Assigned to": "Assignées à",
@@ -89,7 +96,6 @@
   "No notes": "Aucune note",
   "Add note": "Ajouter une note",
   "edited": "éditée",
-
   "New list": "Nouvelle liste",
   "Template": "Modèle",
   "State": "Etat",
@@ -101,6 +107,20 @@
   "Invalid email": "Email invalide",
   "Password is mandatory": "Le mot de passe est obligatoire",
   "Password is too short": "Le mot de passe est trop court",
+  "Email": "Email",
+  "Password": "Mot de passe",
+  "Password (again)": "Mot de passe (à nouveau)",
+  "Recover password": "Récupérer le mot de passe",
+  "Recover": "Récuperer",
+  "Reset": "Réinitialiser",
+  "Reset password": "Réinitialiser le mot de passe",
+  "Already have an account?": "Vous avez un compte ?",
+  "Lost password?": "Mot de passe perdu ?",
+  "Create account": "Créer le compte",
+  "Authentication": "Authentification",
+  "Login": "Se connecter",
+  "Register": "Créer un compte",
+  "Instructions sent, check your inbox!": "Instructions envoyées, vérifiez votre boite mail",
   "Welcome back!": "Ravi de vous revoir!",
   "Empty": "Vide",
   "Background": "Fond d'écran",
@@ -160,6 +180,7 @@
   "Move": "Déplacer",
   "Task moved": "Tâche déplacée",
   "Export": "Exporter",
+  "Export tasks": "Exporter les tâches",
   "Export image": "Exporter l'image",
   "Export XML": "Exporter en XML",
   "Daily digest from subscribed projects": "Résumé quotidien des projets souscrits",
@@ -195,6 +216,52 @@
   "contentSelector": {
     "search": "Projet ou organisation"
   },
+  "canvas": {
+    "goal": {
+      "title": "But",
+      "subtitle": "Quelle est l'intention à l'origine du projet ? (cause et besoin)<br>Pourquoi ce projet est-il porteur de sens et important ? et pour qui ? <br>Comment ce projet va-t-il changer l'avenir ? et pour qui ?"   
+    },
+    "budget": {
+      "title": "Budget",
+      "subtitle": "Quelles sont les finances nécessaires ? disponibles ? <br>...pour L‘ÉQUIPE (interne / externe)<br>..pour les RESSOURCES"
+    },
+    "team": {
+      "title": "Equipe",
+      "subtitle": "Qui est / devrait en faire partie ?<br>...du noyau de l‘équipe<br>...de l‘équipe étendue<br>...en tant que partenaires externes<br>...en tant que chef de projet / manager"
+    },
+    "requirements": {
+      "title": "Conditions",
+      "subtitle": "Forces, faits, événements et personnes connues qui influencent le projet ?<br>...Qui ou quoi soutient le projet ?<br>...Qui ou quoi gênent le projet ?"
+    },
+    "resources": {
+      "title": "Ressources",
+      "subtitle": "Quelles sont les ressources nécessaires ? <br>...un espace projet<br>...des salles de réunions (sur site, à l‘extérieur)<br>...des outils (logiciels inclus) et des matériels"
+    },
+    "risks": {
+      "title": "Risques & opportunités",
+      "subtitle": "Quels sont les évenements futurs et incertains qui menaceraient ou favoriseraient le projet ?<br>Ils vont probablement se concrétiser,ou si vous pouvez les influencer, considérez-les comme des CONDITIONS"
+    },
+    "milestones": {
+      "title": "Jalons",
+      "subtitle": "Quelles sont les étapes clés de progression ?<br>Les échéances pour :<br>...les résultats intermédiaires<br>...les décisions cruciales<br>...les résultats visibles et mesurables"
+    },
+    "quality": {
+      "title": "Qualité",
+      "subtitle": "Qu‘est ce qui rend le CLIENT vraiment heureux au regard :<br>...du RÉSULTAT du projet ?<br>...des JALONS pour atteindre le résultat ?<br>...de la manière d‘être informé / impliqué pendant le projet ?"
+    },
+    "outcome": {
+      "title": "Résultats",
+      "subtitle": "Qu‘est-ce que le projet est censé livré au CLIENT ? C‘est plutôt :<br>...un nouveau produit / service ?<br>...une prise de conscience ? <br>...de nouvelles connaissances ?"
+    },
+    "customers": {
+      "title": "Clients",
+      "subtitle": "Qui est vraiment le client ? Des personnes qui :<br>...payent pour le projet (SPONSOR) <br>...démarrent & arrêtent le projet (PROPRIÉTAIRE)<br>...sont impactées par les résultats (DESTINATAIRES)<br>S‘il y a plusieurs clients : Y a-t-il des conflits déclarés ?"
+    },
+    "planning": {
+      "title": "Calendrier",
+      "subtitle": "Quand le projet démarre-t-il réellement ? <br> De quoi a-t-on besoin pour cela ? (ex : préparatifs,documents, décisions)<br>Quand le projet sera-t-il réellemment terminé ? <br>De quoi a-t-on besoin pour cela ? (ex : documents,décisions)<br>Quelle souplesse a-t-on sur le déroulement au regard des dates de début et de fin du projet ? <br>échéances et JALONS compris ?"
+    }
+  },
   "history": {
     "tasks": {
       "create": "Création",
@@ -225,7 +292,8 @@
         "spent": "Modification de la durée passée"
       },
       "reminderStartDate": "La tâche démarre bientôt",
-      "reminderDueDate": "La date d'échéance de la tâche expire bientôt"  
+      "reminderDueDate": "La date d'échéance de la tâche expire bientôt",
+      "restore": "Restauration de la tâche"
     }
   },
   "tasks": {
@@ -238,7 +306,9 @@
       "PLANNED": "Planifié",
       "DEVELOPMENT": "En développement",
       "PRODUCTION": "En production",
-      "ARCHIVED": "Archivé"
+      "ARCHIVED": "Archivé",
+      "IMPORTING": "En cours d'import",
+      "ERROR": "Invalide"
     },
     "features": {
       "chooseFeature": "Sélectionner une fonctionnalité",
@@ -272,7 +342,8 @@
       "date": "DD/MM/YYYY",
       "dateTime": "DD/MM/YYYY HH:mm",
       "prettyDate": "DD MMMM YYYY",
-      "prettyMonthAndDate": "MMMM YYYY"
+      "prettyMonthAndDate": "MMMM YYYY",
+      "time": "HH:mm"
     },
     "duration": {
       "past": "il y a {duration}",
@@ -317,7 +388,78 @@
     "logout": "Se déconnecter",
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
+  "project": {
+    "import": {
+      "itemsToImport": "Éléments à importer",
+      "importProject": "Importer un projet",
+      "import": "Importer",
+      "simulateImport": "Simuler l'import",
+      "projectName": "Nom du projet",
+      "projectOrganization": "Organisation du projet",
+      "withoutOrganization": "Sans organisation",
+      "importSuccess": "Projet importé avec succès",
+      "importLoading": "Importation du projet en cours",
+      "wizard": {
+        "project": "Nom du projet et organisation"
+      },
+      "items": {
+        "users": {
+          "title": "Utilisateurs",
+          "description": "Importer les membres du projet en tant que nouveaux utilisateurs"
+        },
+        "tasks": {
+          "title": "Tâches",
+          "description": "Importer les tâches et les listes de tâches associées"
+        },
+        "meetings": {
+          "title": "Réunions",
+          "description": "Importer les réunions du projet"
+        },
+        "bpmn": {
+          "title": "Diagrammes BPMN",
+          "description": "Importer les diagrammes BPMN"
+        },
+        "canvas": {
+          "title": "Canvas",
+          "description": "Importer le canvas du projet"
+        },
+        "weather": {
+          "title": "Météo",
+          "description": "Importer les rapports météo"
+        },
+        "attachments": {
+          "title": "Documents",
+          "description": "Importer les documents et pièces-jointes"
+        }
+      },
+      "errors": {
+        "Error when processing project import": "Erreur lors de l'importation des fichiers du projet",
+        "Error when processing project infos": "Erreur lors de l'importation du projet",
+        "Error when creating project": "Erreur lors de la création du projet",
+        "Error when processing attachments metadatas": "Erreur lors du traitement des documents et pièces-jointes",
+        "Error when processing attachment metadatas": "Erreur lors du traitement d'un des documents importés",
+        "Error when importing user": "Ereur lors de l'importation d'un membre du projet"
+      }
+    },
+    "export": {
+      "invalidExport": "Fichier d'export invalide",
+      "exportLoading": "Export du projet en cours",
+      "itemsToExport": "Éléments à exporter",
+      "export": "Exporter le projet",
+      "items": {
+        "tasks": "Tâches",
+        "users": "Utilisateurs",
+        "meetings": "Réunions",
+        "bpmn": "Diagrammes BPMN",
+        "canvas": "Canvas",
+        "weather": "Météo projet",
+        "attachments": "Documents"
+      }
+    }
+  },
   "meetings": {
+    "lock": "Verrouiller",
+    "unlock": "Déverrouiller",
     "list": "Liste",
     "meeting": "Réunion",
     "meetings": "Réunions",
@@ -416,6 +558,26 @@
     },
     "project": {
       "project": "Projet"
+    },
+    "export": {
+      "title": "Titre",
+      "project": "Projet",
+      "date": "Date",
+      "startDate": "Début",
+      "endDate": "Fin",
+      "time": "Heure",
+      "description": "Description",
+      "attendees": "Participants",
+      "agenda": "Ordre du jour",
+      "report": "Compte-rendu",
+      "organizedBy": "Organisé par",
+      "actions": {
+        "title": "Relevé de décisions",
+        "type": "Type",
+        "description": "Description",
+        "assignedTo": "Assigné à",
+        "dueDate": "Echéance"
+      }
     }
   },
   "attachments": {

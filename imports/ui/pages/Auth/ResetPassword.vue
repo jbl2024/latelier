@@ -10,7 +10,7 @@
             <v-text-field
               id="password"
               v-model="form.password"
-              label="Mot de passe"
+              :label="$t('Password')"
               type="password"
               name="password"
               autocomplete="password"
@@ -28,17 +28,14 @@
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'register' }">
+            <v-btn small text :to="{ name: 'register' }">
               {{ $t("Register") }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'login' }">
+            <v-btn small text :to="{ name: 'login' }">
               {{ $t("Already have an account?") }}
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -53,11 +50,10 @@ export default {
     form: {
       password: ""
     },
-    notify: false,
     sending: false,
     passwordRules: [
-      (v) => !!v || "Le mot de passe est obligatoire",
-      (v) => v.length > 1 || "Le mot de passe est trop cours"
+      (v) => !!v || this.$t("Password is mandatory"),
+      (v) => v.length > 1 || this.$t("Password is too short")
     ]
   }),
   i18n: {
@@ -73,7 +69,6 @@ export default {
   methods: {
     clearForm() {
       this.form.password = null;
-      this.notify = false;
     },
     reset() {
       this.sending = true;
@@ -84,10 +79,7 @@ export default {
           this.$notify(err.reason);
           this.isLoading = false;
         } else {
-          this.$store.dispatch(
-            "notify",
-            this.$t("Password reset with success!")
-          );
+          this.$notify(this.$t("Password reset with success!"));
           this.$router.push({ name: "login" });
         }
       });

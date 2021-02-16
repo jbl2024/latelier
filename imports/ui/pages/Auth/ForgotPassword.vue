@@ -26,17 +26,14 @@
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'login' }">
+            <v-btn small text :to="{ name: 'login' }">
               {{ $t("Already have an account?") }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'register' }">
+            <v-btn small text :to="{ name: 'register' }">
               {{ $t("Register") }}
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
       </v-form>
     </div>
@@ -45,24 +42,23 @@
 <script>
 export default {
   name: "NewPassword",
-  data: () => ({
-    form: {
-      email: null,
-      password: null
-    },
-    notify: false,
-    notifyText: "",
-    sending: false,
-    valid: false,
-    emailRules: [
-      (v) => !!v || "L'email est obligatoire",
-      (v) => (v && v.length > 1) || "L'email est invalide"
-    ]
-  }),
+  data() {
+    return {
+      form: {
+        email: null,
+        password: null
+      },
+      sending: false,
+      valid: false,
+      emailRules: [
+        (v) => !!v || this.$t("Email is mandatory"),
+        (v) => (v && v.length > 1) || this.$t("Invalid email")
+      ]
+    };
+  },
   methods: {
     clearForm() {
       this.form.email = null;
-      this.notify = false;
     },
     recover() {
       this.sending = true;
@@ -70,12 +66,9 @@ export default {
       Accounts.forgotPassword({ email }, (err) => {
         this.sending = false;
         if (err) {
-          this.$notify(err.reason);
+          this.$notifyError(err.reason);
         } else {
-          this.$store.dispatch(
-            "notify",
-            this.$t("A link has been sent to your email!")
-          );
+          this.$notify(this.$t("Instructions sent, check your inbox!"));
           this.$router.push({ name: "login" });
         }
       });

@@ -4,6 +4,8 @@ import "/test/api/users/users.test";
 import "/test/api/bpmn/processDiagrams.test";
 import "/test/api/bpmn/examples/examples.test";
 import "/test/api/projects/projects.test";
+import "/test/api/projects/projectsImportExport/projectsExport.test";
+import "/test/api/projects/projectsImportExport/projectsImport.test";
 import "/test/api/tasks/tasks.test";
 import "/test/api/organizations/organizations.test";
 import "/test/api/labels/labels.test";
@@ -14,6 +16,7 @@ import "/test/api/dashboards/dashboards.test";
 import "/test/api/search/search.test";
 import "/test/api/digests/digests.test";
 import "/test/api/meetings/meetings.test";
+import "/test/api/coeditions/coeditions.test";
 
 describe("latelier", function() {
   it("package.json has correct name", async function() {

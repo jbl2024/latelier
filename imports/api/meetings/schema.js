@@ -173,6 +173,7 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
   color: { type: String, optional: true },
   location: { type: String, optional: true },
   type: { type: String, optional: true },
+  report: { type: String, optional: true },
   startDate: { type: String },
   endDate: { type: String },
   attendees: {
@@ -191,7 +192,11 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
     type: Array,
     optional: true
   },
-  "actions.$": new SimpleSchema(ActionCreateUpdateSchema)
+  "actions.$": new SimpleSchema(ActionCreateUpdateSchema),
+  meetingUserId: {
+    type: String,
+    optional: true
+  }
 }))();
 
 

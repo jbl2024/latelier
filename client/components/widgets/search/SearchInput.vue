@@ -88,6 +88,7 @@ export default {
   watch: {
     filter() {
       this.showMenu = this.filter && this.filter.length > 0;
+      this.trackSearch(this.filter);
     },
     showMenu(showMenu) {
       if (showMenu) {
@@ -107,6 +108,11 @@ export default {
     }, 400);
   },
   methods: {
+    trackSearch(keyword) {
+      if (this.$matomo) {
+        this.$matomo.trackSiteSearch(keyword);
+      }
+    },
     onFocus() {
       if (this.filter && this.filter.length > 0) {
         setTimeout(() => {

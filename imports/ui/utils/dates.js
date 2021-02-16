@@ -44,6 +44,9 @@ export default {
       case "day": {
         return startDate.format(format);
       }
+      case "hours": {
+        return ` ${startDate.format("HH:mm")} - ${endDate.format("HH:mm")}`;
+      }
       case "dateWithHours": {
         const intervalText = `dates.interval.dateWithHours.${sameDay ? "sameDay" : "differentDay"}`;
         return i18n.t(intervalText,

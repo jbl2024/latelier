@@ -4,13 +4,13 @@
       <v-form v-model="valid" @submit.prevent>
         <v-card>
           <v-card-title class="title">
-            Authentification
+            {{ $t('Authentication') }}
           </v-card-title>
           <v-card-text>
             <v-text-field
               id="email"
               v-model="form.email"
-              label="Email"
+              :label="$t('Email')"
               name="email"
               autocomplete="email"
               type="email"
@@ -20,7 +20,7 @@
             <v-text-field
               id="password"
               v-model="form.password"
-              label="Mot de passe"
+              :label="$t('Password')"
               type="password"
               name="password"
               autocomplete="password"
@@ -33,22 +33,19 @@
           <v-card-actions>
             <v-spacer />
             <v-btn color="primary" :disabled="sending || !valid" @click="login">
-              Se connecter
+              {{ $t('Login') }}
             </v-btn>
           </v-card-actions>
           <v-divider />
           <v-card-actions>
-            <v-btn text :to="{ name: 'register' }">
-              Créer un compte
+            <v-btn small text :to="{ name: 'register' }">
+              {{ $t('Register') }}
             </v-btn>
             <v-spacer />
-            <v-btn text :to="{ name: 'forgot-password' }">
-              Mot de passe oublié ?
+            <v-btn small text :to="{ name: 'forgot-password' }">
+              {{ $t('Lost password?') }}
             </v-btn>
           </v-card-actions>
-          <v-snackbar v-model="notify">
-            {{ notifyText }}
-          </v-snackbar>
         </v-card>
         <template v-if="oauth2Enabled">
           <v-card class="mt-4">
@@ -74,8 +71,6 @@ export default {
         email: "",
         password: ""
       },
-      notify: false,
-      notifyText: "",
       sending: false,
       emailRules: [
         (v) => !!v || this.$t("Email is mandatory"),
@@ -90,7 +85,7 @@ export default {
   mounted () {
     Meteor.call("users.oauthEnabled", (error, { enabled, title }) => {
       if (error) {
-        this.notifyError(error);
+        this.$notifyError(error);
         return;
       }
       this.oauth2Enabled = enabled;
@@ -101,17 +96,14 @@ export default {
     clearForm() {
       this.form.email = null;
       this.form.password = null;
-      this.notify = false;
     },
     login() {
       this.sending = true;
 
       Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
         this.sending = false;
-        this.notify = false;
         if (err) {
-          this.notifyText = `Erreur ${err.reason}`;
-          this.notify = true;
+          this.$notifyError(err.reason);
         } else {
           this.clearForm();
           Meteor.call("permissions.setAdminIfNeeded");

@@ -1,5 +1,5 @@
 # The tag here should match the Meteor version of your app, per .meteor/release
-FROM geoffreybooth/meteor-base:1.10.1 as build
+FROM geoffreybooth/meteor-base:2.0 as build
 # Copy app package.json and package-lock.json into container
 COPY ./package*.json $APP_SOURCE_FOLDER/
 
@@ -12,8 +12,8 @@ RUN METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash "$SCRIPTS_FOLDER/build-meteor-bundl
 
 
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.9
-FROM node:12.16.1-alpine
-
+FROM node:12.18.4-alpine
+ENV PANDOC_VERSION 2.10.1
 ENV APP_BUNDLE_FOLDER /opt/bundle
 ENV SCRIPTS_FOLDER /docker
 
@@ -22,12 +22,15 @@ RUN apk --no-cache --virtual .node-gyp-compilation-dependencies add \
 	g++ \
 	make \
 	python \
+	curl \
 	# And runtime dependencies, which we keep
 	&& apk --no-cache add \
 	bash \
 	ca-certificates \
 	file \
 	graphicsmagick
+
+RUN curl -L https://github.com/jgm/pandoc/releases/download/${PANDOC_VERSION}/pandoc-${PANDOC_VERSION}-linux-amd64.tar.gz | tar xz --strip-components 1 -C /usr/local/
 
 # Copy in entrypoint
 COPY --from=build $SCRIPTS_FOLDER $SCRIPTS_FOLDER/

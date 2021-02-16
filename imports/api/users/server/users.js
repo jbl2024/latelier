@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { Accounts } from "meteor/accounts-base";
 import { check, Match } from "meteor/check";
 import {
   Permissions,
@@ -112,8 +113,8 @@ Meteor.methods({
   "admin.updateUser"(user) {
     check(user, Object);
 
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
+    if (!Permissions.isAdmin(Meteor.userId())) {
+      throw new Meteor.Error(401, "not-authorized");
     }
 
     const { _id } = user;
@@ -150,6 +151,14 @@ Meteor.methods({
             "services.resume.loginTokens": []
           }
         });
+      }
+    }
+
+    if (user.password && user.password.length > 0) {
+      if (user.password === user.passwordConfirmation && user.password.length > 2) {
+        Accounts.setPassword(_id, user.password);
+      } else {
+        throw new Meteor.Error(400, "wrong-password");
       }
     }
   },

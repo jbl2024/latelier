@@ -28,6 +28,7 @@ const store = new Vuex.Store({
     showSelectBackgroundDialog: false,
     showCategories: false,
     showTaskDetail: false,
+    showTaskDetailFullscreen: false,
     showTaskHistory: false,
     showTaskExport: false,
     showDashboardTitle: false,
@@ -72,6 +73,9 @@ const store = new Vuex.Store({
     },
     updateShowTaskDetail(state, showTaskDetail) {
       state.showTaskDetail = showTaskDetail;
+    },
+    updateShowTaskDetailFullscreen(state, showTaskDetailFullscreen) {
+      state.showTaskDetailFullscreen = showTaskDetailFullscreen;
     },
     updateShowTaskHistory(state, showTaskHistory) {
       state.showTaskHistory = showTaskHistory;
@@ -163,6 +167,9 @@ const store = new Vuex.Store({
     },
     showTaskDetail(context, showTaskDetail) {
       context.commit("updateShowTaskDetail", showTaskDetail);
+    },
+    showTaskDetailFullscreen(context, showTaskDetailFullscreen) {
+      context.commit("updateShowTaskDetailFullscreen", showTaskDetailFullscreen);
     },
     setWindowTitle(context, windowTitle) {
       context.commit("updateWindowTitle", windowTitle);

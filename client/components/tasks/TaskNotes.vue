@@ -114,8 +114,13 @@ export default {
     },
 
     addNote() {
-      Meteor.call("tasks.addNote", this.task._id, this.note);
-      this.note = "";
+      Meteor.call("tasks.addNote", this.task._id, this.note, (error) => {
+        if (error) {
+          this.$notifyError(error);
+          return;
+        }
+        this.note = "";
+      });
     },
 
     deleteNote(note) {
@@ -194,6 +199,8 @@ pre {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
+  max-width: 800px;
+  margin: 0 auto;
 }
 .empty-state {
   transition: none;

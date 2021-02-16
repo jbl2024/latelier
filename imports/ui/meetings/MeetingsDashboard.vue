@@ -133,8 +133,10 @@
             <meeting-list
               :meetings="selectedDateMeetings"
               empty-illustration="empty"
-              hide-subtitles
+              date-interval="hours"
+              with-edit
               @select="openMeeting"
+              @edit-meeting="editMeeting"
             />
           </div>
         </v-col>
@@ -473,6 +475,10 @@ export default {
       this.start = date;
       this.end = date;
     },
+    editMeeting(meeting) {
+      this.selectedMeeting = meeting;
+      this.showEditMeeting = true;
+    },
     async moveMeeting(meetingEvent, direction) {
       const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
       if (!meeting || !["up", "down"].includes(direction)) return;
@@ -531,16 +537,14 @@ export default {
       });
       await this.openMeeting(createdMeeting);
     },
-    addNewMeeting(selectedTime) {
+    addNewMeeting(start, end) {
       const newMeeting = MeetingUtils.makeNewMeeting();
       if (this.color) {
         newMeeting.color = this.color;
       }
-      if (selectedTime?.date && selectedTime?.hour) {
-        const startHour = `${String(selectedTime.hour).padStart(2, "0")}:00`;
-        const endHour = `${String(selectedTime.hour + 1).padStart(2, "0")}:00`;
-        newMeeting.startDate = `${selectedTime.date} ${startHour}`;
-        newMeeting.endDate = `${selectedTime.date} ${endHour}`;
+      if (start && end) {
+        newMeeting.startDate = start;
+        newMeeting.endDate = end;
       }
       this.newMeeting = newMeeting;
       this.showNewMeeting = true;

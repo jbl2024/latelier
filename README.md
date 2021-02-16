@@ -14,7 +14,21 @@ A project management tool.
 - [Business model canvas](https://en.wikipedia.org/wiki/Business_Model_Canvas) sheet for project
 - Projects grouped by organization
 - Project weather like status
+- Meeting reports
 - Permissions per organization & per project
+
+
+## Demonstration
+
+Demo server: https://latelier.services.jbl2024.com
+
+Warning: do not store sensitive data, use at your own risk. 
+Data is reset periodically.
+
+Available credentials:
+
+- username: user1@localhost / password: user1
+- username: user2@localhost / password: user2
 
 ## Installation
 
@@ -32,7 +46,13 @@ See https://www.meteor.com/install for installation instructions.
 
 ### Requirements
 
-GraphicsMagick is required to generate thumbnails. See http://www.graphicsmagick.org/
+The following external dependencies are required:
+
+| Component         | Usage                 | Reference       |
+| ----------------- | --------------------- | --------------- |
+| GraphicsMagick    | Generate thumbnails   | http://www.graphicsmagick.org/ |
+| Pandoc            | Export content to libreoffice & word formats | https://pandoc.org/ |
+
 
 ### Configuration
 
@@ -52,6 +72,9 @@ Settings:
 | public.sso                     | object   | {}              | See below                                        |
 | public.emailVerificationNeeded | boolean  | false           | If false, no verification email is sent          |
 | public.disableAttachments      | boolean  | false           | If true, attachments are disabled                |
+| public.tracking                | object   | {}              | See below                                        |
+| public.tracking.matomo         | object   | {}              | See https://github.com/AmazingDreams/vue-matomo#usage                    |
+| public.tracking.matomo.enabled | boolean  | false           | If true, page and search keyword tracking are enabled|
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |
@@ -59,6 +82,7 @@ Settings:
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
 | auth                           | object   | {}              | See below                                        |
+| coedition                      | object   | {}              | See below                                        |
 
 email:
 
@@ -134,6 +158,14 @@ oauth2:
 
 Note: tested only with [keycloak](https://www.keycloak.org/).
 
+coedition:
+
+| Key                     | Type     | Default value   | Description                                            |
+| ----------------------- | ------- | ---------------- | ------------------------------------------------------ |
+| steps                   | integer  | 500             | Number of steps to keep for coedit collab feature      |
+| daysToKeep              | integer  | 3               | previous edition steps are removed after daysToKeep    |
+
+
 Example:
 
 ```
@@ -188,6 +220,7 @@ $ docker-compose --file docker-compose.dev.yml up
 ```
 
 will start in dev mode (autorestart, no production build):
+
 - the app container with node & meteor
 - mongodb (latest)
 - mongoexpress (http://localhost:8081)
@@ -218,6 +251,10 @@ Note: do not forget to create a `settings-development.json` file.
 ![Weather](/docs/weather.png)
 
 ![Canvas](/docs/canvas.png)
+
+![Meetings calendar](/docs/meeting1.png)
+
+![Meeting detail](/docs/meeting2.png)
 
 ### License
 

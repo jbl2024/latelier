@@ -129,7 +129,7 @@ export default {
     return {
       valid: false,
       nameRules: [
-        (v) => !!v || "Nom obligatoire",
+        (v) => !!v || this.$t("Name is mandatory"),
         (v) => (v && v.length > 0) || this.$t("Name is too short")
       ],
       showDialog: false,
@@ -212,6 +212,8 @@ export default {
         ).then((res) => {
           if (res) {
             this.loading = true;
+            this.$stopMeteor();
+
             const labelIds = this.labels.map((l) => l._id);
             tasks.forEach((name) => {
               Meteor.call(
@@ -233,6 +235,7 @@ export default {
               }
             });
             this.$notify(this.$t("Tasks created"));
+            this.$startMeteor();
           }
         });
       }

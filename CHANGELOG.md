@@ -16,6 +16,175 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Added a test case where we import project without users to validate those changes.
 
 
+## [3.3.3 2021-01-31]
+
+### Added
+
+### Changed
+- Update to Meteor 2.0
+- Update packages:
+  - accounts-base          upgraded from 1.7.0 to 1.8.0
+  - accounts-password      upgraded from 1.6.2 to 1.7.0
+  - autoupdate             upgraded from 1.6.0 to 1.7.0
+  - babel-compiler         upgraded from 7.5.3 to 7.6.0
+  - ddp-client             upgraded from 2.3.3 to 2.4.0
+  - dynamic-import         upgraded from 0.5.3 to 0.6.0
+  - ecmascript             upgraded from 0.14.3 to 0.15.0
+  - logging                upgraded from 1.1.20 to 1.2.0
+  - minimongo              upgraded from 1.6.0 to 1.6.1
+  - modules                upgraded from 0.15.0 to 0.16.0
+  - mongo                  upgraded from 1.10.0 to 1.10.1
+  - mongo-decimal          upgraded from 0.1.1 to 0.1.2
+  - react-fast-refresh     added, version 0.1.0
+  - reload                 upgraded from 1.3.0 to 1.3.1
+  - standard-minifier-css  upgraded from 1.6.1 to 1.7.2
+  - webapp                 upgraded from 1.9.1 to 1.10.0
+  - webapp-hashing         upgraded from 1.0.9 to 1.1.0
+
+### Removed
+
+## [3.3.2 2021-01-21]
+
+### Added
+- Project import/export
+  
+### Changed
+- Update vuetify to 2.3.21
+
+### Removed
+
+## [3.3.1 2020-11-25]
+
+### Added
+- Fullscreen task details window
+
+### Changed
+- Update tiptap:
+  - tiptap@1.30.0
+  - tiptap-extensions@1.33.2
+  - extract custom extensions to dedicated files
+  - fix link paste when url contains special cars which where messing with markdown detection
+
+### Removed
+
+## [3.3.0 2020-10-27]
+
+### Added
+
+### Changed
+
+- Upgrade meteor to 1.11.1
+- Update vuetify to 2.3.15 
+- Update meteor packages:
+  - accounts-base                 upgraded from 1.6.0 to 1.7.0
+  - accounts-password             upgraded from 1.6.0 to 1.6.2
+  - boilerplate-generator         upgraded from 1.7.0 to 1.7.1
+  - ddp-rate-limiter              upgraded from 1.0.7 to 1.0.9
+  - ddp-server                    upgraded from 2.3.1 to 2.3.2
+  - ecmascript-runtime-client     upgraded from 0.10.0 to 0.11.0
+  - ecmascript-runtime-server     upgraded from 0.9.0 to 0.10.0
+  - email*                        upgraded from 1.2.3 to 2.0.0
+  - kschingiz:meteor-elastic-apm  upgraded from 2.3.0 to 2.4.1
+  - minifier-css                  upgraded from 1.5.0 to 1.5.3
+  - minimongo                     upgraded from 1.5.0 to 1.6.0
+  - mongo                         upgraded from 1.9.1 to 1.10.0
+  - npm-mongo                     upgraded from 3.7.0 to 3.8.1
+  - socket-stream-client          upgraded from 0.2.3 to 0.3.1
+  - srp                           upgraded from 1.0.12 to 1.1.0
+  - standard-minifier-css         upgraded from 1.6.0 to 1.6.1
+  - url                           upgraded from 1.2.0 to 1.3.1
+  - dynamic-import               upgraded from 0.5.2 to 0.5.3
+  - meteortesting:browser-tests  upgraded from 1.3.3 to 1.3.4
+  - oauth                        upgraded from 1.3.0 to 1.3.2
+  - ostrio:cookies               upgraded from 2.6.0 to 2.6.1
+  - ostrio:files                 upgraded from 1.14.0 to 1.14.3
+
+### Removed
+
+## [3.2.4 2020-10-23]
+
+### Added
+
+### Changed
+- Fix translation for canvas/milestones
+
+### Removed
+
+## [3.2.3 2020-10-23]
+
+### Added
+- Admin can change user password
+- Missing translations
+  - canvas
+  - login, register, lost password
+  - misc dialogs
+
+### Changed
+- Fix Richeditor behaviors:
+  - model update behavior
+  - Ctrl+Enter to submit data
+
+### Removed
+
+## [3.2.2 2020-10-21]
+
+### Added
+
+### Changed
+- Update SSO handler to handle edge cases
+- Fix recover password page (login was needed)
+- Add missing translations on login pages
+
+### Removed
+
+## [3.2.1 2020-10-20]
+
+### Added
+- Missing translations in history
+- Project history available on tasks page
+
+### Changed
+- Meetings:
+  - realtime update (actions, dates, ...)
+  - disable pdf output
+  - better lock/unlock behavior (do not display lock button on present/futur meetings)
+
+### Removed
+- pdf support for meetings
+- pdflatex deps in docker file
+
+## [3.2.0 2020-10-17]
+
+### Added
+- Matomo support
+- Meetings:
+  - export to odf/docx/pdf
+  - coedition
+  - locked/unlocked status
+  - drag mouse on calendar to create event
+
+### Changed
+- Improve task insertion performance
+
+### Removed
+
+## [3.1.3 2020-09-19]
+
+### Added
+
+### Changed
+- Fix filter users in select dialog
+- Disable profile photo upload when attachments are disabled 
+
+### Removed
+
+## [3.1.2 2020-09-15]
+
+### Added
+
+### Changed
+- Fix font display on firefox with retina screens 
+
 ### Removed
 
 ## [3.1.1 2020-09-11]

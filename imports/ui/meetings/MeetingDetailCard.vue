@@ -1,9 +1,7 @@
 <template>
   <div v-if="meeting" class="meeting-detail-card">
-    <select-date
-      v-model="showSelectDate"
-      @select="selectActionDueDate"
-    />
+    <select-date v-model="showSelectDate" @select="selectActionDueDate" />
+    <meeting-export v-model="showMeetingExport" :meeting="meeting" />
     <select-user
       :key="selectedActionId"
       :project="project"
@@ -16,18 +14,9 @@
     <v-card class="flex-container">
       <v-toolbar class="meeting-detail-card__toolbar" dense>
         <v-row class="meeting-detail-card__row">
-          <v-col
-            v-if="$vuetify.breakpoint.mdAndUp"
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-title-header">
-              <v-btn
-                color="primary"
-                dark
-                :to="meetingsRoute"
-              >
+              <v-btn color="primary" dark :to="meetingsRoute">
                 <v-icon left>
                   mdi-chevron-left
                 </v-icon>
@@ -35,50 +24,62 @@
                   {{ $t("meetings.goBackToMeetings") }}
                 </span>
               </v-btn>
-              <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
-                <v-icon left>
-                  mdi-pencil
-                </v-icon>
-                <span>
-                  {{ $t("Edit") }}
-                </span>
-              </v-btn>
+              <tooltip-button
+                bottom
+                icon="mdi-settings"
+                :tooltip="$t('Settings')"
+                @on="editMeeting"
+              />
+              <tooltip-button
+                bottom
+                icon="mdi-file-export"
+                :tooltip="$t('Export')"
+                @on="showMeetingExport = true"
+              />
+              <template v-if="showLock">
+                <v-btn
+                  v-if="editContent == true"
+                  class="ml-2"
+                  outlined
+                  @click="editContent = false"
+                >
+                  <v-icon>
+                    mdi-pencil-off
+                  </v-icon>
+                  {{ $t("meetings.lock") }}
+                </v-btn>
+                <v-btn
+                  v-if="editContent == false"
+                  class="ml-2"
+                  outlined
+                  @click="editContent = true"
+                >
+                  <v-icon>
+                    mdi-pencil
+                  </v-icon>
+                  {{ $t("meetings.unlock") }}
+                </v-btn>
+              </template>
             </div>
           </v-col>
-          <v-col
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col cols="12" sm="12" md="4">
             <div class="editor-header">
               <rich-editor-menu-bar :editor="currentEditor" />
             </div>
           </v-col>
-          <v-col
-            v-if="$vuetify.breakpoint.mdAndUp"
-            cols="12"
-            sm="12"
-            md="4"
-          >
+          <v-col v-if="$vuetify.breakpoint.mdAndUp" cols="12" sm="12" md="4">
             <div class="meeting-date-header">
-              <v-icon class="mr-2">
+              <v-icon v-ripple class="mr-2" @click="editMeeting">
                 mdi-clock
               </v-icon>
-              {{ meetingInterval }}
+              <a v-ripple @click="editMeeting">{{ meetingInterval }}</a>
             </div>
           </v-col>
         </v-row>
       </v-toolbar>
       <v-card-text class="flex1">
-        <div
-          v-if="$vuetify.breakpoint.smAndDown"
-          class="meeting-title-header"
-        >
-          <v-btn
-            color="primary"
-            dark
-            :to="meetingsRoute"
-          >
+        <div v-if="$vuetify.breakpoint.smAndDown" class="meeting-title-header">
+          <v-btn color="primary" dark :to="meetingsRoute">
             <v-icon left>
               mdi-chevron-left
             </v-icon>
@@ -86,14 +87,34 @@
               {{ $t("meetings.goBackToMeetings") }}
             </span>
           </v-btn>
-          <v-btn class="ml-2" color="primary" outlined @click="editMeeting">
-            <v-icon left>
-              mdi-pencil
-            </v-icon>
-            <span>
-              {{ $t("Edit") }}
-            </span>
-          </v-btn>
+          <tooltip-button
+            bottom
+            icon="mdi-settings"
+            :tooltip="$t('Settings')"
+            @on="editMeeting"
+          />
+          <tooltip-button
+            bottom
+            icon="mdi-file-export"
+            :tooltip="$t('Export')"
+            @on="showMeetingExport = true"
+          />
+          <template v-if="showLock">
+            <tooltip-button
+              v-if="editContent == true"
+              bottom
+              icon="mdi-pencil-off"
+              :tooltip="$t('meetings.lock')"
+              @on="editContent = false"
+            />
+            <tooltip-button
+              v-if="editContent == false"
+              bottom
+              icon="mdi-pencil"
+              :tooltip="$t('meetings.unlock')"
+              @on="editContent = true"
+            />
+          </template>
         </div>
         <div class="list">
           <h1 class="meeting-main-title">
@@ -114,11 +135,14 @@
           <div v-if="meeting.description" v-html="meeting.description" />
           <h2>{{ $t("meetings.agenda.agenda") }}</h2>
           <rich-editor
-            ref="editor1"
             v-model="meeting.agenda"
-            class="editor"
+            :class="{ editor: true, edition: editContent }"
             hide-toolbar
             autofocus
+            :editable="editContent"
+            permission-object="meeting"
+            :permission-id="meeting._id"
+            :collaboration="`${meeting._id}-agenda`"
             @on-focus="setCurrentEditor"
           />
           <h2>
@@ -126,17 +150,20 @@
           </h2>
           <rich-editor
             v-model="meeting.report"
-            class="editor"
+            :class="{ editor: true, edition: editContent }"
             hide-toolbar
+            :editable="editContent"
+            permission-object="meeting"
+            :permission-id="meeting._id"
+            :collaboration="`${meeting._id}-report`"
             @on-focus="setCurrentEditor"
           />
           <template v-if="hasDocuments">
-            <h2
-              class="documents-title"
-              @click="showDocuments = !showDocuments"
-            >
+            <h2 class="documents-title" @click="showDocuments = !showDocuments">
               {{ $t("meetings.documents.documents") }}
-              <v-icon :class="['documents-chevron', showDocuments ? 'active' : null]">
+              <v-icon
+                :class="['documents-chevron', showDocuments ? 'active' : null]"
+              >
                 mdi-chevron-down
               </v-icon>
             </h2>
@@ -152,6 +179,7 @@
           </h2>
           <div class="content actions">
             <meeting-actions-table
+              :editable="editContent"
               :actions="actions"
               :tasks="tasks"
               @select-task="selectTask"
@@ -177,6 +205,7 @@ import { Tasks } from "/imports/api/tasks/tasks.js";
 import { mapState } from "vuex";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import debounce from "lodash/debounce";
+import MeetingExport from "/imports/ui/meetings/MeetingExport";
 import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActionsTable";
 import MeetingUtils from "/imports/api/meetings/utils";
 import Attachments from "/imports/ui/attachments/Attachments";
@@ -187,6 +216,7 @@ import moment from "moment";
 
 export default {
   components: {
+    MeetingExport,
     MeetingActionsTable,
     Attachments
   },
@@ -203,11 +233,14 @@ export default {
   },
   data() {
     return {
+      editContent: false,
       currentEditor: null,
       selectedAction: null,
       showSelectDate: false,
       showSelectUser: false,
       showDocuments: false,
+      showLock: false,
+      showMeetingExport: false,
       actions: [],
       attachments: []
     };
@@ -217,7 +250,8 @@ export default {
       currentUser: (state) => state.currentUser,
       meetingsRoute(state) {
         return state.storedRoutes["meetings-dashboard"]
-          ? state.storedRoutes["meetings-dashboard"] : this.defaultMeetingsRoute;
+          ? state.storedRoutes["meetings-dashboard"]
+          : this.defaultMeetingsRoute;
       }
     }),
     defaultMeetingsRoute() {
@@ -238,7 +272,10 @@ export default {
         return false;
       }
       if (!this.meeting) return false;
-      return Array.isArray(this.meeting?.documents) && this.meeting.documents.length > 0;
+      return (
+        Array.isArray(this.meeting?.documents)
+        && this.meeting.documents.length > 0
+      );
     },
     meetingInterval() {
       if (!this.meeting) return "";
@@ -250,6 +287,22 @@ export default {
     }
   },
   watch: {
+    "meeting.startDate": {
+      immediate: true,
+      handler(createdAt, previousCreatedAt) {
+        if (previousCreatedAt?.getTime() === createdAt?.getTime()) {
+          return;
+        }
+        const yesterday = moment().startOf("day").add(-1, "days").toDate();
+        if (moment(createdAt).isBefore(yesterday)) {
+          this.showLock = true;
+          this.editContent = false;
+        } else {
+          this.showLock = false;
+          this.editContent = true;
+        }
+      }
+    },
     "meeting.agenda"(agenda) {
       this.updateAgenda(agenda);
     },
@@ -267,14 +320,22 @@ export default {
     "meeting.documents": {
       immediate: true,
       handler() {
-        if (!Array.isArray(this.meeting?.documents) || !this.meeting.documents.length) return;
+        if (
+          !Array.isArray(this.meeting?.documents)
+          || !this.meeting.documents.length
+        ) return;
         Api.call("attachments.find", {
-          attachmentsIds: this.meeting.documents.map((document) => document.documentId)
-        }).then((result) => {
-          this.attachments = result.data;
-        }, (error) => {
-          this.$notifyError(error);
-        });
+          attachmentsIds: this.meeting.documents.map(
+            (document) => document.documentId
+          )
+        }).then(
+          (result) => {
+            this.attachments = result.data;
+          },
+          (error) => {
+            this.$notifyError(error);
+          }
+        );
       }
     }
   },
@@ -351,7 +412,9 @@ export default {
       }
 
       // update list before loading from server to avoid flickering
-      const actionIndex = this.actions.findIndex((a) => a.actionId === action.actionId);
+      const actionIndex = this.actions.findIndex(
+        (a) => a.actionId === action.actionId
+      );
       if (actionIndex > -1) {
         this.$set(this.actions, actionIndex, deepCopy(action));
       }
@@ -400,11 +463,14 @@ export default {
       Api.call("meetings.createAction", {
         meetingId: this.meeting._id,
         action: MeetingUtils.makeNewMeetingAction()
-      }).then(() => {
-        this.fetch();
-      }, (error) => {
-        this.$notifyError(error);
-      });
+      }).then(
+        () => {
+          this.fetch();
+        },
+        (error) => {
+          this.$notifyError(error);
+        }
+      );
     },
 
     async fetch() {
@@ -439,14 +505,18 @@ export default {
         action.description,
         [],
         action?.assignedTo ? action.assignedTo : null,
-        action?.dueDate ? moment(action.dueDate).format("YYYY-MM-DD HH:mm") : null
+        action?.dueDate
+          ? moment(action.dueDate).format("YYYY-MM-DD HH:mm")
+          : null
       ).catch(() => {
         this.$notifyError(this.$t("meetings.actions.createTaskFailed"));
       });
 
-      await this.saveAction({ ...action, taskId: createdTask._id }).catch(() => {
-        this.$notifyError(this.$t("meetings.actions.saveActionFailed"));
-      });
+      await this.saveAction({ ...action, taskId: createdTask._id }).catch(
+        () => {
+          this.$notifyError(this.$t("meetings.actions.saveActionFailed"));
+        }
+      );
       this.$notify(this.$t("meetings.actions.createTaskSuccess"));
     },
     selectTask(task) {
@@ -454,6 +524,9 @@ export default {
       this.$store.dispatch("showTaskDetail", true);
     },
     setCurrentEditor(editor) {
+      if (this.showLock && !this.editContent) {
+        return;
+      }
       this.currentEditor = editor.editor;
     },
     editMeeting() {
@@ -501,6 +574,12 @@ export default {
   line-height: 1.5;
   background-color: white;
   margin-bottom: 24px;
+}
+
+.edition {
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border: 2px solid black;
+  border-radius: 4px;
 }
 
 .flex-container {
@@ -559,5 +638,16 @@ export default {
 .list {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.content {
+  width: 100%;
+  cursor: text;
+  background-color: white;
+  box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  transition: box-shadow 0.5s ease, opacity 0.5s ease,
+    background-color 0.5s ease;
+  font-size: 16px;
 }
 </style>

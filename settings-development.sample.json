@@ -2,6 +2,12 @@
   "generateFixtures": true,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
+  "elasticApm": {
+    "enabled": true,
+    "options": {
+      "serviceName": "latelier"
+    }
+  },
   "storage": {
     "type": "s3",
     "migrateFromFS": "false",
@@ -58,6 +64,14 @@
       "enabled": true,
       "email": "ct-remote-email"
     },
-    "uploadTransport": "ddp"
+    "uploadTransport": "ddp",
+    "tracking": {
+      "matomo": {
+        "enabled": true,
+        "host": "https://matomo.url/analytics/",
+        "siteId": "1",
+        "trackInitialView": true
+      }
+    }
   }
 }

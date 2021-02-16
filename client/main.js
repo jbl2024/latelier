@@ -4,9 +4,7 @@ import { Meteor } from "meteor/meteor";
 import Vue from "vue";
 import VueRouter from "vue-router";
 
-
 import VueMeteorTracker from "vue-meteor-tracker";
-
 import VueEvents from "vue-event-handler";
 import VueObserveVisibility from "vue-observe-visibility";
 import vClickOutside from "v-click-outside";
@@ -26,6 +24,9 @@ import "/imports/favicon";
 import i18n from "/imports/i18n/";
 
 import confirm from "/imports/confirm/confirm";
+
+// Matomo Tracker
+import VueMatomo from "vue-matomo";
 
 require("intersection-observer");
 
@@ -115,6 +116,10 @@ Meteor.startup(() => {
     routes
   });
 
+  // Matomo Tracker
+  if (Meteor.settings.public?.tracking?.matomo?.enabled === true) {
+    Vue.use(VueMatomo, { router, ...Meteor.settings.public?.tracking?.matomo });
+  }
 
   new Vue({
     i18n,

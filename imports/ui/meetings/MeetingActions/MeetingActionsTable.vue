@@ -1,230 +1,234 @@
 <template>
-  <div class="meeting-actions-table">
-    <v-data-table
-      v-model="selectedActions"
-      :headers="headers"
-      :items="meetingActions"
-      item-key="actionId"
-      disable-pagination
-      hide-default-footer
-      :no-data-text="$t('meetings.actions.none')"
-    >
-      <template v-slot:top>
-        <v-toolbar flat color="white">
-          <v-btn outlined color="primary" @click="addNewAction">
-            <v-icon left>
-              mdi-plus
-            </v-icon>
-            {{ $t("meetings.actions.addAction") }}
-          </v-btn>
-        </v-toolbar>
-      </template>
-      <!-- Type -->
-      <template v-slot:item.type="{ item }">
-        <v-menu offset-y :nudge-bottom="10">
-          <template v-slot:activator="{ on, attrs }">
-            <v-chip
-              :color="types[item.type].color"
-              dark
-              v-bind="attrs"
-              v-on="on"
+  <v-card class="meeting-actions-table">
+    <v-card-text>
+      <v-data-table
+        v-model="selectedActions"
+        :headers="headers"
+        :items="meetingActions"
+        item-key="actionId"
+        disable-pagination
+        hide-default-footer
+        :no-data-text="$t('meetings.actions.none')"
+      >
+        <template v-slot:top>
+          <v-toolbar flat color="white">
+            <v-btn
+              :disabled="!editable"
+              outlined
+              color="primary"
+              @click="addNewAction"
             >
               <v-icon left>
-                {{ types[item.type].icon }}
+                mdi-plus
               </v-icon>
-              {{ types[item.type].text }}
-            </v-chip>
-          </template>
-          <v-list dense>
-            <v-list-item
-              v-for="(type, index) in types"
-              :key="index"
-              @click="selectActionType(item, type.value)"
-            >
-              <v-list-item-icon>
-                <v-icon :color="type.color">
-                  {{ type.icon }}
+              {{ $t("meetings.actions.addAction") }}
+            </v-btn>
+          </v-toolbar>
+        </template>
+        <!-- Type -->
+        <template v-slot:item.type="{ item }">
+          <v-menu offset-y :nudge-bottom="10">
+            <template v-slot:activator="{ on, attrs }">
+              <v-chip
+                :disabled="!editable"
+                :color="types[item.type].color"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                <v-icon left>
+                  {{ types[item.type].icon }}
                 </v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>{{ type.text }}</v-list-item-title>
-            </v-list-item>
-          </v-list>
-        </v-menu>
-      </template>
-      <!-- Description -->
-      <template v-slot:item.description="{ item }">
-        <button
-          v-if="item.taskId && tasksByIds[item.taskId]"
-          text
-          @click="selectTask(tasksByIds[item.taskId])"
-        >
-          <span class="action-task">
-            <v-icon v-if="tasksByIds[item.taskId].completed" small>
-              mdi-check-box-outline
-            </v-icon>
-            {{ tasksByIds[item.taskId].name }}
-          </span>
-        </button>
-        <div
-          v-else
-          :class="[
-            'description-cell',
-            isEditingAction(item) ? 'is-editing' : null,
-          ]"
-        >
-          <div v-if="isEditingAction(item)">
-            <v-textarea
-              v-model="editedAction.description"
-              solo
-              outlined
-              auto-grow
-              autofocus
-              hide-details
-              @keydown.shift.enter="saveEditedAction"
-              @keyup.esc="cancelEdit(item)"
-            />
-            <v-btn text icon @click="saveEditedAction">
-              <v-icon color="green">
-                mdi-check-circle
+                {{ types[item.type].text }}
+              </v-chip>
+            </template>
+            <v-list dense>
+              <v-list-item
+                v-for="(type, index) in types"
+                :key="index"
+                @click="selectActionType(item, type.value)"
+              >
+                <v-list-item-icon>
+                  <v-icon :color="type.color">
+                    {{ type.icon }}
+                  </v-icon>
+                </v-list-item-icon>
+                <v-list-item-title>{{ type.text }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </template>
+        <!-- Description -->
+        <template v-slot:item.description="{ item }">
+          <button
+            v-if="item.taskId && tasksByIds[item.taskId]"
+            text
+            @click="selectTask(tasksByIds[item.taskId])"
+          >
+            <span class="action-task">
+              <v-icon v-if="tasksByIds[item.taskId].completed" small>
+                mdi-check-box-outline
               </v-icon>
-            </v-btn>
-            <v-btn text icon @click="cancelEdit(item)">
-              <v-icon color="red">
-                mdi-close-circle
-              </v-icon>
-            </v-btn>
-          </div>
+              {{ tasksByIds[item.taskId].name }}
+            </span>
+          </button>
           <div
             v-else
-            class="description-display"
-            @click.stop="editAction(item)"
+            :class="[
+              'description-cell',
+              isEditingAction(item) ? 'is-editing' : null,
+            ]"
           >
-            <span v-if="item.description">
-              {{ item.description }}
-            </span>
-            <v-chip v-else>
-              <v-icon left>
-                mdi-text-subject
-              </v-icon>
-              {{ $t("meetings.actions.addDescription") }}
-            </v-chip>
+            <div v-if="isEditingAction(item)">
+              <v-textarea
+                v-model="editedAction.description"
+                solo
+                outlined
+                auto-grow
+                autofocus
+                hide-details
+                @keydown.shift.enter="saveEditedAction"
+                @keyup.esc="cancelEdit(item)"
+              />
+              <v-btn text icon @click="saveEditedAction">
+                <v-icon color="green">
+                  mdi-check-circle
+                </v-icon>
+              </v-btn>
+              <v-btn text icon @click="cancelEdit(item)">
+                <v-icon color="red">
+                  mdi-close-circle
+                </v-icon>
+              </v-btn>
+            </div>
+            <div
+              v-else
+              class="description-display"
+              @click.stop="editAction(item)"
+            >
+              <span v-if="item.description">
+                {{ item.description }}
+              </span>
+              <v-chip v-else :disabled="!editable">
+                <v-icon left>
+                  mdi-text-subject
+                </v-icon>
+                {{ $t("meetings.actions.addDescription") }}
+              </v-chip>
+            </div>
           </div>
-        </div>
-      </template>
-      <!-- Assigned to -->
-      <template v-slot:item.assignedTo="{ item }">
-        <v-chip
-          :color="item.assignedTo == null ? null : 'success'"
-          :close="!item.taskId && Boolean(item.assignedTo)"
-          @click="chooseActionAssignedTo(item)"
-          @click:close="clearAssignedTo(item)"
-        >
-          <v-icon left>
-            mdi-account
-          </v-icon>
-          <span>
-            {{
-              usersByIds[item.assignedTo]
-                ? getUserProfileName(usersByIds[item.assignedTo])
-                : $t("meetings.actions.addAssignedTo")
-            }}
-          </span>
-        </v-chip>
-      </template>
-      <!-- Due date -->
-      <template v-slot:item.dueDate="{ item }">
-        <div>
+        </template>
+        <!-- Assigned to -->
+        <template v-slot:item.assignedTo="{ item }">
           <v-chip
-            v-if="item.dueDate == null"
-            @click="chooseActionDueDate(item)"
+            :disabled="!editable"
+            :color="item.assignedTo == null ? null : 'success'"
+            :close="!item.taskId && Boolean(item.assignedTo)"
+            @click="chooseActionAssignedTo(item)"
+            @click:close="clearAssignedTo(item)"
           >
             <v-icon left>
-              mdi-calendar
+              mdi-account
             </v-icon>
-            {{ $t("meetings.actions.addDueDate") }}
-          </v-chip>
-          <v-chip
-            v-else
-            color="success"
-            :close="!item.taskId"
-            @click="chooseActionDueDate(item)"
-            @click:close="clearActionDueDate(item)"
-          >
-            {{ formatDateTime(item.dueDate) }}
-          </v-chip>
-        </div>
-      </template>
-      <!-- Actions on row -->
-      <template v-slot:item.actions="{ item }">
-        <div class="actions">
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                x-small
-                color="success"
-                dark
-                class="mr-2"
-                v-on="on"
-                @click.stop="createTask(item)"
-              >
-                <v-icon>
-                  mdi-format-list-bulleted
-                </v-icon>
-              </v-btn>
-            </template>
-            <span v-if="item.taskId && tasksByIds[item.taskId]">
-              {{ $t("meetings.actions.consultTask") }}
-            </span>
-            <span v-else>
-              {{ $t("meetings.actions.createAssociatedTask") }}
-            </span>
-          </v-tooltip>
-          <v-tooltip
-            v-if="item.taskId && tasksByIds[item.taskId]"
-            bottom
-          >
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                x-small
-                color="error"
-                dark
-                v-on="on"
-                @click="unlinkTask(item)"
-              >
-                <v-icon>
-                  mdi-link-variant-off
-                </v-icon>
-              </v-btn>
-            </template>
             <span>
-              {{ $t("meetings.actions.unlinkTask") }}
+              {{
+                usersByIds[item.assignedTo]
+                  ? getUserProfileName(usersByIds[item.assignedTo])
+                  : $t("meetings.actions.addAssignedTo")
+              }}
             </span>
-          </v-tooltip>
-          <v-tooltip v-else bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn
-                fab
-                x-small
-                color="error"
-                dark
-                v-on="on"
-                @click="deleteAction(item)"
-              >
-                <v-icon>
-                  mdi-close
-                </v-icon>
-              </v-btn>
-            </template>
-            <span>
-              {{ $t("meetings.actions.deleteAction") }}
-            </span>
-          </v-tooltip>
-        </div>
-      </template>
-    </v-data-table>
-  </div>
+          </v-chip>
+        </template>
+        <!-- Due date -->
+        <template v-slot:item.dueDate="{ item }">
+          <div>
+            <v-chip
+              v-if="item.dueDate == null"
+              :disabled="!editable"
+              @click="chooseActionDueDate(item)"
+            >
+              <v-icon left>
+                mdi-calendar
+              </v-icon>
+              {{ $t("meetings.actions.addDueDate") }}
+            </v-chip>
+            <v-chip
+              v-else
+              color="success"
+              :close="!item.taskId"
+              @click="chooseActionDueDate(item)"
+              @click:close="clearActionDueDate(item)"
+            >
+              {{ formatDateTime(item.dueDate) }}
+            </v-chip>
+          </div>
+        </template>
+        <!-- Actions on row -->
+        <template v-slot:item.actions="{ item }">
+          <div class="actions">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  :disabled="!editable"
+                  fab
+                  x-small
+                  color="success"
+                  dark
+                  class="mr-2"
+                  v-on="on"
+                  @click.stop="createTask(item)"
+                >
+                  <v-icon> mdi-format-list-bulleted </v-icon>
+                </v-btn>
+              </template>
+              <span v-if="item.taskId && tasksByIds[item.taskId]">
+                {{ $t("meetings.actions.consultTask") }}
+              </span>
+              <span v-else>
+                {{ $t("meetings.actions.createAssociatedTask") }}
+              </span>
+            </v-tooltip>
+            <v-tooltip v-if="item.taskId && tasksByIds[item.taskId]" bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  :disabled="!editable"
+                  fab
+                  x-small
+                  color="error"
+                  dark
+                  v-on="on"
+                  @click="unlinkTask(item)"
+                >
+                  <v-icon> mdi-link-variant-off </v-icon>
+                </v-btn>
+              </template>
+              <span>
+                {{ $t("meetings.actions.unlinkTask") }}
+              </span>
+            </v-tooltip>
+            <v-tooltip v-else bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  :disabled="!editable"
+                  fab
+                  x-small
+                  color="error"
+                  dark
+                  v-on="on"
+                  @click="deleteAction(item)"
+                >
+                  <v-icon> mdi-close </v-icon>
+                </v-btn>
+              </template>
+              <span>
+                {{ $t("meetings.actions.deleteAction") }}
+              </span>
+            </v-tooltip>
+          </div>
+        </template>
+      </v-data-table>
+    </v-card-text>
+  </v-card>
 </template>
 <script>
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
@@ -234,6 +238,10 @@ import deepCopy from "/imports/ui/utils/deepCopy";
 export default {
   mixins: [DatesMixin, usersMixin],
   props: {
+    editable: {
+      type: Boolean,
+      default: true
+    },
     actions: {
       type: Array,
       default() {
@@ -275,7 +283,11 @@ export default {
         { text: this.$t("Type"), value: "type" },
         { text: this.$t("Description"), value: "description" },
         { text: this.$t("meetings.actions.assignedTo"), value: "assignedTo" },
-        { text: this.$t("meetings.actions.dueDate"), value: "dueDate", width: 50 },
+        {
+          text: this.$t("meetings.actions.dueDate"),
+          value: "dueDate",
+          width: 50
+        },
         { text: "", value: "actions", sortable: false, width: 80 }
       ]),
       editedAction: null,
@@ -334,7 +346,9 @@ export default {
     meetingActionsAssignedTos: {
       immediate: true,
       handler() {
-        const users = Meteor.users.find({ _id: { $in: this.meetingActionsAssignedTos } }).fetch();
+        const users = Meteor.users
+          .find({ _id: { $in: this.meetingActionsAssignedTos } })
+          .fetch();
         this.users = Array.isArray(users) ? users : [];
       }
     }
@@ -348,6 +362,9 @@ export default {
       return this.editedAction?.actionId === action.actionId;
     },
     editAction(action) {
+      if (!this.editable) {
+        return;
+      }
       this.originalAction = deepCopy(action);
       this.editedAction = deepCopy(action);
     },
