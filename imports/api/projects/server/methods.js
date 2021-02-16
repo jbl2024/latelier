@@ -21,7 +21,7 @@ import JSZip from "jszip";
 import { createProjectExportZip,
   unserializeProjectImportZip,
   linkAttachmentsToFiles,
-  items as defaultImportItems } from "/imports/api/projects/importExport/";
+  importExportDefaultItems } from "/imports/api/projects/importExport/";
 
 
 Projects.methods.create = new ValidatedMethod({
@@ -619,7 +619,7 @@ Projects.methods.import = new ValidatedMethod({
         throw new Meteor.Error("not-authorized");
       }
 
-      items = Array.isArray(items) ? items : defaultImportItems;
+      items = Array.isArray(items) ? items : importExportDefaultItems;
 
       const zip = await JSZip.loadAsync(fileBuffer);
       const zippedProjects = await unserializeProjectImportZip(zip);
@@ -676,8 +676,10 @@ Projects.methods.import = new ValidatedMethod({
         attachments: {}
       };
 
-      const getMapId = (id, item) => {
-        if (item === "users" && !canImportUsers) return currentUserId;
+      // Try to find the corresponding imported entity with its inserted id
+      // For users, if we don't find users we replace it by default with currentUserId
+      const getMapId = (id, item, replaceWithCurrentUserId = true) => {
+        if (replaceWithCurrentUserId === true && item === "users" && !canImportUsers) return currentUserId;
         if (!mappedIds[item]) return null;
         return mappedIds[item][id] ? mappedIds[item][id] : null;
       };
@@ -816,10 +818,15 @@ Projects.methods.import = new ValidatedMethod({
                     ? mappedIds.labels[labelId] : null).filter((l) => l);
                 }
 
-                // Watchers
-                let watchers = null;
+                // Task watchers
+                const watchers = [];
                 if (Array.isArray(task.watchers) && task.watchers.length > 0) {
-                  watchers = task.watchers.map((watcherId) => getMapId(watcherId, "users"));
+                  task.watchers.forEach((watcherId) => {
+                    const watcherMappedId = getMapId(watcherId, "users", false);
+                    if (watcherMappedId !== null && !watchers.includes(watcherMappedId)) {
+                      watchers.push(watcherMappedId);
+                    }
+                  });
                 }
 
                 const disableTracking = true;
@@ -830,11 +837,11 @@ Projects.methods.import = new ValidatedMethod({
                   createdList._id,
                   task.name,
                   Array.isArray(taskLabelsIds) && taskLabelsIds.length ? taskLabelsIds : null,
-                  getMapId(task.assignedTo, "users"),
+                  getMapId(task.assignedTo, "users", false),
                   task.dueDate ? moment(task.dueDate).format(dateFormat) : null,
                   task.startDate ? moment(task.startDate).format(dateFormat) : null,
                   task.description ? task.description : null,
-                  watchers,
+                  Array.isArray(watchers) && watchers.length ? watchers : null,
                   notes,
                   checklist,
                   task.reminderStartDate ? task.reminderStartDate : null,
@@ -960,7 +967,7 @@ Projects.methods.import = new ValidatedMethod({
             if (attendees.length > 0) {
               attendees = attendees.map((attendee) => {
                 if (attendee.userId) {
-                  attendee.userId = getMapId(attendee.userId, "users");
+                  attendee.userId = getMapId(attendee.userId, "users", false);
                 }
                 return attendee;
               });

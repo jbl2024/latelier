@@ -29,12 +29,23 @@
         </v-col>
       </v-row>
     </div>
+
+    <generic-dialog
+      v-model="loading"
+      :title="$t('project.export.exportLoading')"
+      max-width="520"
+      simple
+    >
+      <template v-slot:content>
+        <v-progress-linear v-if="loading" class="project-export__progress-bar" indeterminate />
+      </template>
+    </generic-dialog>
   </div>
 </template>
 <script>
 import { mapState } from "vuex";
 import { Projects } from "/imports/api/projects/projects.js";
-import { items } from "/imports/api/projects/importExport/";
+import { importExportDefaultItems } from "/imports/api/projects/importExport/";
 import { saveAs } from "file-saver";
 import { sanitizeForFs } from "/imports/ui/utils/sanitize";
 import { Permissions } from "/imports/api/permissions/permissions";
@@ -50,6 +61,7 @@ export default {
   data() {
     return {
       info: null,
+      loading: false,
       infoMapping: Object.freeze({
         tasks: "taskCount",
         meetings: "meetingCount",
@@ -57,7 +69,7 @@ export default {
         bpmn: "diagramCount",
         attachments: "attachmentCount"
       }),
-      selectedItems: items.reduce((obj, item) => {
+      selectedItems: importExportDefaultItems.reduce((obj, item) => {
         obj[item] = true;
         return obj;
       }, {})
@@ -70,7 +82,7 @@ export default {
     availableItems() {
       if (!this.currentProject) return [];
       const baseItems = ["tasks", "users", "attachments"];
-      return items.filter((item) => {
+      return importExportDefaultItems.filter((item) => {
         if (baseItems.includes(item)) return true;
         return this.hasFeature(this.currentProject, item);
       });
@@ -124,6 +136,7 @@ export default {
       return this.info[this.infoMapping[item]];
     },
     exportProject() {
+      this.loading = true;
       Meteor.call("projects.export",
         {
           projectId: this.projectId,
@@ -131,12 +144,15 @@ export default {
         },
         (error, result) => {
           if (error || !result?.data || result.data.constructor !== Uint8Array) {
+            this.loading = false;
             this.$notifyError(this.$t("projects.export.invalidExport"));
             return;
           }
           const blob = new Blob([result.data]);
           const timestamp = moment().format("YYYY-MM-DD");
           saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
+          this.loading = false;
+          this.$notifyError(this.$t("projects.export.invalidExport"));
         });
     },
     getProjectsInfo() {
@@ -160,6 +176,10 @@ export default {
 <style lang="scss" scoped>
   .project-export {
     background-color: #e5e5e5;
+  }
+
+  .project-export__progress-bar {
+    margin-top: 20px;
   }
 
   .wrapper {
