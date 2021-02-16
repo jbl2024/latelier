@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Some fixes when importing/exporting a project:
+  - Added a dialog with a progress bar when exporting project in ProjectExport
+  - It's no longer possible to import project users (disabled in UI ProjectImportWizard). We can still export users but they will not be used during import phase.
+  - Accordingly, we will not assign the current user to any imported task or any user attendee in imported meetings.
+  - Added a test case where we import project without users to validate those changes.
+
 
 ### Removed
 
