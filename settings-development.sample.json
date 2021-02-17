@@ -21,12 +21,6 @@
   },
   "notificationsPerUser": 50,
   "digestsRetention": 60,
-  "elasticApm": {
-    "enabled": true,
-    "options": {
-      "serviceName": "latelier"
-    }
-  },
   "users": {
     "search": "admin",
     "invite": "admin"
@@ -38,6 +32,20 @@
   },
   "roles": {
     "admin": ["foo@bar.com"]
+  },
+  "restApi": {
+    "enabled": true,
+    "basePath": "/api",
+    "swagger": {
+      "uiPath": "/api-docs",
+      "enabled": true,
+      "servers": [
+        {
+          "url": "http://localhost/api",
+          "description": "Main HTTP REST Api endpoint"
+        }
+      ]
+    }
   },
   "auth": {
     "oauth2": {
