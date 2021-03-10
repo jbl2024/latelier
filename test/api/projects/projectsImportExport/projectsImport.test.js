@@ -1,7 +1,10 @@
 import { expect } from "chai";
 import { initData } from "/test/fixtures/fixtures";
 import { makeProjectDatas } from "/test/fixtures/projects/projectsImportExport";
-import { createProjectExportZip } from "/imports/api/projects/importExport";
+import {
+  createProjectExportZip,
+  importExportDefaultItems
+} from "/imports/api/projects/importExport";
 import { Projects, ProjectAccessRights } from "/imports/api/projects/projects";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Canvas } from "/imports/api/canvas/canvas";
@@ -195,16 +198,16 @@ if (Meteor.isServer) {
       expect(meeting.name, "should be equal to imported meeting name").to.be.equal(importedMeetingName);
 
       // Other items that should not be imported
-      canvas = Canvas.findOne({ projectId: createdProjectId });
+      const canvas = Canvas.findOne({ projectId: createdProjectId });
       expect(canvas, "should be undefined").to.be.undefined;
 
-      tasks = Tasks.find({ projectId: createdProjectId }).fetch();
+      const tasks = Tasks.find({ projectId: createdProjectId }).fetch();
       expect(tasks, "should be empty").to.be.empty;
 
-      labels = Labels.find({ projectId: createdProjectId }).fetch();
+      const labels = Labels.find({ projectId: createdProjectId }).fetch();
       expect(labels, "should be empty").to.be.empty;
 
-      healthReports = HealthReports.find({ projectId: createdProjectId }).fetch();
+      const healthReports = HealthReports.find({ projectId: createdProjectId }).fetch();
       expect(healthReports, "should be empty").to.be.empty;
     });
 
@@ -393,6 +396,77 @@ if (Meteor.isServer) {
           && t.name === importedTask.name);
         expect(foundTask, "should be an object").to.be.a("object");
         expect(foundTask, "should have a valid id").to.have.property("_id");
+      });
+    });
+
+    it("import project must create valid entities without importing users", async function() {
+      let importErrorCode = null;
+      let createdProjectId = null;
+      let userId = null;
+
+      const projectDatas = makeProjectDatas();
+      const { zipContent } = await stepCreateProjectZip(projectDatas);
+
+      const itemsToImport = importExportDefaultItems.filter((item) => item !== "users");
+
+      try {
+        userId = Meteor.users.findOne()._id;
+        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const context = { userId };
+        const args = {
+          fileBuffer: zipContent,
+          locale: "en",
+          projectName: projectDatas.project.name,
+          items: itemsToImport,
+          organizationId: null
+        };
+        createdProjectId = await Projects.methods.import._execute(context, args);
+      } catch (error) {
+        importErrorCode = error.error;
+      }
+      expect(importErrorCode, "should not throw error").to.equal(null);
+
+      // Checking project
+      expect(createdProjectId, "should be a string").to.be.a("string");
+      expect(createdProjectId, "should be a valid projectId").to.not.be.empty;
+      const project = Projects.findOne({ _id: createdProjectId });
+      expect(project, "should be an object").to.be.a("object");
+      expect(project, "should have an _id property").to.have.property("_id");
+      expect(project._id, "should have the same id").to.be.equal(createdProjectId);
+
+      expect(project.members, "should be an array of members ids").to.be.an("array");
+      expect(project.members, "should only contains one entry with current user id").to.be.eql([userId]);
+
+      const tasks = Tasks.find({ projectId: createdProjectId }).fetch();
+      expect(tasks, "should be an array").to.be.an("array");
+      expect(tasks, "should not be empty").to.not.be.empty;
+
+      // createdBy, updatedBy, watchers => currentUserId
+      tasks.forEach((task) => {
+        expect(task.createdBy, "should equals currentUserId").to.be.equals(userId);
+        if (task.updatedBy) {
+          expect(task.updatedBy, "should equals currentUserId").to.be.equals(userId);
+        }
+        expect(task.assignedTo).to.equal(null);
+        expect(task.watchers, "should only contains one entry with current user id").to.be.eql([userId]);
+      });
+
+
+      const meetings = Meetings.find({ projectId: createdProjectId }).fetch();
+      expect(meetings, "should be an array").to.be.an("array");
+      expect(meetings, "should not be empty").to.not.be.empty;
+      meetings.forEach((meeting) => {
+        expect(meeting.createdBy, "shoud equals currentUserId").to.be.equals(userId);
+        if (meeting.updatedBy) {
+          expect(meeting.updatedBy, "shoud equals currentUserId").to.be.equals(userId);
+        }
+        if (Array.isArray(meeting.attendees)) {
+          meeting.attendees.forEach((attendee) => {
+            if (attendee.userId) {
+              expect(attendee.userId, "should be null").to.equals(null);
+            }
+          });
+        }
       });
     });
   });

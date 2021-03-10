@@ -177,7 +177,7 @@
 <script>
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import deepCopy from "/imports/ui/utils/deepCopy";
-import { items } from "/imports/api/projects/importExport/";
+import { importExportDefaultItems } from "/imports/api/projects/importExport/";
 
 export default {
   props: {
@@ -209,7 +209,8 @@ export default {
   },
   data() {
     return {
-      items,
+      // We disable users import for now
+      items: importExportDefaultItems.filter((itemToImport) => itemToImport !== "users"),
       projectName: "",
       projectOrganizationId: null,
       stepper: 1,

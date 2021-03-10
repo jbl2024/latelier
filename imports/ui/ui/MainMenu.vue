@@ -145,7 +145,7 @@ export default {
           title: this.$t("Tasks"),
           icon: "mdi-format-list-bulleted",
           onClick: () => {
-            this.$store.dispatch("showLeftDrawer", true);
+            this.$store.dispatch("ui/leftDrawer/showLeftDrawer", true);
           }
         }
       ];

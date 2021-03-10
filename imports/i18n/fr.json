@@ -443,6 +443,7 @@
     },
     "export": {
       "invalidExport": "Fichier d'export invalide",
+      "exportLoading": "Export du projet en cours",
       "itemsToExport": "Éléments à exporter",
       "export": "Exporter le projet",
       "items": {
