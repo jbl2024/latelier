@@ -10,6 +10,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update to Meteor 2.1
+- Update packages
+- Update linter rules:
+  - eslint: ^7.21.0
+  - eslint-config-airbnb: ^18.2.1
+  - eslint-config-airbnb-base: ^14.2.1
+  - eslint-import-resolver-meteor: ^0.4.0
+  - eslint-plugin-import: ^2.22.1
+  - eslint-plugin-jsx-a11y: ^6.4.1
+  - eslint-plugin-meteor: ^7.3.0
+  - eslint-plugin-react: ^7.22.0
+  - eslint-plugin-vue: ^7.7.0
 - Some fixes when importing/exporting a project:
   - Added a dialog with a progress bar when exporting project in ProjectExport
   - It's no longer possible to import project users (disabled in UI ProjectImportWizard). We can still export users but they will not be used during import phase.
