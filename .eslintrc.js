@@ -10,6 +10,7 @@ module.exports = {
     "import/prefer-default-export": "off",
     "import/no-cycle": "off",
     "no-undef": "off",
+    "prefer-destructuring": "off",
     "no-underscore-dangle": "off",
     "quotes": ["error", "double"],
     "comma-dangle": ["error", "never"],
