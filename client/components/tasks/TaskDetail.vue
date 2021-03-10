@@ -121,30 +121,21 @@
           {{ $t("Completed on") }}
           {{ formatDate(task.completedAt) }}
         </div>
-
-        <v-layout row>
-          <v-flex shrink>
-            <div class="number">
-              #{{ task.number }}
-            </div>
-          </v-flex>
-          <v-flex>
-            <author-line
-              v-if="showCreatedBy(task)"
-              :user-id="task.createdBy"
-              :date="task.createdAt"
-              class="author"
-              :prefix="$t('Created by')"
-            />
-            <author-line
-              v-if="showUpdatedBy(task)"
-              :user-id="task.updatedBy"
-              :date="task.updatedAt"
-              class="author"
-              :prefix="$t('Last update by')"
-            />
-          </v-flex>
-        </v-layout>
+        <span class="number">#{{ task.number }}</span>
+        <author-line
+          v-if="showCreatedBy(task)"
+          :user-id="task.createdBy"
+          :date="task.createdAt"
+          class="author"
+          :prefix="$t('Created by')"
+        />
+        <author-line
+          v-if="showUpdatedBy(task)"
+          :user-id="task.updatedBy"
+          :date="task.updatedAt"
+          class="author"
+          :prefix="$t('Last update by')"
+        />
       </div>
 
       <v-divider />
