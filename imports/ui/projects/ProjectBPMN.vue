@@ -99,7 +99,7 @@ import EditProcessDiagram from "/imports/ui/bpmn/EditProcessDiagram.vue";
 import NewProcessDiagram from "/imports/ui/bpmn/NewProcessDiagram.vue";
 
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import * as htmlToText from "@mxiii/html-to-text";
+import * as htmlToText from "html-to-text";
 
 export default {
   components: {

@@ -7,7 +7,7 @@ import {
 } from "/imports/api/permissions/permissions";
 import { Email } from "/imports/email";
 import { UserUtils } from "/imports/api/users/utils";
-import * as htmlToText from "@mxiii/html-to-text";
+import * as htmlToText from "html-to-text";
 import { MJML } from "/imports/mjml";
 
 // Disable client insert/remove/update
