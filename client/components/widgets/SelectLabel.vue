@@ -2,7 +2,7 @@
   <div class="select-label">
     <edit-label ref="editLabel" :label-id="selectedLabelId" />
     <generic-dialog v-model="showDialog" :title="$t('Add label')" simple>
-      <template v-slot:content>
+      <template #content>
         <new-label ref="newLabel" :project-id="projectId" />
         <v-btn
           v-show="false"

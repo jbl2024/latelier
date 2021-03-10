@@ -1,6 +1,6 @@
 <template>
   <v-tooltip :top="top" :left="left" :bottom="bottom" :right="right">
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn icon v-on="on" @click.stop="onClick()">
         <v-icon>{{ icon }}</v-icon>
       </v-btn>

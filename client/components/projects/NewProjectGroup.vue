@@ -24,10 +24,10 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="showDialog = false">
-            {{ this.$t("Cancel") }}
+            {{ $t("Cancel") }}
           </v-btn>
           <v-btn color="info" :disabled="!valid" @click="create">
-            {{ this.$t("Create") }}
+            {{ $t("Create") }}
           </v-btn>
         </v-card-actions>
       </v-card>

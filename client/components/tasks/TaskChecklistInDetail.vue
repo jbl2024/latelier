@@ -81,7 +81,7 @@
           </td>
           <td class="table-actions">
             <v-menu bottom left class="menu" :close-on-content-click="false">
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn icon v-on="on">
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>

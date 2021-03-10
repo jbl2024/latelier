@@ -5,7 +5,7 @@
       :title="$t('Filters')"
       :close-label="$t('Close')"
     >
-      <template v-slot:content>
+      <template #content>
         <project-filters :project-id="projectId" />
       </template>
     </generic-dialog>

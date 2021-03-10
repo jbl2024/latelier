@@ -10,7 +10,7 @@
       </v-btn>
       <!-- Fast selector for any organizations or projects -->
       <content-selector :key="contentSelectorKey">
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             v-shortkey="['p']"
             text

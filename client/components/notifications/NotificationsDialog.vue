@@ -21,7 +21,7 @@
         </v-toolbar-title>
         <v-spacer />
         <v-menu bottom left class="menu">
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn icon v-on="on">
               <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>
@@ -74,7 +74,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text @click="close()">
-              {{ this.$t("Close") }}
+              {{ $t("Close") }}
             </v-btn>
           </v-card-actions>
         </div>

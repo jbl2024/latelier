@@ -15,22 +15,20 @@
           :item-value="getItemValue"
           menu-props="closeOnContentClick"
         >
-          <template v-slot:item="data">
-            <template>
-              <v-list-item-action>
-                <v-icon :style="getColor(data.item)">
-                  mdi-label
-                </v-icon>
-              </v-list-item-action>
-              <v-list-item-content>
-                <v-list-item-title>
-                  <span :class="isSelected(data.item) ? 'selected' : ''">
-                    {{ data.item.name }}</span>
-                </v-list-item-title>
-              </v-list-item-content>
-            </template>
+          <template #item="data">
+            <v-list-item-action>
+              <v-icon :style="getColor(data.item)">
+                mdi-label
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                <span :class="isSelected(data.item) ? 'selected' : ''">
+                  {{ data.item.name }}</span>
+              </v-list-item-title>
+            </v-list-item-content>
           </template>
-          <template v-slot:selection="{ item, index }">
+          <template #selection="{ item, index }">
             <v-chip v-if="index === 0" small :style="getStyleForChip(item)">
               {{ ellipsis(item.name, 15) }}
             </v-chip>
@@ -73,7 +71,7 @@
           </v-list-item-action>
 
           <v-list-item-content>
-            <v-list-item-title>{{ this.$t("Create") }}...</v-list-item-title>
+            <v-list-item-title>{{ $t("Create") }}...</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -117,7 +115,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ this.$t("Create") }}...</v-list-item-title>
+            <v-list-item-title>{{ $t("Create") }}...</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>

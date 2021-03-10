@@ -5,14 +5,14 @@
       :css-classes="['meeting']"
       max-width="700px"
     >
-      <template v-slot:title>
+      <template #title>
         <meeting-title
           v-if="meeting"
           :title="meeting.name"
           :color="meeting.color"
         />
       </template>
-      <template v-slot:content>
+      <template #content>
         <div v-if="meeting" class="meeting__content">
           <div class="meeting__chips">
             <v-chip>
@@ -95,7 +95,7 @@
           </v-expansion-panels>
         </div>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <template v-if="meeting">
           <!-- Edit meeting -->
           <v-btn

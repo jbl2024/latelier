@@ -34,7 +34,7 @@
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         ripple
@@ -51,7 +51,7 @@
                 </v-list-item-action>
                 <v-list-item-action>
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         ripple
@@ -74,7 +74,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="close()">
-            {{ this.$t("Close") }}
+            {{ $t("Close") }}
           </v-btn>
         </v-card-actions>
       </v-card>

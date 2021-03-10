@@ -34,7 +34,7 @@
             "
           >
             <v-tooltip>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
                   icon
                   ripple
@@ -58,7 +58,7 @@
             "
           >
             <v-tooltip>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
                   icon
                   ripple

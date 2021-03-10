@@ -3,7 +3,7 @@
     offset-y
     class="meeting-attendee-role-selector"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         text
         class="meeting-attendee-role-selector__activator"

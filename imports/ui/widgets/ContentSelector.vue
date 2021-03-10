@@ -7,7 +7,7 @@
     offset-y
     @click-outside="isMenuShown = false"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <slot name="activator" :on="on" />
     </template>
     <v-card>

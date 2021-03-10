@@ -6,7 +6,7 @@
       :fullscreen="$vuetify.breakpoint.xsOnly"
       :title="$t('Label')"
     >
-      <template v-slot:content>
+      <template #content>
         <select-color :active.sync="showSelectColor" @select="onSelectColor" />
         <v-form v-model="valid" class="form" @submit.prevent>
           <v-text-field
@@ -34,7 +34,7 @@
           />
         </v-form>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text :disabled="!valid" @click="create">
           {{ $t("Create") }}
         </v-btn>

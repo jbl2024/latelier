@@ -12,7 +12,7 @@
     <notification-button />
     <v-avatar dark>
       <v-menu offset-y eager>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn icon v-on="on">
             <author-avatar v-if="hasAvatar" small :user-id="currentUserId" />
             <v-icon v-if="!hasAvatar">

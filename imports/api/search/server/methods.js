@@ -40,7 +40,6 @@ methods.findTasks = new ValidatedMethod({
     };
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
@@ -140,7 +139,6 @@ methods.findTasks = new ValidatedMethod({
     };
   }
 });
-
 
 methods.findProjects = new ValidatedMethod({
   name: "search.findProjects",
@@ -280,7 +278,6 @@ methods.findAttachments = new ValidatedMethod({
     const attachmentQuery = {};
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
@@ -405,7 +402,6 @@ methods.findMeetings = new ValidatedMethod({
     };
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
@@ -439,7 +435,6 @@ methods.findMeetings = new ValidatedMethod({
       limit: perPage,
       sort
     }).fetch();
-
 
     // load associated objects and assign them to meetings
     const projects = {};

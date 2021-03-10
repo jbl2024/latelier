@@ -3,7 +3,7 @@
     <notifications-dialog :active.sync="showDialog" />
     <v-btn icon @click="showDialog = true">
       <v-badge color="red" :value="notificationsCount > 0" overlap>
-        <template v-slot:badge>
+        <template #badge>
           <span>{{ notificationsCount }}</span>
         </template>
         <v-icon>mdi-bell</v-icon>

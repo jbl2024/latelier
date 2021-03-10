@@ -13,7 +13,7 @@
           @click-color="showSelectColor = true"
         />
       </template>
-      <template v-slot:content>
+      <template #content>
         <select-color :active.sync="showSelectColor" @select="onSelectColor" />
         <select-attachments
           :value="documents"
@@ -214,7 +214,7 @@
           </template>
         </v-form>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn v-if="!isNewMeeting" color="error" @click="remove">
           {{ $t("meetings.remove") }}
         </v-btn>

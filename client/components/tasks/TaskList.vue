@@ -42,10 +42,8 @@
               </template>
             </v-list-item-subtitle>
             <v-list-item-subtitle v-if="task.completed">
-              <template>
-                {{ $t("Completed on") }}
-                <b>{{ formatDateDuration(task.completedAt) }}</b>
-              </template>
+              {{ $t("Completed on") }}
+              <b>{{ formatDateDuration(task.completedAt) }}</b>
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>

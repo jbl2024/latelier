@@ -82,7 +82,7 @@
                 class="show-desktop"
               >
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       icon
                       text
@@ -98,7 +98,7 @@
               </v-list-item-action>
               <v-list-item-action class="show-desktop">
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       icon
                       text
@@ -117,7 +117,7 @@
                 class="show-desktop"
               >
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       icon
                       text
@@ -146,7 +146,7 @@
 
             <div>
               <v-tooltip top>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn icon @click.stop="newProject()" v-on="on">
                     <v-icon>mdi-plus</v-icon>
                   </v-btn>
@@ -191,7 +191,7 @@
                   class="show-desktop"
                 >
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         text
@@ -207,7 +207,7 @@
                 </v-list-item-action>
                 <v-list-item-action class="show-desktop">
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         text
@@ -226,7 +226,7 @@
                   class="show-desktop"
                 >
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         text
@@ -269,7 +269,7 @@
 
               <div>
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       icon
                       @click.stop="newProject(organization._id)"
@@ -284,7 +284,7 @@
 
               <div>
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       icon
                       @click.stop="openOrganizationTimeline(organization._id)"
@@ -299,7 +299,7 @@
 
               <div>
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       v-if="canManageOrganization(organization)"
                       icon
@@ -315,7 +315,7 @@
 
               <div>
                 <v-tooltip top>
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <v-btn
                       v-if="canDeleteOrganization(organization)"
                       icon
@@ -394,7 +394,7 @@
                       class="show-desktop"
                     >
                       <v-tooltip top>
-                        <template v-slot:activator="{ on }">
+                        <template #activator="{ on }">
                           <v-btn
                             icon
                             text
@@ -410,7 +410,7 @@
                     </v-list-item-action>
                     <v-list-item-action class="show-desktop">
                       <v-tooltip top>
-                        <template v-slot:activator="{ on }">
+                        <template #activator="{ on }">
                           <v-btn
                             icon
                             text
@@ -429,7 +429,7 @@
                       class="show-desktop"
                     >
                       <v-tooltip top>
-                        <template v-slot:activator="{ on }">
+                        <template #activator="{ on }">
                           <v-btn
                             icon
                             text

@@ -5,7 +5,7 @@
       max-width="620"
       :title="computedTitle"
     >
-      <template v-slot:content>
+      <template #content>
         <v-row justify="space-around" align="center">
           <v-col style="width: 290px; flex: 0 1 auto;">
             <v-time-picker
@@ -28,7 +28,7 @@
           </v-col>
         </v-row>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text @click="selectHourRange">
           {{ $t("Select") }}
         </v-btn>

@@ -14,7 +14,7 @@
       :item-value="getObjectForUser"
       menu-props="closeOnContentClick"
     >
-      <template v-slot:selection="{ item, index }">
+      <template #selection="{ item, index }">
         <div v-if="index <= 2" class="avatar">
           <author-avatar xsmall :user-id="item" />
         </div>
@@ -37,7 +37,7 @@
       :item-value="getObjectForUser"
       menu-props="closeOnContentClick"
     >
-      <template v-slot:selection="{ item, index }">
+      <template #selection="{ item, index }">
         <div v-if="index <= 2" class="avatar">
           <author-avatar xsmall :user-id="item" />
         </div>
@@ -154,7 +154,6 @@ export default {
   max-width: 200px;
   display: inline-block;
 }
-
 
 </style>
 

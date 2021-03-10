@@ -47,7 +47,6 @@ stepCreateProjectZip = async (projectDatas) => {
   return { zip, zipContent };
 };
 
-
 if (Meteor.isServer) {
   describe("projectsImport V2020_11", function () {
     beforeEach(function () {
@@ -101,7 +100,6 @@ if (Meteor.isServer) {
       );
     });
 
-
     it("import project must create a valid project", async function () {
       let importErrorCode = null;
       let createdProjectId = null;
@@ -150,7 +148,7 @@ if (Meteor.isServer) {
       });
     });
 
-    it("import project must create only specified project items", async function() {
+    it("import project must create only specified project items", async function () {
       let importErrorCode = null;
       let createdProjectId = null;
       const projectDatas = makeProjectDatas();
@@ -234,7 +232,6 @@ if (Meteor.isServer) {
 
       expect(importErrorCode, "should not throw error").to.equal(null);
 
-
       // Checking project
       expect(createdProjectId, "should be a string").to.be.a("string");
       expect(createdProjectId, "should be a valid projectId").to.not.be.empty;
@@ -254,8 +251,7 @@ if (Meteor.isServer) {
       });
     });
 
-
-    it("import project must create valid health reports", async function() {
+    it("import project must create valid health reports", async function () {
       let importErrorCode = null;
       let createdProjectId = null;
       const projectDatas = makeProjectDatas();
@@ -311,7 +307,7 @@ if (Meteor.isServer) {
       });
     });
 
-    it("import project must create valid tasks and labels items", async function() {
+    it("import project must create valid tasks and labels items", async function () {
       let importErrorCode = null;
       let createdProjectId = null;
       const projectDatas = makeProjectDatas();
@@ -399,7 +395,7 @@ if (Meteor.isServer) {
       });
     });
 
-    it("import project must create valid entities without importing users", async function() {
+    it("import project must create valid entities without importing users", async function () {
       let importErrorCode = null;
       let createdProjectId = null;
       let userId = null;
@@ -450,7 +446,6 @@ if (Meteor.isServer) {
         expect(task.assignedTo).to.equal(null);
         expect(task.watchers, "should only contains one entry with current user id").to.be.eql([userId]);
       });
-
 
       const meetings = Meetings.find({ projectId: createdProjectId }).fetch();
       expect(meetings, "should be an array").to.be.an("array");

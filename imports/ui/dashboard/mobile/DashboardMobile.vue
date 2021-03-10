@@ -23,5 +23,4 @@ export default {
 
 @import "/imports/ui/styles/mixins/breakpoint";
 
-
 </style>

@@ -5,7 +5,7 @@
       max-width="820"
       :title="$t('New project')"
     >
-      <template v-slot:content>
+      <template #content>
         <div class="project-wrapper">
           <div class="project">
             <v-stepper v-model="stepper" non-linear vertical class="stepper">
@@ -106,7 +106,7 @@
         </div>
       </template>
 
-      <template v-slot:actions>
+      <template #actions>
         <v-btn color="primary" :disabled="!isStep1Completed()" @click="create">
           {{ $t("Create") }}
         </v-btn>

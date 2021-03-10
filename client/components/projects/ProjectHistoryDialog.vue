@@ -1,7 +1,7 @@
 <template>
   <div>
     <generic-dialog v-model="showDialog" max-width="60%" :title="$t('History')">
-      <template v-slot:content>
+      <template #content>
         <div class="content">
           <project-history v-if="showDialog" :project-id="projectId" />
         </div>

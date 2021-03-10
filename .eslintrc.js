@@ -12,18 +12,22 @@ module.exports = {
     "no-undef": "off",
     "prefer-destructuring": "off",
     "no-underscore-dangle": "off",
-    "quotes": ["error", "double"],
+    quotes: ["error", "double"],
     "comma-dangle": ["error", "never"],
     "no-plusplus": [2, { allowForLoopAfterthoughts: true }],
-    "object-curly-newline": ["error", { "consistent": true }],
+    "object-curly-newline": ["error", { consistent: true }],
     "vue/max-attributes-per-line": ["error", {
-      "singleline": 8,
-      "multiline": {
-        "max": 8,
-        "allowFirstLine": true
+      singleline: 8,
+      multiline: {
+        max: 8,
+        allowFirstLine: true
       }
     }],
-    "vue/no-v-html": "off" 
+    "vue/no-v-html": "off",
+    "vue/valid-v-slot": ["error", {
+      allowModifiers: true
+    }],
+    "vue/no-mutating-props": "off"
   },
   overrides: [
     {
@@ -33,11 +37,11 @@ module.exports = {
       }
     }
   ],
-  "parser": "vue-eslint-parser",
-  "parserOptions": {
-    "parser": "babel-eslint",
-    "sourceType": "module",
-    "allowImportExportEverywhere": true,
-    "codeFrame": false
+  parser: "vue-eslint-parser",
+  parserOptions: {
+    parser: "babel-eslint",
+    sourceType: "module",
+    allowImportExportEverywhere: true,
+    codeFrame: false
   }
 };

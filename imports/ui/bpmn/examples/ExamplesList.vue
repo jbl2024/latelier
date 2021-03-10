@@ -48,7 +48,7 @@
 
                   <v-list-item-action v-if="isAdmin">
                     <v-menu bottom left class="menu">
-                      <template v-slot:activator="{ on }">
+                      <template #activator="{ on }">
                         <v-btn
                           icon
                           text

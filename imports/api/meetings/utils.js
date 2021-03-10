@@ -2,7 +2,6 @@ import moment from "moment";
 import i18n from "/imports/i18n/";
 import { UserUtils } from "../users/utils";
 
-
 const allowedUpdateFields = [
   "id",
   "name",

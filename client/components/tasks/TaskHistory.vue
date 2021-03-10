@@ -1,7 +1,7 @@
 <template>
   <div class="task-history">
     <generic-dialog v-model="showDialog" max-width="60%" :title="$t('History')">
-      <template v-slot:content>
+      <template #content>
         <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
 

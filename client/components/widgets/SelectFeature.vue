@@ -65,7 +65,6 @@ export default {
 
 <style scoped>
 
-
 .cursor {
   cursor: pointer;
 }

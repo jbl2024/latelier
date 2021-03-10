@@ -5,7 +5,7 @@
       max-width="520"
       :title="$t('Select date')"
     >
-      <template v-slot:content>
+      <template #content>
         <v-tabs v-if="showDialog" fixed-tabs>
           <v-tabs-slider color="accent" />
           <v-tab>
@@ -39,7 +39,7 @@
           :label="$t('Reminder')"
         />
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text :disabled="!date" @click="selectDate">
           {{ $t("Select") }}
         </v-btn>

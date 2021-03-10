@@ -107,7 +107,7 @@
       <v-spacer />
 
       <v-tooltip v-if="!isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -122,7 +122,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -137,7 +137,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="!isSubscribedToDigests(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -152,7 +152,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="isSubscribedToDigests(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -168,7 +168,7 @@
 
       <template v-if="canManageProject(project)">
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text
@@ -184,7 +184,7 @@
           </span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text
@@ -198,7 +198,7 @@
           <span>{{ $t("Settings") }}</span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text

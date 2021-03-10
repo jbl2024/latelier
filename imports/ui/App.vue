@@ -61,7 +61,7 @@
       </template>
       <v-snackbar v-model="showSnackbar" :timeout="timeout" bottom app>
         {{ notifyMessage }}
-        <template v-slot:action="{ attrs }">
+        <template #action="{ attrs }">
           <v-btn dark icon text v-bind="attrs" @click="showSnackbar = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>

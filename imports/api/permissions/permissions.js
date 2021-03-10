@@ -176,7 +176,6 @@ export const checkCanDeleteTask = (taskId) => {
   Meteor.call("permissions.canDeleteTask", { taskId });
 };
 
-
 /** Meetings * */
 
 export const checkCanReadMeeting = (meetingId) => {

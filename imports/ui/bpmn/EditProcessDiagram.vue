@@ -5,7 +5,7 @@
       max-width="520"
       :title="$t('Edit process diagram')"
     >
-      <template v-slot:content>
+      <template #content>
         <v-form v-model="valid" @submit.prevent>
           <v-layout wrap>
             <v-flex xs12>
@@ -28,7 +28,7 @@
           </v-layout>
         </v-form>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text :disabled="!valid" @click="update">
           {{ $t("Update") }}
         </v-btn>

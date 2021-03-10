@@ -36,7 +36,7 @@
       max-width="520"
       simple
     >
-      <template v-slot:content>
+      <template #content>
         <v-progress-linear v-if="loading" class="project-export__progress-bar" indeterminate />
       </template>
     </generic-dialog>

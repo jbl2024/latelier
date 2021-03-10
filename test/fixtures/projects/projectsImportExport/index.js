@@ -1,4 +1,3 @@
-
 export const makeProject = () => ({
   _id: "wqdWQjv5hhm8FRGu2",
   organizationId: null,
@@ -62,7 +61,6 @@ export const makeMetadatas = () => ({
     profile: null
   }
 });
-
 
 export const makeLabels = () => [
   {

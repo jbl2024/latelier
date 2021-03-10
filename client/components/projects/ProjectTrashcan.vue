@@ -5,7 +5,7 @@
       max-width="640px"
       :title="$t('Trashcan')"
     >
-      <template v-slot:content>
+      <template #content>
         <div class="content">
           <v-progress-linear v-if="loading" indeterminate />
           <empty-state
@@ -24,7 +24,7 @@
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         ripple
@@ -41,7 +41,7 @@
                 </v-list-item-action>
                 <v-list-item-action>
                   <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+                    <template #activator="{ on }">
                       <v-btn
                         icon
                         ripple
@@ -71,7 +71,7 @@
         </div>
       </template>
 
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text @click="flush()">
           {{ $t("Flush") }}
         </v-btn>

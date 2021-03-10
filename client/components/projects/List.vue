@@ -20,7 +20,7 @@
             {{ list.name }} ({{ hiddenTaskCount }}/{{ taskCount }})
           </div>
           <v-menu bottom left class="flex0">
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-btn :dark="dark" small icon v-on="on">
                 <v-icon>mdi-dots-vertical</v-icon>
               </v-btn>
@@ -43,7 +43,7 @@
                 <v-list-item-action>
                   <v-icon>mdi-delete</v-icon>
                 </v-list-item-action>
-                <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
+                <v-list-item-title>{{ $t("Delete") }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>

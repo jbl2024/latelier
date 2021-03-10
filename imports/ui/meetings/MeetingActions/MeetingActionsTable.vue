@@ -10,7 +10,7 @@
         hide-default-footer
         :no-data-text="$t('meetings.actions.none')"
       >
-        <template v-slot:top>
+        <template #top>
           <v-toolbar flat color="white">
             <v-btn
               :disabled="!editable"
@@ -26,9 +26,9 @@
           </v-toolbar>
         </template>
         <!-- Type -->
-        <template v-slot:item.type="{ item }">
+        <template #item.type="{ item }">
           <v-menu offset-y :nudge-bottom="10">
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-chip
                 :disabled="!editable"
                 :color="types[item.type].color"
@@ -59,7 +59,7 @@
           </v-menu>
         </template>
         <!-- Description -->
-        <template v-slot:item.description="{ item }">
+        <template #item.description="{ item }">
           <button
             v-if="item.taskId && tasksByIds[item.taskId]"
             text
@@ -119,7 +119,7 @@
           </div>
         </template>
         <!-- Assigned to -->
-        <template v-slot:item.assignedTo="{ item }">
+        <template #item.assignedTo="{ item }">
           <v-chip
             :disabled="!editable"
             :color="item.assignedTo == null ? null : 'success'"
@@ -140,7 +140,7 @@
           </v-chip>
         </template>
         <!-- Due date -->
-        <template v-slot:item.dueDate="{ item }">
+        <template #item.dueDate="{ item }">
           <div>
             <v-chip
               v-if="item.dueDate == null"
@@ -164,10 +164,10 @@
           </div>
         </template>
         <!-- Actions on row -->
-        <template v-slot:item.actions="{ item }">
+        <template #item.actions="{ item }">
           <div class="actions">
             <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
                   :disabled="!editable"
                   fab
@@ -189,7 +189,7 @@
               </span>
             </v-tooltip>
             <v-tooltip v-if="item.taskId && tasksByIds[item.taskId]" bottom>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
                   :disabled="!editable"
                   fab
@@ -207,7 +207,7 @@
               </span>
             </v-tooltip>
             <v-tooltip v-else bottom>
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn
                   :disabled="!editable"
                   fab

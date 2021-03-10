@@ -5,7 +5,7 @@
       max-width="420"
       :title="$t('New organization')"
     >
-      <template v-slot:content>
+      <template #content>
         <v-form v-model="valid" @submit.prevent>
           <v-container>
             <v-row>
@@ -24,7 +24,7 @@
         </v-form>
       </template>
 
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text :disabled="!valid" @click="create">
           {{ $t("Create") }}
         </v-btn>

@@ -6,7 +6,7 @@
       max-width="820"
       :title="currentTitle"
     >
-      <template v-slot:content>
+      <template #content>
         <div v-if="isImporting" class="project-import__import-progress">
           <v-progress-linear indeterminate />
           <div class="mt-2">
@@ -25,7 +25,7 @@
           />
         </div>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn
           :disabled="!valid"
           color="success"

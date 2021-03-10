@@ -8,7 +8,7 @@
     :close-on-content-click="false"
     @click-outside="onClickOutside"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <div class="search-input radius">
         <v-text-field
           ref="input"

@@ -1,6 +1,5 @@
 import messages from "/imports/i18n/i18n";
 
-
 function dotGet(obj, dotKey, defaultValue = null) {
   const keys = dotKey.split(".");
   let val = obj;

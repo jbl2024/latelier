@@ -24,7 +24,7 @@
       menu-props="closeOnContentClick"
     >
       <template
-        v-slot:item="{ item }"
+        #item="{ item }"
         @click="selectGroup(item)"
         @mouseover="showButtons = item._id"
         @mouseleave="showButtons = null"
@@ -47,7 +47,7 @@
           </v-btn>
         </v-list-item-action>
       </template>
-      <template v-slot:append-item>
+      <template #append-item>
         <v-divider />
         <v-list-item @click="$refs.newProjectGroup.open()">
           <v-list-item-action>

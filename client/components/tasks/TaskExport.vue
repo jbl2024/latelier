@@ -5,7 +5,7 @@
       :title="$t('Export')"
       simple
     >
-      <template v-slot:content>
+      <template #content>
         <v-progress-linear v-if="loading" indeterminate absolute top />
         <v-list>
           <v-list-item @click="exportODT()">

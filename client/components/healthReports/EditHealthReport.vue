@@ -5,7 +5,7 @@
       :title="$t('Edit report')"
       max-width="800px"
     >
-      <template v-slot:content>
+      <template #content>
         <select-date
           v-model="showSelectDate"
           :disable-time="true"
@@ -69,7 +69,7 @@
         </v-form>
       </template>
 
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text :disabled="!valid || !coherent" @click="create">
           {{ $t("Update") }}
         </v-btn>

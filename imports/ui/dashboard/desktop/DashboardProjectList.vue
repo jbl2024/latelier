@@ -32,7 +32,7 @@
 
       <v-list-item-action>
         <v-tooltip v-if="!isFavorite(user, project._id)" top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text
@@ -60,7 +60,7 @@
 
       <v-list-item-action>
         <v-menu bottom left class="menu">
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn icon text color="grey darken-1" v-on="on" @click.native.stop>
               <v-icon>mdi-dots-vertical</v-icon>
             </v-btn>

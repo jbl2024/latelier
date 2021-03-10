@@ -230,7 +230,6 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
 
 /** Meetings * */
 
-
 Permissions.methods.canReadMeeting = new ValidatedMethod({
   name: "permissions.canReadMeeting",
   validate: new SimpleSchema({

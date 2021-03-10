@@ -4,7 +4,7 @@
       {{ $tc("meetings.meetingsCount", meetings.length, { count: meetings.length }) }}
     </div>
     <v-menu bottom left class="menu">
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn small icon v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>

@@ -1,7 +1,7 @@
 <template>
   <div class="edit-label">
     <generic-dialog v-model="showDialog" max-width="420" :title="$t('Edit')">
-      <template v-slot:content>
+      <template #content>
         <select-color :active.sync="showSelectColor" @select="onSelectColor" />
         <v-form v-model="valid" @submit.prevent>
           <v-text-field
@@ -27,7 +27,7 @@
           />
         </v-form>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text @click="remove">
           {{ $t("Delete") }}
         </v-btn>

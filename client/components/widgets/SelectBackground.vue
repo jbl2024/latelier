@@ -5,7 +5,7 @@
       max-width="620"
       :title="$t('Select background')"
     >
-      <template v-slot:content>
+      <template #content>
         <div class="backgrounds-wrapper">
           <div class="backgrounds">
             <v-card
@@ -36,7 +36,7 @@
           </div>
         </div>
       </template>
-      <template v-slot:actions>
+      <template #actions>
         <v-btn text @click="clearBackground">
           {{ $t("BackgroundNone") }}
         </v-btn>

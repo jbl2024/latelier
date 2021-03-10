@@ -46,7 +46,7 @@
       <v-spacer />
 
       <v-tooltip v-if="!isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -61,7 +61,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="isFavorite(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -76,7 +76,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="!isSubscribedToDigests(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -91,7 +91,7 @@
       </v-tooltip>
 
       <v-tooltip v-if="isSubscribedToDigests(user, project._id)" top>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             icon
             text
@@ -107,7 +107,7 @@
 
       <template v-if="canManageProject(project)">
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text
@@ -121,7 +121,7 @@
           <span>{{ $t("Settings") }}</span>
         </v-tooltip>
         <v-tooltip top>
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-btn
               icon
               text
@@ -143,7 +143,6 @@
 import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-
 
 export default {
   name: "DashboardProjectCard",

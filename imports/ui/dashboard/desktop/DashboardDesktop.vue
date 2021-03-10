@@ -39,7 +39,7 @@
           </v-flex>
           <v-flex shrink>
             <v-menu bottom left class="menu">
-              <template v-slot:activator="{ on }">
+              <template #activator="{ on }">
                 <v-btn small icon v-on="on">
                   <v-icon>mdi-dots-vertical</v-icon>
                 </v-btn>
@@ -173,7 +173,7 @@
                 {{ organization.name }}
               </template>
               <v-tooltip top>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
                     icon
                     small
@@ -188,7 +188,7 @@
                 <span>{{ $t("Timeline") }}</span>
               </v-tooltip>
               <v-tooltip v-if="canManageOrganization(organization)" top>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
                     icon
                     small
@@ -203,7 +203,7 @@
                 <span>{{ $t("Settings") }}</span>
               </v-tooltip>
               <v-tooltip top>
-                <template v-slot:activator="{ on }">
+                <template #activator="{ on }">
                   <v-btn
                     v-if="canDeleteOrganization(organization)"
                     icon

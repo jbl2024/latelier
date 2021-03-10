@@ -5,7 +5,7 @@
       max-width="820"
       :title="$t('Select a project')"
     >
-      <template v-slot:content>
+      <template #content>
         <v-text-field
           v-model="search"
           :label="$t('Search') + '...'"
