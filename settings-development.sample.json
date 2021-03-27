@@ -2,12 +2,6 @@
   "generateFixtures": true,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
-  "elasticApm": {
-    "enabled": true,
-    "options": {
-      "serviceName": "latelier"
-    }
-  },
   "storage": {
     "type": "s3",
     "migrateFromFS": "false",
