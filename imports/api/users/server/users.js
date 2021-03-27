@@ -507,23 +507,28 @@ Meteor.methods({
     if (!user) {
       return Meteor.absoluteUrl("/");
     }
-    if (!user.services?.oidc) {
-      return Meteor.absoluteUrl("/");
-    }
-    const redirectUrl = Meteor.absoluteUrl("/login");
-    const redirectParameter = Meteor.settings.auth?.oauth2?.logoutRedirectParameter;
-    const baseUrl = Meteor.settings.auth?.oauth2.serverUrl;
-    let logoutUrl = Meteor.settings.auth?.oauth2?.logoutUrl;
-
-    if (!logoutUrl || !baseUrl) {
+    // Oauth enabled
+    if (user.services?.oidc) {
+      const redirectUrl = Meteor.absoluteUrl("/login");
+      const redirectParameter = Meteor.settings.auth?.oauth2?.logoutRedirectParameter;
+      const baseUrl = Meteor.settings.auth?.oauth2.serverUrl;
+      let logoutUrl = Meteor.settings.auth?.oauth2?.logoutUrl;
+      if (!logoutUrl || !baseUrl) {
+        return null;
+      }
+      if (redirectParameter) {
+        if (logoutUrl.indexOf("?") === -1) {
+          logoutUrl = `${logoutUrl}?${redirectParameter}=${redirectUrl}`;
+        }
+      }
+      return `${baseUrl}${logoutUrl}`;
+    // SSO enabled
+    } else if (Boolean(Meteor?.settings?.public?.sso?.enabled) && Meteor?.settings?.public?.sso?.logoutUrl) {
+      return Meteor.settings.public.sso.logoutUrl;
+    // Default logout
+    } else {
       return null;
     }
-    if (redirectParameter) {
-      if (logoutUrl.indexOf("?") === -1) {
-        logoutUrl = `${logoutUrl}?${redirectParameter}=${redirectUrl}`;
-      }
-    }
-    return `${baseUrl}${logoutUrl}`;
   },
 
   "users.oauthEnabled"() {

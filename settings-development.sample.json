@@ -62,7 +62,8 @@
     "emailVerificationNeeded": false,
     "sso": {
       "enabled": true,
-      "email": "ct-remote-email"
+      "email": "ct-remote-email",
+      "logoutUrl": "/logout"
     },
     "uploadTransport": "ddp",
     "tracking": {
