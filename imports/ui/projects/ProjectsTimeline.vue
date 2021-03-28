@@ -59,9 +59,11 @@ import { mapState } from "vuex";
 import { Timeline } from "vue2vis";
 import debounce from "lodash/debounce";
 import moment from "moment";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import ProjectsTimelineToolbar from "/imports/ui/projects/ProjectsTimelineToolbar";
 
 export default {
+  mixins: [DatesMixin],
   components: {
     Timeline,
     ProjectsTimelineToolbar
@@ -281,8 +283,8 @@ export default {
         "projects.setDatesAndState",
         {
           projectId: item.id,
-          startDate: moment(item.start).format("YYYY-MM-DD HH:mm"),
-          endDate: moment(item.end).format("YYYY-MM-DD HH:mm"),
+          startDate: this.formatDateTz(item.start),
+          endDate: this.formatDateTz(item.end),
           state: item.group
         },
         (error) => {
