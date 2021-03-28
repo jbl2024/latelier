@@ -342,16 +342,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }
 
-    const dateFormat = "YYYY-MM-DD HH:mm:ss";
-
     if (Array.isArray(dates) && dates.length) {
       query.$or = dates.map((d) => {
         const $and = [];
         if (d.start) {
-          $and.push({ startDate: { $gte: moment(d.start, dateFormat).toDate() } });
+          $and.push({ startDate: { $gte: moment(d.start).toDate() } });
         }
         if (d.end) {
-          $and.push({ endDate: { $lte: moment(d.end, dateFormat).toDate() } });
+          $and.push({ endDate: { $lte: moment(d.end).toDate() } });
         }
         return $and.length > 0 ? { $and } : null;
       });
@@ -493,9 +491,6 @@ Meetings.methods.updateAction = new ValidatedMethod({
     action
   }) {
     checkCanReadMeeting(meetingId);
-    if (action.dueDate) {
-      action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
-    }
     const returnedId = Meetings.update(
       {
         _id: meetingId,

@@ -84,6 +84,7 @@ import { Timeline } from "vue2vis";
 import { mapState, mapGetters } from "vuex";
 import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import debounce from "lodash/debounce";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import moment from "moment";
 import Api from "/imports/api/Api";
 
@@ -92,6 +93,7 @@ export default {
     Timeline,
     Meeting
   },
+  mixins: [DatesMixin],
   props: {
     projectId: {
       type: String,
@@ -244,8 +246,8 @@ export default {
         page: 1,
         dates: [
           {
-            start: moment(this.startRange).format("YYYY-MM-DD 00:00:00"),
-            end: moment(this.endRange).format("YYYY-MM-DD 23:59:59")
+            start: this.formatDateTz(moment(this.startRange).format("YYYY-MM-DD 00:00:00")),
+            end: this.formatDateTz(moment(this.endRange).format("YYYY-MM-DD 23:59:59"))
           }
         ]
       };

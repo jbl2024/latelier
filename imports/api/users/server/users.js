@@ -522,13 +522,13 @@ Meteor.methods({
         }
       }
       return `${baseUrl}${logoutUrl}`;
-    // SSO enabled
-    } else if (Boolean(Meteor?.settings?.public?.sso?.enabled) && Meteor?.settings?.public?.sso?.logoutUrl) {
+      // SSO enabled
+    } if (Boolean(Meteor?.settings?.public?.sso?.enabled)
+      && Meteor?.settings?.public?.sso?.logoutUrl) {
       return Meteor.settings.public.sso.logoutUrl;
-    // Default logout
-    } else {
-      return null;
+      // Default logout
     }
+    return null;
   },
 
   "users.oauthEnabled"() {

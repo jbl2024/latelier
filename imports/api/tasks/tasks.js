@@ -7,7 +7,6 @@ import { Events } from "/imports/api/events/events.js";
 import { Meetings } from "/imports/api/meetings/meetings.js";
 
 import { Random } from "meteor/random";
-import moment from "moment";
 import {
   Permissions,
   checkCanReadTask,
@@ -729,18 +728,13 @@ Meteor.methods({
 
     if (reminder === "never") reminder = null;
 
-    let convertedDate = null;
-    if (dueDate) {
-      convertedDate = moment(dueDate, "YYYY-MM-DD HH:mm").toDate();
-    }
-
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
 
     Tasks.update(
       { _id: taskId },
-      { $set: { dueDate: convertedDate, reminderDueDate: reminder } }
+      { $set: { dueDate: dueDate || null, reminderDueDate: reminder } }
     );
 
     Meteor.call("tasks.track", {
@@ -757,17 +751,12 @@ Meteor.methods({
 
     if (reminder === "never") reminder = null;
 
-    let convertedDate = null;
-    if (startDate) {
-      convertedDate = moment(startDate, "YYYY-MM-DD HH:mm").toDate();
-    }
-
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
     Tasks.update(
       { _id: taskId },
-      { $set: { startDate: convertedDate, reminderStartDate: reminder } }
+      { $set: { startDate: startDate || null, reminderStartDate: reminder } }
     );
 
     Meteor.call("tasks.track", {
