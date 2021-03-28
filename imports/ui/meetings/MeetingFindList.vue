@@ -22,8 +22,10 @@
 <script>
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import moment from "moment";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
 
 export default {
+  mixins: [DatesMixin],
   components: {
     MeetingList
   },
@@ -65,7 +67,7 @@ export default {
       if (this.type === "today") {
         return { ...baseParams,
           dates: [
-            { start: moment().format("YYYY-MM-DD 00:00:00") }
+            { start: this.formatDateTz(moment()) }
           ] };
       }
       return baseParams;

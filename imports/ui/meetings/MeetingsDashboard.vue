@@ -311,12 +311,12 @@ export default {
       const endFormat = "YYYY-MM-DD 23:59:59";
       return [
         {
-          start: moment(this.start).format(startFormat),
-          end: moment(this.end).format(endFormat)
+          start: this.formatDateTz(moment(this.start).format(startFormat)),
+          end: this.formatDateTz(moment(this.end).format(endFormat))
         },
         {
-          start: moment(this.pickerDate).startOf("month").format(startFormat),
-          end: moment(this.pickerDate).endOf("month").format(endFormat)
+          start: this.formatDateTz(moment(this.pickerDate).startOf("month").format(startFormat)),
+          end: this.formatDateTz(moment(this.pickerDate).endOf("month").format(endFormat))
         }
       ];
     },
