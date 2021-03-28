@@ -484,8 +484,8 @@ export default {
       if (!meeting || !["up", "down"].includes(direction)) return;
       const dateFormat = "YYYY-MM-DD HH:mm";
       const func = direction === "up" ? "subtract" : "add";
-      meeting.startDate = moment(meeting.startDate)[func](30, "minutes").format(dateFormat);
-      meeting.endDate = moment(meeting.endDate)[func](30, "minutes").format(dateFormat);
+      meeting.startDate = this.formatDateTz(moment(meeting.startDate)[func](30, "minutes"));
+      meeting.endDate = this.formatDateTz(moment(meeting.endDate)[func](30, "minutes"));
       const params = MeetingUtils.sanitizeMeetingForUpdate(meeting);
       await Api.call("meetings.update", params);
       await this.refresh();
