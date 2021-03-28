@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deleted
 
+## [3.3.5 2021-03-28]
+
+### Added
+
+### Changed
+- Fix dates timezone in meetings & tasks 
+- Add logout url for sso
+
+### Deleted
+
 ## [3.3.4 2021-03-11]
 
 ### Added
