@@ -491,9 +491,6 @@ Meetings.methods.updateAction = new ValidatedMethod({
     action
   }) {
     checkCanReadMeeting(meetingId);
-    if (action.dueDate) {
-      action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
-    }
     const returnedId = Meetings.update(
       {
         _id: meetingId,

@@ -408,7 +408,7 @@ export default {
     },
     async saveAction(action) {
       if (action.dueDate) {
-        action.dueDate = moment(action.dueDate).format("YYYY-MM-DD HH:mm");
+        action.dueDate = this.formatDateTz(action.dueDate);
       }
 
       // update list before loading from server to avoid flickering
@@ -445,7 +445,7 @@ export default {
       this.showSelectUser = false;
     },
     async selectActionDueDate(date) {
-      const action = { ...this.selectedAction, dueDate: date };
+      const action = { ...this.selectedAction, dueDate: this.formatDateTz(date) };
       await this.saveAction(action);
       this.selectedAction = null;
       this.showSelectDate = false;
@@ -506,7 +506,7 @@ export default {
         [],
         action?.assignedTo ? action.assignedTo : null,
         action?.dueDate
-          ? moment(action.dueDate).format("YYYY-MM-DD HH:mm")
+          ? this.formatDateTz(action.dueDate)
           : null
       ).catch(() => {
         this.$notifyError(this.$t("meetings.actions.createTaskFailed"));
