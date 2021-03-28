@@ -89,11 +89,11 @@ import moment from "moment";
 import Api from "/imports/api/Api";
 
 export default {
-  mixins: [DatesMixin],
   components: {
     Timeline,
     Meeting
   },
+  mixins: [DatesMixin],
   props: {
     projectId: {
       type: String,

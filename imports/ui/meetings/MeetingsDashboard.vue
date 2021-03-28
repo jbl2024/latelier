@@ -482,7 +482,6 @@ export default {
     async moveMeeting(meetingEvent, direction) {
       const meeting = this.meetings.find((m) => m._id === meetingEvent.id);
       if (!meeting || !["up", "down"].includes(direction)) return;
-      const dateFormat = "YYYY-MM-DD HH:mm";
       const func = direction === "up" ? "subtract" : "add";
       meeting.startDate = this.formatDateTz(moment(meeting.startDate)[func](30, "minutes"));
       meeting.endDate = this.formatDateTz(moment(meeting.endDate)[func](30, "minutes"));

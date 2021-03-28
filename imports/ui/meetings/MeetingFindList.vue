@@ -25,10 +25,10 @@ import moment from "moment";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 
 export default {
-  mixins: [DatesMixin],
   components: {
     MeetingList
   },
+  mixins: [DatesMixin],
   props: {
     projectId: {
       type: String,

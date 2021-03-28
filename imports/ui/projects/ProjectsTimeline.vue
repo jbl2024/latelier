@@ -63,11 +63,11 @@ import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import ProjectsTimelineToolbar from "/imports/ui/projects/ProjectsTimelineToolbar";
 
 export default {
-  mixins: [DatesMixin],
   components: {
     Timeline,
     ProjectsTimelineToolbar
   },
+  mixins: [DatesMixin],
   props: {
     organizationId: {
       type: String,

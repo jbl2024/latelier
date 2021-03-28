@@ -50,6 +50,7 @@
 
 <script>
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+
 export default {
   mixins: [DatesMixin],
   props: {
