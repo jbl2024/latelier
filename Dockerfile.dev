@@ -1,9 +1,9 @@
 # Adapted from https://github.com/disney/meteor-base/issues/48
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.10.2
-FROM node:12.21.0-alpine
+FROM node:12.22.1-alpine
 
 # Setup environment variables that will be available to the instance
-ENV METEOR_VERSION 2.1
+ENV METEOR_VERSION 2.1.1
 ENV PANDOC_VERSION 2.10.1
 RUN apk add --update --no-cache bash curl
 # Here we're running https://github.com/staeke/meteor-alpine/ with a few tweaks
