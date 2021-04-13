@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update node version to 12.22.1
+- Update to Meteor 2.1.1
 - Security updates:
   - Update MJML to latest version (4.9.0)
 
