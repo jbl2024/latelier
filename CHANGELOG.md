@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update tiptap:
+  - tiptap: 1.32.2
+  - tiptap-extensions: 1.35.2
+  - Markdown shortcuts: apply shortcut only on separate words
 
 ### Deleted
 
