@@ -3,6 +3,10 @@
 import { markInputRule, markPasteRule } from "tiptap-commands";
 import { Italic, Bold } from "tiptap-extensions";
 
+/**
+ * CustomItalic: same as original but do not format while typing inside a word
+ * (foo_bar_ will be ignored)
+ */
 export const CustomItalic = class CustomItalic extends Italic {
   inputRules({ type }) {
     return [markInputRule(/(?:^| )[^\w\s_]*(_([^_]+)_)/g, type), markInputRule(/(?:^| )[^\w\s*]*(\*([^*]+)\*)/g, type)];
@@ -13,6 +17,10 @@ export const CustomItalic = class CustomItalic extends Italic {
   }
 };
 
+/**
+ * CustomBold: same as original but do not format while typing inside a word
+ * (foo__bar__ or foo**bar** will be ignored)
+ */
 export const CustomBold = class CustomBold extends Bold {
   inputRules({ type }) {
     return [markInputRule(/(?:^|)(?:\*\*|__)([^*_]+)(?:\*\*|__)$/, type)];
