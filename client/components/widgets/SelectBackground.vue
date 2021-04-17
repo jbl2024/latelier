@@ -2,7 +2,7 @@
   <div class="select-background">
     <generic-dialog
       v-model="showDialog"
-      max-width="620"
+      max-width="820"
       :title="$t('Select background')"
     >
       <template v-slot:content>
@@ -11,27 +11,19 @@
             <v-card
               v-for="image in backgrounds"
               :key="image._id"
-              max-width="344"
+              width="244"
               tile
               class="mx-auto background-card"
               @keyup.enter.native="selectBackground(image)"
               @click="selectBackground(image)"
             >
-              <v-list-item>
-                <v-list-item-content>
-                  <v-list-item-title class="headline">
-                    {{ image.meta.name }}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-
               <v-img
                 :src="thumbnail(image)"
                 :alt="image.meta.name"
                 height="194"
               />
 
-              <v-card-text v-html="image.meta.credits" />
+              <v-card-text class="credits" v-html="image.meta.credits" />
             </v-card>
           </div>
         </div>
@@ -141,5 +133,18 @@ export default {
 
 .background-card {
   margin: 12px;
+  border-radius: 6px !important;
+  transition: box-shadow 0.2s ease, opacity 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.background-card:hover {
+  box-shadow: 0px 8px 8px rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+}
+
+.credits {
+  font-size: 10px;
+  text-align: center;
 }
 </style>
