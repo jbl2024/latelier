@@ -11,7 +11,7 @@
             <v-card
               v-for="image in backgrounds"
               :key="image._id"
-              max-width="244"
+              width="244"
               tile
               class="mx-auto background-card"
               @keyup.enter.native="selectBackground(image)"
