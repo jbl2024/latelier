@@ -142,7 +142,7 @@ export default {
 
     isAdmin(user, project) {
       return (
-        Permissions.isAdmin(user._id, project._id)
+        Permissions.isAdmin(user, project._id)
         || Permissions.isAdmin(user._id)
       );
     },
@@ -161,7 +161,9 @@ export default {
           (error) => {
             if (error) {
               this.$notifyError(error);
+              return;
             }
+            this.fetchUsers();
           }
         );
       }
@@ -174,7 +176,9 @@ export default {
           (error) => {
             if (error) {
               this.$notifyError(error);
+              return;
             }
+            this.fetchUsers();
           }
         );
       }
