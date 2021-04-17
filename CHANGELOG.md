@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- 3 background photos
 
 ### Changed
+- Improve background selector
 - Update tiptap:
   - tiptap: 1.32.2
   - tiptap-extensions: 1.35.2
