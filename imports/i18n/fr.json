@@ -389,6 +389,9 @@
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
   "project": {
+    "owner": "Propriétaire",
+    "administrator": "Administrateur",
+    "organizationMember": "Membre de l'organisation",
     "import": {
       "itemsToImport": "Éléments à importer",
       "importProject": "Importer un projet",

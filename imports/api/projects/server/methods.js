@@ -1,5 +1,6 @@
 import SimpleSchema from "simpl-schema";
 import { Projects, ProjectStates, ProjectAccessRights, ProjectExportVersions } from "../projects";
+import { Organizations } from "/imports/api/organizations/organizations";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Labels } from "/imports/api/labels/labels.js";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
@@ -8,7 +9,7 @@ import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
-import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import { findProjectMembersIds, findUserIdsInvolvedInProject } from "/imports/api/projects/server/common";
 import i18n from "/imports/i18n/server/";
 import {
   Permissions,
@@ -323,76 +324,29 @@ Projects.methods.adminFind = new ValidatedMethod({
   }
 });
 
-const projectOrOrganizationRequired = function () {
-  if (!this.field("projectId").value && !this.field("organizationId").value) {
-    return SimpleSchema.ErrorTypes.REQUIRED;
-  }
-  return true;
-};
 Projects.methods.findUsers = new ValidatedMethod({
   name: "projects.findUsers",
   validate: new SimpleSchema({
     projectId: {
-      type: String,
-      optional: true,
-      custom: projectOrOrganizationRequired
-    },
-    organizationId: {
-      type: String,
-      optional: true,
-      custom: projectOrOrganizationRequired
-    },
-    filter: { type: String, optional: true },
-    usersIds: { type: Array, optional: true },
-    "usersIds.$": {
       type: String
     }
   }).validator(),
-  run({ projectId, organizationId, filter, usersIds }) {
+  run({ projectId }) {
     checkLoggedIn();
-    let membersIds = [];
-    const projectQuery = {};
-    if (projectId) {
-      projectQuery._id = projectId;
-    }
-    if (organizationId) {
-      projectQuery.organizationId = organizationId;
-    }
-    const projects = Projects.find(projectQuery).fetch();
-    if (!projects || !Array.isArray(projects) || !projects.length) {
-      return [];
-    }
-    projects.forEach((project) => {
-      membersIds = membersIds.concat(findProjectMembersIds(project));
-    });
-    membersIds = [...new Set(membersIds)];
-    if (usersIds && Array.isArray(usersIds) && usersIds.length) {
-      membersIds = membersIds.filter((memberId) => usersIds.includes(memberId));
-    }
+    checkCanReadProject(projectId);
 
-    const query = { _id: { $in: membersIds } };
-    if (filter && filter.length > 0) {
-      const emails = {
-        $elemMatch: {
-          address: { $regex: `.*${filter}.*`, $options: "i" }
-        }
-      };
-      query.$or = [
-        { emails },
-        {
-          "profile.email": { $regex: `.*${filter}.*`, $options: "i" }
-        },
-        {
-          "profile.firstName": { $regex: `.*${filter}.*`, $options: "i" }
-        },
-        {
-          "profile.lastName": { $regex: `.*${filter}.*`, $options: "i" }
-        }
-      ];
+    const project = Projects.findOne({ _id: projectId });
+    let organization;
+    if (!project) {
+      throw new Meteor.Error("not-found");
     }
-
-    return Meteor.users
-      .find(query, {
+    if (project.organizationId
+      && project.accessRights === ProjectAccessRights.ORGANIZATION) {
+      organization = Organizations.findOne({ _id: project.organizationId });
+    }
+    const membersIds = findProjectMembersIds(project);
+    const users = Meteor.users
+      .find({ _id: { $in: membersIds } }, {
         fields: {
           profile: 1,
           status: 1,
@@ -403,6 +357,22 @@ Projects.methods.findUsers = new ValidatedMethod({
         }
       })
       .fetch();
+    const organizationMembers = organization?.members || [];
+
+    users.forEach((user) => {
+      if (user._id === project.createdBy) {
+        user.isOwner = true;
+      }
+      if (organizationMembers.indexOf(user._id) !== -1) {
+        user.inOrganization = true;
+      }
+    });
+
+    return users.sort((a, b) => {
+      const emailA = (UserUtils.getEmail(a) || "").toLowerCase();
+      const emailB = (UserUtils.getEmail(b) || "").toLowerCase();
+      return emailA.localeCompare(emailB);
+    });
   }
 });
 
@@ -506,7 +476,7 @@ Projects.methods.export = new ValidatedMethod({
     const projectInfos = Meteor.call("tasks.exportProject", { projectId });
 
     // Users
-    const membersIds = findProjectMembersIds(project);
+    const membersIds = findUserIdsInvolvedInProject(project);
     const users = {};
     membersIds.forEach((id) => {
       UserUtils.loadUser(id, users, {

@@ -382,6 +382,9 @@
     "logoutConfirm": "Do you want to log out?"
   },
   "project": {
+    "owner": "Owner",
+    "organizationMember": "Organization member",
+    "administrator": "Administrator",
     "import": {
       "itemsToImport": "Items to import",
       "importProject": "Import project",
