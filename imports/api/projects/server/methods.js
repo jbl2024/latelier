@@ -398,7 +398,8 @@ Projects.methods.findUsers = new ValidatedMethod({
           status: 1,
           statusDefault: 1,
           statusConnection: 1,
-          emails: 1
+          emails: 1,
+          roles: 1
         }
       })
       .fetch();
