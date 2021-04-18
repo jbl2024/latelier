@@ -6,7 +6,7 @@
       @select="onSelectUser"
     />
     <div class="users">
-      <v-list v-if="currentUser && $subReady.usersInOrganization" class="list">
+      <v-list v-if="currentUser && $subReady.usersInOrganization" two-line class="list">
         <v-subheader>
           {{ $t("Members") }}
           <v-btn text icon @click="showSelectUserDialog = true">
@@ -21,8 +21,22 @@
 
             <v-list-item-content>
               <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+              <v-list-item-subtitle>
+                <v-chip-group>
+                  <v-chip v-if="user._id === organization.createdBy" small color="purple" dark>
+                    {{ $t('project.owner') }}
+                  </v-chip>
+                  <v-chip v-if="isAdmin(user, organization)" small color="red" dark>
+                    <v-avatar left>
+                      <v-icon small>
+                        mdi-security
+                      </v-icon>
+                    </v-avatar>
+                    {{ $t('project.administrator') }}
+                  </v-chip>
+                </v-chip-group>
+              </v-list-item-subtitle>
             </v-list-item-content>
-
             <v-list-item-action
               v-if="
                 canManageOrganization(organization) &&
