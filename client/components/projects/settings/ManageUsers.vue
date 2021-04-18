@@ -75,7 +75,7 @@
                 userId != user._id
             "
           >
-            <v-tooltip>
+            <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
@@ -92,7 +92,7 @@
             </v-tooltip>
           </v-list-item-action>
 
-          <v-list-item-action>
+          <v-list-item-action v-if="!user.inOrganization">
             <v-btn icon ripple @click.stop="removeUser(user)">
               <v-icon>
                 mdi-delete
