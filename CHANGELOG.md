@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 3 background photos
 
 ### Changed
+- Display & manage labels & attachments on task detail in dashboard page
 - Fix set admin button in project management page
 - Improve background selector
 - Update tiptap:
