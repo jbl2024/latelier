@@ -10,9 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 3 background photos
 
 ### Changed
+- User management:
+  - Display more information about users on organization & project on setting pages
+  - Disable remove user from project if user is member of associated organization
+  - Fix set admin button in project settings page
+  - Fix user listing in project settings page
 - Check permissions when uploading file
 - Display & manage labels & attachments on task detail in dashboard page
-- Fix set admin button in project management page
 - Improve background selector
 - Update tiptap:
   - tiptap: 1.32.2
