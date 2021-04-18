@@ -2,12 +2,6 @@
   "generateFixtures": true,
   "disableAccountCreation": false,
   "attachmentsPath": "/tmp/attachments/",
-  "elasticApm": {
-    "enabled": true,
-    "options": {
-      "serviceName": "latelier"
-    }
-  },
   "storage": {
     "type": "s3",
     "migrateFromFS": "false",
@@ -70,7 +64,8 @@
     "emailVerificationNeeded": false,
     "sso": {
       "enabled": true,
-      "email": "ct-remote-email"
+      "email": "ct-remote-email",
+      "logoutUrl": "/logout"
     },
     "uploadTransport": "ddp",
     "tracking": {

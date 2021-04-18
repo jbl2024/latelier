@@ -104,6 +104,7 @@ sso:
 | ------- | ------- | ------------- | -------------------------- |
 | enabled | boolean | false         | If true, sso is enabled    |
 | email   | string  | null          | email header to match user |
+| logoutUrl | string | null         | Logout url                 |
 
 elasticApm:
 

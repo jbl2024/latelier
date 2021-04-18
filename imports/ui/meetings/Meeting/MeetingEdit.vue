@@ -248,6 +248,7 @@ import MeetingAttendeesList from "./MeetingAttendees/MeetingAttendeesList";
 import MeetingExternalAttendees from "./MeetingAttendees/MeetingExternalAttendees";
 import MeetingTitle from "./MeetingTitle";
 import moment from "moment";
+import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import SelectHourRange from "/imports/ui/widgets/SelectHourRange";
 import SelectAttachments from "/imports/ui/attachments/SelectAttachments.vue";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
@@ -266,7 +267,7 @@ export default {
     SelectAttachments,
     Attachments
   },
-  mixins: [usersMixin],
+  mixins: [usersMixin, DatesMixin],
   props: {
     project: {
       type: Object,
@@ -539,8 +540,8 @@ export default {
       const params = {
         name: this.name,
         projectId: this.currentProjectId,
-        startDate: `${date} ${this.startHour}:00`,
-        endDate: `${date} ${this.endHour}:00`,
+        startDate: this.formatDateTz(moment(`${date} ${this.startHour}:00`)),
+        endDate: this.formatDateTz(moment(`${date} ${this.endHour}:00`)),
         agenda: this.agenda,
         type: this.type,
         description: this.description,

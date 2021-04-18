@@ -12,6 +12,9 @@ export default {
     if (!date) return null;
     return moment(date).format(format || i18n.t("dates.format.date"));
   },
+  formatDateTz(date) {
+    return moment(date).format(moment.defaultFormat);
+  },
   formatDateTime(date, format = null) {
     if (!date) return null;
     return moment(date).format(format || i18n.t("dates.format.dateTime"));

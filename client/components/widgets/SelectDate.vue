@@ -49,7 +49,10 @@
 </template>
 
 <script>
+import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+
 export default {
+  mixins: [DatesMixin],
   props: {
     value: {
       type: Boolean,
@@ -91,6 +94,7 @@ export default {
       if (this.hour) {
         dateTime = `${dateTime} ${this.hour}`;
       }
+      dateTime = this.formatDateTz(dateTime);
       this.showDialog = false;
       this.$emit("select", dateTime, this.selectedReminder);
     },
