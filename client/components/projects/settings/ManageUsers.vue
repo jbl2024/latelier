@@ -7,7 +7,7 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list class="list">
+    <v-list class="list" two-line>
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
@@ -24,6 +24,16 @@
 
           <v-list-item-content>
             <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <v-chip-group>
+                <v-chip v-if="user.isOwner" small color="red" dark>
+                  {{ $t('Creator') }}
+                </v-chip>
+                <v-chip v-if="user.inOrganization" small color="blue" dark>
+                  {{ $t('Organization member') }}
+                </v-chip>
+              </v-chip-group>
+            </v-list-item-subtitle>
           </v-list-item-content>
 
           <v-list-item-action
