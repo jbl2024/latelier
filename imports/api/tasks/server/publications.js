@@ -7,6 +7,7 @@ import {
 
 import { Tasks } from "../tasks";
 import { Attachments } from "../../attachments/attachments";
+import { Labels } from "../../labels/labels";
 
 
 // This code only runs on the server
@@ -34,6 +35,12 @@ publishComposite("task", function (taskId) {
         // attachments
         find(task) {
           return Attachments.find({ "meta.taskId": task._id }).cursor;
+        }
+      },
+      {
+        // labels
+        find(task) {
+          return Labels.find({ projectId: task.projectId });
         }
       }
     ]
