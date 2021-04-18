@@ -1,6 +1,13 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
+import { publishComposite } from "meteor/reywood:publish-composite";
+import {
+  checkCanReadTask
+} from "/imports/api/permissions/permissions";
+
 import { Tasks } from "../tasks";
+import { Attachments } from "../../attachments/attachments";
+
 
 // This code only runs on the server
 Meteor.publish("tasks", function tasksPublication(listId) {
@@ -11,7 +18,24 @@ Meteor.publish("tasks", function tasksPublication(listId) {
   );
 });
 
-Meteor.publish("task", function task(taskId) {
-  check(taskId, String);
-  return Tasks.find({ _id: taskId, deleted: { $ne: true } });
+publishComposite("task", function (taskId) {
+  return {
+    find() {
+      try {
+        check(taskId, String);
+        checkCanReadTask(taskId);
+      } catch (error) {
+        return this.ready();
+      }
+      return Tasks.find({ _id: taskId, deleted: { $ne: true } });
+    },
+    children: [
+      {
+        // attachments
+        find(task) {
+          return Attachments.find({ "meta.taskId": task._id }).cursor;
+        }
+      }
+    ]
+  };
 });
