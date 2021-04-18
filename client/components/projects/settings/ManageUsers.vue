@@ -27,10 +27,10 @@
             <v-list-item-subtitle>
               <v-chip-group>
                 <v-chip v-if="user.isOwner" small color="red" dark>
-                  {{ $t('Creator') }}
+                  {{ $t('project.owner') }}
                 </v-chip>
                 <v-chip v-if="user.inOrganization" small color="blue" dark>
-                  {{ $t('Organization member') }}
+                  {{ $t('project.organizationMember') }}
                 </v-chip>
               </v-chip-group>
             </v-list-item-subtitle>
