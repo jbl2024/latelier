@@ -9,7 +9,7 @@ import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { UserUtils } from "/imports/api/users/utils";
-import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import { findProjectMembersIds, findUserIdsInvolvedInProject } from "/imports/api/projects/server/common";
 import i18n from "/imports/i18n/server/";
 import {
   Permissions,
