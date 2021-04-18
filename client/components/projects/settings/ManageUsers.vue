@@ -33,7 +33,7 @@
                 userId != user._id
             "
           >
-            <v-tooltip>
+            <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
