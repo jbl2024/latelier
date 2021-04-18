@@ -476,7 +476,7 @@ Projects.methods.export = new ValidatedMethod({
     const projectInfos = Meteor.call("tasks.exportProject", { projectId });
 
     // Users
-    const membersIds = findProjectMembersIds(project);
+    const membersIds = findUserIdsInvolvedInProject(project);
     const users = {};
     membersIds.forEach((id) => {
       UserUtils.loadUser(id, users, {
