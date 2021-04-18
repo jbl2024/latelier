@@ -5,8 +5,8 @@
       :is-admin="canManageOrganization(organization)"
       @select="onSelectUser"
     />
-    <div class="elevation-1 users">
-      <v-list v-if="currentUser && $subReady.usersInOrganization">
+    <div class="users">
+      <v-list v-if="currentUser && $subReady.usersInOrganization" class="list">
         <v-subheader>
           {{ $t("Members") }}
           <v-btn text icon @click="showSelectUserDialog = true">
@@ -209,7 +209,16 @@ export default {
   background-color: red;
 }
 
-.users {
-  margin-top: 12px;
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
+
+.organization-settings-manage-users {
+  padding-top: 8px;
+  background-color: #e5e5e5;
+}
+
 </style>

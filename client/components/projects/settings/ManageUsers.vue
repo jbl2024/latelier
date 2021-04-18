@@ -221,7 +221,7 @@ export default {
 }
 
 .manage-users {
-  margin-top: 12px;
+  padding-top: 8px;
   background-color: #e5e5e5;
 }
 

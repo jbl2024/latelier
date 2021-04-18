@@ -26,7 +26,7 @@
     />
     <select-project v-model="showSelectProject" @select="importLabels" />
     <select-color :active.sync="showSelectColor" @select="onSelectColor" />
-    <div class="wrapper">
+    <div class="wrapper elevation-1">
       <v-subheader>{{ $t("Name") }}</v-subheader>
       <div class="elevation-1 settings">
         <div class="name headline">
@@ -534,6 +534,8 @@ export default {
 <style lang="scss" scoped>
 .project-settings-general {
   background-color: #e5e5e5;
+  padding-top: 4px;
+  padding-bottom: 4px;
 }
 
 .wrapper {

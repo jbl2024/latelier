@@ -1,82 +1,84 @@
 <template>
   <div class="organization-settings-general">
-    <v-subheader>Titre</v-subheader>
-    <v-card>
-      <div class="description">
-        <div
-          v-show="
-            !editName && organization.name && organization.name.length > 0
-          "
-          @click="startEditName"
-        >
-          {{ organization.name }}
-        </div>
-        <div v-show="!organization.name && !editName" @click="startEditName">
-          Aucun nom
-        </div>
-        <div v-show="editName">
-          <v-text-field
-            ref="name"
-            v-model="organization.name"
-            :label="$t('Name')"
-            @keyup.enter="updateName"
-          />
-          <v-btn icon @click="updateName">
-            <v-icon color="green">
-              mdi-check-circle
-            </v-icon>
-          </v-btn>
-          <v-btn icon @click="cancelUpdateName">
-            <v-icon color="red">
-              mdi-close-circle
-            </v-icon>
-          </v-btn>
-        </div>
-      </div>
-    </v-card>
-    <v-subheader>Description</v-subheader>
-    <v-card>
-      <div class="description">
-        <div
-          v-show="
-            !editDescription &&
-              organization.description &&
-              organization.description.length > 0
-          "
-          @click="startEditDescription"
-        >
+    <div class="wrapper elevation-1">
+      <v-subheader>{{ $t('Name') }}</v-subheader>
+      <v-card>
+        <div class="description">
           <div
-            class="tiptap-editor-view"
-            v-html="markDown(organization.description)"
-          />
+            v-show="
+              !editName && organization.name && organization.name.length > 0
+            "
+            @click="startEditName"
+          >
+            {{ organization.name }}
+          </div>
+          <div v-show="!organization.name && !editName" @click="startEditName">
+            Aucun nom
+          </div>
+          <div v-show="editName">
+            <v-text-field
+              ref="name"
+              v-model="organization.name"
+              :label="$t('Name')"
+              @keyup.enter="updateName"
+            />
+            <v-btn icon @click="updateName">
+              <v-icon color="green">
+                mdi-check-circle
+              </v-icon>
+            </v-btn>
+            <v-btn icon @click="cancelUpdateName">
+              <v-icon color="red">
+                mdi-close-circle
+              </v-icon>
+            </v-btn>
+          </div>
         </div>
-        <div
-          v-show="!organization.description && !editDescription"
-          @click="startEditDescription"
-        >
-          {{ $t("No description") }}
+      </v-card>
+      <v-subheader>{{ $t('Description') }}</v-subheader>
+      <v-card>
+        <div class="description">
+          <div
+            v-show="
+              !editDescription &&
+                organization.description &&
+                organization.description.length > 0
+            "
+            @click="startEditDescription"
+          >
+            <div
+              class="tiptap-editor-view"
+              v-html="markDown(organization.description)"
+            />
+          </div>
+          <div
+            v-show="!organization.description && !editDescription"
+            @click="startEditDescription"
+          >
+            {{ $t("No description") }}
+          </div>
+          <div v-show="editDescription">
+            <v-textarea
+              ref="description"
+              v-model="organization.description"
+              solo
+              label="Description"
+              @keydown.shift.enter="updateDescription"
+            />
+            <v-btn icon @click="updateDescription">
+              <v-icon color="green">
+                mdi-check-circle
+              </v-icon>
+            </v-btn>
+            <v-btn icon @click="cancelUpdateDescription">
+              <v-icon color="red">
+                mdi-close-circle
+              </v-icon>
+            </v-btn>
+          </div>
         </div>
-        <div v-show="editDescription">
-          <v-textarea
-            ref="description"
-            v-model="organization.description"
-            solo
-            label="Description"
-            @keydown.shift.enter="updateDescription"
-          />
-          <v-btn icon @click="updateDescription">
-            <v-icon color="green">
-              mdi-check-circle
-            </v-icon>
-          </v-btn>
-          <v-btn icon @click="cancelUpdateDescription">
-            <v-icon color="red">
-              mdi-close-circle
-            </v-icon>
-          </v-btn>
-        </div>
-      </div>
-    </v-card>
+      </v-card>
+    </div>
   </div>
 </template>
 
@@ -143,6 +145,25 @@ export default {
 </script>
 
 <style scoped>
+
+.organization-settings-general {
+  background-color: #e5e5e5;
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.wrapper {
+  max-width: 800px;
+  margin: 0 auto;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-bottom: 24px;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  background-color: white;
+  border-radius: 4px;
+}
+
 .description {
   margin-left: 24px;
   margin-right: 24px;
