@@ -390,6 +390,7 @@
   },
   "project": {
     "owner": "Propriétaire",
+    "administrator": "Administrateur",
     "organizationMember": "Membre de l'organisation",
     "import": {
       "itemsToImport": "Éléments à importer",

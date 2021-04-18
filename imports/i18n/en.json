@@ -384,6 +384,7 @@
   "project": {
     "owner": "Owner",
     "organizationMember": "Organization member",
+    "administrator": "Administrator",
     "import": {
       "itemsToImport": "Items to import",
       "importProject": "Import project",

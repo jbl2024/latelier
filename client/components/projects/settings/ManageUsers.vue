@@ -26,11 +26,19 @@
             <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
             <v-list-item-subtitle>
               <v-chip-group>
-                <v-chip v-if="user.isOwner" small color="red" dark>
+                <v-chip v-if="user.isOwner" small color="purple" dark>
                   {{ $t('project.owner') }}
                 </v-chip>
                 <v-chip v-if="user.inOrganization" small color="blue" dark>
                   {{ $t('project.organizationMember') }}
+                </v-chip>
+                <v-chip v-if="isAdmin(user, project)" small color="red" dark>
+                  <v-avatar left>
+                    <v-icon small>
+                      mdi-security
+                    </v-icon>
+                  </v-avatar>
+                  {{ $t('project.administrator') }}
                 </v-chip>
               </v-chip-group>
             </v-list-item-subtitle>
