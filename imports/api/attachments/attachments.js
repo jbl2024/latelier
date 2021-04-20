@@ -28,7 +28,6 @@ export const Attachments = new FilesCollection({
       }
       return true;
     });
-
   },
   onAfterUpload(fileRef) {
     if (Meteor.isServer) {
