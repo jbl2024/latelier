@@ -2,7 +2,8 @@ import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
 import {
   checkCanWriteProject,
-  checkCanWriteTask
+  checkCanWriteTask,
+  runAsUser
 } from "/imports/api/permissions/permissions";
 
 export const Attachments = new FilesCollection({
@@ -10,22 +11,23 @@ export const Attachments = new FilesCollection({
   storagePath: Meteor.settings.attachmentsPath || "assets/app/uploads",
   allowClientCode: true, // Disallow remove files from Client
   onBeforeUpload(fileData) {
-    if (fileData.meta?.taskId) {
-      try {
-        checkCanWriteTask(fileData.meta.taskId);
-      } catch (error) {
-        return false;
+    return runAsUser(this.userId, function() {
+      if (fileData.meta?.taskId) {
+        try {
+          checkCanWriteTask(fileData.meta.taskId);
+        } catch (error) {
+          return false;
+        }
       }
-    }
-    if (fileData.meta?.projectId) {
-      try {
-        checkCanWriteProject(fileData.meta.projectId);
-      } catch (error) {
-        return false;
+      if (fileData.meta?.projectId) {
+        try {
+          checkCanWriteProject(fileData.meta.projectId);
+        } catch (error) {
+          return false;
+        }
       }
-    }
-
-    return true;
+      return true;
+    });
   },
   onAfterUpload(fileRef) {
     if (Meteor.isServer) {
