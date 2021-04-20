@@ -152,10 +152,9 @@ if (Meteor.isServer) {
 }
 
 export const checkLoggedIn = () => {
-  /*
   if (!Meteor.userId()) {
     throw new Meteor.Error("not-authorized");
-  } */
+  }
 };
 
 export const checkAdmin = (scope) => {
