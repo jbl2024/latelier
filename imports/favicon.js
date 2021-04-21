@@ -18,6 +18,12 @@ const data = `
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="${basePath}ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="Description" content="L'atelier">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="L'atelier">
+<meta name="application-name" content="L'atelier">
+
 `;
 
 document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend", data);
