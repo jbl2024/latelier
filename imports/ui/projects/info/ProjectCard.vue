@@ -288,22 +288,6 @@ export default {
         ? `background: linear-gradient(0deg, #fff 95%, ${project.color} 95%);`
         : "";
     },
-
-    formatProjectDates(project) {
-      if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
-          project.endDate
-        )}`;
-      }
-      if (project.startDate) {
-        return `A partir du ${this.formatDate(project.startDate)}`;
-      }
-      if (project.endtDate) {
-        return `Jusqu'au ${this.formatDate(project.endDate)}`;
-      }
-      return "";
-    },
-
     taskCount(info) {
       if (!info) return 0;
 

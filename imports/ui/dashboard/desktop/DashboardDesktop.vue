@@ -129,7 +129,7 @@
           >
             <v-layout row wrap>
               <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
-                <dashboard-project-card :project="project" :user="user" />
+                <dashboard-project-card :project="project" :user="user" :is-favorite="true" />
               </v-flex>
             </v-layout>
           </v-container>
@@ -151,7 +151,12 @@
           </div>
           <v-list two-line class="list">
             <template v-for="project in individuals">
-              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+              <dashboard-project-list
+                :key="project._id"
+                :project="project"
+                :user="user"
+                :is-favorite="favoriteProjects.includes(project._id)"
+              />
             </template>
           </v-list>
         </template>
@@ -240,7 +245,12 @@
                 dashboardFilter
               )"
             >
-              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+              <dashboard-project-list
+                :key="project._id"
+                :project="project"
+                :user="user"
+                :is-favorite="favoriteProjects.includes(project._id)"
+              />
             </template>
           </v-list>
 
@@ -306,6 +316,13 @@ export default {
     isReady() {
       return this.$subReady.allProjects
       && this.$subReady.organizations && this.currentUser;
+    },
+    favoriteProjects() {
+      let favorites = [];
+      if (this.currentUser && this.currentUser.profile) {
+        favorites = this.currentUser.profile.favoriteProjects || [];
+      }
+      return favorites;
     }
   },
   mounted() {
