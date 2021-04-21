@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-
+import "/imports/startup/client/serviceWorker.js";
 // Libs
 import Vue from "vue";
 import VueRouter from "vue-router";
