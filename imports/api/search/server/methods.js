@@ -152,6 +152,7 @@ methods.findProjects = new ValidatedMethod({
   run({ organizationId, name, page }) {
     checkLoggedIn();
 
+    const user = Meteor.user();
     const userId = Meteor.userId();
     const isRegularUser = !Permissions.isAdmin(userId);
     const sort = { updatedAt: -1 };
@@ -183,11 +184,30 @@ methods.findProjects = new ValidatedMethod({
     }
     // get tasks
     const count = Projects.find(projectQuery).count();
-    const data = Projects.find(projectQuery, {
+    let data = Projects.find(projectQuery, {
       skip,
       limit: perPage,
       sort
     }).fetch();
+
+    const favoriteProjectIds = user.profile.favoriteProjects || [];
+    if (favoriteProjectIds.length > 0) {
+      const favoriteProjects = Projects.find(
+        {
+          ...projectQuery,
+          _id: {
+            $in: favoriteProjectIds
+          }
+        }, {
+          skip,
+          limit: perPage,
+          sort
+        }
+      ).fetch();
+
+      data = data.filter((project) => favoriteProjectIds.indexOf(project._id) === -1);
+      data = favoriteProjects.concat(data);
+    }
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
