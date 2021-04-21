@@ -64,5 +64,19 @@ export default {
         return i18n.t("dates.interval.date", { start: startDate.format(format), end: endDate.format(format) });
       }
     }
+  },
+  formatProjectDates(project) {
+    if (project.startDate && project.endDate) {
+      return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(
+        project.endDate
+      )}`;
+    }
+    if (project.startDate) {
+      return `A partir du ${this.formatDate(project.startDate)}`;
+    }
+    if (project.endtDate) {
+      return `Jusqu'au ${this.formatDate(project.endDate)}`;
+    }
+    return "";
   }
 };

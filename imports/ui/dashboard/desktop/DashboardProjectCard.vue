@@ -45,7 +45,7 @@
       </v-btn>
       <v-spacer />
 
-      <v-tooltip v-if="!isFavorite(user, project._id)" top>
+      <v-tooltip v-if="!isFavorite" top>
         <template v-slot:activator="{ on }">
           <v-btn
             icon
@@ -60,7 +60,7 @@
         <span>{{ $t("Add to favorites") }}</span>
       </v-tooltip>
 
-      <v-tooltip v-if="isFavorite(user, project._id)" top>
+      <v-tooltip v-if="isFavorite" top>
         <template v-slot:activator="{ on }">
           <v-btn
             icon
@@ -156,6 +156,10 @@ export default {
     user: {
       type: Object,
       default: () => {}
+    },
+    isFavorite: {
+      type: Boolean,
+      default: false
     }
   },
   i18n: {
@@ -196,20 +200,6 @@ export default {
       }
       return "";
     },
-
-    formatProjectDates(project) {
-      if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
-      }
-      if (project.startDate) {
-        return `A partir du ${this.formatDate(project.startDate)}`;
-      }
-      if (project.endtDate) {
-        return `Jusqu'au ${this.formatDate(project.endDate)}`;
-      }
-      return "";
-    },
-
     taskCount(project) {
       return project.taskCount;
     },
@@ -276,15 +266,6 @@ export default {
         }
       });
     },
-
-    isFavorite(user, projectId) {
-      let favorites = [];
-      if (user && user.profile) {
-        favorites = user.profile.favoriteProjects || [];
-      }
-      return favorites.indexOf(projectId) >= 0;
-    },
-
     addToFavorites(user, projectId) {
       this.$nextTick(() => {
         Meteor.call(

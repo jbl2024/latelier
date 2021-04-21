@@ -6,11 +6,11 @@
       small
       :label="$t('No project')"
     />
-    <v-list v-else-if="projects.length > 0" two-line>
+    <v-list v-else-if="projects.length > 0">
       <v-list-item v-for="project in projects" :key="project._id" @click="selectProject(project)">
         <v-list-item-icon>
           <v-badge
-            :value="isFavorite(project)"
+            :value="favoriteProjects.includes(project._id)"
             bordered
             overlap
             icon="mdi-star"
@@ -35,6 +35,7 @@
 <script>
 import { ProjectAccessRights } from "/imports/api/projects/projects";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
+import { mapState } from "vuex";
 
 export default {
   name: "ProjectList",
@@ -49,6 +50,16 @@ export default {
       default: null
     }
   },
+  computed: {
+    ...mapState(["currentUser"]),
+    favoriteProjects() {
+      let favorites = [];
+      if (this.currentUser && this.currentUser.profile) {
+        favorites = this.currentUser.profile.favoriteProjects || [];
+      }
+      return favorites;
+    }
+  },
   methods: {
     getVisibilityIcon(project) {
       if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
@@ -59,40 +70,15 @@ export default {
     getColor(project) {
       return project.color;
     },
-
-    formatProjectDates(project) {
-      if (project.startDate && project.endDate) {
-        return `Du ${this.formatDate(project.startDate)} au ${this.formatDate(project.endDate)}`;
-      }
-      if (project.startDate) {
-        return `A partir du ${this.formatDate(project.startDate)}`;
-      }
-      if (project.endtDate) {
-        return `Jusqu'au ${this.formatDate(project.endDate)}`;
-      }
-      return "";
-    },
-
     getVisibilityIconClass(project) {
       if (project.accessRights === ProjectAccessRights.ORGANIZATION) {
         return "";
       }
       return "";
     },
-
     selectProject(project) {
       this.$emit("select", project);
-    },
-
-    isFavorite(project) {
-      let favorites = [];
-      const user = Meteor.user();
-      if (user && user.profile) {
-        favorites = user.profile.favoriteProjects || [];
-      }
-      return favorites.indexOf(project._id) >= 0;
     }
-
   }
 };
 </script>
