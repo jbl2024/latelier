@@ -4,7 +4,7 @@
     <task-list :tasks="tasks" @select="onSelectTask" />
     <div class="text-xs-center">
       <v-pagination
-        v-if="pagination.totalPages > 0"
+        v-if="pagination.totalPages > 1"
         v-model="page"
         :total-visible="5"
         :length="pagination.totalPages"
