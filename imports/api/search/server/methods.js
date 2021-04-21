@@ -155,7 +155,7 @@ methods.findProjects = new ValidatedMethod({
     const user = Meteor.user();
     const userId = Meteor.userId();
     const isRegularUser = !Permissions.isAdmin(userId);
-    const sort = { updatedAt: -1 };
+    const sort = { name: 1 };
 
     const perPage = 5;
     let skip = 0;
@@ -182,31 +182,45 @@ methods.findProjects = new ValidatedMethod({
     if (name && name.length > 0) {
       projectQuery.name = { $regex: `.*${name}.*`, $options: "i" };
     }
-    // get tasks
-    const count = Projects.find(projectQuery).count();
-    let data = Projects.find(projectQuery, {
-      skip,
-      limit: perPage,
-      sort
-    }).fetch();
-
     const favoriteProjectIds = user.profile.favoriteProjects || [];
-    if (favoriteProjectIds.length > 0) {
-      const favoriteProjects = Projects.find(
-        {
-          ...projectQuery,
-          _id: {
-            $in: favoriteProjectIds
-          }
-        }, {
-          skip,
-          limit: perPage,
-          sort
-        }
-      ).fetch();
 
-      data = data.filter((project) => favoriteProjectIds.indexOf(project._id) === -1);
-      data = favoriteProjects.concat(data);
+    const count = Projects.find(projectQuery).count();
+    const favoriteCount = Projects.find({
+      ...projectQuery,
+      _id: {
+        $in: favoriteProjectIds
+      }
+    }).count();
+
+    // get favorite projects
+    let data = Projects.find(
+      {
+        ...projectQuery,
+        _id: {
+          $in: favoriteProjectIds
+        }
+      }, {
+        skip,
+        limit: perPage,
+        sort
+      }
+    ).fetch();
+
+    if (data.length < perPage) {
+      // get regular projects if slots are still available
+      let newSkip = skip - favoriteCount; // recaculate skip for regular projects
+      if (newSkip < 0) newSkip = 0;
+      const regularProjects = Projects.find({
+        ...projectQuery,
+        _id: {
+          $nin: favoriteProjectIds
+        }
+      }, {
+        skip: newSkip,
+        limit: perPage - data.length,
+        sort
+      }).fetch();
+      data = data.concat(regularProjects);
     }
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
