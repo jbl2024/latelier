@@ -8,11 +8,19 @@
     />
     <v-list v-else-if="projects.length > 0" two-line>
       <v-list-item v-for="project in projects" :key="project._id" @click="selectProject(project)">
-        <v-list-item-avatar :color="getColor(project)">
-          <v-icon :class="getVisibilityIconClass(project)">
-            {{ getVisibilityIcon(project) }}
-          </v-icon>
-        </v-list-item-avatar>
+        <v-list-item-icon>
+          <v-badge
+            :value="isFavorite(project)"
+            bordered
+            overlap
+            icon="mdi-star"
+            color="yellow darken-3"
+          >
+            <v-icon :class="getVisibilityIconClass(project)" :color="getColor(project)">
+              {{ getVisibilityIcon(project) }}
+            </v-icon>
+          </v-badge>
+        </v-list-item-icon>
         <v-list-item-content class="pointer">
           <v-list-item-title>{{ project.name }}</v-list-item-title>
           <v-list-item-subtitle>
@@ -74,7 +82,17 @@ export default {
 
     selectProject(project) {
       this.$emit("select", project);
+    },
+
+    isFavorite(project) {
+      let favorites = [];
+      const user = Meteor.user();
+      if (user && user.profile) {
+        favorites = user.profile.favoriteProjects || [];
+      }
+      return favorites.indexOf(project._id) >= 0;
     }
+
   }
 };
 </script>
