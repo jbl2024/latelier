@@ -73,7 +73,7 @@
       <div class="flex0">
         <div class="text-xs-center">
           <v-pagination
-            v-if="pagination.totalPages > 0"
+            v-if="pagination.totalPages > 1"
             v-model="page"
             :length="pagination.totalPages"
           />
