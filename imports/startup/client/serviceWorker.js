@@ -2,6 +2,9 @@
 import { Meteor } from "meteor/meteor";
 
 Meteor.startup(() => {
+  if (!navigator.serviceWorker) {
+    return;
+  }
   navigator.serviceWorker
     .register("/sw.js")
     .catch((error) => {
