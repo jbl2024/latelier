@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Deleted
+
+## [3.4.2 2021-04-22]
+
+### Added
 - PWA support
 - Display favorite projects on project list on top with icon
 
