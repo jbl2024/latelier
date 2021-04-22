@@ -182,7 +182,7 @@ methods.findProjects = new ValidatedMethod({
     if (name && name.length > 0) {
       projectQuery.name = { $regex: `.*${name}.*`, $options: "i" };
     }
-    const favoriteProjectIds = user.profile.favoriteProjects || [];
+    const favoriteProjectIds = user.profile?.favoriteProjects || [];
 
     const count = Projects.find(projectQuery).count();
     const favoriteCount = Projects.find({
