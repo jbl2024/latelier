@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Display favorite projects on project list on top with icon
 
 ### Changed
+- Hide pagination bars when pagination is irrelevant
 
 ### Deleted
 
