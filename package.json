@@ -28,7 +28,7 @@
     "jquery": "^3.5.0",
     "jszip": "^3.5.0",
     "linkifyjs": "^2.1.9",
-    "lodash": ">=4.17.19",
+    "lodash": ">=4.17.21",
     "meteor-node-stubs": "^1.0.1",
     "mjml": "^4.9.0",
     "mobile-drag-drop": "^2.3.0-rc.2",
