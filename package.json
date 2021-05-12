@@ -37,7 +37,7 @@
     "path": "^0.12.7",
     "pretty-checkbox": "^3.0.3",
     "showdown": "^1.9.1",
-    "simpl-schema": "^1.7.0",
+    "simpl-schema": "^1.10.2",
     "sortablejs": "^1.10.2",
     "tiptap": "^1.32.2",
     "tiptap-extensions": "^1.35.2",
