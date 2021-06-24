@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.11.2",
-    "@mxiii/html-to-text": "^5.2.3",
+    "html-to-text": "^8.0.0",
     "aws-sdk": "^2.670.0",
     "bcrypt": "^5.0.0",
     "bpmn-js": "^6.5.1",
