@@ -74,7 +74,7 @@
           <v-card-actions>
             <v-spacer />
             <v-btn text @click="close()">
-              {{ this.$t("Close") }}
+              {{ $t("Close") }}
             </v-btn>
           </v-card-actions>
         </div>

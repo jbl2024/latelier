@@ -1,7 +1,6 @@
 import { Avatars } from "/imports/api/users/avatars.js";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 
-
 Avatars.methods.clear = new ValidatedMethod({
   name: "avatars.clear",
   validate: null,
@@ -17,7 +16,6 @@ Avatars.methods.clear = new ValidatedMethod({
     });
   }
 });
-
 
 Avatars.methods.setAvatar = new ValidatedMethod({
   name: "avatars.setAvatar",

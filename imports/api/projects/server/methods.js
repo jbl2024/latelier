@@ -24,7 +24,6 @@ import { createProjectExportZip,
   linkAttachmentsToFiles,
   importExportDefaultItems } from "/imports/api/projects/importExport/";
 
-
 Projects.methods.create = new ValidatedMethod({
   name: "projects.create",
   validate: new SimpleSchema({
@@ -518,7 +517,6 @@ Projects.methods.export = new ValidatedMethod({
         projectId
       }).fetch() : null;
 
-
     // Attachments
     const attachments = items.includes("attachments")
       ? Attachments.find({ "meta.projectId": projectId }).fetch() : null;
@@ -759,7 +757,6 @@ Projects.methods.import = new ValidatedMethod({
                 return 0;
               });
 
-
               taskList.tasks.forEach((task) => {
                 // Notes
                 let notes = null;
@@ -833,7 +830,6 @@ Projects.methods.import = new ValidatedMethod({
                   getMapId(task.createdBy, "users"),
                   disableTracking
                 );
-
 
                 if (canImportAttachments && attachmentsTasksIds.includes(task._id)) {
                   mappedIds.tasks[task._id] = createdTask._id;

@@ -233,7 +233,6 @@ Tasks.methods.exportODT = new ValidatedMethod({
   }
 });
 
-
 Tasks.methods.exportProject = new ValidatedMethod({
   name: "tasks.exportProject",
   validate: new SimpleSchema({

@@ -30,7 +30,6 @@ import VueMatomo from "vue-matomo";
 
 require("intersection-observer");
 
-
 if (Meteor.settings.public.devServerURL) {
   // HMR url for iOS
   /* eslint no-undef: "off" */

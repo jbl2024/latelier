@@ -260,7 +260,6 @@ Meetings.methods.restore = new ValidatedMethod({
   }
 });
 
-
 Meetings.methods.findMeetings = new ValidatedMethod({
   name: "meetings.findMeetings",
   validate: new SimpleSchema({
@@ -624,7 +623,6 @@ Meetings.methods.export = new ValidatedMethod({
       }
       return aUsers;
     }, {});
-
 
     const project = Projects.findOne({ _id: meeting.projectId });
     if (!project) {

@@ -9,7 +9,6 @@ import { Tasks } from "../tasks";
 import { Attachments } from "../../attachments/attachments";
 import { Labels } from "../../labels/labels";
 
-
 // This code only runs on the server
 Meteor.publish("tasks", function tasksPublication(listId) {
   check(listId, String);

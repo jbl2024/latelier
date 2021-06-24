@@ -1,4 +1,3 @@
-
 import Api from "/imports/api/Api";
 
 export default {

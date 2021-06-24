@@ -144,7 +144,6 @@ import { ProjectAccessRights } from "/imports/api/projects/projects.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 
-
 export default {
   name: "DashboardProjectCard",
   mixins: [DatesMixin],

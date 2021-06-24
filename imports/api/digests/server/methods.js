@@ -15,7 +15,6 @@ methods.addDigest = new ValidatedMethod({
         .startOf("day")
         .toDate();
 
-
       let digestType = type;
       const notUpdateTypes = [
         "tasks.create",

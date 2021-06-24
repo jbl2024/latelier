@@ -31,7 +31,7 @@
                 <v-icon>mdi-folder</v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="cursor">
-                <v-list-item-title>{{ this.$t("Create") }}...</v-list-item-title>
+                <v-list-item-title>{{ $t("Create") }}...</v-list-item-title>
               </v-list-item-content>
             </v-list-item>
           </v-list>
@@ -39,7 +39,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="closeDialog">
-            {{ this.$t("Cancel") }}
+            {{ $t("Cancel") }}
           </v-btn>
         </v-card-actions>
       </v-card>

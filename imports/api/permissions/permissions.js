@@ -14,7 +14,6 @@ export const PermissionObjects = Object.freeze({
   TASK: "task"
 });
 
-
 // Provide ddp auth
 export const runAsUser = function runAsUser(userId, func) {
   const { DDPCommon } = Package["ddp-common"];
@@ -190,7 +189,6 @@ export const checkCanWriteTask = (taskId) => {
 export const checkCanDeleteTask = (taskId) => {
   Meteor.call("permissions.canDeleteTask", { taskId });
 };
-
 
 /** Meetings * */
 

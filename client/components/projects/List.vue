@@ -43,7 +43,7 @@
                 <v-list-item-action>
                   <v-icon>mdi-delete</v-icon>
                 </v-list-item-action>
-                <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
+                <v-list-item-title>{{ $t("Delete") }}</v-list-item-title>
               </v-list-item>
             </v-list>
           </v-menu>
