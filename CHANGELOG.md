@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Bump simpl-schema from 1.7.0 to 1.10.2
   - Bump y18n from 4.0.0 to 4.0.1
   - Bump lodash from 4.17.19 to 4.17.21 
+- Move from @mxiii/html-to-text to html-to-text (https://github.com/werk85/node-html-to-text/issues/198 is closed)
+
 
 ### Deleted
 
