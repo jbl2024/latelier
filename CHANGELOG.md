@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update packages:
+  - Bump handlebars from 4.7.6 to 4.7.7 
+  - Bump handlebars from 4.7.6 to 4.7.7
+  - Bump simpl-schema from 1.7.0 to 1.10.2
+  - Bump y18n from 4.0.0 to 4.0.1
+  - Bump lodash from 4.17.19 to 4.17.21 
 
 ### Deleted
 
