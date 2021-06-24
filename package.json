@@ -69,8 +69,8 @@
     }
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.14.7",
     "@meteorjs/eslint-config-meteor": "^1.0.5",
+    "babel-eslint": "^10.1.0",
     "chai": "^4.3.4",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.0",
