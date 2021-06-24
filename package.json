@@ -5,8 +5,8 @@
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json --exclude-archs 'web.browser.legacy,web.cordova'",
     "start-dev": "meteor run --settings settings-development.json --exclude-archs 'web.browser.legacy,web.cordova'",
     "test": "MOCHA_TIMEOUT=8000 meteor test --once --driver-package meteortesting:mocha",
-    "test-run": "MOCHA_TIMEOUT=8000 meteor test --driver-package meteortesting:mocha",
-    "test-app": "MOCHA_TIMEOUT=8000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
+    "test-run": "MOCHA_TIMEOUT=15000 meteor test --driver-package meteortesting:mocha",
+    "test-app": "MOCHA_TIMEOUT=15000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
     "lint": "eslint --ext .js,.vue .",
     "pretest": "npm run lint --silent"
@@ -69,8 +69,8 @@
     }
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.14.7",
     "@meteorjs/eslint-config-meteor": "^1.0.5",
-    "babel-eslint": "^10.1.0",
     "chai": "^4.3.4",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.0",
@@ -79,7 +79,6 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jsx-a11y": "^6.4.1",
     "eslint-plugin-meteor": "^7.3.0",
-    "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-vue": "^7.11.1"
   }
 }
