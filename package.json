@@ -17,6 +17,7 @@
     "bcrypt": "^5.0.0",
     "bpmn-js": "^6.5.1",
     "carbone": "^1.2.1",
+    "connect-route": "^0.1.5",
     "diagram-js-minimap": "^2.0.3",
     "faker": "^4.1.0",
     "file-saver": "^2.0.2",
