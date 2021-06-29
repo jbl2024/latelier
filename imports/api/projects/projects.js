@@ -28,6 +28,7 @@ if (Meteor.isServer) {
   Meteor.startup(() => {
     Projects.rawCollection().createIndex({ organizationId: 1 });
     Projects.rawCollection().createIndex({ deleted: 1 });
+    Projects.rawCollection().createIndex({ state: 1 });
   });
 }
 
@@ -228,6 +229,9 @@ Projects.methods.updateStates = new ValidatedMethod({
     state: { type: String }
   }).validator(),
   run({ projectId, state }) {
+    checkLoggedIn();
+    checkIfAdminOrCreator(projectId);
+
     if (state.length === 0) {
       throw new Meteor.Error("invalid-state");
     }
