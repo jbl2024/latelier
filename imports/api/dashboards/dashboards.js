@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import { Projects } from "/imports/api/projects/projects.js";
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import {
   Permissions,
   checkLoggedIn
@@ -36,7 +36,8 @@ Meteor.methods({
     let sort = {};
 
     const projectQuery = {
-      deleted: { $ne: true }
+      deleted: { $ne: true },
+      state: { $ne: ProjectStates.ARCHIVED }
     };
 
     if (organizationId) {

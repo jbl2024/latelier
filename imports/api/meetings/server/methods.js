@@ -1,6 +1,6 @@
 import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
-import { Projects } from "/imports/api/projects/projects";
+import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { UserUtils } from "/imports/api/users/utils";
 
@@ -328,7 +328,8 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       }
     }
     const query = {
-      deleted: { $ne: true }
+      deleted: { $ne: true },
+      state: { $ne: ProjectStates.ARCHIVED }
     };
     if (projectId) {
       query.projectId = projectId;
