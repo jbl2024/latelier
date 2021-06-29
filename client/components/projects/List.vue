@@ -76,6 +76,7 @@
     </div>
     <div class="tasks-wrapper dragscroll">
       <v-btn
+        v-if="canAddTask(list)"
         small
         block
         class="add-new-task dragscroll"
@@ -102,7 +103,7 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { colors } from "/imports/colors";
@@ -341,6 +342,14 @@ export default {
           });
         }
       );
+    },
+
+    canAddTask(list) {
+      const project = Projects.findOne({ _id: list.projectId });
+      if (!project) {
+        return false;
+      }
+      return project.state !== ProjectStates.ARCHIVED;
     },
 
     onDragOver(e) {
