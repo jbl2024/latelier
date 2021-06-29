@@ -111,6 +111,24 @@
               <v-list-item-title>{{ $t("Export") }}</v-list-item-title>
             </v-list-item>
             <v-list-item
+              v-if="!isArchived(project) && canManageProject(project)"
+              @click="archiveProject(project)"
+            >
+              <v-list-item-action>
+                <v-icon>mdi-archive</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t("Archive") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              v-if="isArchived(project) && canManageProject(project)"
+              @click="unarchiveProject(project)"
+            >
+              <v-list-item-action>
+                <v-icon>mdi-archive</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t("Restore") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
               v-if="canManageProject(project)"
               @click="deleteProject(project)"
             >
@@ -139,7 +157,7 @@
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+import { ProjectAccessRights, ProjectStates } from "/imports/api/projects/projects.js";
 
 export default {
   name: "DashboardProjectList",
@@ -203,6 +221,24 @@ export default {
     userCount(project) {
       const members = project.members || [];
       return members.length;
+    },
+
+    isArchived(project) {
+      return project.state === ProjectStates.ARCHIVED;
+    },
+
+    archiveProject(project) {
+      Meteor.call("projects.updateState", {
+        projectId: project._id,
+        state: ProjectStates.ARCHIVED
+      });
+    },
+
+    unarchiveProject(project) {
+      Meteor.call("projects.updateState", {
+        projectId: project._id,
+        state: ProjectStates.DEVELOPMENT
+      });
     },
 
     canDeleteProject(project) {
