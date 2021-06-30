@@ -9,10 +9,7 @@
       :organization-id="organizationId"
       :is-shown.sync="showProjectImport"
     />
-    <div v-if="!isReady">
-      <v-progress-linear indeterminate />
-    </div>
-    <div v-else>
+    <div>
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
@@ -95,6 +92,11 @@
         </v-layout>
       </div>
       <v-divider />
+      <v-switch
+        color="indigo"
+        v-model="showArchivedProjects"
+        :label="$t('Show archived projects')"
+      />
       <template v-if="projects.length == 0 && organizations.length == 0">
         <empty-state
           class="main-empty-state"
@@ -313,6 +315,15 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "dashboardFilter"]),
+    showArchivedProjects: {
+      get() {
+        return this.$store.state.showArchivedProjects;
+      },
+      set(value) {
+        this.$store.dispatch("showArchivedProjects", value);
+      }
+    },
+
     isReady() {
       return this.$subReady.allProjects
       && this.$subReady.organizations && this.currentUser;
@@ -338,7 +349,7 @@ export default {
   meteor: {
     $subscribe: {
       allProjects: function() {
-        return ["", this.organizationId];
+        return ["", this.organizationId, this.showArchivedProjects];
       },
       organizations: function() {
         return ["", this.organizationId];

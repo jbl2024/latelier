@@ -32,6 +32,7 @@ const store = new Vuex.Store({
     showTaskHistory: false,
     showTaskExport: false,
     showDashboardTitle: false,
+    showArchivedProjects: false,
     dashboardFilter: "",
     windowTitle: "",
     notifyMessage: "",
@@ -85,6 +86,9 @@ const store = new Vuex.Store({
     },
     updateShowDashboardTitle(state, showDashboardTitle) {
       state.showDashboardTitle = showDashboardTitle;
+    },
+    updateShowArchivedProjects(state, showArchivedProjects) {
+      state.showArchivedProjects = showArchivedProjects;
     },
     updateDashboardFilter(state, dashboardFilter) {
       state.dashboardFilter = dashboardFilter;
@@ -170,6 +174,9 @@ const store = new Vuex.Store({
     },
     showTaskDetailFullscreen(context, showTaskDetailFullscreen) {
       context.commit("updateShowTaskDetailFullscreen", showTaskDetailFullscreen);
+    },
+    showArchivedProjects(context, showArchivedProjects) {
+      context.commit("updateShowArchivedProjects", showArchivedProjects);
     },
     setWindowTitle(context, windowTitle) {
       context.commit("updateWindowTitle", windowTitle);

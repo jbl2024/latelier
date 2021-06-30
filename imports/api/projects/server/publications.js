@@ -50,11 +50,16 @@ Meteor.publish("projects", function projectsPublication(
   return Projects.find(query);
 });
 
-publishComposite("allProjects", (name, organizationId) => ({
+publishComposite("allProjects", (name, organizationId, showArchivedProjects) => ({
   // projects
   find() {
     const userId = Meteor.userId();
-    const query = { deleted: { $ne: true }, state: { $ne: ProjectStates.ARCHIVED } };
+    const query = { deleted: { $ne: true } };
+    if (!showArchivedProjects) {
+      query.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
 
     if (!Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];

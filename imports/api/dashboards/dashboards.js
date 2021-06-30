@@ -9,11 +9,12 @@ import {
 } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
-  "dashboards.findTasks"(type, organizationId, projectId, page) {
+  "dashboards.findTasks"(type, organizationId, projectId, page, showArchivedProjects) {
     check(type, String);
     check(organizationId, Match.Maybe(String));
     check(projectId, Match.Maybe(String));
     check(page, Match.Maybe(Number));
+    check(showArchivedProjects, Match.Maybe(Boolean));
     checkLoggedIn();
 
     const perPage = 25;
@@ -36,9 +37,14 @@ Meteor.methods({
     let sort = {};
 
     const projectQuery = {
-      deleted: { $ne: true },
-      state: { $ne: ProjectStates.ARCHIVED }
+      deleted: { $ne: true }
     };
+
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
 
     if (organizationId) {
       projectQuery.organizationId = organizationId;
