@@ -93,8 +93,8 @@
       </div>
       <v-divider />
       <v-switch
-        color="indigo"
         v-model="showArchivedProjects"
+        color="indigo"
         :label="$t('Show archived projects')"
       />
       <template v-if="projects.length == 0 && organizations.length == 0">
@@ -258,7 +258,7 @@
 
           <empty-state
             v-if="
-              dashboardFilter === '' &&
+              isReady && dashboardFilter === '' &&
                 projectsByOrganization(organization).length == 0
             "
             :key="`${organization._id}-empty`"
