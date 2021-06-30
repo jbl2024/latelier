@@ -59,6 +59,30 @@ if (Meteor.isServer) {
       expect(result.totalItems).to.be.equal(1);
     });
 
+    it("task from archived project is not displayed to user", async function() {
+      createProject();
+      Meteor.call(
+        "tasks.insert",
+        Projects.findOne()._id,
+        Lists.findOne()._id,
+        "a name"
+      );
+
+      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      expect(result.totalItems).to.be.equal(1);
+
+      Meteor.call("projects.updateState", {
+        projectId: Projects.findOne()._id,
+        state: ProjectStates.ARCHIVED
+      });
+
+      const result2 = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      expect(result2.totalItems).to.be.equal(0);
+
+      const result3 = Meteor.call("dashboards.findTasks", "recent", null, null, 1, true /* showArchivedProject = true */);
+      expect(result3.totalItems).to.be.equal(1);
+    });
+
     it("nothing is displayed to new user", async function() {
       createProject();
       Meteor.call(
