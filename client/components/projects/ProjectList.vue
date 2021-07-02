@@ -25,6 +25,9 @@
           <v-list-item-title>{{ project.name }}</v-list-item-title>
           <v-list-item-subtitle>
             {{ formatProjectDates(project) }}
+            <v-chip v-if="isArchived(project)" x-small>
+              {{ $t('Archived') }}
+            </v-chip>
           </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
@@ -33,7 +36,7 @@
 </template>
 
 <script>
-import { ProjectAccessRights } from "/imports/api/projects/projects";
+import { ProjectAccessRights, ProjectStates } from "/imports/api/projects/projects";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
 import { mapState } from "vuex";
 
@@ -78,6 +81,9 @@ export default {
     },
     selectProject(project) {
       this.$emit("select", project);
+    },
+    isArchived(project) {
+      return project.state === ProjectStates.ARCHIVED;
     }
   }
 };
