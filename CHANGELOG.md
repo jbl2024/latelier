@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Fix manifest.json URLs when root path is not /
+- Do not display archived projects
 
 ### Deleted
 
