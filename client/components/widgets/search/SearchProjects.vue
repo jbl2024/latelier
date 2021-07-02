@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 
 export default {
   props: {
@@ -47,6 +48,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(["showArchivedProjects"])
+  },
   watch: {
     page() {
       this.find();
@@ -71,7 +75,8 @@ export default {
         {
           name: this.filter,
           organizationId: this.organizationId,
-          page: this.page
+          page: this.page,
+          showArchivedProjects: this.showArchivedProjects
         },
         (error, result) => {
           this.loading = false;

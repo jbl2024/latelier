@@ -18,6 +18,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import Attachments from "/imports/ui/attachments/Attachments";
 
 export default {
@@ -51,6 +52,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(["showArchivedProjects"])
+  },
   watch: {
     page() {
       this.find();
@@ -75,7 +79,8 @@ export default {
         {
           name: this.filter,
           projectId: this.projectId,
-          page: this.page
+          page: this.page,
+          showArchivedProjects: this.showArchivedProjects
         },
         (error, result) => {
           this.loading = false;

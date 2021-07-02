@@ -1,6 +1,6 @@
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
-import { Projects } from "/imports/api/projects/projects";
+import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Meetings } from "/imports/api/meetings/meetings";
 import {
@@ -17,9 +17,10 @@ methods.findTasks = new ValidatedMethod({
     organizationId: { type: String, optional: true },
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page }) {
+  run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -44,6 +45,12 @@ methods.findTasks = new ValidatedMethod({
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (organizationId) {
       projectQuery.organizationId = organizationId;
     }
@@ -145,9 +152,10 @@ methods.findProjects = new ValidatedMethod({
   validate: new SimpleSchema({
     organizationId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, name, page }) {
+  run({ organizationId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const user = Meteor.user();
@@ -170,6 +178,12 @@ methods.findProjects = new ValidatedMethod({
     };
     if (organizationId) {
       projectQuery.organizationId = organizationId;
+    }
+
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
     }
 
     if (isRegularUser) {
@@ -291,9 +305,10 @@ methods.findAttachments = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ projectId, name, page }) {
+  run({ projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -316,6 +331,12 @@ methods.findAttachments = new ValidatedMethod({
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (projectId) {
       checkCanReadProject(projectId);
       projectQuery._id = projectId;
@@ -413,9 +434,10 @@ methods.findMeetings = new ValidatedMethod({
     organizationId: { type: String, optional: true },
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page }) {
+  run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -440,6 +462,12 @@ methods.findMeetings = new ValidatedMethod({
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (organizationId) {
       projectQuery.organizationId = organizationId;
     }
