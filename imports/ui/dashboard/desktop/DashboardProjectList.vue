@@ -6,7 +6,10 @@
     min-height="72"
     transition="fade-transition"
   >
-    <v-list-item @click="openProject(project)">
+    <v-list-item
+      :class="{ archive: isArchived(project) }"
+      @click="openProject(project)"
+    >
       <v-list-item-avatar :color="getColor(project)">
         <v-icon :class="getVisibilityIconClass(project)">
           {{ getVisibilityIcon(project) }}
@@ -16,6 +19,9 @@
         <v-list-item-title>{{ project.name }}</v-list-item-title>
         <v-list-item-subtitle>
           {{ formatProjectDates(project) }}
+          <v-chip v-if="isArchived(project)" x-small>
+            {{ $t('Archived') }}
+          </v-chip>
         </v-list-item-subtitle>
       </v-list-item-content>
 
@@ -73,7 +79,11 @@
               <v-list-item-action>
                 <v-icon>mdi-email-outline</v-icon>
               </v-list-item-action>
-              <v-list-item-title>{{ $t("Add to daily digest") }}</v-list-item-title>
+              <v-list-item-title>
+                {{
+                  $t("Add to daily digest")
+                }}
+              </v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="isSubscribedToDigests(user, project._id)"
@@ -82,7 +92,11 @@
               <v-list-item-action>
                 <v-icon>mdi-email</v-icon>
               </v-list-item-action>
-              <v-list-item-title>{{ $t("Remove from daily digest") }}</v-list-item-title>
+              <v-list-item-title>
+                {{
+                  $t("Remove from daily digest")
+                }}
+              </v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="canManageProject(project)"
@@ -104,11 +118,27 @@
               @click="openProjectExport(project)"
             >
               <v-list-item-action>
-                <v-icon>
-                  mdi-file-export
-                </v-icon>
+                <v-icon> mdi-file-export </v-icon>
               </v-list-item-action>
               <v-list-item-title>{{ $t("Export") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              v-if="!isArchived(project) && canManageProject(project)"
+              @click="archiveProject(project)"
+            >
+              <v-list-item-action>
+                <v-icon>mdi-archive</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t("Archive") }}</v-list-item-title>
+            </v-list-item>
+            <v-list-item
+              v-if="isArchived(project) && canManageProject(project)"
+              @click="unarchiveProject(project)"
+            >
+              <v-list-item-action>
+                <v-icon>mdi-package-up</v-icon>
+              </v-list-item-action>
+              <v-list-item-title>{{ $t("Unarchive") }}</v-list-item-title>
             </v-list-item>
             <v-list-item
               v-if="canManageProject(project)"
@@ -139,7 +169,10 @@
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 import { Permissions } from "/imports/api/permissions/permissions";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
-import { ProjectAccessRights } from "/imports/api/projects/projects.js";
+import {
+  ProjectAccessRights,
+  ProjectStates
+} from "/imports/api/projects/projects.js";
 
 export default {
   name: "DashboardProjectList",
@@ -203,6 +236,24 @@ export default {
     userCount(project) {
       const members = project.members || [];
       return members.length;
+    },
+
+    isArchived(project) {
+      return project.state === ProjectStates.ARCHIVED;
+    },
+
+    archiveProject(project) {
+      Meteor.call("projects.updateState", {
+        projectId: project._id,
+        state: ProjectStates.ARCHIVED
+      });
+    },
+
+    unarchiveProject(project) {
+      Meteor.call("projects.updateState", {
+        projectId: project._id,
+        state: ProjectStates.DEVELOPMENT
+      });
     },
 
     canDeleteProject(project) {
@@ -281,15 +332,11 @@ export default {
         confirmText: this.$t("Leave project")
       }).then((res) => {
         if (res) {
-          Meteor.call(
-            "projects.leave",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-              }
+          Meteor.call("projects.leave", { projectId: project._id }, (error) => {
+            if (error) {
+              this.$notifyError(error);
             }
-          );
+          });
         }
       });
     },
@@ -349,17 +396,13 @@ export default {
         confirmText: this.$t("Clone")
       }).then((res) => {
         if (res) {
-          Meteor.call(
-            "projects.clone",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-              } else {
-                this.$notify(this.$t("Project cloned successfully"));
-              }
+          Meteor.call("projects.clone", { projectId: project._id }, (error) => {
+            if (error) {
+              this.$notifyError(error);
+            } else {
+              this.$notify(this.$t("Project cloned successfully"));
             }
-          );
+          });
         }
       });
     },
@@ -407,8 +450,8 @@ export default {
 </script>
 
 <style scoped>
-
 .project-group + .project-group {
   margin-left: 4px;
 }
+
 </style>

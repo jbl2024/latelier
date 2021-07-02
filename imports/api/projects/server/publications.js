@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { publishComposite } from "meteor/reywood:publish-composite";
 
-import { Projects } from "../projects";
+import { Projects, ProjectStates } from "../projects";
 import { Organizations } from "../../organizations/organizations";
 import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
@@ -50,11 +50,16 @@ Meteor.publish("projects", function projectsPublication(
   return Projects.find(query);
 });
 
-publishComposite("allProjects", (name, organizationId) => ({
+publishComposite("allProjects", (name, organizationId, showArchivedProjects) => ({
   // projects
   find() {
     const userId = Meteor.userId();
     const query = { deleted: { $ne: true } };
+    if (!showArchivedProjects) {
+      query.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
 
     if (!Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];

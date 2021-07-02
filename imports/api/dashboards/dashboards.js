@@ -2,18 +2,19 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
-import { Projects } from "/imports/api/projects/projects.js";
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import {
   Permissions,
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
-  "dashboards.findTasks"(type, organizationId, projectId, page) {
+  "dashboards.findTasks"(type, organizationId, projectId, page, showArchivedProjects) {
     check(type, String);
     check(organizationId, Match.Maybe(String));
     check(projectId, Match.Maybe(String));
     check(page, Match.Maybe(Number));
+    check(showArchivedProjects, Match.Maybe(Boolean));
     checkLoggedIn();
 
     const perPage = 25;
@@ -38,6 +39,12 @@ Meteor.methods({
     const projectQuery = {
       deleted: { $ne: true }
     };
+
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
 
     if (organizationId) {
       projectQuery.organizationId = organizationId;
