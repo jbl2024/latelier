@@ -97,7 +97,7 @@
         color="indigo"
         :label="$t('Show archived projects')"
       />
-      <template v-if="projects.length == 0 && organizations.length == 0">
+      <template v-if="isReady && (projects.length == 0 && organizations.length == 0)">
         <empty-state
           class="main-empty-state"
           :description="$t('noProjectYet')"
@@ -115,7 +115,7 @@
           </v-btn>
         </empty-state>
       </template>
-      <div class="projects-wrapper">
+      <div v-if="isReady" class="projects-wrapper">
         <template v-if="favorites.length > 0">
           <div class="header">
             <div class="header-title">
