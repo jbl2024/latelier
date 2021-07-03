@@ -20,6 +20,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import moment from "moment";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
@@ -57,12 +58,14 @@ export default {
     };
   },
   computed: {
+    ...mapState(["showArchivedProjects"]),
     params() {
       const baseParams = {
         projectId: this.projectId,
         organizationId: this.organizationId,
         page: this.page,
-        withRelated: true
+        withRelated: true,
+        showArchivedProjects: this.showArchivedProjects
       };
       if (this.type === "today") {
         return { ...baseParams,
@@ -82,6 +85,9 @@ export default {
       handler() {
         this.find();
       }
+    },
+    showArchivedProjects() {
+      this.find();
     }
   },
   methods: {

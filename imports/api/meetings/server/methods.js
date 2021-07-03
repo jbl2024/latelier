@@ -307,15 +307,29 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       type: Boolean,
       optional: true,
       defaultValue: false
+    },
+    showArchivedProjects: {
+      type: Boolean,
+      optional: true
     }
   }).validator(),
-  run({ projectId, organizationId, dates, page, perPage, documentsIds, withRelated }) {
+  run({ projectId,
+    organizationId,
+    dates,
+    page,
+    perPage,
+    documentsIds,
+    withRelated,
+    showArchivedProjects }) {
     if (projectId) {
       checkCanReadProject(projectId);
     }
     if (organizationId) {
       checkCanReadOrganization(organizationId);
     }
+
+    const userId = Meteor.userId();
+    const isRegularUser = !Permissions.isAdmin(userId);
 
     let skip = 0;
     if (perPage) {
@@ -327,23 +341,41 @@ Meetings.methods.findMeetings = new ValidatedMethod({
         skip = 0;
       }
     }
-    const query = {
-      deleted: { $ne: true },
-      state: { $ne: ProjectStates.ARCHIVED }
+
+    // get projects
+    const projectQuery = {
+      deleted: { $ne: true }
     };
-    if (projectId) {
-      query.projectId = projectId;
+    if (!showArchivedProjects && !projectId) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+    if (isRegularUser) {
+      projectQuery.members = userId;
     }
 
     if (organizationId) {
-      const projects = Projects.find({ organizationId }).fetch();
-      if (projects && Array.isArray(projects)) {
-        query.projectId = { $in: projects.map((p) => p._id) };
-      }
+      projectQuery.organizationId = organizationId;
     }
 
+    if (projectId) {
+      projectQuery._id = projectId;
+    }
+
+    const projectIds = Projects.find(projectQuery, {
+      fields: {
+        _id: 1
+      }
+    }).map((project) => project._id);
+
+    const meetingQuery = {
+      deleted: { $ne: true },
+      projectId: { $in: projectIds }
+    };
+
     if (Array.isArray(dates) && dates.length) {
-      query.$or = dates.map((d) => {
+      meetingQuery.$or = dates.map((d) => {
         const $and = [];
         if (d.start) {
           $and.push({ startDate: { $gte: moment(d.start).toDate() } });
@@ -356,27 +388,16 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     }
 
     if (Array.isArray(documentsIds) && documentsIds.length) {
-      query["documents.documentId"] = { $in: documentsIds };
+      meetingQuery["documents.documentId"] = { $in: documentsIds };
     }
-    const count = Meetings.find(query).count();
-    let data = Meetings.find(query, {
+    const count = Meetings.find(meetingQuery).count();
+    const data = Meetings.find(meetingQuery, {
       skip,
       limit: perPage,
       sort: {
         startDate: 1
       }
     }).fetch();
-
-    if (!projectId) {
-      data = data.filter((meeting) => {
-        try {
-          checkCanReadProject(meeting.projectId);
-          return true;
-        } catch (error) {
-          return false;
-        }
-      });
-    }
 
     // load associated objects and assign them to meetings
     const projects = {};
