@@ -120,7 +120,7 @@
           {{ formatDate(task.completedAt) }}
         </div>
 
-        <v-layout row>
+        <v-layout>
           <v-flex shrink>
             <div class="number">
               #{{ task.number }}
