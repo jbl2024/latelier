@@ -329,4 +329,10 @@ html {
   height: 100%;
 }
 
+/* safari issue, see https://github.com/vuetifyjs/vuetify/issues/13599 */
+.v-btn--disabled {
+  pointer-events: unset !important;
+  cursor: default;
+}
+
 </style>
