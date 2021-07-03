@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Deleted
+
+## [3.4.4 2021-07-03]
+
+### Added
+
+### Changed
 - Fix manifest.json URLs when root path is not /
 - Do not display archived projects
 - Fix project label display on task detail
