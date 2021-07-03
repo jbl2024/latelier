@@ -2,7 +2,7 @@ import {
   Permissions,
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
-import { Projects } from "/imports/api/projects/projects.js";
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { Meetings } from "/imports/api/meetings/meetings.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
@@ -49,7 +49,8 @@ Permissions.methods.canWriteProject = new ValidatedMethod({
     }
     const project = Projects.findOne({
       _id: projectId,
-      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
+      state: { $ne: ProjectStates.ARCHIVED }
     });
     if (project) {
       return true;
@@ -128,7 +129,8 @@ Permissions.methods.canWriteTask = new ValidatedMethod({
 
     const project = Projects.findOne({
       _id: task.projectId,
-      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
+      state: { $ne: ProjectStates.ARCHIVED }
     });
     if (project) {
       return true;
@@ -155,7 +157,8 @@ Permissions.methods.canDeleteTask = new ValidatedMethod({
 
     const project = Projects.findOne({
       _id: task.projectId,
-      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
+      $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
+      state: { $ne: ProjectStates.ARCHIVED }
     });
     if (project) {
       return true;

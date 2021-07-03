@@ -13,6 +13,13 @@
       <v-container fluid>
         <v-row>
           <v-col cols="12">
+            <v-alert
+              v-if="isArchived(currentProject)"
+              dense
+              type="warning"
+            >
+              {{ $t('Archived project') }}
+            </v-alert>
             <project-card :project="currentProject" :user="currentUser" :info="info" />
           </v-col>
           <v-col v-if="hasFeature(currentProject, 'meetings')" :cols="cardColumns">
@@ -34,7 +41,7 @@
 </template>
 
 <script>
-import { Projects } from "/imports/api/projects/projects.js";
+import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
 import ProjectCard from "/imports/ui/projects/info/ProjectCard";
 import ProcessCard from "/imports/ui/projects/info/ProcessCard";
 import CanvasCard from "/imports/ui/projects/info/CanvasCard";
@@ -119,6 +126,9 @@ export default {
           projectId: project._id
         }
       });
+    },
+    isArchived(project) {
+      return project.state === ProjectStates.ARCHIVED;
     }
   }
 };

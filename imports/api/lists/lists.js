@@ -3,7 +3,7 @@ import { Mongo } from "meteor/mongo";
 import { check, Match } from "meteor/check";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import ListSchema from "./schema";
-import { Permissions } from "/imports/api/permissions/permissions";
+import { Permissions, checkCanWriteProject } from "/imports/api/permissions/permissions";
 
 export const Lists = new Mongo.Collection("lists");
 Lists.attachSchema(ListSchema);
@@ -29,6 +29,8 @@ Meteor.methods({
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
+
+    checkCanWriteProject(projectId);
 
     let userId = Meteor.userId();
     const canSelectUserId = listUserId && Meteor.isServer && Permissions.isAdmin(userId);
@@ -57,6 +59,8 @@ Meteor.methods({
 
   "lists.remove"(listId) {
     check(listId, String);
+    const list = Lists.findOne({ _id: listId });
+    checkCanWriteProject(list.projectId);
 
     const tasks = Tasks.find({ listId });
     tasks.forEach((task) => {
@@ -70,6 +74,10 @@ Meteor.methods({
   "lists.updateName"(listId, name) {
     check(listId, String);
     check(name, String);
+
+    const list = Lists.findOne({ _id: listId });
+    checkCanWriteProject(list.projectId);
+
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
@@ -81,6 +89,8 @@ Meteor.methods({
     check(projectId, String);
     check(listId, String);
     check(order, Number);
+
+    checkCanWriteProject(projectId);
 
     const _reorder = function() {
       const lists = Lists.find({ projectId }, { sort: { order: 1 } }).fetch();
@@ -105,6 +115,9 @@ Meteor.methods({
     check(listId, String);
     check(autoComplete, Boolean);
 
+    const list = Lists.findOne({ _id: listId });
+    checkCanWriteProject(list.projectId);
+
     Lists.update({ _id: listId }, { $set: { autoComplete } });
     if (autoComplete) {
       Tasks.update({ listId }, { $set: { completed: true } }, { multi: true });
@@ -115,9 +128,11 @@ Meteor.methods({
     check(listId, String);
     check(catchCompleted, Boolean);
 
+    const list = Lists.findOne({ _id: listId });
+    checkCanWriteProject(list.projectId);
+
     Lists.update({ _id: listId }, { $set: { catchCompleted } });
     if (catchCompleted) {
-      const list = Lists.findOne({ _id: listId });
       Lists.update(
         {
           projectId: list.projectId,

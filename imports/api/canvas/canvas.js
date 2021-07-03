@@ -1,6 +1,8 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
+import { Permissions, checkCanWriteProject } from "/imports/api/permissions/permissions";
+
 import CanvasSchema from "./schema";
 
 export const Canvas = new Mongo.Collection("canvas");
@@ -18,10 +20,8 @@ Meteor.methods({
     check(projectId, String);
     check(data, Object);
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanWriteProject(projectId);
+
     const canvas = Canvas.findOne({ projectId });
     const existingData = canvas.data || {};
     const finalData = Object.assign(existingData, data);
@@ -41,10 +41,7 @@ Meteor.methods({
   "canvas.get"(projectId) {
     check(projectId, String);
 
-    // Make sure the user is logged in before inserting a task
-    if (!Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
-    }
+    checkCanReadProject(projectId);
 
     let canvas = Canvas.findOne({ projectId });
     if (!canvas) {
