@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-desktop">
+  <div class="dashboard">
     <new-organization ref="newOrganization" />
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
@@ -555,7 +555,7 @@ export default {
   margin-right: 12px;
 }
 
-.dashboard-desktop {
+.dashboard {
   padding: 2rem;
   display: flex;
   flex-direction: column;
