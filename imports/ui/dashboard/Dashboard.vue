@@ -279,8 +279,8 @@
 </template>
 
 <script>
-import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
-import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
+import DashboardProjectCard from "/imports/ui/dashboard/DashboardProjectCard";
+import DashboardProjectList from "/imports/ui/dashboard/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";

@@ -1,6 +1,6 @@
 <template>
   <div class="dashboard-page">
-    <dashboard-desktop
+    <dashboard
       :key="organizationId ? organizationId : 'home'"
       :organization-id="organizationId"
     />
@@ -8,11 +8,11 @@
 </template>
 
 <script>
-import DashboardDesktop from "/imports/ui/dashboard/desktop/DashboardDesktop";
+import Dashboard from "/imports/ui/dashboard/Dashboard";
 
 export default {
   components: {
-    DashboardDesktop
+    Dashboard
   },
   props: {
     organizationId: {

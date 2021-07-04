@@ -75,7 +75,7 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import DashboardTabs from "/imports/ui/dashboard/common/DashboardTabs";
+import DashboardTabs from "/imports/ui/dashboard/DashboardTabs";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
