@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-desktop">
+  <div class="dashboard">
     <new-organization ref="newOrganization" />
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
@@ -279,8 +279,8 @@
 </template>
 
 <script>
-import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
-import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
+import DashboardProjectCard from "/imports/ui/dashboard/DashboardProjectCard";
+import DashboardProjectList from "/imports/ui/dashboard/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
@@ -555,7 +555,7 @@ export default {
   margin-right: 12px;
 }
 
-.dashboard-desktop {
+.dashboard {
   padding: 2rem;
   display: flex;
   flex-direction: column;

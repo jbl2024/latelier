@@ -85,7 +85,7 @@
   </div>
 </template>
 <script>
-import DashboardTaskList from "/imports/ui/dashboard/common/DashboardTaskList";
+import DashboardTaskList from "/imports/ui/dashboard/DashboardTaskList";
 import MeetingFindList from "/imports/ui/meetings/MeetingFindList";
 
 export default {
