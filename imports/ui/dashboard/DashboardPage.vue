@@ -1,24 +1,18 @@
 <template>
   <div class="dashboard-page">
     <dashboard-desktop
-      v-if="organizationId || $vuetify.breakpoint.mdAndUp"
       :key="organizationId ? organizationId : 'home'"
       :organization-id="organizationId"
-    />
-    <dashboard-mobile
-      v-if="!organizationId && $vuetify.breakpoint.smAndDown"
     />
   </div>
 </template>
 
 <script>
 import DashboardDesktop from "/imports/ui/dashboard/desktop/DashboardDesktop";
-import DashboardMobile from "/imports/ui/dashboard/mobile/DashboardMobile";
 
 export default {
   components: {
-    DashboardDesktop,
-    DashboardMobile
+    DashboardDesktop
   },
   props: {
     organizationId: {
