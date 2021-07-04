@@ -1,7 +1,7 @@
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { check } from "meteor/check";
-import { Permissions, checkCanWriteProject } from "/imports/api/permissions/permissions";
+import { checkCanWriteProject } from "/imports/api/permissions/permissions";
 
 import CanvasSchema from "./schema";
 
