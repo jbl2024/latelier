@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 ### Deleted
+
+## [3.4.5 2021-07-05]
+
+### Added
+
+### Changed
+
+### Deleted
 - Remove mobile dedicated dashboard
 
 ## [3.4.4 2021-07-03]
