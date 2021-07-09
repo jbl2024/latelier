@@ -24,7 +24,6 @@ import "../imports/api/users/server/avatars.js";
 import "../imports/api/projectGroups/projectGroups.js";
 import "../imports/api/projectGroups/server/publications.js";
 import "../imports/api/labels/labels.js";
-import "../imports/api/labels/server/publications.js";
 import "../imports/api/canvas/canvas.js";
 import "../imports/api/canvas/server/methods.js";
 import "../imports/api/canvas/server/publications.js";
