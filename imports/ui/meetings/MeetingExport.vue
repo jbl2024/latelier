@@ -31,6 +31,7 @@
 import { Meteor } from "meteor/meteor";
 import { saveAs } from "file-saver";
 import { sanitizeForFs } from "/imports/ui/utils/sanitize";
+import dates from "/imports/ui/utils/dates";
 
 export default {
   props: {
@@ -104,7 +105,8 @@ export default {
             const blobURL = URL.createObjectURL(blob);
             window.open(blobURL);
           } else {
-            const filename = `${this.meeting.name}.${format}`;
+            const date = dates.formatDate(this.meeting.startDate, "YYYYMMDD");
+            const filename = `${date}-${this.meeting.name}.${format}`;
             saveAs(blob, sanitizeForFs(filename));
           }
         }
