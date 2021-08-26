@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Deleted
+
+## [3.4.6 2021-08-26]
+
+### Added
+
+### Changed
 - Fix permission check for canvas & project group
 - Fix manifest.json loading behind cookie authenticated site
 - Prefix exported meeting filename with start date
