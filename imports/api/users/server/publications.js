@@ -1,13 +1,13 @@
 import { Meteor } from "meteor/meteor";
 import { check } from "meteor/check";
-import { checkLoggedIn } from "/imports/api/permissions/permissions";
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { checkCanReadOrganization } from "../../permissions/permissions";
 
 Meteor.publish("usersInOrganization", function usersInOrganization(
   organizationId
 ) {
   check(organizationId, String);
-  checkLoggedIn();
+  checkCanReadOrganization(organizationId);
   if (!organizationId) {
     this.ready();
     return null;

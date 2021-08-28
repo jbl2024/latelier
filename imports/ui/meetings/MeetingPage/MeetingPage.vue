@@ -25,7 +25,6 @@ import { mapState } from "vuex";
 import MeetingDetailCard from "/imports/ui/meetings/MeetingDetailCard";
 import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 
-
 export default {
   components: {
     MeetingEdit,

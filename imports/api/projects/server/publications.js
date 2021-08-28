@@ -2,7 +2,7 @@ import { Meteor } from "meteor/meteor";
 import { check, Match } from "meteor/check";
 import { publishComposite } from "meteor/reywood:publish-composite";
 
-import { Projects } from "../projects";
+import { Projects, ProjectStates } from "../projects";
 import { Organizations } from "../../organizations/organizations";
 import { ProjectGroups } from "../../projectGroups/projectGroups";
 import { Lists } from "../../lists/lists";
@@ -11,7 +11,7 @@ import { Labels } from "../../labels/labels";
 import { Attachments } from "../../attachments/attachments";
 import { Permissions } from "/imports/api/permissions/permissions";
 
-import { findProjectMembersIds } from "/imports/api/projects/server/common";
+import { findUserIdsInvolvedInProject } from "/imports/api/projects/server/common";
 
 Meteor.publish("projects", function projectsPublication(
   organizationId,
@@ -50,11 +50,16 @@ Meteor.publish("projects", function projectsPublication(
   return Projects.find(query);
 });
 
-publishComposite("allProjects", (name, organizationId) => ({
+publishComposite("allProjects", (name, organizationId, showArchivedProjects) => ({
   // projects
   find() {
     const userId = Meteor.userId();
     const query = { deleted: { $ne: true } };
+    if (!showArchivedProjects) {
+      query.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
 
     if (!Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];
@@ -208,7 +213,7 @@ publishComposite("project", function(projectId) {
       {
         // users
         find(project) {
-          const membersIds = findProjectMembersIds(project);
+          const membersIds = findUserIdsInvolvedInProject(project);
           return Meteor.users.find(
             { _id: { $in: membersIds } },
             {

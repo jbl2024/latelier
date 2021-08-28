@@ -145,7 +145,6 @@ export default {
 
 @include scrollbar;
 
-
 .project {
   display: flex;
   min-height: 0;

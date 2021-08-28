@@ -32,6 +32,7 @@ import { Coeditions } from "/imports/api/coeditions/coeditions";
 import { Editor, EditorContent } from "tiptap";
 import KeyboardSubmit from "./extensions/KeyboardSubmit";
 import TodoItem from "./extensions/TodoItem";
+import { CustomItalic, CustomBold } from "./extensions/Markdown";
 
 import {
   Link,
@@ -42,9 +43,7 @@ import {
   OrderedList,
   BulletList,
   ListItem,
-  Bold,
   Code,
-  Italic,
   Strike,
   Underline,
   History,
@@ -168,9 +167,9 @@ export default {
       new BulletList(),
       new OrderedList(),
       new ListItem(),
-      new Bold(),
+      new CustomBold(),
       new Code(),
-      new Italic(),
+      new CustomItalic(),
       new Strike(),
       new Underline(),
       new History(),

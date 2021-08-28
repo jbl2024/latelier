@@ -14,10 +14,16 @@ const data = `
 <link rel="icon" type="image/png" sizes="32x32" href="${basePath}favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="96x96" href="${basePath}favicon-96x96.png">
 <link rel="icon" type="image/png" sizes="16x16" href="${basePath}favicon-16x16.png">
-<link rel="manifest" href="${basePath}manifest.json">
+<link rel="manifest" href="${basePath}manifest.json" crossorigin="use-credentials">
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="msapplication-TileImage" content="${basePath}ms-icon-144x144.png">
 <meta name="theme-color" content="#ffffff">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="Description" content="L'atelier">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="L'atelier">
+<meta name="application-name" content="L'atelier">
+
 `;
 
 document.getElementsByTagName("head")[0].insertAdjacentHTML("beforeend", data);

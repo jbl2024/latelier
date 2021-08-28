@@ -1,9 +1,7 @@
 import { FilesCollection } from "meteor/ostrio:files";
 import SimpleSchema from "simpl-schema";
 
-
 export const AttachmentSchema = FilesCollection.schema;
-
 
 // Picking meta,name,userId from Attachment schema and add page and perPage field to it
 export const AttachmentsFindSchema = (() => {

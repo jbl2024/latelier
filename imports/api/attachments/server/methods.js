@@ -111,7 +111,6 @@ Attachments.methods.clone = new ValidatedMethod({
   }
 });
 
-
 Attachments.methods.find = new ValidatedMethod({
   name: "attachments.find",
   validate: AttachmentsFindSchema.validator(),

@@ -92,7 +92,7 @@
             </v-list>
             <div class="text-xs-center">
               <v-pagination
-                v-if="pagination.totalPages > 0"
+                v-if="pagination.totalPages > 1"
                 v-model="page"
                 :length="pagination.totalPages"
               />
@@ -115,7 +115,7 @@
 import { mapState } from "vuex";
 import { Meteor } from "meteor/meteor";
 import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
-import * as htmlToText from "@mxiii/html-to-text";
+import * as htmlToText from "html-to-text";
 import debounce from "lodash/debounce";
 import NewExample from "./NewExample";
 import EditExample from "./EditExample";

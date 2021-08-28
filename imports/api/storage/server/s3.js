@@ -159,7 +159,6 @@ export const interceptDownload = ({ collection, http, fileRef, version }) => {
   return false;
 };
 
-
 export const onBeforeRemove = ({ collection, search }) => {
   const cursor = collection.find(search);
   cursor.forEach((fileRef) => {
@@ -180,7 +179,6 @@ export const onBeforeRemove = ({ collection, search }) => {
   });
 };
 
-
 export const migrateCollectionToS3 = ({ collection, folder, search = {} }) => {
   if (!folder) return;
   if (!collection) return;
@@ -196,7 +194,6 @@ export const migrateCollectionToS3 = ({ collection, folder, search = {} }) => {
   cursor.forEach((fileRef) => {
     _.each(fileRef.versions, (vRef) => {
       if (isAlreadyMigrated(vRef)) return;
-
 
       if (!fs.existsSync(vRef.path)) {
         console.log(`${collection.collection._name}: file not found: ${vRef.path}`);

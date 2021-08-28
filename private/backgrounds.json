@@ -38,5 +38,28 @@
     "credits": "<span>Photo by <a href='https://unsplash.com/@nasa?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>NASA</a> on <a href='https://unsplash.com/explore/backgrounds?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Unsplash</a></span>",
     "name": "Gulf of Mexico, United States",
     "path": "./backgrounds/nasa-Q1p7bh3SHj8-unsplash.jpg"
+  },
+  {
+    "credits": "<span>Photo by <a href='https://unsplash.com/@evieshaffer?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Evie S.</a> on <a href='https://unsplash.com/s/photos/background?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Unsplash</a></span>",
+    "name": "Red petaled flower",
+    "path": "./backgrounds/evie-s-bSVGnUCk4tk-unsplash.jpg"
+  },
+  {
+    "credits": "<span>Photo by <a href='https://unsplash.com/@randomlies?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Ashim D’Silva</a> on <a href='https://unsplash.com/?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Unsplash</a></span>",
+    "name": "Lower Antelope Canyon, Page, United States",
+    "path": "./backgrounds/ashim-d-silva-WeYamle9fDM-unsplash.jpg"
+  },
+  {
+    "credits": "<span>Photo by <a href='https://unsplash.com/@andersjilden?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Anders Jildén</a> on <a href='https://unsplash.com/s/photos/wallpaper?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Unsplash</a></span>",
+    "name": "Värmdö, Sweden",
+    "path": "./backgrounds/anders-jilden-uwbajDCODj4-unsplash.jpg"
+  },
+  {
+    "credits": "<span>Photo by <a href='https://unsplash.com/@zoltantasi?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Zoltan Tasi</a> on <a href='https://unsplash.com/s/photos/zen-garden?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText'>Unsplash</a></span>",
+    "name": "Penshurst Place & Gardens, Penshurst, United Kingdom",
+    "path": "./backgrounds/zoltan-tasi-vHnVtLK8rCc-unsplash.jpg"
   }
 ]
+
+
+  

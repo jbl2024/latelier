@@ -70,12 +70,28 @@ if (Meteor.isServer) {
 
       const result = Meteor.call("search.findTasks", { name: "a" });
       expect(result.totalItems).to.be.equal(1);
+
+      Meteor.call("projects.updateState", {
+        projectId: Projects.findOne()._id,
+        state: ProjectStates.ARCHIVED
+      });
+
+      const result2 = Meteor.call("search.findTasks", { name: "a" });
+      expect(result2.totalItems).to.be.equal(0);
     });
 
     it("project is displayed to user", async function() {
       createProject();
       const result = Meteor.call("search.findProjects", { name: "project" });
       expect(result.totalItems).to.be.equal(1);
+
+      Meteor.call("projects.updateState", {
+        projectId: result.data[0]._id,
+        state: ProjectStates.ARCHIVED
+      });
+
+      const result2 = Meteor.call("search.findProjects", { name: "project" });
+      expect(result2.totalItems).to.be.equal(0);
     });
 
     it("nothing is displayed to new user", async function() {

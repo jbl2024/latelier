@@ -187,9 +187,6 @@ export default {
   meteor: {
     // Subscriptions
     $subscribe: {
-      project() {
-        return [this.projectId];
-      },
       canvas: function () {
         return [this.projectId];
       }

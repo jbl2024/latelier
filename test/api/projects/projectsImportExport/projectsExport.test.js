@@ -14,7 +14,6 @@ if (Meteor.isServer) {
       restoreStubs();
     });
 
-
     it("export project is only available for project admin members", async function () {
       let errorCode;
       const user = Meteor.users.findOne();

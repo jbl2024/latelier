@@ -10,6 +10,7 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 
 export default {
   name: "DashboardTaskList",
@@ -37,8 +38,14 @@ export default {
       tasks: null
     };
   },
+  computed: {
+    ...mapState(["showArchivedProjects"])
+  },
   watch: {
     organizationId() {
+      this.refresh();
+    },
+    showArchivedProjects() {
       this.refresh();
     }
   },
@@ -53,6 +60,7 @@ export default {
         this.organizationId,
         this.projectId,
         1,
+        this.showArchivedProjects,
         (error, result) => {
           this.loading = false;
           if (error) {

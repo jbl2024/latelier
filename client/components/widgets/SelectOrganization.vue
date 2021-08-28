@@ -37,7 +37,7 @@
         <v-card-actions>
           <v-spacer />
           <v-btn text @click="closeDialog">
-            {{ this.$t("Cancel") }}
+            {{ $t("Cancel") }}
           </v-btn>
         </v-card-actions>
       </v-card>

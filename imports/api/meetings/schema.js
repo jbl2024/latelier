@@ -199,7 +199,6 @@ export const MeetingCreateSchema = (() => new SimpleSchema({
   }
 }))();
 
-
 export const MeetingUpdateSchema = (() => {
   const updateSchema = MeetingCreateSchema.omit("projectId");
   updateSchema.extend({

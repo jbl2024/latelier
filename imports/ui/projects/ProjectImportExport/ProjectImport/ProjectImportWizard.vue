@@ -18,60 +18,56 @@
             <v-list subheader two-line flat>
               <!-- Project name -->
               <v-list-item>
-                <template>
-                  <v-list-item-content>
-                    <v-list-item-title>
-                      <v-text-field
-                        v-model="projectName"
-                        :label="$t('project.import.projectName')"
-                        hide-details="auto"
-                        required
-                      />
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </template>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    <v-text-field
+                      v-model="projectName"
+                      :label="$t('project.import.projectName')"
+                      hide-details="auto"
+                      required
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
               <!-- Organization -->
               <v-list-item>
-                <template>
-                  <v-list-item-content>
-                    <v-list-item-title
-                      v-if="!organizationId"
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-if="!organizationId"
+                  >
+                    <v-select
+                      v-model="projectOrganizationId"
+                      :label="$t('project.import.projectOrganization')"
+                      :items="organizations"
+                      hide-details="auto"
+                      item-text="name"
+                      item-value="_id"
                     >
-                      <v-select
-                        v-model="projectOrganizationId"
-                        :label="$t('project.import.projectOrganization')"
-                        :items="organizations"
-                        hide-details="auto"
-                        item-text="name"
-                        item-value="_id"
-                      >
-                        <template v-slot:prepend-item>
-                          <v-list-item
-                            ripple
-                            @click.stop="projectOrganizationId = null"
-                          >
-                            <v-list-item-content>
-                              <v-list-item-title>
-                                {{ $t("project.import.withoutOrganization") }}
-                              </v-list-item-title>
-                            </v-list-item-content>
-                          </v-list-item>
-                          <v-divider />
-                        </template>
-                      </v-select>
-                      <!-- Preselected organization -->
-                    </v-list-item-title>
-                    <v-list-item-title v-else-if="selectedOrganization">
-                      <v-text-field
-                        :label="$t('project.import.projectOrganization')"
-                        :value="selectedOrganization.name"
-                        :readonly="true"
-                        hide-details="auto"
-                      />
-                    </v-list-item-title>
-                  </v-list-item-content>
-                </template>
+                      <template v-slot:prepend-item>
+                        <v-list-item
+                          ripple
+                          @click.stop="projectOrganizationId = null"
+                        >
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ $t("project.import.withoutOrganization") }}
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-divider />
+                      </template>
+                    </v-select>
+                    <!-- Preselected organization -->
+                  </v-list-item-title>
+                  <v-list-item-title v-else-if="selectedOrganization">
+                    <v-text-field
+                      :label="$t('project.import.projectOrganization')"
+                      :value="selectedOrganization.name"
+                      :readonly="true"
+                      hide-details="auto"
+                    />
+                  </v-list-item-title>
+                </v-list-item-content>
               </v-list-item>
             </v-list>
             <div class="pt-2">

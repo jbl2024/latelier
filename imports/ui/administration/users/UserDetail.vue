@@ -34,7 +34,7 @@
             v-if="!isMe()"
             @click="showConfirmDeleteUserDialog = true"
           >
-            <v-list-item-title>{{ this.$t("Delete") }}</v-list-item-title>
+            <v-list-item-title>{{ $t("Delete") }}</v-list-item-title>
           </v-list-item>
         </v-list>
       </v-menu>
@@ -118,7 +118,7 @@
     <v-card-actions>
       <v-spacer />
       <v-btn text @click.native="close()">
-        {{ this.$t("Close") }}
+        {{ $t("Close") }}
       </v-btn>
       <v-btn color="primary" :disabled="!valid" @click.native="save()">
         {{ $t("Update") }}

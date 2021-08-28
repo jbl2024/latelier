@@ -4,7 +4,7 @@
     <task-list :tasks="tasks" @select="onSelectTask" />
     <div class="text-xs-center">
       <v-pagination
-        v-if="pagination.totalPages > 0"
+        v-if="pagination.totalPages > 1"
         v-model="page"
         :total-visible="5"
         :length="pagination.totalPages"
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
+
 export default {
   props: {
     filter: {
@@ -42,6 +44,9 @@ export default {
       }
     };
   },
+  computed: {
+    ...mapState(["showArchivedProjects"])
+  },
   watch: {
     page() {
       this.find();
@@ -67,7 +72,8 @@ export default {
           name: this.filter,
           projectId: this.projectId,
           organizationId: this.organizationId,
-          page: this.page
+          page: this.page,
+          showArchivedProjects: this.showArchivedProjects
         },
         (error, result) => {
           this.loading = false;

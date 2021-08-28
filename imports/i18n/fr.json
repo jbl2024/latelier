@@ -45,6 +45,11 @@
   "New organization": "Nouvelle organisation",
   "Create new organization": "Créer une nouvelle organisation",
   "Create new project": "Créer un nouveau projet",
+  "Show archived projects": "Afficher les projets archivés",
+  "Archive": "Archiver",
+  "Unarchive": "Désarchiver",
+  "Archived": "Archivé",
+  "Archived project": "Projet archivé",
   "Choose color": "Choisir une couleur",
   "New label": "Nouveau label",
   "Add new task": "Ajouter une tâche",
@@ -389,6 +394,9 @@
     "logoutConfirm": "Voulez-vous vous déconnecter ?"
   },
   "project": {
+    "owner": "Propriétaire",
+    "administrator": "Administrateur",
+    "organizationMember": "Membre de l'organisation",
     "import": {
       "itemsToImport": "Éléments à importer",
       "importProject": "Importer un projet",

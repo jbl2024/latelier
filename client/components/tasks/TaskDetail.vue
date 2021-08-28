@@ -96,9 +96,7 @@
       </div>
 
       <!-- Task Labels -->
-      <template v-if="!hideLabels">
-        <task-labels :task="task" />
-      </template>
+      <task-labels :task="task" />
 
       <!-- Dates -->
       <div class="authors">
@@ -122,7 +120,7 @@
           {{ formatDate(task.completedAt) }}
         </div>
 
-        <v-layout row>
+        <v-layout>
           <v-flex shrink>
             <div class="number">
               #{{ task.number }}
@@ -260,10 +258,6 @@ export default {
         #${this.task.number} - 
         ${this.task.name ? this.linkifyHtml(this.task.name) : ""}
       `;
-    },
-    hideLabels() {
-      if (this.taskObject && this.taskObject.project) return true;
-      return false;
     },
     attachmentsDisabled() {
       return Meteor.settings.public.disableAttachments;

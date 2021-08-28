@@ -1,12 +1,27 @@
+import { Meteor } from "meteor/meteor";
 import { publishComposite } from "meteor/reywood:publish-composite";
 
 import { Projects } from "/imports/api/projects/projects";
 import { Canvas } from "/imports/api/canvas/canvas";
+import { Permissions } from "/imports/api/permissions/permissions";
 
-publishComposite("canvas", function(projectId) {
+publishComposite("canvas", function (projectId) {
   return {
     find() {
-      return Projects.find({ _id: projectId });
+      const userId = Meteor.userId();
+      const query = {
+        _id: projectId,
+        deleted: { $ne: true }
+      };
+      if (!Permissions.isAdmin(Meteor.userId())) {
+        query.$or = [
+          { createdBy: userId },
+          { members: userId },
+          { isPublic: true }
+        ];
+      }
+
+      return Projects.find(query);
     },
     children: [
       {

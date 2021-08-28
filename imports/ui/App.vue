@@ -75,7 +75,7 @@
 import { mapState, mapGetters } from "vuex";
 import TopBar from "./ui/TopBar";
 import NavDrawer from "./ui/NavDrawer";
-import DashboardTabs from "/imports/ui/dashboard/common/DashboardTabs";
+import DashboardTabs from "/imports/ui/dashboard/DashboardTabs";
 import MainMenu from "/imports/ui/ui/MainMenu";
 
 export default {
@@ -327,6 +327,12 @@ html {
 /* fix for safari : all parents must have height defined for height:100% to work */
 .v-main__wrap {
   height: 100%;
+}
+
+/* safari issue, see https://github.com/vuetifyjs/vuetify/issues/13599 */
+.v-btn--disabled {
+  pointer-events: unset !important;
+  cursor: default;
 }
 
 </style>

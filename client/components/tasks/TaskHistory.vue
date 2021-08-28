@@ -27,7 +27,7 @@
 
         <div class="text-xs-center pb-2 flex0">
           <v-pagination
-            v-if="showDialog && pagination.totalPages > 0"
+            v-if="showDialog && pagination.totalPages > 1"
             v-model="page"
             :length="pagination.totalPages"
           />

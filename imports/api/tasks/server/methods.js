@@ -5,7 +5,7 @@ import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Lists } from "/imports/api/lists/lists.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 import { Labels } from "/imports/api/labels/labels.js";
-import * as htmlToText from "@mxiii/html-to-text";
+import * as htmlToText from "html-to-text";
 import carbone from "carbone";
 import moment from "moment";
 
@@ -232,7 +232,6 @@ Tasks.methods.exportODT = new ValidatedMethod({
     return future.wait();
   }
 });
-
 
 Tasks.methods.exportProject = new ValidatedMethod({
   name: "tasks.exportProject",

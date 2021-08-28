@@ -1,6 +1,6 @@
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
-import { Projects } from "/imports/api/projects/projects";
+import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { Meetings } from "/imports/api/meetings/meetings";
 import {
@@ -17,9 +17,10 @@ methods.findTasks = new ValidatedMethod({
     organizationId: { type: String, optional: true },
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page }) {
+  run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -40,11 +41,16 @@ methods.findTasks = new ValidatedMethod({
     };
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (organizationId) {
       projectQuery.organizationId = organizationId;
     }
@@ -141,20 +147,21 @@ methods.findTasks = new ValidatedMethod({
   }
 });
 
-
 methods.findProjects = new ValidatedMethod({
   name: "search.findProjects",
   validate: new SimpleSchema({
     organizationId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, name, page }) {
+  run({ organizationId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
+    const user = Meteor.user();
     const userId = Meteor.userId();
     const isRegularUser = !Permissions.isAdmin(userId);
-    const sort = { updatedAt: -1 };
+    const sort = { name: 1 };
 
     const perPage = 5;
     let skip = 0;
@@ -173,6 +180,12 @@ methods.findProjects = new ValidatedMethod({
       projectQuery.organizationId = organizationId;
     }
 
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (isRegularUser) {
       projectQuery.members = userId;
     }
@@ -181,13 +194,46 @@ methods.findProjects = new ValidatedMethod({
     if (name && name.length > 0) {
       projectQuery.name = { $regex: `.*${name}.*`, $options: "i" };
     }
-    // get tasks
+    const favoriteProjectIds = user.profile?.favoriteProjects || [];
+
     const count = Projects.find(projectQuery).count();
-    const data = Projects.find(projectQuery, {
-      skip,
-      limit: perPage,
-      sort
-    }).fetch();
+    const favoriteCount = Projects.find({
+      ...projectQuery,
+      _id: {
+        $in: favoriteProjectIds
+      }
+    }).count();
+
+    // get favorite projects
+    let data = Projects.find(
+      {
+        ...projectQuery,
+        _id: {
+          $in: favoriteProjectIds
+        }
+      }, {
+        skip,
+        limit: perPage,
+        sort
+      }
+    ).fetch();
+
+    if (data.length < perPage) {
+      // get regular projects if slots are still available
+      let newSkip = skip - favoriteCount; // recaculate skip for regular projects
+      if (newSkip < 0) newSkip = 0;
+      const regularProjects = Projects.find({
+        ...projectQuery,
+        _id: {
+          $nin: favoriteProjectIds
+        }
+      }, {
+        skip: newSkip,
+        limit: perPage - data.length,
+        sort
+      }).fetch();
+      data = data.concat(regularProjects);
+    }
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
@@ -259,9 +305,10 @@ methods.findAttachments = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ projectId, name, page }) {
+  run({ projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -280,11 +327,16 @@ methods.findAttachments = new ValidatedMethod({
     const attachmentQuery = {};
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (projectId) {
       checkCanReadProject(projectId);
       projectQuery._id = projectId;
@@ -382,9 +434,10 @@ methods.findMeetings = new ValidatedMethod({
     organizationId: { type: String, optional: true },
     projectId: { type: String, optional: true },
     name: { type: String },
-    page: { type: Number, optional: true }
+    page: { type: Number, optional: true },
+    showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page }) {
+  run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -405,11 +458,16 @@ methods.findMeetings = new ValidatedMethod({
     };
     const sort = { updatedAt: -1 };
 
-
     // get projects
     const projectQuery = {
       deleted: { $ne: true }
     };
+    if (!showArchivedProjects) {
+      projectQuery.state = {
+        $ne: ProjectStates.ARCHIVED
+      };
+    }
+
     if (organizationId) {
       projectQuery.organizationId = organizationId;
     }
@@ -439,7 +497,6 @@ methods.findMeetings = new ValidatedMethod({
       limit: perPage,
       sort
     }).fetch();
-
 
     // load associated objects and assign them to meetings
     const projects = {};

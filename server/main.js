@@ -25,7 +25,6 @@ import "../imports/api/users/server/avatars.js";
 import "../imports/api/projectGroups/projectGroups.js";
 import "../imports/api/projectGroups/server/publications.js";
 import "../imports/api/labels/labels.js";
-import "../imports/api/labels/server/publications.js";
 import "../imports/api/canvas/canvas.js";
 import "../imports/api/canvas/server/methods.js";
 import "../imports/api/canvas/server/publications.js";
@@ -68,6 +67,8 @@ import "../imports/api/storage/server/s3";
 
 import "./apm.js";
 import "./oauth2";
+import "./manifest";
+
 import { RestApi } from "../imports/api/RestApi";
 
 if (Meteor.settings.email?.mailUrl) {

@@ -4,7 +4,8 @@
       <v-progress-linear indeterminate />
     </div>
     <div v-else class="project-wrapper">
-      <v-tabs>
+      <v-tabs ref="tabs" v-resize="centerTabs" centered class="sticky-tabs">
+        <v-tabs-slider color="accent" />
         <v-tab id="tab-general">
           {{ $t('Settings' ) }}
         </v-tab>
@@ -71,12 +72,24 @@ export default {
       }
       return organization;
     }
+  },
+  methods: {
+    centerTabs() {
+      setTimeout(() => {
+        this.$refs.tabs.onResize();
+      }, 500);
+    }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.organization-settings-tab-item {
-  padding: 2rem;
+.organization-settings {
+  height: 400px; /* fix sticky on webkit */
 }
+
+.users {
+  overflow-y: scroll;
+}
+
 </style>

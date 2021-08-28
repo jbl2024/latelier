@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-desktop">
+  <div class="dashboard">
     <new-organization ref="newOrganization" />
     <new-project ref="newProject" :organization-id="selectedOrganizationId" />
     <projects-trashcan ref="projectsTrashcan" />
@@ -9,10 +9,7 @@
       :organization-id="organizationId"
       :is-shown.sync="showProjectImport"
     />
-    <div v-if="!isReady">
-      <v-progress-linear indeterminate />
-    </div>
-    <div v-else>
+    <div>
       <div class="projects-title">
         <v-layout align-center>
           <v-flex grow>
@@ -95,7 +92,12 @@
         </v-layout>
       </div>
       <v-divider />
-      <template v-if="projects.length == 0 && organizations.length == 0">
+      <v-switch
+        v-model="showArchivedProjects"
+        color="indigo"
+        :label="$t('Show archived projects')"
+      />
+      <template v-if="isReady && (projects.length == 0 && organizations.length == 0)">
         <empty-state
           class="main-empty-state"
           :description="$t('noProjectYet')"
@@ -113,7 +115,7 @@
           </v-btn>
         </empty-state>
       </template>
-      <div class="projects-wrapper">
+      <div v-if="isReady" class="projects-wrapper">
         <template v-if="favorites.length > 0">
           <div class="header">
             <div class="header-title">
@@ -129,7 +131,7 @@
           >
             <v-layout row wrap>
               <v-flex v-for="project in favorites" :key="project._id" :class="cardClass">
-                <dashboard-project-card :project="project" :user="user" />
+                <dashboard-project-card :project="project" :user="user" :is-favorite="true" />
               </v-flex>
             </v-layout>
           </v-container>
@@ -151,7 +153,12 @@
           </div>
           <v-list two-line class="list">
             <template v-for="project in individuals">
-              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+              <dashboard-project-list
+                :key="project._id"
+                :project="project"
+                :user="user"
+                :is-favorite="favoriteProjects.includes(project._id)"
+              />
             </template>
           </v-list>
         </template>
@@ -240,13 +247,18 @@
                 dashboardFilter
               )"
             >
-              <dashboard-project-list :key="project._id" :project="project" :user="user" />
+              <dashboard-project-list
+                :key="project._id"
+                :project="project"
+                :user="user"
+                :is-favorite="favoriteProjects.includes(project._id)"
+              />
             </template>
           </v-list>
 
           <empty-state
             v-if="
-              dashboardFilter === '' &&
+              isReady && dashboardFilter === '' &&
                 projectsByOrganization(organization).length == 0
             "
             :key="`${organization._id}-empty`"
@@ -267,8 +279,8 @@
 </template>
 
 <script>
-import DashboardProjectCard from "/imports/ui/dashboard/desktop/DashboardProjectCard";
-import DashboardProjectList from "/imports/ui/dashboard/desktop/DashboardProjectList";
+import DashboardProjectCard from "/imports/ui/dashboard/DashboardProjectCard";
+import DashboardProjectList from "/imports/ui/dashboard/DashboardProjectList";
 import { Projects } from "/imports/api/projects/projects.js";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin.js";
@@ -303,9 +315,25 @@ export default {
   },
   computed: {
     ...mapState(["currentUser", "dashboardFilter"]),
+    showArchivedProjects: {
+      get() {
+        return this.$store.state.showArchivedProjects;
+      },
+      set(value) {
+        this.$store.dispatch("showArchivedProjects", value);
+      }
+    },
+
     isReady() {
       return this.$subReady.allProjects
       && this.$subReady.organizations && this.currentUser;
+    },
+    favoriteProjects() {
+      let favorites = [];
+      if (this.currentUser && this.currentUser.profile) {
+        favorites = this.currentUser.profile.favoriteProjects || [];
+      }
+      return favorites;
     }
   },
   mounted() {
@@ -321,7 +349,7 @@ export default {
   meteor: {
     $subscribe: {
       allProjects: function() {
-        return ["", this.organizationId];
+        return ["", this.organizationId, this.showArchivedProjects];
       },
       organizations: function() {
         return ["", this.organizationId];
@@ -527,7 +555,7 @@ export default {
   margin-right: 12px;
 }
 
-.dashboard-desktop {
+.dashboard {
   padding: 2rem;
   display: flex;
   flex-direction: column;

@@ -77,7 +77,7 @@
       <v-card-actions>
         <v-spacer />
         <v-btn text @click.native="close()">
-          {{ this.$t("Close") }}
+          {{ $t("Close") }}
         </v-btn>
         <v-btn color="primary" :disabled="!valid" @click.native="create()">
           {{ $t("Create") }}

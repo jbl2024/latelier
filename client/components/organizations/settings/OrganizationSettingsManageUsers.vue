@@ -5,8 +5,8 @@
       :is-admin="canManageOrganization(organization)"
       @select="onSelectUser"
     />
-    <div class="elevation-1 users">
-      <v-list v-if="currentUser && $subReady.usersInOrganization">
+    <div class="users">
+      <v-list v-if="currentUser && $subReady.usersInOrganization" two-line class="list">
         <v-subheader>
           {{ $t("Members") }}
           <v-btn text icon @click="showSelectUserDialog = true">
@@ -21,8 +21,20 @@
 
             <v-list-item-content>
               <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+              <v-list-item-subtitle>
+                <v-chip v-if="user._id === organization.createdBy" small color="purple" dark>
+                  {{ $t('project.owner') }}
+                </v-chip>
+                <v-chip v-if="isAdmin(user, organization)" small color="red" dark>
+                  <v-avatar left>
+                    <v-icon small>
+                      mdi-security
+                    </v-icon>
+                  </v-avatar>
+                  {{ $t('project.administrator') }}
+                </v-chip>
+              </v-list-item-subtitle>
             </v-list-item-content>
-
             <v-list-item-action
               v-if="
                 canManageOrganization(organization) &&
@@ -209,7 +221,16 @@ export default {
   background-color: red;
 }
 
-.users {
-  margin-top: 12px;
+.list {
+  max-width: 800px;
+  margin: 0 auto;
+  margin-top: 24px;
+  margin-bottom: 24px;
 }
+
+.organization-settings-manage-users {
+  padding-top: 8px;
+  background-color: #e5e5e5;
+}
+
 </style>

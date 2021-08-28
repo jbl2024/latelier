@@ -9,6 +9,104 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+
+### Deleted
+
+## [3.4.6 2021-08-26]
+
+### Added
+
+### Changed
+- Fix permission check for canvas & project group
+- Fix manifest.json loading behind cookie authenticated site
+- Prefix exported meeting filename with start date
+
+### Deleted
+
+## [3.4.5 2021-07-05]
+
+### Added
+
+### Changed
+
+### Deleted
+- Remove mobile dedicated dashboard
+
+## [3.4.4 2021-07-03]
+
+### Added
+- Do not display archived projects
+
+### Changed
+- Fix manifest.json URLs when root path is not /
+- Fix project label display on task detail
+
+### Deleted
+
+## [3.4.3 2021-06-25]
+
+### Added
+
+### Changed
+- Update packages:
+  - Bump handlebars from 4.7.6 to 4.7.7 
+  - Bump simpl-schema from 1.7.0 to 1.10.2
+  - Bump y18n from 4.0.0 to 4.0.1
+  - Bump lodash from 4.17.19 to 4.17.21 
+- Move from @mxiii/html-to-text to html-to-text (https://github.com/werk85/node-html-to-text/issues/198 is closed)
+- Update es-lint-* packages
+
+
+### Deleted
+
+## [3.4.2 2021-04-22]
+
+### Added
+- PWA support
+- Display favorite projects on project list on top with icon
+
+### Changed
+- Hide pagination bars when pagination is irrelevant
+
+### Deleted
+
+## [3.4.1 2021-04-20]
+
+### Added
+
+### Changed
+- Fix http mode upload
+
+### Deleted
+
+## [3.4.0 2021-04-19]
+
+### Added
+- 3 background photos
+
+### Changed
+- User management:
+  - Display more information about users on organization & project on setting pages
+  - Disable remove user from project if user is member of associated organization
+  - Fix set admin button in project settings page
+  - Fix user listing in project settings page
+- Check permissions when uploading file
+- Display & manage labels & attachments on task detail in dashboard page
+- Improve background selector
+- Update tiptap:
+  - tiptap: 1.32.2
+  - tiptap-extensions: 1.35.2
+  - Markdown shortcuts: apply shortcut only on separate words
+
+### Deleted
+
+## [3.3.6 2021-04-13]
+
+### Added
+
+### Changed
+- Update node version to 12.22.1
+- Update to Meteor 2.1.1
 - Security updates:
   - Update MJML to latest version (4.9.0)
 

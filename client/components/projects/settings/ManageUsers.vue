@@ -7,7 +7,7 @@
       :is-admin="canManageProject(project)"
       @select="onSelectUser"
     />
-    <v-list class="list">
+    <v-list class="list" two-line>
       <v-subheader>
         {{ $t("Members") }}
         <v-btn text icon @click="showSelectUserDialog = true">
@@ -24,6 +24,22 @@
 
           <v-list-item-content>
             <v-list-item-title>{{ formatUser(user) }}</v-list-item-title>
+            <v-list-item-subtitle>
+              <v-chip v-if="user.isOwner" small color="purple" dark>
+                {{ $t('project.owner') }}
+              </v-chip>
+              <v-chip v-if="user.inOrganization" small color="blue" dark>
+                {{ $t('project.organizationMember') }}
+              </v-chip>
+              <v-chip v-if="isAdmin(user, project)" small color="red" dark>
+                <v-avatar left>
+                  <v-icon small>
+                    mdi-security
+                  </v-icon>
+                </v-avatar>
+                {{ $t('project.administrator') }}
+              </v-chip>
+            </v-list-item-subtitle>
           </v-list-item-content>
 
           <v-list-item-action
@@ -33,7 +49,7 @@
                 userId != user._id
             "
           >
-            <v-tooltip>
+            <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
@@ -57,7 +73,7 @@
                 userId != user._id
             "
           >
-            <v-tooltip>
+            <v-tooltip top>
               <template v-slot:activator="{ on }">
                 <v-btn
                   icon
@@ -74,7 +90,7 @@
             </v-tooltip>
           </v-list-item-action>
 
-          <v-list-item-action>
+          <v-list-item-action v-if="!user.inOrganization">
             <v-btn icon ripple @click.stop="removeUser(user)">
               <v-icon>
                 mdi-delete
@@ -142,7 +158,7 @@ export default {
 
     isAdmin(user, project) {
       return (
-        Permissions.isAdmin(user._id, project._id)
+        Permissions.isAdmin(user, project._id)
         || Permissions.isAdmin(user._id)
       );
     },
@@ -161,7 +177,9 @@ export default {
           (error) => {
             if (error) {
               this.$notifyError(error);
+              return;
             }
+            this.fetchUsers();
           }
         );
       }
@@ -174,7 +192,9 @@ export default {
           (error) => {
             if (error) {
               this.$notifyError(error);
+              return;
             }
+            this.fetchUsers();
           }
         );
       }
@@ -199,7 +219,7 @@ export default {
 }
 
 .manage-users {
-  margin-top: 12px;
+  padding-top: 8px;
   background-color: #e5e5e5;
 }
 

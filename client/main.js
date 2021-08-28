@@ -1,5 +1,5 @@
 import { Meteor } from "meteor/meteor";
-
+import "/imports/startup/client/serviceWorker.js";
 // Libs
 import Vue from "vue";
 import VueRouter from "vue-router";
@@ -29,7 +29,6 @@ import confirm from "/imports/confirm/confirm";
 import VueMatomo from "vue-matomo";
 
 require("intersection-observer");
-
 
 if (Meteor.settings.public.devServerURL) {
   // HMR url for iOS

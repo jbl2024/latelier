@@ -115,7 +115,6 @@ if (Meteor.isServer) {
       expect(convertedTask.name).to.be.equal("check3");
     });
 
-
     it("only members can create tasks", async function() {
       let errorCode;
 

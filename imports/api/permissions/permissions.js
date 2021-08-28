@@ -14,6 +14,20 @@ export const PermissionObjects = Object.freeze({
   TASK: "task"
 });
 
+// Provide ddp auth
+export const runAsUser = function runAsUser(userId, func) {
+  const { DDPCommon } = Package["ddp-common"];
+  const invocation = new DDPCommon.MethodInvocation({
+    isSimulation: false,
+    userId: userId,
+    setUserId: () => { },
+    unblock: () => { },
+    connection: {},
+    randomSeed: Random.id()
+  });
+  return DDP._CurrentInvocation.withValue(invocation, () => func());
+};
+
 export const Permissions = {
   isAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     if (!userId) {
@@ -175,7 +189,6 @@ export const checkCanWriteTask = (taskId) => {
 export const checkCanDeleteTask = (taskId) => {
   Meteor.call("permissions.canDeleteTask", { taskId });
 };
-
 
 /** Meetings * */
 
