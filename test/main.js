@@ -1,5 +1,6 @@
 import assert from "assert";
 import "/server/main";
+import "/test/utils/isNumeric.test";
 import "/test/api/users/users.test";
 import "/test/api/bpmn/processDiagrams.test";
 import "/test/api/bpmn/examples/examples.test";
