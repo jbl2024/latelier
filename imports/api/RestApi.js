@@ -5,13 +5,15 @@ import mung from "express-mung";
 import bodyParser from "body-parser";
 import swaggerDocument from "./swagger.json";
 import routes from "./routes";
+import { RestApiError } from "./RestApiError";
+
+export { RestApiError };
 
 export const API_STATUSES = {
   SUCCESS: "success",
   FAIL: "fail",
   ERROR: "error"
 };
-
 
 export const runAsUser = function runAsUser(userId, func) {
   const { DDPCommon } = Package["ddp-common"];
@@ -28,10 +30,10 @@ export const runAsUser = function runAsUser(userId, func) {
 
 export const RestApi = class RestApi {
   constructor(config) {
-    this.config = config || this.defaultConfig();
+    this.config = config || RestApi.defaultConfig();
   }
 
-  defaultConfig() {
+  static defaultConfig() {
     return {
       enabled: true,
       basePath: "/api",
@@ -45,12 +47,12 @@ export const RestApi = class RestApi {
     const server = express();
 
     server.use((req, res, next) => runAsUser("Z4f76EuDbLhN6whyy", next));
-    server.use(this.responseEnvelope());
+    server.use(RestApi.responseEnvelope());
     server.use(this.config.basePath, routes);
     if (this.config?.swagger?.enabled === true) {
       this.setupSwagger(server);
     }
-    this.setErrorHandler(server);
+    RestApi.setErrorHandler(server);
     webApp.connectHandlers
       .use(this.config.basePath, helmet())
       .use(this.config.basePath, bodyParser.urlencoded({ extended: true }))
@@ -66,23 +68,21 @@ export const RestApi = class RestApi {
     server.use(this.config?.swagger?.uiPath, swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 
-  setErrorHandler(server) {
-    const _this = this;
-    server.use(function (error, req, res, next) {
+  static setErrorHandler(server) {
+    server.use(function (error, req, res) {
       if (error instanceof RestApiError) {
         res.status(error.statusCode).json({
-          status: _this.getStatusCode(req, res),
+          status: RestApi.getStatusCode(req, res),
           message: error.message
         }).end();
       }
     });
   }
 
-  responseEnvelope() {
-    const _this = this;
+  static responseEnvelope() {
     const response = function response(body, req, res) {
       return {
-        status: _this.getStatusCode(req, res),
+        status: RestApi.getStatusCode(req, res),
         data: body
       };
     };
@@ -91,7 +91,7 @@ export const RestApi = class RestApi {
     });
   }
 
-  getStatusCode(req, res) {
+  static getStatusCode(req, res) {
     const statusCode = res.statusCode || 200;
     if (statusCode >= 500) {
       return API_STATUSES.ERROR;
@@ -101,13 +101,5 @@ export const RestApi = class RestApi {
       return API_STATUSES.SUCCESS;
     }
     return API_STATUSES.SUCCESS;
-  }
-};
-
-export const RestApiError = class RestApiError extends Error {
-  constructor(message, statusCode = 422) {
-    super(message);
-    this.name = "RestApiError";
-    this.statusCode = statusCode;
   }
 };
