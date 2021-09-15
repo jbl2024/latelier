@@ -106,13 +106,6 @@ sso:
 | email   | string  | null          | email header to match user |
 | logoutUrl | string | null         | Logout url                 |
 
-elasticApm:
-
-| Key     | Type    | Default value | Description                                         |
-| ------- | ------- | ------------- | --------------------------------------------------- |
-| enabled | boolean | false         | If true, elastic-apm is enabled                     |
-| options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
-
 storage:
 
 | Key           | Type          | Default value | Description                                                                                            |
