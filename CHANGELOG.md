@@ -85,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prefix exported meeting filename with start date
 
 ### Deleted
+- Elastic APM support (package outdated)
 
 ## [3.4.5 2021-07-05]
 
