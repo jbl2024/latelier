@@ -74,5 +74,34 @@ if (Meteor.isServer) {
 
       expect(Meetings.find().count()).to.be.equal(0);
     });
+
+    it("find meetings", async function () {
+      const context = { userId: Meteor.users.findOne()._id };
+      const projectId = Projects.findOne()._id;
+
+      const args = {
+        projectId: projectId,
+        name: "name",
+        state: "pending",
+        startDate: moment().format("YYYY-MM-DD HH:00"),
+        endDate: moment().format("YYYY-MM-DD HH:00")
+      };
+      Meetings.methods.create._execute(context, args);
+      Meetings.methods.create._execute(context, args);
+      Meetings.methods.create._execute(context, args);
+
+      const allMeetings = Meteor.call("meetings.findMeetings", {
+        projectId: projectId
+      });
+      expect(allMeetings.totalItems).to.be.equal(3);
+
+      const todayMeetings = Meteor.call("meetings.findMeetings", {
+        projectId: projectId,
+        dates: [
+          { start: moment().startOf("day").format(moment.defaultFormat) }
+        ]
+      });
+      expect(todayMeetings.totalItems).to.be.equal(3);
+    });
   });
 }

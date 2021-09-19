@@ -70,7 +70,7 @@ export default {
       if (this.type === "today") {
         return { ...baseParams,
           dates: [
-            { start: this.formatDateTz(moment()) }
+            { start: this.formatDateTz(moment().startOf("day")) }
           ] };
       }
       return baseParams;
