@@ -64,7 +64,6 @@ import "../imports/api/administration/server/methods.js";
 
 import "../imports/api/storage/server/s3";
 
-import "./apm.js";
 import "./oauth2";
 import "./manifest";
 

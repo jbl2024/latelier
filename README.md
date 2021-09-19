@@ -78,7 +78,6 @@ Settings:
 | uploadTransport                | string   | ddp             | http or ddp                                      |
 | notificationsPerUser           | number   | 50              | max number of notifications stored per user      |
 | users                          | object   | {}              | See below                                        |
-| elasticApm                     | object   | {}              | See below                                        |
 | digestsRetention               | number   | 60              | Number of days to keep in digest                 |
 | storage                        | object   | {}              | Storage. If empty, fs is used                    |
 | auth                           | object   | {}              | See below                                        |
@@ -105,13 +104,6 @@ sso:
 | enabled | boolean | false         | If true, sso is enabled    |
 | email   | string  | null          | email header to match user |
 | logoutUrl | string | null         | Logout url                 |
-
-elasticApm:
-
-| Key     | Type    | Default value | Description                                         |
-| ------- | ------- | ------------- | --------------------------------------------------- |
-| enabled | boolean | false         | If true, elastic-apm is enabled                     |
-| options | object  | {}            | see https://github.com/kschingiz/meteor-elastic-apm |
 
 storage:
 

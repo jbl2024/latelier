@@ -4,7 +4,7 @@
   "scripts": {
     "start": "MAIL_URL=smtp://localhost:1025 meteor run --settings settings-development.json --exclude-archs 'web.browser.legacy,web.cordova'",
     "start-dev": "meteor run --settings settings-development.json --exclude-archs 'web.browser.legacy,web.cordova'",
-    "test": "MOCHA_TIMEOUT=8000 meteor test --once --driver-package meteortesting:mocha",
+    "test": "MOCHA_TIMEOUT=15000 meteor test --once --driver-package meteortesting:mocha",
     "test-run": "MOCHA_TIMEOUT=15000 meteor test --driver-package meteortesting:mocha",
     "test-app": "MOCHA_TIMEOUT=15000 TEST_WATCH=1 meteor test --full-app --driver-package meteortesting:mocha",
     "visualize": "meteor --production --extra-packages bundle-visualizer",
@@ -27,7 +27,7 @@
     "html-to-text": "^8.0.0",
     "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
-    "jszip": "^3.5.0",
+    "jszip": "^3.7.1",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.21",
     "meteor-node-stubs": "^1.0.1",

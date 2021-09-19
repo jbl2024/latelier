@@ -9,8 +9,71 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Update to Meteor 2.3.6
+- Update packages:
+  - blaze-tools                 upgraded from 1.1.0 to 1.1.2
+  - caching-html-compiler       upgraded from 1.2.0 to 1.2.1
+  - html-tools                  upgraded from 1.1.0 to 1.1.2
+  - htmljs                      upgraded from 1.1.0 to 1.1.1
+  - http                        upgraded from 1.4.3 to 1.4.4
+  - meteorhacks:inject-initial  upgraded from 1.0.4 to 1.0.5
+  - modern-browsers             upgraded from 0.1.5 to 0.1.6
+  - observe-sequence            upgraded from 1.0.16 to 1.0.19
+  - spacebars-compiler          upgraded from 1.2.0 to 1.3.0
+  - static-html                 upgraded from 1.2.2 to 1.3.2
+  - templating-tools            upgraded from 1.2.0 to 1.2.1
+  - accounts-base*             upgraded from 1.8.0 to 2.0.1
+  - accounts-oauth             upgraded from 1.2.0 to 1.3.0
+  - accounts-password*         upgraded from 1.7.0 to 2.0.1
+  - alanning:roles             upgraded from 1.2.19 to 1.3.0
+  - babel-compiler             upgraded from 7.6.0 to 7.7.0
+  - blaze                      upgraded from 2.3.4 to 2.5.0
+  - blaze-tools                upgraded from 1.0.10 to 1.1.0
+  - caching-html-compiler      upgraded from 1.1.3 to 1.2.0
+  - callback-hook              upgraded from 1.3.0 to 1.3.1
+  - ddp-client                 upgraded from 2.4.0 to 2.5.0
+  - ddp-rate-limiter           upgraded from 1.0.9 to 1.1.0
+  - ddp-server                 upgraded from 2.3.2 to 2.4.1
+  - dynamic-import             upgraded from 0.6.0 to 0.7.1
+  - ecmascript                 upgraded from 0.15.0 to 0.15.3
+  - ecmascript-runtime-client  upgraded from 0.11.0 to 0.11.1
+  - ecmascript-runtime-server  upgraded from 0.10.0 to 0.10.1
+  - email                      upgraded from 2.0.0 to 2.1.1
+  - html-tools                 upgraded from 1.0.11 to 1.1.0
+  - htmljs                     upgraded from 1.0.11 to 1.1.0
+  - id-map                     upgraded from 1.1.0 to 1.1.1
+  - latelier-accounts-oidc*    upgraded from 1.0.10 to 2.0.0
+  - launch-screen              upgraded from 1.2.0 to 1.3.0
+  - matb33:collection-hooks*   upgraded from 0.9.1 to 1.1.0
+  - meteor-base                upgraded from 1.4.0 to 1.5.1
+  - minifier-css               upgraded from 1.5.3 to 1.5.4
+  - minifier-js                upgraded from 2.6.0 to 2.6.1
+  - minimongo                  upgraded from 1.6.1 to 1.7.0
+  - mongo                      upgraded from 1.10.1 to 1.12.0
+  - mongo-id                   upgraded from 1.0.7 to 1.0.8
+  - npm-bcrypt                 removed from your project
+  - npm-mongo                  upgraded from 3.8.1 to 3.9.1
+  - oauth*                     upgraded from 1.3.2 to 2.0.0
+  - oauth2                     upgraded from 1.3.0 to 1.3.1
+  - promise                    upgraded from 0.11.2 to 0.12.0
+  - react-fast-refresh         upgraded from 0.1.0 to 0.1.1
+  - routepolicy                upgraded from 1.1.0 to 1.1.1
+  - service-configuration      upgraded from 1.0.11 to 1.1.0
+  - socket-stream-client       upgraded from 0.3.1 to 0.4.0
+  - spacebars                  upgraded from 1.0.15 to 1.2.0
+  - spacebars-compiler         upgraded from 1.1.3 to 1.2.0
+  - srp                        removed from your project
+  - standard-minifier-css      upgraded from 1.7.2 to 1.7.3
+  - standard-minifier-js       upgraded from 2.6.0 to 2.6.1
+  - templating                 upgraded from 1.3.2 to 1.4.1
+  - templating-compiler        upgraded from 1.3.3 to 1.4.1
+  - templating-runtime         upgraded from 1.3.2 to 1.5.0
+  - templating-tools           upgraded from 1.1.2 to 1.2.0
+  - url                        upgraded from 1.3.1 to 1.3.2
+  - webapp                     upgraded from 1.10.0 to 1.11.1
 
 ### Deleted
+- Elastic APM support
 
 ## [3.4.6 2021-08-26]
 
@@ -22,6 +85,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Prefix exported meeting filename with start date
 
 ### Deleted
+- Elastic APM support (package outdated)
 
 ## [3.4.5 2021-07-05]
 

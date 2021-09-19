@@ -15,12 +15,6 @@
   },
   "notificationsPerUser": 50,
   "digestsRetention": 60,
-  "elasticApm": {
-    "enabled": true,
-    "options": {
-      "serviceName": "latelier"
-    }
-  },
   "users": {
     "search": "admin",
     "invite": "admin"
