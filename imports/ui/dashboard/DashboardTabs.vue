@@ -68,12 +68,32 @@
     >
       <v-tabs-slider color="accent" />
       <v-tab>{{ $t("Today") }}</v-tab>
+      <v-tab>{{ $t("Past") }}</v-tab>
+      <v-tab>{{ $t("To come") }}</v-tab>
       <v-tab-item :transition="false" :reverse-transition="false">
         <meeting-find-list
           :key="key('meeting-list-today')"
           :project-id="projectId"
           :organization-id="organizationId"
           type="today"
+          @select="onSelectMeeting"
+        />
+      </v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
+        <meeting-find-list
+          :key="key('meeting-list-past')"
+          :project-id="projectId"
+          :organization-id="organizationId"
+          type="past"
+          @select="onSelectMeeting"
+        />
+      </v-tab-item>
+      <v-tab-item :transition="false" :reverse-transition="false">
+        <meeting-find-list
+          :key="key('meeting-list-past')"
+          :project-id="projectId"
+          :organization-id="organizationId"
+          type="future"
           @select="onSelectMeeting"
         />
       </v-tab-item>
