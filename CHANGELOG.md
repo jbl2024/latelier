@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unrelease
 
 ### Added
+- Meetings: add tabs for now/past/future meetings
 
 ### Changed
+- Bump nth-check from 2.0.0 to 2.0.1
 
 ### Deleted
 
