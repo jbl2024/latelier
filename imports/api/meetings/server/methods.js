@@ -311,6 +311,11 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     showArchivedProjects: {
       type: Boolean,
       optional: true
+    },
+    sortAsc: {
+      type: Boolean,
+      optional: true,
+      defaultValue: true
     }
   }).validator(),
   run({ projectId,
@@ -320,7 +325,8 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     perPage,
     documentsIds,
     withRelated,
-    showArchivedProjects }) {
+    showArchivedProjects,
+    sortAsc }) {
     if (projectId) {
       checkCanReadProject(projectId);
     }
@@ -395,7 +401,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       skip,
       limit: perPage,
       sort: {
-        startDate: 1
+        startDate: sortAsc === true ? 1 : -1
       }
     }).fetch();
 

@@ -68,10 +68,35 @@ export default {
         showArchivedProjects: this.showArchivedProjects
       };
       if (this.type === "today") {
-        return { ...baseParams,
+        return {
+          ...baseParams,
           dates: [
-            { start: this.formatDateTz(moment()) }
-          ] };
+            {
+              start: this.formatDateTz(moment().startOf("day")),
+              end: this.formatDateTz(moment().add(1, "days").startOf("day"))
+            }
+          ]
+        };
+      }
+      if (this.type === "past") {
+        return {
+          ...baseParams,
+          sortAsc: false,
+          perPage: 50,
+          dates: [{ end: this.formatDateTz(moment().startOf("day")) }]
+        };
+      }
+      if (this.type === "future") {
+        return {
+          ...baseParams,
+          sortAsc: true,
+          perPage: 50,
+          dates: [
+            {
+              start: this.formatDateTz(moment().add(1, "days").startOf("day"))
+            }
+          ]
+        };
       }
       return baseParams;
     },
@@ -93,24 +118,20 @@ export default {
   methods: {
     find() {
       this.loading = true;
-      Meteor.call(
-        "meetings.findMeetings",
-        this.params,
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-
-          this.meetings = Array.isArray(result?.data) ? result.data : [];
-          this.meetingCount = result.totalItems;
-          this.$emit("update:meeting-count", this.meetingCount);
+      Meteor.call("meetings.findMeetings", this.params, (error, result) => {
+        this.loading = false;
+        if (error) {
+          this.$notifyError(error);
+          return;
         }
-      );
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+
+        this.meetings = Array.isArray(result?.data) ? result.data : [];
+        this.meetingCount = result.totalItems;
+        this.$emit("update:meeting-count", this.meetingCount);
+      });
     },
 
     onSelectMeeting(meeting) {
