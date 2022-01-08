@@ -42,9 +42,7 @@
             @click="startEditCheckItem(checkItem)"
           >
             <template v-if="!isCheckItemEdited(checkItem)">
-              <span>
-                {{ checkItem.name }}
-              </span>
+              <span v-html="linkifyHtml(checkItem.name)" />
             </template>
             <template v-if="isCheckItemEdited(checkItem)">
               <v-textarea
@@ -130,6 +128,7 @@
 <script>
 import "moment/locale/fr";
 import Sortable from "sortablejs";
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
 
 export default {
   name: "TaskChecklistInDetail",
@@ -150,6 +149,7 @@ export default {
       }
     }
   },
+  mixins: [TextRenderingMixin],
   props: {
     hideIfEmpty: {
       type: Boolean,
