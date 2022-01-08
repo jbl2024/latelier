@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Meetings: add tabs for now/past/future meetings
+- Enable hyperlinks on check list items
 
 ### Changed
 - Bump nth-check from 2.0.0 to 2.0.1
+- Fix hashtag detection
 
 ### Deleted
 
