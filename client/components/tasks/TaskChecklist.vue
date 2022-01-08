@@ -21,7 +21,7 @@
               @click.stop=""
             >
             <div class="state p-primary">
-              <label>{{ item.name }}</label>
+              <label :for="item._id" v-html="linkifyHtml(item.name)" />
             </div>
           </div>
         </div>
@@ -58,8 +58,11 @@
 </template>
 
 <script>
+import TextRenderingMixin from "/imports/ui/mixins/TextRenderingMixin.js";
+
 export default {
   name: "TaskChecklist",
+  mixins: [TextRenderingMixin],
   i18n: {
     messages: {
       en: {
@@ -277,10 +280,15 @@ pre {
 .pretty .state label {
   text-indent: 0;
   padding-left: 2rem;
+  cursor: pointer;
 }
 
 .pretty .state label:after,
 .pretty .state label:before {
   top: 0;
+}
+
+.pretty input {
+  width: 20px;
 }
 </style>
