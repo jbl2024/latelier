@@ -7,7 +7,7 @@
       :title="$t('Keyboard shortcuts')"
     >
       <template v-slot:content>
-        <v-simple-table dense>
+        <v-simple-table dense class="pt-4">
           <template v-slot:default>
             <tbody>
               <tr
@@ -45,14 +45,20 @@ export default {
   data() {
     return {
       keys: [{
-        label: this.$t("Open help screen"),
+        label: this.$t("Help screen"),
         key: "?"
       }, {
-        label: this.$t("Open search bar"),
+        label: this.$t("Search bar"),
         keys: ["/", "s"]
       }, {
-        label: this.$t("Open projects bar"),
+        label: this.$t("Projects search bar"),
         key: "p"
+      }, {
+        label: this.$t("Add label on task"),
+        key: "l"
+      }, {
+        label: this.$t("Toggle task fullscreen"),
+        key: "m"
       }]
     };
   },
