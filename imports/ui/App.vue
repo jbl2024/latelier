@@ -20,6 +20,7 @@
         <nav-drawer v-show="$vuetify.breakpoint.mdAndDown" />
       </template>
       <select-background v-model="showSelectBackgroundDialog" />
+      <show-help v-model="showHelp" />
       <template v-if="isConnected">
         <task-history
           v-model="showTaskHistory"
@@ -120,6 +121,14 @@ export default {
       },
       set(value) {
         this.$store.dispatch("ui/leftDrawer/showLeftDrawer", value);
+      }
+    },
+    showHelp: {
+      get() {
+        return this.$store.state.ui.showHelp;
+      },
+      set(value) {
+        this.$store.dispatch("ui/showHelp", value);
       }
     },
     showTaskDetail: {
