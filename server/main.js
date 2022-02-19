@@ -1,4 +1,5 @@
 import { Meteor } from "meteor/meteor";
+import { WebApp } from "meteor/webapp";
 import "../imports/startup/server/fixtures.js";
 import "../imports/startup/server/fixEmptyAttributes.js";
 import "../imports/startup/server/fixTaskNumber.js";
@@ -67,6 +68,8 @@ import "../imports/api/storage/server/s3";
 import "./oauth2";
 import "./manifest";
 
+import { RestApi } from "../imports/api/RestApi";
+
 if (Meteor.settings.email?.mailUrl) {
   process.env.MAIL_URL = Meteor.settings.email.mailUrl;
 }
@@ -86,4 +89,8 @@ Accounts.config({
 
 Meteor.startup(() => {
   Meteor.call("organizations.fixOrphanProjectGroups");
+  if (Meteor.settings?.restApi?.enabled === true) {
+    const restApi = new RestApi(Meteor.settings?.restApi);
+    restApi.connectServer(WebApp);
+  }
 });

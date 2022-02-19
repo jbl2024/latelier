@@ -1,0 +1,72 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+        "description": " L'Atelier",
+        "version": "1.0.0",
+        "title": "L'Atelier",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "email": "apiteam@swagger.io"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "tags": [
+        {
+            "name": "projects",
+            "description": "Projects"
+        },
+        {
+            "name": "organizations",
+            "description": "Organizations"
+        },
+        {
+            "name": "tasks",
+            "description": "Tasks"
+        }
+    ],
+    "paths": {
+        "/projects/{projectId}": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Find a project by its id",
+                "description": "",
+                "operationId": "findProjectById",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "description": "Id of the project",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "schema": {
+                            "$ref": "#/definitions/Project"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Project": {
+            "type": "object",
+            "properties": {
+                "_id": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
