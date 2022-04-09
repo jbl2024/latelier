@@ -33,7 +33,7 @@
     "meteor-node-stubs": "^1.0.1",
     "mjml": "^4.9.0",
     "mobile-drag-drop": "^2.3.0-rc.2",
-    "moment": "^2.25.3",
+    "moment": "^2.29.2",
     "node-pandoc": "^0.3.0",
     "path": "^0.12.7",
     "pretty-checkbox": "^3.0.3",
