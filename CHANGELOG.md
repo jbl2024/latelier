@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deleted
 
+## [3.4.9 2022-11-19]
+
+### Added
+
+### Changed
+Update packages:
+- akryum:vue-sass              upgraded from 0.1.2 to 0.1.3
+- blaze-tools                  upgraded from 1.1.2 to 1.1.3
+- html-tools                   upgraded from 1.1.2 to 1.1.3
+- matb33:collection-hooks      upgraded from 1.1.0 to 1.1.4
+- meteortesting:browser-tests  upgraded from 1.3.4 to 1.3.5
+- modern-browsers              upgraded from 0.1.6 to 0.1.7
+- observe-sequence             upgraded from 1.0.19 to 1.0.20
+- ostrio:cookies               upgraded from 2.7.0 to 2.7.2
+- spacebars-compiler           upgraded from 1.3.0 to 1.3.1
+- templating-tools             upgraded from 1.2.1 to 1.2.2
+### Deleted
+
 ## [3.4.8 2022-01-09]
 
 ### Added
