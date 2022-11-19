@@ -37,8 +37,9 @@
       </v-list-item>
       <v-list-item
         v-shortkey="{single: ['?'], altSingle: ['h'], multiple: ['shift', '?']}"
-        @click="toggleShowHelp()" 
-        @shortkey="toggleShowHelp()">
+        @click="toggleShowHelp()"
+        @shortkey="toggleShowHelp()"
+      >
         <v-list-item-action>
           <v-icon>mdi-keyboard-outline</v-icon>
         </v-list-item-action>
