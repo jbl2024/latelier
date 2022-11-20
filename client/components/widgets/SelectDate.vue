@@ -18,7 +18,7 @@
             <v-date-picker
               v-model="date"
               :landscape="!$vuetify.breakpoint.xsOnly"
-              locale="fr-fr"
+              :locale="getLocale()"
               @dblclick.native="checkDblClick"
             />
           </v-tab-item>
@@ -89,6 +89,10 @@ export default {
     }
   },
   methods: {
+    getLocale() {
+      const locale = this.$i18n.locale;
+      return locale;
+    },
     selectDate() {
       let dateTime = this.date;
       if (this.hour) {

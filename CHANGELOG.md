@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
+- Fix missing translation for date selector (fix #142)
 Update packages:
 - akryum:vue-sass              upgraded from 0.1.2 to 0.1.3
 - blaze-tools                  upgraded from 1.1.2 to 1.1.3
