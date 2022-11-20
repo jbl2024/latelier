@@ -601,5 +601,12 @@
     "noneFound": "Aucun document trouvé"
   },
   "Next": "Suivant",
-  "Previous": "Précédent"
+  "Previous": "Précédent",
+  "Display keyboard shortcuts": "Afficher les raccourcis clavier",
+  "Keyboard shortcuts": "Raccourcis clavier",
+  "Help screen": "Ecran d'aide",
+  "Search bar": "Barre de recherche",
+  "Projects search bar": "Barre de recherche des projets",
+  "Add label on task": "Ajouter un label sur une tâche",
+  "Toggle task fullscreen": "Basculer la tâche en plein écran"
 }

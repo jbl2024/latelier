@@ -592,5 +592,12 @@
     "noneFound": "No document found"
   },
   "Next": "Next",
-  "Previous": "Previous"
+  "Previous": "Previous",
+  "Display keyboard shortcuts": "Display keyboard shortcuts",
+  "Keyboard shortcuts": "Keyboard shortcuts",
+  "Help screen": "Help screen",
+  "Search bar": "Search bar",
+  "Projects search bar": "Projects search bar",
+  "Add label on task": "Add label on task",
+  "Toggle task fullscreen": "Toggle task fullscreen"
 }

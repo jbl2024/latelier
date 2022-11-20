@@ -35,6 +35,18 @@
           </v-list-item-title>
         </v-list-item-content>
       </v-list-item>
+      <v-list-item
+        v-shortkey="{single: ['?'], altSingle: ['h'], multiple: ['shift', '?']}"
+        @click="toggleShowHelp()"
+        @shortkey="toggleShowHelp()"
+      >
+        <v-list-item-action>
+          <v-icon>mdi-keyboard-outline</v-icon>
+        </v-list-item-action>
+        <v-list-item-content>
+          <v-list-item-title>{{ $t("Display keyboard shortcuts") }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
       <v-divider />
       <v-list-item @click="logout()">
         <v-list-item-action>
@@ -56,6 +68,9 @@ export default {
     ...mapGetters(["isConnected", "isAdmin"])
   },
   methods: {
+    toggleShowHelp() {
+      this.$store.dispatch("ui/toggleShowHelp");
+    },
     logout() {
       this.$confirm(this.$t("login.logoutConfirm"), {
         title: this.$t("Confirm"),
