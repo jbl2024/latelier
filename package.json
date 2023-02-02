@@ -27,7 +27,7 @@
     "html-to-text": "^8.0.0",
     "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
-    "jszip": "^3.7.1",
+    "jszip": "^3.8.0",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.21",
     "meteor-node-stubs": "^1.0.1",
