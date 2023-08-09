@@ -20,7 +20,7 @@ A project management tool.
 
 ## Demonstration
 
-Demo server: https://latelier.services.jbl2024.com
+Demo server: https://latelier-demo.services2.jbl2024.com
 
 Warning: do not store sensitive data, use at your own risk. 
 Data is reset periodically.
@@ -28,7 +28,6 @@ Data is reset periodically.
 Available credentials:
 
 - username: user1@localhost / password: user1
-- username: user2@localhost / password: user2
 
 ## Installation
 
