@@ -24,10 +24,8 @@ Tasks.attachSchema(TaskSchema);
 Tasks.methods = {};
 Tasks.helpers = {};
 
-const Counter = new Mongo.Collection("counters");
-
 const incNumber = function() {
-  return incrementCounter(Counter, "taskNumber");
+  return incrementCounter("taskNumber");
 };
 
 const removeLinkWithMeetingAction = (taskId) => {
