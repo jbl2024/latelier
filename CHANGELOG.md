@@ -9,7 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 ### Changed
-
+- Update to Meteor 2.13.3
+- Update packages:
+  - msavin:sjobs*  upgraded from 3.1.1 to 4.3.2   
+  - sakulstra:aggregate  upgraded from 1.4.3 to 1.4.4
 ### Deleted
 
 ## [3.4.9 2022-11-20]
