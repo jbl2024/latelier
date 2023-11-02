@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - observe-sequence           upgraded from 1.0.20 to 1.0.21
   - reywood:publish-composite  upgraded from 1.7.3 to 1.8.3
   - zodern:types               added, version 1.0.10
+  - akryum:vue-component -> bslocombe:vue-component@0.16.1
 
 ### Deleted
 

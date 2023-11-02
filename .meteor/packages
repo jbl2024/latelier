@@ -43,4 +43,4 @@ service-configuration@1.3.1
 latelier-oidc
 latelier-accounts-oidc
 underscore@1.0.13
-akryum:vue-component@0.15.2
+bslocombe:vue-component
