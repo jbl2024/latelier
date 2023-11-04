@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update to Meteor 2.13.3
-- Update packages:
+- Update meteor packages:
   - msavin:sjobs*  upgraded from 3.1.1 to 4.3.2   
   - sakulstra:aggregate  upgraded from 1.4.3 to 1.4.4
   - ostrio:files*  upgraded from 1.14.3 to 2.3.3
@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - reywood:publish-composite  upgraded from 1.7.3 to 1.8.3
   - zodern:types               added, version 1.0.10
   - akryum:vue-component -> bslocombe:vue-component@0.16.1
+    - see https://github.com/meteor-vue/vue-meteor/issues/437#issuecomment-1543296641
+ - Update npm packages:
+  - jszip                       upgraded from 3.7.1 to 3.10.1
 
 ### Deleted
 
