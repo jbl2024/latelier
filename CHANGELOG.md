@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- Makefile: simplify local & docker dev usage
 
 ### Changed
 - Update to Meteor 2.13.3
