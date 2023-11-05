@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Update to Meteor 2.13.3
+- Dockerfiles: 
+  - update meteor version
+  - use meteor nodejs14 extended support version
+  - set architecture to linux/amd64 platform in docker compose
 - Update meteor packages:
   - msavin:sjobs*  upgraded from 3.1.1 to 4.3.2   
   - sakulstra:aggregate  upgraded from 1.4.3 to 1.4.4
