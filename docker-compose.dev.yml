@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
+    platform: linux/amd64
     ports:
       - '80:3000'
       - '3030:3030'
