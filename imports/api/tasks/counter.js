@@ -7,13 +7,26 @@ const incrementCounter = (counterName, amount = 1) => {
   check(counterName, String);
   check(amount, Number);
 
-  const counter = Counters.findOne({ _id: counterName });
-  if (counter) {
-    Counters.update({ _id: counterName }, { $inc: { next_val: amount } });
-    return counter.next_val + amount;
+  // Create a synchronous version of the findOneAndUpdate function
+  const findOneAndUpdateSync = Meteor.wrapAsync(
+    Counters.rawCollection().findOneAndUpdate,
+    Counters.rawCollection()
+  );
+
+  try {
+    const result = findOneAndUpdateSync(
+      { _id: counterName },
+      { $inc: { next_val: amount } },
+      {
+        returnDocument: "after", // This option is the equivalent of { new: true } in the findAndModify method.
+        upsert: true // Creates the object if it doesn't exist.
+      }
+    );
+    return result.value.next_val;
+  } catch (error) {
+    // Handle error
+    throw new Meteor.Error("increment-failed", "Could not increment counter.");
   }
-  Counters.insert({ _id: counterName, next_val: amount });
-  return amount;
 };
 
 const decrementCounter = (counterName, amount = 1) => incrementCounter(counterName, -amount);
