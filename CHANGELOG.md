@@ -30,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - jszip                       upgraded from 3.7.1 to 3.10.1
 
 ### Deleted
+- Remove useless vador.yml file
 
 ## [3.4.9 2022-11-20]
 
