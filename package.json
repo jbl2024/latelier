@@ -30,7 +30,7 @@
     "jszip": "^3.10.1",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.21",
-    "meteor-node-stubs": "^1.2.1",
+    "meteor-node-stubs": "^1.2.5",
     "mjml": "^4.9.0",
     "mobile-drag-drop": "^2.3.0-rc.2",
     "moment": "^2.29.2",

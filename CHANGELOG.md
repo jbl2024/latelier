@@ -36,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - see https://github.com/meteor-vue/vue-meteor/issues/437#issuecomment-1543296641
  - Update npm packages:
   - jszip                       upgraded from 3.7.1 to 3.10.1
+  - meteor-node-stubs"          upgraded from 1.2.1 to 1.2.5
 
 ### Deleted
 - Remove useless vador.yml file
