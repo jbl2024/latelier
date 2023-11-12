@@ -68,7 +68,6 @@ export default {
       const upload = Avatars.insert(
         {
           file: file,
-          streams: "dynamic",
           chunkSize: "dynamic",
           transport: transport,
           meta: {

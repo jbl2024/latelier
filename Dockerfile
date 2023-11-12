@@ -1,5 +1,5 @@
 # The tag here should match the Meteor version of your app, per .meteor/release
-FROM geoffreybooth/meteor-base:2.3.6 as build
+FROM geoffreybooth/meteor-base:2.13.3 as build
 # Copy app package.json and package-lock.json into container
 COPY ./package*.json $APP_SOURCE_FOLDER/
 
@@ -12,7 +12,7 @@ RUN METEOR_DISABLE_OPTIMISTIC_CACHING=1 bash "$SCRIPTS_FOLDER/build-meteor-bundl
 
 
 # Use the specific version of Node expected by your Meteor release, per https://docs.meteor.com/changelog.html; this is expected for Meteor 1.9
-FROM node:14.17.6-alpine
+FROM meteor/node:14.21.4-alpine3.17
 ENV PANDOC_VERSION 2.10.1
 ENV APP_BUNDLE_FOLDER /opt/bundle
 ENV SCRIPTS_FOLDER /docker
@@ -21,7 +21,7 @@ ENV SCRIPTS_FOLDER /docker
 RUN apk --no-cache --virtual .node-gyp-compilation-dependencies add \
 	g++ \
 	make \
-	python \
+	python3 \
 	curl \
 	# And runtime dependencies, which we keep
 	&& apk --no-cache add \

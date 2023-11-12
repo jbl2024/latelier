@@ -65,7 +65,6 @@ export default {
       const upload = Attachments.insert(
         {
           file: file,
-          streams: "dynamic",
           chunkSize: "dynamic",
           transport: transport,
           meta: {

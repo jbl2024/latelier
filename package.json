@@ -12,7 +12,7 @@
     "pretest": "npm run lint --silent"
   },
   "dependencies": {
-    "@babel/runtime": "^7.11.2",
+    "@babel/runtime": "^7.23.2",
     "aws-sdk": "^2.670.0",
     "bcrypt": "^5.0.0",
     "bpmn-js": "^6.5.1",
@@ -27,10 +27,10 @@
     "html-to-text": "^8.0.0",
     "intersection-observer": "^0.10.0",
     "jquery": "^3.5.0",
-    "jszip": "^3.7.1",
+    "jszip": "^3.10.1",
     "linkifyjs": "^2.1.9",
     "lodash": ">=4.17.21",
-    "meteor-node-stubs": "^1.0.1",
+    "meteor-node-stubs": "^1.2.1",
     "mjml": "^4.9.0",
     "mobile-drag-drop": "^2.3.0-rc.2",
     "moment": "^2.29.2",
