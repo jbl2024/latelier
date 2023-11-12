@@ -44,3 +44,4 @@ latelier-oidc
 latelier-accounts-oidc
 underscore@1.0.13
 bslocombe:vue-component
+logging
