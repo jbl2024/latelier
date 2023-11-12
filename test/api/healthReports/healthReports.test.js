@@ -27,7 +27,7 @@ if (Meteor.isServer) {
         weather: "cloudy"
       };
       try {
-        HealthReports.methods.create._execute(context, args);
+        await HealthReports.methods.create._execute(context, args);
       } catch (error) {
         errorCode = error.error;
       }
@@ -46,7 +46,7 @@ if (Meteor.isServer) {
         date: "2019-01-01",
         weather: "cloudy"
       };
-      HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
       expect(HealthReports.find().count()).to.be.equal(1);
     });
 
@@ -60,16 +60,16 @@ if (Meteor.isServer) {
         date: "2019-01-01",
         weather: "cloudy"
       };
-      HealthReports.methods.create._execute(context, args);
-      HealthReports.methods.create._execute(context, args);
-      HealthReports.methods.create._execute(context, args);
-      expect(HealthReports.find().count()).to.be.equal(3);
+      await HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
+      expect(await HealthReports.find().countAsync()).to.be.equal(3);
 
-      Meteor.call("projects.deleteForever", {
+      await Meteor.callAsync("projects.deleteForever", {
         projectId: Projects.findOne()._id
       });
 
-      expect(HealthReports.find().count()).to.be.equal(0);
+      expect(await HealthReports.find().countAsync()).to.be.equal(0);
     });
   });
 }

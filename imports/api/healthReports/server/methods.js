@@ -27,7 +27,7 @@ HealthReports.methods.create = new ValidatedMethod({
       optional: true
     }
   }).validator(),
-  run({ projectId, name, description, date, weather, reportUserId }) {
+  run: async function ({ projectId, name, description, date, weather, reportUserId }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
 
@@ -36,7 +36,7 @@ HealthReports.methods.create = new ValidatedMethod({
     userId = canSelectUserId ? reportUserId : userId;
 
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
-    const reportId = HealthReports.insert({
+    const reportId = await HealthReports.insertAsync({
       projectId,
       name,
       description,
@@ -59,10 +59,10 @@ HealthReports.methods.update = new ValidatedMethod({
     date: { type: String },
     weather: { type: String }
   }).validator(),
-  run({ id, name, description, date, weather }) {
+  run: async function ({ id, name, description, date, weather }) {
     checkLoggedIn();
 
-    const report = HealthReports.findOne({ _id: id });
+    const report = await HealthReports.findOneAsync({ _id: id });
     if (!report) {
       throw new Meteor.Error("not-found");
     }
@@ -73,7 +73,7 @@ HealthReports.methods.update = new ValidatedMethod({
     }
 
     const convertedDate = moment(date, "YYYY-MM-DD").toDate();
-    const reportId = HealthReports.update(
+    const reportId = await HealthReports.updateAsync(
       {
         _id: id
       },
@@ -99,16 +99,16 @@ HealthReports.methods.updateDescription = new ValidatedMethod({
     id: { type: String },
     description: { type: String }
   }).validator(),
-  run({ id, description }) {
+  run: async function ({ id, description }) {
     checkLoggedIn();
 
-    const report = HealthReports.findOne({ _id: id });
+    const report = await HealthReports.findOneAsync({ _id: id });
     if (!report) {
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(report.projectId);
 
-    const reportId = HealthReports.update(
+    const reportId = await HealthReports.updateAsync(
       {
         _id: id
       },
@@ -128,15 +128,15 @@ HealthReports.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     id: { type: String }
   }).validator(),
-  run({ id }) {
+  run: async function({ id }) {
     checkLoggedIn();
 
-    const report = HealthReports.findOne({ _id: id });
+    const report = await HealthReports.findOneAsync({ _id: id });
     if (!report) {
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(report.projectId);
-    HealthReports.remove(id);
+    await HealthReports.removeAsync(id);
   }
 });
 
@@ -146,23 +146,23 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     id: { type: String },
     page: { type: Number }
   }).validator(),
-  run({ id, page }) {
+  run: async function ({ id, page }) {
     checkLoggedIn();
 
-    const report = HealthReports.findOne({ _id: id });
-    const project = Projects.findOne({ _id: report.projectId });
+    const report = await HealthReports.findOneAsync({ _id: id });
+    const project = await Projects.findOneAsync({ _id: report.projectId });
     const projectId = project._id;
 
     checkCanReadProject(projectId);
 
     let organization;
     if (project.organizationId) {
-      organization = Organizations.findOne({ _id: project.organizationId });
+      organization = await Organizations.findOneAsync({ _id: project.organizationId });
     }
     const currentDate = moment(report.date).add(1, "days").startOf("day").toDate();
 
     let previousDate = null;
-    const previous = HealthReports.findOne(
+    const previous = await HealthReports.findOneAsync(
       {
         projectId,
         date: { $lt: report.date }
@@ -204,24 +204,24 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       };
     }
 
-    const count = Tasks.find(query).count();
-    const data = Tasks.find(query, {
+    const count = await Tasks.find(query).countAsync();
+    const data = await Tasks.find(query, {
       skip,
       limit: perPage,
       sort: {
         updatedAt: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     // load associated objects and assign them to tasks
     const users = {};
 
-    const loadUser = (userId) => {
+    const loadUser = async (userId) => {
       const user = users[userId];
       if (user) {
         return user;
       }
-      users[userId] = Meteor.users.findOne(
+      users[userId] = await Meteor.users.findOneAsync(
         { _id: userId },
         {
           fields: {
@@ -237,17 +237,17 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       return users[userId];
     };
 
-    data.forEach((task) => {
+    data.forEach(async (task) => {
       if (project) {
         task.project = project;
         task.organization = organization;
       }
 
       if (task.assignedTo) {
-        task.assignedTo = loadUser(task.assignedTo);
+        task.assignedTo = await loadUser(task.assignedTo);
       }
       if (task.createdBy) {
-        task.createdBy = loadUser(task.createdBy);
+        task.createdBy = await loadUser(task.createdBy);
       }
     });
 
@@ -265,7 +265,7 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
     projectId: { type: String },
     page: { type: Number }
   }).validator(),
-  run({ projectId, page }) {
+  run: async function({ projectId, page }) {
     checkLoggedIn();
     checkCanReadProject(projectId);
 
@@ -282,14 +282,14 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
       projectId
     };
 
-    const count = HealthReports.find(query).count();
-    const data = HealthReports.find(query, {
+    const count = await HealthReports.find(query).countAsync();
+    const data = await HealthReports.find(query, {
       skip,
       limit: perPage,
       sort: {
         date: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     return {
       rowsPerPage: perPage,
@@ -304,9 +304,9 @@ HealthReports.methods.get = new ValidatedMethod({
   validate: new SimpleSchema({
     healthReportId: { type: String }
   }).validator(),
-  run({ healthReportId }) {
+  run: async function({ healthReportId }) {
     checkLoggedIn();
-    const healthReport = HealthReports.findOne({ _id: healthReportId });
+    const healthReport = await HealthReports.findOneAsync({ _id: healthReportId });
     if (healthReport) {
       checkCanReadProject(healthReport.projectId);
     } else {

@@ -1,3 +1,4 @@
+import { Log } from "meteor/logging";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import HealthReportSchema from "./schema";
@@ -7,7 +8,11 @@ HealthReports.attachSchema(HealthReportSchema);
 HealthReports.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    HealthReports.rawCollection().createIndex({ projectId: 1 });
+  Meteor.startup(async () => {
+    try {
+      await HealthReports.createIndex({ projectId: 1 });
+    } catch (error) {
+      Log.error("Failed to create index on HealthReports:", error);
+    }
   });
 }

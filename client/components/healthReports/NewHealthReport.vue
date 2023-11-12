@@ -1,26 +1,13 @@
 <template>
   <div class="new-health-report">
-    <generic-dialog
-      v-model="showDialog"
-      :title="$t('New report')"
-      max-width="800px"
-    >
+    <generic-dialog v-model="showDialog" :title="$t('New report')" max-width="800px">
       <template v-slot:content>
-        <select-date
-          v-model="showSelectDate"
-          :disable-time="true"
-          @select="onSelectDate"
-        />
+        <select-date v-model="showSelectDate" :disable-time="true" @select="onSelectDate" />
 
         <v-form v-model="valid" @submit.prevent>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field
-                v-model="name"
-                :rules="nameRules"
-                :label="$t('Name')"
-                required
-              />
+              <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required />
             </v-flex>
             <v-flex xs12>
               <v-list two-line class="elevation-1 date">
@@ -43,11 +30,7 @@
               </v-list>
             </v-flex>
             <v-flex xs12>
-              <v-combobox
-                v-model="weather"
-                :items="items"
-                :label="$t('Project health')"
-              >
+              <v-combobox v-model="weather" :items="items" :label="$t('Project health')">
                 <template slot="selection" slot-scope="data">
                   <img :src="getIcon(data.item)">
                 </template>
@@ -59,10 +42,8 @@
 
             <v-flex xs12>
               <label>{{ $t("Description") }}</label>
-              <rich-editor
-                ref="description"
-                v-model="description"
-                :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+              <rich-editor ref="description" v-model="description"
+                           :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
               />
             </v-flex>
           </v-layout>
@@ -148,26 +129,24 @@ export default {
       }
       this.coherent = true;
     },
-    create() {
+    async create() {
       this.showDialog = false;
-      Meteor.call(
-        "healthReports.create",
-        {
+
+      try {
+        await Meteor.callAsync("healthReports.create", {
           projectId: this.projectId,
           name: this.name,
           description: this.description,
           date: this.date,
           weather: this.weather
-        },
-        (error) => {
-          this.$emit("created");
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
-      this.showDialog = false;
+        });
+
+        this.$emit("created");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     getIcon(weather) {
       return Meteor.absoluteUrl(`/weather/${weather}.svg`);
     }
