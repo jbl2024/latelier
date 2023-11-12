@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+
+### Changed
+
+### Deleted
+
+## [3.5.0 2023-11-12]
+
+### Added
 - Makefile: simplify local & docker dev usage
 
 ### Changed
