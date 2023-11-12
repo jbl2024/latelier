@@ -37,10 +37,10 @@ if (Meteor.isServer) {
     });
 
     it("creates a new report", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description",
         date: "2019-01-01",
@@ -51,10 +51,10 @@ if (Meteor.isServer) {
     });
 
     it("remove project remove all reports", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: Meteor.users.findOneAsync()._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description",
         date: "2019-01-01",
@@ -66,7 +66,7 @@ if (Meteor.isServer) {
       expect(await HealthReports.find().countAsync()).to.be.equal(3);
 
       await Meteor.callAsync("projects.deleteForever", {
-        projectId: Projects.findOne()._id
+        projectId: (await Projects.findOneAsync())._id
       });
 
       expect(await HealthReports.find().countAsync()).to.be.equal(0);

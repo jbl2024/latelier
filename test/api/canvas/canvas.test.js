@@ -17,41 +17,41 @@ if (Meteor.isServer) {
     });
 
     it("only one canvas is automatically created", async function() {
-      const projectId = Projects.findOne()._id;
-      const canvas = Meteor.call("canvas.get", projectId);
+      const projectId = (await Projects.findOneAsync())._id;
+      const canvas = await Meteor.callAsync("canvas.get", projectId);
       expect(canvas).to.not.be.null;
       expect(canvas.projectId).to.be.equal(projectId);
 
-      expect(Canvas.find().count()).to.be.equal(1);
+      expect(await Canvas.find().countAsync()).to.be.equal(1);
 
-      Meteor.call("canvas.get", projectId);
-      Meteor.call("canvas.get", projectId);
-      expect(Canvas.find().count()).to.be.equal(1);
+      await Meteor.callAsync("canvas.get", projectId);
+      await Meteor.callAsync("canvas.get", projectId);
+      expect(await Canvas.find().countAsync()).to.be.equal(1);
     });
 
     it("canvas is updated", async function() {
-      const projectId = Projects.findOne()._id;
-      const canvas = Meteor.call("canvas.get", projectId);
+      const projectId = (await Projects.findOneAsync())._id;
+      const canvas = await Meteor.callAsync("canvas.get", projectId);
       expect(canvas).to.not.be.null;
       expect(canvas.projectId).to.be.equal(projectId);
       expect(canvas.data.goal).to.be.equal("");
 
-      Meteor.call("canvas.update", projectId, {
+      await Meteor.callAsync("canvas.update", projectId, {
         goal: "goal"
       });
 
-      expect(Canvas.findOne({ projectId }).data.goal).to.be.equal(
+      expect((await Canvas.findOneAsync({ projectId })).data.goal).to.be.equal(
         "goal"
       );
 
-      Meteor.call("canvas.update", projectId, {
+      await Meteor.callAsync("canvas.update", projectId, {
         budget: "budget"
       });
 
-      expect(Canvas.findOne({ projectId }).data.goal).to.be.equal(
+      expect((await Canvas.findOneAsync({ projectId })).data.goal).to.be.equal(
         "goal"
       );
-      expect(Canvas.findOne({ projectId }).data.budget).to.be.equal(
+      expect((await Canvas.findOneAsync({ projectId })).data.budget).to.be.equal(
         "budget"
       );
     });
