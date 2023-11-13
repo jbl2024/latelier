@@ -9,7 +9,7 @@ import {
 } from "/imports/api/permissions/permissions";
 
 Meteor.methods({
-  "dashboards.findTasks"(type, organizationId, projectId, page, showArchivedProjects) {
+  "dashboards.findTasks": async function(type, organizationId, projectId, page, showArchivedProjects) {
     check(type, String);
     check(organizationId, Match.Maybe(String));
     check(projectId, Match.Maybe(String));
@@ -58,11 +58,11 @@ Meteor.methods({
       projectQuery.members = userId;
     }
 
-    const projectIds = Projects.find(projectQuery, {
+    const projectIds = await Projects.find(projectQuery, {
       fields: {
         _id: 1
       }
-    }).map((project) => project._id);
+    }).mapAsync(async (project) => project._id);
 
     taskQuery.projectId = { $in: projectIds };
 
@@ -84,24 +84,24 @@ Meteor.methods({
       };
     }
 
-    const count = Tasks.find(taskQuery).count();
-    const data = Tasks.find(taskQuery, {
+    const count = await Tasks.find(taskQuery).countAsync();
+    const data = await Tasks.find(taskQuery, {
       skip,
       limit: perPage,
       sort
-    }).fetch();
+    }).fetchAsync();
 
     // load associated objects and assign them to tasks
     const projects = {};
     const users = {};
     const organizations = {};
 
-    const loadUser = (aUserId) => {
+    const loadUser = async (aUserId) => {
       const aUser = users[aUserId];
       if (aUser) {
         return aUser;
       }
-      users[aUserId] = Meteor.users.findOne(
+      users[aUserId] = await Meteor.users.findOneAsync(
         { _id: aUserId },
         {
           fields: {
@@ -117,10 +117,10 @@ Meteor.methods({
       return users[aUserId];
     };
 
-    data.forEach((task) => {
+    data.forEach(async (task) => {
       let project = projects[task.projectId];
       if (!project) {
-        projects[task.projectId] = Projects.findOne({ _id: task.projectId });
+        projects[task.projectId] = await Projects.findOneAsync({ _id: task.projectId });
         project = projects[task.projectId];
       }
       if (project) {
@@ -128,7 +128,7 @@ Meteor.methods({
 
         let organization = organizations[project.organizationId];
         if (!organization) {
-          organizations[project.organizationId] = Organizations.findOne({
+          organizations[project.organizationId] = await Organizations.findOneAsync({
             _id: project.organizationId
           });
           organization = organizations[project.organizationId];
@@ -139,10 +139,10 @@ Meteor.methods({
       }
 
       if (task.assignedTo) {
-        task.assignedTo = loadUser(task.assignedTo);
+        task.assignedTo = await loadUser(task.assignedTo);
       }
       if (task.createdBy) {
-        task.createdBy = loadUser(task.createdBy);
+        task.createdBy = await loadUser(task.createdBy);
       }
     });
 
