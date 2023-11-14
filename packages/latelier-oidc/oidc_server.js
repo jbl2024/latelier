@@ -1,7 +1,7 @@
 /* eslint-disable */
 Oidc = {};
 
-OAuth.registerService('oidc', 2, null, function (query) {
+OAuth.registerService('oidc', 2, null, async function (query) {
   let oauth2 = {};
   if (Meteor.settings && Meteor.settings.auth) {
     oauth2 = Meteor.settings.auth.oauth2;
@@ -11,7 +11,7 @@ OAuth.registerService('oidc', 2, null, function (query) {
   }
 
   var debug = process.env.DEBUG || false;
-  var token = getToken(query);
+  var token = await getToken(query);
   if (debug) console.log('XXX: register token:', token);
 
   var accessToken = token.access_token || token.id_token;
@@ -32,7 +32,7 @@ OAuth.registerService('oidc', 2, null, function (query) {
 
   if (accessToken) {
     var tokenContent = getTokenContent(accessToken);
-    var fields = _.pick(tokenContent, getConfiguration().idTokenWhitelistFields);
+    var fields = _.pick(tokenContent, (await getConfiguration()).idTokenWhitelistFields);
     _.extend(serviceData, fields);
   }
 
@@ -56,9 +56,9 @@ if (Meteor.release) {
   userAgent += "/" + Meteor.release;
 }
 
-var getToken = function (query) {
+var getToken = async function (query) {
   var debug = process.env.DEBUG || false;
-  var config = getConfiguration();
+  var config = await getConfiguration();
   if(config.tokenEndpoint.includes('https://')){
     var serverTokenEndpoint = config.tokenEndpoint;
   }else{
@@ -127,8 +127,8 @@ var getUserInfo = function (accessToken) {
   return response.data;
 };
 
-var getConfiguration = function () {
-  var config = ServiceConfiguration.configurations.findOne({ service: 'oidc' });
+var getConfiguration = async function () {
+  var config = await ServiceConfiguration.configurations.findOneAsync({ service: 'oidc' });
   if (!config) {
     throw new ServiceConfiguration.ConfigError('Service oidc not configured.');
   }

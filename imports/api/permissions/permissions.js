@@ -36,7 +36,7 @@ export const Permissions = {
     return Roles.userIsInRole(userId, ApplicationRoles.ADMIN, scope);
   },
 
-  setAdmin(userId, scope = Roles.GLOBAL_GROUP) {
+  async setAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     let accessGranted = false;
     if (this.isAdmin(Meteor.userId())) {
       accessGranted = true;
@@ -46,7 +46,7 @@ export const Permissions = {
     if (!accessGranted) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope);
+    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope);
   },
 
   initializeProjectPermissions(project) {
@@ -162,51 +162,51 @@ export const checkAdmin = (scope) => {
   }
 };
 
-export const checkCanReadProject = (projectId) => {
-  Meteor.call("permissions.canReadProject", { projectId });
+export const checkCanReadProject = async (projectId) => {
+  await Meteor.callAsync("permissions.canReadProject", { projectId });
 };
 
-export const checkCanWriteProject = (projectId) => {
-  Meteor.call("permissions.canWriteProject", { projectId });
+export const checkCanWriteProject = async (projectId) => {
+  await Meteor.callAsync("permissions.canWriteProject", { projectId });
 };
 
-export const checkCanReadOrganization = (organizationId) => {
-  Meteor.call("permissions.canReadOrganization", { organizationId });
+export const checkCanReadOrganization = async (organizationId) => {
+  await Meteor.callAsync("permissions.canReadOrganization", { organizationId });
 };
 
-export const checkCanDeleteProject = (projectId) => {
-  Meteor.call("permissions.canDeleteProject", { projectId });
+export const checkCanDeleteProject = async (projectId) => {
+  await Meteor.callAsync("permissions.canDeleteProject", { projectId });
 };
 
-export const checkCanReadTask = (taskId) => {
-  Meteor.call("permissions.canReadTask", { taskId });
+export const checkCanReadTask = async (taskId) => {
+  await Meteor.callAsync("permissions.canReadTask", { taskId });
 };
 
-export const checkCanWriteTask = (taskId) => {
-  Meteor.call("permissions.canWriteTask", { taskId });
+export const checkCanWriteTask = async (taskId) => {
+  await Meteor.callAsync("permissions.canWriteTask", { taskId });
 };
 
-export const checkCanDeleteTask = (taskId) => {
-  Meteor.call("permissions.canDeleteTask", { taskId });
+export const checkCanDeleteTask = async (taskId) => {
+  await Meteor.callAsync("permissions.canDeleteTask", { taskId });
 };
 
 /** Meetings * */
 
-export const checkCanReadMeeting = (meetingId) => {
-  Meteor.call("permissions.canReadMeeting", { meetingId });
+export const checkCanReadMeeting = async (meetingId) => {
+  await Meteor.callAsync("permissions.canReadMeeting", { meetingId });
 };
 
-export const checkCanWriteMeeting = (meetingId) => {
-  Meteor.call("permissions.canWriteMeeting", { meetingId });
+export const checkCanWriteMeeting = async (meetingId) => {
+  await Meteor.callAsync("permissions.canWriteMeeting", { meetingId });
 };
 
-export const checkCanDeleteMeeting = (meetingId) => {
-  Meteor.call("permissions.canDeleteMeeting", { meetingId });
+export const checkCanDeleteMeeting = async (meetingId) => {
+  await Meteor.callAsync("permissions.canDeleteMeeting", { meetingId });
 };
 
 /** Generic permissions * */
 
-export const checkCanWriteObject = (scope, objectId) => {
+export const checkCanWriteObject = async (scope, objectId) => {
   switch (scope) {
     case PermissionObjects.MEETING:
       return checkCanWriteMeeting(objectId);
@@ -227,13 +227,13 @@ Permissions.methods.setAdmin = new ValidatedMethod({
     userId: { type: String },
     scope: { type: String, optional: true }
   }).validator(),
-  run({ userId, scope }) {
+  async run({ userId, scope }) {
     checkLoggedIn();
 
     if (!scope) {
       scope = Roles.GLOBAL_GROUP;
     }
-    Permissions.setAdmin(userId, scope);
+    await Permissions.setAdmin(userId, scope);
   }
 });
 
@@ -242,13 +242,13 @@ Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
 
-    const project = Projects.findOne({ _id: projectId });
+    const project = await Projects.findOneAsync({ _id: projectId });
     const userId = project.createdBy;
     if (!userId) return;
-    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
+    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
   }
 });
 
@@ -257,13 +257,13 @@ Permissions.methods.initializeOrganizationPermissions = new ValidatedMethod({
   validate: new SimpleSchema({
     organizationId: { type: String }
   }).validator(),
-  run({ organizationId }) {
+  async run({ organizationId }) {
     checkLoggedIn();
 
-    const organization = Organizations.findOne({ _id: organizationId });
+    const organization = await Organizations.findOneAsync({ _id: organizationId });
     const userId = organization.createdBy;
     if (!userId) return;
-    Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, organizationId);
+    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, organizationId);
   }
 });
 
@@ -273,12 +273,12 @@ Permissions.methods.removeAdmin = new ValidatedMethod({
     userId: { type: String },
     scope: { type: String, optional: true }
   }).validator(),
-  run({ userId, scope }) {
+  async run({ userId, scope }) {
     checkLoggedIn();
 
     if (!scope) {
       scope = Roles.GLOBAL_GROUP;
     }
-    Permissions.removeAdmin(userId, scope);
+    await Permissions.removeAdmin(userId, scope);
   }
 });

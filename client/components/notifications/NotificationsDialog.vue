@@ -115,23 +115,21 @@ export default {
       this.refresh();
     }
   },
-  created() {
-    this.debouncedLoad = debounce(() => {
+  async created() {
+    this.debouncedLoad = debounce(async () => {
       const notificationIds = [];
       this.notifications.forEach((notification) => {
         if (!notification.read) notificationIds.push(notification._id);
       });
       if (notificationIds.length === 0) return;
 
-      Meteor.call(
+      await Meteor.callAsync(
         "notifications.markAsRead",
         {
           notificationIds
-        },
-        () => {
-          this.refresh();
         }
       );
+      this.refresh();
     }, 2000);
   },
   methods: {

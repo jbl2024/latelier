@@ -1,24 +1,23 @@
-import { Meteor } from "meteor/meteor";
-import { check, Match } from "meteor/check";
-import { Projects } from "/imports/api/projects/projects.js";
-import { Attachments } from "/imports/api/attachments/attachments.js";
-import { Lists } from "/imports/api/lists/lists.js";
-import { Tasks } from "/imports/api/tasks/tasks.js";
-import { Labels } from "/imports/api/labels/labels.js";
-import * as htmlToText from "html-to-text";
 import carbone from "carbone";
+import * as htmlToText from "html-to-text";
+import { check, Match } from "meteor/check";
+import { Log } from "meteor/logging";
+import { Meteor } from "meteor/meteor";
 import moment from "moment";
+import { Attachments } from "/imports/api/attachments/attachments.js";
+import { Labels } from "/imports/api/labels/labels.js";
+import { Lists } from "/imports/api/lists/lists.js";
+import { Projects } from "/imports/api/projects/projects.js";
+import { Tasks } from "/imports/api/tasks/tasks.js";
 
 import {
-  checkCanReadTask,
   checkCanReadProject,
+  checkCanReadTask,
   checkCanWriteProject
 } from "/imports/api/permissions/permissions";
 
-const bound = Meteor.bindEnvironment((callback) => callback());
-
 Meteor.methods({
-  "tasks.clone"(taskId, name, projectId, listId, keepDates) {
+  async "tasks.clone"(taskId, name, projectId, listId, keepDates) {
     check(taskId, String);
     check(name, Match.Maybe(String));
     check(projectId, Match.Maybe(String));
@@ -29,7 +28,7 @@ Meteor.methods({
     const userId = Meteor.userId();
     const now = new Date();
 
-    const task = Tasks.findOne({ _id: taskId });
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("not-found");
     }
@@ -42,11 +41,11 @@ Meteor.methods({
     const cloneToAnotherProject = task.projectId !== projectId;
 
     if (cloneToAnotherProject && !listId) {
-      const list = Lists.findOne({ projectId });
+      const list = await Lists.findOneAsync({ projectId });
       if (list) {
         listId = list._id;
       } else {
-        listId = Meteor.call("lists.insert", projectId, "Sans nom")._id;
+        listId = Meteor.callAsync("lists.insert", projectId, "Sans nom")._id;
       }
     }
 
@@ -69,16 +68,16 @@ Meteor.methods({
       checked: aChecklist.checked
     }));
 
-    const findLabelsInDestinationProject = () => {
+    const findLabelsInDestinationProject = async () => {
       const labels = [];
       if (!task.labels) {
         return labels;
       }
-      task.labels.forEach((labelId) => {
-        const previousLabel = Labels.findOne({
+      task.labels.forEach(async (labelId) => {
+        const previousLabel = await Labels.findOneAsync({
           _id: labelId
         });
-        const labelInClonedProject = Labels.findOne({
+        const labelInClonedProject = await Labels.findOneAsync({
           name: previousLabel.name,
           color: previousLabel.color,
           projectId: projectId
@@ -102,7 +101,7 @@ Meteor.methods({
       updatedAt: !keepDates ? now : task.updatedAt,
       createdBy: !keepDates ? userId : task.createdBy,
       updatedBy: !keepDates ? userId : task.updatedBy,
-      labels: !cloneToAnotherProject ? task.labels : findLabelsInDestinationProject(),
+      labels: !cloneToAnotherProject ? task.labels : await findLabelsInDestinationProject(),
       watchers: !cloneToAnotherProject ? task.watchers : undefined,
       notes,
       checklist,
@@ -110,37 +109,38 @@ Meteor.methods({
       dueDate: task.dueDate
     };
 
-    const clonedTaskId = Tasks.insert(clonedTask);
-    Meteor.call("tasks.setNumber", clonedTaskId);
+    const clonedTaskId = await Tasks.insertAsync(clonedTask);
+    Meteor.callAsync("tasks.setNumber", clonedTaskId);
 
-    const _reorder = function (aListId) {
-      const tasks = Tasks.find({ aListId }, { sort: { order: 1 } }).fetch();
+    const _reorder = async function (aListId) {
+      const tasks = await Tasks.find({ aListId }, { sort: { order: 1 } }).fetchAsync();
       for (let i = 0; i < tasks.length; i++) {
         const aTask = tasks[i];
         aTask.order = i * 10;
 
-        Tasks.direct.update({ _id: aTask._id }, { $set: { order: aTask.order } });
+        // eslint-disable-next-line no-await-in-loop
+        await Tasks.direct.updateAsync({ _id: aTask._id }, { $set: { order: aTask.order } });
       }
     };
     _reorder(clonedTask.listId);
 
-    const attachments = Attachments.find({ "meta.taskId": taskId }).fetch();
-    attachments.forEach((attachment) => {
-      Meteor.call("attachments.clone", {
+    const attachments = await Attachments.find({ "meta.taskId": taskId });
+    await attachments.forEachAsync(async (attachment) => {
+      await Meteor.callAsync("attachments.clone", {
         attachmentId: attachment._id,
         taskId: clonedTaskId,
         projectId
       });
     });
 
-    Meteor.call("tasks.track", {
+    await Meteor.callAsync("tasks.track", {
       type: "tasks.create",
       taskId: clonedTaskId
     });
-    return Tasks.findOne({ _id: clonedTaskId });
+    return Tasks.findOneAsync({ _id: clonedTaskId });
   },
 
-  "tasks.track"(event) {
+  async "tasks.track"(event) {
     check(event, {
       taskId: String,
       type: String,
@@ -148,12 +148,12 @@ Meteor.methods({
     });
     const userId = Meteor.userId();
 
-    Meteor.defer(() => {
-      const task = Tasks.findOne({ _id: event.taskId });
+    Meteor.defer(async () => {
+      const task = await Tasks.findOneAsync({ _id: event.taskId });
       const properties = event.properties || {};
 
-      const project = Projects.findOne({ _id: task.projectId });
-      const list = Lists.findOne({ _id: task.listId });
+      const project = await Projects.findOneAsync({ _id: task.projectId });
+      const list = await Lists.findOneAsync({ _id: task.listId });
 
       properties.task = task;
       properties.task.project = project;
@@ -162,22 +162,22 @@ Meteor.methods({
         `/projects/${project._id}/${task._id}`
       );
 
-      Meteor.call("events.track", {
+      await Meteor.callAsync("events.track", {
         type: event.type,
         userId: userId,
         properties
       });
 
-      Meteor.call("digests.add", {
+      await Meteor.callAsync("digests.add", {
         type: event.type,
         properties: properties
       });
     });
   },
 
-  "tasks.getUrl"(taskNumber) {
+  async "tasks.getUrl"(taskNumber) {
     check(taskNumber, Number);
-    const task = Tasks.findOne({ number: taskNumber });
+    const task = await Tasks.findOneAsync({ number: taskNumber });
     if (!task) {
       throw new Meteor.Error("not-found");
     }
@@ -196,12 +196,12 @@ Tasks.methods.exportODT = new ValidatedMethod({
     taskId: { type: String },
     format: { type: String }
   }).validator(),
-  run({ taskId, format }) {
+  run: async function({ taskId, format }) {
     checkCanReadTask(taskId);
 
     const source = Assets.absoluteFilePath(`exports/tasks/task.${format}`);
-    const task = Tasks.findOne({ _id: taskId });
-    const context = Tasks.helpers.loadAssociations(task);
+    const task = await Tasks.findOneAsync({ _id: taskId });
+    const context = await Tasks.helpers.loadAssociations(task);
 
     context.description = htmlToText.fromString(context.description);
     if (context.notes) {
@@ -215,21 +215,23 @@ Tasks.methods.exportODT = new ValidatedMethod({
     context.dueDate = context.dueDate ? moment(context.dueDate).format("DD/MM/YYYY HH:mm") : "";
     context.completedAt = context.completedAt ? moment(context.completedAt).format("DD/MM/YYYY HH:mm") : "";
 
-    const future = new (Npm.require(
-      Npm.require("path").join("fibers", "future")
-    ))();
-
-    bound(() => {
-      carbone.render(source, context, (err, res) => {
-        if (err) {
-          throw new Meteor.Error("error", err);
-        }
-        future.return({
-          data: res
+    try {
+      // Wrap carbone.render in a Promise
+      const result = await new Promise((resolve, reject) => {
+        carbone.render(source, context, (err, res) => {
+          if (err) {
+            reject(new Meteor.Error("error", err));
+          } else {
+            resolve({ data: res });
+          }
         });
       });
-    });
-    return future.wait();
+      return result;
+    } catch (error) {
+      // Handle the error appropriately
+      Log.error(error);
+      throw error;
+    }
   }
 });
 
@@ -249,7 +251,7 @@ Tasks.methods.exportProject = new ValidatedMethod({
     context.lists = [];
 
     const lists = Lists.find({ projectId: projectId }, { sort: { order: 1 } });
-    lists.forEach((list) => {
+    await lists.forEachAsync(async (list) => {
       context.lists.push(list);
       list.tasks = [];
       const tasks = Tasks.find({
@@ -257,9 +259,9 @@ Tasks.methods.exportProject = new ValidatedMethod({
         deleted: { $ne: true }
       }, { sort: { order: 1 } });
 
-      tasks.forEach((task) => {
+      await tasks.forEachAsync(async (task) => {
         if (format) {
-          task = Tasks.helpers.loadAssociations(task);
+          task = await Tasks.helpers.loadAssociations(task);
           task.description = htmlToText.fromString(task.description);
           if (task.notes) {
             task.notes.forEach((note) => {

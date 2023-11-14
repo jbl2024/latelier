@@ -1,6 +1,7 @@
+import { check } from "meteor/check";
+import { Log } from "meteor/logging";
 import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
-import { check } from "meteor/check";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 
 export const Backgrounds = new FilesCollection({
@@ -13,7 +14,7 @@ export const Backgrounds = new FilesCollection({
   onBeforeUpload() {
     return true;
   },
-  onAfterUpload(file) {
+  async onAfterUpload(file) {
     if (Meteor.isServer) {
       import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";
 
@@ -22,10 +23,9 @@ export const Backgrounds = new FilesCollection({
         { $set: { "meta.createdAt": new Date() } }
       );
       if (/png|jpe?g/i.test(file.extension || "")) {
-        createThumbnails(this, file, (error) => {
+        await createThumbnails(this, file, (error) => {
           if (error) {
-            /* eslint no-console: off */
-            console.error(error);
+            Log.error(error);
           }
         });
       }
@@ -34,11 +34,11 @@ export const Backgrounds = new FilesCollection({
 });
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Backgrounds.collection
+  Meteor.startup(async () => {
+    await Backgrounds.collection
       .rawCollection()
       .createIndex({ "metadata.userId": 1 });
-    Backgrounds.collection.rawCollection().createIndex({ "metadata.name": 1 });
+    await Backgrounds.collection.rawCollection().createIndex({ "metadata.name": 1 });
   });
 }
 if (!Backgrounds.methods) {
@@ -46,14 +46,14 @@ if (!Backgrounds.methods) {
 }
 
 Meteor.methods({
-  "backgrounds.remove"(id) {
+  async "backgrounds.remove"(id) {
     check(id, String);
 
     Backgrounds.remove(id);
   },
 
-  "backgrounds.find"() {
-    return Backgrounds.find({}).fetch();
+  async "backgrounds.find"() {
+    return Backgrounds.find({}).fetchAsync();
   }
 });
 
@@ -63,13 +63,13 @@ if (Meteor.isServer) {
     validate: new SimpleSchema({
       backgroundId: { type: String }
     }).validator(),
-    run({ backgroundId }) {
+    async run({ backgroundId }) {
       checkLoggedIn();
       const background = Backgrounds.findOne({ _id: backgroundId });
       if (!background) {
         throw new Meteor.Error("not-found");
       }
-      Meteor.users.update(Meteor.userId(), {
+      await Meteor.users.updateAsync(Meteor.userId(), {
         $set: { "profile.background": background.link() }
       });
     }
@@ -78,9 +78,9 @@ if (Meteor.isServer) {
   Backgrounds.methods.clear = new ValidatedMethod({
     name: "backgrounds.clear",
     validate: null,
-    run() {
+    async run() {
       checkLoggedIn();
-      Meteor.users.update(Meteor.userId(), {
+      await Meteor.users.updateAsync(Meteor.userId(), {
         $unset: { "profile.background": 1 }
       });
     }

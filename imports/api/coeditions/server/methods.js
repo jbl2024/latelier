@@ -11,16 +11,16 @@ Coeditions.methods.send = new ValidatedMethod({
     permissionObject: { type: String },
     permissionId: { type: String }
   }).validator(),
-  run({ objectId, permissionObject, permissionId }) {
+  async run({ objectId, permissionObject, permissionId }) {
     checkCanWriteObject(permissionObject, permissionId);
-    let storedData = Coeditions.findOne({
+    let storedData = await Coeditions.findOneAsync({
       objectId: objectId
     }, {
       sort: { version: -1 }
     });
 
     if (!storedData) {
-      Coeditions.insert({
+      await Coeditions.insertAsync({
         createdAt: new Date(),
         objectId: objectId,
         version: 0,
@@ -31,7 +31,7 @@ Coeditions.methods.send = new ValidatedMethod({
           }]
         })
       });
-      storedData = Coeditions.findOne({
+      storedData = await Coeditions.findOneAsync({
         objectId: objectId
       }, {
         sort: { version: -1 }
@@ -50,8 +50,8 @@ Coeditions.methods.send = new ValidatedMethod({
     sendable: { type: Object, blackbox: true },
     schema: { type: Object, blackbox: true }
   }).validator(),
-  run({ objectId, permissionObject, permissionId, sendable, schema }) {
-    const storedData = Meteor.call("coeditions.init", { objectId, permissionObject, permissionId });
+  async run({ objectId, permissionObject, permissionId, sendable, schema }) {
+    const storedData = await Meteor.callAsync("coeditions.init", { objectId, permissionObject, permissionId });
     const { version, clientID, steps } = sendable;
 
     if (storedData.version !== version) {
@@ -84,9 +84,9 @@ Coeditions.methods.send = new ValidatedMethod({
         return stepData;
       }))
     };
-    Coeditions.insert(newObject);
+    await Coeditions.insertAsync(newObject);
 
-    Meteor.call("coeditions.purge", { objectId });
+    await Meteor.callAsync("coeditions.purge", { objectId });
 
     return newObject;
   }
@@ -97,16 +97,16 @@ Coeditions.methods.purge = new ValidatedMethod({
   validate: new SimpleSchema({
     objectId: { type: String }
   }).validator(),
-  run({ objectId }) {
+  async run({ objectId }) {
     this.unblock();
 
-    const count = Coeditions.find({ objectId }).count();
+    const count = await Coeditions.findAsync({ objectId }).count();
     const keep = Meteor.settings.coedition?.steps || 500;
     if (count > keep) {
-      const coeditions = Coeditions.find(
+      const coeditions = await Coeditions.find(
         { objectId },
         { sort: { version: 1 } }
-      ).fetch();
+      ).fetchAsync();
       const toDelete = count - keep;
       for (let i = 0; i < toDelete; i++) {
         Coeditions.remove({ _id: coeditions[i]._id });
@@ -120,10 +120,10 @@ Coeditions.methods.removeOutdated = new ValidatedMethod({
   validate: new SimpleSchema({
     when: { type: Date }
   }).validator(),
-  run({ when }) {
+  async run({ when }) {
     this.unblock();
 
-    Coeditions.remove({
+    await Coeditions.removeAsync({
       createdAt: {
         $lte: when
       }

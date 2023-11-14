@@ -34,19 +34,19 @@ Organizations.methods.create = new ValidatedMethod({
   validate: new SimpleSchema({
     name: { type: String }
   }).validator(),
-  run({ name }) {
+  async run({ name }) {
     checkLoggedIn();
     check(name, String);
     const currentUser = Meteor.userId();
-    const organizationId = Organizations.insert({
+    const organizationId = await Organizations.insertAsync({
       name,
       createdAt: new Date(),
       createdBy: currentUser
     });
-    Meteor.call("permissions.initializeOrganizationPermissions", {
+    await Meteor.callAsync("permissions.initializeOrganizationPermissions", {
       organizationId
     });
-    Meteor.call("organizations.addMember", {
+    await Meteor.callAsync("organizations.addMember", {
       organizationId,
       userId: currentUser
     });
@@ -57,8 +57,8 @@ Organizations.methods.create = new ValidatedMethod({
 Organizations.methods.fixOrphanProjectGroups = new ValidatedMethod({
   name: "organizations.fixOrphanProjectGroups",
   validate: null,
-  run() {
-    ProjectGroups.remove({ organizationId: { $exists: false } });
+  async run() {
+    await ProjectGroups.removeAsync({ organizationId: { $exists: false } });
   }
 });
 
@@ -67,10 +67,10 @@ Organizations.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     organizationId: { type: String }
   }).validator(),
-  run({ organizationId }) {
+  async run({ organizationId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    const organization = Organizations.findOne({ _id: organizationId });
+    const organization = await Organizations.findOneAsync({ _id: organizationId });
 
     let canDelete = false;
     if (
@@ -84,14 +84,14 @@ Organizations.methods.remove = new ValidatedMethod({
       throw new Meteor.Error("permission-error");
     }
 
-    Projects.update(
+    await Projects.updateAsync(
       { organizationId },
       { $unset: { organizationId: 1 } },
       { multi: true }
     );
-    Organizations.remove(organizationId);
+    await Organizations.removeAsync(organizationId);
 
-    Meteor.call("organizations.fixOrphanProjectGroups");
+    await Meteor.callAsync("organizations.fixOrphanProjectGroups");
   }
 });
 
@@ -101,14 +101,14 @@ Organizations.methods.updateName = new ValidatedMethod({
     organizationId: { type: String },
     name: { type: String }
   }).validator(),
-  run({ organizationId, name }) {
+  async run({ organizationId, name }) {
     checkLoggedIn();
     checkCanManage(organizationId);
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
 
-    Organizations.update({ _id: organizationId }, { $set: { name } });
+    await Organizations.updateAsync({ _id: organizationId }, { $set: { name } });
   }
 });
 
@@ -118,10 +118,10 @@ Organizations.methods.updateDescription = new ValidatedMethod({
     organizationId: { type: String },
     description: { type: String }
   }).validator(),
-  run({ organizationId, description }) {
+  async run({ organizationId, description }) {
     checkLoggedIn();
     checkCanManage(organizationId);
-    Organizations.update({ _id: organizationId }, { $set: { description } });
+    await Organizations.updateAsync({ _id: organizationId }, { $set: { description } });
   }
 });
 
@@ -131,14 +131,14 @@ Organizations.methods.moveProject = new ValidatedMethod({
     organizationId: { type: String },
     projectId: { type: String }
   }).validator(),
-  run({ organizationId, projectId }) {
+  async run({ organizationId, projectId }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
-    ProjectGroups.update(
+    await ProjectGroups.updateAsync(
       { projects: projectId },
       { $pull: { projects: projectId } }
     );
-    Projects.update({ _id: projectId }, { $set: { organizationId } });
+    await Projects.updateAsync({ _id: projectId }, { $set: { organizationId } });
   }
 });
 
@@ -148,15 +148,15 @@ Organizations.methods.addMember = new ValidatedMethod({
     organizationId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ organizationId, userId }) {
+  async run({ organizationId, userId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
     if (
-      Organizations.find({ _id: organizationId, members: userId }).count() > 0
+      await Organizations.find({ _id: organizationId, members: userId }).countAsync() > 0
     ) {
       return;
     }
-    Organizations.update(
+    await Organizations.updateAsync(
       { _id: organizationId },
       { $push: { members: userId } }
     );
@@ -165,9 +165,9 @@ Organizations.methods.addMember = new ValidatedMethod({
       organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.forEach((project) => {
+    await projects.forEachAsync(async (project) => {
       try {
-        Meteor.call("projects.addMember", {
+        await Meteor.callAsync("projects.addMember", {
           projectId: project._id,
           userId
         });
@@ -184,11 +184,11 @@ Organizations.methods.removeMember = new ValidatedMethod({
     organizationId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ organizationId, userId }) {
+  async run({ organizationId, userId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
 
-    const organization = Organizations.findOne({ _id: organizationId });
+    const organization = await Organizations.findOneAsync({ _id: organizationId });
     if (!organization) {
       throw new Meteor.Error("not-found");
     }
@@ -198,7 +198,7 @@ Organizations.methods.removeMember = new ValidatedMethod({
     }
 
     if (
-      Organizations.find({ _id: organizationId, members: userId }).count() === 0
+      await Organizations.find({ _id: organizationId, members: userId }).countAsync() === 0
     ) {
       return;
     }
@@ -207,9 +207,9 @@ Organizations.methods.removeMember = new ValidatedMethod({
       organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.forEach((project) => {
+    await projects.forEachAsync(async (project) => {
       try {
-        Meteor.call("projects.removeMember", {
+        await Meteor.callAsync("projects.removeMember", {
           projectId: project._id,
           userId
         });
@@ -222,7 +222,7 @@ Organizations.methods.removeMember = new ValidatedMethod({
       Permissions.removeAdmin(userId, organizationId);
     }
 
-    Organizations.update(
+    await Organizations.updateAsync(
       { _id: organizationId },
       { $pull: { members: userId } }
     );
@@ -235,16 +235,16 @@ Organizations.methods.propagateMembership = new ValidatedMethod({
     organizationId: { type: String },
     projectId: { type: String }
   }).validator(),
-  run({ organizationId, projectId }) {
+  async run({ organizationId, projectId }) {
     checkLoggedIn();
     checkCanManage(projectId);
-    const organization = Organizations.findOne({ _id: organizationId });
+    const organization = await Organizations.findOneAsync({ _id: organizationId });
     if (!organization) {
       throw new Meteor.Error("not-found");
     }
     const members = organization.members || [];
-    members.forEach((member) => {
-      Meteor.call("projects.addMember", {
+    members.forEach(async (member) => {
+      await Meteor.callAsync("projects.addMember", {
         projectId,
         userId: member
       });
@@ -262,7 +262,7 @@ Organizations.methods.setAdmin = new ValidatedMethod({
     organizationId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ organizationId, userId }) {
+  async run({ organizationId, userId }) {
     checkLoggedIn();
     checkCanManage(organizationId);
     Permissions.methods.setAdmin.call({
@@ -273,8 +273,9 @@ Organizations.methods.setAdmin = new ValidatedMethod({
       organizationId,
       accessRights: ProjectAccessRights.ORGANIZATION
     });
-    projects.forEach((project) => {
+    await projects.forEachAsync(async (project) => {
       try {
+        // TODO: check async
         Permissions.methods.setAdmin.call({
           userId,
           scope: project._id

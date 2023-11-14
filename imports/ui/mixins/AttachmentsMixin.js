@@ -23,26 +23,21 @@ export default {
     getIconStyles(attachment) {
       return AttachmentsUtils.getIconStyles(attachment);
     },
-    deleteAttachment(attachment) {
-      this.$confirm(this.$t("Delete attachment?"), {
-        title: attachment.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteAttachment(attachment) {
+      try {
+        const res = await this.$confirm(this.$t("Delete attachment?"), {
+          title: attachment.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+
         if (res) {
-          Meteor.call(
-            "attachments.remove",
-            { attachmentId: attachment._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-              } else {
-                this.$notify(this.$t("attachments.removeSuccess"));
-              }
-            }
-          );
+          await Meteor.callAsync("attachments.remove", { attachmentId: attachment._id });
+          this.$notify(this.$t("attachments.removeSuccess"));
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

@@ -215,19 +215,18 @@ export default {
             this.$stopMeteor();
 
             const labelIds = this.labels.map((l) => l._id);
-            tasks.forEach((name) => {
-              Meteor.call(
-                "tasks.insert",
-                list.projectId,
-                this.listId,
-                name,
-                labelIds,
-                (error) => {
-                  if (error) {
-                    this.$notifyError(error);
-                  }
-                }
-              );
+            tasks.forEach(async (name) => {
+              try {
+                await Meteor.callAsync(
+                  "tasks.insert",
+                  list.projectId,
+                  this.listId,
+                  name,
+                  labelIds
+                );
+              } catch (error) {
+                this.$notifyError(error);
+              }
               this.loading = false;
               this.reset();
               if (!keep) {

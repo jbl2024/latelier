@@ -14,10 +14,10 @@ Tasks.helpers.findUserIdsInvolvedInTask = function(task) {
   return userIds;
 };
 
-Tasks.helpers.loadAssociations = function (task) {
-  const loadUser = (aUserId) => {
+Tasks.helpers.loadAssociations = async function (task) {
+  const loadUser = async (aUserId) => {
     if (!aUserId) return {};
-    return Meteor.users.findOne(
+    return Meteor.users.findOneAsync(
       { _id: aUserId },
       {
         fields: {
@@ -32,29 +32,29 @@ Tasks.helpers.loadAssociations = function (task) {
     );
   };
 
-  task.project = Projects.findOne({ _id: task.projectId });
-  task.assignedTo = loadUser(task.assignedTo);
-  task.completedBy = loadUser(task.completedBy);
+  task.project = await Projects.findOneAsync({ _id: task.projectId });
+  task.assignedTo = await loadUser(task.assignedTo);
+  task.completedBy = await loadUser(task.completedBy);
   if (task.watchers) {
-    task.watchers = task.watchers.map((watcher) => loadUser(watcher));
+    task.watchers = task.watchers.map(async (watcher) => loadUser(watcher));
   }
 
   if (task.checklist) {
-    task.checklist = task.checklist.map((checklistItem) => {
-      checklistItem.createdBy = loadUser(checklistItem.createdBy);
+    task.checklist = task.checklist.map(async (checklistItem) => {
+      checklistItem.createdBy = await loadUser(checklistItem.createdBy);
       return checklistItem;
     });
   }
 
   if (task.notes) {
-    task.notes = task.notes.map((note) => {
-      note.createdBy = loadUser(note.createdBy);
+    task.notes = task.notes.map(async (note) => {
+      note.createdBy = await loadUser(note.createdBy);
       return note;
     });
   }
 
   if (task.labels) {
-    task.labels = task.labels.map((label) => Labels.findOne({ _id: label }));
+    task.labels = task.labels.map(async (label) => Labels.findOneAsync({ _id: label }));
   }
 
   return task;

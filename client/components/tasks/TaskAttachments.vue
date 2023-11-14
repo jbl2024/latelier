@@ -1,12 +1,6 @@
 <template>
   <div class="task-attachments">
-    <input
-      v-if="!isUploading"
-      type="file"
-      multiple
-      :disabled="isUploading"
-      @change="onUpload"
-    >
+    <input v-if="!isUploading" type="file" multiple :disabled="isUploading" @change="onUpload">
     <v-progress-linear v-show="isUploading" indeterminate />
     <v-list>
       <v-list-item v-for="attachment in attachments" :key="attachment._id">
@@ -33,6 +27,7 @@
 </template>
 
 <script>
+import { Log } from "meteor/logging";
 import { Attachments } from "/imports/api/attachments/attachments";
 
 import "moment/locale/fr";
@@ -42,7 +37,7 @@ export default {
   props: {
     task: {
       type: Object,
-      default: () => {}
+      default: () => { }
     }
   },
   data() {
@@ -76,16 +71,16 @@ export default {
         false
       );
 
-      upload.on("start", function() {
+      upload.on("start", function () {
         that.isUploading = true;
       });
 
-      upload.on("end", function(error) {
+      upload.on("end", async function (error) {
         that.isUploading = false;
         if (error) {
           this.$notifyError(error);
         } else {
-          Meteor.call("tasks.addAttachment", that.task._id);
+          await Meteor.callAsync("tasks.addAttachment", that.task._id);
           that.file = null;
         }
       });
@@ -93,16 +88,20 @@ export default {
       upload.start();
     },
 
-    deleteAttachment(attachment) {
-      this.$confirm(this.$t("Delete attachment?"), {
-        title: attachment.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteAttachment(attachment) {
+      try {
+        const res = await this.$confirm(this.$t("Delete attachment?"), {
+          title: attachment.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+
         if (res) {
-          Meteor.call("tasks.removeAttachment", this.task._id, attachment._id);
+          await Meteor.callAsync("tasks.removeAttachment", this.task._id, attachment._id);
         }
-      });
+      } catch (error) {
+        Log.error(error);
+      }
     },
 
     link(attachment) {
@@ -128,6 +127,7 @@ export default {
 input {
   padding: 14px;
 }
+
 .progress {
   text-align: center;
 }

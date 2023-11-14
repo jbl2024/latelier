@@ -8,7 +8,7 @@ import { callbacks as notificationsCB } from "./notifications";
 const callbacks = [mailsCB, remindersCB, notificationsCB];
 
 Meteor.methods({
-  "events.track"(event) {
+  async "events.track"(event) {
     check(event, {
       createdAt: Match.Optional(Date),
       type: String,
@@ -17,7 +17,7 @@ Meteor.methods({
       properties: Match.Optional(Object)
     });
     event.createdAt = event.createdAt || new Date();
-    Events.insert(event);
+    await Events.insertAsync(event);
 
     callbacks.forEach((cb) => {
       if (cb[event.type]) {
@@ -29,10 +29,10 @@ Meteor.methods({
     });
   },
 
-  "events.removeProject"(projectId) {
+  async "events.removeProject"(projectId) {
     check(projectId, String);
-    Meteor.defer(() => {
-      Events.remove({ "properties.task.project._id": projectId });
+    Meteor.defer(async () => {
+      await Events.remove({ "properties.task.project._id": projectId });
     });
   }
 });

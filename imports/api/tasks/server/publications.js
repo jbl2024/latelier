@@ -10,7 +10,7 @@ import { Attachments } from "../../attachments/attachments";
 import { Labels } from "../../labels/labels";
 
 // This code only runs on the server
-Meteor.publish("tasks", function tasksPublication(listId) {
+Meteor.publish("tasks", async function tasksPublication(listId) {
   check(listId, String);
   return Tasks.find(
     { listId, deleted: { $ne: true } },
@@ -18,7 +18,7 @@ Meteor.publish("tasks", function tasksPublication(listId) {
   );
 });
 
-publishComposite("task", function (taskId) {
+publishComposite("task", async function (taskId) {
   return {
     find() {
       try {

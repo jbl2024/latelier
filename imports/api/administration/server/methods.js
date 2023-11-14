@@ -1,36 +1,36 @@
-import { Organizations } from "/imports/api/organizations/organizations";
-import { Projects } from "/imports/api/projects/projects";
-import { Tasks } from "/imports/api/tasks/tasks";
 import { Attachments } from "/imports/api/attachments/attachments";
 import { ProcessDiagrams } from "/imports/api/bpmn/processDiagrams";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
+import { Organizations } from "/imports/api/organizations/organizations";
 import { checkAdmin } from "/imports/api/permissions/permissions";
+import { Projects } from "/imports/api/projects/projects";
+import { Tasks } from "/imports/api/tasks/tasks";
 
 export const methods = {};
 
 methods.info = new ValidatedMethod({
   name: "administration.info",
   validate: null,
-  run() {
+  async run() {
     checkAdmin();
-    const taskCount = Tasks.find({
+    const taskCount = await Tasks.find({
       deleted: { $ne: true }
-    }).count();
+    }).countAsync();
 
-    const projectCount = Projects.find({
+    const projectCount = await Projects.find({
       deleted: { $ne: true }
-    }).count();
+    }).countAsync();
 
-    const meetingCount = Meetings.find({
+    const meetingCount = await Meetings.find({
       deleted: { $ne: true }
-    }).count();
+    }).countAsync();
 
-    const organizationCount = Organizations.find({}).count();
-    const processDiagramCount = ProcessDiagrams.find({}).count();
-    const healthReportCount = HealthReports.find({}).count();
-    const attachmentCount = Attachments.find({}).count();
-    const userCount = Meteor.users.find({}).count();
+    const organizationCount = await Organizations.find({}).countAsync();
+    const processDiagramCount = await ProcessDiagrams.find({}).countAsync();
+    const healthReportCount = await HealthReports.find({}).countAsync();
+    const attachmentCount = await Attachments.find({}).countAsync();
+    const userCount = await Meteor.users.find({}).countAsync();
 
     return {
       organizationCount,

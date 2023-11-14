@@ -8,16 +8,16 @@ Notifications.methods.create = new ValidatedMethod({
     type: { type: String },
     properties: { type: Object, optional: true, blackbox: true }
   }).validator(),
-  run({ userId, type, properties }) {
-    const notificationId = Notifications.insert({
+  async run({ userId, type, properties }) {
+    const notificationId = await Notifications.insertAsync({
       userId,
       type,
       properties,
       read: false,
       createdAt: new Date()
     });
-    Meteor.call("notifications.updateProfile", { userId });
-    Meteor.call("notifications.purge", { userId });
+    await Meteor.callAsync("notifications.updateProfile", { userId });
+    await Meteor.callAsync("notifications.purge", { userId });
     return notificationId;
   }
 });
@@ -27,39 +27,39 @@ Notifications.methods.markAsRead = new ValidatedMethod({
   validate: new SimpleSchema({
     notificationIds: { type: [String] }
   }).validator(),
-  run({ notificationIds }) {
+  async run({ notificationIds }) {
     const userId = Meteor.userId();
-    notificationIds.forEach((id) => {
-      Notifications.update(
+    notificationIds.forEach(async (id) => {
+      await Notifications.updateAsync(
         { _id: id, userId },
         { $set: { read: true } }
       );
     });
-    Meteor.call("notifications.updateProfile", { userId });
+    await Meteor.callAsync("notifications.updateProfile", { userId });
   }
 });
 
 Notifications.methods.markAllAsRead = new ValidatedMethod({
   name: "notifications.markAllAsRead",
   validate: null,
-  run() {
+  async run() {
     const userId = Meteor.userId();
-    Notifications.update(
+    await Notifications.updateAsync(
       { userId, read: false },
       { $set: { read: true } },
       { multi: true }
     );
-    Meteor.call("notifications.updateProfile", { userId });
+    await Meteor.callAsync("notifications.updateProfile", { userId });
   }
 });
 
 Notifications.methods.clear = new ValidatedMethod({
   name: "notifications.clear",
   validate: null,
-  run() {
+  async run() {
     const userId = Meteor.userId();
-    Notifications.remove({ userId });
-    Meteor.call("notifications.updateProfile", { userId });
+    await Notifications.removeAsync({ userId });
+    await Meteor.callAsync("notifications.updateProfile", { userId });
   }
 });
 
@@ -68,7 +68,7 @@ Notifications.methods.load = new ValidatedMethod({
   validate: new SimpleSchema({
     page: { type: Number }
   }).validator(),
-  run({ page }) {
+  async run({ page }) {
     checkLoggedIn();
     const query = {
       userId: Meteor.userId()
@@ -84,14 +84,14 @@ Notifications.methods.load = new ValidatedMethod({
       skip = 0;
     }
 
-    const count = Notifications.find(query).count();
-    const data = Notifications.find(query, {
+    const count = await Notifications.find(query).countAsync();
+    const data = await Notifications.find(query, {
       skip,
       limit: perPage,
       sort: {
         createdAt: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     return {
       rowsPerPage: perPage,
@@ -106,14 +106,14 @@ Notifications.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     notificationId: { type: String }
   }).validator(),
-  run({ notificationId }) {
-    const notification = Notifications.findOne({ _id: notificationId });
+  async run({ notificationId }) {
+    const notification = await Notifications.findOneAsync({ _id: notificationId });
     if (notification.userId !== Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Notifications.remove({ _id: notificationId });
+    await Notifications.removeAsync({ _id: notificationId });
 
-    Meteor.call("notifications.updateProfile", { userId: Meteor.userId() });
+    await Meteor.callAsync("notifications.updateProfile", { userId: Meteor.userId() });
   }
 });
 
@@ -122,11 +122,11 @@ Notifications.methods.updateProfile = new ValidatedMethod({
   validate: new SimpleSchema({
     userId: { type: String }
   }).validator(),
-  run({ userId }) {
+  async run({ userId }) {
     this.unblock();
 
-    const count = Notifications.find({ userId, read: false }).count();
-    Meteor.users.update(userId, { $set: { "notifications.count": count } });
+    const count = await Notifications.find({ userId, read: false }).countAsync();
+    await Meteor.users.updateAsync(userId, { $set: { "notifications.count": count } });
   }
 });
 
@@ -135,19 +135,20 @@ Notifications.methods.purge = new ValidatedMethod({
   validate: new SimpleSchema({
     userId: { type: String }
   }).validator(),
-  run({ userId }) {
+  async run({ userId }) {
     this.unblock();
 
-    const count = Notifications.find({ userId }).count();
+    const count = await Notifications.find({ userId }).countAsync();
     const keep = Meteor.settings.notificationsPerUser || 50;
     if (count > keep) {
-      const notifications = Notifications.find(
+      const notifications = await Notifications.find(
         { userId },
         { sort: { createdAt: 1 } }
-      ).fetch();
+      ).fetchAsync();
       const toDelete = count - keep;
       for (let i = 0; i < toDelete; i++) {
-        Notifications.remove({ _id: notifications[i]._id });
+        // eslint-disable-next-line no-await-in-loop
+        await Notifications.removeAsync({ _id: notifications[i]._id });
       }
     }
   }

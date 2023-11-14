@@ -61,9 +61,9 @@ export const Attachments = new FilesCollection({
 });
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Attachments.collection.rawCollection().createIndex({ "meta.projectId": 1 });
-    Attachments.collection.rawCollection().createIndex({ metataskId: 1 });
+  Meteor.startup(async () => {
+    await Attachments.collection.rawCollection().createIndex({ "meta.projectId": 1 });
+    await Attachments.collection.rawCollection().createIndex({ metataskId: 1 });
   });
 
   // Intercept FilesCollection's remove method to remove file from other storages

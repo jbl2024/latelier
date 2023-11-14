@@ -3,19 +3,19 @@ import moment from "moment";
 import { NotificationTypes } from "/imports/api/notifications/notifications.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
 
-const clearJobs = function(jobName, taskId) {
+const clearJobs = async function(jobName, taskId) {
   const existingJobs = Jobs.collection.find({
     name: jobName,
     arguments: taskId
   });
-  existingJobs.forEach((job) => {
-    Jobs.remove(job._id);
+  await existingJobs.forEachAsync(async (job) => {
+    await Jobs.remove(job._id);
   });
 };
 
 Jobs.register({
-  sendReminderDueDate(taskId) {
-    const task = Tasks.findOne({ _id: taskId });
+  async sendReminderDueDate(taskId) {
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       this.remove();
       return;
@@ -23,9 +23,9 @@ Jobs.register({
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
-    userIds.forEach((userId) => {
+    userIds.forEach(async (userId) => {
       if (!userId) return;
-      Meteor.call("notifications.create", {
+      await Meteor.callAsync("notifications.create", {
         userId,
         type: NotificationTypes.TASK_REMINDER_DUE_DATE,
         properties: {
@@ -34,11 +34,11 @@ Jobs.register({
       });
     });
 
-    this.remove();
+    await this.remove();
   },
 
-  sendReminderStartDate(taskId) {
-    const task = Tasks.findOne({ _id: taskId });
+  async sendReminderStartDate(taskId) {
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       this.remove();
       return;
@@ -46,9 +46,9 @@ Jobs.register({
 
     const userIds = Tasks.helpers.findUserIdsInvolvedInTask(task);
 
-    userIds.forEach((userId) => {
+    userIds.forEach(async (userId) => {
       if (!userId) return;
-      Meteor.call("notifications.create", {
+      await Meteor.callAsync("notifications.create", {
         userId,
         type: NotificationTypes.TASK_REMINDER_START_DATE,
         properties: {
@@ -57,15 +57,15 @@ Jobs.register({
       });
     });
 
-    this.remove();
+    await this.removeAsync();
   }
 });
 
 export const callbacks = {
-  "tasks.setDueDate"(event) {
+  async "tasks.setDueDate"(event) {
     const { task } = event.properties;
     const taskId = task._id;
-    clearJobs("sendReminderDueDate", taskId);
+    await clearJobs("sendReminderDueDate", taskId);
 
     if (
       task.completed
@@ -84,10 +84,10 @@ export const callbacks = {
     });
   },
 
-  "tasks.setStartDate"(event) {
+  async "tasks.setStartDate"(event) {
     const { task } = event.properties;
     const taskId = task._id;
-    clearJobs("sendReminderStartDate", taskId);
+    await clearJobs("sendReminderStartDate", taskId);
     if (
       task.completed
       || task.reminderStartDate == null
@@ -105,18 +105,18 @@ export const callbacks = {
     });
   },
 
-  "tasks.remove"(event) {
+  async "tasks.remove"(event) {
     const { task } = event.properties;
     const taskId = task._id;
-    clearJobs("sendReminderDueDate", taskId);
-    clearJobs("sendReminderStartDate", taskId);
+    await clearJobs("sendReminderDueDate", taskId);
+    await clearJobs("sendReminderStartDate", taskId);
   },
 
-  "tasks.complete"(event) {
+  async "tasks.complete"(event) {
     const { task } = event.properties;
     const taskId = task._id;
-    clearJobs("sendReminderDueDate", taskId);
-    clearJobs("sendReminderStartDate", taskId);
+    await clearJobs("sendReminderDueDate", taskId);
+    await clearJobs("sendReminderStartDate", taskId);
   },
 
   "tasks.uncomplete"(event) {

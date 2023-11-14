@@ -11,7 +11,7 @@ export const Avatars = new FilesCollection({
   onBeforeUpload() {
     return true;
   },
-  onAfterUpload(fileRef) {
+  async onAfterUpload(fileRef) {
     if (Meteor.isServer) {
       import { onAfterUpload as handleUpload } from "/imports/api/storage/server/upload";
       import { createThumbnails } from "/imports/api/imageProcessing/server/imageProcessing";
@@ -21,7 +21,7 @@ export const Avatars = new FilesCollection({
         { $set: { "meta.createdAt": new Date() } }
       );
       if (/png|jpe?g/i.test(fileRef.extension || "")) {
-        createThumbnails(this, fileRef, (error) => {
+        await createThumbnails(this, fileRef, (error) => {
           if (error) {
             /* eslint no-console:off */
             console.error(error);

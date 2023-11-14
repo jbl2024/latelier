@@ -7,7 +7,7 @@ Examples.methods.find = new ValidatedMethod({
     page: { type: Number },
     name: { type: String, optional: true }
   }).validator(),
-  run({ page, name }) {
+  async run({ page, name }) {
     checkLoggedIn();
 
     const perPage = 4;
@@ -28,14 +28,14 @@ Examples.methods.find = new ValidatedMethod({
       };
     }
 
-    const count = Examples.find(query).count();
-    const data = Examples.find(query, {
+    const count = await Examples.find(query).countAsync();
+    const data = await Examples.find(query, {
       skip,
       limit: perPage,
       sort: {
         name: 1
       }
-    }).fetch();
+    }).fetchAsync();
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 

@@ -13,8 +13,8 @@ Labels.attachSchema(LabelSchema);
 Labels.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Tasks.rawCollection().createIndex({ projectId: 1 });
+  Meteor.startup(async () => {
+    await Tasks.rawCollection().createIndex({ projectId: 1 });
   });
 }
 
@@ -25,11 +25,11 @@ Labels.methods.create = new ValidatedMethod({
     name: { type: String },
     color: { type: String }
   }).validator(),
-  run({ projectId, name, color }) {
+  async run({ projectId, name, color }) {
     checkLoggedIn();
     checkCanWriteProject(projectId);
 
-    const labelId = Labels.insert({
+    const labelId = await Labels.insertAsync({
       projectId,
       name,
       color,
@@ -45,14 +45,14 @@ Labels.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     labelId: { type: String }
   }).validator(),
-  run({ labelId }) {
+  async run({ labelId }) {
     checkLoggedIn();
     const label = Labels.findOne({ _id: labelId });
     if (!label) {
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Tasks.direct.update(
+    await Tasks.direct.updateAsync(
       { labels: labelId },
       { $pull: { labels: labelId } },
       { multi: true }
@@ -67,14 +67,14 @@ Labels.methods.updateColor = new ValidatedMethod({
     labelId: { type: String },
     color: { type: String }
   }).validator(),
-  run({ labelId, color }) {
+  async run({ labelId, color }) {
     checkLoggedIn();
     const label = Labels.findOne({ _id: labelId });
     if (!label) {
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Labels.update({ _id: labelId }, { $set: { color } });
+    await Labels.updateAsync({ _id: labelId }, { $set: { color } });
   }
 });
 
@@ -85,14 +85,14 @@ Labels.methods.updateNameAndColor = new ValidatedMethod({
     name: { type: String },
     color: { type: String }
   }).validator(),
-  run({ labelId, name, color }) {
+  async run({ labelId, name, color }) {
     checkLoggedIn();
-    const label = Labels.findOne({ _id: labelId });
+    const label = await Labels.findOneAsync({ _id: labelId });
     if (!label) {
       throw new Meteor.Error("not-found");
     }
     checkCanWriteProject(label.projectId);
-    Labels.update({ _id: labelId }, { $set: { color, name } });
+    await Labels.updateAsync({ _id: labelId }, { $set: { color, name } });
   }
 });
 
@@ -102,15 +102,15 @@ Labels.methods.import = new ValidatedMethod({
     from: { type: String },
     to: { type: String }
   }).validator(),
-  run({ from, to }) {
+  async run({ from, to }) {
     checkLoggedIn();
     checkCanReadProject(from);
     checkCanWriteProject(to);
 
     const labels = Labels.find({ projectId: from }) || [];
-    labels.forEach((label) => {
-      if (!Labels.findOne({ projectId: to, name: label.name })) {
-        Meteor.call("labels.create", {
+    await labels.forEachAsync(async (label) => {
+      if (!await Labels.findOneAsync({ projectId: to, name: label.name })) {
+        await Meteor.callasync("labels.create", {
           projectId: to,
           name: label.name,
           color: label.color
