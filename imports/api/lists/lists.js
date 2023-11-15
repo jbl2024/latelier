@@ -30,7 +30,7 @@ Meteor.methods({
       throw new Meteor.Error("not-authorized");
     }
 
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     let userId = Meteor.userId();
     const canSelectUserId = listUserId && Meteor.isServer && Permissions.isAdmin(userId);
@@ -60,7 +60,7 @@ Meteor.methods({
   async "lists.remove"(listId) {
     check(listId, String);
     const list = await Lists.findOneAsync({ _id: listId });
-    checkCanWriteProject(list.projectId);
+    await checkCanWriteProject(list.projectId);
 
     const tasks = Tasks.find({ listId });
     await tasks.forEachAsync(async (task) => {
@@ -76,7 +76,7 @@ Meteor.methods({
     check(name, String);
 
     const list = await Lists.findOneAsync({ _id: listId });
-    checkCanWriteProject(list.projectId);
+    await checkCanWriteProject(list.projectId);
 
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
@@ -90,7 +90,7 @@ Meteor.methods({
     check(listId, String);
     check(order, Number);
 
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const _reorder = async function() {
       const lists = await Lists.findAsync({ projectId }, { sort: { order: 1 } }).fetch();
@@ -117,7 +117,7 @@ Meteor.methods({
     check(autoComplete, Boolean);
 
     const list = await Lists.findOneAsync({ _id: listId });
-    checkCanWriteProject(list.projectId);
+    await checkCanWriteProject(list.projectId);
 
     await Lists.updateAsync({ _id: listId }, { $set: { autoComplete } });
     if (autoComplete) {
@@ -130,7 +130,7 @@ Meteor.methods({
     check(catchCompleted, Boolean);
 
     const list = await Lists.findOneAsync({ _id: listId });
-    checkCanWriteProject(list.projectId);
+    await checkCanWriteProject(list.projectId);
 
     await Lists.updateAsync({ _id: listId }, { $set: { catchCompleted } });
     if (catchCompleted) {

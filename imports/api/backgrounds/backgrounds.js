@@ -53,7 +53,7 @@ Meteor.methods({
   },
 
   async "backgrounds.find"() {
-    return Backgrounds.find({}).fetchAsync();
+    return Backgrounds.find({}).fetch();
   }
 });
 

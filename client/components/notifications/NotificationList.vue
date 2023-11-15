@@ -60,19 +60,14 @@ export default {
       });
       this.$emit("click");
     },
-    removeNotification(notification) {
-      Meteor.call(
-        "notifications.remove",
-        { notificationId: notification._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("refresh");
-          this.$notify(this.$t("Notification deleted"));
-        }
-      );
+    async removeNotification(notification) {
+      try {
+        await Meteor.callAsync("notifications.remove", { notificationId: notification._id });
+        this.$emit("refresh");
+        this.$notify(this.$t("Notification deleted"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     getIcon(notification) {

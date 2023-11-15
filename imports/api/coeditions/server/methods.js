@@ -12,7 +12,7 @@ Coeditions.methods.send = new ValidatedMethod({
     permissionId: { type: String }
   }).validator(),
   async run({ objectId, permissionObject, permissionId }) {
-    checkCanWriteObject(permissionObject, permissionId);
+    await checkCanWriteObject(permissionObject, permissionId);
     let storedData = await Coeditions.findOneAsync({
       objectId: objectId
     }, {

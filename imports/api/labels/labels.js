@@ -27,7 +27,7 @@ Labels.methods.create = new ValidatedMethod({
   }).validator(),
   async run({ projectId, name, color }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const labelId = await Labels.insertAsync({
       projectId,
@@ -51,7 +51,7 @@ Labels.methods.remove = new ValidatedMethod({
     if (!label) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(label.projectId);
+    await checkCanWriteProject(label.projectId);
     await Tasks.direct.updateAsync(
       { labels: labelId },
       { $pull: { labels: labelId } },
@@ -73,7 +73,7 @@ Labels.methods.updateColor = new ValidatedMethod({
     if (!label) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(label.projectId);
+    await checkCanWriteProject(label.projectId);
     await Labels.updateAsync({ _id: labelId }, { $set: { color } });
   }
 });
@@ -91,7 +91,7 @@ Labels.methods.updateNameAndColor = new ValidatedMethod({
     if (!label) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(label.projectId);
+    await checkCanWriteProject(label.projectId);
     await Labels.updateAsync({ _id: labelId }, { $set: { color, name } });
   }
 });
@@ -104,8 +104,8 @@ Labels.methods.import = new ValidatedMethod({
   }).validator(),
   async run({ from, to }) {
     checkLoggedIn();
-    checkCanReadProject(from);
-    checkCanWriteProject(to);
+    await checkCanReadProject(from);
+    await checkCanWriteProject(to);
 
     const labels = Labels.find({ projectId: from }) || [];
     await labels.forEachAsync(async (label) => {

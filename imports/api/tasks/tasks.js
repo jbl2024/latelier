@@ -286,7 +286,7 @@ Meteor.methods({
 
   async "tasks.restore"(taskId) {
     check(taskId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (Meteor.isClient) {
       return;
@@ -326,7 +326,7 @@ Meteor.methods({
   async "tasks.updateName"(taskId, name) {
     check(taskId, String);
     check(name, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
@@ -342,7 +342,7 @@ Meteor.methods({
   async "tasks.updateDescription"(taskId, description) {
     check(taskId, String);
     check(description, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (task.description && task.description === description) {
@@ -360,7 +360,7 @@ Meteor.methods({
   async "tasks.updateSize"(taskId, size) {
     check(taskId, String);
     check(size, Match.Maybe(String));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
     await Tasks.updateAsync({ _id: taskId }, { $set: { "estimation.size": size } });
 
     await Meteor.callAsync("tasks.track", {
@@ -372,7 +372,7 @@ Meteor.methods({
   async "tasks.updateSpent"(taskId, spent) {
     check(taskId, String);
     check(spent, Match.Maybe(String));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
     await Tasks.updateAsync({ _id: taskId }, { $set: { "estimation.spent": spent } });
 
     await Meteor.callAsync("tasks.track", {
@@ -384,7 +384,7 @@ Meteor.methods({
   async "tasks.complete"(taskId, completed) {
     check(taskId, String);
     check(completed, Boolean);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     await Tasks.updateAsync({ _id: taskId }, { $set: { completed } });
     const task = Tasks.findOne({ _id: taskId });
@@ -401,7 +401,7 @@ Meteor.methods({
     check(listId, String);
     check(taskId, String);
     check(order, Match.Maybe(Number));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     _checkForCompletion(listId, taskId);
 
@@ -453,7 +453,7 @@ Meteor.methods({
   async "tasks.addNote"(taskId, content) {
     check(taskId, String);
     check(content, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const note = {
       _id: Random.id(),
@@ -473,7 +473,7 @@ Meteor.methods({
   async "tasks.removeNote"(taskId, noteId) {
     check(taskId, String);
     check(noteId, Match.Maybe(String));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (noteId) {
       await Tasks.updateAsync({ _id: taskId }, { $pull: { notes: { _id: noteId } } });
@@ -490,7 +490,7 @@ Meteor.methods({
   async "tasks.updateNote"(taskId, note) {
     check(taskId, String);
     check(note, Object);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     await Tasks.updateAsync(
       {
@@ -515,7 +515,7 @@ Meteor.methods({
   async "tasks.addChecklistItem"(taskId, name) {
     check(taskId, String);
     check(name, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const item = {
       _id: Random.id(),
@@ -538,7 +538,7 @@ Meteor.methods({
   async "tasks.removeChecklistItem"(taskId, itemId) {
     check(taskId, String);
     check(itemId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     await Tasks.updateAsync({ _id: taskId }, { $pull: { checklist: { _id: itemId } } });
 
@@ -552,7 +552,7 @@ Meteor.methods({
     check(taskId, String);
     check(itemId, String);
     check(checked, Boolean);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     await Tasks.updateAsync(
       { _id: taskId, "checklist._id": itemId },
@@ -568,7 +568,7 @@ Meteor.methods({
   async "tasks.convertItemToTask"(taskId, itemId) {
     check(taskId, String);
     check(itemId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId, "checklist._id": itemId });
     if (!task) {
@@ -594,7 +594,7 @@ Meteor.methods({
   async "tasks.updateCheckListItem"(taskId, item) {
     check(taskId, String);
     check(item, Object);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
@@ -609,7 +609,7 @@ Meteor.methods({
   async "tasks.updateCheckList"(taskId, checklist) {
     check(taskId, String);
     check(checklist, Array);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
@@ -622,7 +622,7 @@ Meteor.methods({
   async "tasks.assignTo"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) throw new Meteor.Error("task-not-found");
@@ -655,7 +655,7 @@ Meteor.methods({
 
   async "tasks.removeAssignedTo"(taskId) {
     check(taskId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) throw new Meteor.Error("task-not-found");
@@ -674,7 +674,7 @@ Meteor.methods({
   async "tasks.addWatcher"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
@@ -706,7 +706,7 @@ Meteor.methods({
   async "tasks.removeWatcher"(taskId, userId) {
     check(taskId, String);
     check(userId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (await Tasks.find({ _id: taskId, watchers: userId }).countAsync() === 0) {
       return;
@@ -723,7 +723,7 @@ Meteor.methods({
     check(taskId, String);
     check(dueDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (reminder === "never") reminder = null;
 
@@ -746,7 +746,7 @@ Meteor.methods({
     check(taskId, String);
     check(startDate, Match.Maybe(String));
     check(reminder, Match.Maybe(Match.OneOf(String, Number)));
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (reminder === "never") reminder = null;
 
@@ -767,7 +767,7 @@ Meteor.methods({
   async "tasks.addLabel"(taskId, labelId) {
     check(taskId, String);
     check(labelId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (await Tasks.find({ _id: taskId, labels: labelId }).countAsync() > 0) {
       return;
@@ -783,7 +783,7 @@ Meteor.methods({
   async "tasks.removeLabel"(taskId, labelId) {
     check(taskId, String);
     check(labelId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (await Tasks.find({ _id: taskId, labels: labelId }).countAsync() === 0) {
       return;
@@ -798,7 +798,7 @@ Meteor.methods({
 
   async "tasks.addAttachment"(taskId) {
     check(taskId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (Meteor.isClient) {
       return;
@@ -817,7 +817,7 @@ Meteor.methods({
   async "tasks.removeAttachment"(taskId, attachmentId) {
     check(taskId, String);
     check(attachmentId, String);
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     if (Meteor.isClient) {
       return;
@@ -842,7 +842,7 @@ Tasks.methods.getHistory = new ValidatedMethod({
     page: { type: Number }
   }).validator(),
   async run({ taskId, page }) {
-    checkCanReadTask(taskId);
+    await checkCanReadTask(taskId);
     const query = {
       "properties.task._id": taskId
     };
@@ -891,7 +891,7 @@ Tasks.methods.moveToAdjacentList = new ValidatedMethod({
     direction: { type: String }
   }).validator(),
   async run({ taskId, direction }) {
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
     const task = await Tasks.findOneAsync({ _id: taskId });
     const list = await Lists.findOneAsync({ _id: task.listId });
     let newList;

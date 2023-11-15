@@ -77,7 +77,7 @@ Attachments.methods.clone = new ValidatedMethod({
   }).validator(),
   async run({ attachmentId, projectId, taskId }) {
     checkLoggedIn();
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const attachment = await Attachments.findOneAsync({ _id: attachmentId });
     const userId = Meteor.userId();

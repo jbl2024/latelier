@@ -29,7 +29,7 @@ HealthReports.methods.create = new ValidatedMethod({
   }).validator(),
   run: async function ({ projectId, name, description, date, weather, reportUserId }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     let userId = Meteor.userId();
     const canSelectUserId = reportUserId && Meteor.isServer && Permissions.isAdmin(userId);
@@ -66,7 +66,7 @@ HealthReports.methods.update = new ValidatedMethod({
     if (!report) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(report.projectId);
+    await checkCanWriteProject(report.projectId);
 
     if (description == null) {
       description = report.description;
@@ -106,7 +106,7 @@ HealthReports.methods.updateDescription = new ValidatedMethod({
     if (!report) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(report.projectId);
+    await checkCanWriteProject(report.projectId);
 
     const reportId = await HealthReports.updateAsync(
       {
@@ -135,7 +135,7 @@ HealthReports.methods.remove = new ValidatedMethod({
     if (!report) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(report.projectId);
+    await checkCanWriteProject(report.projectId);
     await HealthReports.removeAsync(id);
   }
 });

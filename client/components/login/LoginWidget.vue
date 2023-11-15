@@ -82,15 +82,14 @@ export default {
       ]
     };
   },
-  mounted () {
-    Meteor.call("users.oauthEnabled", (error, { enabled, title }) => {
-      if (error) {
-        this.$notifyError(error);
-        return;
-      }
+  async mounted () {
+    try {
+      const { enabled, title } = await Meteor.callAsync("users.oauthEnabled");
       this.oauth2Enabled = enabled;
       this.oauth2Title = title;
-    });
+    } catch (error) {
+      this.$notifyError(error);
+    }
   },
   methods: {
     clearForm() {
@@ -100,13 +99,13 @@ export default {
     login() {
       this.sending = true;
 
-      Meteor.loginWithPassword(this.form.email, this.form.password, (err) => {
+      Meteor.loginWithPassword(this.form.email, this.form.password, async (err) => {
         this.sending = false;
         if (err) {
           this.$notifyError(err.reason);
         } else {
           this.clearForm();
-          Meteor.call("permissions.setAdminIfNeeded");
+          await Meteor.callAsync("permissions.setAdminIfNeeded");
           this.$notify(this.$t("Welcome back!"));
           this.$router.push({ name: "dashboard-page" });
         }

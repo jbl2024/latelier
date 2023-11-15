@@ -6,6 +6,7 @@ import "../imports/startup/server/permissions.js";
 import "../imports/startup/server/userPresence.js";
 import "../imports/startup/server/migrateStorage.js";
 import "../imports/api/organizations/organizations.js";
+import "../imports/api/organizations/server/methods.js";
 import "../imports/api/organizations/server/publications.js";
 import "../imports/api/projects/projects.js";
 import "../imports/api/tasks/server/helpers.js";

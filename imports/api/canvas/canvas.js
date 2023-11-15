@@ -20,7 +20,7 @@ Meteor.methods({
     check(projectId, String);
     check(data, Object);
 
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const canvas = await Canvas.findOneAsync({ projectId });
     const existingData = canvas.data || {};

@@ -30,7 +30,7 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
   }).validator(),
   async run({ projectId, name, description, xml, diagramUserId }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     let userId = Meteor.userId();
     const canSelectUserId = diagramUserId && Meteor.isServer && Permissions.isAdmin(userId);
@@ -61,7 +61,7 @@ ProcessDiagrams.methods.update = new ValidatedMethod({
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
     await ProcessDiagrams.updateAsync(
       {
@@ -89,7 +89,7 @@ ProcessDiagrams.methods.saveXML = new ValidatedMethod({
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
     ProcessDiagrams.updateAsync(
       {
@@ -115,7 +115,7 @@ ProcessDiagrams.methods.remove = new ValidatedMethod({
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
     await ProcessDiagrams.removeAsync({ _id: processDiagramId });
   }
@@ -132,7 +132,7 @@ ProcessDiagrams.methods.clone = new ValidatedMethod({
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
     const id = await ProcessDiagrams.insertAsync({
       projectId: processDiagram.projectId,

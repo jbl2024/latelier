@@ -11,17 +11,17 @@ export const Attachments = new FilesCollection({
   storagePath: Meteor.settings.attachmentsPath || "assets/app/uploads",
   allowClientCode: true, // Disallow remove files from Client
   onBeforeUpload(fileData) {
-    return runAsUser(this.userId, function() {
+    return runAsUser(this.userId, async function() {
       if (fileData.meta?.taskId) {
         try {
-          checkCanWriteTask(fileData.meta.taskId);
+          await checkCanWriteTask(fileData.meta.taskId);
         } catch (error) {
           return false;
         }
       }
       if (fileData.meta?.projectId) {
         try {
-          checkCanWriteProject(fileData.meta.projectId);
+          await checkCanWriteProject(fileData.meta.projectId);
         } catch (error) {
           return false;
         }

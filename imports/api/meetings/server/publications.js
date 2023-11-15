@@ -5,6 +5,6 @@ import { checkCanReadMeeting } from "/imports/api/permissions/permissions";
 
 Meteor.publish("meeting", async function coeditions(meetingId) {
   check(meetingId, String);
-  checkCanReadMeeting(meetingId);
+  await checkCanReadMeeting(meetingId);
   return Meetings.find({ _id: meetingId });
 });

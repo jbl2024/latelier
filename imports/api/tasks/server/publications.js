@@ -20,10 +20,10 @@ Meteor.publish("tasks", async function tasksPublication(listId) {
 
 publishComposite("task", async function (taskId) {
   return {
-    find() {
+    async find() {
       try {
         check(taskId, String);
-        checkCanReadTask(taskId);
+        await checkCanReadTask(taskId);
       } catch (error) {
         return this.ready();
       }

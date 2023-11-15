@@ -8,6 +8,6 @@ Meteor.publish("coeditions", async function coeditions(objectId, permissionObjec
   check(objectId, String);
   check(permissionObject, String);
   check(permissionId, String);
-  checkCanWriteObject(permissionObject, permissionId);
+  await checkCanWriteObject(permissionObject, permissionId);
   return Coeditions.find({ objectId: objectId }, { sort: { version: -1 }, limit: 1 });
 });

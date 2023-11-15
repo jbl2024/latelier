@@ -23,7 +23,7 @@ Meteor.methods({
     check(projectId, Match.Maybe(String));
     check(listId, Match.Maybe(String));
     check(keepDates, Match.Maybe(Boolean));
-    checkCanReadTask(taskId);
+    await checkCanReadTask(taskId);
 
     const userId = Meteor.userId();
     const now = new Date();
@@ -36,7 +36,7 @@ Meteor.methods({
     if (!name) name = task.name;
     if (!projectId) projectId = task.projectId;
 
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const cloneToAnotherProject = task.projectId !== projectId;
 
@@ -181,7 +181,7 @@ Meteor.methods({
     if (!task) {
       throw new Meteor.Error("not-found");
     }
-    checkCanReadTask(task._id);
+    await checkCanReadTask(task._id);
 
     return {
       projectId: task.projectId,
@@ -197,7 +197,7 @@ Tasks.methods.exportODT = new ValidatedMethod({
     format: { type: String }
   }).validator(),
   run: async function({ taskId, format }) {
-    checkCanReadTask(taskId);
+    await checkCanReadTask(taskId);
 
     const source = Assets.absoluteFilePath(`exports/tasks/task.${format}`);
     const task = await Tasks.findOneAsync({ _id: taskId });

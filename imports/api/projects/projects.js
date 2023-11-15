@@ -58,14 +58,14 @@ export const ProjectExportVersions = Object.freeze({
   V2020_11: "V2020_11"
 });
 
-const checkIfAdminOrCreator = (projectId) => {
+const checkIfAdminOrCreator = async (projectId) => {
   if (Permissions.isAdmin(Meteor.userId())) {
     return true;
   }
   if (Permissions.isAdmin(Meteor.userId(), projectId)) {
     return true;
   }
-  const project = Projects.findOne(projectId);
+  const project = await Projects.findOneAsync(projectId);
   if (project.createdBy === Meteor.userId()) {
     return true;
   }
@@ -173,11 +173,11 @@ Projects.methods.restore = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
-    Projects.update(
+    await Projects.updateAsync(
       { _id: projectId },
       {
         $set: {
@@ -194,14 +194,14 @@ Projects.methods.updateName = new ValidatedMethod({
     projectId: { type: String },
     name: { type: String }
   }).validator(),
-  run({ projectId, name }) {
+  async run({ projectId, name }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
 
     if (name.length === 0) {
       throw new Meteor.Error("invalid-name");
     }
-    Projects.update({ _id: projectId }, { $set: { name } });
+    await Projects.updateAsync({ _id: projectId }, { $set: { name } });
   }
 });
 
@@ -211,14 +211,14 @@ Projects.methods.updateDescription = new ValidatedMethod({
     projectId: { type: String },
     description: { type: String }
   }).validator(),
-  run({ projectId, description }) {
+  async run({ projectId, description }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
     if (description.length === 0) {
       throw new Meteor.Error("invalid-description");
     }
 
-    Projects.update({ _id: projectId }, { $set: { description } });
+    await Projects.updateAsync({ _id: projectId }, { $set: { description } });
   }
 });
 
@@ -228,15 +228,15 @@ Projects.methods.updateStates = new ValidatedMethod({
     projectId: { type: String },
     state: { type: String }
   }).validator(),
-  run({ projectId, state }) {
+  async run({ projectId, state }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
 
     if (state.length === 0) {
       throw new Meteor.Error("invalid-state");
     }
 
-    Projects.update({ _id: projectId }, { $set: { state } });
+    await Projects.updateAsync({ _id: projectId }, { $set: { state } });
   }
 });
 
@@ -246,10 +246,10 @@ Projects.methods.updateColor = new ValidatedMethod({
     projectId: { type: String },
     color: { type: String }
   }).validator(),
-  run({ projectId, color }) {
+  async run({ projectId, color }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
-    Projects.update({ _id: projectId }, { $set: { color } });
+    await checkIfAdminOrCreator(projectId);
+    await Projects.updateAsync({ _id: projectId }, { $set: { color } });
   }
 });
 
@@ -259,10 +259,10 @@ Projects.methods.updateIsPublic = new ValidatedMethod({
     projectId: { type: String },
     isPublic: { type: Boolean }
   }).validator(),
-  run({ projectId, isPublic }) {
+  async run({ projectId, isPublic }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
-    Projects.update({ _id: projectId }, { $set: { isPublic } });
+    await checkIfAdminOrCreator(projectId);
+    await Projects.updateAsync({ _id: projectId }, { $set: { isPublic } });
   }
 });
 
@@ -272,21 +272,21 @@ Projects.methods.updateAccessRights = new ValidatedMethod({
     projectId: { type: String },
     accessRights: { type: String }
   }).validator(),
-  run({ projectId, accessRights }) {
+  async run({ projectId, accessRights }) {
     checkLoggedIn();
-    checkIfAdmin(projectId);
+    await checkIfAdmin(projectId);
 
-    const project = Projects.findOne({ _id: projectId });
+    const project = await Projects.findOneAsync({ _id: projectId });
     if (!project) {
       throw new Meteor.Error("invalid-project");
     }
-    Projects.update({ _id: projectId }, { $set: { accessRights } });
+    await Projects.updateAsync({ _id: projectId }, { $set: { accessRights } });
 
     if (
       accessRights === ProjectAccessRights.ORGANIZATION
       && project.organizationId
     ) {
-      Meteor.call("organizations.propagateMembership", {
+      await Meteor.callAsync("organizations.propagateMembership", {
         organizationId: project.organizationId,
         projectId: project._id
       });
@@ -299,15 +299,15 @@ Projects.methods.clone = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
-    checkCanReadProject(projectId);
-    const project = Projects.findOne(projectId);
+    await checkCanReadProject(projectId);
+    const project = await Projects.findOneAsync(projectId);
     if (!project) {
       throw new Meteor.Error("invalid-project");
     }
 
-    const newProjectId = Projects.insert({
+    const newProjectId = await Projects.insertAsync({
       name: `Copie de ${project.name}`,
       organizationId: project.organizationId,
       createdAt: new Date(),
@@ -320,19 +320,19 @@ Projects.methods.clone = new ValidatedMethod({
       features: project.features
     });
 
-    const newProject = Projects.findOne(newProjectId);
+    const newProject = await Projects.findOneAsync(newProjectId);
     if (!newProject) {
       throw new Meteor.Error("invalid-new-project");
     }
 
     const projectGroups = ProjectGroups.find({ projects: projectId });
-    projectGroups.forEach((projectGroup) => {
-      Meteor.call("projectGroups.addProject", projectGroup._id, newProjectId);
+    await projectGroups.forEachAsync(async (projectGroup) => {
+      await Meteor.callAsync("projectGroups.addProject", projectGroup._id, newProjectId);
     });
 
-    const labels = Labels.find({ projectId });
-    labels.forEach((label) => {
-      Meteor.call("labels.create", {
+    const labels = await Labels.find({ projectId });
+    await labels.forEachAsync(async (label) => {
+      await Meteor.callAsync("labels.create", {
         projectId: newProjectId,
         name: label.name,
         color: label.color
@@ -340,8 +340,8 @@ Projects.methods.clone = new ValidatedMethod({
     });
 
     const lists = Lists.find({ projectId });
-    lists.forEach((list) => {
-      const newListId = Lists.insert({
+    await lists.forEachAsync(async (list) => {
+      const newListId = await Lists.insertAsync({
         name: list.name,
         order: list.order,
         projectId: newProjectId,
@@ -350,8 +350,8 @@ Projects.methods.clone = new ValidatedMethod({
       });
 
       const tasks = Tasks.find({ listId: list._id });
-      tasks.forEach((task) => {
-        Meteor.call(
+      await tasks.forEachAsync(async (task) => {
+        await Meteor.callAsync(
           "tasks.clone",
           task._id,
           task.name,
@@ -362,7 +362,7 @@ Projects.methods.clone = new ValidatedMethod({
       });
     });
 
-    Meteor.call("permissions.initializeProjectPermissions", {
+    await Meteor.callAsync("permissions.initializeProjectPermissions", {
       projectId: newProjectId
     });
 
@@ -376,18 +376,18 @@ Projects.methods.addMember = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
 
-    if (Projects.find({ _id: projectId, members: userId }).count() > 0) {
+    if (await Projects.find({ _id: projectId, members: userId }).countAsync() > 0) {
       return;
     }
-    const project = Projects.findOne({ _id: projectId });
+    const project = await Projects.findOneAsync({ _id: projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
-    Projects.update({ _id: projectId }, { $push: { members: userId } });
+    await Projects.updateAsync({ _id: projectId }, { $push: { members: userId } });
   }
 });
 
@@ -397,21 +397,21 @@ Projects.methods.removeMember = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
 
-    if (Projects.find({ _id: projectId, members: userId }).count() === 0) {
+    if (await Projects.find({ _id: projectId, members: userId }).countAsync() === 0) {
       return;
     }
-    Projects.update({ _id: projectId }, { $pull: { members: userId } });
-    Tasks.update(
+    await Projects.updateAsync({ _id: projectId }, { $pull: { members: userId } });
+    await Tasks.updateAsync(
       { projectId, assignedTo: userId },
       { $set: { assignedTo: null } },
       { multi: true }
     );
 
-    Tasks.update(
+    await Tasks.updateAsync(
       { projectId, watchers: userId },
       { $pull: { watchers: userId } },
       { multi: true }
@@ -428,27 +428,27 @@ Projects.methods.leave = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
 
-    if (Projects.find({ _id: projectId, members: userId }).count() === 0) {
+    if (await Projects.find({ _id: projectId, members: userId }).countAsync() === 0) {
       return;
     }
-    Projects.update({ _id: projectId }, { $pull: { members: userId } });
-    Tasks.update(
+    await Projects.updateAsync({ _id: projectId }, { $pull: { members: userId } });
+    await Tasks.updateAsync(
       { projectId, assignedTo: userId },
       { $set: { assignedTo: null } },
       { multi: true }
     );
 
-    Tasks.update(
+    await Tasks.updateAsync(
       { projectId, watchers: userId },
       { $pull: { watchers: userId } },
       { multi: true }
     );
 
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       { _id: userId },
       { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } }
     );
@@ -467,10 +467,10 @@ Projects.methods.setStartDate = new ValidatedMethod({
     projectId: { type: String },
     startDate: { type: String, optional: true }
   }).validator(),
-  run({ projectId, startDate }) {
+  async run({ projectId, startDate }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
-    Projects.update({ _id: projectId }, { $set: { startDate } });
+    await checkIfAdminOrCreator(projectId);
+    await Projects.updateAsync({ _id: projectId }, { $set: { startDate } });
   }
 });
 
@@ -480,10 +480,10 @@ Projects.methods.setEndDate = new ValidatedMethod({
     projectId: { type: String },
     endDate: { type: String, optional: true }
   }).validator(),
-  run({ projectId, endDate }) {
+  async run({ projectId, endDate }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
-    Projects.update({ _id: projectId }, { $set: { endDate } });
+    await checkIfAdminOrCreator(projectId);
+    await Projects.updateAsync({ _id: projectId }, { $set: { endDate } });
   }
 });
 
@@ -495,10 +495,10 @@ Projects.methods.setDatesAndState = new ValidatedMethod({
     endDate: { type: String, optional: true },
     state: { type: String, optional: true }
   }).validator(),
-  run({ projectId, startDate, endDate, state }) {
+  async run({ projectId, startDate, endDate, state }) {
     checkLoggedIn();
     checkIfAdminOrCreator(projectId);
-    Projects.update(
+    await Projects.updateAsync(
       { _id: projectId },
       { $set: { startDate, endDate, state } }
     );
@@ -511,8 +511,8 @@ Projects.methods.getHistory = new ValidatedMethod({
     projectId: { type: String },
     page: { type: Number }
   }).validator(),
-  run({ projectId, page }) {
-    checkCanReadProject(projectId);
+  async run({ projectId, page }) {
+    await checkCanReadProject(projectId);
     const query = {
       "properties.task.projectId": projectId
     };
@@ -527,19 +527,19 @@ Projects.methods.getHistory = new ValidatedMethod({
       skip = 0;
     }
 
-    const count = Events.find(query).count();
+    const count = await Events.find(query).countAsync();
     const data = Events.find(query, {
       skip,
       limit: perPage,
       sort: {
         createdAt: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     const dataWithUsers = [];
-    data.forEach((item) => {
+    data.forEach(async (item) => {
       item.user = item.userId;
-      const user = Meteor.users.findOne({ _id: item.userId });
+      const user = await Meteor.users.findOneAsync({ _id: item.userId });
       if (user) {
         item.user = UserUtils.getEmail(user);
       }
@@ -560,9 +560,9 @@ Projects.methods.getDeletedTasks = new ValidatedMethod({
     projectId: { type: String },
     page: { type: Number }
   }).validator(),
-  run({ projectId, page }) {
+  async run({ projectId, page }) {
     checkLoggedIn();
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
     const perPage = 10;
     let skip = 0;
@@ -574,14 +574,14 @@ Projects.methods.getDeletedTasks = new ValidatedMethod({
       skip = 0;
     }
     const query = { projectId, deleted: true };
-    const count = Tasks.find(query).count();
-    const data = Tasks.find(query, {
+    const count = await Tasks.find(query).countAsync();
+    const data = await Tasks.find(query, {
       skip,
       limit: perPage,
       sort: {
         createdAt: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     return {
       rowsPerPage: perPage,
@@ -596,13 +596,13 @@ Projects.methods.flushTrashcan = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
     const query = { projectId, deleted: true };
     const tasks = Tasks.find(query);
-    tasks.forEach((task) => {
-      Meteor.call("tasks.deleteForever", task._id);
+    await tasks.forEachAsync(async (task) => {
+      Meteor.callAsync("tasks.deleteForever", task._id);
     });
   }
 });
@@ -610,7 +610,7 @@ Projects.methods.flushTrashcan = new ValidatedMethod({
 Projects.methods.getDeletedProjects = new ValidatedMethod({
   name: "projects.getDeletedProjects",
   validate: null,
-  run() {
+  async run() {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -622,11 +622,11 @@ Projects.methods.getDeletedProjects = new ValidatedMethod({
       query.$or = [{ createdBy: userId }, { members: userId }];
     }
 
-    const data = Projects.find(query, {
+    const data = await Projects.find(query, {
       sort: {
         createdAt: -1
       }
-    }).fetch();
+    }).fetchAsync();
 
     return {
       data
@@ -640,12 +640,12 @@ Projects.methods.addToUserFavorites = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
     if (!Meteor.userId() || Meteor.userId() !== userId) {
       throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $push: { "profile.favoriteProjects": projectId }
     });
   }
@@ -657,14 +657,14 @@ Projects.methods.removeFromUserFavorites = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
     check(projectId, String);
     check(userId, String);
     if (!Meteor.userId() || Meteor.userId() !== userId) {
       throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $pull: { "profile.favoriteProjects": projectId }
     });
   }
@@ -676,12 +676,12 @@ Projects.methods.addToUserDigests = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
     if (!Meteor.userId() || Meteor.userId() !== userId) {
       throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $push: { "profile.digests": projectId }
     });
   }
@@ -693,14 +693,14 @@ Projects.methods.removeFromUserDigests = new ValidatedMethod({
     projectId: { type: String },
     userId: { type: String }
   }).validator(),
-  run({ projectId, userId }) {
+  async run({ projectId, userId }) {
     checkLoggedIn();
     check(projectId, String);
     check(userId, String);
     if (!Meteor.userId() || Meteor.userId() !== userId) {
       throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $pull: { "profile.digests": projectId }
     });
   }
@@ -713,11 +713,11 @@ if (Meteor.isServer) {
       projectId: { type: String },
       feature: { type: String }
     }).validator(),
-    run({ projectId, feature }) {
+    async run({ projectId, feature }) {
       checkLoggedIn();
-      checkCanWriteProject(projectId);
-      Projects.update({ _id: projectId }, { $addToSet: { features: feature } });
-      return Projects.findOne({ _id: projectId });
+      await checkCanWriteProject(projectId);
+      await Projects.updateAsync({ _id: projectId }, { $addToSet: { features: feature } });
+      return Projects.findOneAsync({ _id: projectId });
     }
   });
 
@@ -727,11 +727,11 @@ if (Meteor.isServer) {
       projectId: { type: String },
       feature: { type: String }
     }).validator(),
-    run({ projectId, feature }) {
+    async run({ projectId, feature }) {
       checkLoggedIn();
-      checkCanWriteProject(projectId);
-      Projects.update({ _id: projectId }, { $pull: { features: feature } });
-      return Projects.findOne({ _id: projectId });
+      await checkCanWriteProject(projectId);
+      await Projects.updateAsync({ _id: projectId }, { $pull: { features: feature } });
+      return Projects.findOneAsync({ _id: projectId });
     }
   });
 
@@ -740,10 +740,10 @@ if (Meteor.isServer) {
     validate: new SimpleSchema({
       projectId: { type: String }
     }).validator(),
-    run({ projectId }) {
+    async run({ projectId }) {
       checkLoggedIn();
-      checkCanReadProject(projectId);
-      const project = Projects.findOne(
+      await checkCanReadProject(projectId);
+      const project = await Projects.findOneAsync(
         { _id: projectId },
         { fields: { features: 1 } }
       );
@@ -757,10 +757,10 @@ if (Meteor.isServer) {
       projectId: { type: String },
       feature: { type: String }
     }).validator(),
-    run({ projectId, feature }) {
+    async run({ projectId, feature }) {
       checkLoggedIn();
-      checkCanReadProject(projectId);
-      const project = Projects.findOne({ _id: projectId });
+      await checkCanReadProject(projectId);
+      const project = await Projects.findOneAsync({ _id: projectId });
       const features = project.features || [];
       return features.find((feat) => feat === feature);
     }

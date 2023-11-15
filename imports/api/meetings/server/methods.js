@@ -63,7 +63,7 @@ Meetings.methods.create = new ValidatedMethod({
     report,
     meetingUserId
   }) {
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const now = new Date();
 
@@ -119,7 +119,7 @@ Meetings.methods.update = new ValidatedMethod({
     documents,
     actions
   }) {
-    checkCanWriteMeeting(id);
+    await checkCanWriteMeeting(id);
 
     state = state || MeetingState.PENDING;
     const meetingId = await Meetings.updateAsync(
@@ -157,7 +157,7 @@ Meetings.methods.updateAgenda = new ValidatedMethod({
     agenda: { type: String, optional: true }
   }).validator(),
   async run({ meetingId, agenda }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
 
     const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (meeting.agenda === agenda) {
@@ -186,7 +186,7 @@ Meetings.methods.updateReport = new ValidatedMethod({
     report: { type: String, optional: true }
   }).validator(),
   async run({ meetingId, report }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
 
     const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (meeting.report === report) {
@@ -248,7 +248,7 @@ Meetings.methods.restore = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   async run({ meetingId }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
     await Meetings.updateAsync(
       { _id: meetingId },
       {
@@ -489,7 +489,7 @@ Meetings.methods.createAction = new ValidatedMethod({
     meetingId,
     action
   }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
     if (action.dueDate) {
       action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
     }
@@ -547,7 +547,7 @@ Meetings.methods.deleteActions = new ValidatedMethod({
     }
   }).validator(),
   async run({ meetingId, actionsIds }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
     if (!Array.isArray(actionsIds) || !actionsIds.length) return false;
     const ids = await Meetings.updateAsync(
       { _id: meetingId },
