@@ -64,17 +64,12 @@ export default {
         autofocus.focus(this.$refs.name);
       });
     },
-    create() {
-      Meteor.call(
-        "projectGroups.create",
-        this.organizationId,
-        this.name,
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+    async create() {
+      try {
+        await Meteor.callAsync("projectGroups.create", this.organizationId, this.name);
+      } catch (error) {
+        this.$notifyError(error);
+      }
       this.showDialog = false;
     }
   }

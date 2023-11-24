@@ -118,9 +118,9 @@ export default {
       this.showConfirmDialog = true;
     },
 
-    onConfirmDeleteOrganization() {
+    async onConfirmDeleteOrganization() {
       this.showConfirmDialog = false;
-      Meteor.call("organizations.remove", {
+      await Meteor.callAsync("organizations.remove", {
         organizationId: this.organizationId
       });
     },

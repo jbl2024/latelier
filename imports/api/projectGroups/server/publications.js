@@ -8,7 +8,7 @@ Meteor.publish("projectGroups", async function projectGroups(organizationId, nam
   check(organizationId, String);
   check(name, Match.Maybe(String));
 
-  checkCanReadOrganization(organizationId);
+  await checkCanReadOrganization(organizationId);
 
   const query = {};
   if (name && name.length > 0) {
