@@ -100,7 +100,7 @@ Coeditions.methods.purge = new ValidatedMethod({
   async run({ objectId }) {
     this.unblock();
 
-    const count = await Coeditions.findAsync({ objectId }).count();
+    const count = await Coeditions.find({ objectId }).count();
     const keep = Meteor.settings.coedition?.steps || 500;
     if (count > keep) {
       const coeditions = await Coeditions.find(

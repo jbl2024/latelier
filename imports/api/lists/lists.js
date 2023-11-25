@@ -46,7 +46,7 @@ Meteor.methods({
 
     const listId = await Lists.insertAsync({
       name,
-      order: _findLastOrder() + 1,
+      order: await _findLastOrder() + 1,
       autoComplete,
       catchCompleted,
       projectId,
@@ -93,7 +93,7 @@ Meteor.methods({
     await checkCanWriteProject(projectId);
 
     const _reorder = async function() {
-      const lists = await Lists.findAsync({ projectId }, { sort: { order: 1 } }).fetch();
+      const lists = await Lists.find({ projectId }, { sort: { order: 1 } }).fetchAsync();
       for (let i = 0; i < lists.length; i++) {
         const list = lists[i];
         list.order = i * 10;
@@ -155,7 +155,7 @@ Meteor.methods({
       return;
     }
 
-    const tasks = await Tasks.findAsync({
+    const tasks = await Tasks.find({
       projectId,
       listId: { $ne: list._id },
       completed: true
