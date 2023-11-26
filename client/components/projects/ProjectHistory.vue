@@ -78,23 +78,22 @@ export default {
     }
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "projects.getHistory",
-        { projectId: this.projectId, page: this.page },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
-          this.history = result.data;
-        }
-      );
+    async refresh() {
+      try {
+        const result = await Meteor.callAsync("projects.getHistory", {
+          projectId: this.projectId,
+          page: this.page
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+        this.history = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     calculateTotalPages() {
       return this.pagination.rowsPerPage == null
         || this.pagination.totalItems == null

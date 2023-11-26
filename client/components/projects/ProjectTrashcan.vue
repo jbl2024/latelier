@@ -121,23 +121,22 @@ export default {
       this.showDialog = false;
     },
 
-    refresh() {
+    async refresh() {
       this.loading = true;
-      Meteor.call(
-        "projects.getDeletedTasks",
-        { projectId: this.projectId, page: this.page },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
-          this.tasks = result.data;
-        }
-      );
+      try {
+        const result = await Meteor.callAsync("projects.getDeletedTasks", {
+          projectId: this.projectId,
+          page: this.page
+        });
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+        this.tasks = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
     calculateTotalPages() {
@@ -153,58 +152,55 @@ export default {
       );
     },
 
-    restoreTask(task) {
-      Meteor.call("tasks.restore", task._id, (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async restoreTask(task) {
+      try {
+        await Meteor.callAsync("tasks.restore", task._id);
         this.refresh();
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    deleteForever(task) {
-      this.$confirm(this.$t("Delete task?"), {
+    async deleteForever(task) {
+      const confirmed = await this.$confirm(this.$t("Delete task?"), {
         title: task.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("tasks.deleteForever", task._id, (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.$notify(this.$t("Task deleted"));
-            this.refresh();
-          });
-        }
       });
+
+      if (confirmed) {
+        try {
+          await Meteor.callAsync("tasks.deleteForever", task._id);
+          this.$notify(this.$t("Task deleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
-    flush() {
-      this.$confirm(this.$t("Delete all tasks?"), {
+    async flush() {
+      const res = await this.$confirmAsync(this.$t("Delete all tasks?"), {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          this.loading = true;
-          Meteor.call(
-            "projects.flushTrashcan",
-            { projectId: this.projectId },
-            (error) => {
-              this.loading = false;
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Tasks deleted"));
-              this.refresh();
-            }
-          );
-        }
       });
+
+      if (res) {
+        this.loading = true;
+        try {
+          await Meteor.callAsync(
+            "projects.flushTrashcan",
+            { projectId: this.projectId }
+          );
+          this.$notify(this.$t("Tasks deleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        } finally {
+          this.loading = false;
+        }
+      }
     }
   }
 };

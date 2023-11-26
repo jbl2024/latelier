@@ -70,17 +70,20 @@ export default {
     open() {
       this.showDialog = true;
     },
-    create() {
-      Meteor.call(
-        "labels.create",
-        { projectId: this.projectId, name: this.name, color: this.color },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
-      this.showDialog = false;
+
+    async create() {
+      this.showDialog = true;
+      try {
+        await Meteor.callAsync("labels.create", {
+          projectId: this.projectId,
+          name: this.name,
+          color: this.color
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.showDialog = false;
+      }
     },
 
     getColor(label) {
