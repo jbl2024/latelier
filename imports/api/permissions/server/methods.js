@@ -183,7 +183,7 @@ Permissions.methods.canReadAttachment = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const attachment = await Attachments.findOneAsync({ _id: attachmentId });
+    const attachment = Attachments.findOne({ _id: attachmentId });
     if (!attachment) {
       return false;
     }
@@ -203,7 +203,7 @@ Permissions.methods.canWriteAttachment = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const attachment = await Attachments.findOne({ _id: attachmentId });
+    const attachment = Attachments.findOne({ _id: attachmentId });
     if (!attachment) {
       return false;
     }
@@ -223,7 +223,7 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
     if (Permissions.isAdmin(userId)) {
       return true;
     }
-    const attachment = await Attachments.findOneAsync({ _id: attachmentId });
+    const attachment = Attachments.findOne({ _id: attachmentId });
     if (!attachment) {
       return false;
     }

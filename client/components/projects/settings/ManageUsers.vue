@@ -142,18 +142,26 @@ export default {
     }
   },
   methods: {
-    onSelectUser(user) {
-      Meteor.call("projects.addMember", {
-        projectId: this.project._id,
-        userId: user._id
-      });
+    async onSelectUser(user) {
+      try {
+        await Meteor.callAsync("projects.addMember", {
+          projectId: this.project._id,
+          userId: user._id
+        });
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
 
-    removeUser(user) {
-      Meteor.call("projects.removeMember", {
-        projectId: this.project._id,
-        userId: user._id
-      });
+    async removeUser(user) {
+      try {
+        await Meteor.callAsync("projects.removeMember", {
+          projectId: this.project._id,
+          userId: user._id
+        });
+      } catch (error) {
+        this.$notifyError("Failed to remove user");
+      }
     },
 
     isAdmin(user, project) {

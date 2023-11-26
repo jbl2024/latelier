@@ -29,7 +29,7 @@ methods.info = new ValidatedMethod({
     const organizationCount = await Organizations.find({}).countAsync();
     const processDiagramCount = await ProcessDiagrams.find({}).countAsync();
     const healthReportCount = await HealthReports.find({}).countAsync();
-    const attachmentCount = await Attachments.find({}).countAsync();
+    const attachmentCount = Attachments.find({}).count();
     const userCount = await Meteor.users.find({}).countAsync();
 
     return {

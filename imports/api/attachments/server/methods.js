@@ -21,34 +21,34 @@ Attachments.methods.remove = new ValidatedMethod({
       if (!canRemove) {
         throw new Meteor.Error("not-authorized");
       }
-      await Attachments.removeAsync(attachmentId);
+      Attachments.remove(attachmentId);
     }
 
     if (projectId) {
       const attachments = Attachments.find({
         "meta.projectId": projectId
       });
-      await attachments.forEachAsync(async (attachment) => {
+      attachments.forEach(async (attachment) => {
         const canRemove = await Meteor.callAsync("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
         if (!canRemove) {
           throw new Meteor.Error("not-authorized");
         }
-        await Attachments.removeAsync(attachment._id);
+        Attachments.remove(attachment._id);
       });
     }
 
     if (taskId) {
       const attachments = Attachments.find({ "meta.taskId": taskId });
-      await attachments.forEachAsync(async (attachment) => {
+      attachments.forEach(async (attachment) => {
         const canRemove = await Meteor.callAsync("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
         if (!canRemove) {
           throw new Meteor.Error("not-authorized");
         }
-        await Attachments.removeAsync(attachment._id);
+        Attachments.remove(attachment._id);
       });
     }
   }
@@ -79,10 +79,10 @@ Attachments.methods.clone = new ValidatedMethod({
     checkLoggedIn();
     await checkCanWriteTask(taskId);
 
-    const attachment = await Attachments.findOneAsync({ _id: attachmentId });
+    const attachment = Attachments.findOne({ _id: attachmentId });
     const userId = Meteor.userId();
     const data = await fs.promises.readFile(attachment.path);
-    await Attachments.writeAsync(
+    Attachments.write(
       data,
       {
         fileName: attachment.name,
@@ -132,14 +132,14 @@ Attachments.methods.find = new ValidatedMethod({
       query._id = { $in: attachmentsIds };
     }
 
-    const count = await Attachments.find(query).countAsync();
-    const data = await Attachments.find(query, {
+    const count = Attachments.find(query).count();
+    const data = Attachments.find(query, {
       skip,
       limit: perPage,
       sort: {
         name: 1
       }
-    }).fetchAsync();
+    }).fetch();
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
     return {

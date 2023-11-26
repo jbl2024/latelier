@@ -54,7 +54,6 @@ export default {
       this.showDialog = true;
     },
     async create() {
-      console.log("coucou");
       try {
         const result = await Meteor.callAsync("organizations.create", { name: this.name });
         this.showDialog = false;

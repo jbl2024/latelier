@@ -54,7 +54,7 @@ export default {
       }
     },
 
-    uploadFile(file) {
+    async uploadFile(file) {
       const that = this;
       const transport = Meteor.settings.public.uploadTransport || "ddp";
       const upload = Attachments.insert(
@@ -78,7 +78,7 @@ export default {
       upload.on("end", async function (error) {
         that.isUploading = false;
         if (error) {
-          this.$notifyError(error);
+          that.$notifyError(error);
         } else {
           await Meteor.callAsync("tasks.addAttachment", that.task._id);
           that.file = null;

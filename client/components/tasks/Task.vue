@@ -206,9 +206,14 @@ export default {
         }
       }
     },
-    completed(completed) {
-      Meteor.call("tasks.complete", this.task._id, completed);
+    async completed(completed) {
+      try {
+        await Meteor.callAsync("tasks.complete", this.task._id, completed);
+      } catch (error) {
+        this.$notifyError("Failed to complete task");
+      }
     },
+
     selectedTask(selectedTask) {
       if (selectedTask && selectedTask._id === this.task._id) {
         if (!this.isVisible()) {
@@ -251,7 +256,7 @@ export default {
       this.$nextTick(() => this.$refs.name.focus());
     },
 
-    updateName(e) {
+    async updateName(e) {
       if (e) {
         e.stopPropagation();
       }
@@ -260,17 +265,13 @@ export default {
       if (this.task.name.length === 0) {
         this.task.name = this.savedName;
       }
-      Meteor.call(
-        "tasks.updateName",
-        this.task._id,
-        this.task.name,
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            this.task.name = this.savedName;
-          }
-        }
-      );
+
+      try {
+        await Meteor.callAsync("tasks.updateName", this.task._id, this.task.name);
+      } catch (error) {
+        this.$notifyError(error);
+        this.task.name = this.savedName;
+      }
     },
 
     cancelUpdateName(e) {
@@ -358,35 +359,48 @@ export default {
         : "has-attachments";
     },
 
-    onDrop(event) {
+    async onDrop(event) {
       event.preventDefault();
+
       if (Meteor.settings.public.disableAttachments) {
         return;
       }
 
       const { task } = this;
-      const files = [];
-      if (event.dataTransfer.items) {
-        for (let i = 0; i < event.dataTransfer.items.length; i++) {
-          if (event.dataTransfer.items[i].kind === "file") {
-            const file = event.dataTransfer.items[i].getAsFile();
-            files.push(file);
-          }
-        }
-      } else {
-        for (let i = 0; i < event.dataTransfer.files.length; i++) {
-          files.push(event.dataTransfer.files[i]);
-        }
-      }
+      const files = this.extractFilesFromEvent(event);
+
       if (files.length === 0) {
         return;
       }
+
       event.stopPropagation();
 
+      await this.uploadFiles(files, task);
+    },
+
+    extractFilesFromEvent(event) {
+      const files = [];
+
+      if (event.dataTransfer.items) {
+        for (let i = 0; i < event.dataTransfer.items.length; i++) {
+          const item = event.dataTransfer.items[i];
+          if (item.kind === "file") {
+            files.push(item.getAsFile());
+          }
+        }
+      } else {
+        files.push(...event.dataTransfer.files);
+      }
+
+      return files;
+    },
+
+    async uploadFiles(files, task) {
       const transport = Meteor.settings.public.uploadTransport || "ddp";
-      files.forEach((file) => {
-        const upload = Attachments.insert(
-          {
+
+      files.forEach(async (file) => {
+        try {
+          const upload = Attachments.insert({
             file: file,
             chunkSize: "dynamic",
             transport: transport,
@@ -395,18 +409,15 @@ export default {
               taskId: task._id,
               createdBy: Meteor.userId()
             }
-          },
-          false
-        );
-        upload.on("start", function () {});
-        upload.on("end", function (error) {
-          if (error) {
-            this.$notifyError(error);
-          } else {
-            Meteor.call("tasks.addAttachment", task._id);
-          }
-        });
-        upload.start();
+          });
+
+          upload.start();
+
+          console.log("cool");
+          await Meteor.callAsync("tasks.addAttachment", task._id);
+        } catch (error) {
+          this.$notifyError(error);
+        }
       });
     },
 
