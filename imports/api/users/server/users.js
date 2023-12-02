@@ -24,7 +24,7 @@ Meteor.users.deny({
 });
 
 Meteor.methods({
-  "admin.findUsers"(page, filter, isOnline, isAway) {
+  async "admin.findUsers"(page, filter, isOnline, isAway) {
     check(page, Number);
     check(filter, Match.Maybe(String));
     check(isOnline, Match.Maybe(Boolean));
@@ -92,10 +92,9 @@ Meteor.methods({
         sort: {
           _id: 1
         }
-      })
-      .fetch();
+      });
 
-    data.forEach((user) => {
+    data.forEachAsync(async (user) => {
       user.features = {
         emailVerified: user.emails ? user.emails[0].verified : false,
         isActive: Permissions.isActive(user),
@@ -110,7 +109,7 @@ Meteor.methods({
     };
   },
 
-  "admin.updateUser"(user) {
+  async "admin.updateUser"(user) {
     check(user, Object);
 
     if (!Permissions.isAdmin(Meteor.userId())) {
@@ -118,7 +117,7 @@ Meteor.methods({
     }
 
     const { _id } = user;
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       {
         _id
       },
@@ -133,20 +132,20 @@ Meteor.methods({
     const features = user.features || {};
     if (user._id !== Meteor.userId()) {
       if (features.isActive && !Permissions.isActive(user)) {
-        Meteor.call("admin.activateUser", user._id);
+        await Meteor.callAsync("admin.activateUser", user._id);
       } else if (!features.isActive && Permissions.isActive(user)) {
-        Meteor.call("admin.deactivateUser", user._id);
+        await Meteor.callAsync("admin.deactivateUser", user._id);
       }
       if (features.emailVerified && !user.emails[0].verified) {
-        Meteor.call("admin.confirmEmail", user._id);
+        await Meteor.callAsync("admin.confirmEmail", user._id);
       } else if (!features.emailVerified && user.emails[0].verified) {
-        Meteor.call("admin.unconfirmEmail", user._id);
+        await Meteor.callAsync("admin.unconfirmEmail", user._id);
       }
       if (features.isAdmin && !Permissions.isAdmin(user)) {
         Permissions.setAdmin(user._id);
       } else if (!features.isAdmin && Permissions.isAdmin(user)) {
         Permissions.removeAdmin(user._id);
-        Meteor.users.update(user._id, {
+        await Meteor.users.updateAsync(user._id, {
           $set: {
             "services.resume.loginTokens": []
           }
@@ -163,7 +162,7 @@ Meteor.methods({
     }
   },
 
-  "admin.deactivateUser"(userId) {
+  async "admin.deactivateUser"(userId) {
     check(userId, String);
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
@@ -171,7 +170,7 @@ Meteor.methods({
     Permissions.setInactive(userId);
   },
 
-  "admin.activateUser"(userId) {
+  async "admin.activateUser"(userId) {
     check(userId, String);
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
@@ -179,7 +178,7 @@ Meteor.methods({
     Permissions.setActive(userId);
   },
 
-  "admin.removeUser"(userId) {
+  async "admin.removeUser"(userId) {
     check(userId, String);
     if (userId === Meteor.userId()) {
       throw new Meteor.Error(401, "not-authorized");
@@ -187,21 +186,21 @@ Meteor.methods({
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $set: {
         "services.resume.loginTokens": []
       }
     });
-    Meteor.users.remove(userId);
+    await Meteor.users.removeAsync(userId);
   },
 
-  "admin.confirmEmail"(userId) {
+  async "admin.confirmEmail"(userId) {
     check(userId, String);
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       { _id: userId },
       {
         $set: {
@@ -212,13 +211,13 @@ Meteor.methods({
     );
   },
 
-  "admin.unconfirmEmail"(userId) {
+  async "admin.unconfirmEmail"(userId) {
     check(userId, String);
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       { _id: userId },
       {
         $set: {
@@ -228,13 +227,13 @@ Meteor.methods({
     );
   },
 
-  "admin.addUser"(user) {
+  async "admin.addUser"(user) {
     check(user, Object);
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
-    const existingUser = Meteor.users.findOne({
+    const existingUser = await Meteor.users.findOneAsync({
       emails: {
         $elemMatch: {
           address: { $regex: user.email, $options: "i" }
@@ -252,19 +251,19 @@ Meteor.methods({
     };
     const userId = Accounts.createUser(userData);
     if (user.isConfirmed) {
-      Meteor.call("admin.confirmEmail", userId);
+      await Meteor.callAsync("admin.confirmEmail", userId);
     } else {
-      Meteor.call("admin.unconfirmEmail", userId);
+      await Meteor.callAsync("admin.unconfirmEmail", userId);
     }
     if (user.isActive) {
-      Meteor.call("admin.activateUser", userId);
+      await Meteor.callAsync("admin.activateUser", userId);
     } else {
-      Meteor.call("admin.deactivateUser", userId);
+      await Meteor.callAsync("admin.deactivateUser", userId);
     }
     return userId;
   },
 
-  "users.create"(userData) {
+  async "users.create"(userData) {
     check(userData, Object);
     if (Meteor.settings.disableAccountCreation) {
       throw new Meteor.Error("not-authorized");
@@ -275,11 +274,11 @@ Meteor.methods({
     }
   },
 
-  "users.getEmailPreferences"() {
+  async "users.getEmailPreferences"() {
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    const user = Meteor.users.findOne({ _id: Meteor.userId() });
+    const user = await Meteor.users.findOneAsync({ _id: Meteor.userId() });
     user.emailSettings = user.emailSettings || {};
     user.emailSettings.tasks = user.emailSettings.tasks || {
       assignTo: true,
@@ -291,12 +290,12 @@ Meteor.methods({
     return user;
   },
 
-  "users.updateEmailPreferences"(settings) {
+  async "users.updateEmailPreferences"(settings) {
     check(settings, Object);
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       {
         _id: Meteor.userId()
       },
@@ -308,7 +307,7 @@ Meteor.methods({
     );
   },
 
-  "users.findUsers"(page, filter) {
+  async "users.findUsers"(page, filter) {
     check(page, Number);
     check(filter, Match.Maybe(String));
     checkLoggedIn();
@@ -361,9 +360,9 @@ Meteor.methods({
       };
     }
 
-    const count = Meteor.users.find(query).count();
+    const count = await Meteor.users.find(query).countAsync();
 
-    const data = Meteor.users
+    const data = await Meteor.users
       .find(query, {
         fields: {
           profile: 1,
@@ -375,7 +374,7 @@ Meteor.methods({
           _id: 1
         }
       })
-      .fetch();
+      .fetchAsync();
 
     return {
       rowsPerPage: perPage,
@@ -384,7 +383,7 @@ Meteor.methods({
     };
   },
 
-  "users.invite"(email) {
+  async "users.invite"(email) {
     check(email, String);
     checkLoggedIn();
 
@@ -411,7 +410,7 @@ Meteor.methods({
       email
     };
 
-    const existingUser = Meteor.users.findOne({
+    const existingUser = await Meteor.users.findOneAsync({
       emails: {
         $elemMatch: {
           address: { $regex: userData.email, $options: "i" }
@@ -427,7 +426,7 @@ Meteor.methods({
       email: userData.email,
       profile: userData.profile
     });
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       { _id: userId },
       {
         $set: {
@@ -437,12 +436,12 @@ Meteor.methods({
       }
     );
 
-    const user = Meteor.users.findOne({ _id: userId });
-    Meteor.call("users.sendInvitation", user);
+    const user = await Meteor.users.findOneAsync({ _id: userId });
+    await Meteor.callAsync("users.sendInvitation", user);
     return user;
   },
 
-  "users.sendInvitation"(user) {
+  async "users.sendInvitation"(user) {
     check(user, Object);
     this.unblock();
 
@@ -476,7 +475,7 @@ Meteor.methods({
     }
   },
 
-  "users.getProfile"() {
+  async "users.getProfile"() {
     if (!Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
@@ -491,7 +490,7 @@ Meteor.methods({
       }
     };
 
-    const user = Meteor.users.findOne({ _id: Meteor.userId() }, options);
+    const user = await Meteor.users.findOneAsync({ _id: Meteor.userId() }, options);
     if (!user.profile) {
       user.profile = {};
     }
@@ -502,7 +501,7 @@ Meteor.methods({
    * This is useful to force log out from
    * oauth2 id provider for example
    */
-  "users.getRedirectUrlAfterLogout"() {
+  async "users.getRedirectUrlAfterLogout"() {
     const user = Meteor.user();
     if (!user) {
       return Meteor.absoluteUrl("/");
@@ -531,7 +530,7 @@ Meteor.methods({
     return null;
   },
 
-  "users.oauthEnabled"() {
+  async "users.oauthEnabled"() {
     return {
       enabled: Meteor.settings.auth?.oauth2?.enabled,
       title: Meteor.settings.auth?.oauth2?.title
