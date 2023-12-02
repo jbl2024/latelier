@@ -113,37 +113,29 @@ export default {
       return notes && notes.length > 0;
     },
 
-    addNote() {
-      Meteor.call("tasks.addNote", this.task._id, this.note, (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async addNote() {
+      try {
+        await Meteor.callAsync("tasks.addNote", this.task._id, this.note);
         this.note = "";
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    deleteNote(note) {
-      this.$confirm(this.$t("Delete note?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteNote(note) {
+      try {
+        const res = await this.$confirm(this.$t("Delete note?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
         if (res) {
-          Meteor.call(
-            "tasks.removeNote",
-            this.task._id,
-            note._id,
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Note deleted"));
-            }
-          );
+          await Meteor.callAsync("tasks.removeNote", this.task._id, note._id);
+          this.$notify(this.$t("Note deleted"));
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     formatUser(userId) {
@@ -160,19 +152,13 @@ export default {
       return this.selectedNote && this.selectedNote._id === id;
     },
 
-    updateNote() {
-      Meteor.call(
-        "tasks.updateNote",
-        this.task._id,
-        this.selectedNote,
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.selectedNote = null;
-        }
-      );
+    async updateNote() {
+      try {
+        await Meteor.callAsync("tasks.updateNote", this.task._id, this.selectedNote);
+        this.selectedNote = null;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     cancelUpdateNote() {
