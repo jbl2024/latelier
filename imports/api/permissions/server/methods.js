@@ -253,7 +253,7 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
 
-    return Meteor.call("permissions.canReadProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canReadProject", { projectId: meeting.projectId });
   }
 });
 
@@ -275,7 +275,7 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
     if (!meeting) {
       throw new Meteor.Error("not-found");
     }
-    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 
@@ -298,7 +298,7 @@ Permissions.methods.canDeleteMeeting = new ValidatedMethod({
     if (!meeting) {
       throw new Meteor.Error("not-authorized");
     }
-    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 

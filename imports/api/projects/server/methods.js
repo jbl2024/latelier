@@ -61,7 +61,7 @@ Projects.methods.create = new ValidatedMethod({
       optional: true
     }
   }).validator(),
-  run({
+  async run({
     organizationId,
     name,
     projectType,
@@ -80,7 +80,7 @@ Projects.methods.create = new ValidatedMethod({
     locale = locale || "en";
     const i18nHelper = i18n(locale.split("-")[0]);
 
-    const projectId = Projects.insert({
+    const projectId = await Meteor.callAsync("projects.insert", {
       organizationId,
       name,
       state,
@@ -93,37 +93,42 @@ Projects.methods.create = new ValidatedMethod({
       startDate,
       endDate
     });
-    Meteor.call("projects.addMember", {
+    await Meteor.callAsync("projects.addMember", {
       projectId,
       userId: currentUserId
     });
-    Meteor.call("permissions.initializeProjectPermissions", {
+    await Meteor.callAsync("permissions.initializeProjectPermissions", {
       projectId
     });
 
-    if (projectType === "kanban") {
-      Meteor.call("lists.insert", projectId, i18nHelper.t("Todo"));
-      Meteor.call("lists.insert", projectId, i18nHelper.t("Doing"));
-      Meteor.call("lists.insert", projectId, i18nHelper.t("Done"), true, true);
-    }
+    try {
+      if (projectType === "kanban") {
+        await Meteor.callAsync("lists.insert", projectId, i18nHelper.t("Todo"));
+        await Meteor.callAsync("lists.insert", projectId, i18nHelper.t("Doing"));
+        await Meteor.callAsync("lists.insert", projectId, i18nHelper.t("Done"), true, true);
+      }
 
-    if (projectType === "people") {
-      Meteor.call("lists.insert", projectId, "Vincent");
-      Meteor.call("lists.insert", projectId, "François");
-      Meteor.call("lists.insert", projectId, "Paul");
-      Meteor.call("lists.insert", projectId, "... et les autres");
-    }
+      if (projectType === "people") {
+        await Meteor.callAsync("lists.insert", projectId, "Vincent");
+        await Meteor.callAsync("lists.insert", projectId, "François");
+        await Meteor.callAsync("lists.insert", projectId, "Paul");
+        await Meteor.callAsync("lists.insert", projectId, "... et les autres");
+      }
 
-    if (projectGroupId) {
-      Meteor.call("projectGroups.addProject", projectGroupId, projectId);
+      if (projectGroupId) {
+        await Meteor.callAsync("projectGroups.addProject", projectGroupId, projectId);
+      }
+      if (organizationId && accessRights === ProjectAccessRights.ORGANIZATION) {
+        await Meteor.callAsync("organizations.propagateMembership", {
+          organizationId,
+          projectId
+        });
+      }
+      return projectId;
+    } catch (e) {
+      this.$notifyError(e.message);
+      return null;
     }
-    if (organizationId && accessRights === ProjectAccessRights.ORGANIZATION) {
-      Meteor.call("organizations.propagateMembership", {
-        organizationId,
-        projectId
-      });
-    }
-    return projectId;
   }
 });
 
@@ -134,7 +139,7 @@ Projects.methods.load = new ValidatedMethod({
     organizationId: { type: String, optional: true },
     page: { type: Number }
   }).validator(),
-  run({ name, organizationId, page }) {
+  async run({ name, organizationId, page }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -161,20 +166,30 @@ Projects.methods.load = new ValidatedMethod({
       skip = 0;
     }
 
-    const count = Projects.find(query).count();
-    const data = Projects.find(query, {
-      skip,
-      limit: perPage,
-      sort: {
-        name: 1
-      }
-    }).fetch();
+    try {
+      const count = await Meteor.callAsync("projects.count", query);
+      const data = await Meteor.callAsync("projects.find", {
+        query,
+        skip,
+        limit: perPage,
+        sort: {
+          name: 1
+        }
+      });
 
-    return {
-      rowsPerPage: perPage,
-      totalItems: count,
-      data
-    };
+      return {
+        rowsPerPage: perPage,
+        totalItems: count,
+        data
+      };
+    } catch (error) {
+      this.$notifyError(error.message);
+      return {
+        rowsPerPage: perPage,
+        totalItems: 0,
+        data: []
+      };
+    }
   }
 });
 
@@ -183,63 +198,69 @@ Projects.methods.info = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
-    checkCanReadProject(projectId);
-    const project = Projects.findOne({ _id: projectId });
-    const taskCount = Tasks.find({
-      projectId: projectId,
-      deleted: { $ne: true }
-    }).count();
+  async run({ projectId }) {
+    try {
+      checkCanReadProject(projectId);
 
-    const completedTaskCount = Tasks.find({
-      projectId: projectId,
-      completed: true,
-      deleted: { $ne: true }
-    }).count();
+      const project = await Projects.findOneAsync({ _id: projectId });
+      const taskCount = await Tasks.find({
+        projectId: projectId,
+        deleted: { $ne: true }
+      }).countAsync();
 
-    const userCount = (project.members || []).length;
-    const diagramCount = ProcessDiagrams.find({ projectId: projectId }).count();
-    const meetingCount = Meetings.find({
-      projectId: projectId,
-      deleted: { $ne: true }
-    }).count();
-    const canvas = Canvas.findOne({ projectId: projectId });
-    let canvasProgression = 0;
-    if (canvas && canvas.data) {
-      let itemCount = 0;
-      let itemCompleted = 0;
-      Object.keys(canvas.data).forEach((item) => {
-        itemCount += 1;
-        if (canvas.data[item].length > 0) {
-          itemCompleted += 1;
+      const completedTaskCount = await Tasks.find({
+        projectId: projectId,
+        completed: true,
+        deleted: { $ne: true }
+      }).countAsync();
+
+      const userCount = (project.members || []).length;
+      const diagramCount = await ProcessDiagrams.find({ projectId: projectId }).countAsync();
+      const meetingCount = await Meetings.find({
+        projectId: projectId,
+        deleted: { $ne: true }
+      }).countAsync();
+      const canvas = await Canvas.findOneAsync({ projectId: projectId });
+      let canvasProgression = 0;
+      if (canvas && canvas.data) {
+        let itemCount = 0;
+        let itemCompleted = 0;
+        Object.keys(canvas.data).forEach((item) => {
+          itemCount += 1;
+          if (canvas.data[item].length > 0) {
+            itemCompleted += 1;
+          }
+        });
+        if (itemCount > 0) {
+          canvasProgression = Math.trunc(100 * (itemCompleted / itemCount));
         }
-      });
-      if (itemCount > 0) {
-        canvasProgression = Math.trunc(100 * (itemCompleted / itemCount));
       }
+
+      const healthReport = await HealthReports.findOneAsync(
+        { projectId: projectId },
+        {
+          sort: {
+            date: -1
+          }
+        }
+      );
+
+      const attachmentCount = await Attachments.find({ "meta.projectId": projectId }).count();
+
+      return {
+        taskCount,
+        completedTaskCount,
+        meetingCount,
+        userCount,
+        diagramCount,
+        canvasProgression,
+        healthReport,
+        attachmentCount
+      };
+    } catch (error) {
+      this.$notifyError(error.message);
+      return {};
     }
-
-    const healthReport = HealthReports.findOne(
-      { projectId: projectId },
-      {
-        sort: {
-          date: -1
-        }
-      }
-    );
-
-    const attachmentCount = Attachments.find({ "meta.projectId": projectId }).count();
-
-    return {
-      taskCount: taskCount,
-      completedTaskCount: completedTaskCount,
-      meetingCount: meetingCount,
-      userCount: userCount,
-      diagramCount: diagramCount,
-      canvasProgression: canvasProgression,
-      healthReport: healthReport,
-      attachmentCount: attachmentCount
-    };
   }
 });
 
@@ -252,7 +273,7 @@ Projects.methods.adminFind = new ValidatedMethod({
     "projectStates.$": { type: String },
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
-  run({ page, filter, projectStates, isDeleted }) {
+  async run({ page, filter, projectStates, isDeleted }) {
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
@@ -281,19 +302,19 @@ Projects.methods.adminFind = new ValidatedMethod({
     if (isDeleted) {
       query.deleted = true;
     }
-    const count = Projects.find(query).count();
+    const count = await Projects.find(query).countAsync();
 
-    const data = Projects.find(query, {
+    const data = await Projects.find(query, {
       skip,
       limit: perPage,
       sort: {
         name: 1
       }
-    }).fetch();
+    }).fetchAsync();
 
-    const loadUser = (aUserId) => {
+    const loadUser = async (aUserId) => {
       if (!aUserId) return {};
-      return Meteor.users.findOne(
+      return Meteor.users.findOneAsync(
         { _id: aUserId },
         {
           fields: {
@@ -308,8 +329,8 @@ Projects.methods.adminFind = new ValidatedMethod({
       );
     };
 
-    data.forEach((project) => {
-      project.createdBy = loadUser(project.createdBy);
+    data.forEach(async (project) => {
+      project.createdBy = await loadUser(project.createdBy);
     });
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
@@ -330,9 +351,9 @@ Projects.methods.findUsers = new ValidatedMethod({
       type: String
     }
   }).validator(),
-  run({ projectId }) {
-    checkLoggedIn();
-    checkCanReadProject(projectId);
+  async run({ projectId }) {
+    await checkLoggedIn();
+    await checkCanReadProject(projectId);
 
     const project = Projects.findOne({ _id: projectId });
     let organization;
@@ -358,7 +379,7 @@ Projects.methods.findUsers = new ValidatedMethod({
       .fetch();
     const organizationMembers = organization?.members || [];
 
-    users.forEach((user) => {
+    users.forEachAsync(async (user) => {
       if (user._id === project.createdBy) {
         user.isOwner = true;
       }
@@ -378,33 +399,33 @@ Projects.methods.findUsers = new ValidatedMethod({
 Projects.methods.adminMigrateFeatures = new ValidatedMethod({
   name: "admin.projectsMigrateFeatures",
   validate: null,
-  run() {
+  async run() {
     if (!Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
-    const hasMeetings = (project) => Meetings.findOne(
+    const hasMeetings = async (project) => Meetings.findOneAsync(
       { projectId: project._id },
       {
         fields: { _id: 1 }
       }
     );
 
-    const hasBPMN = (project) => ProcessDiagrams.findOne(
+    const hasBPMN = async (project) => ProcessDiagrams.findOneAsync(
       { projectId: project._id },
       {
         fields: { _id: 1 }
       }
     );
 
-    const hasCanvas = (project) => Canvas.findOne(
+    const hasCanvas = async (project) => Canvas.findOneAsync(
       { projectId: project._id },
       {
         fields: { _id: 1 }
       }
     );
 
-    const hasWeather = (project) => HealthReports.findOne(
+    const hasWeather = async (project) => HealthReports.findOneAsync(
       { projectId: project._id },
       {
         fields: { _id: 1 }
@@ -414,27 +435,27 @@ Projects.methods.adminMigrateFeatures = new ValidatedMethod({
     const projects = Projects.find({ deleted: { $ne: true } }, {
       fields: { _id: 1 }
     });
-    projects.forEach((project) => {
-      if (hasMeetings(project)) {
-        Meteor.call("projects.addFeature", {
+    projects.forEachAsync(async (project) => {
+      if (await hasMeetings(project)) {
+        await Meteor.callAsync("projects.addFeature", {
           projectId: project._id,
           feature: "meetings"
         });
       }
-      if (hasBPMN(project)) {
-        Meteor.call("projects.addFeature", {
+      if (await hasBPMN(project)) {
+        await Meteor.callAsync("projects.addFeature", {
           projectId: project._id,
           feature: "bpmn"
         });
       }
-      if (hasCanvas(project)) {
-        Meteor.call("projects.addFeature", {
+      if (await hasCanvas(project)) {
+        await Meteor.callAsync("projects.addFeature", {
           projectId: project._id,
           feature: "canvas"
         });
       }
-      if (hasWeather(project)) {
-        Meteor.call("projects.addFeature", {
+      if (await hasWeather(project)) {
+        await Meteor.callAsync("projects.addFeature", {
           projectId: project._id,
           feature: "weather"
         });
@@ -466,19 +487,19 @@ Projects.methods.export = new ValidatedMethod({
     items = items || [];
 
     // Project
-    const project = Projects.findOne({ _id: projectId });
+    const project = await Projects.findOneAsync({ _id: projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
 
     // Tasks (project + associated lists and tasks)
-    const projectInfos = Meteor.call("tasks.exportProject", { projectId });
+    const projectInfos = await Meteor.callAsync("tasks.exportProject", { projectId });
 
     // Users
     const membersIds = findUserIdsInvolvedInProject(project);
     const users = {};
-    membersIds.forEach((id) => {
-      UserUtils.loadUser(id, users, {
+    membersIds.forEach(async (id) => {
+      await UserUtils.loadUser(id, users, {
         profile: 1,
         emails: 1
       });
@@ -603,7 +624,7 @@ Projects.methods.import = new ValidatedMethod({
       }
 
       // Project
-      createdProjectId = Meteor.call(
+      createdProjectId = await Meteor.callAsync(
         "projects.create",
         {
           organizationId: organizationId || null,
@@ -681,7 +702,7 @@ Projects.methods.import = new ValidatedMethod({
         const users = await zippedProject.getContent("users");
         const usersIds = Object.keys(users);
         if (users && usersIds.length) {
-          usersIds.forEach((userId) => {
+          usersIds.forEach(async (userId) => {
             if (!mappedIds.users[userId]) {
               const user = users[userId];
               const userEmail = UserUtils.getEmail(user);
@@ -704,7 +725,7 @@ Projects.methods.import = new ValidatedMethod({
               }
 
               mappedIds.users[user._id] = createdUserId;
-              Meteor.call("projects.addMember", {
+              await Meteor.callAsync("projects.addMember", {
                 projectId: createdProjectId,
                 userId: createdUserId
               });
@@ -738,8 +759,8 @@ Projects.methods.import = new ValidatedMethod({
             return 0;
           });
 
-          tasksLists.forEach((taskList) => {
-            const createdList = Meteor.call(
+          tasksLists.forEach(async (taskList) => {
+            const createdList = await Meteor.callAsync(
               "lists.insert",
               createdProjectId,
               taskList.name,
@@ -757,7 +778,7 @@ Projects.methods.import = new ValidatedMethod({
                 return 0;
               });
 
-              taskList.tasks.forEach((task) => {
+              taskList.tasks.forEach(async (task) => {
                 // Notes
                 let notes = null;
                 if (Array.isArray(task.notes)) {
@@ -811,7 +832,7 @@ Projects.methods.import = new ValidatedMethod({
                   reminderDueDate = null;
                 }
 
-                const createdTask = Meteor.call(
+                const createdTask = await Meteor.callAsync(
                   "tasks.insert",
                   createdList.projectId,
                   createdList._id,
@@ -848,8 +869,8 @@ Projects.methods.import = new ValidatedMethod({
       if (items.includes("bpmn")) {
         const bpmnDiagrams = await zippedProject.getContent("bpmn");
         if (Array.isArray(bpmnDiagrams) && bpmnDiagrams.length) {
-          bpmnDiagrams.forEach((diagram) => {
-            Meteor.call("processDiagrams.create",
+          bpmnDiagrams.forEach(async (diagram) => {
+            await Meteor.callAsync("processDiagrams.create",
               {
                 projectId: createdProjectId,
                 name: diagram.name,
@@ -865,7 +886,7 @@ Projects.methods.import = new ValidatedMethod({
       if (items.includes("canvas")) {
         const canvas = await zippedProject.getContent("canvas");
         if (canvas && canvas._id && canvas.data) {
-          Canvas.insert({
+          await Canvas.insertAsync({
             projectId: createdProjectId,
             createdAt: new Date(),
             createdBy: getMapId(canvas.createdBy, "users"),
@@ -878,8 +899,8 @@ Projects.methods.import = new ValidatedMethod({
       if (items.includes("weather")) {
         const healthReports = await zippedProject.getContent("weather");
         if (Array.isArray(healthReports) && healthReports.length) {
-          healthReports.forEach((healthReport) => {
-            Meteor.call("healthReports.create",
+          healthReports.forEach(async (healthReport) => {
+            await Meteor.callAsync("healthReports.create",
               {
                 projectId: createdProjectId,
                 name: healthReport.name,
@@ -942,7 +963,7 @@ Projects.methods.import = new ValidatedMethod({
       // Meetings
       if (canImportMeetings) {
         if (Array.isArray(meetings) && meetings.length) {
-          meetings.forEach((meeting) => {
+          meetings.forEach(async (meeting) => {
             let attendees = Array.isArray(meeting?.attendees) ? meeting?.attendees : null;
             if (attendees.length > 0) {
               attendees = attendees.map((attendee) => {
@@ -971,7 +992,7 @@ Projects.methods.import = new ValidatedMethod({
                 return action;
               });
             }
-            Meteor.call("meetings.create",
+            await Meteor.callAsync("meetings.create",
               {
                 projectId: createdProjectId,
                 name: meeting.name,
@@ -994,7 +1015,7 @@ Projects.methods.import = new ValidatedMethod({
       }
 
       // Updating with corresponding state
-      Meteor.call("projects.updateState", {
+      await Meteor.callAsync("projects.updateState", {
         projectId: createdProjectId,
         state: project.state
       });
@@ -1005,7 +1026,7 @@ Projects.methods.import = new ValidatedMethod({
       console.log("Error import", error);
       // Error state
       if (createdProjectId) {
-        Meteor.call("projects.updateState", {
+        await Meteor.callAsync("projects.updateState", {
           projectId: createdProjectId,
           state: ProjectStates.ERROR
         });
