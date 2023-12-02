@@ -122,27 +122,25 @@ export default {
     }
   },
   methods: {
-    refresh() {
+    async refresh() {
       this.loading = true;
-      Meteor.call(
-        "projects.load",
-        {
+
+      try {
+        const result = await Meteor.callAsync("projects.load", {
           name: this.search,
           page: this.page,
           organizationId: this.organizationId
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
-          this.projects = result.data;
-        }
-      );
+        });
+
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+        this.projects = result.data;
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     calculateTotalPages() {
