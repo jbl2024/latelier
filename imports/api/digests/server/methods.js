@@ -9,11 +9,11 @@ methods.addDigest = new ValidatedMethod({
     type: { type: String },
     properties: { type: Object, blackbox: true }
   }).validator(),
-  run({ type, properties }) {
-    Meteor.defer(() => {
-      const today = moment()
-        .startOf("day")
-        .toDate();
+  async run({ type, properties }) {
+    try {
+      await Meteor.callAsync("digests.run", { type, properties });
+
+      const today = moment().startOf("day").toDate();
 
       let digestType = type;
       const notUpdateTypes = [
@@ -25,7 +25,7 @@ methods.addDigest = new ValidatedMethod({
       ];
 
       if (digestType === "tasks.complete") {
-        Digests.remove({
+        await Digests.removeAsync({
           type: "tasks.uncomplete",
           when: today,
           taskId: properties.task._id
@@ -33,7 +33,7 @@ methods.addDigest = new ValidatedMethod({
       }
 
       if (digestType === "tasks.uncomplete") {
-        Digests.remove({
+        await Digests.removeAsync({
           type: "tasks.complete",
           when: today,
           taskId: properties.task._id
@@ -44,7 +44,7 @@ methods.addDigest = new ValidatedMethod({
         digestType = "tasks.update";
       }
 
-      Digests.upsert(
+      await Digests.upsertAsync(
         {
           type: digestType,
           when: today,
@@ -61,10 +61,12 @@ methods.addDigest = new ValidatedMethod({
         }
       );
 
-      Meteor.call("digests.purge", {
+      await Meteor.callAsync("digests.purge", {
         projectId: properties.task.projectId
       });
-    });
+    } catch (error) {
+      this.$notifyError("Failed to run digest");
+    }
   }
 });
 
