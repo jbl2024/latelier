@@ -200,58 +200,66 @@ export default {
       return checklist && checklist.length > 0;
     },
 
-    addItem() {
+    async addItem() {
       this.editNewItem = false;
-      Meteor.call(
-        "tasks.addChecklistItem",
-        this.task._id,
-        this.item,
-        (error) => {
-          if (!error) {
-            this.item = "";
-          }
-        }
-      );
+      try {
+        await Meteor.callAsync("tasks.addChecklistItem", this.task._id, this.item);
+        this.item = "";
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    deleteItem(item) {
-      this.$confirm(this.$t("Delete element?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteItem(item) {
+      try {
+        const res = await this.$confirm(this.$t("Delete element?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
         if (res) {
-          Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
+          await Meteor.callAsync("tasks.removeChecklistItem", this.task._id, item._id);
         }
-      });
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    toggleCheckItem(item) {
-      Meteor.call(
-        "tasks.toggleCheckItem",
-        this.task._id,
-        item._id,
-        item.checked
-      );
+    async toggleCheckItem(item) {
+      try {
+        await Meteor.callAsync(
+          "tasks.toggleCheckItem",
+          this.task._id,
+          item._id,
+          item.checked
+        );
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
     cancelAddItem() {
       this.editNewItem = false;
     },
 
-    convertToTask(e, item) {
+    async convertToTask(e, item) {
       if (e) {
         e.stopPropagation();
       }
-      this.$confirm(this.$t("Convert element to task?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Convert")
-      }).then((res) => {
+
+      try {
+        const res = await this.$confirm(this.$t("Convert element to task?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Convert")
+        });
+
         if (res) {
-          Meteor.call("tasks.convertItemToTask", this.task._id, item._id);
+          await Meteor.callAsync("tasks.convertItemToTask", this.task._id, item._id);
         }
-      });
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
     isCheckItemEdited(item) {
@@ -274,21 +282,29 @@ export default {
       this.selectedCheckItem = null;
     },
 
-    updateCheckItem(item) {
+    async updateCheckItem(item) {
       if (!this.isCheckItemEdited(item)) {
         return;
       }
-      Meteor.call("tasks.updateCheckListItem", this.task._id, item);
-      this.selectedCheckItem = null;
+      try {
+        await Meteor.callAsync("tasks.updateCheckListItem", this.task._id, item);
+        this.selectedCheckItem = null;
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    moveItem({ oldIndex, newIndex }) {
-      const moved = this.task.checklist.splice(oldIndex, 1)[0];
-      this.task.checklist.splice(newIndex, 0, moved);
-      Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
+    async moveItem({ oldIndex, newIndex }) {
+      try {
+        const moved = this.task.checklist.splice(oldIndex, 1)[0];
+        this.task.checklist.splice(newIndex, 0, moved);
+        await Meteor.callAsync("tasks.updateCheckList", this.task._id, this.task.checklist);
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    moveUp(item) {
+    async moveUp(item) {
       const oldIndex = this.task.checklist.findIndex(
         (anItem) => anItem._id === item._id
       );
@@ -296,10 +312,10 @@ export default {
         return;
       }
       const newIndex = oldIndex - 1;
-      this.moveItem({ oldIndex, newIndex });
+      await this.moveItem({ oldIndex, newIndex });
     },
 
-    moveDown(item) {
+    async moveDown(item) {
       const oldIndex = this.task.checklist.findIndex(
         (anItem) => anItem._id === item._id
       );
@@ -307,16 +323,8 @@ export default {
         return;
       }
       const newIndex = oldIndex + 1;
-      this.moveItem({ oldIndex, newIndex });
+      await this.moveItem({ oldIndex, newIndex });
     }
-
-    // moveItem(oldIndex, newIndex) {
-    //   [this.task.checklist[oldIndex], this.task.checklist[newIndex]] = [
-    //     this.task.checklist[newIndex],
-    //     this.task.checklist[oldIndex]
-    //   ];
-    //   Meteor.call("tasks.updateCheckList", this.task._id, this.task.checklist);
-    // },
   }
 };
 </script>
