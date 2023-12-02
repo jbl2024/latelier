@@ -324,7 +324,7 @@ export default {
           !Array.isArray(this.meeting?.documents)
           || !this.meeting.documents.length
         ) return;
-        Api.call("attachments.find", {
+        Meteor.callAsync("attachments.find", {
           attachmentsIds: this.meeting.documents.map(
             (document) => document.documentId
           )
@@ -399,7 +399,7 @@ export default {
         confirmText: this.$t("Delete")
       });
       if (!res || res === false) return;
-      await Api.call("meetings.deleteActions", {
+      await Meteor.callAsync("meetings.deleteActions", {
         meetingId: this.meeting._id,
         actionsIds: [action.actionId]
       });
@@ -419,7 +419,7 @@ export default {
         this.$set(this.actions, actionIndex, deepCopy(action));
       }
 
-      await Api.call("meetings.updateAction", {
+      await Meteor.callAsync("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action
       }).catch((error) => {
@@ -460,7 +460,7 @@ export default {
       );
     },
     addNewAction() {
-      Api.call("meetings.createAction", {
+      Meteor.callAsync("meetings.createAction", {
         meetingId: this.meeting._id,
         action: MeetingUtils.makeNewMeetingAction()
       }).then(
@@ -475,7 +475,7 @@ export default {
 
     async fetch() {
       try {
-        const meetingActions = await Api.call("meetings.getActions", {
+        const meetingActions = await Meteor.callAsync("meetings.getActions", {
           meetingId: this.meeting._id
         });
         this.actions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
@@ -498,7 +498,7 @@ export default {
         return;
       }
 
-      const createdTask = await Api.call(
+      const createdTask = await Meteor.callAsync(
         "tasks.insert",
         this.meeting.projectId,
         this.firstList._id,

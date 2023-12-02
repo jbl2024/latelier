@@ -347,7 +347,7 @@ export default {
     },
     fetchMeetings() {
       if (!this.hasProjectFeature("meetings")) return;
-      Api.call("meetings.findMeetings", this.meetingsParams).then((result) => {
+      Meteor.callAsync("meetings.findMeetings", this.meetingsParams).then((result) => {
         this.meetings = Array.isArray(result?.data) ? result.data : [];
       }).catch((error) => {
         this.$notifyError(error);

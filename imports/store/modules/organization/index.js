@@ -32,7 +32,7 @@ export default {
       } else {
         context.commit("clearSelectedGroup", null, { root: true });
         // Organizations features sums all related projects features
-        Api.call("organizations.getFeatures", {
+        Meteor.callAsync("organizations.getFeatures", {
           organizationId: organization._id
         }).then((features) => {
           organization.features = Array.isArray(features) ? features : [];

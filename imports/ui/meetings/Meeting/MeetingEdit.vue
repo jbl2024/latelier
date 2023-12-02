@@ -453,7 +453,7 @@ export default {
       if (this.isNewMeeting) return;
       if (!this.documents || !this.documents.length) return;
       const selectedDocumentsIds = this.documents.map((doc) => doc.documentId);
-      const result = await Api.call("attachments.find", {
+      const result = await Meteor.callAsync("attachments.find", {
         attachmentsIds: selectedDocumentsIds
       });
       this.documents = result.data;
@@ -528,7 +528,7 @@ export default {
         });
         if (res === null || res === false) return;
         this.showDialog = false;
-        await Api.call("meetings.remove", { meetingId: this.meeting._id });
+        await Meteor.callAsync("meetings.remove", { meetingId: this.meeting._id });
         this.$notify(this.$t("meetings.meetingDeleted"));
         this.$emit("removed");
       } catch (error) {
@@ -559,13 +559,13 @@ export default {
     },
     async update() {
       this.showDialog = false;
-      await Api.call("meetings.update", this.getParams());
+      await Meteor.callAsync("meetings.update", this.getParams());
       this.$emit("updated");
       this.$notify(this.$t("meetings.updated"));
     },
     async create() {
       this.showDialog = false;
-      const meetingId = await Api.call("meetings.create", this.getParams());
+      const meetingId = await Meteor.callAsync("meetings.create", this.getParams());
       this.$emit("created", meetingId);
       this.$notify(this.$t("meetings.created"));
     },

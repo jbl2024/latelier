@@ -208,7 +208,7 @@ export default {
       }
     },
     async fetchUsers() {
-      this.projectUsers = await Api.call(
+      this.projectUsers = await Meteor.callAsync(
         "projects.findUsers",
         { projectId: this.project._id }
       );
