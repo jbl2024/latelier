@@ -67,8 +67,12 @@ export default {
     }
   },
   methods: {
-    onSelectLabel(label) {
-      Meteor.call("tasks.addLabel", this.task._id, label._id);
+    async onSelectLabel(label) {
+      try {
+        await Meteor.callAsync("tasks.addLabel", this.task._id, label._id);
+      } catch (error) {
+        this.$notifyError("Failed to add label to task");
+      }
     },
 
     getColor(label) {
@@ -78,8 +82,12 @@ export default {
       `;
     },
 
-    removeLabel(label) {
-      Meteor.call("tasks.removeLabel", this.task._id, label._id);
+    async removeLabel(label) {
+      try {
+        await Meteor.callAsync("tasks.removeLabel", this.task._id, label._id);
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
 
     selectLabel() {
