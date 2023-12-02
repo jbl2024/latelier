@@ -63,33 +63,29 @@ export default {
     }
   },
   methods: {
-    find() {
+    async find() {
       if (!this.filter || !this.filter.length === 0) return;
       this.loading = true;
-      Meteor.call(
-        "search.findTasks",
-        {
+      try {
+        const result = await Meteor.callAsync("search.findTasks", {
           name: this.filter,
           projectId: this.projectId,
           organizationId: this.organizationId,
           page: this.page,
           showArchivedProjects: this.showArchivedProjects
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
 
-          this.tasks = result.data;
-          this.taskCount = result.totalItems;
-          this.$emit("update:taskCount", this.taskCount);
-        }
-      );
+        this.tasks = result.data;
+        this.taskCount = result.totalItems;
+        this.$emit("update:taskCount", this.taskCount);
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     onSelectTask(task) {

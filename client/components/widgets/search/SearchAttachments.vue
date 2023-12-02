@@ -71,31 +71,27 @@ export default {
     }
   },
   methods: {
-    find() {
-      if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
+    async find() {
+      if (!this.autoSearch && (!this.filter || this.filter.length === 0)) return;
       this.loading = true;
-      Meteor.call(
-        "search.findAttachments",
-        {
+      try {
+        const result = await Meteor.callAsync("search.findAttachments", {
           name: this.filter,
           projectId: this.projectId,
           page: this.page,
           showArchivedProjects: this.showArchivedProjects
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-          this.attachments = Array.isArray(result?.data) ? result.data : [];
-          this.attachmentCount = result.totalItems;
-          this.$emit("update:attachment-count", this.attachmentCount);
-        }
-      );
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.attachments = Array.isArray(result?.data) ? result.data : [];
+        this.attachmentCount = result.totalItems;
+        this.$emit("update:attachment-count", this.attachmentCount);
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     onSelectProject(project) {
