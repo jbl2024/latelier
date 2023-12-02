@@ -1,5 +1,3 @@
-import Api from "/imports/api/Api";
-
 export default {
   namespaced: true,
   state: {

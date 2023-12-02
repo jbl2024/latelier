@@ -186,7 +186,6 @@ import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import MeetingListHeader from "/imports/ui/meetings/MeetingListHeader";
 import moment from "moment";
-import Api from "/imports/api/Api";
 
 export default {
   components: {

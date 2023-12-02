@@ -86,7 +86,6 @@ import Meeting from "/imports/ui/meetings/Meeting/Meeting";
 import debounce from "lodash/debounce";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import moment from "moment";
-import Api from "/imports/api/Api";
 
 export default {
   components: {

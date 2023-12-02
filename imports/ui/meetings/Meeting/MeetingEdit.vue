@@ -255,7 +255,6 @@ import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import MeetingUtils from "/imports/api/meetings/utils";
 import { Permissions } from "/imports/api/permissions/permissions";
 import Attachments from "/imports/ui/attachments/Attachments";
-import Api from "/imports/api/Api";
 
 export default {
   components: {

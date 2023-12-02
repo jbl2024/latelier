@@ -210,7 +210,6 @@ import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActi
 import MeetingUtils from "/imports/api/meetings/utils";
 import Attachments from "/imports/ui/attachments/Attachments";
 import deepCopy from "/imports/ui/utils/deepCopy";
-import Api from "/imports/api/Api";
 import { Permissions } from "/imports/api/permissions/permissions";
 import moment from "moment";
 
