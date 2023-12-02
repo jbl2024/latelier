@@ -74,45 +74,43 @@ export default {
     }
   },
   methods: {
-    exportODS() {
+    async exportODS() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call(
-        "tasks.exportProject",
-        { projectId: this.projectId, format: "ods" },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          const blob = new Blob([result.data], {
-            type: "application/vnd.oasis.opendocument.spreadsheet"
-          });
-          saveAs(blob, "task.ods");
-        }
-      );
+      try {
+        const result = await Meteor.callAsync("tasks.exportProject", {
+          projectId: this.projectId,
+          format: "ods"
+        });
+        const blob = new Blob([result.data], {
+          type: "application/vnd.oasis.opendocument.spreadsheet"
+        });
+        saveAs(blob, "task.ods");
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    exportXLSX() {
+    async exportXLSX() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call(
-        "tasks.exportProject",
-        { projectId: this.projectId, format: "xlsx" },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          const blob = new Blob([result.data], {
-            type:
-              "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-          });
-          saveAs(blob, "task.xlsx");
-        }
-      );
+      try {
+        const result = await Meteor.callAsync("tasks.exportProject", {
+          projectId: this.projectId,
+          format: "xlsx"
+        });
+        const blob = new Blob([result.data], {
+          type:
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+        saveAs(blob, "task.xlsx");
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };
