@@ -39,7 +39,7 @@ if (Meteor.isServer) {
     it("clone labels should create 2 instances", async function() {
       const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectAid = Projects.methods.create._execute(context, {
+      const projectAid = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION

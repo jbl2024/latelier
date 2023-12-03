@@ -110,7 +110,7 @@ Labels.methods.import = new ValidatedMethod({
     const labels = Labels.find({ projectId: from }) || [];
     await labels.forEachAsync(async (label) => {
       if (!await Labels.findOneAsync({ projectId: to, name: label.name })) {
-        await Meteor.callasync("labels.create", {
+        await Meteor.callAsync("labels.create", {
           projectId: to,
           name: label.name,
           color: label.color

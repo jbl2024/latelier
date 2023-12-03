@@ -79,7 +79,7 @@ methods.purge = new ValidatedMethod({
   async run({ projectId }) {
     Meteor.defer(async () => {
       const keep = Meteor.settings.digestsRetention || 60;
-      const digests = Digests.find(
+      const digests = await Digests.find(
         {
           projectId: projectId
         },

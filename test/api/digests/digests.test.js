@@ -145,8 +145,8 @@ if (Meteor.isServer) {
       expect(await Digests.find().countAsync()).to.be.equal(200 + 200);
       await Meteor.callAsync("digests.purge", { projectId: "projectId" });
       Meteor._sleepForMs(100);
-      expect(Digests.find({ projectId: "anotherProjectId" }).count()).to.be.equal(200);
-      expect(Digests.find({ projectId: "projectId" }).count()).to.be.equal(keep * 2);
+      expect(await Digests.find({ projectId: "anotherProjectId" }).countAsync()).to.be.equal(200);
+      expect(await Digests.find({ projectId: "projectId" }).countAsync()).to.be.equal(keep * 2);
     });
   });
 }

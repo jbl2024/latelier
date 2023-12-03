@@ -72,7 +72,7 @@ if (Meteor.isServer) {
       expect(projectAid).to.not.be.null;
       expect(projectBid).to.not.be.null;
 
-      let projectA = await await Projects.findOneAsyncAsync(projectAid);
+      let projectA = await await Projects.findOneAsync(projectAid);
       expect(projectA.members)
         .to.be.an("array")
         .that.include(userId);
@@ -80,7 +80,7 @@ if (Meteor.isServer) {
         .to.be.an("array")
         .that.include(otherUserId);
 
-      let projectB = await await Projects.findOneAsyncAsync(projectBid);
+      let projectB = await await Projects.findOneAsync(projectBid);
       expect(projectB.members)
         .to.be.an("array")
         .that.include(userId);
