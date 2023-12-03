@@ -162,24 +162,27 @@ export default {
     close() {
       this.$emit("close");
     },
-    save() {
-      Meteor.call("admin.updateUser", this.user, (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async save() {
+      try {
+        await Meteor.callAsync("admin.updateUser", this.user);
         this.$notify(this.$t("User updated"));
         this.$emit("saved");
         this.$emit("close");
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     onCancelDeleteUser() {},
 
-    onConfirmDeleteUser() {
-      Meteor.call("admin.removeUser", this.user._id);
-      this.$emit("saved");
-      this.$emit("close");
+    async onConfirmDeleteUser() {
+      try {
+        await Meteor.callAsync("admin.removeUser", this.user._id);
+        this.$emit("saved");
+        this.$emit("close");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

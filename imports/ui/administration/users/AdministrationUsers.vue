@@ -165,52 +165,50 @@ export default {
     }
   },
   methods: {
-    findUsers() {
-      Meteor.call(
-        "admin.findUsers",
-        this.page,
-        this.search,
-        this.filterOnline,
-        this.filterAway,
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
+    async findUsers() {
+      try {
+        const result = await Meteor.callAsync(
+          "admin.findUsers",
+          this.page,
+          this.search,
+          this.filterOnline,
+          this.filterAway
+        );
 
-          this.users = result.data;
-          this.users.forEach((user) => {
-            if (!user.profile) {
-              user.profile = {
-                firstName: "",
-                lastName: ""
-              };
-            }
-          });
-        }
-      );
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+
+        this.users = result.data;
+        this.users.forEach((user) => {
+          if (!user.profile) {
+            user.profile = {
+              firstName: "",
+              lastName: ""
+            };
+          }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeUser(user) {
-      this.$confirm(this.$t("Delete user?"), {
+    async removeUser(user) {
+      const confirmed = await this.$confirm(this.$t("Delete user?"), {
         title: UserUtils.getEmail(user),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("admin.removeUser", user._id, (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.$notify(this.$t("User deleted"));
-            this.findUsers();
-          });
-        }
       });
+
+      if (confirmed) {
+        try {
+          await Meteor.callAsync("admin.removeUser", user._id);
+          this.$notify(this.$t("User deleted"));
+          this.findUsers();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
     calculateTotalPages() {

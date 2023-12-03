@@ -128,17 +128,15 @@ export default {
     close() {
       this.showDialog = false;
     },
-    create() {
-      Meteor.call("admin.addUser", this.user, (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async create() {
+      try {
+        await Meteor.callAsync("admin.addUser", this.user);
         this.$notify(this.$t("User created"));
-
         this.close();
         this.$emit("created");
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

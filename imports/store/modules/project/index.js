@@ -30,12 +30,11 @@ export default {
       ? state.currentProject.color : null
   },
   actions: {
-    setCurrentProjectId(context, projectId) {
+    async setCurrentProjectId(context, projectId) {
       context.commit("filters/clearSelectedLabels");
       if (projectId != null) {
-        Meteor.call("projects.loadFeatures", { projectId }, (error, result) => {
-          context.commit("updateProjectFeatures", result);
-        });
+        const result = await Meteor.callAsync("projects.loadFeatures", { projectId });
+        context.commit("updateProjectFeatures", result);
         if (context.state.currentProject && (context.state.currentProject._id !== projectId)) {
           context.commit("updateProjectFeatures", []);
           context.commit("updateCurrentProject", null);
