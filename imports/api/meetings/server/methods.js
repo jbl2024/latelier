@@ -214,7 +214,7 @@ Meetings.methods.remove = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   async run({ meetingId }) {
-    checkCanDeleteMeeting(meetingId);
+    await checkCanDeleteMeeting(meetingId);
     // @todo check can write
     await Meetings.updateAsync(
       { _id: meetingId },
@@ -235,7 +235,7 @@ Meetings.methods.deleteForever = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   async run({ meetingId }) {
-    checkCanDeleteMeeting(meetingId);
+    await checkCanDeleteMeeting(meetingId);
     // @todo remove only if it has exclusively meetingId as meta ?
     // Attachments.remove({ "meta.projectId": projectId });
     await Meetings.removeAsync(meetingId);
@@ -450,7 +450,7 @@ Meetings.methods.get = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   async run({ meetingId }) {
-    checkCanReadMeeting(meetingId);
+    await checkCanReadMeeting(meetingId);
     const meeting = await Meetings.findOneAsync(
       {
         _id: meetingId,
@@ -475,7 +475,7 @@ Meetings.methods.getActions = new ValidatedMethod({
     meetingId: { type: String }
   }).validator(),
   async run({ meetingId }) {
-    checkCanReadMeeting(meetingId);
+    await checkCanReadMeeting(meetingId);
     const meeting = await Meetings.findOneAsync({ _id: meetingId });
     return meeting.actions && Array.isArray(meeting.actions) ? meeting.actions : [];
   }
@@ -521,7 +521,7 @@ Meetings.methods.updateAction = new ValidatedMethod({
     meetingId,
     action
   }) {
-    checkCanReadMeeting(meetingId);
+    await checkCanReadMeeting(meetingId);
     const returnedId = await Meetings.updateAsync(
       {
         _id: meetingId,
@@ -637,7 +637,7 @@ Meetings.methods.export = new ValidatedMethod({
     }
   }).validator(),
   async run({ meetingId, format, locale }) {
-    checkCanReadMeeting(meetingId);
+    await checkCanReadMeeting(meetingId);
 
     const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (!meeting) {

@@ -153,7 +153,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
     const project = await Projects.findOneAsync({ _id: report.projectId });
     const projectId = project._id;
 
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
     let organization;
     if (project.organizationId) {
@@ -269,7 +269,7 @@ HealthReports.methods.findHealthReports = new ValidatedMethod({
   }).validator(),
   run: async function({ projectId, page }) {
     checkLoggedIn();
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
     const perPage = 25;
     let skip = 0;
@@ -310,7 +310,7 @@ HealthReports.methods.get = new ValidatedMethod({
     checkLoggedIn();
     const healthReport = await HealthReports.findOneAsync({ _id: healthReportId });
     if (healthReport) {
-      checkCanReadProject(healthReport.projectId);
+      await checkCanReadProject(healthReport.projectId);
     } else {
       throw new Meteor.Error("not-found");
     }

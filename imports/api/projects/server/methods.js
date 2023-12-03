@@ -233,7 +233,7 @@ Projects.methods.info = new ValidatedMethod({
   }).validator(),
   async run({ projectId }) {
     try {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
 
       const project = await Projects.findOneAsync({ _id: projectId });
       const taskCount = await Tasks.find({

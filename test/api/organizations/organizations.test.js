@@ -25,7 +25,7 @@ if (Meteor.isServer) {
       const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
 
-      const organizationId = Organizations.methods.create._execute(context, {
+      const organizationId = await Organizations.methods.create._execute(context, {
         name: "organization"
       });
       const organization = Organizations.findOne(organizationId);
@@ -38,7 +38,7 @@ if (Meteor.isServer) {
       const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
 
-      const organizationId = Organizations.methods.create._execute(context, {
+      const organizationId = await Organizations.methods.create._execute(context, {
         name: "organization"
       });
 
@@ -48,12 +48,12 @@ if (Meteor.isServer) {
       };
       const otherUserId = Accounts.createUser(userData);
 
-      Organizations.methods.addMember._execute(context, {
+      await Organizations.methods.addMember._execute(context, {
         organizationId,
         userId: otherUserId
       });
 
-      const projectAid = Projects.methods.create._execute(context, {
+      const projectAid = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         organizationId,
@@ -61,7 +61,7 @@ if (Meteor.isServer) {
         state: ProjectStates.PRODUCTION
       });
 
-      const projectBid = Projects.methods.create._execute(context, {
+      const projectBid = await Projects.methods.create._execute(context, {
         name: "projectB",
         projectType: "kanban",
         organizationId,
@@ -72,7 +72,7 @@ if (Meteor.isServer) {
       expect(projectAid).to.not.be.null;
       expect(projectBid).to.not.be.null;
 
-      let projectA = Projects.findOne(projectAid);
+      let projectA = await await Projects.findOneAsyncAsync(projectAid);
       expect(projectA.members)
         .to.be.an("array")
         .that.include(userId);
@@ -80,7 +80,7 @@ if (Meteor.isServer) {
         .to.be.an("array")
         .that.include(otherUserId);
 
-      let projectB = Projects.findOne(projectBid);
+      let projectB = await await Projects.findOneAsyncAsync(projectBid);
       expect(projectB.members)
         .to.be.an("array")
         .that.include(userId);
@@ -93,32 +93,32 @@ if (Meteor.isServer) {
         email: "foo+3@bar.com"
       };
       const user3Id = Accounts.createUser(user3);
-      Organizations.methods.addMember._execute(context, {
+      await Organizations.methods.addMember._execute(context, {
         organizationId,
         userId: user3Id
       });
 
-      projectA = Projects.findOne(projectAid);
+      projectA = await Projects.findOneAsync(projectAid);
       expect(projectA.members)
         .to.be.an("array")
         .that.include(user3Id);
 
-      projectB = Projects.findOne(projectBid);
+      projectB = await Projects.findOneAsync(projectBid);
       expect(projectB.members)
         .to.be.an("array")
         .that.not.include(user3Id);
 
-      Organizations.methods.removeMember._execute(context, {
+      await Organizations.methods.removeMember._execute(context, {
         organizationId,
         userId: user3Id
       });
 
-      projectA = Projects.findOne(projectAid);
+      projectA = await Projects.findOneAsync(projectAid);
       expect(projectA.members)
         .to.be.an("array")
         .that.not.include(user3Id);
 
-      projectB = Projects.findOne(projectBid);
+      projectB = await Projects.findOneAsync(projectBid);
       expect(projectB.members)
         .to.be.an("array")
         .that.not.include(user3Id);

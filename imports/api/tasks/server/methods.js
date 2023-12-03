@@ -145,7 +145,7 @@ if (Meteor.isServer) {
       }));
 
       check(taskUserId, Match.Maybe(String));
-      checkCanWriteProject(projectId);
+      await checkCanWriteProject(projectId);
 
       let userId = Meteor.userId();
       const canSelectUserId = taskUserId && Meteor.isServer && Permissions.isAdmin(userId);
@@ -232,7 +232,7 @@ Meteor.methods({
 
   async "tasks.remove"(taskId) {
     check(taskId, String);
-    checkCanDeleteTask(taskId);
+    await checkCanDeleteTask(taskId);
 
     await Tasks.updateAsync(
       { _id: taskId },
@@ -255,7 +255,7 @@ Meteor.methods({
 
   async "tasks.deleteForever"(taskId) {
     check(taskId, String);
-    checkCanDeleteTask(taskId);
+    await checkCanDeleteTask(taskId);
 
     await Meteor.callAsync("attachments.remove", { taskId });
 
@@ -331,7 +331,7 @@ Meteor.methods({
 
     await Tasks.updateAsync({ _id: taskId }, { $set: { description } });
 
-    Meteor.callAsync("tasks.track", {
+    await Meteor.callAsync("tasks.track", {
       type: "tasks.updateDescription",
       taskId
     });

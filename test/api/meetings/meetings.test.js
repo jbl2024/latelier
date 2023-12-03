@@ -63,16 +63,16 @@ if (Meteor.isServer) {
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      expect(Meetings.find().count()).to.be.equal(3);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      expect(await Meetings.find().countAsync()).to.be.equal(3);
 
-      Meteor.call("projects.deleteForever", {
-        projectId: Projects.findOne()._id
+      await Meteor.call("projects.deleteForever", {
+        projectId: (await Projects.findOneAsync())._id
       });
 
-      expect(Meetings.find().count()).to.be.equal(0);
+      expect(await Meetings.find().countAsync()).to.be.equal(0);
     });
 
     it("find meetings", async function () {
@@ -86,16 +86,16 @@ if (Meteor.isServer) {
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
 
-      const allMeetings = Meteor.call("meetings.findMeetings", {
+      const allMeetings = await Meteor.call("meetings.findMeetings", {
         projectId: projectId
       });
       expect(allMeetings.totalItems).to.be.equal(3);
 
-      const todayMeetings = Meteor.call("meetings.findMeetings", {
+      const todayMeetings = await Meteor.call("meetings.findMeetings", {
         projectId: projectId,
         dates: [
           { start: moment().startOf("day").format(moment.defaultFormat) }

@@ -18,10 +18,10 @@ if (Meteor.isServer) {
       let errorCode;
       const user = Meteor.users.findOne();
       const userId = user._id;
-      const projectId = createProject({ userId });
+      const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;
 
-      const anotherUserId = Meteor.users.findOne({
+      const anotherUserId = await Meteor.users.findOneAsync({
         _id: { $ne: userId }
       });
 
@@ -29,7 +29,7 @@ if (Meteor.isServer) {
       createStubs(anotherUserId);
 
       try {
-        Meteor.call("projects.export", { projectId });
+        await Meteor.call("projects.export", { projectId });
       } catch (error) {
         errorCode = error.error;
       }
@@ -42,7 +42,7 @@ if (Meteor.isServer) {
     it("export project should create a valid zip", async function () {
       let errorCode = null;
       let zipContent;
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
       const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;
@@ -50,7 +50,6 @@ if (Meteor.isServer) {
       try {
         zipContent = await Meteor.callAsync("projects.export", { projectId });
       } catch (error) {
-        console.log(error);
         errorCode = error.error;
       }
       expect(errorCode, "should not throw error").to.equal(null);

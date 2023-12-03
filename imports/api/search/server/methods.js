@@ -480,7 +480,7 @@ methods.findMeetings = new ValidatedMethod({
       projectQuery.organizationId = organizationId;
     }
     if (projectId) {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
       projectQuery._id = projectId;
     }
     if (isRegularUser) {

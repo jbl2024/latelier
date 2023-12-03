@@ -3,16 +3,16 @@ import { check } from "meteor/check";
 import { Organizations } from "/imports/api/organizations/organizations.js";
 import { checkCanReadOrganization } from "../../permissions/permissions";
 
-Meteor.publish("usersInOrganization", function usersInOrganization(
+Meteor.publish("usersInOrganization", async function usersInOrganization(
   organizationId
 ) {
   check(organizationId, String);
-  checkCanReadOrganization(organizationId);
+  await checkCanReadOrganization(organizationId);
   if (!organizationId) {
     this.ready();
     return null;
   }
-  const organization = Organizations.findOne({ _id: organizationId });
+  const organization = await Organizations.findOneAsync({ _id: organizationId });
   if (!organization) {
     throw new Meteor.Error("not-found");
   }
