@@ -91,24 +91,18 @@ export default {
       this.showDialog = false;
     },
 
-    create() {
+    async create() {
       this.showDialog = false;
-      Meteor.call(
-        "bpmnExamples.create",
-        {
+      try {
+        await Meteor.callAsync("bpmnExamples.create", {
           name: this.name,
           description: this.description,
           xml: this.xml
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("created");
-        }
-      );
-      this.showDialog = false;
+        });
+        this.$emit("created");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

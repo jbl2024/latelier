@@ -180,7 +180,7 @@ export default {
     },
 
     async flush() {
-      const res = await this.$confirmAsync(this.$t("Delete all tasks?"), {
+      const res = await this.$confirm(this.$t("Delete all tasks?"), {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")

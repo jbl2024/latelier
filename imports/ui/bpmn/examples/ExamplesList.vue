@@ -171,24 +171,19 @@ export default {
     }, 400);
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "bpmnExamples.find",
-        {
+    async refresh() {
+      try {
+        const result = await Meteor.callAsync("bpmnExamples.find", {
           page: this.page,
           name: this.search
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-          this.examples = result.data;
-        }
-      );
+        });
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.examples = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     newExample() {
@@ -200,55 +195,45 @@ export default {
       this.$emit("select", example);
     },
 
-    deleteExample(example) {
-      this.$confirm(this.$t("Delete example?"), {
-        title: example.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "bpmnExamples.remove",
-            { exampleId: example._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Diagram deleted"));
-              this.refresh();
-            }
-          );
+    async deleteExample(example) {
+      try {
+        const confirmed = await this.$confirm(this.$t("Delete example?"), {
+          title: example.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+        if (confirmed) {
+          await Meteor.callAsync("bpmnExamples.remove", { exampleId: example._id });
+          this.$notify(this.$t("Diagram deleted"));
+          this.refresh();
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     editExample(example) {
       this.$refs.editExample.open(example);
     },
 
-    cloneExample(example) {
-      this.$confirm(this.$t("Clone diagram?"), {
-        title: example.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Clone")
-      }).then((res) => {
+    async cloneExample(example) {
+      try {
+        const res = await this.$confirm(this.$t("Clone diagram?"), {
+          title: example.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Clone")
+        });
+
         if (res) {
-          Meteor.call(
-            "bpmnExamples.clone",
-            { exampleId: example._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Diagram cloned"));
-              this.refresh();
-            }
-          );
+          await Meteor.callAsync("bpmnExamples.clone", { exampleId: example._id });
+          this.$notify(this.$t("Diagram cloned"));
+          this.refresh();
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     htmlToText(html) {
       return htmlToText.fromString(html);
     }

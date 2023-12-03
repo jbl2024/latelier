@@ -369,7 +369,7 @@ export default {
       if (!project) return;
 
       try {
-        const res = await this.$confirmAsync(
+        const res = await this.$confirm(
           this.$t("cloneToProject.confirmation", { project: project.name }),
           {
             title: this.$t("Confirm"),

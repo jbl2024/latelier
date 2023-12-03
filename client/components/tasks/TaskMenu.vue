@@ -89,7 +89,7 @@ export default {
   methods: {
     async cloneTask(id) {
       try {
-        await this.$confirmAsync(this.$t("Do you really want to clone this task?"), {
+        await this.$confirm(this.$t("Do you really want to clone this task?"), {
           title: this.$t("Confirm"),
           cancelText: this.$t("Cancel"),
           confirmText: this.$t("Clone")

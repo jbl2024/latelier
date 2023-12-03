@@ -281,7 +281,7 @@ export default {
     },
 
     async deleteForever(project) {
-      const confirmation = await this.$confirmAsync(this.$t("Delete forever"), {
+      const confirmation = await this.$confirm(this.$t("Delete forever"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
