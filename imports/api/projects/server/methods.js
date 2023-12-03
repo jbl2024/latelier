@@ -1192,43 +1192,35 @@ Projects.methods.deleteForever = new ValidatedMethod({
   }).validator(),
   async run({ projectId }) {
     try {
-      checkLoggedIn();
-      checkIfAdminOrCreator(projectId);
+      await checkLoggedIn();
+      await checkIfAdminOrCreator(projectId);
 
-      await Promise.all([
-        Tasks.remove({ projectId }),
-        Lists.remove({ projectId }),
-        Labels.remove({ projectId }),
-        ProcessDiagrams.remove({ projectId }),
-        HealthReports.remove({ projectId }),
-        Meetings.remove({ projectId }),
-        Canvas.remove({ projectId }),
-        Attachments.remove({ "meta.projectId": projectId }),
-        Meteor.callAsync("events.removeProject", projectId),
-        Meteor.users.update(
-          {},
-          {
-            $pull: {
-              "profile.favoriteProjects": projectId,
-              "profile.digests": projectId
-            }
-          },
-          { multi: true }
-        )
-      ]);
+      await Tasks.removeAsync({ projectId });
+      await Lists.removeAsync({ projectId });
+      await Labels.removeAsync({ projectId });
+      await ProcessDiagrams.removeAsync({ projectId });
+      await HealthReports.removeAsync({ projectId });
+      await Meetings.removeAsync({ projectId });
+      await Canvas.removeAsync({ projectId });
+      await Attachments.remove({ "meta.projectId": projectId });
+      await Meteor.callAsync("events.removeProject", projectId);
+      await Meteor.users.updateAsync(
+        {},
+        { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } },
+        { multi: true }
+      );
 
       const projectGroups = ProjectGroups.find({ projects: projectId });
-      projectGroups.forEach((projectGroup) => {
-        Meteor.callAsync("projectGroups.removeProject", projectGroup._id, projectId);
+      await projectGroups.forEachAsync(async (projectGroup) => {
+        await Meteor.callAsync("projectGroups.removeProject", projectGroup._id, projectId);
       });
 
       const query = {};
       query[`roles.${projectId}`] = { $exists: true };
       const update = { $unset: {} };
       update.$unset[`roles.${projectId}`] = 1;
-      await Meteor.users.update(query, update, { multi: true });
-
-      await Projects.remove(projectId);
+      await Meteor.users.updateAsync(query, update, { multi: true });
+      await Projects.removeAsync(projectId);
     } catch (error) {
       Log.error(error);
     }
