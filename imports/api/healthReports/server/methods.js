@@ -211,7 +211,7 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       sort: {
         updatedAt: -1
       }
-    }).fetchAsync();
+    });
 
     // load associated objects and assign them to tasks
     const users = {};
@@ -237,7 +237,8 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       return users[userId];
     };
 
-    data.forEach(async (task) => {
+    const loadedData = [];
+    data.forEachAsync(async (task) => {
       if (project) {
         task.project = project;
         task.organization = organization;
@@ -249,12 +250,13 @@ HealthReports.methods.findTasks = new ValidatedMethod({
       if (task.createdBy) {
         task.createdBy = await loadUser(task.createdBy);
       }
+      loadedData.push(task);
     });
 
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data
+      data: loadedData
     };
   }
 });

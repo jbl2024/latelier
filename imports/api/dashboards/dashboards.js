@@ -89,7 +89,7 @@ Meteor.methods({
       skip,
       limit: perPage,
       sort
-    }).fetchAsync();
+    });
 
     // load associated objects and assign them to tasks
     const projects = {};
@@ -117,7 +117,8 @@ Meteor.methods({
       return users[aUserId];
     };
 
-    data.forEach(async (task) => {
+    const loadedData = [];
+    data.forEachAsync(async (task) => {
       let project = projects[task.projectId];
       if (!project) {
         projects[task.projectId] = await Projects.findOneAsync({ _id: task.projectId });
@@ -144,12 +145,13 @@ Meteor.methods({
       if (task.createdBy) {
         task.createdBy = await loadUser(task.createdBy);
       }
+      loadedData.push(task);
     });
 
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data
+      data: loadedData
     };
   }
 });

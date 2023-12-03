@@ -20,7 +20,7 @@ methods.findTasks = new ValidatedMethod({
     page: { type: Number, optional: true },
     showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page, showArchivedProjects }) {
+  async run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -55,17 +55,17 @@ methods.findTasks = new ValidatedMethod({
       projectQuery.organizationId = organizationId;
     }
     if (projectId) {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
       projectQuery._id = projectId;
     }
     if (isRegularUser) {
       projectQuery.members = userId;
     }
-    const projectIds = Projects.find(projectQuery, {
+    const projectIds = await Projects.find(projectQuery, {
       fields: {
         _id: 1
       }
-    }).map((project) => project._id);
+    }).mapAsync(async (project) => project._id);
     taskQuery.projectId = { $in: projectIds };
 
     // filter by name
@@ -74,24 +74,24 @@ methods.findTasks = new ValidatedMethod({
     }
 
     // get tasks
-    const count = Tasks.find(taskQuery).count();
-    const data = Tasks.find(taskQuery, {
+    const count = await Tasks.find(taskQuery).countAsync();
+    const data = await Tasks.find(taskQuery, {
       skip,
       limit: perPage,
       sort
-    }).fetch();
+    });
 
     // load associated objects and assign them to tasks
     const projects = {};
     const users = {};
     const organizations = {};
 
-    const loadUser = (aUserId) => {
+    const loadUser = async (aUserId) => {
       const aUser = users[aUserId];
       if (aUser) {
         return aUser;
       }
-      users[aUserId] = Meteor.users.findOne(
+      users[aUserId] = await Meteor.users.findOneAsync(
         { _id: aUserId },
         {
           fields: {
@@ -107,10 +107,11 @@ methods.findTasks = new ValidatedMethod({
       return users[aUserId];
     };
 
-    data.forEach((task) => {
+    const loadedData = [];
+    data.forEachAsync(async (task) => {
       let project = projects[task.projectId];
       if (!project) {
-        projects[task.projectId] = Projects.findOne({ _id: task.projectId });
+        projects[task.projectId] = await Projects.findOneAsync({ _id: task.projectId });
         project = projects[task.projectId];
       }
       if (project) {
@@ -118,7 +119,7 @@ methods.findTasks = new ValidatedMethod({
 
         let organization = organizations[project.organizationId];
         if (!organization) {
-          organizations[project.organizationId] = Organizations.findOne({
+          organizations[project.organizationId] = await Organizations.findOneAsync({
             _id: project.organizationId
           });
           organization = organizations[project.organizationId];
@@ -134,6 +135,7 @@ methods.findTasks = new ValidatedMethod({
       if (task.createdBy) {
         task.createdBy = loadUser(task.createdBy);
       }
+      loadedData.push(task);
     });
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
@@ -142,7 +144,7 @@ methods.findTasks = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       totalPages: totalPages,
-      data
+      data: loadedData
     };
   }
 });
@@ -155,7 +157,7 @@ methods.findProjects = new ValidatedMethod({
     page: { type: Number, optional: true },
     showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, name, page, showArchivedProjects }) {
+  async run({ organizationId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const user = Meteor.user();
@@ -196,16 +198,16 @@ methods.findProjects = new ValidatedMethod({
     }
     const favoriteProjectIds = user.profile?.favoriteProjects || [];
 
-    const count = Projects.find(projectQuery).count();
-    const favoriteCount = Projects.find({
+    const count = await Projects.find(projectQuery).countAsync();
+    const favoriteCount = await Projects.find({
       ...projectQuery,
       _id: {
         $in: favoriteProjectIds
       }
-    }).count();
+    }).countAsync();
 
     // get favorite projects
-    let data = Projects.find(
+    let data = await Projects.find(
       {
         ...projectQuery,
         _id: {
@@ -216,13 +218,13 @@ methods.findProjects = new ValidatedMethod({
         limit: perPage,
         sort
       }
-    ).fetch();
+    ).fetchAsync();
 
     if (data.length < perPage) {
       // get regular projects if slots are still available
       let newSkip = skip - favoriteCount; // recaculate skip for regular projects
       if (newSkip < 0) newSkip = 0;
-      const regularProjects = Projects.find({
+      const regularProjects = await Projects.findAsync({
         ...projectQuery,
         _id: {
           $nin: favoriteProjectIds
@@ -231,7 +233,7 @@ methods.findProjects = new ValidatedMethod({
         skip: newSkip,
         limit: perPage - data.length,
         sort
-      }).fetch();
+      }).fetchAsync();
       data = data.concat(regularProjects);
     }
 
@@ -252,7 +254,7 @@ methods.findOrganizations = new ValidatedMethod({
     name: { type: String },
     page: { type: Number, optional: true }
   }).validator(),
-  run({ name, page }) {
+  async run({ name, page }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -282,12 +284,12 @@ methods.findOrganizations = new ValidatedMethod({
       organizationQuery.name = { $regex: `.*${name}.*`, $options: "i" };
     }
     // get organizations
-    const count = Organizations.find(organizationQuery).count();
-    const data = Organizations.find(organizationQuery, {
+    const count = await Organizations.find(organizationQuery).countAsync();
+    const data = await Organizations.find(organizationQuery, {
       skip,
       limit: perPage,
       sort
-    }).fetch();
+    }).fetchAsync();
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
@@ -308,7 +310,7 @@ methods.findAttachments = new ValidatedMethod({
     page: { type: Number, optional: true },
     showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ projectId, name, page, showArchivedProjects }) {
+  async run({ projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -338,17 +340,17 @@ methods.findAttachments = new ValidatedMethod({
     }
 
     if (projectId) {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
       projectQuery._id = projectId;
     }
     if (isRegularUser) {
       projectQuery.members = userId;
     }
-    const projectIds = Projects.find(projectQuery, {
+    const projectIds = await Projects.find(projectQuery, {
       fields: {
         _id: 1
       }
-    }).map((project) => project._id);
+    }).mapAsync(async (project) => project._id);
     attachmentQuery["meta.projectId"] = { $in: projectIds };
 
     // filter by name
@@ -357,8 +359,8 @@ methods.findAttachments = new ValidatedMethod({
     }
 
     // get attachments
-    const count = Attachments.find(attachmentQuery).count();
-    const data = Attachments.find(attachmentQuery, {
+    const count = await Attachments.find(attachmentQuery).count();
+    const data = await Attachments.find(attachmentQuery, {
       skip,
       limit: perPage,
       sort
@@ -369,12 +371,12 @@ methods.findAttachments = new ValidatedMethod({
     const users = {};
     const organizations = {};
 
-    const loadUser = (aUserId) => {
+    const loadUser = async (aUserId) => {
       const aUser = users[aUserId];
       if (aUser) {
         return aUser;
       }
-      users[aUserId] = Meteor.users.findOne(
+      users[aUserId] = await Meteor.users.findOneAsync(
         { _id: aUserId },
         {
           fields: {
@@ -390,19 +392,20 @@ methods.findAttachments = new ValidatedMethod({
       return users[aUserId];
     };
 
-    data.forEach((attachment) => {
+    // Collect all promises
+    const promises = data.map(async (attachment) => {
       const attachmentProjectId = attachment?.meta?.projectId ? attachment.meta.projectId : null;
       if (attachmentProjectId) {
         let project = projects[attachmentProjectId];
         if (!project) {
-          projects[attachmentProjectId] = Projects.findOne({ _id: attachmentProjectId });
+          projects[attachmentProjectId] = await Projects.findOneAsync({ _id: attachmentProjectId });
           project = projects[attachmentProjectId];
         }
         if (project) {
           attachment.project = project;
           let organization = organizations[project.organizationId];
           if (!organization) {
-            organizations[project.organizationId] = Organizations.findOne({
+            organizations[project.organizationId] = await Organizations.findOneAsync({
               _id: project.organizationId
             });
             organization = organizations[project.organizationId];
@@ -413,9 +416,14 @@ methods.findAttachments = new ValidatedMethod({
         }
       }
       if (attachment.createdBy) {
-        attachment.createdBy = loadUser(attachment.createdBy);
+        attachment.createdBy = await loadUser(attachment.createdBy);
       }
+
+      // Return the modified attachment
+      return attachment;
     });
+
+    const loadedData = await Promise.all(promises);
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
 
@@ -423,7 +431,7 @@ methods.findAttachments = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       totalPages: totalPages,
-      data
+      data: loadedData
     };
   }
 });
@@ -437,7 +445,7 @@ methods.findMeetings = new ValidatedMethod({
     page: { type: Number, optional: true },
     showArchivedProjects: { type: Boolean, optional: true }
   }).validator(),
-  run({ organizationId, projectId, name, page, showArchivedProjects }) {
+  async run({ organizationId, projectId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
     const userId = Meteor.userId();
@@ -478,11 +486,11 @@ methods.findMeetings = new ValidatedMethod({
     if (isRegularUser) {
       projectQuery.members = userId;
     }
-    const projectIds = Projects.find(projectQuery, {
+    const projectIds = await Projects.find(projectQuery, {
       fields: {
         _id: 1
       }
-    }).map((project) => project._id);
+    }).mapAsync(async (project) => project._id);
     meetingQuery.projectId = { $in: projectIds };
 
     // filter by name
@@ -491,21 +499,22 @@ methods.findMeetings = new ValidatedMethod({
     }
 
     // get meetings
-    const count = Meetings.find(meetingQuery).count();
-    const data = Meetings.find(meetingQuery, {
+    const count = await Meetings.find(meetingQuery).countAsync();
+    const data = await Meetings.find(meetingQuery, {
       skip,
       limit: perPage,
       sort
-    }).fetch();
+    });
 
     // load associated objects and assign them to meetings
     const projects = {};
     const organizations = {};
 
-    data.forEach((meeting) => {
+    const loadedData = [];
+    data.forEachAsync(async (meeting) => {
       let project = projects[meeting.projectId];
       if (!project) {
-        projects[meeting.projectId] = Projects.findOne({ _id: meeting.projectId });
+        projects[meeting.projectId] = await Projects.findOneAsync({ _id: meeting.projectId });
         project = projects[meeting.projectId];
       }
       if (project) {
@@ -521,6 +530,7 @@ methods.findMeetings = new ValidatedMethod({
           meeting.organization = organization;
         }
       }
+      loadedData.push(meeting);
     });
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
@@ -529,7 +539,7 @@ methods.findMeetings = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       totalPages: totalPages,
-      data
+      data: loadedData
     };
   }
 });

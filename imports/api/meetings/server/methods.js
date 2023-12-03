@@ -403,13 +403,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       sort: {
         startDate: sortAsc === true ? 1 : -1
       }
-    }).fetchAsync();
+    });
 
     // load associated objects and assign them to meetings
     const projects = {};
     const organizations = {};
+    let loadedData = [];
     if (withRelated === true) {
-      data.forEach(async (meeting) => {
+      data.forEachAsync(async (meeting) => {
         let project = projects[meeting.projectId];
         if (!project) {
           projects[meeting.projectId] = await Projects.findOneAsync({ _id: meeting.projectId });
@@ -427,15 +428,18 @@ Meetings.methods.findMeetings = new ValidatedMethod({
           if (organization) {
             meeting.organization = organization;
           }
+          loadedData.push(meeting);
         }
       });
+    } else {
+      loadedData = await data.fetchAsync();
     }
     const totalPages = !perPage ? 0 : Math.ceil(count / perPage);
     return {
       rowsPerPage: perPage || 0,
       totalItems: count,
       totalPages,
-      data
+      data: loadedData
     };
   }
 });
@@ -603,11 +607,12 @@ Meetings.methods.adminFind = new ValidatedMethod({
         sort: {
           name: 1
         }
-      })
-      .fetchAsync();
+      });
 
-    data.forEach(async (meeting) => {
+    const loadedData = [];
+    data.forEachAsync(async (meeting) => {
       meeting.createdBy = await loadUser(meeting.createdBy);
+      loadedData.push(meeting);
     });
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
@@ -616,7 +621,7 @@ Meetings.methods.adminFind = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       totalPages: totalPages,
-      data
+      data: loadedData
     };
   }
 });

@@ -1,5 +1,6 @@
-import { Digests } from "/imports/api/digests/digests";
+import { Log } from "meteor/logging";
 import moment from "moment";
+import { Digests } from "/imports/api/digests/digests";
 
 const methods = {};
 
@@ -65,7 +66,7 @@ methods.addDigest = new ValidatedMethod({
         projectId: properties.task.projectId
       });
     } catch (error) {
-      this.$notifyError("Failed to run digest");
+      Log.error(`Failed to run digest: ${error}`);
     }
   }
 });

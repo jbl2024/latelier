@@ -31,7 +31,6 @@ Tasks.helpers.loadAssociations = async function (task) {
       }
     );
   };
-
   task.project = await Projects.findOneAsync({ _id: task.projectId });
   task.assignedTo = await loadUser(task.assignedTo);
   task.completedBy = await loadUser(task.completedBy);

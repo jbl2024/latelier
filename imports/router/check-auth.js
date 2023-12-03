@@ -3,52 +3,51 @@ import store from "/imports/store/store";
 import Vue from "vue";
 
 // Basic User
-export const isBasicAuth = (to, from, next) => {
+export const isBasicAuth = async (to, from, next) => {
   Vue.prototype.$isLoggingIn = true;
+
   if (
     Meteor.settings.public
     && Meteor.settings.public.sso
     && Meteor.settings.public.sso.enabled
     && !Meteor.userId()
   ) {
-    Meteor.call("users.ssoAuthenticate", (error, result) => {
-      if (!error) {
-        Meteor.loginWithToken(result.token, (err) => {
-          if (!err) {
-            Meteor.call("permissions.setAdminIfNeeded");
+    try {
+      const result = await Meteor.callAsync("users.ssoAuthenticate");
+      Meteor.loginWithToken(result.token, async (err) => {
+        if (!err) {
+          try {
+            await Meteor.callAsync("permissions.setAdminIfNeeded");
             Vue.prototype.$isLoggingIn = false;
             next();
-          } else {
+          } catch (adminError) {
             Vue.prototype.$isLoggingIn = false;
-            next({
-              name: "login"
-            });
-            store.dispatch("notifyError", err);
+            store.dispatch("notifyError", adminError);
           }
-        });
-      } else {
-        Vue.prototype.$isLoggingIn = false;
-        store.dispatch("notifyError", error);
-        next({
-          name: "login"
-        });
-      }
-    });
+        } else {
+          Vue.prototype.$isLoggingIn = false;
+          next({ name: "login" });
+          store.dispatch("notifyError", err);
+        }
+      });
+    } catch (error) {
+      Vue.prototype.$isLoggingIn = false;
+      store.dispatch("notifyError", error);
+      next({ name: "login" });
+    }
     return;
   }
 
   Vue.prototype.$isLoggingIn = false;
 
   if (!Meteor.userId()) {
-    next({
-      name: "login"
-    });
+    next({ name: "login" });
   } else {
     next();
   }
 };
 
-export const checkSsoAuth = (to, from, next) => {
+export const checkSsoAuth = async (to, from, next) => {
   Vue.prototype.$isLoggingIn = true;
   if (
     Meteor.settings.public
@@ -56,51 +55,60 @@ export const checkSsoAuth = (to, from, next) => {
     && Meteor.settings.public.sso.enabled
     && !Meteor.userId()
   ) {
-    Meteor.call("users.ssoAuthenticate", (error, result) => {
-      if (!error) {
-        Meteor.loginWithToken(result.token, (err) => {
-          Vue.prototype.$isLoggingIn = false;
-          if (!err) {
-            Meteor.call("permissions.setAdminIfNeeded");
-          } else {
-            store.dispatch("notifyError", err);
-          }
-          next();
-        });
-      } else {
+    try {
+      const result = await Meteor.callAsync("users.ssoAuthenticate");
+      Meteor.loginWithToken(result.token, (err) => {
         Vue.prototype.$isLoggingIn = false;
-        store.dispatch("notifyError", error);
+        if (!err) {
+          try {
+            Meteor.callAsync("permissions.setAdminIfNeeded");
+          } catch (adminError) {
+            store.dispatch("notifyError", adminError);
+          }
+        } else {
+          store.dispatch("notifyError", err);
+        }
         next();
-      }
-    });
+      });
+    } catch (error) {
+      Vue.prototype.$isLoggingIn = false;
+      store.dispatch("notifyError", error);
+      next();
+    }
   } else {
     Vue.prototype.$isLoggingIn = false;
     next();
   }
 };
 
-export const projectAuth = (to, from, next) => {
+export const projectAuth = async (to, from, next) => {
   const { projectId } = to.params;
-  Meteor.call("permissions.canReadProject", { projectId }, (error, result) => {
-    if (error || !result) {
-      next({
-        name: "forbidden"
-      });
+
+  try {
+    const result = await Meteor.callAsync("permissions.canReadProject", { projectId });
+    if (!result) {
+      next({ name: "forbidden" });
     } else {
       next();
     }
-  });
+  } catch (error) {
+    // Handle the error as needed, for instance, by redirecting to a 'forbidden' route
+    next({ name: "forbidden" });
+  }
 };
 
-export const meetingAuth = (to, from, next) => {
+export const meetingAuth = async (to, from, next) => {
   const { meetingId } = to.params;
-  Meteor.call("permissions.canReadMeeting", { meetingId }, (error, result) => {
-    if (error || !result) {
-      next({
-        name: "forbidden"
-      });
+
+  try {
+    const result = await Meteor.callAsync("permissions.canReadMeeting", { meetingId });
+    if (!result) {
+      next({ name: "forbidden" });
     } else {
       next();
     }
-  });
+  } catch (error) {
+    // Handle the error as needed, for instance, by redirecting to a 'forbidden' route
+    next({ name: "forbidden" });
+  }
 };
