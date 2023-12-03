@@ -11,10 +11,10 @@ methods.addDigest = new ValidatedMethod({
     properties: { type: Object, blackbox: true }
   }).validator(),
   async run({ type, properties }) {
-    try {
-      await Meteor.callAsync("digests.run", { type, properties });
-
-      const today = moment().startOf("day").toDate();
+    Meteor.defer(async () => {
+      const today = moment()
+        .startOf("day")
+        .toDate();
 
       let digestType = type;
       const notUpdateTypes = [
@@ -65,9 +65,7 @@ methods.addDigest = new ValidatedMethod({
       await Meteor.callAsync("digests.purge", {
         projectId: properties.task.projectId
       });
-    } catch (error) {
-      Log.error(`Failed to run digest: ${error}`);
-    }
+    });
   }
 });
 
@@ -79,8 +77,8 @@ methods.purge = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
-    Meteor.defer(() => {
+  async run({ projectId }) {
+    Meteor.defer(async () => {
       const keep = Meteor.settings.digestsRetention || 60;
       const digests = Digests.find(
         {
@@ -109,7 +107,7 @@ methods.purge = new ValidatedMethod({
       }
 
       if (toDelete.length > 0) {
-        Digests.remove({
+        await Digests.removeAsync({
           _id: { $in: toDelete }
         });
       }

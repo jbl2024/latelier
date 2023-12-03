@@ -226,7 +226,7 @@ if (Meteor.isServer) {
 Meteor.methods({
   async "tasks.setNumber"(taskId) {
     check(taskId, String);
-    const number = incNumber();
+    const number = await incNumber();
     await Tasks.direct.updateAsync({ _id: taskId }, { $set: { number } });
   },
 
@@ -997,7 +997,7 @@ Meteor.methods({
     };
 
     const clonedTaskId = await Tasks.insertAsync(clonedTask);
-    Meteor.callAsync("tasks.setNumber", clonedTaskId);
+    await Meteor.callAsync("tasks.setNumber", clonedTaskId);
 
     const _reorder = async function (aListId) {
       const tasks = await Tasks.find({ aListId }, { sort: { order: 1 } }).fetchAsync();

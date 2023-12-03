@@ -224,7 +224,7 @@ methods.findProjects = new ValidatedMethod({
       // get regular projects if slots are still available
       let newSkip = skip - favoriteCount; // recaculate skip for regular projects
       if (newSkip < 0) newSkip = 0;
-      const regularProjects = await Projects.findAsync({
+      const regularProjects = await Projects.find({
         ...projectQuery,
         _id: {
           $nin: favoriteProjectIds

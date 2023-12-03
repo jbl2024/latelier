@@ -112,7 +112,7 @@ Projects.methods.create = new ValidatedMethod({
     const currentUserId = Meteor.userId();
     locale = locale || "en";
     const i18nHelper = i18n(locale.split("-")[0]);
-    const projectId = await Meteor.callAsync("projects.insert", {
+    const projectId = await Projects.insertAsync({
       organizationId,
       name,
       state,
@@ -1135,10 +1135,10 @@ Projects.methods.insert = new ValidatedMethod({
     organizationId: { type: String },
     name: { type: String }
   }).validator(),
-  run({ organizationId, name }) {
+  async run({ organizationId, name }) {
     checkLoggedIn();
 
-    const project = Projects.insert({
+    const project = await Projects.insertAsync({
       organizationId,
       name,
       state: ProjectStates.DEVELOPMENT,
