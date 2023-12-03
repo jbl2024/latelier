@@ -63,31 +63,27 @@ export default {
     }
   },
   methods: {
-    find() {
+    async find() {
       if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
-      Meteor.call(
-        "search.findOrganizations",
-        {
+      try {
+        const result = await Meteor.callAsync("search.findOrganizations", {
           name: this.filter,
           page: this.page
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-
-          this.organizations = result.data;
-          this.organizationCount = result.totalItems;
-          this.$emit("update:organizationCount", this.organizationCount);
-        }
-      );
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.organizations = result.data;
+        this.organizationCount = result.totalItems;
+        this.$emit("update:organizationCount", this.organizationCount);
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
+
     onSelectOrganization(organization) {
       this.$emit("select", organization);
     }

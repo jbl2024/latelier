@@ -98,17 +98,14 @@ export default {
     }
   },
   methods: {
-    refresh() {
-      Meteor.call("projects.info",
-        { projectId: this.projectId },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.info = result;
-        });
+    async refresh() {
+      try {
+        this.info = await Meteor.callAsync("projects.info", { projectId: this.projectId });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     onResize() {
       const { cards } = this.$refs;
       const width = cards.offsetWidth;

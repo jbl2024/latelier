@@ -11,12 +11,9 @@ export default {
       default: ""
     }
   },
-  mounted() {
-    Meteor.call("tasks.getUrl", Number(this.taskNumber), (error, result) => {
-      if (error) {
-        this.$notifyError(error);
-        return;
-      }
+  async mounted() {
+    try {
+      const result = await Meteor.asyncCall("tasks.getUrl", Number(this.taskNumber));
       this.$router.push({
         name: "project-task",
         params: {
@@ -24,7 +21,9 @@ export default {
           taskId: result.taskId
         }
       });
-    });
+    } catch (error) {
+      this.$notifyError(error);
+    }
   }
 };
 </script>

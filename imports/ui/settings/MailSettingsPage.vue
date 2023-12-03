@@ -64,23 +64,28 @@ export default {
     this.refreshUser();
   },
   methods: {
-    toggleSettings(property) {
+    async toggleSettings(property) {
       if (!has(this.user, property)) {
         set(this.user, property, false);
       }
+
+      try {
+        await Meteor.callAsync("users.updateEmailPreferences", this.user.emailSettings);
+        await this.refreshUser();
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
+
       set(this.user, property, !get(this.user, property, false));
-      Meteor.call("users.updateEmailPreferences", this.user.emailSettings);
-      this.refreshUser();
     },
 
-    refreshUser() {
-      Meteor.call("users.getEmailPreferences", (error, result) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async refreshUser() {
+      try {
+        const result = await Meteor.callAsync("users.getEmailPreferences");
         this.user = result;
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

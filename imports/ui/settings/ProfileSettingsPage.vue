@@ -47,71 +47,61 @@ export default {
     this.refreshUser();
   },
   methods: {
-    refreshUser() {
-      Meteor.call("users.getProfile", (error, result) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async refreshUser() {
+      try {
+        const result = await Meteor.callAsync("users.getProfile");
         this.user = result;
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onUpload(e) {
+    async onUpload(e) {
       const file = e.target.files[0];
-      this.uploadFile(file);
+      await this.uploadFile(file);
     },
 
-    uploadFile(file) {
+    async uploadFile(file) {
       const that = this;
       const transport = Meteor.settings.public.uploadTransport || "ddp";
-      const upload = Avatars.insert(
-        {
-          file: file,
-          chunkSize: "dynamic",
-          transport: transport,
-          meta: {
-            userId: Meteor.userId(),
-            createdBy: Meteor.userId()
-          }
-        },
-        false
-      );
+      const upload = Avatars.insert({
+        file: file,
+        chunkSize: "dynamic",
+        transport: transport,
+        meta: {
+          userId: Meteor.userId(),
+          createdBy: Meteor.userId()
+        }
+      }, false);
 
       upload.on("start", function() {
         that.isUploading = true;
       });
 
-      upload.on("end", function(uploadError, fileObj) {
+      upload.on("end", async function(uploadError, fileObj) {
         that.isUploading = false;
         if (uploadError) {
           this.$notifyError(uploadError);
         } else {
-          Meteor.call(
-            "avatars.setAvatar",
-            { avatarId: fileObj._id },
-            (error) => {
-              if (error) {
-                that.$store.dispatch("notifyError", error);
-                return;
-              }
-              that.refreshUser();
-            }
-          );
+          try {
+            await Meteor.callAsync("avatars.setAvatar", { avatarId: fileObj._id });
+            that.refreshUser();
+          } catch (error) {
+            that.$store.dispatch("notifyError", error);
+          }
           that.file = null;
         }
       });
       upload.start();
     },
 
-    remove() {
-      Meteor.call("avatars.clear", (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async remove() {
+      try {
+        await Meteor.callAsync("avatars.clear");
         this.refreshUser();
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     getEmail(user) {

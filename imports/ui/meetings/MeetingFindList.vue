@@ -116,22 +116,21 @@ export default {
     }
   },
   methods: {
-    find() {
+    async find() {
       this.loading = true;
-      Meteor.call("meetings.findMeetings", this.params, (error, result) => {
+      try {
+        const result = await Meteor.callAsync("meetings.findMeetings", this.params);
         this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
         this.pagination.totalItems = result.totalItems;
         this.pagination.rowsPerPage = result.rowsPerPage;
         this.pagination.totalPages = result.totalPages;
-
         this.meetings = Array.isArray(result?.data) ? result.data : [];
         this.meetingCount = result.totalItems;
         this.$emit("update:meeting-count", this.meetingCount);
-      });
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     onSelectMeeting(meeting) {

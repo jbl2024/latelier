@@ -278,25 +278,20 @@ export default {
       });
     },
 
-    handleMove(item, cb) {
-      Meteor.call(
-        "projects.setDatesAndState",
-        {
+    async handleMove(item, cb) {
+      try {
+        await Meteor.callAsync("projects.setDatesAndState", {
           projectId: item.id,
           startDate: this.formatDateTz(item.start),
           endDate: this.formatDateTz(item.end),
           state: item.group
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            cb(null);
-            return;
-          }
-          this.refreshSelectedProject();
-          cb(item);
-        }
-      );
+        });
+        this.refreshSelectedProject();
+        cb(item);
+      } catch (error) {
+        this.$notifyError(error);
+        cb(null);
+      }
     },
 
     refreshSelectedProject() {

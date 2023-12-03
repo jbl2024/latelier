@@ -86,7 +86,7 @@ export default {
       this.form.email = null;
       this.form.password = null;
     },
-    register() {
+    async register() {
       if (this.form.password !== this.form.passwordConfirmation) {
         this.$notify(this.$t("Passwords do not match"));
         return;
@@ -98,30 +98,24 @@ export default {
         email: this.form.email
       };
       this.sending = true;
-      Meteor.call("users.create", userData, (error) => {
+      try {
+        await Meteor.callAsync("users.create", userData);
         this.sending = false;
-        if (error) {
-          this.$notifyError(error);
-        } else if (Meteor.settings.public.emailVerificationNeeded) {
+        if (Meteor.settings.public.emailVerificationNeeded) {
           this.$router.push({ name: "registration-completed" });
         } else {
-          Meteor.loginWithPassword(
-            this.form.email,
-            this.form.password,
-            (err) => {
-              this.sending = false;
-              if (err) {
-                this.$notifyError(err.reason);
-              } else {
-                this.clearForm();
-                this.$notify(this.$t("Welcome to you!"));
-                this.$router.push({ name: "dashboard-page" });
-              }
-            }
-          );
+          await Meteor.loginWithPasswordAsync(this.form.email, this.form.password);
+          this.sending = false;
+          this.clearForm();
+          this.$notify(this.$t("Welcome to you!"));
+          this.$router.push({ name: "dashboard-page" });
         }
-      });
+      } catch (error) {
+        this.sending = false;
+        this.$notifyError(error);
+      }
     },
+
     validateRegister() {
       this.register();
     }

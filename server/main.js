@@ -86,6 +86,6 @@ Accounts.config({
   sendVerificationEmail: Meteor.settings.public.emailVerificationNeeded
 });
 
-Meteor.startup(() => {
-  Meteor.call("organizations.fixOrphanProjectGroups");
+Meteor.startup(async () => {
+  await Meteor.callAsync("organizations.fixOrphanProjectGroups");
 });
