@@ -44,12 +44,13 @@ if (Meteor.isServer) {
       let zipContent;
       const user = Meteor.users.findOne();
       const userId = user._id;
-      const projectId = createProject({ userId });
+      const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;
 
       try {
-        zipContent = Meteor.call("projects.export", { projectId });
+        zipContent = await Meteor.callAsync("projects.export", { projectId });
       } catch (error) {
+        console.log(error);
         errorCode = error.error;
       }
       expect(errorCode, "should not throw error").to.equal(null);

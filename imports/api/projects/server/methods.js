@@ -531,7 +531,7 @@ Projects.methods.export = new ValidatedMethod({
     const projectInfos = await Meteor.callAsync("tasks.exportProject", { projectId });
 
     // Users
-    const membersIds = findUserIdsInvolvedInProject(project);
+    const membersIds = await findUserIdsInvolvedInProject(project);
     const users = {};
     // eslint-disable-next-line no-restricted-syntax
     for (const id of membersIds) {

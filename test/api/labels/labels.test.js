@@ -58,7 +58,7 @@ if (Meteor.isServer) {
         color: "a color"
       });
 
-      Labels.methods.import._execute(context, {
+      await Labels.methods.import._execute(context, {
         from: projectAid,
         to: projectBid
       });

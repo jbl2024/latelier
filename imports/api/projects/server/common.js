@@ -35,13 +35,13 @@ export const findProjectMembersIds = (project) => {
  * @param {project} project
  * @returns user ids
  */
-export const findUserIdsInvolvedInProject = (project) => {
+export const findUserIdsInvolvedInProject = async (project) => {
   const members = Array.from(project.members || []);
-  const tasks = Tasks.find(
+  const tasks = await Tasks.find(
     { projectId: project._id, deleted: { $ne: true } },
     { fields: { createdBy: 1, updatedBy: 1 } }
   );
-  tasks.forEach((task) => {
+  await tasks.forEachAsync(async (task) => {
     if (task.createdBy) members.push(task.createdBy);
     if (task.updatedBy) members.push(task.updatedBy);
     if (task.watchers) {
@@ -50,7 +50,7 @@ export const findUserIdsInvolvedInProject = (project) => {
   });
 
   if (project.organizationId && project.accesRights === ProjectAccessRights.ORGANIZATION) {
-    const organization = Organizations.findOne(
+    const organization = await Organizations.findOneAsync(
       { _id: project.organizationId },
       { fields: { members: 1 } }
     );

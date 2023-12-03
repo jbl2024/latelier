@@ -212,8 +212,8 @@ publishComposite("project", function(projectId) {
       },
       {
         // users
-        find(project) {
-          const membersIds = findUserIdsInvolvedInProject(project);
+        async find(project) {
+          const membersIds = await findUserIdsInvolvedInProject(project);
           return Meteor.users.find(
             { _id: { $in: membersIds } },
             {

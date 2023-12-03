@@ -20,28 +20,31 @@ if (Meteor.isServer) {
       const context = { userId };
 
       for (let i = 0; i < 100; i++) {
-        Notifications.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        await Notifications.methods.create._execute(context, {
           userId: "user1",
           type: "bar",
           properties: { baz: `number${i}` }
         });
-        Notifications.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        await Notifications.methods.create._execute(context, {
           userId: "user2",
           type: "bar",
           properties: { baz: `number${i}` }
         });
 
-        Notifications.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        await Notifications.methods.create._execute(context, {
           userId: "user3",
           type: "bar",
           properties: { baz: `number${i}` }
         });
       }
-      const total = Notifications.find({}).count();
+      const total = await Notifications.find({}).countAsync();
       expect(total).to.equal(50 * 3);
-      expect(Notifications.find({ userId: "user1" }).count()).to.equal(50);
-      expect(Notifications.find({ userId: "user2" }).count()).to.equal(50);
-      expect(Notifications.find({ userId: "user3" }).count()).to.equal(50);
+      expect(await Notifications.find({ userId: "user1" }).countAsync()).to.equal(50);
+      expect(await Notifications.find({ userId: "user2" }).countAsync()).to.equal(50);
+      expect(await Notifications.find({ userId: "user3" }).countAsync()).to.equal(50);
     });
   });
 }
