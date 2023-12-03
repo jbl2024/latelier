@@ -67,7 +67,7 @@ export default {
 
     async save() {
       try {
-        const xml = await new Promise((resolve, reject) => {
+        const savedXml = await new Promise((resolve, reject) => {
           this.modeler.saveXML({ format: false }, (err, xml) => {
             if (err) {
               reject(err);
@@ -77,7 +77,7 @@ export default {
           });
         });
 
-        this.xmlCache = xml;
+        this.xmlCache = savedXml;
 
         try {
           await Meteor.callAsync("bpmnExamples.saveXML", { exampleId: this.example._id, xml });

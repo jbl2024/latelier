@@ -281,6 +281,7 @@ export default {
     },
 
     async onDrop(event) {
+      const that = this;
       event.preventDefault();
 
       if (Meteor.settings.public.disableAttachments) {
@@ -335,14 +336,14 @@ export default {
           upload.on("start", function() {});
           upload.on("end", async (uploadError) => {
             if (uploadError) {
-              this.$notifyError(uploadError);
+              that.$notifyError(error);
             } else {
               // Using Meteor.callAsync with await in the callback
               try {
                 await Meteor.callAsync("tasks.addAttachment", task._id);
               } catch (error) {
                 // Handle error for tasks.addAttachment
-                console.error(error);
+                that.$notifyError(error);
               }
             }
           });
@@ -351,7 +352,7 @@ export default {
         });
       } catch (error) {
         // Handle error for tasks.insert
-        console.error(error);
+        that.$notifyError(error);
       }
     },
 

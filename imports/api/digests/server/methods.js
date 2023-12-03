@@ -1,4 +1,3 @@
-import { Log } from "meteor/logging";
 import moment from "moment";
 import { Digests } from "/imports/api/digests/digests";
 

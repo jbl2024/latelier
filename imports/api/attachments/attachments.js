@@ -1,10 +1,5 @@
 import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
-import {
-  checkCanWriteProject,
-  checkCanWriteTask,
-  runAsUser
-} from "/imports/api/permissions/permissions";
 import { Log } from "meteor/logging";
 
 export const Attachments = new FilesCollection({
@@ -12,6 +7,7 @@ export const Attachments = new FilesCollection({
   storagePath: Meteor.settings.attachmentsPath || "assets/app/uploads",
   allowClientCode: true, // Disallow remove files from Client
   onBeforeUpload(fileData) {
+    Log.debug(fileData);
     return true;
   },
   onAfterUpload(fileRef) {

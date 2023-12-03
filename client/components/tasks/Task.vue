@@ -413,7 +413,6 @@ export default {
 
           upload.start();
 
-          console.log("cool");
           await Meteor.callAsync("tasks.addAttachment", task._id);
         } catch (error) {
           this.$notifyError(error);

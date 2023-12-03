@@ -18,7 +18,7 @@ if (Meteor.isServer) {
     });
 
     it("label crud should work", async function() {
-      const userId = Meteor.users.findOne()._id;
+      const userId = await Meteor.users.findOneAsync()._id;
       const context = { userId };
       const projectAid = Projects.methods.create._execute(context, {
         name: "projectA",
