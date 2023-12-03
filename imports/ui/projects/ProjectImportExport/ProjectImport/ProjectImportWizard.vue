@@ -258,7 +258,7 @@ export default {
     },
     metadatas: {
       immediate: true,
-      async handler() {
+      handler() {
         if (this?.metadatas?.items) {
           this.metas = this?.metadatas?.items;
           const availableItems = Object.keys(

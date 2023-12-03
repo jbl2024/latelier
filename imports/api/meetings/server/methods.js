@@ -328,10 +328,10 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     showArchivedProjects,
     sortAsc }) {
     if (projectId) {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
     }
     if (organizationId) {
-      checkCanReadOrganization(organizationId);
+      await checkCanReadOrganization(organizationId);
     }
 
     const userId = Meteor.userId();

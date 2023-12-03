@@ -1,4 +1,5 @@
 import JSZip from "jszip";
+import { Log } from "meteor/logging";
 import moment from "moment";
 import SimpleSchema from "simpl-schema";
 import { ProjectAccessRights, ProjectExportVersions, ProjectStates, Projects } from "../projects";
@@ -532,12 +533,18 @@ Projects.methods.export = new ValidatedMethod({
     // Users
     const membersIds = findUserIdsInvolvedInProject(project);
     const users = {};
-    membersIds.forEach(async (id) => {
-      await UserUtils.loadUser(id, users, {
-        profile: 1,
-        emails: 1
-      });
-    });
+    // eslint-disable-next-line no-restricted-syntax
+    for (const id of membersIds) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await UserUtils.loadUser(id, users, {
+          profile: 1,
+          emails: 1
+        });
+      } catch (error) {
+        Log.error(error);
+      }
+    }
 
     // Tasks
     const tasksLists = items.includes("tasks")
@@ -547,30 +554,30 @@ Projects.methods.export = new ValidatedMethod({
 
     // Labels
     const labels = items.includes("tasks")
-      ? Labels.find({ projectId: projectId }).fetch() : null;
+      ? await Labels.find({ projectId: projectId }).fetchAsync() : null;
 
     // BPMN Diagrams
     const bpmnDiagrams = items.includes("bpmn")
-      ? ProcessDiagrams.find({ projectId }).fetch() : null;
+      ? await ProcessDiagrams.find({ projectId }).fetchAsync() : null;
 
     // Meetings
     const meetings = items.includes("meetings")
-      ? Meetings.find({
+      ? await Meetings.find({
         projectId,
         deleted: { $ne: true }
-      }).fetch() : null;
+      }).fetchAsync() : null;
 
     // Canvas
     const canvas = items.includes("canvas")
-      ? Canvas.findOne({
+      ? await Canvas.findOneAsync({
         projectId
       }) : null;
 
     // Weather reports
     const healthReports = items.includes("weather")
-      ? HealthReports.find({
+      ? await HealthReports.find({
         projectId
-      }).fetch() : null;
+      }).fetchAsync() : null;
 
     // Attachments
     const attachments = items.includes("attachments")
