@@ -29,7 +29,7 @@ if (Meteor.isServer) {
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
       try {
-        Meetings.methods.create._execute(context, args);
+        await Meetings.methods.create._execute(context, args);
       } catch (error) {
         errorCode = error.error;
       }
@@ -42,14 +42,14 @@ if (Meteor.isServer) {
       const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         state: "pending",
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      expect(Meetings.find().count()).to.be.equal(1);
+      await Meetings.methods.create._execute(context, args);
+      expect(await Meetings.find().countAsync()).to.be.equal(1);
     });
 
     it("remove project remove all meetings", async function() {
