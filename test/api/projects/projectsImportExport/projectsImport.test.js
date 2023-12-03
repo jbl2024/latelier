@@ -254,7 +254,7 @@ if (Meteor.isServer) {
     it("import project must create valid health reports", async function() {
       let importErrorCode = null;
       let createdProjectId = null;
-      const projectDatas = makeProjectDatas();
+      const projectDatas = await makeProjectDatas();
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
@@ -282,7 +282,7 @@ if (Meteor.isServer) {
       expect(project, "should have an _id property").to.have.property("_id");
       expect(project._id, "should have the same id").to.be.equal(createdProjectId);
 
-      const healthReports = HealthReports.find({ projectId: createdProjectId }).fetch();
+      const healthReports = await HealthReports.find({ projectId: createdProjectId }).fetchAsync();
       expect(healthReports, "should be an array of results").to.be.an("array");
       expect(healthReports, "should not be empty").to.not.be.empty;
       expect(healthReports.length, "should have the same size").to.be.equal(projectDatas.healthReports.length);
@@ -310,7 +310,7 @@ if (Meteor.isServer) {
     it("import project must create valid tasks and labels items", async function() {
       let importErrorCode = null;
       let createdProjectId = null;
-      const projectDatas = makeProjectDatas();
+      const projectDatas = await makeProjectDatas();
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
@@ -333,13 +333,13 @@ if (Meteor.isServer) {
       // Checking project
       expect(createdProjectId, "should be a string").to.be.a("string");
       expect(createdProjectId, "should be a valid projectId").to.not.be.empty;
-      const project = Projects.findOne({ _id: createdProjectId });
+      const project = await Projects.findOneAsync({ _id: createdProjectId });
       expect(project, "should be an object").to.be.a("object");
       expect(project, "should have an _id property").to.have.property("_id");
       expect(project._id, "should have the same id").to.be.equal(createdProjectId);
 
       // Checking labels
-      const labels = Labels.find({ projectId: createdProjectId }).fetch();
+      const labels = await Labels.find({ projectId: createdProjectId }).fetchAsync();
       expect(labels, "should be an array of results").to.be.an("array");
       expect(labels, "should not be empty").to.not.be.empty;
       expect(labels.length, "should have the same size").to.be.equal(projectDatas.labels.length);
@@ -357,7 +357,7 @@ if (Meteor.isServer) {
       });
 
       // Checking lists
-      const lists = Lists.find({ projectId: createdProjectId }).fetch();
+      const lists = await Lists.find({ projectId: createdProjectId }).fetchAsync();
       expect(lists, "should be an array of results").to.be.an("array");
       expect(lists, "should not be empty").to.not.be.empty;
       expect(lists.length, "should have the same size").to.be.equal(projectDatas.tasksLists.length);

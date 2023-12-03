@@ -75,7 +75,7 @@ if (Meteor.isServer) {
     });
 
     it("clone an example should copy all data except name", async function() {
-      Roles.addUsersToRoles(Meteor.users.findOne()._id, "admin", Roles.GLOBAL_GROUP);
+      Roles.addUsersToRoles((await Meteor.users.findOneAsync())._id, "admin", Roles.GLOBAL_GROUP);
       const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
@@ -85,7 +85,7 @@ if (Meteor.isServer) {
       await Examples.methods.create._execute(context, args);
       expect(await Examples.find().countAsync()).to.be.equal(1);
 
-      Examples.methods.clone._execute(context, {
+      await Examples.methods.clone._execute(context, {
         exampleId: Examples.findOne()._id
       });
       expect(await Examples.find().countAsync()).to.be.equal(2);

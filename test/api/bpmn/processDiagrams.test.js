@@ -48,8 +48,8 @@ if (Meteor.isServer) {
   });
 
   describe("processDiagrams.clone", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -68,7 +68,7 @@ if (Meteor.isServer) {
       await ProcessDiagrams.methods.create._execute(context, args);
       expect(await ProcessDiagrams.find().countAsync()).to.be.equal(1);
 
-      ProcessDiagrams.methods.clone._execute(context, {
+      await ProcessDiagrams.methods.clone._execute(context, {
         processDiagramId: ProcessDiagrams.findOne()._id
       });
       expect(await ProcessDiagrams.find().countAsync()).to.be.equal(2);

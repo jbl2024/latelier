@@ -743,11 +743,13 @@ Projects.methods.import = new ValidatedMethod({
         const users = await zippedProject.getContent("users");
         const usersIds = Object.keys(users);
         if (users && usersIds.length) {
-          usersIds.forEach(async (userId) => {
+          // eslint-disable-next-line no-restricted-syntax
+          for (const userId of usersIds) {
             if (!mappedIds.users[userId]) {
               const user = users[userId];
               const userEmail = UserUtils.getEmail(user);
-              const existingUser = Meteor.users.findOne({
+              // eslint-disable-next-line no-await-in-loop
+              const existingUser = await Meteor.users.findOneAsync({
                 emails: {
                   $elemMatch: {
                     address: { $regex: userEmail, $options: "i" }
@@ -766,12 +768,13 @@ Projects.methods.import = new ValidatedMethod({
               }
 
               mappedIds.users[user._id] = createdUserId;
+              // eslint-disable-next-line no-await-in-loop
               await Meteor.callAsync("projects.addMember", {
                 projectId: createdProjectId,
                 userId: createdUserId
               });
             }
-          });
+          }
         }
       }
 
@@ -779,16 +782,19 @@ Projects.methods.import = new ValidatedMethod({
       if (canImportTasks) {
         const labels = await zippedProject.getContent("labels");
         if (Array.isArray(labels) && labels.length) {
-          labels.forEach((label) => {
-            const labelId = Labels.insert({
-              projectId: createdProjectId,
-              name: label.name,
-              color: label.color,
-              createdAt: new Date(label.createdAt),
-              createdBy: getMapId(label.createdBy, "users")
-            });
-            mappedIds.labels[label._id] = labelId;
-          });
+          // eslint-disable-next-line no-restricted-syntax
+          for (const label of labels) {
+            if (!mappedIds.labels[label._id]) {
+              // eslint-disable-next-line no-await-in-loop
+              mappedIds.labels[label._id] = await Labels.insertAsync({
+                projectId: createdProjectId,
+                name: label.name,
+                color: label.color,
+                createdAt: new Date(label.createdAt),
+                createdBy: getMapId(label.createdBy, "users")
+              });
+            }
+          }
         }
 
         const tasksLists = await zippedProject.getContent("tasks");
@@ -800,7 +806,9 @@ Projects.methods.import = new ValidatedMethod({
             return 0;
           });
 
-          tasksLists.forEach(async (taskList) => {
+          // eslint-disable-next-line no-restricted-syntax
+          for (const taskList of tasksLists) {
+            // eslint-disable-next-line no-await-in-loop
             const createdList = await Meteor.callAsync(
               "lists.insert",
               createdProjectId,
@@ -819,7 +827,8 @@ Projects.methods.import = new ValidatedMethod({
                 return 0;
               });
 
-              taskList.tasks.forEach(async (task) => {
+              // eslint-disable-next-line no-restricted-syntax
+              for (const task of taskList.tasks) {
                 // Notes
                 let notes = null;
                 if (Array.isArray(task.notes)) {
@@ -873,6 +882,7 @@ Projects.methods.import = new ValidatedMethod({
                   reminderDueDate = null;
                 }
 
+                // eslint-disable-next-line no-await-in-loop
                 const createdTask = await Meteor.callAsync(
                   "tasks.insert",
                   createdList.projectId,
@@ -900,9 +910,9 @@ Projects.methods.import = new ValidatedMethod({
                 if (canImportMeetings && meetingsTasksIds.includes(task._id)) {
                   mappedIds.tasks[task._id] = createdTask._id;
                 }
-              });
+              }
             }
-          });
+          }
         }
       }
 
