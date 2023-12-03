@@ -75,7 +75,7 @@ Meteor.methods({
       query.$or.push({ statusConnection: "away" });
     }
 
-    const count = Meteor.users.find(query).count();
+    const count = await Meteor.users.find(query).countAsync();
 
     const data = Meteor.users
       .find(query, {

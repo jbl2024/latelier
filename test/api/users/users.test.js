@@ -6,8 +6,8 @@ import { UserUtils } from "/imports/api/users/utils";
 
 if (Meteor.isServer) {
   describe("users", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
     });
 
     it("fake users are created", async function() {

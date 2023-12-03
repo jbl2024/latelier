@@ -88,7 +88,7 @@ methods.purge = new ValidatedMethod({
             when: -1
           }
         }
-      ).fetch();
+      ).fetchAsync();
 
       let when;
       let differentDays = 0;

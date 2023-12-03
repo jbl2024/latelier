@@ -12,8 +12,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("organizations", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -22,7 +22,7 @@ if (Meteor.isServer) {
     });
 
     it("organization creator is added as member", async function() {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
 
       const organizationId = Organizations.methods.create._execute(context, {
@@ -35,7 +35,7 @@ if (Meteor.isServer) {
     });
 
     it("organization members are added to project", async function() {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
 
       const organizationId = Organizations.methods.create._execute(context, {

@@ -8,8 +8,8 @@ import moment from "moment";
 
 if (Meteor.isServer) {
   describe("notifications", function () {
-    beforeEach(function () {
-      initData();
+    beforeEach(async function () {
+      await initData();
       createStubs();
     });
 

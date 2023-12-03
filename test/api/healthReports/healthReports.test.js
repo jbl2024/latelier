@@ -6,8 +6,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("healthReports", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 

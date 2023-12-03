@@ -932,7 +932,7 @@ Meteor.methods({
       if (list) {
         listId = list._id;
       } else {
-        listId = Meteor.callAsync("lists.insert", projectId, "Sans nom")._id;
+        listId = await Meteor.callAsync("lists.insert", projectId, "Sans nom")._id;
       }
     }
 
@@ -960,10 +960,11 @@ Meteor.methods({
       if (!task.labels) {
         return labels;
       }
-      task.labels.forEach(async (labelId) => {
-        const previousLabel = await Labels.findOneAsync({
-          _id: labelId
-        });
+      // eslint-disable-next-line no-restricted-syntax
+      for (label of task.labels) {
+        // eslint-disable-next-line no-await-in-loop
+        const previousLabel = await Labels.findOneAsync({ _id: label });
+        // eslint-disable-next-line no-await-in-loop
         const labelInClonedProject = await Labels.findOneAsync({
           name: previousLabel.name,
           color: previousLabel.color,
@@ -972,7 +973,7 @@ Meteor.methods({
         if (labelInClonedProject) {
           labels.push(labelInClonedProject._id);
         }
-      });
+      }
       return labels;
     };
 
@@ -1009,7 +1010,7 @@ Meteor.methods({
         await Tasks.direct.updateAsync({ _id: aTask._id }, { $set: { order: aTask.order } });
       }
     };
-    _reorder(clonedTask.listId);
+    await _reorder(clonedTask.listId);
 
     const attachments = Attachments.find({ "meta.taskId": taskId });
     attachments.forEach(async (attachment) => {

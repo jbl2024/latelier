@@ -364,7 +364,7 @@ methods.findAttachments = new ValidatedMethod({
       skip,
       limit: perPage,
       sort
-    }).fetch();
+    }).fetchAsync();
 
     // load associated objects and assign them to attachments
     const projects = {};

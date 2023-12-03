@@ -7,8 +7,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("canvas", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 

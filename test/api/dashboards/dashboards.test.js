@@ -16,8 +16,8 @@ function createProject(name) {
 
 if (Meteor.isServer) {
   describe("dashboards (anonymous)", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
     });
 
     afterEach(function() {});
@@ -37,8 +37,8 @@ if (Meteor.isServer) {
   });
 
   describe("dashboards", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 

@@ -6,8 +6,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("notifications", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -16,7 +16,7 @@ if (Meteor.isServer) {
     });
 
     it("notifications per user are capped", async function() {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
 
       for (let i = 0; i < 100; i++) {

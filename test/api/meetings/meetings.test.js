@@ -8,8 +8,8 @@ import moment from "moment";
 
 if (Meteor.isServer) {
   describe("meetings", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -39,7 +39,7 @@ if (Meteor.isServer) {
     });
 
     it("creates a new meeting", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
         projectId: Projects.findOne()._id,
@@ -53,7 +53,7 @@ if (Meteor.isServer) {
     });
 
     it("remove project remove all meetings", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
       const projectId = Projects.findOne()._id;
 
       const args = {
@@ -76,7 +76,7 @@ if (Meteor.isServer) {
     });
 
     it("find meetings", async function () {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
       const projectId = Projects.findOne()._id;
 
       const args = {

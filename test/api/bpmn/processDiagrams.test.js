@@ -6,8 +6,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("processDiagrams.create", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -25,7 +25,7 @@ if (Meteor.isServer) {
         description: "description"
       };
       try {
-        ProcessDiagrams.methods.create._execute(context, args);
+        await ProcessDiagrams.methods.create._execute(context, args);
       } catch (error) {
         errorCode = error.error;
       }
@@ -35,15 +35,15 @@ if (Meteor.isServer) {
     });
 
     it("creates a new diagram", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description"
       };
-      ProcessDiagrams.methods.create._execute(context, args);
-      expect(ProcessDiagrams.find().count()).to.be.equal(1);
+      await ProcessDiagrams.methods.create._execute(context, args);
+      expect(await ProcessDiagrams.find().countAsync()).to.be.equal(1);
     });
   });
 
@@ -58,22 +58,22 @@ if (Meteor.isServer) {
     });
 
     it("clone a a diagram should copy all data except name", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description"
       };
-      ProcessDiagrams.methods.create._execute(context, args);
-      expect(ProcessDiagrams.find().count()).to.be.equal(1);
+      await ProcessDiagrams.methods.create._execute(context, args);
+      expect(await ProcessDiagrams.find().countAsync()).to.be.equal(1);
 
       ProcessDiagrams.methods.clone._execute(context, {
         processDiagramId: ProcessDiagrams.findOne()._id
       });
-      expect(ProcessDiagrams.find().count()).to.be.equal(2);
+      expect(await ProcessDiagrams.find().countAsync()).to.be.equal(2);
 
-      const diagrams = ProcessDiagrams.find().fetch();
+      const diagrams = await ProcessDiagrams.find().fetchAsync();
       expect(`Copie de ${diagrams[0].name}`).to.be.equal(diagrams[1].name);
       expect(diagrams[0].description).to.be.equal(diagrams[1].description);
       expect(diagrams[0].xml).to.be.equal(diagrams[1].xml);

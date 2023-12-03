@@ -5,8 +5,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("projectsExport V2020_11", function () {
-    beforeEach(function () {
-      initData();
+    beforeEach(async function () {
+      await initData();
       createStubs();
     });
 

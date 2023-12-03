@@ -159,7 +159,7 @@ Projects.methods.create = new ValidatedMethod({
       }
       return projectId;
     } catch (e) {
-      this.$notifyError(e.message);
+      Log.error(e);
       return null;
     }
   }
@@ -216,7 +216,7 @@ Projects.methods.load = new ValidatedMethod({
         data
       };
     } catch (error) {
-      this.$notifyError(error.message);
+      Log.error(error);
       return {
         rowsPerPage: perPage,
         totalItems: 0,
@@ -291,7 +291,7 @@ Projects.methods.info = new ValidatedMethod({
         attachmentCount
       };
     } catch (error) {
-      this.$notifyError(error.message);
+      Log.error(error);
       return {};
     }
   }
@@ -400,7 +400,7 @@ Projects.methods.findUsers = new ValidatedMethod({
       organization = Organizations.findOne({ _id: project.organizationId });
     }
     const membersIds = findProjectMembersIds(project);
-    const users = Meteor.users
+    const users = await Meteor.users
       .find({ _id: { $in: membersIds } }, {
         fields: {
           profile: 1,
@@ -411,7 +411,7 @@ Projects.methods.findUsers = new ValidatedMethod({
           roles: 1
         }
       })
-      .fetch();
+      .fetchAsync();
     const organizationMembers = organization?.members || [];
 
     users.forEachAsync(async (user) => {
@@ -1230,7 +1230,7 @@ Projects.methods.deleteForever = new ValidatedMethod({
 
       await Projects.remove(projectId);
     } catch (error) {
-      this.$notifyError(error);
+      Log.error(error);
     }
   }
 });

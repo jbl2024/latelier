@@ -10,9 +10,9 @@ import { Permissions } from "/imports/api/permissions/permissions";
 import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
-  describe("projects", function () {
-    beforeEach(function () {
-      initData();
+  describe.only("projects", function () {
+    beforeEach(async function () {
+      await initData();
       createStubs();
     });
 
@@ -21,7 +21,7 @@ if (Meteor.isServer) {
     });
 
     it("clone project keep members", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectAid = Projects.methods.create._execute(context, {
         name: "projectA",
@@ -29,19 +29,19 @@ if (Meteor.isServer) {
         state: ProjectStates.PRODUCTION
       });
       expect(projectAid).to.not.be.null;
-      const projectA = Projects.findOne(projectAid);
+      const projectA = await Projects.findOneAsync(projectAid);
       expect(projectA.members).to.be.an("array").that.include(userId);
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
-      const projectB = Projects.findOne(projectBid);
+      const projectB = await Projects.findOneAsync(projectBid);
       expect(projectB.members).to.be.an("array").that.include(userId);
     });
 
     it("clone project keep admins", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectAid = Projects.methods.create._execute(context, {
         name: "projectA",
@@ -51,7 +51,7 @@ if (Meteor.isServer) {
       expect(projectAid).to.not.be.null;
       Permissions.setAdmin(userId, projectAid);
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
@@ -60,7 +60,7 @@ if (Meteor.isServer) {
     });
 
     it("clone project give admins rights", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectAid = Projects.methods.create._execute(context, {
         name: "projectA",
@@ -69,7 +69,7 @@ if (Meteor.isServer) {
       });
       expect(projectAid).to.not.be.null;
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
@@ -78,7 +78,7 @@ if (Meteor.isServer) {
     });
 
     it("clone project keep features", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectAid = Projects.methods.create._execute(context, {
         name: "projectA",
@@ -87,25 +87,25 @@ if (Meteor.isServer) {
       });
       expect(projectAid).to.not.be.null;
 
-      Projects.methods.addFeature._execute(context, {
+      await Projects.methods.addFeature._execute(context, {
         projectId: projectAid,
         feature: "estimation"
       });
-      const projectA = Projects.findOne(projectAid);
+      const projectA = await Projects.findOneAsync(projectAid);
       expect(projectA.features).to.be.an("array").that.include("estimation");
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
-      const projectB = Projects.findOne(projectBid);
+      const projectB = await Projects.findOneAsync(projectBid);
       expect(projectB.features).to.be.an("array").that.include("estimation");
     });
 
     it("clone project keep tasks in corresponding lists", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectAid = Projects.methods.create._execute(context, {
+      const projectAid = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
@@ -122,11 +122,11 @@ if (Meteor.isServer) {
         name: "Doing"
       })._id;
 
-      Meteor.call("tasks.insert", projectAid, listId1, "task1");
+      await Meteor.callAsync("tasks.insert", projectAid, listId1, "task1");
 
-      Meteor.call("tasks.insert", projectAid, listId2, "task2");
+      await Meteor.callAsync("tasks.insert", projectAid, listId2, "task2");
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
@@ -153,49 +153,49 @@ if (Meteor.isServer) {
     });
 
     it("clone task to another project has consistent list", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectAid = Projects.methods.create._execute(context, {
+      const projectAid = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
       });
       expect(projectAid).to.not.be.null;
 
-      const listId1 = Lists.findOne({
+      const listId1 = await Lists.findOneAsync({
         projectId: projectAid,
         name: "Todo"
       })._id;
 
-      const listId2 = Lists.findOne({
+      const listId2 = await Lists.findOneAsync({
         projectId: projectAid,
         name: "Doing"
       })._id;
 
-      const task1id = Meteor.call("tasks.insert", projectAid, listId1, "task1")
+      const task1id = await Meteor.callAsync("tasks.insert", projectAid, listId1, "task1")
         ._id;
 
-      const task2id = Meteor.call("tasks.insert", projectAid, listId2, "task2")
+      const task2id = await Meteor.callAsync("tasks.insert", projectAid, listId2, "task2")
         ._id;
 
-      const projectBid = Projects.methods.create._execute(context, {
+      const projectBid = await Projects.methods.create._execute(context, {
         name: "projectB",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
       });
       expect(projectBid).to.not.be.null;
 
-      Meteor.call("tasks.clone", task1id, "task1", projectBid);
+      await Meteor.callAsync("tasks.clone", task1id, "task1", projectBid);
 
-      Meteor.call("tasks.clone", task2id, "task2", projectBid);
+      await Meteor.callAsync("tasks.clone", task2id, "task2", projectBid);
 
-      const task1 = Tasks.findOne({
+      const task1 = await Tasks.findOneAsync({
         projectId: projectBid
       });
       expect(task1).to.not.be.undefined;
       expect(task1._id).to.not.be.null;
 
-      const task2 = Tasks.findOne({
+      const task2 = await Tasks.findOneAsync({
         projectId: projectBid
       });
       expect(task2).to.not.be.undefined;
@@ -206,55 +206,56 @@ if (Meteor.isServer) {
     });
 
     it("clone project keeps labels on tasks", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectAid = Projects.methods.create._execute(context, {
+      const projectAid = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
       });
       expect(projectAid).to.not.be.null;
 
-      const listId1 = Lists.findOne({
+      const listId1 = (await Lists.findOneAsync({
         projectId: projectAid,
         name: "Todo"
-      })._id;
+      }))._id;
 
-      const listId2 = Lists.findOne({
+      const listId2 = (await Lists.findOneAsync({
         projectId: projectAid,
         name: "Doing"
-      })._id;
+      }))._id;
 
-      const task1id = Meteor.call("tasks.insert", projectAid, listId1, "task1")
+      const task1id = (await Meteor.callAsync("tasks.insert", projectAid, listId1, "task1"))
         ._id;
 
-      Meteor.call("tasks.insert", projectAid, listId2, "task2")._id;
+      await Meteor.callAsync("tasks.insert", projectAid, listId2, "task2");
 
-      const labelId = Meteor.call("labels.create", {
+      const labelId = await Meteor.callAsync("labels.create", {
         projectId: projectAid,
         name: "label",
         color: "black"
       });
-      Meteor.call("tasks.addLabel", task1id, labelId);
+      await Meteor.callAsync("tasks.addLabel", task1id, labelId);
 
-      const projectBid = Projects.methods.clone._execute(context, {
+      const projectBid = await Projects.methods.clone._execute(context, {
         projectId: projectAid
       });
 
-      const labels = Labels.find().fetch();
+      const labels = await Labels.find().fetchAsync();
       expect(labels).to.have.lengthOf(2);
 
-      const label = Labels.findOne({
+      const label = await Labels.findOneAsync({
         projectId: projectBid
       });
 
       expect(label).to.not.be.undefined;
       expect(label._id).to.not.be.null;
 
-      const clonedTaskWithLabel = Tasks.findOne({
+      const clonedTaskWithLabel = await Tasks.findOneAsync({
         name: "task1",
         projectId: projectBid
       });
+      console.log(clonedTaskWithLabel);
 
       expect(clonedTaskWithLabel).to.not.be.undefined;
       expect(clonedTaskWithLabel.labels).to.not.be.undefined;
@@ -262,18 +263,20 @@ if (Meteor.isServer) {
     });
 
     it("delete forever should remove associated objects", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectIds = [];
       const labelIds = [];
       for (let i = 0; i < 10; i++) {
-        const projectId = Projects.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        const projectId = await Projects.methods.create._execute(context, {
           name: "project",
           projectType: "kanban",
           state: ProjectStates.PRODUCTION
         });
         projectIds.push(projectId);
-        const labelId = Labels.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        const labelId = await Labels.methods.create._execute(context, {
           projectId,
           name: "a label",
           color: "a color"
@@ -290,35 +293,35 @@ if (Meteor.isServer) {
         email: "foo@bar.com"
       };
       const otherUserId = Accounts.createUser(userData);
-      Permissions.methods.setAdmin._execute(context, {
+      await await (context, {
         userId: otherUserId,
         scope: projectIds[0]
       });
-      Permissions.methods.setAdmin._execute(context, {
+      await await (context, {
         userId: otherUserId,
         scope: projectIds[1]
       });
-      Permissions.methods.setAdmin._execute(context, {
+      await Permissions.methods.setAdmin._execute(context, {
         userId: otherUserId,
         scope: projectIds[2]
       });
 
-      Projects.methods.addToUserFavorites._execute(context, {
+      await Projects.methods.addToUserFavorites._execute(context, {
         projectId: projectIds[0],
         userId: Meteor.userId()
       });
 
-      Projects.methods.addToUserDigests._execute(context, {
+      await Projects.methods.addToUserDigests._execute(context, {
         projectId: projectIds[0],
         userId: Meteor.userId()
       });
 
       expect(
-        Meteor.users.findOne({ _id: Meteor.userId() }).profile.favoriteProjects
+        (await Meteor.users.findOneAsync({ _id: Meteor.userId() })).profile.favoriteProjects
       )
         .to.be.an("array")
         .that.include(projectIds[0]);
-      expect(Meteor.users.findOne({ _id: Meteor.userId() }).profile.digests)
+      expect((await Meteor.users.findOneAsync({ _id: Meteor.userId() })).profile.digests)
         .to.be.an("array")
         .that.include(projectIds[0]);
       expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.true;
@@ -327,18 +330,18 @@ if (Meteor.isServer) {
       expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
       expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
 
-      expect(Labels.findOne({ projectId: projectIds[0] })).not.to.be.undefined;
+      expect((await Labels.findOneAsync({ projectId: projectIds[0] }))).not.to.be.undefined;
 
-      Projects.methods.deleteForever._execute(context, {
+      await Projects.methods.deleteForever._execute(context, {
         projectId: projectIds[0]
       });
 
       expect(
-        Meteor.users.findOne({ _id: Meteor.userId() }).profile.favoriteProjects
+        (await Meteor.users.findOneAsync({ _id: Meteor.userId() })).profile.favoriteProjects
       )
         .to.be.an("array")
         .that.not.include(projectIds[0]);
-      expect(Meteor.users.findOne({ _id: Meteor.userId() }).profile.digests)
+      expect((await Meteor.users.findOneAsync({ _id: Meteor.userId() })).profile.digests)
         .to.be.an("array")
         .that.not.include(projectIds[0]);
       expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
@@ -347,17 +350,18 @@ if (Meteor.isServer) {
       expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
       expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
 
-      expect(Labels.findOne({ projectId: projectIds[0] })).to.be.undefined;
+      expect((await Labels.findOneAsync({ projectId: projectIds[0] }))).to.be.undefined;
     });
 
     it("leave project should remove associated objects", async function () {
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
 
       const context = { userId };
       const projectIds = [];
       for (let i = 0; i < 10; i++) {
-        const projectId = Projects.methods.create._execute(context, {
+        // eslint-disable-next-line no-await-in-loop
+        const projectId = await Projects.methods.create._execute(context, {
           name: "project",
           projectType: "kanban",
           state: ProjectStates.PRODUCTION
@@ -367,44 +371,44 @@ if (Meteor.isServer) {
 
       expect(projectIds).to.have.lengthOf(10);
 
-      Permissions.methods.setAdmin._execute(context, {
+      await Permissions.methods.setAdmin._execute(context, {
         userId: userId,
         scope: projectIds[0]
       });
 
-      Projects.methods.addToUserFavorites._execute(context, {
+      await Projects.methods.addToUserFavorites._execute(context, {
         projectId: projectIds[0],
         userId: userId
       });
 
-      Projects.methods.addToUserDigests._execute(context, {
+      await Projects.methods.addToUserDigests._execute(context, {
         projectId: projectIds[0],
         userId: userId
       });
 
-      expect(Meteor.users.findOne({ _id: userId }).profile.favoriteProjects)
+      expect((await Meteor.users.findOneAsync({ _id: userId })).profile.favoriteProjects)
         .to.be.an("array")
         .that.include(projectIds[0]);
-      expect(Meteor.users.findOne({ _id: userId }).profile.digests)
+      expect((await Meteor.users.findOneAsync({ _id: userId })).profile.digests)
         .to.be.an("array")
         .that.include(projectIds[0]);
       expect(Permissions.isAdmin(user._id, projectIds[0])).to.be.true;
 
-      Projects.methods.leave._execute(context, {
+      await Projects.methods.leave._execute(context, {
         projectId: projectIds[0]
       });
 
-      expect(Meteor.users.findOne({ _id: userId }).profile.favoriteProjects)
+      expect((await Meteor.users.findOneAsync({ _id: userId })).profile.favoriteProjects)
         .to.be.an("array")
         .that.not.include(projectIds[0]);
-      expect(Meteor.users.findOne({ _id: userId }).profile.digests)
+      expect((await Meteor.users.findOneAsync({ _id: userId })).profile.digests)
         .to.be.an("array")
         .that.not.include(projectIds[0]);
       expect(Permissions.isAdmin(user, projectIds[0])).to.be.false;
     });
 
     it("getHistory is available for members", async function () {
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectId = Projects.methods.create._execute(context, {
         name: "projectA",
@@ -413,7 +417,7 @@ if (Meteor.isServer) {
       });
       expect(projectId).to.not.be.null;
 
-      const history = Meteor.call("projects.getHistory", {
+      const history = await Meteor.callAsync("projects.getHistory", {
         projectId: projectId,
         page: 1
       });
@@ -422,9 +426,9 @@ if (Meteor.isServer) {
 
     it("getHistory is not available for anonymous users", async function () {
       let errorCode;
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectId = Projects.methods.create._execute(context, {
+      const projectId = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
@@ -434,7 +438,7 @@ if (Meteor.isServer) {
       restoreStubs();
 
       try {
-        Meteor.call("projects.getHistory", {
+        await Meteor.callAsync("projects.getHistory", {
           projectId: projectId,
           page: 1
         });
@@ -448,9 +452,9 @@ if (Meteor.isServer) {
 
     it("getHistory is available only for project members", async function () {
       let errorCode;
-      const userId = Meteor.users.findOne()._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
-      const projectId = Projects.methods.create._execute(context, {
+      const projectId = await Projects.methods.create._execute(context, {
         name: "projectA",
         projectType: "kanban",
         state: ProjectStates.PRODUCTION
@@ -465,7 +469,7 @@ if (Meteor.isServer) {
       createStubs(anotherUserId);
 
       try {
-        Meteor.call("projects.getHistory", {
+        await Meteor.callAsync("projects.getHistory", {
           projectId: projectId,
           page: 1
         });

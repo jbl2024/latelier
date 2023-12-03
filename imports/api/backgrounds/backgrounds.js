@@ -49,11 +49,11 @@ Meteor.methods({
   async "backgrounds.remove"(id) {
     check(id, String);
 
-    Backgrounds.remove(id);
+    await Backgrounds.removeAsync(id);
   },
 
   async "backgrounds.find"() {
-    return Backgrounds.find({}).fetch();
+    return Backgrounds.find({}).fetchAsync();
   }
 });
 
