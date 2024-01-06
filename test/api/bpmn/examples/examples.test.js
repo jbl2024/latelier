@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { initData } from "/test/fixtures/fixtures";
 import { Examples } from "/imports/api/bpmn/examples/examples";
-import { Roles } from "meteor/alanning:roles";
+import { Roles } from "meteor/jbl2024:roles";
 import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {

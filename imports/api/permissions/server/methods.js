@@ -1,4 +1,4 @@
-import { Roles } from "meteor/alanning:roles";
+import { Roles } from "meteor/jbl2024:roles";
 import { Log } from "meteor/logging";
 import { Attachments } from "/imports/api/attachments/attachments.js";
 import { Meetings } from "/imports/api/meetings/meetings.js";

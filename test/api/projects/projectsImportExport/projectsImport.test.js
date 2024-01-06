@@ -13,7 +13,7 @@ import { Lists } from "/imports/api/lists/lists";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { createStubs, restoreStubs } from "/test/stubs";
-import { Roles } from "meteor/alanning:roles";
+import { Roles } from "meteor/jbl2024:roles";
 
 createProjectZip = async (datas) => {
   const zip = await createProjectExportZip(datas);
