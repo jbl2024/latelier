@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Roles } from "meteor/jbl2024:roles";
 import { Log } from "meteor/logging";
 import { Attachments } from "/imports/api/attachments/attachments.js";
@@ -306,19 +307,20 @@ Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
   name: "permissions.setAdminIfNeeded",
   validate: null,
   async run() {
-    this.unblock();
-
     checkLoggedIn();
-    const user = Meteor.user();
+    const user = await Meteor.user();
     const admin = Meteor.settings.roles?.admin || [];
-    admin.forEach(async (email) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const email of admin) {
       if (UserUtils.getEmail(user) === email) {
+        // eslint-disable-next-line no-await-in-loop
         if (!await Permissions.isAdmin(user._id)) {
           Log.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
+          // eslint-disable-next-line no-await-in-loop
           await Roles.addUsersToRolesAsync(user._id, "admin", Roles.GLOBAL_GROUP);
         }
       }
-    });
+    }
   }
 });
 

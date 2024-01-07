@@ -1,7 +1,8 @@
-import { Meteor } from "meteor/meteor";
+import SimpleSchema from "simpl-schema";
 import { Roles } from "meteor/jbl2024:roles";
-import { Projects } from "/imports/api/projects/projects.js";
+import { Meteor } from "meteor/meteor";
 import { Organizations } from "/imports/api/organizations/organizations.js";
+import { Projects } from "/imports/api/projects/projects.js";
 
 const ApplicationRoles = Object.freeze({
   ADMIN: "admin",

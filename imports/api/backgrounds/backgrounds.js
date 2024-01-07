@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { check } from "meteor/check";
 import { Log } from "meteor/logging";
 import { Meteor } from "meteor/meteor";

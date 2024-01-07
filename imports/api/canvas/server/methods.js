@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import carbone from "carbone";
 import * as htmlToText from "html-to-text";
 import { Meteor } from "meteor/meteor";

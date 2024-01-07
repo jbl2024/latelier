@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Tasks } from "/imports/api/tasks/tasks";

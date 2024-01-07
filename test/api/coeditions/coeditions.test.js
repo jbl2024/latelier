@@ -19,12 +19,14 @@ if (Meteor.isServer) {
 
     it("coeditions per objectId are capped", async function () {
       for (let i = 0; i < 1000; i++) {
-        Coeditions.insert({
+        // eslint-disable-next-line no-await-in-loop
+        await Coeditions.insertAsync({
           createdAt: new Date(),
           objectId: "object-a",
           version: i
         });
-        Coeditions.insert({
+        // eslint-disable-next-line no-await-in-loop
+        await Coeditions.insertAsync({
           createdAt: new Date(),
           objectId: "object-b",
           version: i
@@ -39,7 +41,7 @@ if (Meteor.isServer) {
       // 1
       // 0
 
-      Meteor.call("coeditions.purge", { objectId: "object-a" });
+      await Meteor.callAsync("coeditions.purge", { objectId: "object-a" });
 
       // after purge:
       // 999
@@ -49,14 +51,14 @@ if (Meteor.isServer) {
       // 501
       // 500
 
-      expect(Coeditions.find({ objectId: "object-a" }).count()).to.equal(500);
-      expect(Coeditions.find({ objectId: "object-b" }).count()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-a" }).countAsync()).to.equal(500);
+      expect(await Coeditions.find({ objectId: "object-b" }).countAsync()).to.equal(1000);
 
-      let coeds = Coeditions.find({ objectId: "object-a" }, { sort: { version: -1 }, limit: 2 }).fetch();
+      let coeds = await Coeditions.find({ objectId: "object-a" }, { sort: { version: -1 }, limit: 2 }).fetchAsync();
       expect(coeds[0].version).equal(999);
       expect(coeds[1].version).equal(998);
 
-      coeds = Coeditions.find({ objectId: "object-a" }, { sort: { version: 1 }, limit: 2 }).fetch();
+      coeds = await Coeditions.find({ objectId: "object-a" }, { sort: { version: 1 }, limit: 2 }).fetchAsync();
       expect(coeds[0].version).equal(500);
       expect(coeds[1].version).equal(501);
     });
@@ -83,37 +85,37 @@ if (Meteor.isServer) {
         });
       }
 
-      expect(Coeditions.find({ objectId: "object-a" }).count()).to.equal(1000);
-      expect(Coeditions.find({ objectId: "object-b" }).count()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-a" }).countAsync()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-b" }).countAsync()).to.equal(1000);
 
       let deleteDate = moment()
         .startOf("day")
         .add(-10, "days")
         .toDate();
-      Meteor.call("coeditions.removeOutdated", { when: deleteDate });
+      await Meteor.callAsync("coeditions.removeOutdated", { when: deleteDate });
 
-      expect(Coeditions.find({ objectId: "object-a" }).count()).to.equal(1000);
-      expect(Coeditions.find({ objectId: "object-b" }).count()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-a" }).countAsync()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-b" }).countAsync()).to.equal(1000);
 
       deleteDate = moment()
         .startOf("day")
         .add(-3, "days")
         .toDate();
 
-      Meteor.call("coeditions.removeOutdated", { when: deleteDate });
+      await Meteor.callAsync("coeditions.removeOutdated", { when: deleteDate });
 
-      expect(Coeditions.find({ objectId: "object-a" }).count()).to.equal(0);
-      expect(Coeditions.find({ objectId: "object-b" }).count()).to.equal(1000);
+      expect(await Coeditions.find({ objectId: "object-a" }).countAsync()).to.equal(0);
+      expect(await Coeditions.find({ objectId: "object-b" }).countAsync()).to.equal(1000);
 
       deleteDate = moment()
         .startOf("day")
         .add(0, "days")
         .toDate();
 
-      Meteor.call("coeditions.removeOutdated", { when: deleteDate });
+      await Meteor.callAsync("coeditions.removeOutdated", { when: deleteDate });
 
-      expect(Coeditions.find({ objectId: "object-a" }).count()).to.equal(0);
-      expect(Coeditions.find({ objectId: "object-b" }).count()).to.equal(0);
+      expect(await Coeditions.find({ objectId: "object-a" }).countAsync()).to.equal(0);
+      expect(await Coeditions.find({ objectId: "object-b" }).countAsync()).to.equal(0);
     });
   });
 }

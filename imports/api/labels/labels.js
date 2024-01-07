@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 import { Tasks } from "/imports/api/tasks/tasks";

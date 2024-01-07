@@ -29,7 +29,7 @@ if (Meteor.isServer) {
       createStubs(anotherUserId);
 
       try {
-        await Meteor.call("projects.export", { projectId });
+        await Meteor.callAsync("projects.export", { projectId });
       } catch (error) {
         errorCode = error.error;
       }

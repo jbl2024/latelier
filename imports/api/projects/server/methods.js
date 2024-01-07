@@ -585,7 +585,7 @@ Projects.methods.export = new ValidatedMethod({
       ? Attachments.find({ "meta.projectId": projectId }).fetch() : null;
 
     // Export metadata
-    currentUser = Meteor.user();
+    currentUser = await Meteor.user();
     const metadatas = {
       version: ProjectExportVersions.V2020_11,
       createdAt: new Date(),

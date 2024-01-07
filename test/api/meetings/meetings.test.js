@@ -68,7 +68,7 @@ if (Meteor.isServer) {
       await Meetings.methods.create._execute(context, args);
       expect(await Meetings.find().countAsync()).to.be.equal(3);
 
-      await Meteor.call("projects.deleteForever", {
+      await Meteor.callAsync("projects.deleteForever", {
         projectId: (await Projects.findOneAsync())._id
       });
 
@@ -90,12 +90,12 @@ if (Meteor.isServer) {
       await Meetings.methods.create._execute(context, args);
       await Meetings.methods.create._execute(context, args);
 
-      const allMeetings = await Meteor.call("meetings.findMeetings", {
+      const allMeetings = await Meteor.callAsync("meetings.findMeetings", {
         projectId: projectId
       });
       expect(allMeetings.totalItems).to.be.equal(3);
 
-      const todayMeetings = await Meteor.call("meetings.findMeetings", {
+      const todayMeetings = await Meteor.callAsync("meetings.findMeetings", {
         projectId: projectId,
         dates: [
           { start: moment().startOf("day").format(moment.defaultFormat) }

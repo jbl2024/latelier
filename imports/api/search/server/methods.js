@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Tasks } from "/imports/api/tasks/tasks";
 import { Organizations } from "/imports/api/organizations/organizations";
 import { Projects, ProjectStates } from "/imports/api/projects/projects";
@@ -160,7 +161,7 @@ methods.findProjects = new ValidatedMethod({
   async run({ organizationId, name, page, showArchivedProjects }) {
     checkLoggedIn();
 
-    const user = Meteor.user();
+    const user = await Meteor.user();
     const userId = Meteor.userId();
     const isRegularUser = !await Permissions.isAdmin(userId);
     const sort = { name: 1 };

@@ -98,8 +98,8 @@ if (Meteor.isServer) {
       await createProject();
       await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
@@ -108,7 +108,7 @@ if (Meteor.isServer) {
         email: "anotheruser@bar.com"
       };
 
-      const otherUserId = Accounts.createUser(userData);
+      const otherUserId = await Accounts.createUserAsync(userData);
 
       restoreStubs();
       createStubs(otherUserId);

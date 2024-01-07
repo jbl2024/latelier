@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Examples } from "../examples";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 

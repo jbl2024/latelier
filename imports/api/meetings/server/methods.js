@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import { Projects, ProjectStates } from "/imports/api/projects/projects";
@@ -24,7 +25,6 @@ import {
 } from "/imports/api/permissions/permissions";
 
 import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
-import SimpleSchema from "simpl-schema";
 
 const loadUser = async (aUserId) => {
   if (!aUserId) return {};

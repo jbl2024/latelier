@@ -93,8 +93,8 @@ export default {
   },
   methods: {
     clearForm() {
-      this.form.email = null;
-      this.form.password = null;
+      this.form.email = "";
+      this.form.password = "";
     },
     login() {
       this.sending = true;

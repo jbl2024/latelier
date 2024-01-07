@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import moment from "moment";
 import { Digests } from "/imports/api/digests/digests";
 

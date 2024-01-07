@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { Schema } from "prosemirror-model";
 import { Coeditions } from "/imports/api/coeditions/coeditions";

@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Notifications } from "/imports/api/notifications/notifications.js";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 
@@ -25,7 +26,7 @@ Notifications.methods.create = new ValidatedMethod({
 Notifications.methods.markAsRead = new ValidatedMethod({
   name: "notifications.markAsRead",
   validate: new SimpleSchema({
-    notificationIds: { type: [String] }
+    notificationIds: [String]
   }).validator(),
   async run({ notificationIds }) {
     const userId = Meteor.userId();

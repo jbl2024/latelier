@@ -507,7 +507,7 @@ Meteor.methods({
    * oauth2 id provider for example
    */
   async "users.getRedirectUrlAfterLogout"() {
-    const user = Meteor.user();
+    const user = await Meteor.user();
     if (!user) {
       return Meteor.absoluteUrl("/");
     }

@@ -4,14 +4,14 @@ import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { initData } from "/test/fixtures/fixtures";
 import { createStubs, restoreStubs } from "/test/stubs";
 
-function createProject(name) {
+async function createProject(name) {
   name = name || "project";
-  const projectId = Meteor.call("projects.create", {
+  const projectId = await Meteor.callAsync("projects.create", {
     name,
     projectType: "kanban",
     state: ProjectStates.PRODUCTION
   });
-  Meteor.call("lists.insert", projectId, "list1", false, false);
+  await Meteor.callAsync("lists.insert", projectId, "list1", false, false);
 }
 
 if (Meteor.isServer) {
@@ -47,11 +47,11 @@ if (Meteor.isServer) {
     });
 
     it("task is displayed to user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
@@ -60,19 +60,19 @@ if (Meteor.isServer) {
     });
 
     it("task from archived project is not displayed to user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
       const result = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(1);
 
-      Meteor.call("projects.updateState", {
-        projectId: Projects.findOne()._id,
+      await Meteor.callAsync("projects.updateState", {
+        projectId: (await Projects.findOneAsync())._id,
         state: ProjectStates.ARCHIVED
       });
 
@@ -84,11 +84,11 @@ if (Meteor.isServer) {
     });
 
     it("nothing is displayed to new user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 

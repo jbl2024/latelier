@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { check } from "meteor/check";
 import { Meteor } from "meteor/meteor";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
@@ -300,7 +301,7 @@ Organizations.methods.removeAdmin = new ValidatedMethod({
     });
     await projects.forEachAsync(async (project) => {
       try {
-        await Meteor.call("permissions.removeAdmin", {
+        await Meteor.callAsync("permissions.removeAdmin", {
           userId,
           scope: project._id
         });
