@@ -210,7 +210,6 @@ import MeetingActionsTable from "/imports/ui/meetings/MeetingActions/MeetingActi
 import MeetingUtils from "/imports/api/meetings/utils";
 import Attachments from "/imports/ui/attachments/Attachments";
 import deepCopy from "/imports/ui/utils/deepCopy";
-import Api from "/imports/api/Api";
 import { Permissions } from "/imports/api/permissions/permissions";
 import moment from "moment";
 
@@ -324,7 +323,7 @@ export default {
           !Array.isArray(this.meeting?.documents)
           || !this.meeting.documents.length
         ) return;
-        Api.call("attachments.find", {
+        Meteor.callAsync("attachments.find", {
           attachmentsIds: this.meeting.documents.map(
             (document) => document.documentId
           )
@@ -362,35 +361,28 @@ export default {
     }
   },
   methods: {
-    updateAgenda: debounce(function () {
-      Meteor.call(
-        "meetings.updateAgenda",
-        {
+    updateAgenda: debounce(async function () {
+      try {
+        await Meteor.callAsync("meetings.updateAgenda", {
           meetingId: this.meeting._id,
           agenda: this.meeting.agenda
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }, 1000),
 
-    updateReport: debounce(function () {
-      Meteor.call(
-        "meetings.updateReport",
-        {
+    updateReport: debounce(async function () {
+      try {
+        await Meteor.callAsync("meetings.updateReport", {
           meetingId: this.meeting._id,
           report: this.meeting.report
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }, 1000),
+
     async deleteAction(action) {
       if (!action) return;
       const res = await this.$confirm(this.$t("Confirm"), {
@@ -399,7 +391,7 @@ export default {
         confirmText: this.$t("Delete")
       });
       if (!res || res === false) return;
-      await Api.call("meetings.deleteActions", {
+      await Meteor.callAsync("meetings.deleteActions", {
         meetingId: this.meeting._id,
         actionsIds: [action.actionId]
       });
@@ -419,7 +411,7 @@ export default {
         this.$set(this.actions, actionIndex, deepCopy(action));
       }
 
-      await Api.call("meetings.updateAction", {
+      await Meteor.callAsync("meetings.updateAction", {
         meetingId: this.meeting._id,
         action: action
       }).catch((error) => {
@@ -460,7 +452,7 @@ export default {
       );
     },
     addNewAction() {
-      Api.call("meetings.createAction", {
+      Meteor.callAsync("meetings.createAction", {
         meetingId: this.meeting._id,
         action: MeetingUtils.makeNewMeetingAction()
       }).then(
@@ -475,7 +467,7 @@ export default {
 
     async fetch() {
       try {
-        const meetingActions = await Api.call("meetings.getActions", {
+        const meetingActions = await Meteor.callAsync("meetings.getActions", {
           meetingId: this.meeting._id
         });
         this.actions = meetingActions && Array.isArray(meetingActions) ? meetingActions : [];
@@ -498,7 +490,7 @@ export default {
         return;
       }
 
-      const createdTask = await Api.call(
+      const createdTask = await Meteor.callAsync(
         "tasks.insert",
         this.meeting.projectId,
         this.firstList._id,
@@ -534,8 +526,8 @@ export default {
     },
     canManageProject() {
       return (
-        Permissions.isAdmin(Meteor.userId(), this.meeting.projectId)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), this.meeting.projectId)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     }
   }

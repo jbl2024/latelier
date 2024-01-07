@@ -63,38 +63,35 @@ export default {
       }
     }
   },
-  mounted() {
-    Meteor.call("backgrounds.find", (error, result) => {
+  async mounted() {
+    try {
+      const result = await Meteor.callAsync("backgrounds.find");
       if (result) {
         this.backgrounds = result;
       }
-    });
+    } catch (error) {
+      this.$notifyError(error);
+    }
   },
   methods: {
-    selectBackground(image) {
-      Meteor.call(
-        "backgrounds.choose",
-        { backgroundId: image._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$notify(this.$t("Background updated"));
-          this.showDialog = false;
-        }
-      );
-    },
-
-    clearBackground() {
-      Meteor.call("backgrounds.clear", (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async selectBackground(image) {
+      try {
+        await Meteor.callAsync("backgrounds.choose", { backgroundId: image._id });
         this.$notify(this.$t("Background updated"));
         this.showDialog = false;
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+
+    async clearBackground() {
+      try {
+        await Meteor.callAsync("backgrounds.clear");
+        this.$notify(this.$t("Background updated"));
+        this.showDialog = false;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     thumbnail(background) {

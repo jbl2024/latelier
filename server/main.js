@@ -6,6 +6,7 @@ import "../imports/startup/server/permissions.js";
 import "../imports/startup/server/userPresence.js";
 import "../imports/startup/server/migrateStorage.js";
 import "../imports/api/organizations/organizations.js";
+import "../imports/api/organizations/server/methods.js";
 import "../imports/api/organizations/server/publications.js";
 import "../imports/api/projects/projects.js";
 import "../imports/api/tasks/server/helpers.js";
@@ -22,6 +23,7 @@ import "../imports/api/users/server/publications.js";
 import "../imports/api/users/avatars.js";
 import "../imports/api/users/server/avatars.js";
 import "../imports/api/projectGroups/projectGroups.js";
+import "../imports/api/projectGroups/server/methods.js";
 import "../imports/api/projectGroups/server/publications.js";
 import "../imports/api/labels/labels.js";
 import "../imports/api/canvas/canvas.js";
@@ -84,6 +86,6 @@ Accounts.config({
   sendVerificationEmail: Meteor.settings.public.emailVerificationNeeded
 });
 
-Meteor.startup(() => {
-  Meteor.call("organizations.fixOrphanProjectGroups");
+Meteor.startup(async () => {
+  await Meteor.callAsync("organizations.fixOrphanProjectGroups");
 });

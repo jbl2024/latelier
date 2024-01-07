@@ -34,38 +34,38 @@ function generateUsers() {
   }
 }
 
-function generateOrganizations() {
-  Organizations.insert({
+async function generateOrganizations() {
+  await Organizations.insertAsync({
     name: "organization",
     createdAt: new Date(),
-    createdBy: Meteor.users.findOne()._id,
-    members: [Meteor.users.findOne()._id]
+    createdBy: (await Meteor.users.findOneAsync())._id,
+    members: [(await Meteor.users.findOneAsync())._id]
   });
 }
 
-export const createProject = (context, projectData) => {
+export const createProject = async (context, projectData) => {
   projectData = projectData || {
     name: "projectA",
     projectType: "kanban",
     state: ProjectStates.PRODUCTION
   };
-  const projectId = Projects.methods.create._execute(context, projectData);
+  const projectId = await Projects.methods.create._execute(context, projectData);
   return projectId;
 };
 
-function generateProjects() {
-  Projects.insert({
+async function generateProjects() {
+  await Projects.insertAsync({
     name: "organization",
     organizationId: Organizations.findOne(),
     createdAt: new Date(),
-    createdBy: Meteor.users.findOne()._id,
-    members: [Meteor.users.findOne()._id]
+    createdBy: (await Meteor.users.findOneAsync())._id,
+    members: [(await Meteor.users.findOneAsync())._id]
   });
 }
 
-export const initData = function() {
-  resetDatabase();
-  generateUsers();
-  generateOrganizations();
-  generateProjects();
+export const initData = async function() {
+  await resetDatabase();
+  await generateUsers();
+  await generateOrganizations();
+  await generateProjects();
 };

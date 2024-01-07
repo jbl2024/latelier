@@ -112,60 +112,65 @@ export default {
     }
   },
   methods: {
-    exportODT() {
+    async exportODT() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call("tasks.export", { taskId: this.taskId, format: "odt" }, (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+      try {
+        const result = await Meteor.callAsync("tasks.export", { taskId: this.taskId, format: "odt" });
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.text" });
         saveAs(blob, "task.odt");
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    exportODS() {
+    async exportODS() {
       if (this.loading) return;
-      this.loading = true;
-      Meteor.call("tasks.export", { taskId: this.taskId, format: "ods" }, (error, result) => {
+
+      try {
+        this.loading = true;
+        const result = await Meteor.callAsync("tasks.export", { taskId: this.taskId, format: "ods" });
         this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+
         const blob = new Blob([result.data], { type: "application/vnd.oasis.opendocument.spreadsheet" });
         saveAs(blob, "task.ods");
-      });
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    exportXLSX() {
+    async exportXLSX() {
       if (this.loading) return;
-      this.loading = true;
-      Meteor.call("tasks.export", { taskId: this.taskId, format: "xlsx" }, (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+
+      try {
+        this.loading = true;
+        const result = await Meteor.callAsync("tasks.export", { taskId: this.taskId, format: "xlsx" });
         const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
         saveAs(blob, "task.xlsx");
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    exportDOCX() {
+    async exportDOCX() {
       if (this.loading) return;
       this.loading = true;
-      Meteor.call("tasks.export", { taskId: this.taskId, format: "docx" }, (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+      try {
+        const result = await Meteor.callAsync("tasks.export", { taskId: this.taskId, format: "docx" });
         const blob = new Blob([result.data], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
         saveAs(blob, "task.docx");
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };

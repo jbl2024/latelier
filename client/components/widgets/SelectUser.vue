@@ -452,31 +452,26 @@ export default {
     }, 400);
   },
   methods: {
-    findUsers() {
-      Meteor.call(
-        "users.findUsers",
-        this.page,
-        this.search,
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
+    async findUsers() {
+      try {
+        const result = await Meteor.callAsync("users.findUsers", this.page, this.search);
 
-          this.users = result.data;
-          this.users.forEach((user) => {
-            if (!user.profile) {
-              user.profile = {
-                firstName: "",
-                lastName: ""
-              };
-            }
-          });
-        }
-      );
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+
+        this.users = result.data;
+        this.users.forEach((user) => {
+          if (!user.profile) {
+            user.profile = {
+              firstName: "",
+              lastName: ""
+            };
+          }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
     getSelectedUserIndex(user) {
       return this.selectedUsers.findIndex((u) => u._id === user._id);
@@ -523,27 +518,26 @@ export default {
       return re.test(email);
     },
 
-    sendInvitation(email) {
-      this.$confirm(this.$t("Invite user?"), {
-        title: email,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Send invitation")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("users.invite", email, (error, result) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.$notify(this.$t("Invitation sent"));
-            const user = result;
-            this.showDialog = false;
-            this.$emit("select", user);
+    async sendInvitation(email) {
+      try {
+        const res = await this.$confirm(this.$t("Invite user?"), {
+          title: email,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Send invitation")
+        });
 
-            this.findUsers();
-          });
+        if (res) {
+          const result = await Meteor.callAsync("users.invite", email);
+          const user = result;
+          this.$notify(this.$t("Invitation sent"));
+          this.showDialog = false;
+          this.$emit("select", user);
+
+          this.findUsers();
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

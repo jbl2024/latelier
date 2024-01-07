@@ -4,11 +4,11 @@ import { check, Match } from "meteor/check";
 import { ProjectGroups } from "../projectGroups";
 import { checkCanReadOrganization } from "../../permissions/permissions";
 
-Meteor.publish("projectGroups", function projectGroups(organizationId, name) {
+Meteor.publish("projectGroups", async function projectGroups(organizationId, name) {
   check(organizationId, String);
   check(name, Match.Maybe(String));
 
-  checkCanReadOrganization(organizationId);
+  await checkCanReadOrganization(organizationId);
 
   const query = {};
   if (name && name.length > 0) {

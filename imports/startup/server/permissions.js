@@ -5,13 +5,13 @@ import { UserUtils } from "/imports/api/users/utils";
 function initializeRoles() {
   const { roles } = Meteor.settings;
   const admin = roles.admin || [];
-  admin.forEach((email) => {
+  admin.forEach(async (email) => {
     const user = Accounts.findUserByEmail(email);
     if (user) {
-      if (!Permissions.isAdmin(user._id)) {
+      if (!await Permissions.isAdmin(user._id)) {
         /* eslint no-console: off */
         console.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
-        Roles.addUsersToRoles(user._id, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(user._id, "admin", Roles.GLOBAL_GROUP);
       }
     } else {
       console.warn(`user with email ${email} not found`);

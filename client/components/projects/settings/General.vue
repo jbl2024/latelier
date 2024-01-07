@@ -310,11 +310,15 @@ export default {
     }
   },
   watch: {
-    "project.state"(state) {
-      Meteor.call("projects.updateState", {
-        projectId: this.project._id,
-        state
-      });
+    async "project.state"(state) {
+      try {
+        await Meteor.callAsync("projects.updateState", {
+          projectId: this.project._id,
+          state
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   },
   meteor: {
@@ -360,48 +364,63 @@ export default {
     }
   },
   methods: {
-    onSelectStartDate(date) {
-      Meteor.call("projects.setStartDate", {
-        projectId: this.project._id,
-        startDate: date
-      });
+    async onSelectStartDate(date) {
+      try {
+        await Meteor.callAsync("projects.setStartDate", {
+          projectId: this.project._id,
+          startDate: date
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectEndDate(date) {
-      Meteor.call("projects.setEndDate", {
-        projectId: this.project._id,
-        endDate: date
-      });
+    async onSelectEndDate(date) {
+      try {
+        await Meteor.callAsync("projects.setEndDate", {
+          projectId: this.project._id,
+          endDate: date
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeGroup(group) {
-      Meteor.call("projectGroups.removeProject", group._id, this.project._id);
+    async removeGroup(group) {
+      try {
+        await Meteor.callAsync("projectGroups.removeProject", group._id, this.project._id);
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectGroup(group) {
-      Meteor.call("projectGroups.addProject", group._id, this.project._id);
+    async onSelectGroup(group) {
+      try {
+        await Meteor.callAsync("projectGroups.addProject", group._id, this.project._id);
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectFeature(feature) {
-      Meteor.call(
-        "projects.addFeature",
-        { projectId: this.project._id, feature },
-        (error, result) => {
-          this.project.features = result.features;
-        }
-      );
-    },
-    removeFeature(feature) {
-      Meteor.call(
-        "projects.removeFeature",
-        { projectId: this.project._id, feature },
-        (error, result) => {
-          this.project.features = result.features;
-        }
-      );
+    async onSelectFeature(feature) {
+      try {
+        const result = await Meteor.callAsync("projects.addFeature", { projectId: this.project._id, feature });
+        this.project.features = result.features;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectOrganization(organization) {
+    async removeFeature(feature) {
+      try {
+        const result = await Meteor.callAsync("projects.removeFeature", { projectId: this.project._id, feature });
+        this.project.features = result.features;
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+
+    async onSelectOrganization(organization) {
       let organizationId;
       if (organization) {
         organizationId = organization._id;
@@ -412,88 +431,91 @@ export default {
         return;
       }
 
-      Meteor.call(
-        "organizations.moveProject",
-        {
+      try {
+        await Meteor.callAsync("organizations.moveProject", {
           organizationId,
           projectId: this.project._id
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
+        });
+        this.$router.push({
+          name: "project-settings",
+          params: {
+            projectId: this.project._id
           }
-          this.$router.push({
-            name: "project-settings",
-            params: {
-              projectId: this.project._id
-            }
-          });
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    importLabels(project) {
-      Meteor.call("labels.import", { from: project._id, to: this.project._id });
+    async importLabels(project) {
+      try {
+        await Meteor.callAsync("labels.import", { from: project._id, to: this.project._id });
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
-    updateProjectName(name, savedName) {
+
+    async updateProjectName(name, savedName) {
       this.editName = false;
-      Meteor.call(
-        "projects.updateName",
-        {
+      try {
+        await Meteor.callAsync("projects.updateName", {
           projectId: this.project._id,
           name: this.project.name
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            this.cancelUpdateProjectName(savedName);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+        this.cancelUpdateProjectName(savedName);
+      }
     },
+
     cancelUpdateProjectName(savedProjectName) {
       this.editName = false;
       this.project.name = savedProjectName;
     },
-    updateDescription(description, savedDescription) {
+    async updateDescription(description, savedDescription) {
       this.editDescription = false;
-      Meteor.call(
-        "projects.updateDescription",
-        {
+      try {
+        await Meteor.callAsync("projects.updateDescription", {
           projectId: this.project._id,
           description: this.project.description
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            this.cancelUpdateDescription(savedDescription);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+        this.cancelUpdateDescription(savedDescription);
+      }
     },
+
     cancelUpdateDescription(savedDescription) {
       this.editDescription = false;
       this.project.description = savedDescription;
     },
 
-    onSelectColor(color) {
-      const hex = color || "white";
-      this.$refs.color.style.backgroundColor = hex;
-      this.project.color = hex;
-      Meteor.call("projects.updateColor", {
-        projectId: this.project._id,
-        color: hex
-      });
+    async onSelectColor(color) {
+      try {
+        const hex = color || "white";
+        this.$refs.color.style.backgroundColor = hex;
+        this.project.color = hex;
+        await Meteor.callAsync("projects.updateColor", {
+          projectId: this.project._id,
+          color: hex
+        });
+      } catch (error) {
+        this.$notifyError("Failed to update color", error);
+      }
     },
 
-    removeColor() {
-      this.project.color = "";
-      Meteor.call("projects.updateColor", {
-        projectId: this.project._id,
-        color: ""
-      });
+    async removeColor() {
+      try {
+        this.project.color = "";
+        await Meteor.callAsync("projects.updateColor", {
+          projectId: this.project._id,
+          color: ""
+        });
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
+
     getColor(project) {
       return `background-color: ${project.color}`;
     },
@@ -509,14 +531,19 @@ export default {
           : "The project is private"
       );
     },
-    toggleProjectVisibility(project) {
-      project.accessRights = project.accessRights === "private" ? "organization" : "private";
-      Meteor.call("projects.updateAccessRights", {
-        projectId: project._id,
-        accessRights: project.accessRights
-      });
-      this.$notify(this.getVisibilityText(project));
+    async toggleProjectVisibility(project) {
+      try {
+        project.accessRights = project.accessRights === "private" ? "organization" : "private";
+        await Meteor.callAsync("projects.updateAccessRights", {
+          projectId: project._id,
+          accessRights: project.accessRights
+        });
+        this.$notify(this.getVisibilityText(project));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     projectStates() {
       const states = [];
       Object.keys(ProjectStates).forEach((state) => {

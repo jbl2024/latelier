@@ -81,35 +81,30 @@ export default {
       this.showDialog = true;
     },
 
-    updateNameAndColor() {
-      Meteor.call(
-        "labels.updateNameAndColor",
-        {
+    async updateNameAndColor() {
+      try {
+        await Meteor.callAsync("labels.updateNameAndColor", {
           labelId: this.label._id,
           name: this.label.name,
           color: this.label.color
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.showDialog = false;
-        }
-      );
+        });
+        this.showDialog = false;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    remove() {
-      /* eslint no-alert: off */
-      /* eslint no-restricted-globals: off */
-      if (confirm("Voulez-vous supprimer définitivement ce label ?")) {
-        Meteor.call("labels.remove", { labelId: this.label._id }, (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.showDialog = false;
-        });
+    async remove() {
+      this.showDialog = true;
+      try {
+        const res = await this.$confirm("Voulez-vous supprimer définitivement ce label ?");
+        if (res) {
+          await Meteor.callAsync("labels.remove", { labelId: this.label._id });
+        }
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.showDialog = false;
       }
     },
 

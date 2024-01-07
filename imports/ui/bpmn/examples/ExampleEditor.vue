@@ -131,7 +131,7 @@ export default {
     },
 
     isAdmin() {
-      return Permissions.isAdmin(Meteor.userId());
+      return Permissions.isAdminSync(Meteor.userId());
     }
   }
 };

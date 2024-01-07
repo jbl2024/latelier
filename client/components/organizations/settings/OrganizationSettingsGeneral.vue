@@ -109,9 +109,9 @@ export default {
       this.$nextTick(() => this.$refs.description.focus());
     },
 
-    updateDescription() {
+    async updateDescription() {
       this.editDescription = false;
-      Meteor.call("organizations.updateDescription", {
+      await Meteor.callAsync("organizations.updateDescription", {
         organizationId: this.organization._id,
         description: this.organization.description
       });
@@ -128,9 +128,9 @@ export default {
       this.$nextTick(() => this.$refs.name.focus());
     },
 
-    updateName() {
+    async updateName() {
       this.editName = false;
-      Meteor.call("organizations.updateName", {
+      await Meteor.callAsync("organizations.updateName", {
         organizationId: this.organization._id,
         name: this.organization.name
       });

@@ -157,7 +157,7 @@ export default {
       });
     }
   },
-  mounted() {
+  async mounted() {
     const extensions = [
       new Link(),
       new HardBreak(),
@@ -188,90 +188,86 @@ export default {
       })
     ];
 
-    if (this.collaboration) {
-      Meteor.call(
-        "coeditions.init",
-        {
+    try {
+      if (this.collaboration) {
+        const result = await Meteor.callAsync("coeditions.init", {
           objectId: this.collaboration,
           permissionObject: this.permissionObject,
           permissionId: this.permissionId
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.version = result.version;
-          extensions.push(
-            new Collaboration({
-              // the initial version we start with
-              // version is an integer which is incremented with every change
-              version: this.version,
-              // debounce changes so we can save some requests
-              debounce: 250,
-              // onSendable is called whenever there are changed we have to send to our server
-              onSendable: ({ sendable }) => {
-                this.onSendable(sendable);
-              }
-            })
-          );
-
-          this.editor = new Editor({
-            editable: this.editable,
-            content: JSON.parse(result.doc),
-            extensions: extensions,
-            onUpdate: ({ getHTML }) => {
-              const content = getHTML();
-              this.$emit("input", content);
-            },
-            onFocus: () => {
-              this.$emit("on-focus", this);
-            },
-            onBlur: () => {
-              this.$emit("on-blur", this);
-            }
-          });
-          if (this.value) {
-            const existingContent = this.editor.getHTML();
-            if (existingContent !== this.value) {
-              this.editor.setContent(this.value);
-            }
-          }
-          this.$subscribe(
-            "coeditions",
-            this.collaboration,
-            this.permissionObject,
-            this.permissionId
-          );
-
-          if (this.autofocus) {
-            this.$nextTick(() => {
-              this.focus();
-            });
-          }
-        }
-      );
-    } else {
-      this.editor = new Editor({
-        editable: this.editable,
-        content: this.content,
-        extensions: extensions,
-        onUpdate: ({ getHTML }) => {
-          const content = getHTML();
-          this.$emit("input", content);
-        },
-        onFocus: () => {
-          this.$emit("on-focus", this);
-        },
-        onBlur: () => {
-          this.$emit("on-blur", this);
-        }
-      });
-      if (this.autofocus) {
-        this.$nextTick(() => {
-          this.focus();
         });
+
+        this.version = result.version;
+
+        extensions.push(
+          new Collaboration({
+            version: this.version,
+            debounce: 250,
+            onSendable: ({ sendable }) => {
+              this.onSendable(sendable);
+            }
+          })
+        );
+
+        this.editor = new Editor({
+          editable: this.editable,
+          content: JSON.parse(result.doc),
+          extensions: extensions,
+          onUpdate: ({ getHTML }) => {
+            const content = getHTML();
+            this.$emit("input", content);
+          },
+          onFocus: () => {
+            this.$emit("on-focus", this);
+          },
+          onBlur: () => {
+            this.$emit("on-blur", this);
+          }
+        });
+
+        if (this.value) {
+          const existingContent = this.editor.getHTML();
+          if (existingContent !== this.value) {
+            this.editor.setContent(this.value);
+          }
+        }
+
+        this.$subscribe(
+          "coeditions",
+          this.collaboration,
+          this.permissionObject,
+          this.permissionId
+        );
+
+        if (this.autofocus) {
+          this.$nextTick(() => {
+            this.focus();
+          });
+        }
+      } else {
+        this.editor = new Editor({
+          editable: this.editable,
+          content: this.content,
+          extensions: extensions,
+          onUpdate: ({ getHTML }) => {
+            const content = getHTML();
+            this.$emit("input", content);
+          },
+          onFocus: () => {
+            this.$emit("on-focus", this);
+          },
+          onBlur: () => {
+            this.$emit("on-blur", this);
+          }
+        });
+
+        if (this.autofocus) {
+          this.$nextTick(() => {
+            this.focus();
+          });
+        }
       }
+    } catch (error) {
+      this.$notifyError(error);
     }
   },
   beforeDestroy() {
@@ -312,10 +308,9 @@ export default {
       return style;
     },
 
-    onSendable(sendable) {
-      Meteor.call(
-        "coeditions.send",
-        {
+    async onSendable(sendable) {
+      try {
+        await Meteor.callAsync("coeditions.send", {
           objectId: this.collaboration,
           permissionObject: this.permissionObject,
           permissionId: this.permissionId,
@@ -325,13 +320,10 @@ export default {
             nodes: this.editor.nodes,
             marks: this.editor.marks
           }
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

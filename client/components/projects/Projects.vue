@@ -214,9 +214,9 @@ export default {
       this.showConfirmDialog = true;
     },
 
-    onConfirmDeleteProject() {
+    async onConfirmDeleteProject() {
       this.showConfirmDialog = false;
-      Meteor.call("projects.remove", { projectId: this.projectId });
+      await Meteor.callAsync("projects.remove", { projectId: this.projectId });
     },
 
     onCancelDeleteProject() {
@@ -228,22 +228,14 @@ export default {
       this.showConfirmCloneDialog = true;
     },
 
-    onConfirmCloneProject() {
+    async onConfirmCloneProject() {
       this.showConfirmCloneDialog = false;
-      Meteor.call(
-        "projects.clone",
-        { projectId: this.projectId },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          } else {
-            this.$store.dispatch(
-              "notify",
-              this.$t("Project cloned successfully")
-            );
-          }
-        }
-      );
+      try {
+        await Meteor.callAsync("projects.clone", { projectId: this.projectId });
+        this.$store.dispatch("notify", this.$t("Project cloned successfully"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     onCancelCloneProject() {
@@ -350,7 +342,7 @@ export default {
 
     canDeleteProject(project) {
       if (
-        Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId())
         || project.createdBy === Meteor.userId()
       ) {
         return true;
@@ -360,8 +352,8 @@ export default {
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), project._id)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     }
   }

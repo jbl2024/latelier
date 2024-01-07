@@ -1,23 +1,23 @@
 import { expect } from "chai";
-import { initData } from "/test/fixtures/fixtures";
-import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Lists } from "/imports/api/lists/lists";
+import { Projects, ProjectStates } from "/imports/api/projects/projects";
+import { initData } from "/test/fixtures/fixtures";
 import { createStubs, restoreStubs } from "/test/stubs";
 
-function createProject(name) {
+async function createProject(name) {
   name = name || "project";
-  const projectId = Meteor.call("projects.create", {
+  const projectId = await Meteor.callAsync("projects.create", {
     name,
     projectType: "kanban",
     state: ProjectStates.PRODUCTION
   });
-  Meteor.call("lists.insert", projectId, "list1", false, false);
+  await Meteor.callAsync("lists.insert", projectId, "list1", false, false);
 }
 
 if (Meteor.isServer) {
   describe("dashboards (anonymous)", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
     });
 
     afterEach(function() {});
@@ -26,7 +26,7 @@ if (Meteor.isServer) {
       let errorCode;
 
       try {
-        Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+        await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       } catch (error) {
         errorCode = error.error;
       }
@@ -37,8 +37,8 @@ if (Meteor.isServer) {
   });
 
   describe("dashboards", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -47,48 +47,48 @@ if (Meteor.isServer) {
     });
 
     it("task is displayed to user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
-      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      const result = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(1);
     });
 
     it("task from archived project is not displayed to user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
-      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      const result = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(1);
 
-      Meteor.call("projects.updateState", {
-        projectId: Projects.findOne()._id,
+      await Meteor.callAsync("projects.updateState", {
+        projectId: (await Projects.findOneAsync())._id,
         state: ProjectStates.ARCHIVED
       });
 
-      const result2 = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      const result2 = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       expect(result2.totalItems).to.be.equal(0);
 
-      const result3 = Meteor.call("dashboards.findTasks", "recent", null, null, 1, true /* showArchivedProject = true */);
+      const result3 = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1, true /* showArchivedProject = true */);
       expect(result3.totalItems).to.be.equal(1);
     });
 
     it("nothing is displayed to new user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
@@ -101,7 +101,7 @@ if (Meteor.isServer) {
 
       restoreStubs();
       createStubs(otherUserId);
-      const result = Meteor.call("dashboards.findTasks", "recent", null, null, 1);
+      const result = await Meteor.callAsync("dashboards.findTasks", "recent", null, null, 1);
       expect(result.totalItems).to.be.equal(0);
     });
   });

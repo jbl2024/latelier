@@ -1,5 +1,6 @@
-import { Digests } from "/imports/api/digests/digests";
+import SimpleSchema from "simpl-schema";
 import moment from "moment";
+import { Digests } from "/imports/api/digests/digests";
 
 const methods = {};
 
@@ -9,8 +10,8 @@ methods.addDigest = new ValidatedMethod({
     type: { type: String },
     properties: { type: Object, blackbox: true }
   }).validator(),
-  run({ type, properties }) {
-    Meteor.defer(() => {
+  async run({ type, properties }) {
+    Meteor.defer(async () => {
       const today = moment()
         .startOf("day")
         .toDate();
@@ -25,7 +26,7 @@ methods.addDigest = new ValidatedMethod({
       ];
 
       if (digestType === "tasks.complete") {
-        Digests.remove({
+        await Digests.removeAsync({
           type: "tasks.uncomplete",
           when: today,
           taskId: properties.task._id
@@ -33,7 +34,7 @@ methods.addDigest = new ValidatedMethod({
       }
 
       if (digestType === "tasks.uncomplete") {
-        Digests.remove({
+        await Digests.removeAsync({
           type: "tasks.complete",
           when: today,
           taskId: properties.task._id
@@ -44,7 +45,7 @@ methods.addDigest = new ValidatedMethod({
         digestType = "tasks.update";
       }
 
-      Digests.upsert(
+      await Digests.upsertAsync(
         {
           type: digestType,
           when: today,
@@ -61,7 +62,7 @@ methods.addDigest = new ValidatedMethod({
         }
       );
 
-      Meteor.call("digests.purge", {
+      await Meteor.callAsync("digests.purge", {
         projectId: properties.task.projectId
       });
     });
@@ -76,10 +77,10 @@ methods.purge = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
-    Meteor.defer(() => {
+  async run({ projectId }) {
+    Meteor.defer(async () => {
       const keep = Meteor.settings.digestsRetention || 60;
-      const digests = Digests.find(
+      const digests = await Digests.find(
         {
           projectId: projectId
         },
@@ -88,7 +89,7 @@ methods.purge = new ValidatedMethod({
             when: -1
           }
         }
-      ).fetch();
+      ).fetchAsync();
 
       let when;
       let differentDays = 0;
@@ -106,7 +107,7 @@ methods.purge = new ValidatedMethod({
       }
 
       if (toDelete.length > 0) {
-        Digests.remove({
+        await Digests.removeAsync({
           _id: { $in: toDelete }
         });
       }

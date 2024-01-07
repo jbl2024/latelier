@@ -10,23 +10,23 @@ Canvas.attachSchema(CanvasSchema);
 Canvas.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Canvas.rawCollection().createIndex({ projectId: 1 });
+  Meteor.startup(async () => {
+    await Canvas.rawCollection().createIndex({ projectId: 1 });
   });
 }
 
 Meteor.methods({
-  "canvas.update"(projectId, data) {
+  async "canvas.update"(projectId, data) {
     check(projectId, String);
     check(data, Object);
 
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
-    const canvas = Canvas.findOne({ projectId });
+    const canvas = await Canvas.findOneAsync({ projectId });
     const existingData = canvas.data || {};
     const finalData = Object.assign(existingData, data);
 
-    Canvas.update(
+    await Canvas.updateAsync(
       {
         projectId
       },
@@ -38,14 +38,14 @@ Meteor.methods({
     );
   },
 
-  "canvas.get"(projectId) {
+  async "canvas.get"(projectId) {
     check(projectId, String);
 
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
-    let canvas = Canvas.findOne({ projectId });
+    let canvas = await Canvas.findOneAsync({ projectId });
     if (!canvas) {
-      Canvas.insert({
+      await Canvas.insertAsync({
         projectId,
         createdAt: new Date(),
         createdBy: Meteor.userId(),
@@ -63,7 +63,7 @@ Meteor.methods({
           planning: ""
         }
       });
-      canvas = Canvas.findOne({ projectId });
+      canvas = await Canvas.findOneAsync({ projectId });
     }
     return canvas;
   }

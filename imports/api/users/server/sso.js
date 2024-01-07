@@ -4,7 +4,7 @@ import { Accounts } from "meteor/accounts-base";
 Accounts.registerLoginHandler(() => {});
 
 Meteor.methods({
-  "users.ssoAuthenticate"() {
+  async "users.ssoAuthenticate"() {
     const email = headers.get(this, Meteor.settings.public.sso.email);
     if (!email) {
       throw new Meteor.Error("no-email");
@@ -17,7 +17,7 @@ Meteor.methods({
         email
       };
       const userId = Accounts.createUser(userData);
-      Meteor.users.update(
+      await Meteor.users.updateAsync(
         { _id: userId },
         {
           $set: {
@@ -33,7 +33,7 @@ Meteor.methods({
     const stampedToken = Accounts._generateStampedLoginToken();
     const hashStampedToken = Accounts._hashStampedToken(stampedToken);
     // Update the user's token in mongo
-    Meteor.users.update(user._id, {
+    await Meteor.users.updateAsync(user._id, {
       $push: {
         "services.resume.loginTokens": hashStampedToken
       }

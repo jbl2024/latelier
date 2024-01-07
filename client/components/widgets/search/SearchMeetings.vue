@@ -75,33 +75,28 @@ export default {
     }
   },
   methods: {
-    find() {
+    async find() {
       if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
-      Meteor.call(
-        "search.findMeetings",
-        {
+      try {
+        const result = await Meteor.callAsync("search.findMeetings", {
           name: this.filter,
           projectId: this.projectId,
           organizationId: this.organizationId,
           page: this.page,
           showArchivedProjects: this.showArchivedProjects
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-
-          this.meetings = Array.isArray(result?.data) ? result.data : [];
-          this.meetingCount = result.totalItems;
-          this.$emit("update:meeting-count", this.meetingCount);
-        }
-      );
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.meetings = Array.isArray(result?.data) ? result.data : [];
+        this.meetingCount = result.totalItems;
+        this.$emit("update:meeting-count", this.meetingCount);
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     onSelectMeeting(meeting) {

@@ -263,30 +263,25 @@ export default {
     }
   },
   methods: {
-    refresh() {
+    async refresh() {
       this.loading = true;
-      Meteor.call(
-        "healthReports.findHealthReports",
-        {
+      try {
+        const result = await Meteor.callAsync("healthReports.findHealthReports", {
           projectId: this.projectId,
           page: this.page
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
+        });
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
 
-          this.healthReports = result.data;
-          if (this.selectedReport) {
-            this.selectReport(this.selectedReport);
-          }
+        this.healthReports = result.data;
+        if (this.selectedReport) {
+          this.selectReport(this.selectedReport);
         }
-      );
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     calculateTotalPages() {
@@ -313,65 +308,57 @@ export default {
       this.selectedReportForAction = report;
       this.$refs.editHealthReport.open();
     },
-    deleteReport(report) {
-      this.$confirm(this.$t("Confirm"), {
-        title: this.$t("Deletion is permanent"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteReport(report) {
+      try {
+        const res = await this.$confirm(this.$t("Confirm"), {
+          title: this.$t("Deletion is permanent"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+
         if (res) {
-          Meteor.call(
-            "healthReports.remove",
-            {
-              id: report._id
-            },
-            (error) => {
-              this.$emit("updated");
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              if (report._id === this.selectedReport?._id) {
-                this.selectedReport = null;
-              }
-              this.$notify(this.$t("Report deleted"));
-              this.refresh();
-            }
-          );
+          await Meteor.callAsync("healthReports.remove", {
+            id: report._id
+          });
+
+          this.$emit("updated");
+
+          if (report._id === this.selectedReport?._id) {
+            this.selectedReport = null;
+          }
+
+          this.$notify(this.$t("Report deleted"));
+          this.refresh();
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    selectReport(report) {
-      Meteor.call("healthReports.get", {
-        healthReportId: report._id
-      }, (error, result) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async selectReport(report) {
+      try {
+        const result = await Meteor.callAsync("healthReports.get", {
+          healthReportId: report._id
+        });
         this.selectedReport = result;
         this.refreshTasks(this.selectedReport);
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    refreshTasks(report) {
-      this.loadingTasks = true;
-      Meteor.call(
-        "healthReports.findTasks",
-        {
+    async refreshTasks(report) {
+      try {
+        this.loadingTasks = true;
+        const result = await Meteor.callAsync("healthReports.findTasks", {
           id: report._id,
           page: 1
-        },
-        (error, result) => {
-          this.loadingTasks = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.tasks = result.data;
-        }
-      );
+        });
+        this.loadingTasks = false;
+        this.tasks = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     startEditDescription() {
@@ -380,15 +367,17 @@ export default {
       this.$nextTick(() => this.$refs.description.focus());
     },
 
-    updateDescription() {
+    async updateDescription() {
       this.editDescription = false;
       if (this.selectedReport.description != null) {
-        Meteor.call(
-          "healthReports.updateDescription", {
+        try {
+          await Meteor.callAsync("healthReports.updateDescription", {
             id: this.selectedReport._id,
             description: this.selectedReport.description
-          }
-        );
+          });
+        } catch (error) {
+          this.$notifyError(error.message);
+        }
       }
     },
 

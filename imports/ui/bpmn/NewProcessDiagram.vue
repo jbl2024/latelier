@@ -116,30 +116,25 @@ export default {
       this.showDialog = false;
     },
 
-    create() {
+    async create() {
       this.showDialog = false;
-      Meteor.call(
-        "processDiagrams.create",
-        {
+      try {
+        const result = await Meteor.callAsync("processDiagrams.create", {
           projectId: this.projectId,
           name: this.name,
           description: this.description,
           xml: this.example ? this.example.xml : null
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
+        });
+        this.$router.push({
+          name: "project-bpmn-process-diagram",
+          params: {
+            projectId: this.projectId,
+            processDiagramId: result
           }
-          this.$router.push({
-            name: "project-bpmn-process-diagram",
-            params: {
-              projectId: this.projectId,
-              processDiagramId: result
-            }
-          });
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
       this.showDialog = false;
     },
 

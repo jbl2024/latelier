@@ -71,28 +71,24 @@ export default {
     toggleShowHelp() {
       this.$store.dispatch("ui/toggleShowHelp");
     },
-    logout() {
-      this.$confirm(this.$t("login.logoutConfirm"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("login.logout")
-      }).then((res) => {
+    async logout() {
+      try {
+        const res = await this.$confirm(this.$t("login.logoutConfirm"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("login.logout")
+        });
+
         if (res) {
-          Meteor.call("users.getRedirectUrlAfterLogout", (error, url) => {
-            if (error) {
-              this.$notifyError(error);
-            }
-            Meteor.logout((err) => {
-              if (err) {
-                this.$notifyError(err);
-              }
-              if (url) {
-                window.location = url;
-              }
-            });
-          });
+          const url = await Meteor.callAsync("users.getRedirectUrlAfterLogout");
+          Meteor.logout();
+          if (url) {
+            window.location = url;
+          }
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

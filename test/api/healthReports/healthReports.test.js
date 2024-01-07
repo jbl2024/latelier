@@ -6,8 +6,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("healthReports", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -27,7 +27,7 @@ if (Meteor.isServer) {
         weather: "cloudy"
       };
       try {
-        HealthReports.methods.create._execute(context, args);
+        await HealthReports.methods.create._execute(context, args);
       } catch (error) {
         errorCode = error.error;
       }
@@ -37,39 +37,39 @@ if (Meteor.isServer) {
     });
 
     it("creates a new report", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description",
         date: "2019-01-01",
         weather: "cloudy"
       };
-      HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
       expect(HealthReports.find().count()).to.be.equal(1);
     });
 
     it("remove project remove all reports", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: await Meteor.users.findOneAsync()._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         description: "description",
         date: "2019-01-01",
         weather: "cloudy"
       };
-      HealthReports.methods.create._execute(context, args);
-      HealthReports.methods.create._execute(context, args);
-      HealthReports.methods.create._execute(context, args);
-      expect(HealthReports.find().count()).to.be.equal(3);
+      await HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
+      await HealthReports.methods.create._execute(context, args);
+      expect(await HealthReports.find().countAsync()).to.be.equal(3);
 
-      Meteor.call("projects.deleteForever", {
-        projectId: Projects.findOne()._id
+      await Meteor.callAsync("projects.deleteForever", {
+        projectId: (await Projects.findOneAsync())._id
       });
 
-      expect(HealthReports.find().count()).to.be.equal(0);
+      expect(await HealthReports.find().countAsync()).to.be.equal(0);
     });
   });
 }

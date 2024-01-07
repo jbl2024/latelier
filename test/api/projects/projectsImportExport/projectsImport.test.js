@@ -13,7 +13,7 @@ import { Lists } from "/imports/api/lists/lists";
 import { HealthReports } from "/imports/api/healthReports/healthReports";
 import { Meetings } from "/imports/api/meetings/meetings";
 import { createStubs, restoreStubs } from "/test/stubs";
-import { Roles } from "meteor/alanning:roles";
+import { Roles } from "meteor/jbl2024:roles";
 
 createProjectZip = async (datas) => {
   const zip = await createProjectExportZip(datas);
@@ -49,8 +49,8 @@ stepCreateProjectZip = async (projectDatas) => {
 
 if (Meteor.isServer) {
   describe("projectsImport V2020_11", function () {
-    beforeEach(function () {
-      initData();
+    beforeEach(async function () {
+      await initData();
       createStubs();
     });
 
@@ -65,10 +65,10 @@ if (Meteor.isServer) {
       let zip;
 
       const projectDatas = makeProjectDatas();
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
 
-      const anotherUserId = Meteor.users.findOne({
+      const anotherUserId = await Meteor.users.findOneAsync({
         _id: { $ne: userId }
       });
 
@@ -86,7 +86,7 @@ if (Meteor.isServer) {
       expect(zipContent.constructor, "should be a Uint8Array type array").to.equal(Uint8Array);
 
       try {
-        Meteor.call("projects.import", {
+        await Meteor.callAsync("projects.import", {
           fileBuffer: zipContent,
           locale: "en",
           projectName: projectDatas.project.name
@@ -107,8 +107,8 @@ if (Meteor.isServer) {
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
-        const userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -155,8 +155,8 @@ if (Meteor.isServer) {
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
-        const userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -196,16 +196,16 @@ if (Meteor.isServer) {
       expect(meeting.name, "should be equal to imported meeting name").to.be.equal(importedMeetingName);
 
       // Other items that should not be imported
-      const canvas = Canvas.findOne({ projectId: createdProjectId });
+      const canvas = await Canvas.findOneAsync({ projectId: createdProjectId });
       expect(canvas, "should be undefined").to.be.undefined;
 
-      const tasks = Tasks.find({ projectId: createdProjectId }).fetch();
+      const tasks = await Tasks.find({ projectId: createdProjectId }).fetchAsync();
       expect(tasks, "should be empty").to.be.empty;
 
-      const labels = Labels.find({ projectId: createdProjectId }).fetch();
+      const labels = await Labels.find({ projectId: createdProjectId }).fetchAsync();
       expect(labels, "should be empty").to.be.empty;
 
-      const healthReports = HealthReports.find({ projectId: createdProjectId }).fetch();
+      const healthReports = await HealthReports.find({ projectId: createdProjectId }).fetchAsync();
       expect(healthReports, "should be empty").to.be.empty;
     });
 
@@ -216,8 +216,8 @@ if (Meteor.isServer) {
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
-        const userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -240,7 +240,7 @@ if (Meteor.isServer) {
       expect(project, "should have an _id property").to.have.property("_id");
       expect(project._id, "should have the same id").to.be.equal(createdProjectId);
 
-      const canvas = Canvas.findOne({ projectId: createdProjectId });
+      const canvas = await Canvas.findOneAsync({ projectId: createdProjectId });
       expect(canvas, "should be an object").to.be.a("object");
       expect(canvas, "should have an _id property").to.have.property("_id");
       expect(canvas, "should have a data property").to.have.property("data");
@@ -254,12 +254,12 @@ if (Meteor.isServer) {
     it("import project must create valid health reports", async function() {
       let importErrorCode = null;
       let createdProjectId = null;
-      const projectDatas = makeProjectDatas();
+      const projectDatas = await makeProjectDatas();
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
-        const userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -282,7 +282,7 @@ if (Meteor.isServer) {
       expect(project, "should have an _id property").to.have.property("_id");
       expect(project._id, "should have the same id").to.be.equal(createdProjectId);
 
-      const healthReports = HealthReports.find({ projectId: createdProjectId }).fetch();
+      const healthReports = await HealthReports.find({ projectId: createdProjectId }).fetchAsync();
       expect(healthReports, "should be an array of results").to.be.an("array");
       expect(healthReports, "should not be empty").to.not.be.empty;
       expect(healthReports.length, "should have the same size").to.be.equal(projectDatas.healthReports.length);
@@ -310,12 +310,12 @@ if (Meteor.isServer) {
     it("import project must create valid tasks and labels items", async function() {
       let importErrorCode = null;
       let createdProjectId = null;
-      const projectDatas = makeProjectDatas();
+      const projectDatas = await makeProjectDatas();
       const { zipContent } = await stepCreateProjectZip(projectDatas);
 
       try {
-        const userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        const userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -333,13 +333,13 @@ if (Meteor.isServer) {
       // Checking project
       expect(createdProjectId, "should be a string").to.be.a("string");
       expect(createdProjectId, "should be a valid projectId").to.not.be.empty;
-      const project = Projects.findOne({ _id: createdProjectId });
+      const project = await Projects.findOneAsync({ _id: createdProjectId });
       expect(project, "should be an object").to.be.a("object");
       expect(project, "should have an _id property").to.have.property("_id");
       expect(project._id, "should have the same id").to.be.equal(createdProjectId);
 
       // Checking labels
-      const labels = Labels.find({ projectId: createdProjectId }).fetch();
+      const labels = await Labels.find({ projectId: createdProjectId }).fetchAsync();
       expect(labels, "should be an array of results").to.be.an("array");
       expect(labels, "should not be empty").to.not.be.empty;
       expect(labels.length, "should have the same size").to.be.equal(projectDatas.labels.length);
@@ -357,7 +357,7 @@ if (Meteor.isServer) {
       });
 
       // Checking lists
-      const lists = Lists.find({ projectId: createdProjectId }).fetch();
+      const lists = await Lists.find({ projectId: createdProjectId }).fetchAsync();
       expect(lists, "should be an array of results").to.be.an("array");
       expect(lists, "should not be empty").to.not.be.empty;
       expect(lists.length, "should have the same size").to.be.equal(projectDatas.tasksLists.length);
@@ -382,7 +382,7 @@ if (Meteor.isServer) {
       });
 
       // Check tasks in their related lists
-      const tasks = Tasks.find({ projectId: createdProjectId }).fetch();
+      const tasks = await Tasks.find({ projectId: createdProjectId }).fetchAsync();
       expect(tasks, "should be an array of results").to.be.an("array");
       expect(tasks, "should not be empty").to.not.be.empty;
 
@@ -406,8 +406,8 @@ if (Meteor.isServer) {
       const itemsToImport = importExportDefaultItems.filter((item) => item !== "users");
 
       try {
-        userId = Meteor.users.findOne()._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        userId = (await Meteor.users.findOneAsync())._id;
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -433,7 +433,7 @@ if (Meteor.isServer) {
       expect(project.members, "should be an array of members ids").to.be.an("array");
       expect(project.members, "should only contains one entry with current user id").to.be.eql([userId]);
 
-      const tasks = Tasks.find({ projectId: createdProjectId }).fetch();
+      const tasks = await Tasks.find({ projectId: createdProjectId }).fetchAsync();
       expect(tasks, "should be an array").to.be.an("array");
       expect(tasks, "should not be empty").to.not.be.empty;
 

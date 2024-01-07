@@ -145,7 +145,6 @@
   </div>
 </template>
 <script>
-import Api from "/imports/api/Api";
 import AttachmentsMixin from "/imports/ui/mixins/AttachmentsMixin";
 import debounce from "lodash/debounce";
 
@@ -287,7 +286,7 @@ export default {
   methods: {
     fetchAttachments() {
       if (!this.fetch) return;
-      Api.call("attachments.find", this.fetchParams).then((result) => {
+      Meteor.callAsync("attachments.find", this.fetchParams).then((result) => {
         this.pagination.totalItems = result.totalItems;
         this.pagination.rowsPerPage = result.rowsPerPage;
         this.pagination.totalPages = result.totalPages;
@@ -301,7 +300,7 @@ export default {
     fetchMeetings() {
       if (!this.attachments || !Array.isArray(this.attachments)) return;
       const attachmentsIds = this.attachments.map(((a) => a._id));
-      Api.call("meetings.findMeetings", {
+      Meteor.callAsync("meetings.findMeetings", {
         projectId: this.projectId,
         documentsIds: attachmentsIds
       }).then((result) => {

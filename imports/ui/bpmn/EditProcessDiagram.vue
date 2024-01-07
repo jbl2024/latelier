@@ -77,21 +77,17 @@ export default {
       this.showDialog = false;
     },
 
-    update() {
+    async update() {
       this.showDialog = false;
-      Meteor.call(
-        "processDiagrams.update",
-        {
+      try {
+        await Meteor.callAsync("processDiagrams.update", {
           processDiagramId: this.processDiagram._id,
           name: this.name,
           description: this.description
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
       this.showDialog = false;
     }
   }

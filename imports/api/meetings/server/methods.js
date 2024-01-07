@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { MeetingState, MeetingRoles, Meetings } from "/imports/api/meetings/meetings";
 import { Projects, ProjectStates } from "/imports/api/projects/projects";
@@ -24,11 +25,10 @@ import {
 } from "/imports/api/permissions/permissions";
 
 import { MeetingCreateSchema, MeetingUpdateSchema, ActionCreateUpdateSchema } from "/imports/api/meetings/schema";
-import SimpleSchema from "simpl-schema";
 
-const loadUser = (aUserId) => {
+const loadUser = async (aUserId) => {
   if (!aUserId) return {};
-  return Meteor.users.findOne(
+  return Meteor.users.findOneAsync(
     { _id: aUserId },
     {
       fields: {
@@ -46,7 +46,7 @@ const loadUser = (aUserId) => {
 Meetings.methods.create = new ValidatedMethod({
   name: "meetings.create",
   validate: MeetingCreateSchema.validator(),
-  run({
+  async run({
     projectId,
     name,
     state,
@@ -63,7 +63,7 @@ Meetings.methods.create = new ValidatedMethod({
     report,
     meetingUserId
   }) {
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     const now = new Date();
 
@@ -77,7 +77,7 @@ Meetings.methods.create = new ValidatedMethod({
     documents = Array.isArray(documents) ? documents : [];
     actions = Array.isArray(actions) ? actions : [];
 
-    const meetingId = Meetings.insert({
+    const meetingId = await Meetings.insertAsync({
       projectId,
       name,
       state,
@@ -104,7 +104,7 @@ Meetings.methods.create = new ValidatedMethod({
 Meetings.methods.update = new ValidatedMethod({
   name: "meetings.update",
   validate: MeetingUpdateSchema.validator(),
-  run({
+  async run({
     id,
     name,
     state,
@@ -119,10 +119,10 @@ Meetings.methods.update = new ValidatedMethod({
     documents,
     actions
   }) {
-    checkCanWriteMeeting(id);
+    await checkCanWriteMeeting(id);
 
     state = state || MeetingState.PENDING;
-    const meetingId = Meetings.update(
+    const meetingId = await Meetings.updateAsync(
       {
         _id: id
       },
@@ -156,15 +156,15 @@ Meetings.methods.updateAgenda = new ValidatedMethod({
     meetingId: { type: String },
     agenda: { type: String, optional: true }
   }).validator(),
-  run({ meetingId, agenda }) {
-    checkCanWriteMeeting(meetingId);
+  async run({ meetingId, agenda }) {
+    await checkCanWriteMeeting(meetingId);
 
-    const meeting = Meetings.findOne({ _id: meetingId });
+    const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (meeting.agenda === agenda) {
       return;
     }
 
-    Meetings.update(
+    await Meetings.updateAsync(
       {
         _id: meetingId
       },
@@ -185,15 +185,15 @@ Meetings.methods.updateReport = new ValidatedMethod({
     meetingId: { type: String },
     report: { type: String, optional: true }
   }).validator(),
-  run({ meetingId, report }) {
-    checkCanWriteMeeting(meetingId);
+  async run({ meetingId, report }) {
+    await checkCanWriteMeeting(meetingId);
 
-    const meeting = Meetings.findOne({ _id: meetingId });
+    const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (meeting.report === report) {
       return;
     }
 
-    Meetings.update(
+    await Meetings.updateAsync(
       {
         _id: meetingId
       },
@@ -213,10 +213,10 @@ Meetings.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
-    checkCanDeleteMeeting(meetingId);
+  async run({ meetingId }) {
+    await checkCanDeleteMeeting(meetingId);
     // @todo check can write
-    Meetings.update(
+    await Meetings.updateAsync(
       { _id: meetingId },
       {
         $set: {
@@ -234,11 +234,11 @@ Meetings.methods.deleteForever = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
-    checkCanDeleteMeeting(meetingId);
+  async run({ meetingId }) {
+    await checkCanDeleteMeeting(meetingId);
     // @todo remove only if it has exclusively meetingId as meta ?
     // Attachments.remove({ "meta.projectId": projectId });
-    Meetings.remove(meetingId);
+    await Meetings.removeAsync(meetingId);
   }
 });
 
@@ -247,9 +247,9 @@ Meetings.methods.restore = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
-    checkCanWriteMeeting(meetingId);
-    Meetings.update(
+  async run({ meetingId }) {
+    await checkCanWriteMeeting(meetingId);
+    await Meetings.updateAsync(
       { _id: meetingId },
       {
         $set: {
@@ -318,7 +318,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
       defaultValue: true
     }
   }).validator(),
-  run({ projectId,
+  async run({ projectId,
     organizationId,
     dates,
     page,
@@ -328,14 +328,14 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     showArchivedProjects,
     sortAsc }) {
     if (projectId) {
-      checkCanReadProject(projectId);
+      await checkCanReadProject(projectId);
     }
     if (organizationId) {
-      checkCanReadOrganization(organizationId);
+      await checkCanReadOrganization(organizationId);
     }
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     let skip = 0;
     if (perPage) {
@@ -396,30 +396,31 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     if (Array.isArray(documentsIds) && documentsIds.length) {
       meetingQuery["documents.documentId"] = { $in: documentsIds };
     }
-    const count = Meetings.find(meetingQuery).count();
-    const data = Meetings.find(meetingQuery, {
+    const count = await Meetings.find(meetingQuery).countAsync();
+    const data = await Meetings.find(meetingQuery, {
       skip,
       limit: perPage,
       sort: {
         startDate: sortAsc === true ? 1 : -1
       }
-    }).fetch();
+    });
 
     // load associated objects and assign them to meetings
     const projects = {};
     const organizations = {};
+    let loadedData = [];
     if (withRelated === true) {
-      data.forEach((meeting) => {
+      data.forEachAsync(async (meeting) => {
         let project = projects[meeting.projectId];
         if (!project) {
-          projects[meeting.projectId] = Projects.findOne({ _id: meeting.projectId });
+          projects[meeting.projectId] = await Projects.findOneAsync({ _id: meeting.projectId });
           project = projects[meeting.projectId];
         }
         if (project) {
           meeting.project = project;
           let organization = organizations[project.organizationId];
           if (!organization) {
-            organizations[project.organizationId] = Organizations.findOne({
+            organizations[project.organizationId] = await Organizations.findOneAsync({
               _id: project.organizationId
             });
             organization = organizations[project.organizationId];
@@ -427,15 +428,18 @@ Meetings.methods.findMeetings = new ValidatedMethod({
           if (organization) {
             meeting.organization = organization;
           }
+          loadedData.push(meeting);
         }
       });
+    } else {
+      loadedData = await data.fetchAsync();
     }
     const totalPages = !perPage ? 0 : Math.ceil(count / perPage);
     return {
       rowsPerPage: perPage || 0,
       totalItems: count,
       totalPages,
-      data
+      data: loadedData
     };
   }
 });
@@ -445,9 +449,9 @@ Meetings.methods.get = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
-    checkCanReadMeeting(meetingId);
-    const meeting = Meetings.findOne(
+  async run({ meetingId }) {
+    await checkCanReadMeeting(meetingId);
+    const meeting = await Meetings.findOneAsync(
       {
         _id: meetingId,
         deleted: { $ne: true }
@@ -460,7 +464,7 @@ Meetings.methods.get = new ValidatedMethod({
 Meetings.methods.getRoles = new ValidatedMethod({
   name: "meetings.getRoles",
   validate: null,
-  run() {
+  async run() {
     return MeetingRoles;
   }
 });
@@ -470,9 +474,9 @@ Meetings.methods.getActions = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
-    checkCanReadMeeting(meetingId);
-    const meeting = Meetings.findOne({ _id: meetingId });
+  async run({ meetingId }) {
+    await checkCanReadMeeting(meetingId);
+    const meeting = await Meetings.findOneAsync({ _id: meetingId });
     return meeting.actions && Array.isArray(meeting.actions) ? meeting.actions : [];
   }
 });
@@ -485,15 +489,15 @@ Meetings.methods.createAction = new ValidatedMethod({
       type: new SimpleSchema(ActionCreateUpdateSchema)
     }
   }).validator(),
-  run({
+  async run({
     meetingId,
     action
   }) {
-    checkCanWriteMeeting(meetingId);
+    await checkCanWriteMeeting(meetingId);
     if (action.dueDate) {
       action.dueDate = moment(action.dueDate, "YYYY-MM-DD HH:mm").toDate();
     }
-    const returnedId = Meetings.update(
+    const returnedId = await Meetings.updateAsync(
       { _id: meetingId },
       {
         $push: { actions: action }
@@ -513,12 +517,12 @@ Meetings.methods.updateAction = new ValidatedMethod({
       type: new SimpleSchema(ActionCreateUpdateSchema)
     }
   }).validator(),
-  run({
+  async run({
     meetingId,
     action
   }) {
-    checkCanReadMeeting(meetingId);
-    const returnedId = Meetings.update(
+    await checkCanReadMeeting(meetingId);
+    const returnedId = await Meetings.updateAsync(
       {
         _id: meetingId,
         "actions.actionId": action.actionId
@@ -546,10 +550,10 @@ Meetings.methods.deleteActions = new ValidatedMethod({
       type: String
     }
   }).validator(),
-  run({ meetingId, actionsIds }) {
-    checkCanWriteMeeting(meetingId);
+  async run({ meetingId, actionsIds }) {
+    await checkCanWriteMeeting(meetingId);
     if (!Array.isArray(actionsIds) || !actionsIds.length) return false;
-    const ids = Meetings.update(
+    const ids = await Meetings.updateAsync(
       { _id: meetingId },
       {
         $pull: {
@@ -570,8 +574,8 @@ Meetings.methods.adminFind = new ValidatedMethod({
     filter: { type: String, optional: true },
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
-  run({ page, filter, isDeleted }) {
-    if (!Permissions.isAdmin(Meteor.userId())) {
+  async run({ page, filter, isDeleted }) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -594,7 +598,7 @@ Meetings.methods.adminFind = new ValidatedMethod({
     if (isDeleted) {
       query.deleted = true;
     }
-    const count = Meetings.find(query).count();
+    const count = await Meetings.find(query).countAsync();
 
     const data = Meetings
       .find(query, {
@@ -603,11 +607,12 @@ Meetings.methods.adminFind = new ValidatedMethod({
         sort: {
           name: 1
         }
-      })
-      .fetch();
+      });
 
-    data.forEach((meeting) => {
-      meeting.createdBy = loadUser(meeting.createdBy);
+    const loadedData = [];
+    data.forEachAsync(async (meeting) => {
+      meeting.createdBy = await loadUser(meeting.createdBy);
+      loadedData.push(meeting);
     });
 
     const totalPages = perPage !== 0 ? Math.ceil(count / perPage) : 0;
@@ -616,7 +621,7 @@ Meetings.methods.adminFind = new ValidatedMethod({
       rowsPerPage: perPage,
       totalItems: count,
       totalPages: totalPages,
-      data
+      data: loadedData
     };
   }
 });
@@ -631,28 +636,28 @@ Meetings.methods.export = new ValidatedMethod({
       defaultValue: "en"
     }
   }).validator(),
-  run({ meetingId, format, locale }) {
-    checkCanReadMeeting(meetingId);
+  async run({ meetingId, format, locale }) {
+    await checkCanReadMeeting(meetingId);
 
-    const meeting = Meetings.findOne({ _id: meetingId });
+    const meeting = await Meetings.findOneAsync({ _id: meetingId });
     if (!meeting) {
       throw new Meteor.Error("not-found");
     }
 
-    meeting.createdBy = loadUser(meeting.createdBy);
+    meeting.createdBy = await loadUser(meeting.createdBy);
     // Gathering all meeting related users
     const attendeesIds = Array.isArray(meeting.attendees)
       ? meeting.attendees.map((a) => a.userId) : [];
     const assignedIds = Array.isArray(meeting.actions)
       ? meeting.actions.map((a) => a.assignedTo) : [];
-    const users = attendeesIds.concat(assignedIds).reduce((aUsers, userId) => {
+    const users = attendeesIds.concat(assignedIds).reduce(async (aUsers, userId) => {
       if (!aUsers[userId]) {
-        aUsers[userId] = loadUser(userId);
+        aUsers[userId] = await loadUser(userId);
       }
       return aUsers;
     }, {});
 
-    const project = Projects.findOne({ _id: meeting.projectId });
+    const project = await Projects.findOneAsync({ _id: meeting.projectId });
     if (!project) {
       throw new Meteor.Error("not-found");
     }
@@ -664,12 +669,12 @@ Meetings.methods.export = new ValidatedMethod({
       });
     }
 
-    const async = Meteor.wrapAsync(function (done) {
+    try {
       const templateFile = Assets.absoluteFilePath("exports/meetings/default.html");
       const datas = {
         meeting,
         project,
-        users,
+        users: await Promise.all(Object.values(users)),
         datesFormats: i18nHelper.t("dates.format")
       };
       const html = compileTemplate(fs.readFileSync(templateFile, "utf8"), datas, {
@@ -685,31 +690,25 @@ Meetings.methods.export = new ValidatedMethod({
           date.locale(locale);
           return date.format(aFormat);
         },
-        getUserProfileName(user) {
+        async getUserProfileName(user) {
           if (!user) {
             return null;
           }
           if (!user._id) {
-            user = loadUser(user);
+            user = await loadUser(user);
           }
           return UserUtils.getUserProfileName(user);
         }
       });
-      try {
-        convertHtml(html, format, (error, result) => {
-          if (error) {
-            done(new Meteor.Error("cannot-convert"));
-          } else {
-            done(error, {
-              data: result
-            });
-          }
-        });
-      } catch (error) {
-        done(new Meteor.Error("cannot-convert"));
-      }
-    });
-    return async();
-  }
 
+      // Assuming convertHtml is now an async function
+      const result = await convertHtml(html, format);
+
+      return {
+        data: result
+      };
+    } catch (error) {
+      throw new Meteor.Error("cannot-convert", error.message);
+    }
+  }
 });

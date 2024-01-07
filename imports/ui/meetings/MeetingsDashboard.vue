@@ -186,7 +186,6 @@ import MeetingEdit from "/imports/ui/meetings/Meeting/MeetingEdit";
 import MeetingList from "/imports/ui/meetings/MeetingList";
 import MeetingListHeader from "/imports/ui/meetings/MeetingListHeader";
 import moment from "moment";
-import Api from "/imports/api/Api";
 
 export default {
   components: {
@@ -486,7 +485,7 @@ export default {
       meeting.startDate = this.formatDateTz(moment(meeting.startDate)[func](30, "minutes"));
       meeting.endDate = this.formatDateTz(moment(meeting.endDate)[func](30, "minutes"));
       const params = MeetingUtils.sanitizeMeetingForUpdate(meeting);
-      await Api.call("meetings.update", params);
+      await Meteor.callAsync("meetings.update", params);
       await this.refresh();
     },
     filterMeetingsEvents(events) {
@@ -529,12 +528,14 @@ export default {
       }
     },
     async onCreateMeeting(meetingId) {
-      const createdMeeting = await Api.call("meetings.get", {
-        meetingId
-      }).catch((error) => {
+      try {
+        const createdMeeting = await Meteor.callAsync("meetings.get", {
+          meetingId
+        });
+        await this.openMeeting(createdMeeting);
+      } catch (error) {
         this.$notifyError(error);
-      });
-      await this.openMeeting(createdMeeting);
+      }
     },
     addNewMeeting(start, end) {
       const newMeeting = MeetingUtils.makeNewMeeting();
@@ -571,7 +572,7 @@ export default {
       if (this.currentProject) {
         params.projectId = this.currentProject._id;
       }
-      Api.call("meetings.findMeetings", params).then((result) => {
+      Meteor.callAsync("meetings.findMeetings", params).then((result) => {
         this.pagination.totalItems = result.totalItems;
         this.pagination.rowsPerPage = result.rowsPerPage;
         this.pagination.totalPages = result.totalPages;

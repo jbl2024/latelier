@@ -4,14 +4,14 @@ import { Jobs } from "meteor/msavin:sjobs";
 import moment from "moment";
 
 Jobs.register({
-  removeOutdatedCoeditions() {
+  async removeOutdatedCoeditions() {
     const instance = this;
     const deleteDate = moment()
       .startOf("day")
       .add(-1 * (Meteor.settings.coedition?.daysToKeep || 3), "days")
       .toDate();
 
-    Meteor.call("coeditions.removeOutdated", { when: deleteDate });
+    await Meteor.callAsync("coeditions.removeOutdated", { when: deleteDate });
 
     instance.replicate({
       date: moment()

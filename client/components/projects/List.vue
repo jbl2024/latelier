@@ -160,14 +160,14 @@ export default {
     }
   },
   watch: {
-    "list.autoComplete"(autoComplete, prevValue) {
+    async "list.autoComplete"(autoComplete, prevValue) {
       if (prevValue !== autoComplete) {
-        Meteor.call("lists.autoComplete", this.list._id, autoComplete);
+        await Meteor.callAsync("lists.autoComplete", this.list._id, autoComplete);
       }
     },
-    "list.catchCompleted"(catchCompleted, prevValue) {
+    async "list.catchCompleted"(catchCompleted, prevValue) {
       if (prevValue !== catchCompleted) {
-        Meteor.call("lists.catchCompleted", this.list._id, catchCompleted);
+        await Meteor.callAsync("lists.catchCompleted", this.list._id, catchCompleted);
       }
     }
   },
@@ -216,16 +216,16 @@ export default {
       return edited;
     },
 
-    updateName(list) {
+    async updateName(list) {
       if (list.name.length === 0) {
         list.name = this.savedName;
       }
       this.selectedList = null;
-      Meteor.call("lists.updateName", list._id, list.name, (error) => {
-        if (error) {
-          this.$notifyError(error);
-        }
-      });
+      try {
+        await Meteor.callAsync("lists.updateName", list._id, list.name);
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     cancelUpdate(list) {
@@ -233,21 +233,22 @@ export default {
       this.selectedList = null;
     },
 
-    deleteList(listId) {
-      this.$confirm(this.$t("Delete list?"), {
+    async deleteList(listId) {
+      const confirmed = await this.$confirm(this.$t("Delete list?"), {
         title: this.$t("Confirm"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("lists.remove", listId, (error) => {
-            if (error) {
-              this.$notifyError(error);
-            }
-          });
-        }
       });
+
+      if (confirmed) {
+        try {
+          await Meteor.callAsync("lists.remove", listId);
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
+
     newTaskInline() {
       this.showNewTaskDialog = true;
     },
@@ -279,7 +280,8 @@ export default {
       return `(${size}/${spent})`;
     },
 
-    onDrop(event) {
+    async onDrop(event) {
+      const that = this;
       event.preventDefault();
 
       if (Meteor.settings.public.disableAttachments) {
@@ -304,43 +306,54 @@ export default {
       }
       event.stopPropagation();
 
-      const taskName = files[0].name;
-      const transport = Meteor.settings.public.uploadTransport || "ddp";
-      Meteor.call(
-        "tasks.insert",
-        this.list.projectId,
-        this.list._id,
-        taskName,
-        (error, task) => {
-          if (error) {
-            return;
-          }
-          files.forEach((file) => {
-            const upload = Attachments.insert(
-              {
-                file: file,
-                chunkSize: "dynamic",
-                transport: transport,
-                meta: {
-                  projectId: task.projectId,
-                  taskId: task._id,
-                  createdBy: Meteor.userId()
-                }
-              },
-              false
-            );
-            upload.on("start", function() {});
-            upload.on("end", function(uploadError) {
-              if (error) {
-                this.$notifyError(uploadError);
-              } else {
-                Meteor.call("tasks.addAttachment", task._id);
+      try {
+        const taskName = files[0].name;
+        const transport = Meteor.settings.public.uploadTransport || "ddp";
+
+        // Using Meteor.callAsync with await
+        const task = await Meteor.callAsync(
+          "tasks.insert",
+          this.list.projectId,
+          this.list._id,
+          taskName
+        );
+
+        files.forEach((file) => {
+          const upload = Attachments.insert(
+            {
+              file: file,
+              chunkSize: "dynamic",
+              transport: transport,
+              meta: {
+                projectId: task.projectId,
+                taskId: task._id,
+                createdBy: Meteor.userId()
               }
-            });
-            upload.start();
+            },
+            false
+          );
+
+          upload.on("start", function() {});
+          upload.on("end", async (uploadError) => {
+            if (uploadError) {
+              that.$notifyError(error);
+            } else {
+              // Using Meteor.callAsync with await in the callback
+              try {
+                await Meteor.callAsync("tasks.addAttachment", task._id);
+              } catch (error) {
+                // Handle error for tasks.addAttachment
+                that.$notifyError(error);
+              }
+            }
           });
-        }
-      );
+
+          upload.start();
+        });
+      } catch (error) {
+        // Handle error for tasks.insert
+        that.$notifyError(error);
+      }
     },
 
     canAddTask(list) {

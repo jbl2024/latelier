@@ -129,85 +129,69 @@ export default {
     }, 400);
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "admin.findMeetings",
-        {
+    async refresh() {
+      try {
+        const result = await Meteor.callAsync("admin.findMeetings", {
           page: this.page,
           filter: this.search,
           isDeleted: this.filterDeleted
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
-          this.meetings = result.data;
-        }
-      );
+        });
+
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.meetings = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
-    removeMeeting(meeting) {
-      this.$confirm(this.$t("meetings.meetingDelete?"), {
+    async removeMeeting(meeting) {
+      const res = await this.$confirm(this.$t("meetings.meetingDelete?"), {
         title: meeting.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "meetings.remove",
-            { meetingId: meeting._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("meetings.meetingDeleted"));
-              this.refresh();
-            }
-          );
-        }
       });
+
+      if (res) {
+        try {
+          await Meteor.callAsync("meetings.remove", { meetingId: meeting._id });
+          this.$notify(this.$t("meetings.meetingDeleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
-    deleteForever(meeting) {
-      this.$confirm(this.$t("Delete forever"), {
+    async deleteForever(meeting) {
+      const res = await this.$confirm(this.$t("Delete forever"), {
         title: meeting.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "meetings.deleteForever",
-            { meetingId: meeting._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("meetings.meetingDeleted"));
-              this.refresh();
-            }
-          );
-        }
       });
+
+      if (res) {
+        try {
+          await Meteor.callAsync("meetings.deleteForever", {
+            meetingId: meeting._id
+          });
+          this.$notify(this.$t("meetings.meetingDeleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
-    restoreMeeting(meeting) {
-      Meteor.call(
-        "meetings.restore",
-        { meetingId: meeting._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$notify(this.$t("meetings.meetingRestored"));
-          this.refresh();
-        }
-      );
+    async restoreMeeting(meeting) {
+      try {
+        await Meteor.callAsync("meetings.restore", { meetingId: meeting._id });
+        this.$notify(this.$t("meetings.meetingRestored"));
+        this.refresh();
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     async openMeeting(meeting) {
       await this.$router.push({
         name: "meetings",

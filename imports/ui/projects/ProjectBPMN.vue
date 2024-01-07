@@ -186,52 +186,44 @@ export default {
       });
     },
 
-    deleteProcessDiagram(processDiagram) {
-      this.$confirm(this.$t("Delete diagram?"), {
+    async deleteProcessDiagram(processDiagram) {
+      const confirmed = await this.$confirm(this.$t("Delete diagram?"), {
         title: processDiagram.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "processDiagrams.remove",
-            { processDiagramId: processDiagram._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Diagram deleted"));
-            }
-          );
-        }
       });
+
+      if (confirmed) {
+        try {
+          await Meteor.callAsync("processDiagrams.remove", { processDiagramId: processDiagram._id });
+          this.$notify(this.$t("Diagram deleted"));
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
     editProcessDiagram(processDiagram) {
       this.$refs.editProcessDiagram.open(processDiagram);
     },
 
-    cloneProcessDiagram(processDiagram) {
-      this.$confirm(this.$t("Clone diagram?"), {
+    async cloneProcessDiagram(processDiagram) {
+      const res = await this.$confirm(this.$t("Clone diagram?"), {
         title: processDiagram.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Clone")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "processDiagrams.clone",
-            { processDiagramId: processDiagram._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Diagram cloned"));
-            }
-          );
-        }
       });
+
+      if (res) {
+        try {
+          await Meteor.asyncCall("processDiagrams.clone", {
+            processDiagramId: processDiagram._id
+          });
+          this.$notify(this.$t("Diagram cloned"));
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
     htmlToText(html) {

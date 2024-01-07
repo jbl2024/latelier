@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -5,8 +6,8 @@ import ProcessDiagramSchema from "./schema";
 
 import {
   Permissions,
-  checkLoggedIn,
-  checkCanWriteProject
+  checkCanWriteProject,
+  checkLoggedIn
 } from "/imports/api/permissions/permissions";
 
 export const ProcessDiagrams = new Mongo.Collection("processDiagrams");
@@ -14,8 +15,8 @@ ProcessDiagrams.attachSchema(ProcessDiagramSchema);
 ProcessDiagrams.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    ProcessDiagrams.rawCollection().createIndex({ projectId: 1 });
+  Meteor.startup(async () => {
+    await ProcessDiagrams.rawCollection().createIndex({ projectId: 1 });
   });
 }
 
@@ -28,15 +29,15 @@ ProcessDiagrams.methods.create = new ValidatedMethod({
     xml: { type: String, optional: true },
     diagramUserId: { type: String, optional: true }
   }).validator(),
-  run({ projectId, name, description, xml, diagramUserId }) {
+  async run({ projectId, name, description, xml, diagramUserId }) {
     checkLoggedIn();
-    checkCanWriteProject(projectId);
+    await checkCanWriteProject(projectId);
 
     let userId = Meteor.userId();
     const canSelectUserId = diagramUserId && Meteor.isServer && Permissions.isAdmin(userId);
     userId = canSelectUserId ? diagramUserId : userId;
 
-    const id = ProcessDiagrams.insert({
+    const id = await ProcessDiagrams.insertAsync({
       projectId,
       name,
       description,
@@ -55,15 +56,15 @@ ProcessDiagrams.methods.update = new ValidatedMethod({
     name: { type: String },
     description: { type: String, optional: true }
   }).validator(),
-  run({ processDiagramId, name, description }) {
+  async run({ processDiagramId, name, description }) {
     checkLoggedIn();
     const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
-    ProcessDiagrams.update(
+    await ProcessDiagrams.updateAsync(
       {
         _id: processDiagramId
       },
@@ -83,15 +84,15 @@ ProcessDiagrams.methods.saveXML = new ValidatedMethod({
     processDiagramId: { type: String },
     xml: { type: String }
   }).validator(),
-  run({ processDiagramId, xml }) {
+  async run({ processDiagramId, xml }) {
     checkLoggedIn();
-    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    const processDiagram = await ProcessDiagrams.findOneAsync({ _id: processDiagramId });
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
-    ProcessDiagrams.update(
+    ProcessDiagrams.updateAsync(
       {
         _id: processDiagramId
       },
@@ -109,15 +110,15 @@ ProcessDiagrams.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     processDiagramId: { type: String }
   }).validator(),
-  run({ processDiagramId }) {
+  async run({ processDiagramId }) {
     checkLoggedIn();
-    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    const processDiagram = await ProcessDiagrams.findOneAsync({ _id: processDiagramId });
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
-    ProcessDiagrams.remove({ _id: processDiagramId });
+    await ProcessDiagrams.removeAsync({ _id: processDiagramId });
   }
 });
 
@@ -126,15 +127,15 @@ ProcessDiagrams.methods.clone = new ValidatedMethod({
   validate: new SimpleSchema({
     processDiagramId: { type: String }
   }).validator(),
-  run({ processDiagramId }) {
+  async run({ processDiagramId }) {
     checkLoggedIn();
-    const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    const processDiagram = await ProcessDiagrams.findOneAsync({ _id: processDiagramId });
     if (!processDiagram) {
       throw new Meteor.Error("not-found");
     }
-    checkCanWriteProject(processDiagram.projectId);
+    await checkCanWriteProject(processDiagram.projectId);
 
-    const id = ProcessDiagrams.insert({
+    const id = await ProcessDiagrams.insertAsync({
       projectId: processDiagram.projectId,
       name: `Copie de ${processDiagram.name}`,
       description: processDiagram.description,

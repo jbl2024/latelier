@@ -126,52 +126,62 @@ export default {
       return checklist && checklist.length > 0;
     },
 
-    deleteItem(e, item) {
-      if (e) {
-        e.stopPropagation();
+    async deleteItem(e, item) {
+      try {
+        if (e) {
+          e.stopPropagation();
+        }
+        await Meteor.callAsync("tasks.removeChecklistItem", this.task._id, item._id);
+      } catch (error) {
+        this.$notifyError(error.message);
       }
-      Meteor.call("tasks.removeChecklistItem", this.task._id, item._id);
     },
 
-    toggleCheckItem(item) {
-      Meteor.call(
-        "tasks.toggleCheckItem",
-        this.task._id,
-        item._id,
-        item.checked
-      );
+    async toggleCheckItem(item) {
+      try {
+        await Meteor.callAsync("tasks.toggleCheckItem", this.task._id, item._id, item.checked);
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    onConvert() {
-      this.$confirm(this.$t("Convert element to task?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Convert")
-      }).then((res) => {
+    async onConvert() {
+      try {
+        const res = await this.$confirm(this.$t("Convert element to task?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Convert")
+        });
+
         if (res) {
-          Meteor.call(
+          await Meteor.callAsync(
             "tasks.convertItemToTask",
             this.task._id,
             this.selectedItem._id
           );
         }
-      });
+      } catch (error) {
+        this.notifyError(error);
+      }
     },
 
-    onDelete() {
-      this.$confirm(this.$t("Delete element?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async onDelete() {
+      try {
+        const res = await this.$confirm(this.$t("Delete element?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
         if (res) {
-          Meteor.call(
+          await Meteor.callAsync(
             "tasks.removeChecklistItem",
             this.task._id,
             this.selectedItem._id
           );
         }
-      });
+      } catch (error) {
+        this.notifyError(error);
+      }
     }
   }
 };

@@ -216,36 +216,36 @@ export default {
     }, 400);
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "admin.findProjects",
-        {
-          page: this.page,
-          filter: this.search,
-          projectStates: this.selectedStates,
-          isDeleted: this.filterDeleted
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
+    async refresh() {
+      try {
+        const result = await Meteor.callAsync(
+          "admin.findProjects",
+          {
+            page: this.page,
+            filter: this.search,
+            projectStates: this.selectedStates,
+            isDeleted: this.filterDeleted
           }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
+        );
 
-          this.projects = result.data;
-          this.projects.forEach((project) => {
-            if (!project.profile) {
-              project.profile = {
-                firstName: "",
-                lastName: ""
-              };
-            }
-          });
-        }
-      );
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+
+        this.projects = result.data;
+        this.projects.forEach((project) => {
+          if (!project.profile) {
+            project.profile = {
+              firstName: "",
+              lastName: ""
+            };
+          }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     importProject() {
       this.$refs.uploadProject.beginUpload();
     },
@@ -262,61 +262,50 @@ export default {
         }
       });
     },
-    removeProject(project) {
-      this.$confirm(this.$t("Delete project?"), {
+    async removeProject(project) {
+      const confirmed = await this.$confirm(this.$t("Delete project?"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "projects.remove",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Project deleted"));
-              this.refresh();
-            }
-          );
-        }
       });
-    },
 
-    deleteForever(project) {
-      this.$confirm(this.$t("Delete forever"), {
-        title: project.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "projects.deleteForever",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Project deleted"));
-              this.refresh();
-            }
-          );
-        }
-      });
-    },
-
-    restoreProject(project) {
-      Meteor.call("projects.restore", { projectId: project._id }, (error) => {
-        if (error) {
+      if (confirmed) {
+        try {
+          await Meteor.callAsync("projects.remove", { projectId: project._id });
+          this.$notify(this.$t("Project deleted"));
+          this.refresh();
+        } catch (error) {
           this.$notifyError(error);
-          return;
         }
+      }
+    },
+
+    async deleteForever(project) {
+      const confirmation = await this.$confirm(this.$t("Delete forever"), {
+        title: project.name,
+        cancelText: this.$t("Cancel"),
+        confirmText: this.$t("Delete")
+      });
+
+      if (confirmation) {
+        try {
+          await Meteor.callAsync("projects.deleteForever", { projectId: project._id });
+          this.$notify(this.$t("Project deleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
+    },
+
+    async restoreProject(project) {
+      try {
+        await Meteor.callAsync("projects.restore", { projectId: project._id });
         this.$notify(this.$t("Project restored"));
         this.refresh();
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     openDetail(project) {
@@ -351,16 +340,16 @@ export default {
       return project.color;
     },
 
-    migrateToFeatures() {
+    async migrateToFeatures() {
       this.migrating = true;
-      Meteor.call("admin.projectsMigrateFeatures", {}, (error) => {
-        this.migrating = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+      try {
+        await Meteor.callAsync("admin.projectsMigrateFeatures", {});
         this.$notify(this.$t("Migration finished"));
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.migrating = false;
+      }
     }
   }
 };

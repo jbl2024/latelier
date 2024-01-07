@@ -115,47 +115,39 @@ export default {
       this.refresh();
     }
   },
-  created() {
-    this.debouncedLoad = debounce(() => {
+  async created() {
+    this.debouncedLoad = debounce(async () => {
       const notificationIds = [];
       this.notifications.forEach((notification) => {
         if (!notification.read) notificationIds.push(notification._id);
       });
       if (notificationIds.length === 0) return;
 
-      Meteor.call(
+      await Meteor.callAsync(
         "notifications.markAsRead",
         {
           notificationIds
-        },
-        () => {
-          this.refresh();
         }
       );
+      this.refresh();
     }, 2000);
   },
   methods: {
     close() {
       this.$emit("update:active", false);
     },
-    refresh() {
+    async refresh() {
       this.loading = true;
-      Meteor.call(
-        "notifications.load",
-        { page: this.page },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
-          this.notifications = result.data;
-          this.debouncedLoad();
-        }
-      );
+      try {
+        const result = await Meteor.callAsync("notifications.load", { page: this.page });
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+        this.notifications = result.data;
+        this.debouncedLoad();
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     calculateTotalPages() {
@@ -171,32 +163,30 @@ export default {
       );
     },
 
-    markAllAsRead() {
-      Meteor.call("notifications.markAllAsRead", (error) => {
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async markAllAsRead() {
+      try {
+        await Meteor.callAsync("notifications.markAllAsRead");
         this.refresh();
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeAll() {
-      this.$confirm(this.$t("All notifications will be deleted"), {
+    async removeAll() {
+      const res = await this.$confirm(this.$t("All notifications will be deleted"), {
         title: this.$t("Clear notifications?"),
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("notifications.clear", (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.refresh();
-          });
-        }
       });
+
+      if (res) {
+        try {
+          await Meteor.callAsync("notifications.clear");
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     }
   }
 };

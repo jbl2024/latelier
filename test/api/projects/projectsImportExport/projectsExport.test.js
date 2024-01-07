@@ -5,8 +5,8 @@ import { createStubs, restoreStubs } from "/test/stubs";
 
 if (Meteor.isServer) {
   describe("projectsExport V2020_11", function () {
-    beforeEach(function () {
-      initData();
+    beforeEach(async function () {
+      await initData();
       createStubs();
     });
 
@@ -16,12 +16,12 @@ if (Meteor.isServer) {
 
     it("export project is only available for project admin members", async function () {
       let errorCode;
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
-      const projectId = createProject({ userId });
+      const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;
 
-      const anotherUserId = Meteor.users.findOne({
+      const anotherUserId = await Meteor.users.findOneAsync({
         _id: { $ne: userId }
       });
 
@@ -29,7 +29,7 @@ if (Meteor.isServer) {
       createStubs(anotherUserId);
 
       try {
-        Meteor.call("projects.export", { projectId });
+        await Meteor.callAsync("projects.export", { projectId });
       } catch (error) {
         errorCode = error.error;
       }
@@ -42,13 +42,13 @@ if (Meteor.isServer) {
     it("export project should create a valid zip", async function () {
       let errorCode = null;
       let zipContent;
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
-      const projectId = createProject({ userId });
+      const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;
 
       try {
-        zipContent = Meteor.call("projects.export", { projectId });
+        zipContent = await Meteor.callAsync("projects.export", { projectId });
       } catch (error) {
         errorCode = error.error;
       }

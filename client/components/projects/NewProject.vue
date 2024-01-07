@@ -199,10 +199,9 @@ export default {
     close() {
       this.showDialog = false;
     },
-    create() {
-      Meteor.call(
-        "projects.create",
-        {
+    async create() {
+      try {
+        const result = await Meteor.callAsync("projects.create", {
           organizationId: this.organizationId,
           name: this.name,
           projectType: this.projectType,
@@ -213,19 +212,16 @@ export default {
             : ProjectAccessRights.PRIVATE,
           features: this.selectedFeatures,
           locale: this.$i18n.locale
-        },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.close();
-          this.$router.push({
-            name: "project",
-            params: { projectId: result }
-          });
-        }
-      );
+        });
+
+        this.close();
+        this.$router.push({
+          name: "project",
+          params: { projectId: result }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
     projectStates() {
       const states = [];

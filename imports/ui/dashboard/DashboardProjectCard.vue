@@ -210,7 +210,7 @@ export default {
 
     canDeleteProject(project) {
       if (
-        Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId())
         || project.createdBy === Meteor.userId()
       ) {
         return true;
@@ -220,8 +220,8 @@ export default {
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), project._id)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
 
@@ -244,59 +244,44 @@ export default {
       });
     },
 
-    deleteProject(project) {
-      this.$confirm(this.$t("Delete project?"), {
-        title: project.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Move to trash")
-      }).then((res) => {
+    async deleteProject(project) {
+      try {
+        const res = await this.$confirm(this.$t("Delete project?"), {
+          title: project.name,
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Move to trash")
+        });
+
         if (res) {
-          Meteor.call(
-            "projects.remove",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Project deleted"));
-            }
-          );
+          await Meteor.callAsync("projects.remove", { projectId: project._id });
+          this.$notify(this.$t("Project deleted"));
         }
-      });
-    },
-    addToFavorites(user, projectId) {
-      this.$nextTick(() => {
-        Meteor.call(
-          "projects.addToUserFavorites",
-          { projectId: projectId, userId: user._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.$store.dispatch(
-              "notify",
-              this.$t("Project added to favorites")
-            );
-          }
-        );
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeFromFavorites(user, projectId) {
+    async addToFavorites(user, projectId) {
+      try {
+        await Meteor.callAsync("projects.addToUserFavorites", {
+          projectId: projectId,
+          userId: user._id
+        });
+        this.$store.dispatch("notify", this.$t("Project added to favorites"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+
+    async removeFromFavorites(user, projectId) {
       this.$notify(this.$t("Project removed from favorites"));
-      this.$nextTick(() => {
-        Meteor.call(
-          "projects.removeFromUserFavorites",
-          { projectId: projectId, userId: user._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-            }
-          }
-        );
-      });
+      await this.$nextTick();
+
+      try {
+        await Meteor.callAsync("projects.removeFromUserFavorites", { projectId: projectId, userId: user._id });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     isSubscribedToDigests(user, projectId) {
@@ -307,35 +292,28 @@ export default {
       return digests.indexOf(projectId) >= 0;
     },
 
-    addToDigests(user, projectId) {
-      Meteor.call(
-        "projects.addToUserDigests",
-        { projectId, userId: user._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$notify(this.$t("Project added to daily digest"));
-        }
-      );
+    async addToDigests(user, projectId) {
+      try {
+        await Meteor.callAsync("projects.addToUserDigests", {
+          projectId,
+          userId: user._id
+        });
+        this.$notify(this.$t("Project added to daily digest"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeFromDigests(user, projectId) {
-      Meteor.call(
-        "projects.removeFromUserDigests",
-        { projectId, userId: user._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$store.dispatch(
-            "notify",
-            this.$t("Project removed from daily digest")
-          );
-        }
-      );
+    async removeFromDigests(user, projectId) {
+      try {
+        await Meteor.callAsync("projects.removeFromUserDigests", {
+          projectId,
+          userId: user._id
+        });
+        this.$store.dispatch("notify", this.$t("Project removed from daily digest"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

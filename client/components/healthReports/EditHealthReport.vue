@@ -1,26 +1,13 @@
 <template>
   <div class="edit-health-report">
-    <generic-dialog
-      v-model="showDialog"
-      :title="$t('Edit report')"
-      max-width="800px"
-    >
+    <generic-dialog v-model="showDialog" :title="$t('Edit report')" max-width="800px">
       <template v-slot:content>
-        <select-date
-          v-model="showSelectDate"
-          :disable-time="true"
-          @select="onSelectDate"
-        />
+        <select-date v-model="showSelectDate" :disable-time="true" @select="onSelectDate" />
 
         <v-form v-model="valid" @submit.prevent>
           <v-layout wrap>
             <v-flex xs12>
-              <v-text-field
-                v-model="name"
-                :rules="nameRules"
-                :label="$t('Name')"
-                required
-              />
+              <v-text-field v-model="name" :rules="nameRules" :label="$t('Name')" required />
             </v-flex>
             <v-flex xs12>
               <v-list two-line class="elevation-1 date">
@@ -43,11 +30,7 @@
               </v-list>
             </v-flex>
             <v-flex xs12>
-              <v-combobox
-                v-model="weather"
-                :items="items"
-                :label="$t('Project health')"
-              >
+              <v-combobox v-model="weather" :items="items" :label="$t('Project health')">
                 <template slot="selection" slot-scope="data">
                   <img :src="getIcon(data.item)">
                 </template>
@@ -59,10 +42,8 @@
 
             <v-flex xs12>
               <label>{{ $t("Description") }}</label>
-              <rich-editor
-                ref="description"
-                v-model="description"
-                :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
+              <rich-editor ref="description" v-model="description"
+                           :max-height="!$vuetify.breakpoint.xsOnly ? '200px' : null"
               />
             </v-flex>
           </v-layout>
@@ -88,7 +69,7 @@ export default {
   props: {
     report: {
       type: Object,
-      default: () => {}
+      default: () => { }
     }
   },
   i18n: {
@@ -151,24 +132,23 @@ export default {
       }
       this.coherent = true;
     },
-    create() {
-      this.showDialog = false;
-      Meteor.call(
-        "healthReports.update",
-        {
-          id: this.report._id,
-          name: this.name,
-          description: this.description,
-          date: this.date,
-          weather: this.weather
-        },
-        (error) => {
-          this.$emit("updated");
-          if (error) {
-            this.$notifyError(error);
+    async create() {
+      try {
+        this.showDialog = false;
+        await Meteor.callAsync(
+          "healthReports.update",
+          {
+            id: this.report._id,
+            name: this.name,
+            description: this.description,
+            date: this.date,
+            weather: this.weather
           }
-        }
-      );
+        );
+        this.$emit("updated");
+      } catch (error) {
+        this.$notifyError(error);
+      }
       this.showDialog = false;
     },
     getIcon(weather) {

@@ -72,37 +72,36 @@ export default {
         }
       }
     },
-    size(size) {
+    async size(size) {
       if (!size) return;
-      this.debounceSize();
+      await this.debounceSize();
     },
-    spent(spent) {
+    async spent(spent) {
       if (!spent) return;
-      this.debounceSpent();
+      await this.debounceSpent();
     }
   },
   methods: {
-    debounceSize: debounce(function() {
+    debounceSize: debounce(async function() {
       if (!this.task._id) return;
       if (this.task.estimation
-        && this.task.estimation.size
-        && this.task.estimation.size === this.size
-      ) {
+          && this.task.estimation.size
+          && this.task.estimation.size === this.size) {
         return;
       }
 
       this.loading = true;
-      Meteor.call(
-        "tasks.updateSize",
-        this.task._id,
-        this.size,
-        () => {
-          this.loading = false;
-        }
-      );
+      try {
+        await Meteor.callAsync("tasks.updateSize", this.task._id, this.size);
+      } catch (error) {
+        // Handle the error here
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }, 500),
 
-    debounceSpent: debounce(function() {
+    debounceSpent: debounce(async function() {
       if (!this.task._id) return;
       if (
         this.task.estimation
@@ -113,14 +112,17 @@ export default {
       }
 
       this.loading = true;
-      Meteor.call(
-        "tasks.updateSpent",
-        this.task._id,
-        this.spent,
-        () => {
-          this.loading = false;
-        }
-      );
+      try {
+        await Meteor.callAsync(
+          "tasks.updateSpent",
+          this.task._id,
+          this.spent
+        );
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }, 500)
   }
 };

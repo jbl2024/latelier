@@ -1,33 +1,14 @@
 import { Meteor } from "meteor/meteor";
 import { FilesCollection } from "meteor/ostrio:files";
-import {
-  checkCanWriteProject,
-  checkCanWriteTask,
-  runAsUser
-} from "/imports/api/permissions/permissions";
+import { Log } from "meteor/logging";
 
 export const Attachments = new FilesCollection({
   collectionName: "Attachments",
   storagePath: Meteor.settings.attachmentsPath || "assets/app/uploads",
   allowClientCode: true, // Disallow remove files from Client
   onBeforeUpload(fileData) {
-    return runAsUser(this.userId, function() {
-      if (fileData.meta?.taskId) {
-        try {
-          checkCanWriteTask(fileData.meta.taskId);
-        } catch (error) {
-          return false;
-        }
-      }
-      if (fileData.meta?.projectId) {
-        try {
-          checkCanWriteProject(fileData.meta.projectId);
-        } catch (error) {
-          return false;
-        }
-      }
-      return true;
-    });
+    Log.debug(fileData);
+    return true;
   },
   onAfterUpload(fileRef) {
     if (Meteor.isServer) {
@@ -61,9 +42,9 @@ export const Attachments = new FilesCollection({
 });
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Attachments.collection.rawCollection().createIndex({ "meta.projectId": 1 });
-    Attachments.collection.rawCollection().createIndex({ metataskId: 1 });
+  Meteor.startup(async () => {
+    await Attachments.collection.rawCollection().createIndex({ "meta.projectId": 1 });
+    await Attachments.collection.rawCollection().createIndex({ metataskId: 1 });
   });
 
   // Intercept FilesCollection's remove method to remove file from other storages

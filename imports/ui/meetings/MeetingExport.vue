@@ -80,37 +80,32 @@ export default {
     findFormat(format) {
       return this.formats.find((f) => f.format === format);
     },
-    exportAs(format, options = {}) {
+    async exportAs(format, options = {}) {
       const foundFormat = this.findFormat(format);
       if (this.loading || !foundFormat) return;
       this.loading = true;
-      Meteor.call(
-        "meetings.export",
-        {
+      try {
+        const result = await Meteor.callAsync("meetings.export", {
           meetingId: this.meeting._id,
           locale: this.$i18n.locale,
           format
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          const blob = new Blob([result.data], {
-            type: foundFormat.mimeType
-          });
+        });
+        const blob = new Blob([result.data], {
+          type: foundFormat.mimeType
+        });
 
-          if (options.previewOnly === true) {
-            const blobURL = URL.createObjectURL(blob);
-            window.open(blobURL);
-          } else {
-            const date = dates.formatDate(this.meeting.startDate, "YYYYMMDD");
-            const filename = `${date}-${this.meeting.name}.${format}`;
-            saveAs(blob, sanitizeForFs(filename));
-          }
+        if (options.previewOnly === true) {
+          const blobURL = URL.createObjectURL(blob);
+          window.open(blobURL);
+        } else {
+          const date = dates.formatDate(this.meeting.startDate, "YYYYMMDD");
+          const filename = `${date}-${this.meeting.name}.${format}`;
+          saveAs(blob, sanitizeForFs(filename));
         }
-      );
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     }
   }
 };

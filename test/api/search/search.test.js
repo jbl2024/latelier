@@ -4,20 +4,20 @@ import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Lists } from "/imports/api/lists/lists";
 import { createStubs, restoreStubs } from "/test/stubs";
 
-function createProject(name) {
+async function createProject(name) {
   name = name || "project";
-  const projectId = Meteor.call("projects.create", {
+  const projectId = await Meteor.callAsync("projects.create", {
     name,
     projectType: "kanban",
     state: ProjectStates.PRODUCTION
   });
-  Meteor.call("lists.insert", projectId, "list1", false, false);
+  await Meteor.callAsync("lists.insert", projectId, "list1", false, false);
 }
 
 if (Meteor.isServer) {
   describe("search (anonymous)", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
     });
 
     afterEach(function() {});
@@ -26,7 +26,7 @@ if (Meteor.isServer) {
       let errorCode;
 
       try {
-        Meteor.call("search.findTasks", {
+        await Meteor.callAsync("search.findTasks", {
           name: ""
         });
       } catch (error) {
@@ -37,7 +37,7 @@ if (Meteor.isServer) {
       );
 
       try {
-        Meteor.call("search.findProjects", {
+        await Meteor.callAsync("search.findProjects", {
           name: ""
         });
       } catch (error) {
@@ -50,8 +50,8 @@ if (Meteor.isServer) {
   });
 
   describe("search", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -60,46 +60,46 @@ if (Meteor.isServer) {
     });
 
     it("task is displayed to user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
         Projects.findOne()._id,
         Lists.findOne()._id,
         "a name"
       );
 
-      const result = Meteor.call("search.findTasks", { name: "a" });
+      const result = await Meteor.callAsync("search.findTasks", { name: "a" });
       expect(result.totalItems).to.be.equal(1);
 
-      Meteor.call("projects.updateState", {
+      await Meteor.callAsync("projects.updateState", {
         projectId: Projects.findOne()._id,
         state: ProjectStates.ARCHIVED
       });
 
-      const result2 = Meteor.call("search.findTasks", { name: "a" });
+      const result2 = await Meteor.callAsync("search.findTasks", { name: "a" });
       expect(result2.totalItems).to.be.equal(0);
     });
 
     it("project is displayed to user", async function() {
-      createProject();
-      const result = Meteor.call("search.findProjects", { name: "project" });
+      await createProject();
+      const result = await Meteor.callAsync("search.findProjects", { name: "project" });
       expect(result.totalItems).to.be.equal(1);
 
-      Meteor.call("projects.updateState", {
+      await Meteor.callAsync("projects.updateState", {
         projectId: result.data[0]._id,
         state: ProjectStates.ARCHIVED
       });
 
-      const result2 = Meteor.call("search.findProjects", { name: "project" });
+      const result2 = await Meteor.callAsync("search.findProjects", { name: "project" });
       expect(result2.totalItems).to.be.equal(0);
     });
 
     it("nothing is displayed to new user", async function() {
-      createProject();
-      Meteor.call(
+      await createProject();
+      await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
@@ -108,14 +108,14 @@ if (Meteor.isServer) {
         email: "anotheruser@bar.com"
       };
 
-      const otherUserId = Accounts.createUser(userData);
+      const otherUserId = await Accounts.createUserAsync(userData);
 
       restoreStubs();
       createStubs(otherUserId);
-      const result = Meteor.call("search.findTasks", { name: "a" });
+      const result = await Meteor.callAsync("search.findTasks", { name: "a" });
       expect(result.totalItems).to.be.equal(0);
 
-      const resultProject = Meteor.call("search.findProjects", { name: "a" });
+      const resultProject = await Meteor.callAsync("search.findProjects", { name: "a" });
       expect(resultProject.totalItems).to.be.equal(0);
     });
   });

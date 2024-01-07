@@ -8,8 +8,8 @@ import moment from "moment";
 
 if (Meteor.isServer) {
   describe("meetings", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -29,7 +29,7 @@ if (Meteor.isServer) {
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
       try {
-        Meetings.methods.create._execute(context, args);
+        await Meetings.methods.create._execute(context, args);
       } catch (error) {
         errorCode = error.error;
       }
@@ -39,21 +39,21 @@ if (Meteor.isServer) {
     });
 
     it("creates a new meeting", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
 
       const args = {
-        projectId: Projects.findOne()._id,
+        projectId: (await Projects.findOneAsync())._id,
         name: "name",
         state: "pending",
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      expect(Meetings.find().count()).to.be.equal(1);
+      await Meetings.methods.create._execute(context, args);
+      expect(await Meetings.find().countAsync()).to.be.equal(1);
     });
 
     it("remove project remove all meetings", async function() {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
       const projectId = Projects.findOne()._id;
 
       const args = {
@@ -63,20 +63,20 @@ if (Meteor.isServer) {
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      expect(Meetings.find().count()).to.be.equal(3);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      expect(await Meetings.find().countAsync()).to.be.equal(3);
 
-      Meteor.call("projects.deleteForever", {
-        projectId: Projects.findOne()._id
+      await Meteor.callAsync("projects.deleteForever", {
+        projectId: (await Projects.findOneAsync())._id
       });
 
-      expect(Meetings.find().count()).to.be.equal(0);
+      expect(await Meetings.find().countAsync()).to.be.equal(0);
     });
 
     it("find meetings", async function () {
-      const context = { userId: Meteor.users.findOne()._id };
+      const context = { userId: (await Meteor.users.findOneAsync())._id };
       const projectId = Projects.findOne()._id;
 
       const args = {
@@ -86,16 +86,16 @@ if (Meteor.isServer) {
         startDate: moment().format("YYYY-MM-DD HH:00"),
         endDate: moment().format("YYYY-MM-DD HH:00")
       };
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
-      Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
+      await Meetings.methods.create._execute(context, args);
 
-      const allMeetings = Meteor.call("meetings.findMeetings", {
+      const allMeetings = await Meteor.callAsync("meetings.findMeetings", {
         projectId: projectId
       });
       expect(allMeetings.totalItems).to.be.equal(3);
 
-      const todayMeetings = Meteor.call("meetings.findMeetings", {
+      const todayMeetings = await Meteor.callAsync("meetings.findMeetings", {
         projectId: projectId,
         dates: [
           { start: moment().startOf("day").format(moment.defaultFormat) }

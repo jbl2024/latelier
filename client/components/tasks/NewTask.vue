@@ -167,77 +167,79 @@ export default {
         autofocus.focus(this.$refs.name);
       });
     },
-    newTask(keep) {
+    async newTask(keep) {
       const list = Lists.findOne({ _id: this.listId });
+
+      const insertTask = async (name) => {
+        try {
+          const task = await Meteor.callAsync(
+            "tasks.insert",
+            list.projectId,
+            this.listId,
+            name,
+            this.labels.map((l) => l._id)
+          );
+          return task;
+        } catch (error) {
+          this.$notifyError(error);
+          return null;
+        }
+      };
+
+      const createTasks = async (tasks) => {
+        tasks.forEach(async (name) => {
+          await insertTask(name);
+        });
+        this.$notify(this.$t("Tasks created"));
+      };
+
       if (!this.multiline) {
         this.loading = true;
-        Meteor.call(
-          "tasks.insert",
-          list.projectId,
-          this.listId,
-          this.name,
-          this.labels.map((l) => l._id),
-          (error, task) => {
-            this.loading = false;
-            if (error) {
-              this.$notifyError(error);
-              return;
+        const task = await insertTask(this.name);
+        this.loading = false;
+        if (task) {
+          this.$notify(this.$t("Task created"));
+          this.reset();
+          if (!keep) {
+            this.close();
+            this.$router.push({
+              name: "project-task",
+              params: {
+                projectId: this.projectId,
+                taskId: task._id
+              }
+            });
+          }
+        }
+      } else {
+        const tasks = this.name.split(/\r?\n/g).filter((name) => name && name.length > 0);
+        try {
+          const confirmation = await this.$confirm(
+            this.$t("Really create {count} tasks?", { count: tasks.length }),
+            {
+              title: this.$t("Confirmation"),
+              cancelText: this.$t("Cancel"),
+              confirmText: this.$t("Create {count} tasks", {
+                count: tasks.length
+              })
             }
-            this.$notify(this.$t("Task created"));
+          );
+
+          if (confirmation) {
+            this.loading = true;
+            this.$stopMeteor();
+            await createTasks(tasks);
+            this.loading = false;
             this.reset();
             if (!keep) {
               this.close();
-              this.$router.push({
-                name: "project-task",
-                params: {
-                  projectId: this.projectId,
-                  taskId: task._id
-                }
-              });
             }
-          }
-        );
-      } else {
-        let tasks = this.name.split(/\r?\n/g) || [];
-        tasks = tasks.filter((name) => name && name.length > 0);
-        this.$confirm(
-          this.$t("Really create {count} tasks?", { count: tasks.length }),
-          {
-            title: this.$t("Confirmation"),
-            cancelText: this.$t("Cancel"),
-            confirmText: this.$t("Create {count} tasks", {
-              count: tasks.length
-            })
-          }
-        ).then((res) => {
-          if (res) {
-            this.loading = true;
-            this.$stopMeteor();
-
-            const labelIds = this.labels.map((l) => l._id);
-            tasks.forEach((name) => {
-              Meteor.call(
-                "tasks.insert",
-                list.projectId,
-                this.listId,
-                name,
-                labelIds,
-                (error) => {
-                  if (error) {
-                    this.$notifyError(error);
-                  }
-                }
-              );
-              this.loading = false;
-              this.reset();
-              if (!keep) {
-                this.close();
-              }
-            });
-            this.$notify(this.$t("Tasks created"));
             this.$startMeteor();
           }
-        });
+        } catch (error) {
+          this.$notifyError(error);
+          // Handle cancelation or error from confirmation dialog
+        }
       }
     },
     close() {

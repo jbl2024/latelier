@@ -104,18 +104,13 @@ export default {
     this.refresh();
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "administration.info",
-        { projectId: this.projectId },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.info = result;
-        }
-      );
+    async refresh() {
+      try {
+        const result = await Meteor.callAsync("administration.info", { projectId: this.projectId });
+        this.info = result;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     onResize() {

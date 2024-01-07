@@ -1,10 +1,10 @@
 import { Meteor } from "meteor/meteor";
 
-// Not triggered when entering same route but different params
-export const projectHasFeature = (feature) => (to, from, next) => {
+export const projectHasFeature = (feature) => async (to, from, next) => {
   const { projectId } = to.params;
-  Meteor.call("projects.hasFeature", { projectId, feature }, (error, result) => {
-    if (error || !result) {
+  try {
+    const result = await Meteor.callAsync("projects.hasFeature", { projectId, feature });
+    if (!result) {
       next({
         name: "project-dashboard",
         params: { projectId }
@@ -12,14 +12,22 @@ export const projectHasFeature = (feature) => (to, from, next) => {
     } else {
       next();
     }
-  });
+  } catch (error) {
+    next({
+      name: "project-dashboard",
+      params: { projectId }
+    });
+  }
 };
 
-export const organizationHasFeature = (feature) => (to, from, next) => {
+export const organizationHasFeature = (feature) => async (to, from, next) => {
   const { organizationId } = to.params;
-  Meteor.call("organizations.getFeatures", { organizationId }, (error, features) => {
-    features = Array.isArray(features) ? features : [];
-    if (error || !features.includes(feature)) {
+  try {
+    let features = await Meteor.callAsync("organizations.getFeatures", { organizationId });
+    if (!Array.isArray(features)) {
+      features = [];
+    }
+    if (!features.includes(feature)) {
       next({
         name: "dashboard-organization-page",
         params: { organizationId }
@@ -27,5 +35,10 @@ export const organizationHasFeature = (feature) => (to, from, next) => {
     } else {
       next();
     }
-  });
+  } catch (error) {
+    next({
+      name: "dashboard-organization-page",
+      params: { organizationId }
+    });
+  }
 };

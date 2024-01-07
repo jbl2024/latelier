@@ -1,9 +1,8 @@
 <template>
   <v-card class="card" @click="show = !show">
-    <edit-health-report
-      ref="editHealthReport"
-      :report="selectedReport"
-      @updated="$emit('updated')"
+    <edit-health-report ref="editHealthReport"
+                        :report="selectedReport"
+                        @updated="$emit('updated')"
     />
     <v-card-title primary-title>
       <div>
@@ -15,11 +14,7 @@
     </v-card-title>
     <v-img :src="getIcon(report.weather)" height="125px" contain />
     <v-card-text>
-      <div
-        v-if="report.description"
-        class="tiptap-editor-view"
-        v-html="report.description"
-      />
+      <div v-if="report.description" class="tiptap-editor-view" v-html="report.description" />
     </v-card-text>
     <v-divider light />
 
@@ -52,7 +47,7 @@ export default {
   props: {
     report: {
       type: Object,
-      default: () => {}
+      default: () => { }
     }
   },
   data() {
@@ -81,48 +76,42 @@ export default {
       this.selectedReport = report;
       this.$refs.editHealthReport.open();
     },
-    deleteReport(report) {
-      this.$confirm(this.$t("Confirm"), {
-        title: this.$t("Deletion is permanent"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteReport(report) {
+      try {
+        const res = await this.$confirm(this.$t("Confirm"), {
+          title: this.$t("Deletion is permanent"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Delete")
+        });
+
         if (res) {
-          Meteor.call(
-            "healthReports.remove",
-            {
-              id: report._id
-            },
-            (error) => {
-              this.$emit("updated");
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Report deleted"));
-            }
-          );
+          await Meteor.callAsync("healthReports.remove", { id: report._id });
+          this.$emit("updated");
+          this.$notify(this.$t("Report deleted"));
         }
-      });
+      } catch (error) {
+        if (error) {
+          this.$notifyError(error);
+        }
+      }
     },
 
-    refreshTasks() {
-      Meteor.call(
-        "healthReports.findTasks",
-        {
+    async refreshTasks() {
+      this.loading = true;
+
+      try {
+        const result = await Meteor.callAsync("healthReports.findTasks", {
           id: this.report._id,
           page: 1
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.tasks = result.data;
-          this.taskCount = result.data.totalItems;
-        }
-      );
+        });
+
+        this.tasks = result.data;
+        this.taskCount = result.totalItems;
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };

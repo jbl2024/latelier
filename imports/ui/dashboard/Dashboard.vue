@@ -336,15 +336,14 @@ export default {
       return favorites;
     }
   },
-  mounted() {
+  async mounted() {
     this.$store.dispatch("setWindowTitle", this.$t("Dashboard"));
-    Meteor.call("users.getEmailPreferences", (error, user) => {
-      if (error) {
-        this.$notifyError(error);
-        return;
-      }
+    try {
+      const user = await Meteor.callAsync("users.getEmailPreferences");
       this.user = user;
-    });
+    } catch (error) {
+      this.$notifyError(error);
+    }
   },
   meteor: {
     $subscribe: {
@@ -433,8 +432,8 @@ export default {
   },
   methods: {
     canImportProject(organizationId) {
-      return Permissions.isAdmin(Meteor.userId(), organizationId)
-      || Permissions.isAdmin(Meteor.userId());
+      return Permissions.isAdminSync(Meteor.userId(), organizationId)
+      || Permissions.isAdminSync(Meteor.userId());
     },
     importProject() {
       this.$refs.uploadProject.beginUpload();
@@ -447,13 +446,14 @@ export default {
     newOrganization() {
       this.$refs.newOrganization.open();
     },
-    toggleTaskAssignedTo() {
-      this.currentUser.emailSettings.tasks.assignTo = !this.currentUser
-        .emailSettings.tasks.assignTo;
-      Meteor.call(
-        "users.updateEmailPreferences",
-        this.currentUser.emailSettings
-      );
+    async toggleTaskAssignedTo() {
+      try {
+        this.currentUser.emailSettings.tasks.assignTo = !this.currentUser
+          .emailSettings.tasks.assignTo;
+        await Meteor.callAsync("users.updateEmailPreferences", this.currentUser.emailSettings);
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
     newProject(organizationId) {
       this.selectedOrganizationId = organizationId;
@@ -486,8 +486,8 @@ export default {
     },
     canManageOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
@@ -495,35 +495,34 @@ export default {
     },
     canDeleteOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
       return false;
     },
-    deleteOrganization(organization) {
-      this.$confirm(this.$t("Delete organization?"), {
-        title: organization.name,
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Delete")
-      }).then((res) => {
+    async deleteOrganization(organization) {
+      try {
+        const res = await this.$confirm(
+          this.$t("Delete organization?"),
+          {
+            title: organization.name,
+            cancelText: this.$t("Cancel"),
+            confirmText: this.$t("Delete")
+          }
+        );
+
         if (res) {
-          Meteor.call(
-            "organizations.remove",
-            {
-              organizationId: organization._id
-            },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Organization deleted"));
-            }
-          );
+          await Meteor.callAsync("organizations.remove", {
+            organizationId: organization._id
+          });
+
+          this.$notify(this.$t("Organization deleted"));
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     onResizeProjects() {

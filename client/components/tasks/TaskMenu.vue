@@ -87,44 +87,43 @@ export default {
     }
   },
   methods: {
-    cloneTask(id) {
-      this.$confirm(this.$t("Do you really want to clone this task?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Clone")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("tasks.clone", id, (error, result) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.$router.push({
-              name: "project-task",
-              params: {
-                projectId: result.projectId,
-                taskId: result._id
-              }
-            });
-          });
-        }
-      });
+    async cloneTask(id) {
+      try {
+        await this.$confirm(this.$t("Do you really want to clone this task?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Clone")
+        });
+        const result = await Meteor.callAsync("tasks.clone", id);
+        this.$router.push({
+          name: "project-task",
+          params: {
+            projectId: result.projectId,
+            taskId: result._id
+          }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     moveTask() {},
 
-    deleteTask(id) {
-      this.$confirm(this.$t("Do you really want to delete this task?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Move to trash")
-      }).then((res) => {
-        if (res) {
-          Meteor.call("tasks.remove", id);
-          this.$store.dispatch("showTaskDetail", false);
-        }
-      });
+    async deleteTask(id) {
+      try {
+        await this.$confirm(this.$t("Do you really want to delete this task?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Move to trash")
+        });
+
+        await Meteor.callAsync("tasks.remove", id);
+        this.$store.dispatch("showTaskDetail", false);
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
+
     openHistory() {
       this.$store.dispatch("showTaskHistory", true);
     },
@@ -133,24 +132,22 @@ export default {
       this.$store.dispatch("showTaskExport", true);
     },
 
-    moveToLeft(id) {
-      Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "left" }, (error) => {
-        if (error) {
-          this.$notifyError(error);
-        } else {
-          this.$notify(this.$t("Task moved"));
-        }
-      });
+    async moveToLeft(id) {
+      try {
+        await Meteor.callAsync("tasks.moveToAdjacentList", { taskId: id, direction: "left" });
+        this.$notify(this.$t("Task moved"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    moveToRight(id) {
-      Meteor.call("tasks.moveToAdjacentList", { taskId: id, direction: "right" }, (error) => {
-        if (error) {
-          this.$notifyError(error);
-        } else {
-          this.$notify(this.$t("Task moved"));
-        }
-      });
+    async moveToRight(id) {
+      try {
+        await Meteor.callAsync("tasks.moveToAdjacentList", { taskId: id, direction: "right" });
+        this.$notify(this.$t("Task moved"));
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

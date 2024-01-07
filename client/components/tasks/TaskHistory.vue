@@ -86,23 +86,21 @@ export default {
     }
   },
   methods: {
-    refresh() {
+    async refresh() {
       this.loading = true;
-      Meteor.call(
-        "tasks.getHistory",
-        { taskId: this.taskId, page: this.page },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = this.calculateTotalPages();
-          this.history = result.data;
-        }
-      );
+
+      try {
+        const result = await Meteor.callAsync("tasks.getHistory", { taskId: this.taskId, page: this.page });
+
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = this.calculateTotalPages();
+        this.history = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
     calculateTotalPages() {

@@ -135,7 +135,7 @@ const store = new Vuex.Store({
         }
         context.commit("updateCurrentUser", currentUser);
         context.commit("updateCurrentUserId", currentUser._id);
-        context.commit("updateIsAdmin", Permissions.isAdmin(currentUser._id));
+        context.commit("updateIsAdmin", Permissions.isAdminSync(currentUser._id));
       } catch (error) {
         context.commit("updateCurrentUser", null);
         context.commit("updateCurrentUserId", null);

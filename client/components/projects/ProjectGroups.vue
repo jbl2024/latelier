@@ -157,8 +157,8 @@ export default {
     }
   },
   methods: {
-    removeGroup(group) {
-      Meteor.call("projectGroups.remove", group._id);
+    async removeGroup(group) {
+      await Meteor.callAsync("projectGroups.remove", group._id);
     },
     selectGroup(group) {
       this.selectedGroup = this.selectedGroup && this.selectedGroup._id === group._id

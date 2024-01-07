@@ -64,23 +64,28 @@ export default {
       });
     },
 
-    save() {
-      this.modeler.saveXML({ format: false }, (err, xml) => {
-        if (err) {
-          this.$notifyError(error);
-          return;
-        }
-        this.xmlCache = xml;
-        Meteor.call(
-          "processDiagrams.saveXML",
-          { processDiagramId: this.processDiagram._id, xml },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
+    async save() {
+      try {
+        const result = await new Promise((resolve, reject) => {
+          this.modeler.saveXML({ format: false }, (err, xml) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(xml);
             }
-          }
-        );
-      });
+          });
+        });
+
+        this.xmlCache = result;
+
+        try {
+          await Meteor.callAsync("processDiagrams.saveXML", { processDiagramId: this.processDiagram._id, result });
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     saveSVG(cb) {

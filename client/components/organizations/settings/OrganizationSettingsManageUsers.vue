@@ -144,15 +144,15 @@ export default {
     }
   },
   methods: {
-    onSelectUser(user) {
-      Meteor.call("organizations.addMember", {
+    async onSelectUser(user) {
+      await Meteor.callAsync("organizations.addMember", {
         organizationId: this.organization._id,
         userId: user._id
       });
     },
 
-    removeUser(user) {
-      Meteor.call("organizations.removeMember", {
+    async removeUser(user) {
+      await Meteor.callAsync("organizations.removeMember", {
         organizationId: this.organization._id,
         userId: user._id
       });
@@ -160,49 +160,44 @@ export default {
 
     isAdmin(user, organization) {
       return (
-        Permissions.isAdmin(user._id, organization._id)
-        || Permissions.isAdmin(user._id)
+        Permissions.isAdminSync(user._id, organization._id)
+        || Permissions.isAdminSync(user._id)
       );
     },
 
     canManageOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
       return false;
     },
 
-    setAdmin(user, organization) {
-      Meteor.call(
-        "organizations.setAdmin",
-        {
-          organizationId: organization._id,
-          userId: user._id
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
+    async setAdmin(user, organization) {
+      try {
+        await Meteor.callAsync(
+          "organizations.setAdmin",
+          {
+            organizationId: organization._id,
+            userId: user._id
           }
-        }
-      );
+        );
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeAdmin(user, organization) {
-      Meteor.call(
-        "organizations.removeAdmin",
-        {
+    async removeAdmin(user, organization) {
+      try {
+        await Meteor.callAsync("organizations.removeAdmin", {
           organizationId: organization._id,
           userId: user._id
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-        }
-      );
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

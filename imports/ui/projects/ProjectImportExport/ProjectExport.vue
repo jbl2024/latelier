@@ -127,45 +127,48 @@ export default {
   methods: {
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), project._id)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
     getItemCount(item) {
       if (!this.info || !this.infoMapping[item]) return null;
       return this.info[this.infoMapping[item]];
     },
-    exportProject() {
-      this.loading = true;
-      Meteor.call("projects.export",
-        {
+    async exportProject() {
+      try {
+        this.loading = true;
+        const result = await Meteor.callAsync("projects.export", {
           projectId: this.projectId,
           items: this.selectedItemsList
-        },
-        (error, result) => {
-          if (error || !result?.data || result.data.constructor !== Uint8Array) {
-            this.loading = false;
-            this.$notifyError(this.$t("projects.export.invalidExport"));
-            return;
-          }
-          const blob = new Blob([result.data]);
-          const timestamp = moment().format("YYYY-MM-DD");
-          saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
+        });
+
+        if (!result?.data || result.data.constructor !== Uint8Array) {
           this.loading = false;
           this.$notifyError(this.$t("projects.export.invalidExport"));
-        });
+          return;
+        }
+
+        const blob = new Blob([result.data]);
+        const timestamp = moment().format("YYYY-MM-DD");
+        saveAs(blob, `${timestamp} - ${sanitizeForFs(this.project.name)}.zip`);
+        this.loading = false;
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(this.$t("projects.export.invalidExport"));
+      }
     },
-    getProjectsInfo() {
-      Meteor.call("projects.info",
-        { projectId: this.projectId },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.info = result;
+    async getProjectsInfo() {
+      try {
+        const result = await Meteor.callAsync("projects.info", {
+          projectId: this.projectId
         });
+        this.info = result;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
+
     hasFeature(project, feature) {
       return Array.isArray(project?.features)
         && project.features.includes(feature);

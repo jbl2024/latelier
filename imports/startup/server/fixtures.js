@@ -27,5 +27,5 @@ function generateFixtures() {
 }
 
 if (Meteor.settings.generateFixtures) {
-  generateFixtures();
+  await generateFixtures();
 }

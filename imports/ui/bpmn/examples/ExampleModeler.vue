@@ -65,23 +65,28 @@ export default {
       });
     },
 
-    save() {
-      this.modeler.saveXML({ format: false }, (err, xml) => {
-        if (err) {
-          this.$notifyError(error);
-          return;
-        }
-        this.xmlCache = xml;
-        Meteor.call(
-          "bpmnExamples.saveXML",
-          { exampleId: this.example._id, xml },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
+    async save() {
+      try {
+        const savedXml = await new Promise((resolve, reject) => {
+          this.modeler.saveXML({ format: false }, (err, xml) => {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(xml);
             }
-          }
-        );
-      });
+          });
+        });
+
+        this.xmlCache = savedXml;
+
+        try {
+          await Meteor.callAsync("bpmnExamples.saveXML", { exampleId: this.example._id, xml });
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     saveSVG(cb) {

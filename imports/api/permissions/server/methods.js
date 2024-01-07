@@ -1,13 +1,15 @@
+import SimpleSchema from "simpl-schema";
+import { Roles } from "meteor/jbl2024:roles";
+import { Log } from "meteor/logging";
+import { Attachments } from "/imports/api/attachments/attachments.js";
+import { Meetings } from "/imports/api/meetings/meetings.js";
+import { Organizations } from "/imports/api/organizations/organizations.js";
 import {
   Permissions,
   checkLoggedIn
 } from "/imports/api/permissions/permissions";
-import { Projects, ProjectStates } from "/imports/api/projects/projects.js";
-import { Organizations } from "/imports/api/organizations/organizations.js";
-import { Meetings } from "/imports/api/meetings/meetings.js";
+import { ProjectStates, Projects } from "/imports/api/projects/projects.js";
 import { Tasks } from "/imports/api/tasks/tasks.js";
-import { Attachments } from "/imports/api/attachments/attachments.js";
-import { Roles } from "meteor/alanning:roles";
 import { UserUtils } from "/imports/api/users/utils";
 
 /**
@@ -19,13 +21,13 @@ Permissions.methods.canReadProject = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
     });
@@ -41,13 +43,13 @@ Permissions.methods.canWriteProject = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
       state: { $ne: ProjectStates.ARCHIVED }
@@ -64,13 +66,13 @@ Permissions.methods.canDeleteProject = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
     });
@@ -89,18 +91,18 @@ Permissions.methods.canReadTask = new ValidatedMethod({
   validate: new SimpleSchema({
     taskId: { type: String }
   }).validator(),
-  run({ taskId }) {
+  async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({ _id: taskId });
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("not-found");
     }
 
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: task.projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }]
     });
@@ -116,18 +118,18 @@ Permissions.methods.canWriteTask = new ValidatedMethod({
   validate: new SimpleSchema({
     taskId: { type: String }
   }).validator(),
-  run({ taskId }) {
+  async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({ _id: taskId });
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("not-found");
     }
 
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: task.projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
       state: { $ne: ProjectStates.ARCHIVED }
@@ -144,18 +146,18 @@ Permissions.methods.canDeleteTask = new ValidatedMethod({
   validate: new SimpleSchema({
     taskId: { type: String }
   }).validator(),
-  run({ taskId }) {
+  async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const task = Tasks.findOne({ _id: taskId });
+    const task = await Tasks.findOneAsync({ _id: taskId });
     if (!task) {
       throw new Meteor.Error("not-found");
     }
 
-    const project = Projects.findOne({
+    const project = await Projects.findOneAsync({
       _id: task.projectId,
       $or: [{ createdBy: userId }, { members: userId }, { isPublic: true }],
       state: { $ne: ProjectStates.ARCHIVED }
@@ -176,10 +178,10 @@ Permissions.methods.canReadAttachment = new ValidatedMethod({
   validate: new SimpleSchema({
     attachmentId: { type: String }
   }).validator(),
-  run({ attachmentId }) {
+  async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -187,7 +189,7 @@ Permissions.methods.canReadAttachment = new ValidatedMethod({
       return false;
     }
     const { projectId } = attachment.meta;
-    return Meteor.call("permissions.canReadProject", { projectId });
+    return Meteor.callAsync("permissions.canReadProject", { projectId });
   }
 });
 
@@ -196,10 +198,10 @@ Permissions.methods.canWriteAttachment = new ValidatedMethod({
   validate: new SimpleSchema({
     attachmentId: { type: String }
   }).validator(),
-  run({ attachmentId }) {
+  async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -207,7 +209,7 @@ Permissions.methods.canWriteAttachment = new ValidatedMethod({
       return false;
     }
     const { projectId } = attachment.meta;
-    return Meteor.call("permissions.canWriteProject", { projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId });
   }
 });
 
@@ -216,10 +218,10 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
   validate: new SimpleSchema({
     attachmentId: { type: String }
   }).validator(),
-  run({ attachmentId }) {
+  async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -227,7 +229,7 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
       return false;
     }
     const { projectId } = attachment.meta;
-    return Meteor.call("permissions.canWriteProject", { projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId });
   }
 });
 
@@ -238,13 +240,13 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
+  async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const meeting = Meetings.findOne({
+    const meeting = await Meetings.findOne({
       _id: meetingId,
       deleted: { $ne: true }
     });
@@ -252,7 +254,7 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
       throw new Meteor.Error("not-found");
     }
 
-    return Meteor.call("permissions.canReadProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canReadProject", { projectId: meeting.projectId });
   }
 });
 
@@ -261,20 +263,20 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
+  async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const meeting = Meetings.findOne({
+    const meeting = await Meetings.findOneAsync({
       _id: meetingId,
       deleted: { $ne: true }
     });
     if (!meeting) {
       throw new Meteor.Error("not-found");
     }
-    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 
@@ -283,42 +285,42 @@ Permissions.methods.canDeleteMeeting = new ValidatedMethod({
   validate: new SimpleSchema({
     meetingId: { type: String }
   }).validator(),
-  run({ meetingId }) {
+  async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
 
-    const meeting = Meetings.findOne({
+    const meeting = await Meetings.findOneAsync({
       _id: meetingId,
       createdBy: userId
     });
     if (!meeting) {
       throw new Meteor.Error("not-authorized");
     }
-    return Meteor.call("permissions.canWriteProject", { projectId: meeting.projectId });
+    return Meteor.callAsync("permissions.canWriteProject", { projectId: meeting.projectId });
   }
 });
 
 Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
   name: "permissions.setAdminIfNeeded",
   validate: null,
-  run() {
-    this.unblock();
-
+  async run() {
     checkLoggedIn();
-    const user = Meteor.user();
+    const user = await Meteor.user();
     const admin = Meteor.settings.roles?.admin || [];
-    admin.forEach((email) => {
+    // eslint-disable-next-line no-restricted-syntax
+    for (const email of admin) {
       if (UserUtils.getEmail(user) === email) {
-        if (!Permissions.isAdmin(user._id)) {
-          /* eslint no-console: off */
-          console.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
-          Roles.addUsersToRoles(user._id, "admin", Roles.GLOBAL_GROUP);
+        // eslint-disable-next-line no-await-in-loop
+        if (!await Permissions.isAdmin(user._id)) {
+          Log.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
+          // eslint-disable-next-line no-await-in-loop
+          await Roles.addUsersToRolesAsync(user._id, "admin", Roles.GLOBAL_GROUP);
         }
       }
-    });
+    }
   }
 });
 
@@ -327,13 +329,13 @@ Permissions.methods.canReadOrganization = new ValidatedMethod({
   validate: new SimpleSchema({
     organizationId: { type: String }
   }).validator(),
-  run({ organizationId }) {
+  async run({ organizationId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
-    const organization = Organizations.findOne({
+    const organization = await Organizations.findOneAsync({
       _id: organizationId,
       $or: [{ createdBy: userId }, { members: userId }]
     });

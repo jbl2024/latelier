@@ -89,23 +89,19 @@ export default {
       this.showDialog = false;
     },
 
-    update() {
+    async update() {
       this.showDialog = false;
-      Meteor.call(
-        "bpmnExamples.update",
-        {
+      try {
+        await Meteor.callAsync("bpmnExamples.update", {
           exampleId: this.example._id,
           name: this.name,
           description: this.description,
           xml: this.xml
-        },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-          }
-          this.$emit("updated");
-        }
-      );
+        });
+        this.$emit("updated");
+      } catch (error) {
+        this.$notifyError(error);
+      }
       this.showDialog = false;
     }
   }

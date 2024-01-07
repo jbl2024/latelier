@@ -106,53 +106,44 @@ export default {
       this.showDialog = false;
     },
 
-    refresh() {
-      this.loading = true;
-      Meteor.call("projects.getDeletedProjects", (error, result) => {
-        this.loading = false;
-        if (error) {
-          this.$notifyError(error);
-          return;
-        }
+    async refresh() {
+      try {
+        this.loading = true;
+        const result = await Meteor.callAsync("projects.getDeletedProjects");
         this.projects = result.data;
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     },
 
-    restoreProject(project) {
-      Meteor.call(
-        "projects.restore",
-        { projectId: project._id },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.refresh();
-        }
-      );
+    async restoreProject(project) {
+      try {
+        await Meteor.callAsync("projects.restore", { projectId: project._id });
+        this.refresh();
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    deleteForever(project) {
-      this.$confirm(this.$t("Delete forever"), {
+    async deleteForever(project) {
+      const res = await this.$confirm(this.$t("Delete forever"), {
         title: project.name,
         cancelText: this.$t("Cancel"),
         confirmText: this.$t("Delete")
-      }).then((res) => {
-        if (res) {
-          Meteor.call(
-            "projects.deleteForever",
-            { projectId: project._id },
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$notify(this.$t("Project deleted"));
-              this.refresh();
-            }
-          );
-        }
       });
+
+      if (res) {
+        try {
+          await Meteor.callAsync("projects.deleteForever", { projectId: project._id });
+
+          this.$notify(this.$t("Project deleted"));
+          this.refresh();
+        } catch (error) {
+          this.$notifyError(error);
+        }
+      }
     }
   }
 };

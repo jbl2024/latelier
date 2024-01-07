@@ -7,8 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Added
+- Meteor logging package instead of console.log
 
 ### Changed
+- Update to Meteor 2.14
+- Migration to async/await
+- Updated meteor packages:
+  - reywood:publish-composite  upgraded from 1.8.3 to 1.8.4
+  - matb33:collection-hooks    upgraded from 1.3.0 to 1.3.1
+  - aldeed:simple-schema       removed (use simpl-schema from npm instead)
+  - mdg:validation-error       removed
+  - observe-sequence           upgraded from 1.0.21 to 1.0.22
+  - reywood:publish-composite  upgraded from 1.8.4 to 1.8.6
+  - templating-runtime         upgraded from 1.6.0 to 1.6.3  
+- Replace alanning:roles with dedicated fork compatible with aysnc
 
 ### Deleted
 

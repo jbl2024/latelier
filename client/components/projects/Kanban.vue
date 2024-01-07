@@ -116,18 +116,17 @@ export default {
       this.$store.dispatch("showTaskDetail", false);
     },
 
-    newListInline() {
-      Meteor.call(
-        "lists.insert",
-        this.projectId,
-        this.$t("New list"),
-        (error, createdList) => {
-          if (error) {
-            return;
-          }
-          this.$events.fire("edit-list", createdList._id);
-        }
-      );
+    async newListInline() {
+      try {
+        const createdList = await Meteor.callAsync(
+          "lists.insert",
+          this.projectId,
+          this.$t("New list")
+        );
+        this.$events.fire("edit-list", createdList._id);
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     onMouseMove(e) {
@@ -143,7 +142,7 @@ export default {
       }
     },
 
-    handleMove(event) {
+    async handleMove(event) {
       const listId = event.item.dataset.id;
       const index = event.newIndex;
       let newOrder = 0;
@@ -163,7 +162,7 @@ export default {
         newOrder = nextList.order + inc;
       }
 
-      Meteor.call("lists.move", this.projectId, listId, newOrder);
+      await Meteor.callAsync("lists.move", this.projectId, listId, newOrder);
     },
 
     resetColumnSize(event, id) {

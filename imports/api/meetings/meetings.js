@@ -20,7 +20,7 @@ Meetings.attachSchema(MeetingSchema);
 Meetings.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Meetings.rawCollection().createIndex({ projectId: 1 });
+  Meteor.startup(async () => {
+    await Meetings.rawCollection().createIndex({ projectId: 1 });
   });
 }

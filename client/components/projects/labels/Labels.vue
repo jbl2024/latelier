@@ -160,8 +160,13 @@ export default {
     }
   },
   methods: {
-    removeLabel(label) {
-      Meteor.call("labels.remove", { labelId: label._id });
+    async removeLabel(label) {
+      try {
+        await Meteor.callAsync("labels.remove", { labelId: label._id });
+      } catch (error) {
+        // Handle the error here
+        this.$notifyError(error);
+      }
     },
 
     openMenu(id) {

@@ -67,32 +67,29 @@ export default {
     }
   },
   methods: {
-    find() {
+    async find() {
       if (this.autoSearch === false && (!this.filter || !this.filter.length === 0)) return;
       this.loading = true;
-      Meteor.call(
-        "search.findProjects",
-        {
+
+      try {
+        const result = await Meteor.callAsync("search.findProjects", {
           name: this.filter,
           organizationId: this.organizationId,
           page: this.page,
           showArchivedProjects: this.showArchivedProjects
-        },
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.pagination.totalItems = result.totalItems;
-          this.pagination.rowsPerPage = result.rowsPerPage;
-          this.pagination.totalPages = result.totalPages;
+        });
 
-          this.projects = result.data;
-          this.projectCount = result.totalItems;
-          this.$emit("update:projectCount", this.projectCount);
-        }
-      );
+        this.loading = false;
+        this.pagination.totalItems = result.totalItems;
+        this.pagination.rowsPerPage = result.rowsPerPage;
+        this.pagination.totalPages = result.totalPages;
+        this.projects = result.data;
+        this.projectCount = result.totalItems;
+        this.$emit("update:projectCount", this.projectCount);
+      } catch (error) {
+        this.loading = false;
+        this.$notifyError(error);
+      }
     },
 
     onSelectProject(project) {

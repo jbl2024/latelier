@@ -53,22 +53,17 @@ export default {
     open() {
       this.showDialog = true;
     },
-    create() {
-      Meteor.call(
-        "organizations.create",
-        { name: this.name },
-        (error, result) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.showDialog = false;
-          this.$router.push({
-            name: "projects-page",
-            params: { organizationId: result }
-          });
-        }
-      );
+    async create() {
+      try {
+        const result = await Meteor.callAsync("organizations.create", { name: this.name });
+        this.showDialog = false;
+        this.$router.push({
+          name: "projects-page",
+          params: { organizationId: result }
+        });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

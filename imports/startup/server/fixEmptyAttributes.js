@@ -2,8 +2,8 @@ import { Projects, ProjectStates } from "../../api/projects/projects.js";
 
 import { Lists } from "../../api/lists/lists.js";
 
-function fixEmptyProjectAttributes() {
-  Projects.update(
+async function fixEmptyProjectAttributes() {
+  await Projects.updateAsync(
     {
       state: { $exists: false }
     },
@@ -16,8 +16,8 @@ function fixEmptyProjectAttributes() {
   );
 }
 
-function fixEmptyListAttributes() {
-  Lists.update(
+async function fixEmptyListAttributes() {
+  await Lists.updateAsync(
     {
       autoComplete: { $exists: false }
     },
@@ -28,7 +28,7 @@ function fixEmptyListAttributes() {
     },
     { multi: true }
   );
-  Lists.update(
+  await Lists.updateAsync(
     {
       catchCompleted: { $exists: false }
     },
@@ -41,5 +41,5 @@ function fixEmptyListAttributes() {
   );
 }
 
-fixEmptyProjectAttributes();
-fixEmptyListAttributes();
+await fixEmptyProjectAttributes();
+await fixEmptyListAttributes();

@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Avatars } from "/imports/api/users/avatars.js";
 import { checkLoggedIn } from "/imports/api/permissions/permissions";
 

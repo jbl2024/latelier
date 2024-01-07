@@ -5,20 +5,20 @@ import { Projects, ProjectStates } from "/imports/api/projects/projects";
 import { Lists } from "/imports/api/lists/lists";
 import { createStubs, restoreStubs } from "/test/stubs";
 
-function createProject(name) {
+async function createProject(name) {
   name = name || "project";
-  const projectId = Meteor.call("projects.create", {
+  const projectId = await Meteor.callAsync("projects.create", {
     name,
     projectType: "kanban",
     state: ProjectStates.PRODUCTION
   });
-  Meteor.call("lists.insert", projectId, "list1", false, false);
+  await Meteor.callAsync("lists.insert", projectId, "list1", false, false);
 }
 
 if (Meteor.isServer) {
   describe("tasks", function() {
-    beforeEach(function() {
-      initData();
+    beforeEach(async function() {
+      await initData();
       createStubs();
     });
 
@@ -27,12 +27,12 @@ if (Meteor.isServer) {
     });
 
     it("new task has generated number", async function() {
-      createProject();
+      await createProject();
 
-      const task = Meteor.call(
+      const task = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
       expect(task).to.not.be.null;
@@ -40,31 +40,31 @@ if (Meteor.isServer) {
     });
 
     it("cloned task has notes & checklist & labels", async function() {
-      createProject();
+      await createProject();
 
-      const task = Meteor.call(
+      const task = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
-      const labelId = Meteor.call("labels.create", {
-        projectId: Projects.findOne()._id,
+      const labelId = await Meteor.callAsync("labels.create", {
+        projectId: (await Projects.findOneAsync())._id,
         name: "label",
         color: "black"
       });
 
-      Meteor.call("tasks.addNote", task._id, "note1");
-      Meteor.call("tasks.addNote", task._id, "note2");
+      await Meteor.callAsync("tasks.addNote", task._id, "note1");
+      await Meteor.callAsync("tasks.addNote", task._id, "note2");
 
-      Meteor.call("tasks.addLabel", task._id, labelId);
+      await Meteor.callAsync("tasks.addLabel", task._id, labelId);
 
-      Meteor.call("tasks.addChecklistItem", task._id, "check1");
-      Meteor.call("tasks.addChecklistItem", task._id, "check2");
-      Meteor.call("tasks.addChecklistItem", task._id, "check3");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check1");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check2");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check3");
 
-      const clonedTask = Meteor.call("tasks.clone", task._id, task.name, task.projectId);
+      const clonedTask = await Meteor.callAsync("tasks.clone", task._id, task.name, task.projectId);
 
       expect(clonedTask.notes).to.have.lengthOf(2);
       expect(clonedTask.checklist).to.have.lengthOf(3);
@@ -72,58 +72,58 @@ if (Meteor.isServer) {
     });
 
     it("checklist converted from task has labels", async function() {
-      createProject();
+      await createProject();
 
-      const task = Meteor.call(
+      const task = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
-      const labelId = Meteor.call("labels.create", {
-        projectId: Projects.findOne()._id,
+      const labelId = await Meteor.callAsync("labels.create", {
+        projectId: (await Projects.findOneAsync())._id,
         name: "label",
         color: "black"
       });
 
-      Meteor.call("tasks.addLabel", task._id, labelId);
+      await Meteor.callAsync("tasks.addLabel", task._id, labelId);
 
-      Meteor.call("tasks.addChecklistItem", task._id, "check1");
-      Meteor.call("tasks.addChecklistItem", task._id, "check2");
-      const checkItemId = Meteor.call("tasks.addChecklistItem", task._id, "check3");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check1");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check2");
+      const checkItemId = await Meteor.callAsync("tasks.addChecklistItem", task._id, "check3");
 
-      const convertedTask = Meteor.call("tasks.convertItemToTask", task._id, checkItemId);
+      const convertedTask = await Meteor.callAsync("tasks.convertItemToTask", task._id, checkItemId);
       expect(convertedTask.labels).to.have.lengthOf(1);
     });
 
     it("checklist converted from task has name of check item", async function() {
-      createProject();
+      await createProject();
 
-      const task = Meteor.call(
+      const task = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
 
-      Meteor.call("tasks.addChecklistItem", task._id, "check1");
-      Meteor.call("tasks.addChecklistItem", task._id, "check2");
-      const checkItemId = Meteor.call("tasks.addChecklistItem", task._id, "check3");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check1");
+      await Meteor.callAsync("tasks.addChecklistItem", task._id, "check2");
+      const checkItemId = await Meteor.callAsync("tasks.addChecklistItem", task._id, "check3");
 
-      const convertedTask = Meteor.call("tasks.convertItemToTask", task._id, checkItemId);
+      const convertedTask = await Meteor.callAsync("tasks.convertItemToTask", task._id, checkItemId);
       expect(convertedTask.name).to.be.equal("check3");
     });
 
     it("only members can create tasks", async function() {
       let errorCode;
 
-      createProject();
+      await createProject();
 
-      const task = Meteor.call(
+      const task = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
       expect(task).to.not.be.null;
@@ -139,10 +139,10 @@ if (Meteor.isServer) {
       restoreStubs();
       createStubs(otherUserId);
       try {
-        Meteor.call(
+        await Meteor.callAsync(
           "tasks.insert",
-          Projects.findOne()._id,
-          Lists.findOne()._id,
+          (await Projects.findOneAsync())._id,
+          (await Lists.findOneAsync())._id,
           "a name"
         );
       } catch (error) {
@@ -154,17 +154,17 @@ if (Meteor.isServer) {
       restoreStubs();
       createStubs(task.createdBy);
 
-      Meteor.call("projects.addMember", {
-        projectId: Projects.findOne()._id,
+      await Meteor.callAsync("projects.addMember", {
+        projectId: (await Projects.findOneAsync())._id,
         userId: otherUserId
       });
 
       restoreStubs();
       createStubs(otherUserId);
-      const newTask = Meteor.call(
+      const newTask = await Meteor.callAsync(
         "tasks.insert",
-        Projects.findOne()._id,
-        Lists.findOne()._id,
+        (await Projects.findOneAsync())._id,
+        (await Lists.findOneAsync())._id,
         "a name"
       );
       expect(newTask.createdBy).to.be.equal(otherUserId);

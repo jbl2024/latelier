@@ -1,3 +1,4 @@
+import SimpleSchema from "simpl-schema";
 import { Meteor } from "meteor/meteor";
 import { Mongo } from "meteor/mongo";
 
@@ -18,10 +19,10 @@ Examples.methods.create = new ValidatedMethod({
     description: { type: String, optional: true },
     xml: { type: String, optional: true }
   }).validator(),
-  run({ name, description, xml }) {
-    checkAdmin();
+  async run({ name, description, xml }) {
+    await checkAdmin();
 
-    const id = Examples.insert({
+    const id = await Examples.insertAsync({
       name,
       description,
       xml,
@@ -40,14 +41,14 @@ Examples.methods.update = new ValidatedMethod({
     description: { type: String, optional: true },
     xml: { type: String, optional: true }
   }).validator(),
-  run({ exampleId, name, description, xml }) {
-    checkAdmin();
-    const example = Examples.findOne({ _id: exampleId });
+  async run({ exampleId, name, description, xml }) {
+    await checkAdmin();
+    const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
     }
 
-    Examples.update(
+    await Examples.updateAsync(
       {
         _id: exampleId
       },
@@ -68,14 +69,14 @@ Examples.methods.saveXML = new ValidatedMethod({
     exampleId: { type: String },
     xml: { type: String }
   }).validator(),
-  run({ exampleId, xml }) {
-    checkAdmin();
-    const example = Examples.findOne({ _id: exampleId });
+  async run({ exampleId, xml }) {
+    await checkAdmin();
+    const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
     }
 
-    Examples.update(
+    await Examples.updateAsync(
       {
         _id: exampleId
       },
@@ -93,14 +94,14 @@ Examples.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     exampleId: { type: String }
   }).validator(),
-  run({ exampleId }) {
-    checkAdmin();
-    const example = Examples.findOne({ _id: exampleId });
+  async run({ exampleId }) {
+    await checkAdmin();
+    const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
     }
 
-    Examples.remove({ _id: exampleId });
+    await Examples.removeAsync({ _id: exampleId });
   }
 });
 
@@ -109,14 +110,14 @@ Examples.methods.clone = new ValidatedMethod({
   validate: new SimpleSchema({
     exampleId: { type: String }
   }).validator(),
-  run({ exampleId }) {
-    checkAdmin();
-    const example = Examples.findOne({ _id: exampleId });
+  async run({ exampleId }) {
+    await checkAdmin();
+    const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
     }
 
-    const id = Examples.insert({
+    const id = await Examples.insertAsync({
       projectId: example.projectId,
       name: `Copie de ${example.name}`,
       description: example.description,

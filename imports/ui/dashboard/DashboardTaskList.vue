@@ -53,23 +53,16 @@ export default {
     this.refresh();
   },
   methods: {
-    refresh() {
-      Meteor.call(
-        "dashboards.findTasks",
-        this.type,
-        this.organizationId,
-        this.projectId,
-        1,
-        this.showArchivedProjects,
-        (error, result) => {
-          this.loading = false;
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.tasks = result.data;
-        }
-      );
+    async refresh() {
+      try {
+        this.loading = true;
+        const result = await Meteor.callAsync("dashboards.findTasks", this.type, this.organizationId, this.projectId, 1, this.showArchivedProjects);
+        this.tasks = result.data;
+      } catch (error) {
+        this.$notifyError(error);
+      } finally {
+        this.loading = false;
+      }
     }
   }
 };

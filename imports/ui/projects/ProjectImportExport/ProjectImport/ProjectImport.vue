@@ -131,40 +131,55 @@ export default {
     },
     confirmImport() {
       this.isImporting = true;
+
       const reader = new FileReader();
-      reader.onload = () => {
-        const fileBuffer = new Uint8Array(reader.result);
-        Meteor.call("projects.import", {
-          fileBuffer,
-          locale: this.$i18n.locale,
-          projectName: this.importOptions.project.name,
-          organizationId: this.importOptions.project.organizationId,
-          accessRights: this.importOptions.project.allowOrganization
-            ? ProjectAccessRights.ORGANIZATION
-            : ProjectAccessRights.PRIVATE,
-          items: this.importOptions.items
-        }, (err, projectId) => {
+
+      // Wrap the FileReader process in a Promise
+      const readFile = (file) => new Promise((resolve, reject) => {
+        reader.onload = () => resolve(new Uint8Array(reader.result));
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+      });
+
+      readFile(this.projectFile).then(async (fileBuffer) => {
+        try {
+          const projectId = await Meteor.callAsync("projects.import", {
+            fileBuffer,
+            locale: this.$i18n.locale,
+            projectName: this.importOptions.project.name,
+            organizationId: this.importOptions.project.organizationId,
+            accessRights: this.importOptions.project.allowOrganization
+              ? ProjectAccessRights.ORGANIZATION
+              : ProjectAccessRights.PRIVATE,
+            items: this.importOptions.items
+          });
+
           this.isImporting = false;
           this.showDialog = false;
-          if (err) {
-            err = err.error === "project-import"
-              ? {
-                error: err.error,
-                reason: this.$t(`project.import.errors.${err.reason}`)
-              } : err;
-            this.$notifyError(err);
-            return;
-          }
+
           this.$notify(this.$t("project.import.importSuccess"));
           if (projectId) {
             this.$router.push({ name: "project", params: { projectId } });
           }
-        });
-      };
-      if (this.projectFile) {
-        reader.readAsArrayBuffer(this.projectFile);
-      }
+        } catch (err) {
+          this.isImporting = false;
+          this.showDialog = false;
+
+          error = err.error === "project-import"
+            ? {
+              error: err.error,
+              reason: this.$t(`project.import.errors.${err.reason}`)
+            } : err;
+
+          this.$notifyError(error);
+        }
+      }).catch((error) => {
+        this.isImporting = false;
+        this.showDialog = false;
+        this.$notifyError(error);
+      });
     }
+
   }
 };
 </script>

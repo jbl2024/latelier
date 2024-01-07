@@ -246,14 +246,18 @@ export default {
       this.$nextTick(() => this.$refs.description.focus());
     },
 
-    updateDescription() {
+    async updateDescription() {
       this.editDescription = false;
       if (this.task.description != null) {
-        Meteor.call(
-          "tasks.updateDescription",
-          this.task._id,
-          this.task.description
-        );
+        try {
+          await Meteor.callAsync(
+            "tasks.updateDescription",
+            this.task._id,
+            this.task.description
+          );
+        } catch (error) {
+          this.$notifyError("Failed to update description");
+        }
       }
     },
 
@@ -266,38 +270,70 @@ export default {
       return task && task.project;
     },
 
-    onChooseWatcher(user) {
-      Meteor.call("tasks.addWatcher", this.task._id, user._id);
-    },
-
-    addMeAsWatcher() {
-      Meteor.call("tasks.addWatcher", this.task._id, Meteor.userId());
-    },
-
-    removeWatcher(watcher) {
-      Meteor.call("tasks.removeWatcher", this.task._id, watcher);
-    },
-
-    onChooseAssignedTo(user) {
-      Meteor.call("tasks.assignTo", this.task._id, user._id);
-    },
-
-    addMeAsAssignedTo() {
-      Meteor.call("tasks.assignTo", this.task._id, Meteor.userId());
-    },
-
-    removeAssignedTo() {
-      if (this.task.assignedTo) {
-        Meteor.call("tasks.removeAssignedTo", this.task._id);
+    async onChooseWatcher(user) {
+      try {
+        await Meteor.callAsync("tasks.addWatcher", this.task._id, user._id);
+      } catch (error) {
+        this.$notifyError("Failed to add watcher");
       }
     },
 
-    onSelectDueDate(date, reminder) {
-      Meteor.call("tasks.setDueDate", this.task._id, date, reminder);
+    async addMeAsWatcher() {
+      try {
+        await Meteor.callAsync("tasks.addWatcher", this.task._id, Meteor.userId());
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
 
-    onSelectStartDate(date, reminder) {
-      Meteor.call("tasks.setStartDate", this.task._id, date, reminder);
+    async removeWatcher(watcher) {
+      try {
+        await Meteor.callAsync("tasks.removeWatcher", this.task._id, watcher);
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
+    },
+
+    async onChooseAssignedTo(user) {
+      try {
+        await Meteor.callAsync("tasks.assignTo", this.task._id, user._id);
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
+    },
+
+    async addMeAsAssignedTo() {
+      try {
+        await Meteor.callAsync("tasks.assignTo", this.task._id, Meteor.userId());
+      } catch (error) {
+        this.$notifyError("Failed to assign task to yourself");
+      }
+    },
+
+    async removeAssignedTo() {
+      try {
+        if (this.task.assignedTo) {
+          await Meteor.callAsync("tasks.removeAssignedTo", this.task._id);
+        }
+      } catch (error) {
+        this.$notifyError("Failed to remove assignedTo");
+      }
+    },
+
+    async onSelectDueDate(date, reminder) {
+      try {
+        await Meteor.callAsync("tasks.setDueDate", this.task._id, date, reminder);
+      } catch (error) {
+        this.$notifyError("Failed to set due date");
+      }
+    },
+
+    async onSelectStartDate(date, reminder) {
+      try {
+        await Meteor.callAsync("tasks.setStartDate", this.task._id, date, reminder);
+      } catch (error) {
+        this.$notifyError("Failed to set start date");
+      }
     },
 
     formatDate(date) {
@@ -306,25 +342,26 @@ export default {
 
     canManageProject(task) {
       return (
-        Permissions.isAdmin(Meteor.userId(), task.projectId)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), task.projectId)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
 
-    loadEstimationFeature(task) {
+    async loadEstimationFeature(task) {
       if (!task.projectId) return;
       if (task.projectId === this.currentProjectId) {
         this.isEstimationEnabled = this.hasProjectFeature("estimation");
         return;
       }
 
-      Meteor.call(
-        "projects.hasFeature",
-        { projectId: task.projectId, feature: "estimation" },
-        (error, result) => {
-          this.isEstimationEnabled = result;
-        }
-      );
+      try {
+        this.isEstimationEnabled = await Meteor.callAsync(
+          "projects.hasFeature",
+          { projectId: task.projectId, feature: "estimation" }
+        );
+      } catch (error) {
+        this.$notifyError(error);
+      }
     }
   }
 };

@@ -74,35 +74,28 @@ export default {
     open() {
       this.showDialog = true;
     },
-    updateName() {
-      Meteor.call(
-        "projectGroups.updateName",
-        this.projectGroup._id,
-        this.projectGroup.name,
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.showDialog = false;
-        }
-      );
+    async updateName() {
+      try {
+        await Meteor.callAsync("projectGroups.updateName", {
+          _id: this.projectGroup._id,
+          name: this.projectGroup.name
+        });
+        this.showDialog = false;
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    remove() {
+    async remove() {
       /* eslint no-alert: off */
       /* eslint no-restricted-globals: off */
-      if (confirm("Voulez-vous supprimer définitivement cette catégorie ?")) {
+      if (await new Promise((resolve) => confirm("Voulez-vous supprimer définitivement cette catégorie ?") ? resolve(true) : resolve(false))) {
         this.showDialog = false;
-        Meteor.call(
-          "projectGroups.remove",
-          this.projectGroup._id,
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-            }
-          }
-        );
+        try {
+          await Meteor.callAsync("projectGroups.remove", this.projectGroup._id);
+        } catch (error) {
+          this.$notifyError(error);
+        }
       }
     }
   }

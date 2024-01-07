@@ -108,7 +108,6 @@ import { Meteor } from "meteor/meteor";
 import { Permissions } from "/imports/api/permissions/permissions";
 import usersMixin from "/imports/ui/mixins/UsersMixin.js";
 import { mapState } from "vuex";
-import Api from "/imports/api/Api";
 
 export default {
   name: "ProjectSettingsManageUsers",
@@ -142,65 +141,65 @@ export default {
     }
   },
   methods: {
-    onSelectUser(user) {
-      Meteor.call("projects.addMember", {
-        projectId: this.project._id,
-        userId: user._id
-      });
+    async onSelectUser(user) {
+      try {
+        await Meteor.callAsync("projects.addMember", {
+          projectId: this.project._id,
+          userId: user._id
+        });
+      } catch (error) {
+        this.$notifyError(error.message);
+      }
     },
 
-    removeUser(user) {
-      Meteor.call("projects.removeMember", {
-        projectId: this.project._id,
-        userId: user._id
-      });
+    async removeUser(user) {
+      try {
+        await Meteor.callAsync("projects.removeMember", {
+          projectId: this.project._id,
+          userId: user._id
+        });
+      } catch (error) {
+        this.$notifyError("Failed to remove user");
+      }
     },
 
     isAdmin(user, project) {
       return (
-        Permissions.isAdmin(user, project._id)
-        || Permissions.isAdmin(user._id)
+        Permissions.isAdminSync(user, project._id)
+        || Permissions.isAdminSync(user._id)
       );
     },
 
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), project._id)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
 
-    setAdmin(user, project) {
+    async setAdmin(user, project) {
       if (this.canManageProject(project)) {
-        Permissions.methods.setAdmin.call(
-          { userId: user._id, scope: project._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.fetchUsers();
-          }
-        );
+        try {
+          await Meteor.callAsync("permissions.setAdmin", { userId: user._id, scope: project._id });
+          await this.fetchUsers();
+        } catch (error) {
+          this.$notifyError(error);
+        }
       }
     },
 
-    removeAdmin(user, project) {
+    async removeAdmin(user, project) {
       if (this.canManageProject(project)) {
-        Permissions.methods.removeAdmin.call(
-          { userId: user._id, scope: project._id },
-          (error) => {
-            if (error) {
-              this.$notifyError(error);
-              return;
-            }
-            this.fetchUsers();
-          }
-        );
+        try {
+          await Meteor.callAsync("permissions.removeAdmin", { userId: user._id, scope: project._id });
+          await this.fetchUsers();
+        } catch (error) {
+          this.$notifyError(error);
+        }
       }
     },
     async fetchUsers() {
-      this.projectUsers = await Api.call(
+      this.projectUsers = await Meteor.callAsync(
         "projects.findUsers",
         { projectId: this.project._id }
       );

@@ -116,64 +116,54 @@ export default {
     requestClose() {
       this.$emit("update:active", false);
     },
-    onSelectStartDate(date) {
-      Meteor.call(
-        "projects.setStartDate",
-        { projectId: this.project._id, startDate: date },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("refresh");
-        }
-      );
+    async onSelectStartDate(date) {
+      try {
+        await Meteor.callAsync("projects.setStartDate", {
+          projectId: this.project._id,
+          startDate: date
+        });
+        this.$emit("refresh");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectEndDate(date) {
-      Meteor.call(
-        "projects.setEndDate",
-        { projectId: this.project._id, endDate: date },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("refresh");
-        }
-      );
+    async onSelectEndDate(date) {
+      try {
+        await Meteor.callAsync("projects.setEndDate", {
+          projectId: this.project._id,
+          endDate: date
+        });
+        this.$emit("refresh");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    onSelectColor(color) {
+    async onSelectColor(color) {
       const hex = color || "white";
       this.$refs.color.style.backgroundColor = hex;
       this.project.color = hex;
-      Meteor.call(
-        "projects.updateColor",
-        { projectId: this.project._id, color: hex },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("refresh");
-        }
-      );
+      try {
+        await Meteor.callAsync("projects.updateColor", { projectId: this.project._id, color: hex });
+        this.$emit("refresh");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
-    removeColor() {
+    async removeColor() {
       this.project.color = "";
-      Meteor.call(
-        "projects.updateColor",
-        { projectId: this.project._id, color: "" },
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            return;
-          }
-          this.$emit("refresh");
-        }
-      );
+
+      try {
+        await Meteor.callAsync("projects.updateColor", {
+          projectId: this.project._id,
+          color: ""
+        });
+        this.$emit("refresh");
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     getColor(project) {

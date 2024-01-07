@@ -13,7 +13,7 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 import { findUserIdsInvolvedInProject } from "/imports/api/projects/server/common";
 
-Meteor.publish("projects", function projectsPublication(
+Meteor.publish("projects", async function projectsPublication(
   organizationId,
   name,
   groupId
@@ -26,7 +26,7 @@ Meteor.publish("projects", function projectsPublication(
     deleted: { $ne: true }
   };
 
-  if (!Permissions.isAdmin(Meteor.userId())) {
+  if (!await Permissions.isAdmin(Meteor.userId())) {
     query.$or = [
       { createdBy: userId },
       { members: userId },
@@ -52,7 +52,7 @@ Meteor.publish("projects", function projectsPublication(
 
 publishComposite("allProjects", (name, organizationId, showArchivedProjects) => ({
   // projects
-  find() {
+  async find() {
     const userId = Meteor.userId();
     const query = { deleted: { $ne: true } };
     if (!showArchivedProjects) {
@@ -61,7 +61,7 @@ publishComposite("allProjects", (name, organizationId, showArchivedProjects) => 
       };
     }
 
-    if (!Permissions.isAdmin(userId)) {
+    if (!await Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];
     }
 
@@ -114,7 +114,7 @@ publishComposite("allProjects", (name, organizationId, showArchivedProjects) => 
   ]
 }));
 
-Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(
+Meteor.publish("projectsForTimeline", async function projectsForTimelinePublication(
   organizationId,
   name,
   groupId
@@ -127,7 +127,7 @@ Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(
   const query = {
     deleted: { $ne: true }
   };
-  if (!Permissions.isAdmin(Meteor.userId())) {
+  if (!await Permissions.isAdmin(Meteor.userId())) {
     query.$or = [{ members: userId }];
   }
 
@@ -148,13 +148,13 @@ Meteor.publish("projectsForTimeline", function projectsForTimelinePublication(
 
 publishComposite("project", function(projectId) {
   return {
-    find() {
+    async find() {
       const userId = Meteor.userId();
       const query = {
         _id: projectId,
         deleted: { $ne: true }
       };
-      if (!Permissions.isAdmin(Meteor.userId())) {
+      if (!await Permissions.isAdmin(Meteor.userId())) {
         query.$or = [
           { createdBy: userId },
           { members: userId },
@@ -212,8 +212,8 @@ publishComposite("project", function(projectId) {
       },
       {
         // users
-        find(project) {
-          const membersIds = findUserIdsInvolvedInProject(project);
+        async find(project) {
+          const membersIds = await findUserIdsInvolvedInProject(project);
           return Meteor.users.find(
             { _id: { $in: membersIds } },
             {

@@ -7,8 +7,8 @@ Notifications.attachSchema(NotificationSchema);
 Notifications.methods = {};
 
 if (Meteor.isServer) {
-  Meteor.startup(() => {
-    Notifications.rawCollection().createIndex({ userId: 1 });
+  Meteor.startup(async () => {
+    await Notifications.rawCollection().createIndex({ userId: 1 });
   });
 }
 

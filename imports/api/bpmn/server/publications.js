@@ -6,15 +6,15 @@ import {
   checkCanReadProject
 } from "/imports/api/permissions/permissions";
 
-publishComposite("processDiagrams", function(projectId) {
+publishComposite("processDiagrams", async function(projectId) {
   return {
-    find() {
+    async find() {
       const userId = Meteor.userId();
       const query = {
         _id: projectId,
         deleted: { $ne: true }
       };
-      if (!Permissions.isAdmin(userId)) {
+      if (!await Permissions.isAdmin(userId)) {
         query.$or = [
           { createdBy: userId },
           { members: userId },
@@ -36,14 +36,14 @@ publishComposite("processDiagrams", function(projectId) {
   };
 });
 
-publishComposite("processDiagram", function(processDiagramId) {
+publishComposite("processDiagram", async function(processDiagramId) {
   return {
-    find() {
-      const processDiagram = ProcessDiagrams.findOne({ _id: processDiagramId });
+    async find() {
+      const processDiagram = await ProcessDiagrams.findOneAsync({ _id: processDiagramId });
       if (!processDiagram) {
         return this.ready();
       }
-      checkCanReadProject(processDiagram.projectId);
+      await checkCanReadProject(processDiagram.projectId);
       return ProcessDiagrams.find({ _id: processDiagramId });
     },
     children: [

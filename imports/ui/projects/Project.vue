@@ -123,17 +123,21 @@ export default {
         this.$store.dispatch("showTaskDetail", true);
       }
     },
-    deleteTask(task) {
-      this.$confirm(this.$t("Do you really want to delete this task?"), {
-        title: this.$t("Confirm"),
-        cancelText: this.$t("Cancel"),
-        confirmText: this.$t("Move to trash")
-      }).then((res) => {
+    async deleteTask(task) {
+      try {
+        const res = await this.$confirm(this.$t("Do you really want to delete this task?"), {
+          title: this.$t("Confirm"),
+          cancelText: this.$t("Cancel"),
+          confirmText: this.$t("Move to trash")
+        });
+
         if (res) {
-          Meteor.call("tasks.remove", task._id);
-          this.$store.dispatch("showTaskDetail", false);
+          await Meteor.callAsync("tasks.remove", task._id);
+          await this.$store.dispatchAsync("showTaskDetail", false);
         }
-      });
+      } catch (error) {
+        await this.$notifyErrorAsync(error.message);
+      }
     }
   }
 };

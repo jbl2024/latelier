@@ -264,9 +264,13 @@ export default {
     }
   },
   watch: {
-    completed(completed) {
-      if (this.task && this.task.completed !== completed) {
-        Meteor.call("tasks.complete", this.taskId, completed);
+    async completed(completed) {
+      try {
+        if (this.task && this.task.completed !== completed) {
+          await Meteor.callAsync("tasks.complete", this.taskId, completed);
+        }
+      } catch (error) {
+        this.notifyError(error);
       }
     }
   },
@@ -347,55 +351,48 @@ export default {
       this.$nextTick(() => this.$refs.name.focus());
     },
 
-    updateTaskName() {
+    async updateTaskName() {
       this.editTaskName = false;
-      Meteor.call(
-        "tasks.updateName",
-        this.task._id,
-        this.task.name,
-        (error) => {
-          if (error) {
-            this.$notifyError(error);
-            this.task.name = this.savedName;
-          }
-        }
-      );
+      try {
+        await Meteor.callAsync("tasks.updateName", this.task._id, this.task.name);
+      } catch (error) {
+        this.notifyError(error);
+        this.task.name = this.savedName;
+      }
     },
 
     cancelUpdateTaskName() {
       this.editTaskName = false;
       this.task.name = this.savedName;
     },
-    cloneToProject(project) {
+    async cloneToProject(project) {
       if (!project) return;
 
-      this.$confirm(
-        this.$t("cloneToProject.confirmation", { project: project.name }),
-        {
-          title: this.$t("Confirm"),
-          cancelText: this.$t("Cancel"),
-          confirmText: this.$t("Clone")
-        }
-      ).then((res) => {
+      try {
+        const res = await this.$confirm(
+          this.$t("cloneToProject.confirmation", { project: project.name }),
+          {
+            title: this.$t("Confirm"),
+            cancelText: this.$t("Cancel"),
+            confirmText: this.$t("Clone")
+          }
+        );
+
         if (res) {
-          Meteor.call(
+          await Meteor.callAsync(
             "tasks.clone",
             this.taskId,
             this.task.name,
-            project._id,
-            (error) => {
-              if (error) {
-                this.$notifyError(error);
-                return;
-              }
-              this.$store.dispatch(
-                "notify",
-                this.$t("cloneToProject.done", { project: project.name })
-              );
-            }
+            project._id
+          );
+          this.$store.dispatch(
+            "notify",
+            this.$t("cloneToProject.done", { project: project.name })
           );
         }
-      });
+      } catch (error) {
+        this.$notifyError(error);
+      }
     },
 
     showProjectLink(task) {

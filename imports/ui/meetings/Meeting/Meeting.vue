@@ -131,7 +131,6 @@ import MarkdownMixin from "/imports/ui/mixins/MarkdownMixin.js";
 import DatesMixin from "/imports/ui/mixins/DatesMixin";
 import MeetingAttendeesList from "/imports/ui/meetings/Meeting/MeetingAttendees/MeetingAttendeesList";
 import MeetingTitle from "/imports/ui/meetings/Meeting/MeetingTitle";
-import Api from "/imports/api/Api";
 import Attachments from "/imports/ui/attachments/Attachments";
 
 export default {
@@ -193,14 +192,14 @@ export default {
       immediate: true,
       async handler() {
         if (!this.meeting) return;
-        this.canWriteMeeting = await Api.call("permissions.canWriteMeeting", { meetingId: this.meeting._id });
+        this.canWriteMeeting = await Meteor.callAsync("permissions.canWriteMeeting", { meetingId: this.meeting._id });
       }
     },
     "meeting.documents": {
       immediate: true,
       handler() {
         if (!Array.isArray(this.meeting?.documents) || !this.meeting.documents.length) return;
-        Api.call("attachments.find", {
+        Meteor.callAsync("attachments.find", {
           attachmentsIds: this.meeting.documents.map((document) => document.documentId)
         }).then((result) => {
           this.attachments = result.data;

@@ -140,38 +140,45 @@ export default {
       return true;
     },
 
-    newTaskInline() {
-      Meteor.call(
-        "tasks.insert",
-        this.projectId,
-        this.listId,
-        "Nouvelle tâche",
-        (error, task) => {
-          if (error) {
-            return;
-          }
-          this.$events.fire("task-edit-name", task);
-        }
-      );
-    },
-    deleteTask(taskId) {
-      Meteor.call("tasks.remove", taskId);
-    },
-
-    handleMove(event) {
-      const taskId = event.item.dataset.id;
-      const index = event.newIndex;
-      if (index < this.tasks.length) {
-        const nextTask = this.tasks[index];
-        Meteor.call(
-          "tasks.move",
+    async newTaskInline() {
+      try {
+        const task = await Meteor.callAsync(
+          "tasks.insert",
           this.projectId,
           this.listId,
-          taskId,
-          nextTask.order - 1
+          "Nouvelle tâche"
         );
-      } else {
-        Meteor.call("tasks.move", this.projectId, this.listId, taskId);
+        this.$events.fire("task-edit-name", task);
+      } catch (error) {
+        this.$notifyError(error);
+      }
+    },
+    async deleteTask(taskId) {
+      try {
+        await Meteor.callAsync("tasks.remove", taskId);
+      } catch (error) {
+        this.$notifyError("Error deleting task");
+      }
+    },
+
+    async handleMove(event) {
+      const taskId = event.item.dataset.id;
+      const index = event.newIndex;
+      try {
+        if (index < this.tasks.length) {
+          const nextTask = this.tasks[index];
+          await Meteor.callAsync(
+            "tasks.move",
+            this.projectId,
+            this.listId,
+            taskId,
+            nextTask.order - 1
+          );
+        } else {
+          await Meteor.callAsync("tasks.move", this.projectId, this.listId, taskId);
+        }
+      } catch (error) {
+        this.$notifyError(error.message);
       }
     }
   }

@@ -1,11 +1,9 @@
+import fs from "fs";
 import { Meteor } from "meteor/meteor";
 import SimpleSchema from "simpl-schema";
 import { Attachments } from "/imports/api/attachments/attachments";
-import { checkLoggedIn, checkCanWriteTask } from "/imports/api/permissions/permissions";
 import { AttachmentsFindSchema } from "/imports/api/attachments/schema";
-import fs from "fs";
-
-const bound = Meteor.bindEnvironment((callback) => callback());
+import { checkCanWriteTask, checkLoggedIn } from "/imports/api/permissions/permissions";
 
 Attachments.methods.remove = new ValidatedMethod({
   name: "attachments.remove",
@@ -14,10 +12,10 @@ Attachments.methods.remove = new ValidatedMethod({
     projectId: { type: String, optional: true },
     taskId: { type: String, optional: true }
   }).validator(),
-  run({ attachmentId, projectId, taskId }) {
+  async run({ attachmentId, projectId, taskId }) {
     checkLoggedIn();
     if (attachmentId) {
-      const canRemove = Meteor.call("permissions.canDeleteAttachment", {
+      const canRemove = Meteor.callAsync("permissions.canDeleteAttachment", {
         attachmentId
       });
       if (!canRemove) {
@@ -29,9 +27,9 @@ Attachments.methods.remove = new ValidatedMethod({
     if (projectId) {
       const attachments = Attachments.find({
         "meta.projectId": projectId
-      }).fetch();
-      attachments.forEach((attachment) => {
-        const canRemove = Meteor.call("permissions.canDeleteAttachment", {
+      });
+      attachments.forEach(async (attachment) => {
+        const canRemove = await Meteor.callAsync("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
         if (!canRemove) {
@@ -42,9 +40,9 @@ Attachments.methods.remove = new ValidatedMethod({
     }
 
     if (taskId) {
-      const attachments = Attachments.find({ "meta.taskId": taskId }).fetch();
-      attachments.forEach((attachment) => {
-        const canRemove = Meteor.call("permissions.canDeleteAttachment", {
+      const attachments = Attachments.find({ "meta.taskId": taskId });
+      attachments.forEach(async (attachment) => {
+        const canRemove = await Meteor.callAsync("permissions.canDeleteAttachment", {
           attachmentId: attachment._id
         });
         if (!canRemove) {
@@ -63,7 +61,7 @@ Attachments.methods.restore = new ValidatedMethod({
     projectId: { type: String, optional: true },
     taskId: { type: String, optional: true }
   }).validator(),
-  run() {
+  async run() {
     checkLoggedIn();
 
     // TODO : Implement method
@@ -77,44 +75,32 @@ Attachments.methods.clone = new ValidatedMethod({
     projectId: { type: String, optional: true },
     taskId: { type: String, optional: true }
   }).validator(),
-  run({ attachmentId, projectId, taskId }) {
+  async run({ attachmentId, projectId, taskId }) {
     checkLoggedIn();
-    checkCanWriteTask(taskId);
+    await checkCanWriteTask(taskId);
 
     const attachment = Attachments.findOne({ _id: attachmentId });
     const userId = Meteor.userId();
-    fs.readFile(attachment.path, (error, data) => {
-      bound(() => {
-        if (error) {
-          throw error;
-        } else {
-          Attachments.write(
-            data,
-            {
-              fileName: attachment.name,
-              type: attachment.type,
-              meta: {
-                projectId,
-                taskId,
-                createdBy: userId
-              }
-            },
-            (writeError) => {
-              if (writeError) {
-                throw writeError;
-              }
-            }
-          );
+    const data = await fs.promises.readFile(attachment.path);
+    Attachments.write(
+      data,
+      {
+        fileName: attachment.name,
+        type: attachment.type,
+        meta: {
+          projectId,
+          taskId,
+          createdBy: userId
         }
-      });
-    });
+      }
+    );
   }
 });
 
 Attachments.methods.find = new ValidatedMethod({
   name: "attachments.find",
   validate: AttachmentsFindSchema.validator(),
-  run({ meta, name, userId, page, perPage, attachmentsIds }) {
+  async run({ meta, name, userId, page, perPage, attachmentsIds }) {
     checkLoggedIn();
     page = page || 1;
     perPage = perPage || 10;
