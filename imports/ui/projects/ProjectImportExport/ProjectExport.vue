@@ -127,8 +127,8 @@ export default {
   methods: {
     canManageProject(project) {
       return (
-        Permissions.isAdmin(Meteor.userId(), project._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), project._id)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
     getItemCount(item) {

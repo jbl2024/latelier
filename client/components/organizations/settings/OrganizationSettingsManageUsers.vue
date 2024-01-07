@@ -160,15 +160,15 @@ export default {
 
     isAdmin(user, organization) {
       return (
-        Permissions.isAdmin(user._id, organization._id)
-        || Permissions.isAdmin(user._id)
+        Permissions.isAdminSync(user._id, organization._id)
+        || Permissions.isAdminSync(user._id)
       );
     },
 
     canManageOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }

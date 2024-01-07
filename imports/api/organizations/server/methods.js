@@ -212,7 +212,7 @@ Organizations.methods.removeMember = new ValidatedMethod({
       }
     });
 
-    if (Permissions.isAdmin(userId, organizationId)) {
+    if (await Permissions.isAdmin(userId, organizationId)) {
       Permissions.removeAdmin(userId, organizationId);
     }
 
@@ -243,7 +243,7 @@ Organizations.methods.propagateMembership = new ValidatedMethod({
         userId: member
       });
 
-      if (Permissions.isAdmin(member, organizationId)) {
+      if (await Permissions.isAdmin(member, organizationId)) {
         Permissions.setAdmin(member, projectId);
       }
     });
@@ -259,7 +259,7 @@ Organizations.methods.setAdmin = new ValidatedMethod({
   async run({ organizationId, userId }) {
     checkLoggedIn();
     await checkCanManage(organizationId);
-    Permissions.methods.setAdmin.call({
+    await Meteor.callAsync("permissions.setAdmin", {
       userId,
       scope: organizationId
     });
@@ -270,7 +270,7 @@ Organizations.methods.setAdmin = new ValidatedMethod({
     await projects.forEachAsync(async (project) => {
       try {
         // TODO: check async
-        Permissions.methods.setAdmin.call({
+        await Meteor.callAsync("permissions.setAdmin", {
           userId,
           scope: project._id
         });
@@ -290,7 +290,7 @@ Organizations.methods.removeAdmin = new ValidatedMethod({
   async run({ organizationId, userId }) {
     checkLoggedIn();
     await checkCanManage(organizationId);
-    Permissions.methods.removeAdmin.call({
+    await Meteor.callAsync("permissions.removeAdmin", {
       userId,
       scope: organizationId
     });
@@ -300,7 +300,7 @@ Organizations.methods.removeAdmin = new ValidatedMethod({
     });
     await projects.forEachAsync(async (project) => {
       try {
-        Permissions.methods.removeAdmin.call({
+        await Meteor.call("permissions.removeAdmin", {
           userId,
           scope: project._id
         });

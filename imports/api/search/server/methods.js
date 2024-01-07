@@ -24,7 +24,7 @@ methods.findTasks = new ValidatedMethod({
     checkLoggedIn();
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     const perPage = 5;
     let skip = 0;
@@ -162,7 +162,7 @@ methods.findProjects = new ValidatedMethod({
 
     const user = Meteor.user();
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
     const sort = { name: 1 };
 
     const perPage = 5;
@@ -258,7 +258,7 @@ methods.findOrganizations = new ValidatedMethod({
     checkLoggedIn();
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
     const sort = { updatedAt: -1 };
 
     const perPage = 5;
@@ -314,7 +314,7 @@ methods.findAttachments = new ValidatedMethod({
     checkLoggedIn();
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     const perPage = 5;
     let skip = 0;
@@ -449,7 +449,7 @@ methods.findMeetings = new ValidatedMethod({
     checkLoggedIn();
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     const perPage = 5;
     let skip = 0;

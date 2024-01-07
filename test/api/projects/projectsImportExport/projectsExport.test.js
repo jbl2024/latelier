@@ -16,7 +16,7 @@ if (Meteor.isServer) {
 
     it("export project is only available for project admin members", async function () {
       let errorCode;
-      const user = Meteor.users.findOne();
+      const user = await Meteor.users.findOneAsync();
       const userId = user._id;
       const projectId = await createProject({ userId });
       expect(projectId).to.not.be.null;

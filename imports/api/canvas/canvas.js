@@ -41,7 +41,7 @@ Meteor.methods({
   async "canvas.get"(projectId) {
     check(projectId, String);
 
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
     let canvas = await Canvas.findOneAsync({ projectId });
     if (!canvas) {

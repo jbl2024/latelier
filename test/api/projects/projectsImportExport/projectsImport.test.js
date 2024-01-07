@@ -108,7 +108,7 @@ if (Meteor.isServer) {
 
       try {
         const userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -156,7 +156,7 @@ if (Meteor.isServer) {
 
       try {
         const userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -217,7 +217,7 @@ if (Meteor.isServer) {
 
       try {
         const userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -259,7 +259,7 @@ if (Meteor.isServer) {
 
       try {
         const userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -315,7 +315,7 @@ if (Meteor.isServer) {
 
       try {
         const userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,
@@ -407,7 +407,7 @@ if (Meteor.isServer) {
 
       try {
         userId = (await Meteor.users.findOneAsync())._id;
-        Roles.addUsersToRoles(userId, "admin", Roles.GLOBAL_GROUP);
+        await Roles.addUsersToRolesAsync(userId, "admin", Roles.GLOBAL_GROUP);
         const context = { userId };
         const args = {
           fileBuffer: zipContent,

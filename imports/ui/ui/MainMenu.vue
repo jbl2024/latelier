@@ -316,8 +316,8 @@ export default {
   methods: {
     canManageProject(projectId) {
       return (
-        Permissions.isAdmin(Meteor.userId(), projectId)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), projectId)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
     handleOnClick(menuItem) {

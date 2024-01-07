@@ -342,8 +342,8 @@ export default {
 
     canManageProject(task) {
       return (
-        Permissions.isAdmin(Meteor.userId(), task.projectId)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), task.projectId)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     },
 

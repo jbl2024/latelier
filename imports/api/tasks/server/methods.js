@@ -1133,7 +1133,7 @@ Tasks.methods.exportProject = new ValidatedMethod({
     }
   }).validator(),
   async run({ projectId, format }) {
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
     const project = Projects.findOne({ _id: projectId });
     const context = project;
     context.lists = [];

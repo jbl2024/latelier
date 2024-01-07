@@ -101,11 +101,11 @@ Jobs.register({
       const projects = user.profile.digests || [];
 
       const digests = [];
-      projects.forEach((projectId) => {
+      projects.forEach(async (projectId) => {
         const projectQuery = {
           _id: projectId
         };
-        if (!Permissions.isAdmin(user._id)) {
+        if (!await Permissions.isAdmin(user._id)) {
           projectQuery.members = user._id;
         }
         const project = Projects.findOne(projectQuery);

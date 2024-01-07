@@ -30,7 +30,7 @@ Meteor.methods({
     check(isOnline, Match.Maybe(Boolean));
     check(isAway, Match.Maybe(Boolean));
 
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -77,7 +77,7 @@ Meteor.methods({
 
     const count = await Meteor.users.find(query).countAsync();
 
-    const data = Meteor.users
+    const data = await Meteor.users
       .find(query, {
         fields: {
           profile: 1,
@@ -94,25 +94,30 @@ Meteor.methods({
         }
       });
 
+    const dataWithFeatures = [];
     data.forEachAsync(async (user) => {
-      user.features = {
-        emailVerified: user.emails ? user.emails[0].verified : false,
-        isActive: Permissions.isActive(user),
-        isAdmin: Permissions.isAdmin(user)
+      const userWithFeatures = {
+        ...user,
+        features: {
+          emailVerified: user.emails ? user.emails[0].verified : false,
+          isActive: await Permissions.isActive(user),
+          isAdmin: await Permissions.isAdmin(user)
+        }
       };
+      dataWithFeatures.push(userWithFeatures);
     });
 
     return {
       rowsPerPage: perPage,
       totalItems: count,
-      data
+      data: dataWithFeatures
     };
   },
 
   async "admin.updateUser"(user) {
     check(user, Object);
 
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -141,10 +146,10 @@ Meteor.methods({
       } else if (!features.emailVerified && user.emails[0].verified) {
         await Meteor.callAsync("admin.unconfirmEmail", user._id);
       }
-      if (features.isAdmin && !Permissions.isAdmin(user)) {
+      if (features.isAdmin && !await Permissions.isAdmin(user)) {
         Permissions.setAdmin(user._id);
       } else if (!features.isAdmin && Permissions.isAdmin(user)) {
-        Permissions.removeAdmin(user._id);
+        await Permissions.removeAdmin(user._id);
         await Meteor.users.updateAsync(user._id, {
           $set: {
             "services.resume.loginTokens": []
@@ -164,7 +169,7 @@ Meteor.methods({
 
   async "admin.deactivateUser"(userId) {
     check(userId, String);
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     Permissions.setInactive(userId);
@@ -172,7 +177,7 @@ Meteor.methods({
 
   async "admin.activateUser"(userId) {
     check(userId, String);
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     Permissions.setActive(userId);
@@ -183,7 +188,7 @@ Meteor.methods({
     if (userId === Meteor.userId()) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
     await Meteor.users.updateAsync(userId, {
@@ -196,7 +201,7 @@ Meteor.methods({
 
   async "admin.confirmEmail"(userId) {
     check(userId, String);
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -213,7 +218,7 @@ Meteor.methods({
 
   async "admin.unconfirmEmail"(userId) {
     check(userId, String);
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -229,7 +234,7 @@ Meteor.methods({
 
   async "admin.addUser"(user) {
     check(user, Object);
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -322,7 +327,7 @@ Meteor.methods({
     }
 
     if (restriction === "admin") {
-      if (!Permissions.isAdmin(Meteor.userId())) {
+      if (!await Permissions.isAdmin(Meteor.userId())) {
         throw new Meteor.Error(401, "not-authorized");
       }
     }
@@ -397,7 +402,7 @@ Meteor.methods({
     }
 
     if (restriction === "admin") {
-      if (!Permissions.isAdmin(Meteor.userId())) {
+      if (!await Permissions.isAdmin(Meteor.userId())) {
         throw new Meteor.Error(401, "not-authorized");
       }
     }

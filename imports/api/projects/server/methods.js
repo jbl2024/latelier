@@ -35,10 +35,10 @@ import { Lists } from "/imports/api/lists/lists.js";
 import { ProjectGroups } from "/imports/api/projectGroups/projectGroups.js";
 
 const checkIfAdminOrCreator = async (projectId) => {
-  if (Permissions.isAdmin(Meteor.userId())) {
+  if (await Permissions.isAdmin(Meteor.userId())) {
     return true;
   }
-  if (Permissions.isAdmin(Meteor.userId(), projectId)) {
+  if (await Permissions.isAdmin(Meteor.userId(), projectId)) {
     return true;
   }
   const project = await Projects.findOneAsync(projectId);
@@ -48,11 +48,11 @@ const checkIfAdminOrCreator = async (projectId) => {
   throw new Meteor.Error("not-authorized");
 };
 
-const checkIfAdmin = (projectId) => {
-  if (Permissions.isAdmin(Meteor.userId())) {
+const checkIfAdmin = async (projectId) => {
+  if (await Permissions.isAdmin(Meteor.userId())) {
     return true;
   }
-  if (Permissions.isAdmin(Meteor.userId(), projectId)) {
+  if (await Permissions.isAdmin(Meteor.userId(), projectId)) {
     return true;
   }
   throw new Meteor.Error("not-authorized");
@@ -178,7 +178,7 @@ Projects.methods.load = new ValidatedMethod({
     const userId = Meteor.userId();
     const query = { deleted: { $ne: true } };
 
-    if (!Permissions.isAdmin(userId)) {
+    if (!await Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];
     }
 
@@ -307,7 +307,7 @@ Projects.methods.adminFind = new ValidatedMethod({
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
   async run({ page, filter, projectStates, isDeleted }) {
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -343,7 +343,7 @@ Projects.methods.adminFind = new ValidatedMethod({
       sort: {
         name: 1
       }
-    }).fetchAsync();
+    });
 
     const loadUser = async (aUserId) => {
       if (!aUserId) return {};
@@ -410,10 +410,10 @@ Projects.methods.findUsers = new ValidatedMethod({
           emails: 1,
           roles: 1
         }
-      })
-      .fetchAsync();
+      });
     const organizationMembers = organization?.members || [];
 
+    const sortedUsers = [];
     users.forEachAsync(async (user) => {
       if (user._id === project.createdBy) {
         user.isOwner = true;
@@ -421,9 +421,10 @@ Projects.methods.findUsers = new ValidatedMethod({
       if (organizationMembers.indexOf(user._id) !== -1) {
         user.inOrganization = true;
       }
+      sortedUsers.push(user);
     });
 
-    return users.sort((a, b) => {
+    return sortedUsers.sort((a, b) => {
       const emailA = (UserUtils.getEmail(a) || "").toLowerCase();
       const emailB = (UserUtils.getEmail(b) || "").toLowerCase();
       return emailA.localeCompare(emailB);
@@ -435,7 +436,7 @@ Projects.methods.adminMigrateFeatures = new ValidatedMethod({
   name: "admin.projectsMigrateFeatures",
   validate: null,
   async run() {
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 
@@ -515,7 +516,7 @@ Projects.methods.export = new ValidatedMethod({
     projectId,
     items
   }) {
-    if (!Permissions.isAdmin(Meteor.userId(), projectId)) {
+    if (!await Permissions.isAdmin(Meteor.userId(), projectId)) {
       throw new Meteor.Error("not-authorized");
     }
 
@@ -646,7 +647,7 @@ Projects.methods.import = new ValidatedMethod({
     let createdProjectId;
     try {
       const currentUserId = Meteor.userId();
-      if (!Permissions.isAdmin(currentUserId, organizationId)) {
+      if (!await Permissions.isAdmin(currentUserId, organizationId)) {
         throw new Meteor.Error("not-authorized");
       }
 
@@ -1172,11 +1173,11 @@ Projects.methods.remove = new ValidatedMethod({
   validate: new SimpleSchema({
     projectId: { type: String }
   }).validator(),
-  run({ projectId }) {
+  async run({ projectId }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
 
-    Projects.update(
+    await Projects.updateAsync(
       { _id: projectId },
       {
         $set: {
@@ -1187,7 +1188,7 @@ Projects.methods.remove = new ValidatedMethod({
       }
     );
 
-    Meteor.users.update(
+    await Meteor.users.updateAsync(
       {},
       { $pull: { "profile.favoriteProjects": projectId, "profile.digests": projectId } },
       { multi: true }
@@ -1486,8 +1487,8 @@ Projects.methods.removeMember = new ValidatedMethod({
       { multi: true }
     );
 
-    if (Permissions.isAdmin(userId, projectId)) {
-      Permissions.removeAdmin(userId, projectId);
+    if (await Permissions.isAdmin(userId, projectId)) {
+      await Permissions.removeAdmin(userId, projectId);
     }
   }
 });
@@ -1526,7 +1527,7 @@ Projects.methods.leave = new ValidatedMethod({
     query[`roles.${projectId}`] = { $exists: true };
     const update = { $unset: {} };
     update.$unset[`roles.${projectId}`] = 1;
-    Meteor.users.update(query, update);
+    await Meteor.users.updateAsync(query, update);
   }
 });
 
@@ -1566,7 +1567,7 @@ Projects.methods.setDatesAndState = new ValidatedMethod({
   }).validator(),
   async run({ projectId, startDate, endDate, state }) {
     checkLoggedIn();
-    checkIfAdminOrCreator(projectId);
+    await checkIfAdminOrCreator(projectId);
     await Projects.updateAsync(
       { _id: projectId },
       { $set: { startDate, endDate, state } }
@@ -1687,7 +1688,7 @@ Projects.methods.getDeletedProjects = new ValidatedMethod({
       deleted: true
     };
 
-    if (!Permissions.isAdmin(userId)) {
+    if (!await Permissions.isAdmin(userId)) {
       query.$or = [{ createdBy: userId }, { members: userId }];
     }
 

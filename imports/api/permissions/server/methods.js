@@ -23,7 +23,7 @@ Permissions.methods.canReadProject = new ValidatedMethod({
   async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const project = await Projects.findOneAsync({
@@ -45,7 +45,7 @@ Permissions.methods.canWriteProject = new ValidatedMethod({
   async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const project = await Projects.findOneAsync({
@@ -68,7 +68,7 @@ Permissions.methods.canDeleteProject = new ValidatedMethod({
   async run({ projectId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const project = await Projects.findOneAsync({
@@ -93,7 +93,7 @@ Permissions.methods.canReadTask = new ValidatedMethod({
   async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const task = await Tasks.findOneAsync({ _id: taskId });
@@ -120,7 +120,7 @@ Permissions.methods.canWriteTask = new ValidatedMethod({
   async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const task = await Tasks.findOneAsync({ _id: taskId });
@@ -148,7 +148,7 @@ Permissions.methods.canDeleteTask = new ValidatedMethod({
   async run({ taskId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const task = await Tasks.findOneAsync({ _id: taskId });
@@ -180,7 +180,7 @@ Permissions.methods.canReadAttachment = new ValidatedMethod({
   async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -200,7 +200,7 @@ Permissions.methods.canWriteAttachment = new ValidatedMethod({
   async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -220,7 +220,7 @@ Permissions.methods.canDeleteAttachment = new ValidatedMethod({
   async run({ attachmentId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const attachment = Attachments.findOne({ _id: attachmentId });
@@ -242,7 +242,7 @@ Permissions.methods.canReadMeeting = new ValidatedMethod({
   async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const meeting = await Meetings.findOne({
@@ -265,7 +265,7 @@ Permissions.methods.canWriteMeeting = new ValidatedMethod({
   async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const meeting = await Meetings.findOneAsync({
@@ -287,7 +287,7 @@ Permissions.methods.canDeleteMeeting = new ValidatedMethod({
   async run({ meetingId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
 
@@ -311,11 +311,11 @@ Permissions.methods.setAdminIfNeeded = new ValidatedMethod({
     checkLoggedIn();
     const user = Meteor.user();
     const admin = Meteor.settings.roles?.admin || [];
-    admin.forEach((email) => {
+    admin.forEach(async (email) => {
       if (UserUtils.getEmail(user) === email) {
-        if (!Permissions.isAdmin(user._id)) {
+        if (!await Permissions.isAdmin(user._id)) {
           Log.info(`Adding ${UserUtils.getEmail(user)} to admin role`);
-          Roles.addUsersToRoles(user._id, "admin", Roles.GLOBAL_GROUP);
+          await Roles.addUsersToRolesAsync(user._id, "admin", Roles.GLOBAL_GROUP);
         }
       }
     });
@@ -330,7 +330,7 @@ Permissions.methods.canReadOrganization = new ValidatedMethod({
   async run({ organizationId }) {
     checkLoggedIn();
     const userId = Meteor.userId();
-    if (Permissions.isAdmin(userId)) {
+    if (await Permissions.isAdmin(userId)) {
       return true;
     }
     const organization = await Organizations.findOneAsync({

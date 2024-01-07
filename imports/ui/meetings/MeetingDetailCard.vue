@@ -526,8 +526,8 @@ export default {
     },
     canManageProject() {
       return (
-        Permissions.isAdmin(Meteor.userId(), this.meeting.projectId)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), this.meeting.projectId)
+        || Permissions.isAdminSync(Meteor.userId())
       );
     }
   }

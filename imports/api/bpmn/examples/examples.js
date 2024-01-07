@@ -19,7 +19,7 @@ Examples.methods.create = new ValidatedMethod({
     xml: { type: String, optional: true }
   }).validator(),
   async run({ name, description, xml }) {
-    checkAdmin();
+    await checkAdmin();
 
     const id = await Examples.insertAsync({
       name,
@@ -41,7 +41,7 @@ Examples.methods.update = new ValidatedMethod({
     xml: { type: String, optional: true }
   }).validator(),
   async run({ exampleId, name, description, xml }) {
-    checkAdmin();
+    await checkAdmin();
     const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
@@ -69,7 +69,7 @@ Examples.methods.saveXML = new ValidatedMethod({
     xml: { type: String }
   }).validator(),
   async run({ exampleId, xml }) {
-    checkAdmin();
+    await checkAdmin();
     const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
@@ -94,7 +94,7 @@ Examples.methods.remove = new ValidatedMethod({
     exampleId: { type: String }
   }).validator(),
   async run({ exampleId }) {
-    checkAdmin();
+    await checkAdmin();
     const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");
@@ -110,7 +110,7 @@ Examples.methods.clone = new ValidatedMethod({
     exampleId: { type: String }
   }).validator(),
   async run({ exampleId }) {
-    checkAdmin();
+    await checkAdmin();
     const example = await Examples.findOneAsync({ _id: exampleId });
     if (!example) {
       throw new Meteor.Error("not-found");

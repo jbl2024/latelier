@@ -145,8 +145,8 @@ export default {
 
     canDeleteOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
@@ -155,8 +155,8 @@ export default {
 
     canManageOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }

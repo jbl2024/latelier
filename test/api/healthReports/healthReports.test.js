@@ -51,7 +51,7 @@ if (Meteor.isServer) {
     });
 
     it("remove project remove all reports", async function() {
-      const context = { userId: Meteor.users.findOneAsync()._id };
+      const context = { userId: await Meteor.users.findOneAsync()._id };
 
       const args = {
         projectId: (await Projects.findOneAsync())._id,

@@ -28,7 +28,7 @@ Meteor.methods({
     }
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     const taskQuery = {
       completed: false,

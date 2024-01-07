@@ -7,13 +7,13 @@ import { Permissions } from "/imports/api/permissions/permissions";
 
 publishComposite("canvas", async function (projectId) {
   return {
-    find() {
+    async find() {
       const userId = Meteor.userId();
       const query = {
         _id: projectId,
         deleted: { $ne: true }
       };
-      if (!Permissions.isAdmin(Meteor.userId())) {
+      if (!await Permissions.isAdmin(Meteor.userId())) {
         query.$or = [
           { createdBy: userId },
           { members: userId },

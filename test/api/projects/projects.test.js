@@ -55,8 +55,8 @@ if (Meteor.isServer) {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
-      expect(Permissions.isAdmin(userId, projectAid)).to.be.true;
-      expect(Permissions.isAdmin(userId, projectBid)).to.be.true;
+      expect(await Permissions.isAdmin(userId, projectAid)).to.be.true;
+      expect(await Permissions.isAdmin(userId, projectBid)).to.be.true;
     });
 
     it("clone project give admins rights", async function () {
@@ -73,8 +73,8 @@ if (Meteor.isServer) {
         projectId: projectAid
       });
       expect(projectBid).to.not.be.null;
-      expect(Permissions.isAdmin(userId, projectAid)).to.be.true;
-      expect(Permissions.isAdmin(userId, projectBid)).to.be.true;
+      expect(await Permissions.isAdmin(userId, projectAid)).to.be.true;
+      expect(await Permissions.isAdmin(userId, projectBid)).to.be.true;
     });
 
     it("clone project keep features", async function () {
@@ -262,7 +262,7 @@ if (Meteor.isServer) {
     });
 
     it("delete forever should remove associated objects", async function () {
-      const userId = (await Meteor.users.findOne())._id;
+      const userId = (await Meteor.users.findOneAsync())._id;
       const context = { userId };
       const projectIds = [];
       const labelIds = [];
@@ -323,11 +323,11 @@ if (Meteor.isServer) {
       expect((await Meteor.users.findOneAsync({ _id: Meteor.userId() })).profile.digests)
         .to.be.an("array")
         .that.include(projectIds[0]);
-      expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.true;
-      expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
-      expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
-      expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
-      expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[0])).to.be.true;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
 
       expect((await Labels.findOneAsync({ projectId: projectIds[0] }))).not.to.be.undefined;
 
@@ -343,11 +343,11 @@ if (Meteor.isServer) {
       expect((await Meteor.users.findOne({ _id: Meteor.userId() })).profile.digests)
         .to.be.an("array")
         .that.not.include(projectIds[0]);
-      expect(Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
-      expect(Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
-      expect(Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
-      expect(Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
-      expect(Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[0])).to.be.false;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[1])).to.be.true;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[2])).to.be.true;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[3])).to.be.false;
+      expect(await Permissions.isAdmin(otherUserId, projectIds[4])).to.be.false;
 
       expect((await Labels.findOneAsync({ projectId: projectIds[0] }))).to.be.undefined;
     });
@@ -391,7 +391,7 @@ if (Meteor.isServer) {
       expect((await Meteor.users.findOneAsync({ _id: userId })).profile.digests)
         .to.be.an("array")
         .that.include(projectIds[0]);
-      expect(Permissions.isAdmin(user._id, projectIds[0])).to.be.true;
+      expect(await Permissions.isAdmin(user._id, projectIds[0])).to.be.true;
 
       await Projects.methods.leave._execute(context, {
         projectId: projectIds[0]
@@ -403,7 +403,7 @@ if (Meteor.isServer) {
       expect((await Meteor.users.findOneAsync({ _id: userId })).profile.digests)
         .to.be.an("array")
         .that.not.include(projectIds[0]);
-      expect(Permissions.isAdmin(user, projectIds[0])).to.be.false;
+      expect(await Permissions.isAdmin(user, projectIds[0])).to.be.false;
     });
 
     it("getHistory is available for members", async function () {

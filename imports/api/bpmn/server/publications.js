@@ -8,13 +8,13 @@ import {
 
 publishComposite("processDiagrams", async function(projectId) {
   return {
-    find() {
+    async find() {
       const userId = Meteor.userId();
       const query = {
         _id: projectId,
         deleted: { $ne: true }
       };
-      if (!Permissions.isAdmin(userId)) {
+      if (!await Permissions.isAdmin(userId)) {
         query.$or = [
           { createdBy: userId },
           { members: userId },

@@ -10,7 +10,7 @@ Canvas.methods.exportPDF = new ValidatedMethod({
     projectId: { type: String }
   }).validator(),
   async run({ projectId }) {
-    checkCanReadProject(projectId);
+    await checkCanReadProject(projectId);
 
     const source = Assets.absoluteFilePath("canvas/canvas.odt");
     const canvas = await Canvas.findOneAsync({ projectId });

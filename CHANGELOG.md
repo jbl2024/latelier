@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Migration to async/await
 - Updated meteor packages:
   - reywood:publish-composite   upgraded from 1.8.3 to 1.8.4
+  - matb33:collection-hooks     upgraded from 1.3.0 to 1.3.1
 
 ### Deleted
 

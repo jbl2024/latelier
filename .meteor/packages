@@ -28,7 +28,6 @@ konecty:user-presence
 ostrio:files@2.3.3
 meteorhacks:inject-initial
 jbl2024:roles
-matb33:collection-hooks
 email@2.2.5
 gadicohen:headers
 mdg:validated-method
@@ -45,3 +44,4 @@ latelier-accounts-oidc
 underscore@1.0.13
 bslocombe:vue-component
 logging
+matb33:collection-hooks

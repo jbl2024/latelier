@@ -335,7 +335,7 @@ Meetings.methods.findMeetings = new ValidatedMethod({
     }
 
     const userId = Meteor.userId();
-    const isRegularUser = !Permissions.isAdmin(userId);
+    const isRegularUser = !await Permissions.isAdmin(userId);
 
     let skip = 0;
     if (perPage) {
@@ -575,7 +575,7 @@ Meetings.methods.adminFind = new ValidatedMethod({
     isDeleted: { type: Boolean, optional: true }
   }).validator(),
   async run({ page, filter, isDeleted }) {
-    if (!Permissions.isAdmin(Meteor.userId())) {
+    if (!await Permissions.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
 

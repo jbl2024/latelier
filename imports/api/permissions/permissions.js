@@ -29,7 +29,14 @@ export const runAsUser = function runAsUser(userId, func) {
 };
 
 export const Permissions = {
-  isAdmin(userId, scope = Roles.GLOBAL_GROUP) {
+  async isAdmin(userId, scope = Roles.GLOBAL_GROUP) {
+    if (!userId) {
+      return false;
+    }
+    return Roles.userIsInRoleAsync(userId, ApplicationRoles.ADMIN, scope);
+  },
+
+  isAdminSync(userId, scope = Roles.GLOBAL_GROUP) {
     if (!userId) {
       return false;
     }
@@ -38,34 +45,18 @@ export const Permissions = {
 
   async setAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     let accessGranted = false;
-    if (this.isAdmin(Meteor.userId())) {
+    if (await this.isAdmin(Meteor.userId())) {
       accessGranted = true;
-    } else if (this.isAdmin(Meteor.userId(), scope)) {
+    } else if (await this.isAdmin(Meteor.userId(), scope)) {
       accessGranted = true;
     }
     if (!accessGranted) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, scope);
+    await Roles.addUsersToRolesAsync(userId, ApplicationRoles.ADMIN, scope);
   },
 
-  initializeProjectPermissions(project) {
-    Roles.addUsersToRoles(
-      project.createdBy,
-      ApplicationRoles.ADMIN,
-      project._id
-    );
-  },
-
-  initializeOrganizationPermissions(organization) {
-    Roles.addUsersToRoles(
-      organization.createdBy,
-      ApplicationRoles.ADMIN,
-      organization._id
-    );
-  },
-
-  removeAdmin(userId, scope = Roles.GLOBAL_GROUP) {
+  async removeAdmin(userId, scope = Roles.GLOBAL_GROUP) {
     let accessGranted = false;
     if (this.isAdmin(Meteor.userId())) {
       accessGranted = true;
@@ -80,44 +71,44 @@ export const Permissions = {
         throw new Meteor.Error(401, "cannot-remove-self");
       }
     }
-    Roles.removeUsersFromRoles(userId, ApplicationRoles.ADMIN, scope);
+    await Roles.removeUsersFromRolesAsync(userId, ApplicationRoles.ADMIN, scope);
   },
 
-  isActive(userId) {
+  async isActive(userId) {
     if (!userId) {
       return false;
     }
-    return !Roles.userIsInRole(
+    return !(await Roles.userIsInRoleAsync(
       userId,
       ApplicationRoles.INACTIVE,
       Roles.GLOBAL_GROUP
-    );
+    ));
   },
 
-  setInactive(userId) {
+  async setInactive(userId) {
     if (!this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    Roles.addUsersToRoles(
+    await Roles.addUsersToRolesAsync(
       userId,
       ApplicationRoles.INACTIVE,
       Roles.GLOBAL_GROUP
     );
-    Meteor.users.update(userId, {
+    await Meteor.users.updateAsync(userId, {
       $set: {
         "services.resume.loginTokens": []
       }
     });
   },
 
-  setActive(userId) {
-    if (!this.isAdmin(Meteor.userId())) {
+  async setActive(userId) {
+    if (!await this.isAdmin(Meteor.userId())) {
       throw new Meteor.Error(401, "not-authorized");
     }
-    if (this.isActive(userId)) {
+    if (await this.isActive(userId)) {
       return;
     }
-    Roles.removeUsersFromRoles(
+    await Roles.removeUsersFromRolesAsync(
       userId,
       ApplicationRoles.INACTIVE,
       Roles.GLOBAL_GROUP
@@ -126,14 +117,14 @@ export const Permissions = {
 };
 
 if (Meteor.isServer) {
-  Accounts.validateLoginAttempt(function(attemptObj) {
+  Accounts.validateLoginAttempt(async function(attemptObj) {
     if (attemptObj.user && !Permissions.isActive(attemptObj.user._id)) {
       throw new Meteor.Error(403, "Your account is disabled.");
     }
     if (!attemptObj.user) {
       return false;
     }
-    if (Permissions.isAdmin(attemptObj.user._id)) {
+    if (await Permissions.isAdmin(attemptObj.user._id)) {
       return true;
     }
 
@@ -156,8 +147,8 @@ export const checkLoggedIn = () => {
   }
 };
 
-export const checkAdmin = (scope) => {
-  if (!Permissions.isAdmin(Meteor.userId(), scope)) {
+export const checkAdmin = async (scope) => {
+  if (!await Permissions.isAdmin(Meteor.userId(), scope)) {
     throw new Meteor.Error("not-authorized");
   }
 };
@@ -248,7 +239,7 @@ Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
     const project = await Projects.findOneAsync({ _id: projectId });
     const userId = project.createdBy;
     if (!userId) return;
-    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, projectId);
+    await Roles.aokddUsersToRolesAsync(userId, ApplicationRoles.ADMIN, projectId);
   }
 });
 
@@ -263,7 +254,7 @@ Permissions.methods.initializeOrganizationPermissions = new ValidatedMethod({
     const organization = await Organizations.findOneAsync({ _id: organizationId });
     const userId = organization.createdBy;
     if (!userId) return;
-    await Roles.addUsersToRoles(userId, ApplicationRoles.ADMIN, organizationId);
+    await Roles.addUsersToRolesAsync(userId, ApplicationRoles.ADMIN, organizationId);
   }
 });
 

@@ -432,8 +432,8 @@ export default {
   },
   methods: {
     canImportProject(organizationId) {
-      return Permissions.isAdmin(Meteor.userId(), organizationId)
-      || Permissions.isAdmin(Meteor.userId());
+      return Permissions.isAdminSync(Meteor.userId(), organizationId)
+      || Permissions.isAdminSync(Meteor.userId());
     },
     importProject() {
       this.$refs.uploadProject.beginUpload();
@@ -486,8 +486,8 @@ export default {
     },
     canManageOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
@@ -495,8 +495,8 @@ export default {
     },
     canDeleteOrganization(organization) {
       if (
-        Permissions.isAdmin(Meteor.userId(), organization._id)
-        || Permissions.isAdmin(Meteor.userId())
+        Permissions.isAdminSync(Meteor.userId(), organization._id)
+        || Permissions.isAdminSync(Meteor.userId())
       ) {
         return true;
       }
