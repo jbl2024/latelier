@@ -239,7 +239,7 @@ Permissions.methods.initializeProjectPermissions = new ValidatedMethod({
     const project = await Projects.findOneAsync({ _id: projectId });
     const userId = project.createdBy;
     if (!userId) return;
-    await Roles.aokddUsersToRolesAsync(userId, ApplicationRoles.ADMIN, projectId);
+    await Roles.addUsersToRolesAsync(userId, ApplicationRoles.ADMIN, projectId);
   }
 });
 
