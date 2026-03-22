@@ -2,7 +2,16 @@
 
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fjbl2024%2Flatelier?ref=badge_shield) [![Build Status](https://cloud.drone.io/api/badges/jbl2024/latelier/status.svg?ref=refs/heads/master)](https://cloud.drone.io/jbl2024/latelier) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/404a011df8c04d219242ef80d1c26397)](https://www.codacy.com/manual/jbl2024/latelier?utm_source=github.com&utm_medium=referral&utm_content=jbl2024/latelier&utm_campaign=Badge_Grade)
 
-A project management tool.
+This repository is archived and no longer actively maintained.
+
+The project remains available here for reference, but there will be no new features, bug fixes, or support.
+
+If you are looking for an active alternative, consider:
+
+- [Wekan](https://wekan.github.io/) for an open-source Trello-style Kanban board
+- [Kanboard](https://kanboard.org/) for a lightweight self-hosted project management tool
+- [Taiga](https://taiga.io/) for agile project tracking with backlog and Kanban support
+- [Restyaboard](https://restya.com/board/) for a collaborative board-based workflow
 
 ![Kanban](/docs/kanban.png)
 
